@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mail Plug-in (Incubation)
-Bundle-SymbolicName: javax.mail.old
+Bundle-SymbolicName: javax.mail
 Bundle-Version: 0.1.4.qualifier
 Bundle-ClassPath: mail.jar,
  lib/imap.jar,
