@@ -1,0 +1,17 @@
+# phoenix configuration entries
+com.sun.jini.phoenix.activatorExporter: net.jini.export.Exporter
+com.sun.jini.phoenix.groupConfig: String[]
+com.sun.jini.phoenix.groupLocation: String
+com.sun.jini.phoenix.groupOptions: String[]
+com.sun.jini.phoenix.groupOutputHandler: com.sun.jini.phoenix.GroupOutputHandler
+com.sun.jini.phoenix.groupThrottle: int
+com.sun.jini.phoenix.groupTimeout: int
+com.sun.jini.phoenix.instantiatorPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.phoenix.loginContext: javax.security.auth.login.LoginContext
+com.sun.jini.phoenix.monitorExporter: net.jini.export.Exporter
+com.sun.jini.phoenix.persistenceDirectory: String
+com.sun.jini.phoenix.persistenceSnapshotThreshold: int
+com.sun.jini.phoenix.registryExporter: net.jini.export.Exporter
+com.sun.jini.phoenix.systemExporter: net.jini.export.Exporter
+com.sun.jini.phoenix.unexportTimeout: int
+com.sun.jini.phoenix.unexportWait: int

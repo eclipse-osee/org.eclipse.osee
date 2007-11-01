@@ -1,0 +1,9 @@
+# ServiceDiscoveryManager configuration entries
+net.jini.lookup.ServiceDiscoveryManager.cacheTaskManager: com.sun.jini.thread.TaskManager
+net.jini.lookup.ServiceDiscoveryManager.discardTaskManager: com.sun.jini.thread.TaskManager
+net.jini.lookup.ServiceDiscoveryManager.discardWait: long
+net.jini.lookup.ServiceDiscoveryManager.discoveryManager: net.jini.discovery.DiscoveryManagement
+net.jini.lookup.ServiceDiscoveryManager.eventLeasePreparer: net.jini.security.ProxyPreparer
+net.jini.lookup.ServiceDiscoveryManager.eventListenerExporter: net.jini.export.Exporter
+net.jini.lookup.ServiceDiscoveryManager.leaseManager: net.jini.lease.LeaseRenewalManager
+net.jini.lookup.ServiceDiscoveryManager.registrarPreparer: net.jini.security.ProxyPreparer

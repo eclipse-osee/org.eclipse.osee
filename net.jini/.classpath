@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/browser.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/checkconfigurationfile.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/checkser.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/classdep.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/classserver.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/computedigest.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/computehttpmdcodebase.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/destroy.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/envcheck.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/fiddler.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/group.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jarwrapper.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jini-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jini-ext.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-debug-policy.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-lib.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-platform.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/jsk-resources.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/mahalo.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/mercury.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/norm.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/outrigger.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/outrigger-logstore.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/outrigger-snaplogstore.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/phoenix.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/phoenix-group.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/phoenix-init.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/prebuilt-outrigger-logstore.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/preferredlistgen.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/reggie.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/sharedvm.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/start.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/sun-util.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/tools.jar" sourcepath="jini2_1/source.zip"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,63 @@
+# non-activatable persistent outrigger configuration entries
+com.sun.jini.outrigger.gcInterval: int
+com.sun.jini.outrigger.maxOps: int
+com.sun.jini.outrigger.persistenceDirectory: String
+com.sun.jini.outrigger.recoveredListenerPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.outrigger.recoveredLookupLocatorPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.outrigger.recoveredTransactionManagerPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.outrigger.store: com.sun.jini.outrigger.Store
+# transient outrigger configuration entries
+com.sun.jini.outrigger.contentsLeasePeriodPolicy: com.sun.jini.landlord.LeasePeriodPolicy
+com.sun.jini.outrigger.discoveryManager: net.jini.discovery.DiscoveryManagement
+com.sun.jini.outrigger.entryLeasePeriodPolicy: com.sun.jini.landlord.LeasePeriodPolicy
+com.sun.jini.outrigger.eventLeasePolicy: com.sun.jini.landlord.LeasePeriodPolicy
+com.sun.jini.outrigger.initialLookupAttributes: net.jini.core.entry.Entry[]
+com.sun.jini.outrigger.initialLookupGroups: String[]
+com.sun.jini.outrigger.initialLookupLocators: net.jini.core.discovery.LookupLocator[]
+com.sun.jini.outrigger.iteratorBatchSize: int
+com.sun.jini.outrigger.listenerPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.outrigger.loginContext: javax.security.auth.login.LoginContext
+com.sun.jini.outrigger.lookupLocatorPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.outrigger.maxServerQueryTimeout: long
+com.sun.jini.outrigger.maxUnexportDelay: long
+com.sun.jini.outrigger.notificationsTaskManager: com.sun.jini.thread.TaskManager
+com.sun.jini.outrigger.reapingInterval: long
+com.sun.jini.outrigger.reapingPriority: int
+com.sun.jini.outrigger.serverExporter: net.jini.export.Exporter
+com.sun.jini.outrigger.takeMultipleLimit: int
+com.sun.jini.outrigger.transactionManagerPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.outrigger.txnMonitorTaskManager: com.sun.jini.thread.TaskManager
+com.sun.jini.outrigger.unexportRetryDelay: long
+# JoinManager configuration entries
+net.jini.lookup.JoinManager.discoveryManager: net.jini.discovery.DiscoveryManagement
+net.jini.lookup.JoinManager.leaseManager: net.jini.lease.LeaseRenewalManager
+net.jini.lookup.JoinManager.maxLeaseDuration: long
+net.jini.lookup.JoinManager.registrarPreparer: net.jini.security.ProxyPreparer
+net.jini.lookup.JoinManager.registrationPreparer: net.jini.security.ProxyPreparer
+net.jini.lookup.JoinManager.serviceLeasePreparer: net.jini.security.ProxyPreparer
+net.jini.lookup.JoinManager.taskManager: com.sun.jini.thread.TaskManager
+net.jini.lookup.JoinManager.wakeupManager: com.sun.jini.thread.WakeupManager
+net.jini.lookup.JoinManager.wakeupRetries: int
+# LeaseRenewalManager configuration entries
+net.jini.lease.LeaseRenewalManager.renewBatchTimeWindow: long
+net.jini.lease.LeaseRenewalManager.roundTripTime: long
+net.jini.lease.LeaseRenewalManager.taskManager: com.sun.jini.thread.TaskManager
+# LookupDiscovery configuration entries
+net.jini.discovery.LookupDiscovery.discoveryConstraints: net.jini.core.constraint.MethodConstraints
+net.jini.discovery.LookupDiscovery.finalMulticastRequestInterval: long
+net.jini.discovery.LookupDiscovery.initialMulticastRequestDelayRange: long
+net.jini.discovery.LookupDiscovery.multicastAnnouncementInterval: long
+net.jini.discovery.LookupDiscovery.multicastInterfaceRetryInterval: int
+net.jini.discovery.LookupDiscovery.multicastInterfaces: java.net.NetworkInterface[]
+net.jini.discovery.LookupDiscovery.multicastRequestHost: String
+net.jini.discovery.LookupDiscovery.multicastRequestInterval: long
+net.jini.discovery.LookupDiscovery.multicastRequestMax: int
+net.jini.discovery.LookupDiscovery.registrarPreparer: net.jini.security.ProxyPreparer
+net.jini.discovery.LookupDiscovery.taskManager: com.sun.jini.thread.TaskManager
+net.jini.discovery.LookupDiscovery.unicastDelayRange: long
+net.jini.discovery.LookupDiscovery.wakeupManager: com.sun.jini.thread.WakeupManager
+# LookupLocatorDiscovery configuration entries
+net.jini.discovery.LookupLocatorDiscovery.initialUnicastDelayRange: long
+net.jini.discovery.LookupLocatorDiscovery.registrarPreparer: net.jini.security.ProxyPreparer
+net.jini.discovery.LookupLocatorDiscovery.taskManager: com.sun.jini.thread.TaskManager
+net.jini.discovery.LookupLocatorDiscovery.wakeupManager: com.sun.jini.thread.WakeupManager

@@ -1,0 +1,7 @@
+# start.jar ServiceStarter configuration entries
+com.sun.jini.start.activationIDPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.start.activationSystemPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.start.loginContext: javax.security.auth.login.LoginContext
+com.sun.jini.start.serviceDescriptors: com.sun.jini.start.ServiceDescriptor[]
+com.sun.jini.start.serviceDestructors: com.sun.jini.start.ServiceDescriptor[]
+com.sun.jini.start.servicePreparer: net.jini.security.ProxyPreparer

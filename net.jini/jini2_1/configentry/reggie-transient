@@ -1,0 +1,57 @@
+# transient reggie configuration entries
+com.sun.jini.reggie.discoveryConstraints: net.jini.core.constraint.MethodConstraints
+com.sun.jini.reggie.discoveryManager: net.jini.discovery.DiscoveryManagement
+com.sun.jini.reggie.initialLookupAttributes: net.jini.core.entry.Entry[]
+com.sun.jini.reggie.initialLookupGroups: String[]
+com.sun.jini.reggie.initialLookupLocators: net.jini.core.discovery.LookupLocator[]
+com.sun.jini.reggie.initialMemberGroups: String[]
+com.sun.jini.reggie.initialUnicastDiscoveryPort: int
+com.sun.jini.reggie.listenerPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.reggie.locatorPreparer: net.jini.security.ProxyPreparer
+com.sun.jini.reggie.loginContext: javax.security.auth.login.LoginContext
+com.sun.jini.reggie.minMaxEventLease: long
+com.sun.jini.reggie.minMaxServiceLease: long
+com.sun.jini.reggie.minRenewalInterval: long
+com.sun.jini.reggie.multicastAnnouncementInterval: long
+com.sun.jini.reggie.multicastInterfaceRetryInterval: int
+com.sun.jini.reggie.multicastInterfaces: java.net.NetworkInterface[]
+com.sun.jini.reggie.multicastRequestSubjectChecker: com.sun.jini.discovery.ClientSubjectChecker
+com.sun.jini.reggie.resourceIdGenerator: com.sun.jini.reggie.UuidGenerator
+com.sun.jini.reggie.serverExporter: net.jini.export.Exporter
+com.sun.jini.reggie.serviceIdGenerator: com.sun.jini.reggie.UuidGenerator
+com.sun.jini.reggie.taskManager: com.sun.jini.thread.TaskManager
+com.sun.jini.reggie.unicastDiscoveryHost: String
+com.sun.jini.reggie.unicastDiscoverySubjectChecker: com.sun.jini.discovery.ClientSubjectChecker
+# JoinManager configuration entries
+net.jini.lookup.JoinManager.discoveryManager: net.jini.discovery.DiscoveryManagement
+net.jini.lookup.JoinManager.leaseManager: net.jini.lease.LeaseRenewalManager
+net.jini.lookup.JoinManager.maxLeaseDuration: long
+net.jini.lookup.JoinManager.registrarPreparer: net.jini.security.ProxyPreparer
+net.jini.lookup.JoinManager.registrationPreparer: net.jini.security.ProxyPreparer
+net.jini.lookup.JoinManager.serviceLeasePreparer: net.jini.security.ProxyPreparer
+net.jini.lookup.JoinManager.taskManager: com.sun.jini.thread.TaskManager
+net.jini.lookup.JoinManager.wakeupManager: com.sun.jini.thread.WakeupManager
+net.jini.lookup.JoinManager.wakeupRetries: int
+# LeaseRenewalManager configuration entries
+net.jini.lease.LeaseRenewalManager.renewBatchTimeWindow: long
+net.jini.lease.LeaseRenewalManager.roundTripTime: long
+net.jini.lease.LeaseRenewalManager.taskManager: com.sun.jini.thread.TaskManager
+# LookupDiscovery configuration entries
+net.jini.discovery.LookupDiscovery.discoveryConstraints: net.jini.core.constraint.MethodConstraints
+net.jini.discovery.LookupDiscovery.finalMulticastRequestInterval: long
+net.jini.discovery.LookupDiscovery.initialMulticastRequestDelayRange: long
+net.jini.discovery.LookupDiscovery.multicastAnnouncementInterval: long
+net.jini.discovery.LookupDiscovery.multicastInterfaceRetryInterval: int
+net.jini.discovery.LookupDiscovery.multicastInterfaces: java.net.NetworkInterface[]
+net.jini.discovery.LookupDiscovery.multicastRequestHost: String
+net.jini.discovery.LookupDiscovery.multicastRequestInterval: long
+net.jini.discovery.LookupDiscovery.multicastRequestMax: int
+net.jini.discovery.LookupDiscovery.registrarPreparer: net.jini.security.ProxyPreparer
+net.jini.discovery.LookupDiscovery.taskManager: com.sun.jini.thread.TaskManager
+net.jini.discovery.LookupDiscovery.unicastDelayRange: long
+net.jini.discovery.LookupDiscovery.wakeupManager: com.sun.jini.thread.WakeupManager
+# LookupLocatorDiscovery configuration entries
+net.jini.discovery.LookupLocatorDiscovery.initialUnicastDelayRange: long
+net.jini.discovery.LookupLocatorDiscovery.registrarPreparer: net.jini.security.ProxyPreparer
+net.jini.discovery.LookupLocatorDiscovery.taskManager: com.sun.jini.thread.TaskManager
+net.jini.discovery.LookupLocatorDiscovery.wakeupManager: com.sun.jini.thread.WakeupManager
