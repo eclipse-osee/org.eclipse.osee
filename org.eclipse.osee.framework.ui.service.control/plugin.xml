@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension-point id="ServiceView" name="org.eclipse.osee.framework.ui.service.control.ServiceView" schema="schema/ServiceView.exsd"/>
+     <extension-point id="ServiceLaunch" name="ServiceLaunch" schema="schema/ServiceLaunch.exsd"/>
+
+   <extension
+         id="org.eclipse.osee.framework.ui.skynet"
+         name="OSEE"
+         point="org.eclipse.ui.views">
+      <category
+            id="osee.jdk.core.category"
+            name="OSEE"
+            parentCategory="osee.jdk.core.category"/>
+      <view
+            category="osee.jdk.core.category"
+            class="org.eclipse.osee.framework.ui.service.control.view.ServiceManagerView"
+            icon="images/monitor.GIF"
+            id="org.eclipse.osee.framework.ui.service.control.view.ServiceManagerView"
+            name="Service Manager"/>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.service.control.ServiceLaunch">
+      <Application
+            RequiresJiniGroup="true"
+            ServiceName="Local Jini Lookup Service">
+         <NotLocalToPlugin
+               PluginId="org.eclipse.osee.framework.jini">
+         </NotLocalToPlugin>
+         <EclipseApplication
+               AppArgs="-port 8080 -nohup"
+               EclipseApplicationName="org.eclipse.osee.framework.jini.JiniLookup"
+               IsLocalAllowed="true"
+               VmArgs="-Xmx512m -Dlookupcomponent -XX:MaxPermSize=256m">
+         </EclipseApplication>
+            <StandAloneApplication
+                  AppArgs="8080 -nohup"
+                  ExecutionCommand="-jar@oseejini.jar"
+                  IsLocalAllowed="true"
+                  IsRemoteAllowed="false"
+                  VmArgs="-Xmx512m -Dlookupcomponent -XX:MaxPermSize=256m">
+               <ApplicationBundle
+                     UnzipLocation="$USERNAME/server_launching"
+                     ZipFileName="oseejinilookup.zip">
+               </ApplicationBundle>
+            </StandAloneApplication>
+      </Application>
+   </extension>
+</plugin>

@@ -1,0 +1,176 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
+package org.eclipse.osee.framework.ui.plugin.util.db;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+
+/**
+ * Keeps track of contributions to a database transaction. This provides a mechanism for detecting rollback conditions
+ * of a transaction that includes nested levels of method calls that would normally produce their own transaction but
+ * are instead being included in a higher level transaction.
+ * 
+ * @author Robert A. Fisher
+ */
+final class DbTransactionManager extends KeyedLevelManager {
+   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(DbTransactionManager.class);
+   private boolean transactionNeedsRollback;
+   private boolean priorCommit;
+   private Connection connection;
+   private List<IDbTransactionListener> listeners;
+
+   protected DbTransactionManager() {
+      this.transactionNeedsRollback = false;
+      this.priorCommit = false;
+      this.listeners = new LinkedList<IDbTransactionListener>();
+   }
+
+   @Override
+   protected void onInitialEntry() throws SQLException {
+      super.onInitialEntry();
+      try {
+         if (connection == null) connection = ConnectionHandler.getPooledConnection();
+         priorCommit = connection.getAutoCommit();
+         connection.setAutoCommit(false);
+         transactionNeedsRollback = false;
+         String dbName = connection.getMetaData().getDatabaseProductName();
+         if (dbName.equals("MySQL")) {
+            logger.log(
+                  Level.WARNING,
+                  "We are doing a naughty thing in DbTransactionManager line:66.  We skip defering constraint checking because we're using mySQL, and we're checking the metaData to see if we are using mySQL.");
+         } else {
+            DbUtil.deferConstraintChecking(connection);
+         }
+      } catch (SQLException e) {
+         requestRollback();
+         throw e;
+      }
+   }
+
+   @Override
+   protected void onLastExit() {
+      // This is used to signify that the commit itself was successful, and does
+      // not necessarily signify that no SQLException occurred.
+      boolean committed = false;
+
+      try {
+         if (connection != null) {
+            if (transactionNeedsRollback) {
+               connection.rollback();
+            } else {
+               connection.commit();
+               committed = true;
+            }
+
+            connection.setAutoCommit(priorCommit);
+         }
+      } catch (SQLException ex) {
+         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } finally {
+         transactionNeedsRollback = false;
+         ConnectionHandler.repoolConnection(connection);
+         connection = null;
+
+         notifyListeners(committed);
+      }
+   }
+
+   /**
+    * @return Returns the connection.
+    */
+   public Connection getConnection() {
+      return connection;
+   }
+
+   /**
+    * If the manager is already managing a transaction and is given a new connection, then that transaction will be
+    * marked as corrupted, and thusly all changes will be rolledback upon completion of the transaction.
+    * 
+    * @param connection The connection to set.
+    */
+   public void setConnection(Connection connection) {
+      if (this.connection == connection) return;
+
+      if (this.connection != null) {
+         try {
+            try {
+               this.connection.rollback();
+            } finally {
+               this.connection.close();
+            }
+         } catch (SQLException ex) {
+            logger.log(Level.WARNING, ex.toString(), ex);
+         }
+      }
+
+      this.connection = connection;
+
+      if (inTransaction()) {
+         requestRollback();
+         if (connection != null) {
+            try {
+               connection.setAutoCommit(false);
+            } catch (SQLException e) {
+               logger.log(Level.SEVERE, e.toString(), e);
+            }
+         }
+      }
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.osee.framework.ui.plugin.util.db.KeyedLevelManager#endTransactionLevel(java.lang.Object)
+    */
+   @Override
+   public void endTransactionLevel(Object key) throws SQLException {
+      if (true != isTransactionLevelSuccess(key)) {
+         requestRollback();
+      }
+      super.endTransactionLevel(key);
+   }
+
+   /**
+    * Mark the transaction being managed as needing rollback. This may be necessary from a failed sql, loss of a
+    * connection, or any other time the application deems it necessary.
+    */
+   public void requestRollback() {
+      if (!inTransaction()) throw new IllegalStateException(
+            "Can not request a rollback when no transaction is in progress");
+
+      transactionNeedsRollback = true;
+   }
+
+   private void notifyListeners(boolean committed) {
+      DbTransactionEventCompleted eventCompleted = new DbTransactionEventCompleted(committed);
+
+      for (IDbTransactionListener listener : listeners) {
+         listener.onEvent(eventCompleted);
+      }
+   }
+
+   public void addListener(IDbTransactionListener listener) {
+      if (listener == null) {
+         throw new IllegalArgumentException("The listener can not be null");
+      }
+      listeners.add(listener);
+   }
+
+   public boolean removeListener(IDbTransactionListener listener) {
+      return listeners.remove(listener);
+   }
+}

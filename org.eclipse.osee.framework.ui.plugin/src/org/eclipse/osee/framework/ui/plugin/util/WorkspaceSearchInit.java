@@ -1,0 +1,38 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.ui.plugin.util;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+
+/**
+ * @author Andrew M. Finkbeiner
+ */
+public class WorkspaceSearchInit extends Job {
+   private Object obj;
+
+   public WorkspaceSearchInit(Object obj) {
+      super("Initializing Workspace Search");
+      this.obj = obj;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+    */
+   @Override
+   protected IStatus run(IProgressMonitor monitor) {
+      AWorkspace.initWorkspaceSearch();
+      obj.notify();
+      return Status.OK_STATUS;
+   }
+}

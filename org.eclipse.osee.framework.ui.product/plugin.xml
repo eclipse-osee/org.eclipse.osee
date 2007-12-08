@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+     
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="OSEE Product"
+            visible="true"
+            id="osee.product.actionSet">
+         <menu
+            label="&amp;OSEE"
+            id="osee.product.oseeMenu">
+         </menu>
+           
+      </actionSet>
+   </extension>
+   
+   <extension
+         id="osee"
+         name="Open System Engineering Environment"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            description="The Open System Engineering Environment (OSEE) builds upon the strengths of Eclipse (an open, extensible, platform independent, feature-rich, tools platform) to provide a tightly integrated engineering environment that supports lean engineering. Since OSEE integrates all engineering areas, the full lifecycle data for a product is managed by a common platform allowing this data to be seamlessly brought together to form a coherent, accurate view of a project in real-time."
+            name="Open System Engineering Environment">
+        <property name="windowImages" value="images/osee_16.png,images/osee_32.png,images/osee_48.png" />
+        <property name="aboutImage" value="images/osee_154_152.png"/> 
+		<property name="aboutText" value="%blurb"/> 
+		<property name="appName" value="OSEE"/> 
+        <property name="preferenceCustomization" value="support/plugin_customization.ini" />
+      </product>
+   </extension>
+<extension  
+	point="org.eclipse.ui.intro">
+	<intro
+		class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+		id="osee.product.intro">
+	</intro>
+	<introProductBinding
+		introId="osee.product.intro"
+		productId="osee.product.osee">
+	</introProductBinding>
+</extension>
+<extension   
+	id="intro"
+	point="org.eclipse.ui.intro.config">
+	<config
+		introId="osee.product.intro"
+		id="osee.product.introConfig"
+		content="introContent.xml">
+	<presentation
+		home-page-id="root" standby-page-id="standby">
+			<implementation
+ 				ws="win32"
+				style="css/shared.css"
+				kind="html"
+				os="win32">
+			</implementation>
+			<implementation
+				kind="swt">
+			</implementation>
+	</presentation>
+	</config>
+</extension>
+
+
+</plugin>

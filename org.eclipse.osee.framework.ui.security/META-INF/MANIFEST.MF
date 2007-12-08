@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Security Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.ui.security
+Bundle-Version: 0.1.0.qualifier
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.skynet.core,
+ org.eclipse.osee.framework.jdk.core,
+ org.junit,
+ org.eclipse.osee.framework.ui.skynet,
+ org.eclipse.osee.framework.plugin.core
+Eclipse-LazyStart: true
+Export-Package: org.eclipse.osee.framework.ui.security
+Bundle-Vendor: Eclipse.org
