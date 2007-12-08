@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="JiniInterface" name="JiniInterface" schema="schema/JiniInterface.exsd"/>
+  
+     <extension
+            point="org.eclipse.osee.framework.jini.JiniInterface">
+        <RegisterBundle/>
+     </extension>
+     <extension
+           id="JiniLookup"
+           name="JiniLookup"
+           point="org.eclipse.core.runtime.applications">
+        <application>
+           <run class="org.eclipse.osee.framework.jini.JiniLookupPlatformRunnable"/>
+        </application>
+     </extension>
+</plugin>
