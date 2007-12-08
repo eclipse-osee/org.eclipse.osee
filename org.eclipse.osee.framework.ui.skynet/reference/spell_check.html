@@ -1,0 +1,40 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>OSEE Spell Checking</title>
+	</head>
+
+	<body>
+		<h1>OSEE Spell Checking</h1>
+		<br/>
+		<img src="spell_check.jpg"/>
+		<h2>Purpose</h2>
+		Enable data entered in OSEE to be spell checked.
+		<h2>How to do it</h2>
+		As data is entered into OSEE spell-checked fields, a blue line will be displayed if the word is not recognized.
+		Only lower-case words or words with only first character uppercase will be spell checked.  Acronyms, words with
+		special characters, numbers and single letter words will be ignored.
+		<h2>Main Dictionary</h2>
+		OSEE has a main dictionary included in it's release.  See below for it's source, copyrights and credits.
+		<h2>Additional Released Dictionaries</h2>
+		Additionally dictionaries can be added to OSEE via extension points.  These can only be
+		modified by hand and thus included in normal release cycle.
+		<h2>Run-time Global Dictionary</h2>
+		Each OSEE user is able to add words to a Global dictionary stored in the database by right-clicking on the word
+		underlined in blue and selecting to save global.  These words are stored in the "Global Preferences" artifact
+		and will then be shown as a valid word in all users's spell checking.
+		<h2>Run-time Personal Dictionary</h2>
+		Each OSEE user is able to add words to their Personal dictionary stored in the database by right-clicking on the word
+		underlined in blue and selecting to save personal.  These words are stored in the user's "User" artifact
+		and will then be shown as a valid word only for that user.
+		<br>
+</body>
+</html>

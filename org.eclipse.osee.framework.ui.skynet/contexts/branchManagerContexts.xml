@@ -1,0 +1,30 @@
+<contexts>
+	<context id="branch_manager_default_branch_menu" title="Set Default Branch">
+		<description>Sets the selected branch as the default branch.</description>
+		<topic label="Default Branch" href="reference/default_branch.html"/>
+	</context>
+	<context id="branch_manager_favorite_branch_menu" title="Mark/Unmark Favorite Branch">
+		<description>Toggles a branch as being favorite.</description>
+		<topic label="Favorite Branch" href="reference/favorite_branch.html"/>
+	</context>
+	<context id="branch_manager_show_change_report_menu" title="Show Change Report">
+		<description>Shows the Change Report for a branch or range of transactions.</description>
+		<topic label="Show Change Report" href="reference/show_change_report.html"/>
+	</context>
+	
+	<context id="branch_manager_filtering" title="Branch Manager">
+		<description>Displays branches that are available in Skynet.</description>
+		<topic label="Branch Manager" href="reference/branch_manager_view.html"/>
+		<topic label="Branch Filtering" href="reference/branch_filtering.html"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+	<context id="branch_manager_table" title="Branch Manager">
+		<description>Displays branches that are available in Skynet.</description>
+		<topic label="Branch Manager" href="reference/branch_manager_view.html"/>
+		<topic label="Branch Filtering" href="reference/branch_filtering.html"/>
+		<topic label="Default Branch" href="reference/default_branch.html"/>
+		<topic label="Favorite Branch" href="reference/favorite_branch.html"/>
+		<topic label="Show Change Report" href="reference/show_change_report.html"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+</contexts>

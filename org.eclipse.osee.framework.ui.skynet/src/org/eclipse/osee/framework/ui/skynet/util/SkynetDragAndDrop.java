@@ -1,0 +1,203 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.ui.skynet.util;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.ui.skynet.HTMLTransferFormatter;
+import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.dnd.HTMLTransfer;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Control;
+
+/**
+ * @author Jeff C. Phillips
+ */
+public abstract class SkynetDragAndDrop {
+   private String viewId;
+   private DragSource source;
+   private DropTarget target;
+
+   public SkynetDragAndDrop(Control dragAndDropControl, String viewId) {
+      this(dragAndDropControl, dragAndDropControl, viewId);
+   }
+
+   /**
+    * Caller may optionally pass null for either the dragSource or dropTarget when both are not needed
+    * 
+    * @param dragSource
+    * @param dropTarget
+    * @param viewId
+    */
+   public SkynetDragAndDrop(Control dragSource, Control dropTarget, String viewId) {
+      this.viewId = viewId;
+      if (dragSource != null) {
+         source = new DragSource(dragSource, DND.DROP_MOVE | DND.DROP_COPY);
+         setupDragSupport();
+      }
+      if (dropTarget != null) {
+         target = new DropTarget(dropTarget, DND.DROP_MOVE | DND.DROP_COPY);
+         setupDropSupport();
+      }
+   }
+
+   private void setupDragSupport() {
+      source.setTransfer(new Transfer[] {HTMLTransfer.getInstance(), ArtifactTransfer.getInstance(),
+            TextTransfer.getInstance()});
+      source.addDragListener(new DragSourceListener() {
+
+         public void dragFinished(DragSourceEvent event) {
+         }
+
+         public void dragSetData(DragSourceEvent event) {
+            performDataTransafer(event);
+         }
+
+         public void dragStart(DragSourceEvent event) {
+         }
+      });
+   }
+
+   private void performDataTransafer(DragSourceEvent event) {
+      if (HTMLTransfer.getInstance().isSupportedType(event.dataType)) {
+         htmlTransferDragSetData(event);
+      } else if (ArtifactTransfer.getInstance().isSupportedType(event.dataType)) {
+         artifactTransferDragSetData(event);
+      } else if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+         textTransferDragSetData(event);
+      }
+   }
+
+   private void setupDropSupport() {
+      target.setTransfer(new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(),
+            ArtifactTransfer.getInstance()});
+      target.addDropListener(new DropTargetAdapter() {
+
+         public void dragOperationChanged(DropTargetEvent event) {
+            operationChanged(event);
+         }
+
+         public void drop(DropTargetEvent event) {
+            performDrop(event);
+         }
+
+         public void dragOver(DropTargetEvent event) {
+            performDragOver(event);
+         }
+
+         public void dropAccept(DropTargetEvent event) {
+         }
+      });
+   }
+
+   public void performDragOver(DropTargetEvent event) {
+   }
+
+   public void artifactTransferDragSetData(DragSourceEvent event) {
+      try {
+         if (getArtifacts() != null && getArtifacts().length > 0) {
+            event.data = new ArtifactData(getArtifacts(), "work", viewId);
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(ChangeReportView.class, ex, true);
+      }
+   }
+
+   public void htmlTransferDragSetData(DragSourceEvent event) {
+      try {
+         if (getArtifacts() != null && getArtifacts().length > 0) {
+            event.data = HTMLTransferFormatter.getHtml(getArtifacts());
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(ChangeReportView.class, ex, true);
+      }
+   }
+
+   public void textTransferDragSetData(DragSourceEvent event) {
+      try {
+         if (getArtifacts() != null && getArtifacts().length > 0) {
+            Artifact[] artifacts = getArtifacts();
+            Collection<String> names = new ArrayList<String>(artifacts.length);
+
+            for (Artifact artifact : artifacts)
+               names.add(artifact.getDescriptiveName());
+
+            event.data = Collections.toString(names, null, ", ", null);
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(ChangeReportView.class, ex, true);
+      }
+   }
+
+   /**
+    * Override this method to supply the base class with artifacts to be used for drag and drop.
+    */
+   public abstract Artifact[] getArtifacts() throws Exception;
+
+   /**
+    * Override this method to implement the drop operation.
+    */
+   public void performDrop(DropTargetEvent event) {
+      if (event.data instanceof ArtifactData) {
+         performArtifactDrop(((ArtifactData) event.data).getArtifacts());
+      } else if (event.data instanceof String[]) {
+         performFileDrop((String[]) event.data);
+      } else if (event.data instanceof String) {
+         performTextDrop((String) event.data);
+      }
+   }
+
+   public void operationChanged(DropTargetEvent event) {
+   }
+
+   /**
+    * override this method and its cousins rather than performDrop in order to have the drop data preprocessed and
+    * passed in the desired form
+    * 
+    * @param text
+    */
+   public void performTextDrop(String text) {
+
+   }
+
+   /**
+    * override this method and its cousins rather than performDrop in order to have the drop data preprocessed and
+    * passed in the desired form
+    * 
+    * @param dropArtifacts
+    */
+   public void performArtifactDrop(Artifact[] dropArtifacts) {
+
+   }
+
+   /**
+    * override this method and its cousins rather than performDrop in order to have the drop data preprocessed and
+    * passed in the desired form
+    * 
+    * @param fileNames
+    */
+   public void performFileDrop(String[] fileNames) {
+
+   }
+}

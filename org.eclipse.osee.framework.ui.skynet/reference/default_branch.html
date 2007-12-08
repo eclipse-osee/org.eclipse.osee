@@ -1,0 +1,40 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>Default Branch</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+	<body>
+		<h1>Default Branch</h1>
+		<h2>What it is</h2>
+		The branch which is returned to any program that asks for the current default branch. For instance,
+		the Artifact Explorer will use the default branch to determine what artifacts to show, and artifact
+		searches are performed against the default branch.
+		<h2>How to tell what the default branch is</h2>
+		The Branch Manager view shows all of the branches with the <img src="../images/branch.gif"/> icon.<br/>
+		<br/>
+		The default branch will have a <img src="../images/black_check.gif"/> at the top right of the normal branch icon.<br/>
+		<br/>
+		Most views and editors that are working with artifacts will show the branch in the status bar next to the branch icon.
+		<h2>How to set it</h2>
+		The default branch is set from the Branch Manager view. Use sorting or <a href="branch_filtering.html"/>filtering</a> in the table to find the
+		desired branch. Right-click on the branch and then select <i>Set Default Branch</i> from the popup menu.<br/>
+		<br/>
+		The <i>Set Default Branch</i> option will be disabled if any of the following cases are true:
+		<ul>
+		<li>The branch selected is already the default</li>
+		<li>The item selected is not a branch</li>
+		<li>More than one item is selected</li>
+		</ul>
+		
+</body>
+</html>

@@ -1,0 +1,9 @@
+<contexts>
+	<context id="relation_page_tree_viewer" title="Relation Page">
+		<description>An editor to support relation link creation, modification and deletion.</description>
+		<topic href="reference/creating_new_links.html" label="Creating a new Link"/>
+				<topic href="reference/deleting_link.html" label="Deleting a Link"/>
+		<topic href="reference/reorder_links.html" label="Reordering links"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+</contexts>

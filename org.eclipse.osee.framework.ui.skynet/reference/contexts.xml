@@ -1,0 +1,11 @@
+<contexts>
+	<context id="table_customization" title="Table Customization">
+		<description>Allows the table to be customized, saved and loaded.</description>
+		<topic label="Table Customization" href="reference/table_customization.html"/>
+	</context>
+	<context id="mass_artifact_editor" title="Mass Artifact Editor">
+		<description>Allows viewing and editing of attributes from multiple artifacts.</description>
+		<topic label="Mass Artifact Editor" href="reference/mass_artifact_editor.html"/>
+		<topic label="Table Customization" href="reference/table_customization.html"/>
+	</context>
+</contexts>

@@ -1,0 +1,9 @@
+<contexts>
+	<context id="change_report_table" title="Change Report">
+		<description>Shows changes made on a branch, or between two transactions.</description>
+		<topic label="Reading a Change Report" href="reference/change_table.html"/>
+		<topic label="Refresh a Change Report" href="reference/refresh_change_report.html"/>
+		<topic label="Show a Change Report" href="reference/show_change_report.html"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+</contexts>

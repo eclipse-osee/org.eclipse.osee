@@ -1,0 +1,39 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>Artifact Search</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+	<body>
+		<h1>Artifact Search</h1>
+		<br/>
+		<img src="artifact_search_page.gif"/>
+		<h2>What it is</h2>
+		The search page in the Eclipse Search window for finding artifacts on the default branch.
+		<h2>How to use it</h2>
+		<p>The Artifact Search page works by building a list of filters which that
+		describe the desired artifacts. Filter types are selected from the drop down at the top
+		of the page. After completing the options for the filter, pressing the <i>Add Filter</i>
+		button will add the filter to the list of filters. If the <i>Not Equal</i> option is checked,
+		then it will be added with the <img src="../images/not_equal.gif"/> image signifying that the
+		complement of the filter will be used.</p>
+		<p>Filters can be removed from the list at anytime by selecting the <img src="../../osee.core/images/remove.gif"/>
+		next to the filter.</p>
+		<p>The radio buttons in the <i>Artifacts that match</i> frame are used to control whether artifacts are returned
+		that match every filter listed or at least one filter listed.</p>
+		<p>Once all of the options have been filled out, the Search button can be pressed to start the search against the 
+		default branch. For convenience the default branch is stated at the top of the search page. If
+		a large number of artifacts will be returned then a confirmation will be displayed with a count of the
+		artifacts that are about to be loaded.</p>
+		<p>The Search button will not be enabled until there is at least one filter in the list.</p>
+</body>
+</html>

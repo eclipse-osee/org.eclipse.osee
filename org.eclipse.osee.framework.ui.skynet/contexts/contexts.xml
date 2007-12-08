@@ -1,0 +1,17 @@
+<contexts>
+	<context id="artifact_editor" title="Artifact Editor">
+		<description>Artifact Editor</description>
+		<topic href="reference/creating_new_links.html" label="Creating a new Link"/>
+		<topic href="reference/reorder_links.html" label="Reordering links"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+	<context id="artifact_explorer_tree" title="Artifact Explorer">
+		<description>Displays artifacts in a relational hierarchy for navigation.</description>
+		<topic href="reference/artifact_explorer_tree.html" label="Drag and Drop"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+	<context id="xResultView" title="Result View">
+		<description>Show reports, errors, metrics and other data in a multi-paged view with print, email and exporting capabilities.</description>
+		<topic href="reference/result_view.html" label="Result View"/>
+	</context>
+</contexts>

@@ -1,0 +1,9 @@
+<contexts>
+	<context id="query_log_table" title="Query Log">
+		<description>Displays queries that have been run, along with their run time, bind variables, and the time when they were ran. If a SQLException occurred during execution then it will also be shown.</description>
+		<topic label="Query Log" href="reference/queryLog/query_log_view.html"/>
+		<topic label="Refreshing the log" href="reference/queryLog/refresh_log.html"/>
+		<topic label="Deleting the log" href="reference/queryLog/delete_log.html"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+</contexts>

@@ -1,0 +1,39 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>Query Log View</title>
+        <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+	<body>
+		<h1>Query Log View</h1>
+		<br/>
+		<img src="query_log_view.gif"/>
+		<h2>Purpose</h2>
+		<p>The Query Log view is used to review queries that have been run for the purpose of debugging. Details about the query
+		such as how long it took to run, if any bind variables were passed, or if an SQL Exception was thrown while attempting to
+		execute the query are all available. Run time is only reported for queries that executed successfully.</p>
+		<p>Queries can be sorted by clicking on the column heading for the column to sort by. Initially, the data will be sorted in
+		ascending order. Clicking the same column multiple times will toggle the sorting between ascending and descending. The table
+		can be sorted on multiple columns by holding the CTRL key and selecting columns in the order which they should be sorted.</p>
+		<h2>Shortcuts</h2>
+		<ul>
+		<li><b>CTRL+A</b> - Select all items displayed</li>
+		<li><b>CTRL+C</b> - Copy the current selected item to the clipboard.
+			<ul>
+			<li>SQL Item - Copies the full SQL Text</li>
+			<li>Bind Variable - Copies the bind variable value, not including the type. Binary data not supported</li>
+			<li>Exception - Copies the exception and stack trace</li>
+			</ul></li>
+		<li><b>CTRL+X</b> - Fully expand selected items</li>
+		</ul>
+</body>
+</html>

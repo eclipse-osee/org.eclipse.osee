@@ -1,0 +1,19 @@
+<contexts>
+	<context id="quick_search_text" title="Quick Search">
+		<description>Provides quick access to search for artifacts by name or by index</description>
+		<topic label="Quick Search" href="reference/quickSearch/quick_search_view.html"/>
+		<topic label="Name Search" href="reference/quickSearch/name_search.html"/>
+		<topic label="Index Search" href="reference/quickSearch/index_search.html"/>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+	<context id="quick_search_name_radio" title="Quick Search">
+		<description>Provides quick access to search for artifacts by name or by index</description>
+		<topic label="Quick Search" href="reference/quickSearch/quick_search_view.html"/>
+		<topic label="Name Search" href="reference/quickSearch/name_search.html"/>
+	</context>
+	<context id="quick_search_index_radio" title="Quick Search">
+		<description>Provides quick access to search for artifacts by name or by index</description>
+		<topic label="Quick Search" href="reference/quickSearch/quick_search_view.html"/>
+		<topic label="Index Search" href="reference/quickSearch/index_search.html"/>
+	</context>
+</contexts>

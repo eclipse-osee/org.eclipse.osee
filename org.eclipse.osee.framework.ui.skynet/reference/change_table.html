@@ -1,0 +1,51 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>Change Report View</title>
+        <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+	<body>
+		<h1>Change Report View</h1>
+		<br/>
+		<img src="change_report_view.gif"/>
+		<h2>Purpose</h2>
+		<p>The Change Report View is used to summarize the changes that have been made on a branch or series of transactions.</p>
+		<h2>Icons</h2>
+		<ul>
+		<li><img src="../images/relate.gif"/> Base image for relation links</li>
+		<li><img src="../../org.eclipse.osee.framework.skynet.core/images/molecule.gif"/> Base image for attributes</li>
+		<li><img src="../../org.eclipse.osee.framework.skynet.core/images/inc_new.gif"/> Overlay to mark item as an incoming new item</li>
+		<li><img src="../../org.eclipse.osee.framework.skynet.core/images/inc_change.gif"/> Overlay to mark item as an incoming modification</li>
+		<li><img src="../../org.eclipse.osee.framework.skynet.core/images/inc_delete.gif"/> Overlay to mark item as an incoming delete</li>
+		<li><img src="../../org.eclipse.osee.framework.skynet.core/images/out_new.gif"/> Overlay to mark item as an outgoing new item</li>
+		<li><img src="../../org.eclipse.osee.framework.skynet.core/images/out_change.gif"/> Overlay to mark item as an outgoing modification</li>
+		<li><img src="../../org.eclipse.osee.framework.skynet.core/images/out_delete.gif"/> Overlay to mark item as an outgoing delete</li>
+		<li><img src="../../org.eclipse.osee.framework.skynet.core/images/con_new.gif"/> Overlay to mark an item as being new but having incoming changes</li>
+		<li><img src="../../org.eclipse.osee.framework.skynet.core/images/con_change.gif"/> Overlay to mark an item as having incoming and outgoing changes</li>
+		<li><img src="../../org.eclipse.osee.framework.skynet.core/images/con_delete.gif"/> Overlay to mark an item as being deleted but having incoming changes</li>
+		</ul>
+		<h2>Branch Change Report</h2>
+		<p>A Change Report can be performed for a branch two ways. The first way is by selecting right-clicking a branch 
+		from the Branch Manager then choosing the "Show Change Report" menu item. The second way is to select
+		"Show Change Report" from the Aspect view of an ATS Action that is still in work; this will do a Change
+		Report for the working branch of the Aspect.</p>
+		<p>This type of Change Report will display all of the artifacts on the branch that have had an attribute
+		or relation link modified. It will also do conflict detection on these artifacts against the parent branch.
+		All changes done on the current artifact will appear with a grey right arrow<img src="../../org.eclipse.osee.framework.skynet.core/images/out_change.gif"/>, while all changes from the
+		parent branch will be shown with a blue left arrow<img src="../../org.eclipse.osee.framework.skynet.core/images/inc_change.gif"/>. Attributes and relation links with multiple changes will
+		provide a summarized node that shows the final effect of the changes and can be expanded to view all of the
+		minor changes that were made. If an attribute or relation link was modified on both
+		branches then the summary will show a red conflict mark<img src="../../org.eclipse.osee.framework.skynet.core/images/con_change.gif"/> to signify that a commit will cause an override
+		to occur.
+		
+</body>
+</html>

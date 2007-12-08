@@ -1,0 +1,8 @@
+<contexts>
+	<context id="artifact_search" title="Artifact Search">
+		<description>Used to search for artifacts that are on the default branch.</description>
+		<topic label="Artifact Search Page" href="reference/artifact_search_page.html"/>
+		<topic label="Index Based Search" href="reference/index_base_search.html"/>
+		<topic label="Default Branch" href="reference/default_branch.html"/>
+	</context>
+</contexts>
