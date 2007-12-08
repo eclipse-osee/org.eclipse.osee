@@ -1,0 +1,88 @@
+<project name="DBRelease" default="dbrelease" basedir="..">
+
+	<property name="ECLIPSE_HOME" value="C:\Program Files\OSEE" />
+	<property name="release" value="dbrelease/" />
+	<property name="targetzip" value="${release}../oseeDatabase.zip" />
+	<property name="manifestname" value="RELEASE.MF" />
+	<property name="antdir" value="ant/" />
+	<property name="derby" value="${ECLIPSE_HOME}\plugins\org.apache.derby.core_10.1.2.1" />
+	
+	<property name="eclipseruntimejar" value="org.eclipse.core.runtime_3.1.2.jar"/>
+	<property name="eclipseJFacejar" value="org.eclipse.jface_3.1.1.jar" />
+	<property name="eclipseRuntime" value="${ECLIPSE_HOME}\plugins\${eclipseruntimejar}" />
+	<property name="eclipseJFace" value="${ECLIPSE_HOME}\plugins\${eclipseJFacejar}" />
+	
+	<property name="oseecore" value="osee.jdk.core/bin/" />
+	<property name="oseedb" value="osee.database/bin/" />
+	<property name="oseejini" value="osee.jini/bin/" />
+	<property name="oseeats2" value="osee.ats2/bin/" />
+	<property name="oseedefine" value="osee.define/bin/" />
+
+	<target name="clean">
+		<delete file="${manifestname}" />
+		<delete dir="${release}" />
+	</target>
+
+	<target name="createrelease">
+		<echo message="createrelease PATH=${PATH}" />
+		<mkdir dir="${PATH}" />
+		<manifest file="RELEASE.MF">
+			<attribute name="Main-Class" value="osee/database/core/OseeDbLauncher" />
+			<attribute name="Class-Path" value="oseecore.jar oseejini.jar oseedefine.jar oseeats2.jar derby.jar derbyclient.jar derbynet.jar derbytools.jar  ${eclipseruntimejar} ${eclipseJFacejar}" />
+			<section name="common">
+				<attribute name="Specification-Title" value="Example" />
+				<attribute name="Specification-Version" value="${version}" />
+				<attribute name="Specification-Vendor" value="Example Organization" />
+				<attribute name="Implementation-Title" value="common" />
+				<attribute name="Implementation-Version" value="${version} ${TODAY}" />
+				<attribute name="Implementation-Vendor" value="Example Corp." />
+			</section>
+		</manifest>
+
+		<jar jarfile="${PATH}/oseedb.jar" basedir="../${oseedb}" manifest="RELEASE.MF" />
+		<jar jarfile="${PATH}/oseecore.jar" basedir="../${oseecore}" />
+		<jar jarfile="${PATH}/oseejini.jar" basedir="../${oseejini}" />
+		<jar jarfile="${PATH}/oseeats2.jar" basedir="../${oseeats2}" />
+		<jar jarfile="${PATH}/oseedefine.jar" basedir="../${oseedefine}" />
+
+		<copy toDir="${PATH}/">
+			<fileset file="${eclipseRuntime}"/>
+			<fileset file="${eclipseJFace}" />
+		</copy>
+		
+		<copy toDir="${PATH}/">
+			<fileset dir="${derby}" includes="*.jar" />
+		</copy>
+
+		<copy toDir="${PATH}/DatabaseSchemaDump">
+			<fileset dir="DatabaseSchemaDump"/>
+		</copy>
+
+		<copy toDir="${PATH}/excelFiles">
+			<fileset dir="excelFiles"/>
+		</copy>
+		
+		<copy toDir="${PATH}/support/">
+			<fileset file="../${oseecore}/../support/oseeSiteConfig.xml" />
+		</copy>
+		<delete file="${manifestname}" />
+	</target>
+
+	<target name="dbrelease">
+		<antcall target="createrelease">
+			<param name="PATH" value="dbrelease/" />
+		</antcall>
+	</target>
+
+	<target name="dbreleasezip">
+		<antcall target="createrelease">
+			<param name="PATH" value="temp/" />
+		</antcall>
+		<zip destfile="${targetzip}">
+			<fileset dir="temp/" />
+		</zip>
+
+		<delete dir="temp/" />
+	</target>
+	
+</project>

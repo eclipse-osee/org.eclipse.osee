@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ant.core.antTasks">
+      <antTask
+            class="org.tigris.subversion.svnant.SvnTask"
+            eclipseRuntime="false"
+            headless="true"
+            library="lib/svnant-1.0.0/lib/svnant.jar"
+            name="svn">
+      </antTask>
+   </extension>
+   <extension
+         point="org.eclipse.ant.core.extraClasspathEntries">
+      <extraClasspathEntry
+            eclipseRuntime="true"
+            headless="true"
+            library="lib/svnant-1.0.0/lib/svnClientAdapter.jar">
+      </extraClasspathEntry>
+      <extraClasspathEntry
+            eclipseRuntime="true"
+            headless="true"
+            library="lib/svnant-1.0.0/lib/svnjavahl.jar">
+      </extraClasspathEntry>
+   </extension>
+
+</plugin>

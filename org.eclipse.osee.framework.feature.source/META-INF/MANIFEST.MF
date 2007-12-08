@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Source Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.feature.source;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Require-Bundle: org.eclipse.pde.core
+Bundle-Vendor: Eclipse.org

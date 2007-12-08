@@ -1,0 +1,84 @@
+<project name="SQLAnt" default="query" basedir=".">	
+
+	<!-- LOCAL DERBY PROPERTIES -->
+	<property name="driver" value="org.apache.derby.jdbc.ClientDriver"/>
+	<property name="url" value="jdbc:derby://localhost:1621/DerbyDatabase;create=true"/>
+	<property name="userid" value="osee"/>
+	<property name="password" value="osee"/>
+	<property name="driverpath" value="C:\Program Files\OSEE\plugins\org.apache.derby.core_10.1.2.1\derbyclient.jar" />
+	
+	<target name="query" >
+	<sql driver="${driver}" url="${url}" userid="${userid}" password="${password}" print="true" >
+		<classpath><pathelement location="${driverpath}"/></classpath>
+	select * from OSEE_DEFINE_ATTRIBUTE_TYPE
+	</sql>
+	</target>
+	
+	<target name="getAllOseeInfo" >
+		<sql driver="${driver}" url="${url}" userid="${userid}" password="${password}" print="true" >
+			<classpath><pathelement location="${driverpath}"/></classpath>
+			select * from OSEE_INFO
+		</sql>
+	</target>
+	
+	<target name="insertderbyTestScriptOutputFalse" >
+		<sql driver="${driver}" url="${url}" userid="${userid}" password="${password}" print="true" >
+			<classpath><pathelement location="${driverpath}"/></classpath>
+			insert  into OSEE_INFO (OSEE_VALUE, OSEE_KEY) values ('FALSE', 'SAVE_OUTFILE_IN_DB')
+		</sql>
+	</target>
+	
+	<target name="saveTestScriptOutputTrue" >
+		<sql driver="${driver}" url="${url}" userid="${userid}" password="${password}" print="true" >
+			<classpath><pathelement location="${driverpath}"/></classpath>
+			UPDATE OSEE_INFO SET OSEE_VALUE = 'TRUE'
+			WHERE OSEE_KEY = 'SAVE_OUTFILE_IN_DB'
+		</sql>
+	</target>
+	
+	<target name="saveTestScriptOutputFalse" >
+		<sql driver="${driver}" url="${url}" userid="${userid}" password="${password}" print="true" >
+			<classpath><pathelement location="${driverpath}"/></classpath>
+			UPDATE OSEE_INFO SET OSEE_VALUE = 'FALSE'
+			WHERE OSEE_KEY = 'SAVE_OUTFILE_IN_DB'
+		</sql>
+	</target>
+	
+	<target name="testskynet" >
+		<sql driver="${driver}" url="${url}" userid="${userid}" password="${password}" print="true" >
+			<classpath><pathelement location="${driverpath}"/></classpath>
+			SELECT attr_type_id FROM OSEE_DEFINE_valid_attributes WHERE art_type_id = 20 AND gamma_id &lt;= 100000
+		</sql>
+	</target>
+	
+	
+	<target name="testskynet2" >
+		<sql driver="${driver}" url="${url}" userid="${userid}" password="${password}" print="true" >
+			<classpath><pathelement location="${driverpath}"/></classpath>
+			SELECT OSEE_DEFINE_attr_base_type.attribute_class, 
+			OSEE_DEFINE_attribute_type.attr_type_id,
+			OSEE_DEFINE_attribute_type.name,
+			OSEE_DEFINE_attribute_type.default_value,
+			OSEE_DEFINE_attribute_type.validity_xml,
+			OSEE_DEFINE_attribute_type.min_occurence,
+			OSEE_DEFINE_attribute_type.max_occurence,
+			OSEE_DEFINE_attribute_type.user_viewable,
+			OSEE_DEFINE_attribute_type.tip_text 
+			FROM OSEE_DEFINE_attribute_type, OSEE_DEFINE_attr_base_type,transaction_gamma_view 
+			WHERE OSEE_DEFINE_attr_base_type.attr_base_type_id=OSEE_DEFINE_attribute_type.attr_base_type_id 
+			AND transaction_gamma_view.transaction_id=179 
+			AND OSEE_DEFINE_attribute_type.gamma_id&lt;=transaction_gamma_view.largest_gamma_id
+		</sql>
+	</target>
+	
+	
+	<target name="getseqtable" >
+		<sql driver="${driver}" url="${url}" userid="${userid}" password="${password}" print="true" >
+			<classpath><pathelement location="${driverpath}"/></classpath>
+			SELECT * FROM OSEE_DEFINE_SEQUENCE 
+		</sql>
+	</target>
+	
+</project>
+
+

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="IDbInitializationTask" name="DbInitializationTask" schema="schema/IDbInitializationTask.exsd"/>
+   <extension-point id="ProductionDatabase" name="Production Database" schema="schema/ProductionDatabase.exsd"/>
+   <extension-point id="AddDbInitChoice" name="Add Database Initialization Choice" schema="schema/AddDbInitChoice.exsd"/>
+   <extension
+         id="configClient"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run class="org.eclipse.osee.framework.database.ConfigDatabase"/>
+      </application>
+   </extension>
+<extension
+      point="org.eclipse.ui.popupMenus">
+   <objectContribution
+         adaptable="true"
+         id="osee.database.projectContribution"
+         objectClass="org.eclipse.core.resources.IResource">
+      <action
+            class="org.eclipse.osee.framework.database.GenerateTypeEnumAction"
+            id="osee.define.popup.open.artifact"
+            label="Generate Type Classes"
+            menubarPath="osee.define.menu.main/main"/>
+   </objectContribution>
+   
+</extension>
+<extension
+      id="BackupTableData"
+      point="org.eclipse.osee.framework.database.IDbInitializationTask">
+   <DatabaseTask
+         classname="org.eclipse.osee.framework.database.initialize.tasks.relational.BackupTableData"/>
+</extension>
+<extension
+      id="RestoreTableData"
+      point="org.eclipse.osee.framework.database.IDbInitializationTask">
+   <DatabaseTask classname="org.eclipse.osee.framework.database.initialize.tasks.relational.RestoreTableData"/>
+</extension>
+<extension
+      id="ImportDataFromDbService"
+      point="org.eclipse.osee.framework.database.IDbInitializationTask">
+   <DatabaseTask classname="org.eclipse.osee.framework.database.initialize.tasks.ImportDataFromDbService"/>
+</extension>
+<extension
+      id="availableDbTasks"
+      name="availableDbTasks"
+      point="org.eclipse.core.runtime.applications">
+   <application>
+      <run class="org.eclipse.osee.framework.database.PlatformRunnableAvailableInitTasks"/>
+   </application>
+</extension>
+
+    
+</plugin>

@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Database Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.database;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-ClassPath: database.jar
+Bundle-Activator: org.eclipse.osee.framework.database.DatabaseActivator
+Export-Package: org.eclipse.osee.framework.database,
+ org.eclipse.osee.framework.database.config,
+ org.eclipse.osee.framework.database.core,
+ org.eclipse.osee.framework.database.initialize,
+ org.eclipse.osee.framework.database.initialize.tasks,
+ org.eclipse.osee.framework.database.initialize.tasks.relational,
+ org.eclipse.osee.framework.database.utility
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.core.resources,
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.osee.framework.plugin.core
+Eclipse-LazyStart: true
+Bundle-Vendor: Eclipse.org
