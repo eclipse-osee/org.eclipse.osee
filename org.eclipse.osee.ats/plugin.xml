@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="AtsNavigateItem" name="AtsNavigateItem" schema="schema/AtsNavigateItem.exsd"/>
+   <extension-point id="AtsStateItem" name="AtsStateItem" schema="schema/AtsStateItem.exsd"/>
+   <extension-point id="AtsAIandTeamConfig" name="AtsAIandTeamConfig" schema="schema/AtsAIandTeamConfig.exsd"/>
+   <extension-point id="AtsVueWorkflowDiagram" name="AtsVueWorkflowDiagram" schema="schema/AtsVueWorkflowDiagram.exsd"/>
+   <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="schema/AtsWizardItem.exsd"/>
+   <extension-point id="AtsTeamWorkflow" name="AtsTeamWorkflow" schema="schema/AtsTeamWorkflow.exsd"/>
+         <extension
+         point="org.eclipse.ui.editors">
+         <editor
+            class="org.eclipse.osee.ats.editor.SMAEditor"
+            icon="images/plan.gif"
+            default="false"
+            id="org.eclipse.osee.ats.editor.SMAEditor"
+            name="ATS Workflow Editor"/>
+         <editor
+               class="org.eclipse.osee.ats.editor.TaskEditor"
+               default="false"
+               icon="images/task.gif"
+               id="org.eclipse.osee.ats.editor.TaskEditor"
+               name="ATS Task Editor"/>
+   </extension>
+   <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
+      <ArtifactFactory classname="org.eclipse.osee.ats.artifact.AtsArtifactFactory"/>
+   </extension>
+           <extension
+         point="org.eclipse.osee.framework.skynet.core.HttpServerRequest">
+      <IHttpServerRequest
+            classname="org.eclipse.osee.ats.util.AtsHttpServerRequest"/>
+   </extension>
+      <extension
+            point="org.eclipse.help.toc">
+         <toc
+               file="reference/toc.xml"
+               primary="true"/>
+      </extension>
+      <extension
+            point="org.eclipse.help.contexts">
+         <contexts file="reference/contexts.xml"/>
+         <contexts file="reference/newActionWizard/contexts.xml"/>
+         <contexts file="reference/decision_review_workflow/contexts.xml"/>
+         <contexts
+               file="reference/peer_to_peer_review_workflow/contexts.xml">
+         </contexts>
+      </extension> 
+<extension point="org.eclipse.ui.perspectives">
+   <perspective
+         name="ATS"
+         class="org.eclipse.osee.ats.ATSPerspective"
+         fixed="false"
+         id="org.eclipse.osee.ats.ATSPerspective"
+         icon="images/atsPerspective.gif">
+   </perspective>
+</extension>
+      <extension
+            point="org.eclipse.ui.perspectiveExtensions">
+         <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+            <perspectiveShortcut id="org.eclipse.osee.ats.ATSPerspective"/>
+         </perspectiveExtension>
+         <perspectiveExtension targetID="osee.define.PerspectiveFactory">
+            <perspectiveShortcut id="org.eclipse.osee.ats.ATSPerspective"/>
+         </perspectiveExtension>
+         <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
+            <perspectiveShortcut id="org.eclipse.osee.ats.ATSPerspective"/>
+         </perspectiveExtension>
+         <perspectiveExtension targetID="org.eclipse.osee.ats.ATSPerspective">
+            <perspectiveShortcut id="org.eclipse.jdt.ui.JavaPerspective"/>
+            <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
+            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
+         </perspectiveExtension>
+      </extension>
+
+   <extension
+      id="org.eclipse.osee.ats"
+      name="ATS"
+      point="org.eclipse.ui.views">
+    <category
+         name="OSEE ATS"
+         id="org.eclipse.osee.ats.category"/>
+    <view
+         class="org.eclipse.osee.ats.navigate.NavigateView"
+         icon="images/atsNavigate.gif"
+         category="org.eclipse.osee.ats.category"
+         name="ATS Navigator"
+         id="org.eclipse.osee.ats.navigate.NavigateView">
+   </view>
+   <view
+         class="org.eclipse.osee.ats.hyper.ActionHyperView"
+         icon="images/hyper.gif"
+         category="org.eclipse.osee.ats.category"
+         name="Action View"
+         id="org.eclipse.osee.ats.hyper.ActionHyperView">
+   </view>
+<!-- Don't allow access to this yet 
+    <view
+         class="org.eclipse.osee.ats.hyper.ActionSkyWalker"
+         icon="images/hyper.gif"
+         category="org.eclipse.osee.ats.category"
+         name="Action View"
+         id="org.eclipse.osee.ats.hyper.ActionSkyWalker">
+   </view>
+-->
+>>>>>>> .merge-right.r20369
+   <view
+         class="org.eclipse.osee.ats.hyper.ArtifactHyperView"
+         icon="images/artView.gif"
+         category="org.eclipse.osee.ats.category"
+         name="Artifact View"
+         id="org.eclipse.osee.ats.hyper.ArtifactHyperView">
+   </view>
+   <view
+         class="org.eclipse.osee.ats.world.WorldView"
+         icon="images/world.gif"
+         category="org.eclipse.osee.ats.category"
+         name="ATS World"
+         id="org.eclipse.osee.ats.world.WorldView">
+   </view>
+   </extension>
+   <extension
+         id="AtsDatabaseConfig"
+         name="AtsDatabaseConfig"
+         point="org.eclipse.osee.framework.database.IDbInitializationTask">
+      <DatabaseTask
+            classname="org.eclipse.osee.ats.config.AtsDatabaseConfig">
+      </DatabaseTask>
+   </extension>
+   <extension
+         point="org.eclipse.osee.ats.AtsStateItem">
+      <AtsStateItem classname="org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItem"/>
+      <AtsStateItem classname="org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewDecisionStateItem"/>
+      <AtsStateItem classname="org.eclipse.osee.ats.editor.stateItem.AtsTeamAnalyzeStateItem"/>
+      <AtsStateItem classname="org.eclipse.osee.ats.editor.stateItem.AtsTeamEndorseStateItem"/>
+      <AtsStateItem
+            classname="org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItem">
+      </AtsStateItem>
+      <AtsStateItem
+            classname="org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewReviewStateItem">
+      </AtsStateItem>
+      <AtsStateItem
+            classname="org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem">
+      </AtsStateItem>
+      <AtsStateItem
+            classname="org.eclipse.osee.ats.editor.stateItem.AtsBranchCreateCommitStateItem">
+      </AtsStateItem>
+   </extension>
+   <extension
+         id="ATS_Skynet_Types"
+         name="ATS_Skynet_Types"
+         point="org.eclipse.osee.framework.skynet.core.SkynetDbTypes">
+      <ExcelFile
+            file="support/ATS_Skynet_Types.xml"/>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.ArtifactTypeImage">
+      <ArtifactImage
+            ArtifactTypeName="Decision Review"
+            ImagePath="images/R.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Action"
+            ImagePath="images/action.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Review"
+            ImagePath="images/R.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Config Definition"
+            ImagePath="images/configDef.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Reviewer"
+            ImagePath="images/reviewer.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Product Impact"
+            ImagePath="images/product.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Product Definition"
+            ImagePath="images/productDef.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Version"
+            ImagePath="images/version.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Aspect Definition"
+            ImagePath="images/aspectDef.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Aspect Impact"
+            ImagePath="images/aspect.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Task"
+            ImagePath="images/task.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Actionable Item"
+            ImagePath="images/AI.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Universal Group"
+            ImagePath="images/group.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Team Workflow"
+            ImagePath="images/workflow.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="User Community"
+            ImagePath="images/community.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="Team Definition"
+            ImagePath="images/team.gif"/>
+      <ArtifactImage
+            ArtifactTypeName="PeerToPeer Review"
+            ImagePath="images/R.gif">
+      </ArtifactImage>
+   </extension>
+   <extension
+         id="TaskMetrics"
+         name="TaskMetrics"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.operation.TaskMetrics">
+      </Operation>
+   </extension>
+   <extension
+         id="ConnectWorkflowToBranchOrTransaction"
+         name="ConnectWorkflowToBranchOrTransaction"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation className="org.eclipse.osee.ats.operation.ConnectWorkflowToBranchOrTransaction"/>
+   </extension>
+   <extension
+         id="ats"
+         point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer classname="org.eclipse.osee.ats.editor.AtsRenderer"/>
+   </extension>
+   <extension
+         point="org.eclipse.osee.ats.AtsVueWorkflowDiagram">
+      <AtsVueWorkflowDiagram
+            id="osee_ats_defaultTeam_workflow"
+            vueFilename="support/osee_ats_defaultTeam_workflow.vue"/>
+      <AtsVueWorkflowDiagram
+            id="osee_ats_defaultTask_workflow"
+            vueFilename="support/osee_ats_defaultTask_workflow.vue"/>
+      <AtsVueWorkflowDiagram
+            id="osee_ats_defaultSimpleTeam_workflow"
+            vueFilename="support/osee_ats_defaultSimpleTeam_workflow.vue"/>
+      <AtsVueWorkflowDiagram
+            id="osee_ats_decisionReview_workflow"
+            vueFilename="support/osee_ats_decisionReview_workflow.vue"/>
+      <AtsVueWorkflowDiagram
+            id="osee_ats_peerToPeerReview_workflow"
+            vueFilename="support/osee_ats_peerToPeerReview_workflow.vue"/>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider">
+      <Provider class="org.eclipse.osee.ats.TeamBasedDefaultBranchProvider"/>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.ArtifactAnnotation">
+      <ArtifactAnnotation
+            classname="org.eclipse.osee.ats.util.AtsArtifactAnnotations">
+      </ArtifactAnnotation>
+      <ArtifactAnnotation
+            classname="org.eclipse.osee.ats.artifact.annotation.ReviewAnnotationHandler">
+      </ArtifactAnnotation>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.AtsLib">
+      <AtsLib
+            classname="org.eclipse.osee.ats.util.AtsLib">
+      </AtsLib>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
+      <XWidgetProvider
+            classname="org.eclipse.osee.ats.util.widgets.XWidgetProvider">
+      </XWidgetProvider>
+   </extension>
+
+
+</plugin>

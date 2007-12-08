@@ -1,0 +1,39 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>Create Actionable Items</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+<body>
+   <h1>Create Actionable Items</h1>
+		<h2>Purpose</h2>
+		To create Actionable Items which provide the end user with a selection of things impacted by this Action.
+		<h2>How to do it</h2>
+   <ul>
+      <li>Create Actionable Items</li>
+      <ul>
+         <li>Actionable Item tree can be created to the level at which actions are to be written.  Usually a component decomposition.  In the case of UIs, create one for each view or window.</li>
+         <li>Attributes</li>
+         <ul>
+            <li>Name:[uniquely recognizable team name]</li>
+            <li>ats.Active:[yes]</li>
+         </ul>
+         <li>Relations</li>
+         <ul>
+            <li>DefaultHeirarchy: Relate to parent team or top level "Actionable Items" artifact"</li>
+            <li>TeamActionableItem: Relate to team responsible for performing tasks.  Team can be related to parent and all children will have team by default.
+         </ul>
+      </ul>
+   </ul>
+</body>
+</html>
+

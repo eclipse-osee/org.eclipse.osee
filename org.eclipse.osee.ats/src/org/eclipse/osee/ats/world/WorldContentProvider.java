@@ -1,0 +1,156 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
+package org.eclipse.osee.ats.world;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.ats.ActionDebug;
+import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
+
+public class WorldContentProvider implements ITreeContentProvider {
+
+   protected Collection<WorldArtifactItem> rootSet = new HashSet<WorldArtifactItem>();
+   private final WorldXViewer xViewer;
+   private static Object[] EMPTY_ARRAY = new Object[0];
+   private ActionDebug debug = new ActionDebug(false, "WorldTreeContentProvider");
+
+   public WorldContentProvider(WorldXViewer WorldXViewer) {
+      super();
+      this.xViewer = WorldXViewer;
+   }
+
+   public void add(final WorldArtifactItem item) {
+      add(Arrays.asList(new WorldArtifactItem[] {item}));
+   }
+
+   public void add(final Collection<? extends WorldArtifactItem> items) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            rootSet.addAll(items);
+            xViewer.refresh();
+         };
+      });
+   }
+
+   public void set(final Collection<? extends WorldArtifactItem> arts) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            clear();
+            add(arts);
+         };
+      });
+   }
+
+   public void remove(final Artifact art) {
+      remove(Arrays.asList(new Artifact[] {art}));
+   }
+
+   public void remove(final Collection<? extends Artifact> arts) {
+      if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+      ArrayList<WorldArtifactItem> delItems = new ArrayList<WorldArtifactItem>();
+      delItems.addAll(rootSet);
+      for (Artifact art : arts) {
+         for (WorldArtifactItem wai : rootSet)
+            if (wai.getArtifact().equals(art)) delItems.add(wai);
+      }
+      removeItems(delItems);
+   }
+
+   public void removeItems(final Collection<? extends WorldArtifactItem> arts) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            rootSet.remove(arts);
+            xViewer.refresh();
+         };
+      });
+   }
+
+   public void clear() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
+            for (WorldArtifactItem wai : rootSet)
+               wai.dispose();
+            rootSet.clear();
+            xViewer.refresh();
+         };
+      });
+   }
+
+   public Object[] getChildren(Object parentElement) {
+      debug.report("getChildren");
+      if (parentElement instanceof Collection) {
+         return ((Collection<?>) parentElement).toArray();
+      }
+      if (parentElement instanceof WorldArtifactItem) {
+         return ((WorldArtifactItem) parentElement).getChildren();
+      }
+      return EMPTY_ARRAY;
+   }
+
+   public Object getParent(Object element) {
+      debug.report("getParent");
+      if (element instanceof WorldArtifactItem) {
+         return ((WorldArtifactItem) element).getParentItem();
+      }
+      return null;
+   }
+
+   public boolean hasChildren(Object element) {
+      debug.report("hasChildren");
+      if (element instanceof Collection) return true;
+      if (element instanceof String) return false;
+      if (((WorldArtifactItem) element).getArtifact() == null) return false;
+      if (((WorldArtifactItem) element).getArtifact() instanceof TaskArtifact) return false;
+      if (((WorldArtifactItem) element).getArtifact() instanceof DecisionReviewArtifact) return false;
+      if (((WorldArtifactItem) element).getArtifact() instanceof PeerToPeerReviewArtifact) return false;
+      if (((WorldArtifactItem) element).getArtifact().isDeleted()) return false;
+      return true;
+   }
+
+   public Object[] getElements(Object inputElement) {
+      debug.report("getElements");
+      if (inputElement instanceof String) return new Object[] {inputElement};
+      return getChildren(inputElement);
+   }
+
+   public void dispose() {
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+    *      java.lang.Object, java.lang.Object)
+    */
+   public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+   }
+
+   /**
+    * @return the rootSet
+    */
+   public Collection<WorldArtifactItem> getRootSet() {
+      return rootSet;
+   }
+
+}

@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <LastAuthor>Donald G. Dunne</LastAuthor>
+  <Created>1996-10-14T23:33:28Z</Created>
+  <LastSaved>2007-03-08T19:22:23Z</LastSaved>
+  <Version>11.8132</Version>
+ </DocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <DoNotRelyOnCSS/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>9300</WindowHeight>
+  <WindowWidth>15135</WindowWidth>
+  <WindowTopX>120</WindowTopX>
+  <WindowTopY>120</WindowTopY>
+  <AcceptLabelsInFormulas/>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Sheet1">
+  <Table ss:ExpandedColumnCount="8" ss:ExpandedRowCount="3" x:FullColumns="1"
+   x:FullRows="1">
+   <Column ss:Width="78"/>
+   <Column ss:Width="102"/>
+   <Column ss:Width="75.75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="113.25"/>
+   <Column ss:Width="60"/>
+   <Column ss:Index="7" ss:Width="75.75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="78.75"/>
+   <Row>
+    <Cell><Data ss:Type="String">Title</Data></Cell>
+    <Cell><Data ss:Type="String">Description</Data></Cell>
+    <Cell><Data ss:Type="String">ActionableItems</Data></Cell>
+    <Cell><Data ss:Type="String">Assignees</Data></Cell>
+    <Cell><Data ss:Type="String">ChangeType</Data></Cell>
+    <Cell><Data ss:Type="String">Priority</Data></Cell>
+    <Cell><Data ss:Type="String">UserCommunity</Data></Cell>
+    <Cell><Data ss:Type="String">Version</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">This is the name</Data></Cell>
+    <Cell><Data ss:Type="String">This is the description</Data></Cell>
+    <Cell><Data ss:Type="String">ATS Editor</Data></Cell>
+    <Cell><Data ss:Type="String">Dunne, Donald G</Data></Cell>
+    <Cell><Data ss:Type="String">Improvement</Data></Cell>
+    <Cell><Data ss:Type="Number">3</Data></Cell>
+    <Cell><Data ss:Type="String">Eclipse Community</Data></Cell>
+    <Cell><Data ss:Type="String">2.5.7</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">2nd Action</Data></Cell>
+    <Cell><Data ss:Type="String">2nd Description</Data></Cell>
+    <Cell><Data ss:Type="String">Define</Data></Cell>
+    <Cell><Data ss:Type="String">Dunne, Donald G</Data></Cell>
+    <Cell><Data ss:Type="String">Problem</Data></Cell>
+    <Cell><Data ss:Type="Number">4</Data></Cell>
+    <Cell><Data ss:Type="String">Eclipse Community</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>3</ActiveRow>
+     <ActiveCol>6</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="Sheet2">
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="Sheet3">
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>

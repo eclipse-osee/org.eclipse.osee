@@ -1,0 +1,8 @@
+<contexts>
+	<context id="decisionReview" title="Decision Review Workflow">
+		<description>Provides description of the Decision review.</description>
+		<topic href="reference/decision_review_workflow/decisionReview.html" label="Decision Review Workflow"/>
+		<topic href="reference/workflow_editor/ats_workflow_editor_workflow_tab.html" label="Ats Workflow Editor - Workflow Tab"/>
+		<topic href="reference/ats_icons.html" label="Ats Icons"/>
+	</context>
+</contexts>

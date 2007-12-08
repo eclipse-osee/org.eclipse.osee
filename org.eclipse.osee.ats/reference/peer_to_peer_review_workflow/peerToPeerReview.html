@@ -1,0 +1,66 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+    <title>Peer To Peer Review Workflow</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+	<body>
+		<h1>Peer To Peer Review Workflow</h1>
+		<h2>Purpose</h2>
+		The Peer To Peer Review is a lightweight review type that enables interactive one-on-one reviews where two people sit
+		at a single computer and review, disposition and resolve the issues as they are found.  This review type does not 
+		require (but does allow) defects to be logged.  This review type can be created as a stand-alone review or attached to
+		any workflow.  When attached to a workflow, it is related to a state and can be set as a "blocking" review that will
+		keep the workflow from continuing until the review is completed.
+		<img src="peerToPeerReviewEditor.JPG"/>
+		<h2>State Machine</h2>
+		<img src="peerToPeerReviewStateMachine.JPG"/>
+		<h2>How to do it</h2>
+		<b>Stand-Along Peer To Peer Review</b> - From ATS Navigator, filter on "peer" and select "New Peer To Peer Review".  Enter
+		required fields and select transition to start the review.
+		<br><br>
+		<b>Workflow Related Peer To Peer Review</b> - From any ATS workflow editor, select 
+		 "Create a Peer To Peer Review" in the left column of the workflow editor.
+		This will create the review and attach it to the current state.  Enter
+		required fields and select transition to start the review.
+		
+		
+		<h2>Prepare State</h2>
+		This state allows the user to create the peer to peer review.  Enter the required information and transition to
+		Review to start the review.  All review participants will be automatically assigned to the review state upon
+		transition.<br><br>
+		<table border="1">
+		<tr><th>Field</th><th>Description</th></tr>
+		<tr><td>Title</td><td>Enter a descriptive title for this review.</td></tr>
+		<tr><td>Review Roles</td><td>Add roles and select the appropriate user.  This review type requires at least one Author and one Reviewer.<br>
+		<tr><td>Location of review materials</td><td>Either enter in a description of review materials or simply drag in files from workspace to 
+		be reviewed.  If files are dropped in this box, the java package name (if appropriate), filename and a space to enter in the
+		repository version will be provided.</td></tr>
+		<tr><td>Description</td><td>Information necessary to make an informed decision.</td></tr>
+		<tr><td>Blocking Review</td><td>if NOT a stand-alone review, this field will be enabled for entry.
+		select yes if this review must be completed before the parent workflow can transition</td></tr>
+		<tr><td>Need By</td><td>Date the review should be completed.</td></tr>
+        </table>
+        
+        
+		<h2>Review State</h2>
+		This state allows the users to review the materials, log any defects and allows for the author to resolve and close any defects.<br><br>
+		<table border="1">
+		<tr><th>Field</th><th>Description</th></tr>
+		<tr><td>Review Roles</td><td>Add or remove participants as needed.  See Prepare State description for more information.</td></tr>
+		<tr><td>Review Defect</td><td>Defects are not REQUIRED, but can be entered.  Defects must be dispositioned and closed before
+		review can be completed</td></tr>
+		<tr><td>Resolution</td><td>Any notes or further information can be entered here.</td></tr>
+        </table>
+		
+</body>
+</html>

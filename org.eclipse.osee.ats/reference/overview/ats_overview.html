@@ -1,0 +1,27 @@
+<html>
+
+<head>
+<title>ATS Overview</title>
+<LINK rel="stylesheet" type="text/css"
+	href="../../osee.help/html/style.css">
+</head>
+
+<body>
+<h1>ATS Overview</h1>
+<h2>Purpose</h2>
+To give a brief overview of the Action Tracking System (ATS) including
+terms and architecture.
+<h2>Powerpoint Overview</h2>
+<a href="OSEE ATS Overview.pdf">Select to View Overview</a>
+<br><br>
+<h2>Terms</h2>
+<b>Actionable Item (AI)</b> - Item that can be impacted by an Action.  AIs are what the user has to select from when creating an Action. Examples: Flight Box, Lab Computer, Code Subsystem.<br><br>
+<b>Team Workflow Definition</b> - Teams are created to perform that work associated with the Action.  They are related to the AIs that they are responsible for and are configured with Leads and Members to route the Actions and perform the work.  A workflow is configured that the team will follow to perform the work.<br><br>
+<b>Workflow Diagram</b> - State machine that shows the path the Team will follow to perform the work associated with the Action.<br><br>
+<b>Action</b> - Top level grouping object.  An Action is written against any number of AIs.  The Team Workflows are then created for each team configured to perform work for an AI.<br><br>
+<b>Team Workflow</b> - Instantiation of a Workflow Diagram needed to perform the work.  Each team independently moves through their workflow state machine however ATS can be configured such that certain gates must be met from other Teams or outside events before a workflow can continue.<br><br>
+<b>Task</b> - Within states of a Team Workflow, smaller-light-weight Tasks can be created to further separate the work that needs to be completed for that state.  Normally, the state can not continue until the Task is completed.<br><br>
+<b>Versions</b> - ATS has built in project/release planning.  Versions are created to group Team Workflows (Actions) into Builds and Releases.<br><br>
+</body>
+</html>
+

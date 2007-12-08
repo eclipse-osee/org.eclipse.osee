@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.osee.ats.feature"
+      label="ATS (Incubation)"
+      version="0.1.0.qualifier"
+      provider-name="Eclipse.org"
+      plugin="org.eclipse.osee.framework.ui.product">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <url>
+      <update url="http://lba-cte.msc.az.boeing.com:31110/osee/lba_updatesite/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.osee.framework.ui.jdk"/>
+      <import plugin="org.eclipse.gef"/>
+      <import plugin="org.eclipse.osee.framework.jdk.core"/>
+      <import plugin="javax.mail"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.osee.framework.database"/>
+      <import plugin="org.eclipse.osee.framework.skynet.core"/>
+      <import plugin="org.eclipse.osee.framework.ui.skynet"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.osee.framework.ui.plugin"/>
+      <import plugin="org.eclipse.osee.framework.ui.swt"/>
+      <import plugin="org.eclipse.osee.framework.plugin.core"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="quartz.timer"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.osee.ats"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.ats.config"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.ats.feature.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+</feature>

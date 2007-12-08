@@ -1,0 +1,135 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+<head>
+<title>Configure ATS for Tracking</title>
+<LINK rel="stylesheet" type="text/css"
+	href="../../osee.help/html/style.css">
+</head>
+
+<body>
+<h1>Configure ATS for Tracking</h1>
+<h2>Purpose</h2>
+ATS is used to track any type of change throughout the lifecycle of a
+project. Below are the steps to configure ATS for tracking something
+new.
+<h2>How to do it</h2>
+<ul>
+	<li>Review <a href="../overview/ats_overview.html">ATS
+	Overview</a> to understand ATS Concepts, Terms and Architecture. Pay
+	special attention to ATS Terms</li>
+	<li>Determine what Actionable Items (AIs) need to be available to
+	the user to select from. This can be anything from a single AI for
+	tracking something like a tool or even an activity that needs to be
+	done to a hierarchical decomposition of an entire software product or
+	engineering program.</li>
+	<ul>
+		<li>Considerations:</li>
+		<ul>
+			<li>Item should be in the context of what the user would
+			recognize. eg: OSEE ATS World View versus something unknown to the
+			user such as AtsWorldView.java.</li>
+			<li>Decompose AI into children AI when it is desired to
+			sort/filter/report by that decomposition.</li>
+		</ul>
+		<li>Actionable Item attributes to be configured:</li>
+		<ul>
+			<li>Name: Unique name that the user would identify with.</li>
+			<li>Active: yes (converted to "no" when AI is no longer
+			actionable)</li>
+		</ul>
+		<li>Actionable Item relations to be configured:</li>
+		<ul>
+			<li>TeamActionableItem: relate to Team Definition that is
+			responsible for performing the tasks associated with this AI. NOTE:
+			If this relation is not set, ATS will walk up the Default Hierarchy
+			to find the first AI with this relation.</li>
+		</ul>
+	</ul>
+	<li>Determine the teams that are going to perform the tasks that
+	are associated with the AIs selected by the user.</li>
+	<ul>
+		<li>Considerations:</li>
+		<ul>
+			<li>Use separate teams if certain changes are to be managed by
+			different leads.</li>
+			<li>Use separate teams if one team's completion and releasing is
+			independent of another's.</li>
+			<li>Use separate teams if team members are separate.</li>
+			<li>Use separate teams if different workflows are required for
+			one set of AIs than another.</li>
+		</ul>
+		<li>Team attributes to be configured:</li>
+		<ul>
+			<li>Name: Unique team name that is distinguishable from other
+			teams in a list.</li>
+			<li>Description: Full description of the team and it's scope.</li>
+			<li>Active: yes (converted to "no" when AI is no longer
+			actionable)</li>
+			<li>Team Uses Versions: yes if team workflows are going to use
+			the build management and release capabilities of ATS.</li>
+			<li>Full Nam: Extended name for the team. Expansion of acronym
+			if applicable</li>
+		</ul>
+		<li>Team relations to be configured:</li>
+		<ul>
+			<li>TeamActionableItem: relation to all AIs that this team is
+			responsible for.</li>
+			<li>TeamDefinitionToWorkflowDiagram: WorkflowDiagram
+			(GeneralDocument) artifact that configures the state machine that
+			this team works under. NOTE: If this relation is not set, ATS will
+			walk up the Default Hierarchy to find the first AI with this
+			relation.</li>
+			<li>TeamLead: User(s) that are leading this team. These users
+			will be assigned to the Endorse state of the Team Workflow upon
+			creation of an Action by a user. Providing multiple leads reduces
+			bottlenecks. First lead to handle the Team Workflow wins.</li>
+			<li>TeamMember: User(s) that are members of the team. These
+			users will be shown first as preferred assignees and have the ability
+			to privileged edit a Team Workflow for the team they belong to.</li>
+		</ul>
+	</ul>
+	<li>Choose existing Workflow Diagram or create new Workflow
+	Diagram to be used by the team and relate it to Team Definition (as
+	above).</li>
+	<li>Create version artifacts necessary (if using versions) and
+	relate them to Team Definition (as above)</li>
+	<ul>
+		<li>If branching of artifacts is going to be used (see below), configure versions
+		with their appropriate parent branch id.</li>
+	</ul>
+	<li>Determine if Branching within one of the states in the workflow is desired/required
+	and configure as appropriate.</li>
+	<ul>
+		<li>Considerations:</li>
+		<ul>
+			<li>Branching is necessary if objects to change are stored in OSEE as artifacts.
+			If so, OSEE ATS can create a working branch off the parent branch, allow user
+			to modify artifacts and then commit these changes when complete, reviewed and
+			authorized (as necessary).  If objects are stored outside OSEE (eg. code files
+			checked into SVN), this option is not necessary.</li>
+		</ul>
+		<li>Configure ATS workflow for branching:</li>
+		<ul>
+			<li>Create AtsStateItem extension specifying which state the branching will occur.
+			This is normally in the Implement state of a workflow.</li>
+			<li>Create root branch and import documents that will be managed through define
+			and tracked through ATS.</li>
+			<li>Set all Version artifacts "Parent Branch Id" attribute to the branch id
+			of the root branch (or child branches, if using multi-branching)</li>
+			<li>If only a single branch is to be used OR versioning is NOT configured to be
+			used, the "Parent Branch Id" should be s</li>
+		</ul>
+	</ul>
+
+</ul>
+</body>
+</html>
+

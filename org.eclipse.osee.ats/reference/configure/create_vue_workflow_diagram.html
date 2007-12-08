@@ -1,0 +1,29 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>Create new VUE workflow diagram</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+<body>
+   <h1>Create new VUE workflow diagram</h1>
+		<h2>Purpose</h2>
+		To create a new VUE diagram that ATS uses to move an Action through it's specific workflow.
+		<h2>How to do it</h2>
+      <ul>
+         <li>Diagram must have Endorse and Completed</li>
+         <li>Endorse state must have Title, Description, Priority, Deadline, Change Type, Validation</li>
+         <li>Each state must have a unique identifier as the state id</li>
+         <li>Use "-DAtsUseWorkflowFiles" flag to instruct ATS to use a specified file in the workspace to use (versus a skynet artifact).  This helps speed the development of the workflow.</li>
+         <li>If using "-DAtsUseWorkflowFiles" flag, put file path resolution info in AtsWorkFlowFactory.java</li>
+      </ul>
+</body>
+</html>

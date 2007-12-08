@@ -1,0 +1,54 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>ATS World View</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+	<body>
+		<h1>ATS World View</h1>
+		<br/>
+		<img src="ats_world_view.jpg"/>
+		<h2>Purpose</h2>
+		Shows ATS workflow objects including Actions, Team Workflows, Tasks and Reviews that were
+		returned from a search normally performed by the ATS Navigator.
+		<h2>How to do it</h2>
+		Double-click search item from ATS Navigator.  ATS World will show that it is loading.  Upon
+		return, ATS World will contain all ATS objects from the search.  In addition, a plus is shown
+		next to any object.  Upon selection, viewer will expand to show all children of the selected
+		object.
+		<h2>Open ATS Action, Team Workflow, Task or Review</h2>
+		Double-click to open any item open in ATS Workflow Editor.
+		<h2>Sorting</h2>
+		Selecting column headers will sort that column.  Holding down Ctrl and selecting successive
+		columns will enable multi sort.  Re-selecting a column will reverse sort that column.  
+		The status label at the bottom will show the columns being sorted and which direction the
+		sort is being performed.  To remove all sorting, right-click and select "Remove All Sorting".
+		<h2>Bottom Status Line</h2>
+		The bottom status line will show the total number of objects loaded into the table, the total
+		shown and the total selected.  It will also show all the sorts and filters that are enabled.
+		<h2>Top Status Line</h2>
+		The top status line will show the name of the search that populated the ATS World View.  A 
+		warning icon (<img src="../images/warn.gif"/>) will show if the search returned no objects to show.
+		<h2>Filtering</h2>
+		Bottom right of the ATS World shows a filter box that is a quick way to filter by one or two words.
+		Simply type in a string, press enter and ATS World will only show those loaded objects that where one of the 
+		visible cells contains the typed text.  This is a case in-sensitive search.  Select the clear 
+		action (<img src="../images/clear.gif"/>) to clear out the text and restore all loaded actions.
+		<h2>Actions</h2>
+		Select <img src="../images/A.gif"/> to load ATS World with all the actions that you have work to do on.<br/>
+		Select <img src="../images/action.gif"/> to create a new Action.<br/>
+		Select <img src="../images/rank.gif"/> to rank actions by deadline date then by priority and annual cost avoidence.<br/>
+		Select <img src="../images/refresh.gif"/> to refresh the current search.<br/>
+		Select <img src="../..//osee.skynet.gui/images/customize.gif"/> to <A href="../../osee.skynet.gui/reference/table_customization.html"/>Customize Table</A>.<br/>
+		Select <img src="../images/bug.gif"/> to <A href="report_a_bug.html"/>Report a Bug</A>.<br/>
+</body>
+</html>

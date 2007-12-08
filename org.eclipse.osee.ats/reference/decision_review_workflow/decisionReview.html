@@ -1,0 +1,66 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+    <title>Decision Review Workflow</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+	<body>
+		<h1>Decision Review Workflow</h1>
+		<h2>Purpose</h2>
+		The Decision Review is a simple review that allows one or multiple users to review something
+		and answer a question.  This review can be created, and thus attached, to any reviewable
+		state in ATS.  In addition, it can be created automatically to perform simple "validation"
+		type reviews during a workflow.
+		<h2>State Machine</h2>
+		<img src="decisionReview.JPG"/>
+		<h2>How to do it</h2>
+		From any active state, select "Create a Decision Review" in the left column of the workflow editor.
+		This will create the review and attach it to the current state.  Then, proceed to "Prepare State"
+		to entering the necessary information required for this review.
+		
+		
+		<h2>Prepare State</h2>
+		This state allows the user to create the decision review.  Enter the required information and transition to
+		Decision to start the review.  All transitioned to assignees will be required to perform the review.<br><br>
+		<table border="1">
+		<tr><th>Field</th><th>Description</th></tr>
+		<tr><td>Title</td><td>Enter the question that is to be answered by the reviewers.  Example: Do you think we should buy this software?</td></tr>
+		<tr><td>Decision Review Options</td><td>Enter in all the options that are available for selection.<br>
+		Each line is a single decision option in the format: answer;state;&lt;userId&gt;<br><br>
+		Where<br>&nbsp;&nbsp;&nbsp;answer = Yes, No, Mabye, etc...<br>
+		&nbsp;&nbsp;&nbsp;state = Followup or Completed - this will be the state to transition to if the answer is choosen<br>
+		&nbsp;&nbsp;&nbsp;&lt;userId&gt; = userId of the user to assign to the state to transition to.
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note: Multiple users can be specified by &lt;userId1&gt;&lt;userId2&gt;<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note:UserIds are only valid for Followup state.  Completed state has no assignees.</td></tr>
+		<tr><td>Description</td><td>Information necessary to make an informed decision.</td></tr>
+		<tr><td>Blocking Review</td><td>yes if this review must be completed before the parent workflow can transition</td></tr>
+		<tr><td>Need By</td><td>Date the decision must be made.</td></tr>
+        </table>
+        
+        
+		<h2>Decision State</h2>
+		This state allows the user to review the description or materials and choose their decision.<br><br>
+		<table border="1">
+		<tr><th>Field</th><th>Description</th></tr>
+		<tr><td>Question</td><td>The question to be answered as part of this review.</td></tr>
+		<tr><td>Decision</td><td>The decision made by the user.</td></tr>
+		<tr><td>Resolution</td><td>Any notes or information as to why the decision was made.</td></tr>
+        </table>
+		
+		<h2>Followup State</h2>
+		This state allows for followup action to be taken based on the decision.<br><br>
+		<table border="1">
+		<tr><td>Resolution</td><td>Any notes or information as to why the decision was made.</td></tr>
+        </table>
+		
+</body>
+</html>

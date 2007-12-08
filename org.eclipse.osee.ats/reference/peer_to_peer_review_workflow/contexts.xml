@@ -1,0 +1,8 @@
+<contexts>
+	<context id="peerToPeerReview" title="Peer To Peer Review Workflow">
+		<description>Provides description of the Peer to Peer review.</description>
+		<topic href="reference/peer_to_peer_review_workflow/peerToPeerReview.html" label="Peer To Peer Review Workflow"/>
+		<topic href="reference/workflow_editor/ats_workflow_editor_workflow_tab.html" label="Ats Workflow Editor - Workflow Tab"/>
+		<topic href="reference/ats_icons.html" label="Ats Icons"/>
+	</context>
+</contexts>

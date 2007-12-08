@@ -1,0 +1,17 @@
+<contexts>
+	<context id="new_action_wizard_page_1" title="New Action Wizard">
+		<description>Initiates a new Action.  Specify the Title and Impacted Items.</description>
+		<topic label="Title" href="reference/newActionWizard/new_action_wizard_page_1.html#title"/>
+		<topic label="Select Impacted Items" href="reference/newActionWizard/new_action_wizard_page_1.html#impacted"/>
+		<topic label="Filter" href="reference/newActionWizard/new_action_wizard_page_1.html#filter"/>
+	</context>
+	<context id="new_action_wizard_page_2" title="New Action Wizard">
+		<description>Provides details for the new action.</description>
+		<topic label="Description" href="reference/newActionWizard/new_action_wizard_page_2.html#description"/>
+		<topic label="Change Type" href="reference/newActionWizard/new_action_wizard_page_2.html#type"/>
+		<topic label="Priority" href="reference/newActionWizard/new_action_wizard_page_2.html#priority"/>
+		<topic label="Deadline" href="reference/newActionWizard/new_action_wizard_page_2.html#deadline"/>
+		<topic label="Validation Required" href="reference/newActionWizard/new_action_wizard_page_2.html#validation"/>
+		<topic label="User Community" href="reference/newActionWizard/new_action_wizard_page_2.html#comunity"/>
+	</context>
+</contexts>

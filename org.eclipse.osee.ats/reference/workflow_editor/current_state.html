@@ -1,0 +1,44 @@
+<html>
+<!--
+ Copyright (c) 2004, 2007 Boeing.
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the Eclipse Public License v1.0
+ which accompanies this distribution, and is available at
+ http://www.eclipse.org/legal/epl-v10.html
+ Contributors:
+     Boeing - initial API and implementation
+-->
+	<head>
+		<title>ATS Workflow Editor - Current State</title>
+      <LINK rel="stylesheet" type="text/css" href="../../osee.help/html/style.css">
+	</head>
+
+	<body>
+		<h1>ATS Workflow Editor - Current State</h1>
+		<br/> 
+		<img src="ats_workflow_editor_workflow_tab.jpg"/>
+		<h2>Purpose</h2>
+		Shows current state information and allows edit to those users that are authorized for edit.
+		<h2>Assignees</h2>
+		Selecting Assignees at the top of the current state allows the current assignee to add/remove
+		the assignees that are allowed to make changes to the current state.  Any number of users can
+		be selected.
+		<h2>Data Entry</h2>
+		The state has certain fields that are requested/need to be entered.  Red labels denotes a field
+		that is requried for transition for to the next state.  A black label denotes a field that is
+		optional for transition to the next state.
+		<h2>Services</h2>
+		On the left resides a list of services that either provide information and/or allow for the entry
+		of information for the givent ATS objects.  If the service is black text, there is no ability
+		to edit the information.  If the service is blue with underlined (hyperlinked), then the data
+		can be edited through seleciton of the service.
+		<h2>Transition</h2>
+		Select the state to transition to (default is already selected), and choose the assingees
+		that should perform the next state (default is already selected).  No data is lost when
+		transitioning to a previous state.
+		<h2>Assignees</h2>
+		If assigned to a state, the Assignees label is hyperlinked in the current state and allows
+		for adding/removing assignees.  Any number of users can be assigned to any in-work state.
+		Removing the current user and adding a different user re-assigns the object to that user.
+</body>
+</html>

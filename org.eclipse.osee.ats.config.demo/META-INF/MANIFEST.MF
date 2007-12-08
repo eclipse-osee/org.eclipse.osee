@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Demo Plug-in
+Bundle-SymbolicName: org.eclipse.osee.ats.config.demo;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin
+Bundle-Vendor: Boeing
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.database,
+ org.eclipse.osee.ats,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.framework.ui.jdk,
+ org.eclipse.osee.framework.skynet.core,
+ org.eclipse.osee.framework.ui.skynet,
+ org.eclipse.osee.framework.ui.plugin
+Eclipse-LazyStart: true
