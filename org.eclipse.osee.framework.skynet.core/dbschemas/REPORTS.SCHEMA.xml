@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TableConfig>
+   <Table schema="OSEE" name="OSEE_TEST_RUN_REPORTS">
+    <Column id="TS_ART_ID" type="BIGINT"/>
+    <Column id="TC_ART_ID" type="BIGINT"/>
+    <Column id="TR_ART_ID" type="BIGINT"/>
+    <Column id="U_ART_ID" type="BIGINT"/>
+    <Column id="TS_CONTENT_LOCATION" type="VARCHAR" limits="1000" />
+    <Column id="TS_NAME" type="VARCHAR" limits="300" />
+    <Column id="TC_CONTENT_LOCATION" type="VARCHAR" limits="1000" />
+    <Column id="TC_NAME" type="VARCHAR" limits="300" />
+    <Column id="TC_MODIFICATION_FLAG" type="VARCHAR" limits="300" />
+    <Column id="TC_REPOSITORY_TYPE" type="VARCHAR" limits="300" />
+    <Column id="TC_VERSION" type="VARCHAR" limits="300" />
+    <Column id="TR_NAME" type="VARCHAR" limits="300" />
+    <Column id="TR_EXECUTION_DATE" type="VARCHAR" limits="300" />
+    <Column id="TR_PASS" type="INTEGER" />
+    <Column id="TR_FAIL" type="INTEGER" />
+    <Column id="TR_STATUS" type="VARCHAR"  limits="300" />
+    <Column id="U_BEMS" type="VARCHAR"  limits="300" />
+    <Column id="U_EMAIL" type="VARCHAR"  limits="300" />
+    <Column id="U_NAME" type="VARCHAR"  limits="300" />
+  </Table>  
+</TableConfig>

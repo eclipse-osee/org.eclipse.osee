@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.w3.org/2001/XMLSchema" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:pub="http://www.example.org/publishIt" xmlns:tns="http://www.w3.org/2001/XMLSchem">
+
+
+
+    <complexType name="AttributeType">
+    	<sequence>
+    		<element name="Label" type="string" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="Outline" type="string" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
+    		<element name="Name" maxOccurs="1" minOccurs="1">
+    			<simpleType>
+    				<restriction base="string">
+    					<whiteSpace value="collapse"></whiteSpace>
+    					<pattern value=".+"></pattern>
+    				</restriction>
+    			</simpleType>
+    		</element>
+    		<element name="Format" maxOccurs="1" minOccurs="0">
+    			<simpleType>
+    				<restriction base="string">    					<length value="1"></length>
+    					<whiteSpace value="collapse"></whiteSpace>
+    					<pattern value="x"></pattern>
+    				</restriction>
+    			</simpleType>
+    		</element>
+    		<element name="Editable" type="EditableType"></element>
+    	</sequence>
+    </complexType>
+
+
+
+    <complexType name="ArtifactType">
+    	<sequence>
+    		<element name="Set_Name" maxOccurs="1" minOccurs="1">
+    			<simpleType>
+    				<restriction base="string">
+    					<pattern value=".+"></pattern>
+    				</restriction>
+    			</simpleType>
+    		</element>
+            <element name="Outline" type="OutlineType" maxOccurs="1" minOccurs="0"></element>
+            <element name="Attribute" type="AttributeType"
+    			maxOccurs="unbounded" minOccurs="1">
+    		</element>
+    	</sequence>
+    </complexType>
+
+    <element name="Artifact" type="ArtifactType"></element>
+
+
+    <complexType name="OutlineType">
+    	<sequence>
+            <element name="Number" type="OutlineNumberType" minOccurs="0" maxOccurs="1"></element>
+    		<element name="HeadingAttribute" maxOccurs="1"
+    			minOccurs="1">
+    			<simpleType>
+    				<restriction base="string">
+    					<pattern value=".+"></pattern>
+    				</restriction>
+    			</simpleType>
+    		</element>
+    		<element name="RecurseChildren" maxOccurs="1" minOccurs="0">
+    			<simpleType>
+    				<restriction base="string">
+    					<enumeration value="true"></enumeration>
+    					<enumeration value="false"></enumeration>
+    				</restriction>
+    			</simpleType>
+    		</element>
+    	</sequence>
+    </complexType>
+    <element name="Extension_Processor" type="ExtensionPointType"></element>
+
+    <simpleType name="KeyType">
+    	<restriction base="string"></restriction>
+    </simpleType>
+
+    <simpleType name="ValueType">
+    	<restriction base="string"></restriction>
+    </simpleType>
+
+    <complexType name="ArgumentType">
+    	<sequence>
+    		<element name="Key" type="KeyType" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="Value" type="ValueType"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="ExtensionPointType">
+    	<sequence>
+    		<element name="Number" type="OutlineNumberType"
+    			minOccurs="0" maxOccurs="1">
+    		</element>
+    		<element name="SubDoc" type="string" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    		<element name="Name" type="string" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="Argument" type="ArgumentType" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    		<element name="OutlineType" type="string" maxOccurs="1"
+    		 minOccurs="0">
+    		 </element>
+    	</sequence>
+    </complexType>
+
+    <simpleType name="OutlineNumberType">
+    	<restriction base="string">
+    		<pattern value="((\d+|[A-Za-z])\.)*(\d+|[A-Za-z])"></pattern>
+    	</restriction>
+    </simpleType>
+
+
+
+    <complexType name="EditableType">
+    	<sequence>
+    		<element name="IgnoreFormat" type="string"></element>
+    	</sequence>
+    </complexType>
+</schema>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.osee.framework.jini.JiniInterface">
+      <Interface classname="org.eclipse.osee.framework.messaging.event.skynet.ISkynetEventService"/>
+      <Interface classname="org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent"/>
+      <Interface classname="org.eclipse.osee.framework.messaging.event.skynet.ISkynetEventListener"/>
+      <Interface classname="org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange"/>
+	</extension>
+	<extension
+         point="org.eclipse.osee.framework.jini.JiniInterface">
+      <RegisterBundle/>
+   </extension>
+   <extension
+         id="EventService"
+         name="EventService"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run class="org.eclipse.osee.framework.messaging.event.skynet.service.SkynetEventServicePlatformRunnable"/>
+      </application>
+   </extension>
+   <extension
+         id="EventServiceProd"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.osee.framework.messaging.event.skynet.EventService"
+            name="EventServiceProd"/>
+   </extension>
+
+</plugin>

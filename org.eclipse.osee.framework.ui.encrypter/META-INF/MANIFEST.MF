@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Encrypter Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.ui.encrypter;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-ClassPath: encrypter.jar
+Bundle-Activator: org.eclipse.osee.framework.ui.encrypter.EncrypterPlugin
+Bundle-Vendor: Eclipse.org
+Export-Package: org.eclipse.osee.framework.ui.encrypter
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.framework.ui.security,
+ org.eclipse.osee.framework.skynet.core,
+ org.eclipse.osee.framework.ui.skynet,
+ org.eclipse.osee.framework.ui.plugin
+Eclipse-LazyStart: true

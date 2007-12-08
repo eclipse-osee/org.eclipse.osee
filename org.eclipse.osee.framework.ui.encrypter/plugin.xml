@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Encrypter"
+            id="encrypter">
+      </category>
+      <view
+            name="Encrypter"
+            icon="images/lock.gif"
+            category="osee.jdk.core.category"
+            class="org.eclipse.osee.framework.ui.encrypter.EncrypterView"
+            id="osee.encrypter.EncrypterView">
+      </view>
+   </extension>
+   
+</plugin>

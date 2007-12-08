@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension-point id="ArtifactFactory" name="ArtifactFactory" schema="schema/ArtifactFactory.exsd"/>
+   <extension-point id="ArtifactTypeImage" name="ArtifactTypeImage" schema="schema/ArtifactTypeImage.exsd"/>
+   <extension-point id="HttpServerRequest" name="HttpServerRequest" schema="schema/HttpServerRequest.exsd"/>
+   <extension-point id="Tagger" name="Tagger" schema="schema/Tagger.exsd"/>
+   <extension-point id="TaggerCustomization" name="TaggerCustomization" schema="schema/TaggerCustomization.exsd"/>
+   <extension-point id="HttpServerPort" name="HttpServerPort" schema="schema/HttpServerPort.exsd"/>
+   <extension-point id="SkynetDbTypes" name="SkynetDbTypes" schema="schema/SkynetDbTypes.exsd"/>
+   <extension-point id="AtsLib" name="AtsLib" schema="schema/AtsLib.exsd"/>
+   <extension-point id="DefaultInitialBranchProvider" name="DefaultInitialBranchProvider" schema="schema/DefaultInitialBranchProvider.exsd"/>
+   <extension-point id="ArtifactAnnotation" name="ArtifactAnnotation" schema="schema/ArtifactAnnotation.exsd"/>
+   <extension-point id="SkynetDbSchema" name="SkynetDbSchema" schema="schema/SkynetDbSchema.exsd"/>
+   <extension-point id="WordMLConversionHandler" name="WordMLConversionHandler" schema="schema/WordMLConversionHandler.exsd"/>
+   <extension-point id="HtmlImageHandler" name="HtmlImageHandler" schema="schema/HtmlImageHandler.exsd"/>
+   <extension-point id="WebPage" name="WebPage" schema="schema/WebPage.exsd"/>
+   <extension-point id="AttributeSaveListener" name="AttributeSaveListener" schema="schema/AttributeSaveListener.exsd"/>
+   
+      <extension
+            id="SkynetDbInit"
+            name="SkynetDbInit"
+            point="org.eclipse.osee.framework.database.IDbInitializationTask">
+         <DatabaseTask
+               classname="org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit">
+         </DatabaseTask>
+      </extension>
+      <extension
+            point="org.eclipse.osee.framework.skynet.core.ArtifactTypeImage">
+         <ArtifactImage
+               ArtifactTypeName="Heading"
+               ImagePath="images/folder.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Narrative"
+               ImagePath="images/narrative.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="User"
+               ImagePath="images/user.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Folder"
+               ImagePath="images/folder.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Component"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Document"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Support Document"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Root Artifact"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Stylesheet"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Url"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Url"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Group"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Global Preferences"
+               ImagePath="images/gear.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Visio"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="General Document"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="XViewer Global Customization"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Blam Workflow"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="PowerPoint"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Workspace File"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Word Renderer"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="User Group"
+               ImagePath="images/group.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Code Unit"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Spreadsheet"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Component"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
+      </extension>
+      <extension
+            point="org.eclipse.osee.framework.skynet.core.TaggerCustomization">
+         <ignoreSkynetAttribute
+               attributeName="Native Content">
+         </ignoreSkynetAttribute>
+      </extension>
+      <extension
+            point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
+         <ArtifactFactory
+               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.SearchArtifactFactory">
+         </ArtifactFactory>
+         <ArtifactFactory
+               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory">
+         </ArtifactFactory>
+         <ArtifactFactory
+               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.WordArtifactFactory">
+         </ArtifactFactory>
+         <ArtifactFactory
+               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.SkynetArtifactFactory">
+         </ArtifactFactory>
+         <ArtifactFactory
+               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.PolymorphicArtifactFactory">
+         </ArtifactFactory>
+         <ArtifactFactory
+               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.NativeArtifactFactory">
+         </ArtifactFactory>
+      </extension>
+      <extension
+            id="CommonBranch"
+            name="Common Branch"
+            point="org.eclipse.osee.framework.skynet.core.SkynetDbTypes">
+         <ExcelFile
+               file="support/CommonBranch.xml">
+         </ExcelFile>
+      </extension>
+      <extension
+            id="ProgramBranch"
+            name="Program Branch"
+            point="org.eclipse.osee.framework.skynet.core.SkynetDbTypes">
+         <ExcelFile
+               file="support/ProgramBranch.xml">
+         </ExcelFile>
+      </extension>
+      <extension
+            id="ProgramAndCommon"
+            name="Program And Common Branches"
+            point="org.eclipse.osee.framework.skynet.core.SkynetDbTypes">
+         <ExcelFile
+               file="support/ProgramAndCommon.xml">
+         </ExcelFile>
+      </extension>
+      <extension
+            point="org.eclipse.osee.framework.plugin.core.logHandler">
+         <handler
+               name="org.eclipse.osee.framework.skynet.core.usage.SkynetUsageHandler">
+         </handler>
+      </extension>
+      <extension
+            id="SkynetSchemaDefinition"
+            name="SkynetSchemaDefinition"
+            point="org.eclipse.osee.framework.skynet.core.SkynetDbSchema">
+         <Schema
+               SchemaFile="dbschemas/SKYNET.VERSIONING.SCHEMA.xml">
+         </Schema>
+      </extension>
+      <extension
+            id="ReportsDbSchema"
+            name="ReportsDbSchema"
+            point="org.eclipse.osee.framework.skynet.core.SkynetDbSchema">
+         <Schema
+               SchemaFile="dbschemas/REPORTS.SCHEMA.xml">
+         </Schema>
+      </extension>
+      <extension
+            point="org.eclipse.osee.framework.skynet.core.HtmlImageHandler">
+         <HtmlImageHandler
+               ClassName="org.eclipse.osee.framework.skynet.core.httpRequests.EMZHtmlImageHandler">
+         </HtmlImageHandler>
+      </extension>
+      <extension
+            point="org.eclipse.osee.framework.skynet.core.AttributeSaveListener">
+         <AttributeSaveListener
+               classname="org.eclipse.osee.framework.skynet.core.tagging.TagManager">
+         </AttributeSaveListener>
+      </extension>
+   
+</plugin>

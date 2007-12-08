@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Admin Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.ui.admin;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-ClassPath: admin.jar
+Bundle-Activator: org.eclipse.osee.framework.ui.admin.AdminPlugin
+Bundle-Vendor: Eclipse.org
+Export-Package: org.eclipse.osee.framework.ui.admin,
+ org.eclipse.osee.framework.ui.admin.dbtabletab
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.framework.jini,
+ org.eclipse.osee.framework.ui.security,
+ org.eclipse.osee.framework.skynet.core,
+ org.eclipse.osee.framework.messaging.event.skynet,
+ org.eclipse.osee.framework.ui.skynet,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.ui.plugin
+Eclipse-LazyStart: true

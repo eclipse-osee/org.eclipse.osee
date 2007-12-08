@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Plug-in for common eclipse-based non-ui code (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.plugin.core;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.eclipse.osee.framework.plugin.core.PluginCoreActivator
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.jdk.core,
+ net.jini
+Eclipse-LazyStart: true
+Export-Package: org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.plugin.core.config,
+ org.eclipse.osee.framework.plugin.core.config.data,
+ org.eclipse.osee.framework.plugin.core.db,
+ org.eclipse.osee.framework.plugin.core.server,
+ org.eclipse.osee.framework.plugin.core.server.resources,
+ org.eclipse.osee.framework.plugin.core.server.task,
+ org.eclipse.osee.framework.plugin.core.util
+Bundle-ClassPath: library.jar

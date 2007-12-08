@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/export" xmlns:tns="http://www.example.org/export">
+	<complexType name="ArtifactType">
+		<sequence>
+			<element name="Attribute" type="tns:AttributeType"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="guid" type="string" use="required"></attribute>
+		<attribute name="type" type="string" use="required"></attribute>
+		<attribute name="hrid" type="string" use="required"></attribute>
+		<attribute name="deleted" type="boolean" use="optional"></attribute>
+	</complexType>
+
+
+
+	<complexType name="AttributeType">
+		<sequence>
+			<element name="StringValue" type="string"></element>
+			<element name="ContentValue" type="string"></element>
+		</sequence>
+		<attribute name="type" type="string" use="required"></attribute>
+		<attribute name="guid" type="string" use="required"></attribute>
+		<attribute name="deleted" type="boolean" use="optional">
+		</attribute>
+	</complexType>
+
+	<complexType name="LinkType">
+		<sequence>
+			<element name="Rationale" type="string" maxOccurs="1" minOccurs="0"></element>
+		</sequence>
+		<attribute name="type" type="string" use="required"></attribute>
+		<attribute name="guid" type="string" use="required"></attribute>
+		<attribute name="aguid" type="string" use="required"></attribute>
+		<attribute name="bguid" type="string" use="required"></attribute>
+		<attribute name="aorder" type="int" use="required"></attribute>
+		<attribute name="border" type="int" use="required"></attribute>
+		<attribute name="deleted" type="boolean" use="optional"></attribute>
+	</complexType>
+
+	<complexType name="TransactionType">
+		<sequence>
+            <element name="Comment" type="string" maxOccurs="1" minOccurs="0"></element>
+			<element name="Artifact" type="tns:ArtifactType"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+			<element name="Link" type="tns:LinkType"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="author" type="string" use="required"></attribute>
+		<attribute name="time" type="time" use="required"></attribute>
+	</complexType>
+
+	<complexType name="BranchType">
+		<sequence>
+			<element name="Name" type="string" maxOccurs="1" minOccurs="1"></element>
+		<choice maxOccurs="unbounded" minOccurs="0">
+				<element name="Transaction"
+					type="tns:TransactionType">
+			</element>
+		<element name="Branch" type="tns:BranchType"></element>
+		</choice>
+		</sequence>
+		<attribute name="time" type="time"></attribute>
+		<attribute name="associated_guid" type="string"
+			use="optional">
+		</attribute>
+	</complexType>
+
+	<element name="Branch" type="tns:BranchType"></element>
+
+
+
+	<complexType name="ExpectationType">
+		<attribute name="branch_id" type="int"></attribute>
+		<attribute name="transactions" type="int"></attribute>
+		<attribute name="min_transaction" type="int"></attribute>
+		<attribute name="max_transaction" type="int"></attribute>
+	</complexType>
+
+	<complexType name="RealizationType">
+		<attribute name="transactions" type="int"></attribute>
+	</complexType>
+</schema>

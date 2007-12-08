@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Skynet Event Service (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.messaging.event.skynet;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.eclipse.osee.framework.messaging.event.skynet.SkynetEventPlugin
+Require-Bundle: org.eclipse.core.runtime,
+ net.jini,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.osee.framework.jini,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.ui.plugin
+Eclipse-LazyStart: true
+Export-Package: org.eclipse.osee.framework.messaging.event.skynet,
+ org.eclipse.osee.framework.messaging.event.skynet.event,
+ org.eclipse.osee.framework.messaging.event.skynet.filter,
+ org.eclipse.osee.framework.messaging.event.skynet.service
+Bundle-Description: Skynet Event Service - Skynet Cache Network Manager
+Bundle-Vendor: Eclipse.org
+Bundle-ClassPath: skynetEvent.jar

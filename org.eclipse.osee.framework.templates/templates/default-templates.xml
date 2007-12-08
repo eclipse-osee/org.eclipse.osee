@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<templates>
+<template autoinsert="false" context="catchblock_context" deleted="false" description="Code in new catch blocks" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.catchblock" name="catchblock">OSEELog.logException(getClass(), ${exception_var}, true);</template>
+<template name="logger" description="Declares a standard OSEE logger for the current class" id="osee.templates.logger" context="java" enabled="true" autoinsert="true">private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(${enclosing_type}.class);${cursor}</template>
+<template name="notnull" description="Perform a standard parameter check for a null value" id="osee.templates.notnull" context="java" enabled="true" autoinsert="true">if (${variable_name} == null)
+	throw new IllegalArgumentException("${variable_name} can not be null");
+${cursor}</template>
+<template name="notempty" description="Perform a standard parameter check for an empty collection " id="osee.templates.notempty" context="java" enabled="true" autoinsert="true">if (${variable_name}.isEmpty())
+	throw new IllegalArgumentException("${variable_name} can not be empty");
+${cursor}</template>
+
+</templates>

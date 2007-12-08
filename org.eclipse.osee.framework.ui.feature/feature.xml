@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.osee.framework.ui.feature"
+      label="OSEE Framework UI (Incubation)"
+      version="0.1.0.qualifier"
+      provider-name="Eclipse.org"
+      plugin="org.eclipse.osee.framework.ui.product">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <url>
+      <update url="http://lba-cte.msc.az.boeing.com:31110/osee/lba_updatesite/"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.apache.xerces"/>
+      <import plugin="org.apache.ant"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.update.core"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.gef"/>
+      <import plugin="com.ibm.icu"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.pde.core"/>
+      <import plugin="org.eclipse.mylyn.zest.core"/>
+      <import plugin="org.eclipse.mylyn.zest.layouts"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.admin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.encrypter"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.feature.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.jdk"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.plugin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.security"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.service.control"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.skynet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.swt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.zest.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.mylyn.zest.layouts"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.nebula.widgets"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="external.osee.xslt.transform.engine"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+         
+</feature>

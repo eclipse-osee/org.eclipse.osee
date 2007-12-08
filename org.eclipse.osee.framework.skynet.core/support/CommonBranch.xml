@@ -1,0 +1,505 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Author>Robert Fisher</Author>
+  <LastAuthor>b1565043</LastAuthor>
+  <LastPrinted>2006-03-15T03:49:16Z</LastPrinted>
+  <Created>2005-07-01T21:31:12Z</Created>
+  <LastSaved>2007-04-07T22:39:34Z</LastSaved>
+  <Company>The Boeing Company</Company>
+  <Version>11.8132</Version>
+ </DocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <DoNotRelyOnCSS/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>4875</WindowHeight>
+  <WindowWidth>15480</WindowWidth>
+  <WindowTopX>-15</WindowTopX>
+  <WindowTopY>4815</WindowTopY>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s21">
+   <Font x:Family="Swiss" ss:Size="9"/>
+  </Style>
+  <Style ss:ID="s23">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom" ss:WrapText="1"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+  </Style>
+  <Style ss:ID="s25">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="s26">
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+  </Style>
+  <Style ss:ID="s27">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat/>
+  </Style>
+  <Style ss:ID="s28">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat ss:Format="Short Date"/>
+  </Style>
+  <Style ss:ID="s30">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat ss:Format="Short Date"/>
+  </Style>
+  <Style ss:ID="s31">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat/>
+  </Style>
+  <Style ss:ID="s32">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
+   <Interior/>
+  </Style>
+  <Style ss:ID="s33">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+  </Style>
+  <Style ss:ID="s34">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+  <Style ss:ID="s35">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat ss:Format="0"/>
+  </Style>
+  <Style ss:ID="s36">
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="s37">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+  </Style>
+  <Style ss:ID="s38">
+   <Font x:Family="Swiss" ss:Size="9" ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="s39">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat ss:Format="Short Date"/>
+  </Style>
+  <Style ss:ID="s40">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="3"/>
+   </Borders>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat ss:Format="0"/>
+  </Style>
+  <Style ss:ID="s41">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font x:Family="Swiss" ss:Size="9"/>
+  </Style>
+  <Style ss:ID="s42">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat ss:Format="0"/>
+  </Style>
+  <Style ss:ID="s43">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Font x:Family="Swiss" ss:Size="9"/>
+   <NumberFormat ss:Format="@"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="skynetBase">
+  <Names>
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R43C1:R47C4"
+    ss:Hidden="1"/>
+  </Names>
+  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="51" x:FullColumns="1"
+   x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="300"/>
+   <Column ss:StyleID="s21" ss:Width="156.75"/>
+   <Column ss:StyleID="s21" ss:Width="108.75"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="101.25"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="106.5"/>
+   <Column ss:StyleID="s21" ss:Width="71.25"/>
+   <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="101.25"/>
+   <Column ss:StyleID="s21" ss:Width="58.5"/>
+   <Column ss:StyleID="s21" ss:Width="75.75"/>
+   <Column ss:StyleID="s21" ss:Width="56.25"/>
+   <Row ss:AutoFitHeight="0" ss:Height="101.25">
+    <Cell ss:MergeAcross="1" ss:StyleID="s23"><Data ss:Type="String"># Copyright (c) 2004, 2007 Boeing.&#10;# All rights reserved. This program and the accompanying materials&#10;# are made available under the terms of the Eclipse Public License v1.0&#10;# which accompanies this distribution, and is available at&#10;# http://www.eclipse.org/legal/epl-v10.html&#10;# &#10;# Contributors:&#10;#     Boeing - initial API and implementation</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="14.25">
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Factory Class</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Artifact Type Name</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Super Type Name</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.SkynetArtifactFactory</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.ui.skynet.artifact.SkynetGuiArtifactFactory</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Global Preferences</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User Group</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Group Artifact</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="12.75" ss:StyleID="Default">
+    <Cell ss:StyleID="s26"><Data ss:Type="String">org.eclipse.osee.framework.ui.skynet.artifact.SkynetGuiArtifactFactory</Data></Cell>
+    <Cell ss:StyleID="s26"><Data ss:Type="String">XViewer Global Customization</Data></Cell>
+    <Cell ss:StyleID="s28"><Data ss:Type="String">Artifact</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s30"/>
+    <Cell ss:StyleID="s31"/>
+    <Cell ss:StyleID="s30"/>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5"/>
+   <Row ss:AutoFitHeight="0" ss:Height="14.25">
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Attribute Base Type</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Attribute Name</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Default Value</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Validity Xml</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="String">Min Occurrence</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="String">Max Occurrence</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="String">Tip Text</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s33"><Data ss:Type="String">BooleanAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Active</Data></Cell>
+    <Cell ss:StyleID="s34"><Data ss:Type="String">yes</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s33"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User Id</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s33"><Data ss:Type="String">IntegerAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Favorite Branch</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s33"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">XViewer Customization</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s33"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">XViewer Defaults</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s33"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Phone</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s33"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Email</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s33"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Content URL</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s33"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Dictionary</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"/>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s33"/>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Span="1"/>
+   <Row ss:Index="21" ss:AutoFitHeight="0" ss:Height="11.25"/>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s36"><Data ss:Type="String">Artifact Type Name</Data></Cell>
+    <Cell ss:StyleID="s36"><Data ss:Type="String">Attribute Name</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Active</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User Id</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Phone</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Email</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Favorite Branch</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">XViewer Customization</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">XViewer Defaults</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Dictionary</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Global Preferences</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Dictionary</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">XViewer Global Customization</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">XViewer Customization</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="14.25"/>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell><Data ss:Type="String"># Side &quot;A/B&quot; Name should be a free text descriptive name for the user - links between sides and artifact types are performed in the table below.</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Relation type name</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Side A Name</Data></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">A to B Phrase</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="String">Side B Name</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="String">B to A Phrase</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="String">Short Name</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="12.75" ss:StyleID="Default">
+    <Cell ss:StyleID="s33"><Data ss:Type="String">User Grouping</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">group</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">contains</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="String">users</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="String">belong to</Data></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="String">Group</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s37"><Data ss:Type="String">Users</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="String">has users</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="String">is user of</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="String">Usr</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
+   <Row ss:Index="40" ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s38"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell><Data ss:Type="String"># An artifact of type &quot;Artifact Type&quot; can be on side &quot;A&quot;, &quot;Side A Max&quot; number of times for relation links of type &quot;Relation Type&quot;.</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell><Data ss:Type="String"># An artifact of type &quot;Artifact Type&quot; can be on side &quot;B&quot;, &quot;Side B Max&quot; number of times for relation links of type &quot;Relation Type&quot;.</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Artifact Type</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Relation Type</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s25"><Data ss:Type="String">Side A Max</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="String">Side B Max</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="12.75">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User Group</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="String">User Grouping</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="Number">0</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="12.75">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="String">User Grouping</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="Number">0</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s33"><Data ss:Type="String">Users</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="Number">0</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s39"><Data ss:Type="String">Artifact</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="String">Users</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s40"><Data ss:Type="String">UNLIMITED</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+    <Cell ss:StyleID="s40"><Data ss:Type="Number">0</Data><NamedCell
+      ss:Name="_FilterDatabase"/></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s31"/>
+    <Cell ss:StyleID="s41"/>
+    <Cell ss:StyleID="s42"/>
+    <Cell ss:StyleID="s42"/>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s31"/>
+    <Cell ss:StyleID="s41"/>
+    <Cell ss:StyleID="s42"/>
+    <Cell ss:StyleID="s42"/>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5"/>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s43"><Data ss:Type="String">#need method to record whether allocation has been verified as complete and re-verify if changes potentially impact the allocation</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Layout x:Orientation="Landscape"/>
+   </PageSetup>
+   <Unsynced/>
+   <Print>
+    <ValidPrinterInfo/>
+    <HorizontalResolution>600</HorizontalResolution>
+    <VerticalResolution>600</VerticalResolution>
+   </Print>
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>21</ActiveRow>
+     <ActiveCol>1</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+  <Sorting xmlns="urn:schemas-microsoft-com:office:excel">
+   <Sort>Relation Type</Sort>
+  </Sorting>
+ </Worksheet>
+</Workbook>

@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TableConfig>
+
+	<!-- _____________________________________________________ -->
+	<!--                                                       -->
+	<!--              MAIN SKYNET TABLES                       -->
+	<!--                                                       -->
+	<!-- _____________________________________________________ -->
+
+	<Table name="OSEE_DEFINE_ARTIFACT" schema="OSEE">
+		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="GUID" defaultValue="not null" limits="28" type="VARCHAR" />
+		<Column id="HUMAN_READABLE_ID" defaultValue="not null" limits="10" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_ARTIFACT_A_PK" type="PRIMARY KEY" appliesTo="ART_ID" />
+		<Index id="OSEE_ARTIFACT_H_A_IDX" type="UNIQUE">
+			<AppliesTo id="HUMAN_READABLE_ID"/>
+			<AppliesTo id="ART_ID"/>
+		</Index>
+		<Index id="OSEE_ARTIFACT_AT_IDX">
+			<AppliesTo id="ART_TYPE_ID"/>
+		</Index>
+		<Index id="OSEE_ARTIFACT_G_IDX" type="UNIQUE">
+			<AppliesTo id="GUID"/>
+		</Index>
+	</Table>
+	
+	<Table name="OSEE_DEFINE_ARTIFACT_VERSION" schema="OSEE">
+		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="MODIFICATION_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_ARTIFACT_VER_G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />
+		<Constraint schema="OSEE" id="ART_ID2_FK" type="FOREIGN KEY" appliesTo="ART_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Index id="OSEE_ARTIFACT_VER_AR_G_IDX" type="UNIQUE">
+			<AppliesTo id="ART_ID"/>
+			<AppliesTo id="GAMMA_ID"/>
+		</Index>
+		<Index id="OSEE_ARTIFACT_VER_A_IDX">
+			<AppliesTo id="ART_ID"/>
+		</Index>
+	</Table>
+
+	<Table name="OSEE_DEFINE_ARTIFACT_TYPE" schema="OSEE">
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
+		<Column id="FACTORY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="FACTORY_KEY" defaultValue="not null" limits="100" type="VARCHAR" />
+	   <Column id="IMAGE" type="BLOB" />
+		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_AR_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, GAMMA_ID" />
+		<Constraint schema="OSEE" id="FACTORY_ID_FK" type="FOREIGN KEY" appliesTo="FACTORY_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_FACTORY" column="FACTORY_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE">
+			<AppliesTo id="NAME"/>
+		</Index>
+		<Index id="OSEE_ARTIFACT_TYPE_AR_IDX">
+			<AppliesTo id="ART_TYPE_ID"/>
+		</Index>
+	</Table>
+
+	<Table name="OSEE_ATTRIBUTE" schema="OSEE">
+		<Column id="GUID" defaultValue="not null" limits="28" type="VARCHAR" />
+		<Column id="ATTR_ID" defaultValue="not null" type="INTEGER" />
+	</Table>
+
+	<Table name="OSEE_DEFINE_ATTRIBUTE" schema="OSEE">
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ATTR_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="VALUE" limits="4000" type="VARCHAR" />
+		<Column id="CONTENT" type="BLOB" />
+		<Column id="MODIFICATION_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_AT_G_PK" type="PRIMARY KEY" appliesTo="ATTR_ID, GAMMA_ID" />
+		<Constraint schema="OSEE" id="ART_ID1_FK" type="FOREIGN KEY" appliesTo="ART_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Index id="OSEE_ATTRIBUTE_ATT_IDX">
+			<AppliesTo id="ATTR_TYPE_ID"/>
+		</Index>
+ 	  	<Index id="OSEE_ATTRIBUTE_V_IDX" mySqlIgnore="true">
+			<AppliesTo id="VALUE"/>
+		</Index>
+		<Index id="OSEE_ATTRIBUTE_V_AR_IDX" mySqlIgnore="true">
+			<AppliesTo id="ART_ID"/>
+			<AppliesTo id="VALUE"/>
+		</Index>
+		<Index id="OSEE_ATTRIBUTE_V_AR_IDX" mySqlIgnore="true">
+			<AppliesTo id="VALUE"/>
+			<AppliesTo id="ART_ID"/>
+		</Index>
+		<Index id="OSEE_ATTRIBUTE_AR_G_IDX" type="UNIQUE">
+			<AppliesTo id="ART_ID"/>
+			<AppliesTo id="GAMMA_ID"/>
+		</Index>
+		<Index id="OSEE_ATTRIBUTE_G_AT_IDX" type="UNIQUE">
+			<AppliesTo id="GAMMA_ID"/>
+			<AppliesTo id="ATTR_ID"/>
+		</Index>
+		<Index id="OSEE_ATTRIBUTE_G_IDX" type="UNIQUE">
+			<AppliesTo id="GAMMA_ID"/>
+		</Index>
+		<Index id="OSEE_ATTRIBUTE_AT_IDX">
+			<AppliesTo id="ATTR_ID"/>
+		</Index>
+		<Index id="OSEE_ATTRIBUTE_AR_IDX" mySqlIgnore="true">
+			<AppliesTo id="ART_ID"/>
+		</Index>
+	</Table>
+	
+	<Table name="OSEE_DEFINE_ATTRIBUTE_TYPE" schema="OSEE">
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
+		<Column id="DEFAULT_VALUE" limits="500" type="VARCHAR" />
+		<Column id="VALIDITY_XML" limits="4000" type="VARCHAR" />
+		<Column id="MIN_OCCURENCE" defaultValue="not null" type="INTEGER" />
+		<Column id="MAX_OCCURENCE" defaultValue="not null" type="INTEGER" />
+		<Column id="TIP_TEXT" limits="4000" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_TYPE_ID" />
+		<Constraint schema="OSEE" id="ATTR_BASE_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_BASE_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_ATTR_BASE_TYPE" column="ATTR_BASE_TYPE_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Index id="OSEE_ATTRIBUTE_TYPE_N_IDX">
+			<AppliesTo id="NAME"/>
+		</Index>
+	</Table>
+
+	<Table name="OSEE_DEFINE_ATTR_BASE_TYPE" schema="OSEE">
+		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ATTRIBUTE_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_ATTR_BASE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_BASE_TYPE_ID" />
+		<Index id="OSEE_ATTR_BASE_TYPE_AC_IDX" type="UNIQUE">
+			<AppliesTo id="ATTRIBUTE_CLASS"/>
+		</Index>
+	</Table>
+	
+	<Table name="OSEE_DEFINE_FACTORY" schema="OSEE">
+		<Column id="FACTORY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="FACTORY_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_FACTORY_FI_PK" type="PRIMARY KEY" appliesTo="FACTORY_ID" />
+		<Index id="OSEE_FACTORY_FC_IDX" type="UNIQUE">
+			<AppliesTo id="FACTORY_CLASS"/>
+		</Index>
+	</Table>
+	
+	<Table name="OSEE_REL_LINK" schema="OSEE">
+		<Column id="GUID" defaultValue="not null" limits="28" type="VARCHAR" />
+		<Column id="REL_LINK_ID" defaultValue="not null" type="INTEGER" />
+	</Table>
+
+	<Table name="OSEE_DEFINE_REL_LINK" schema="OSEE">
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="REL_LINK_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="A_ART_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="B_ART_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="A_ORDER_VALUE" type="INTEGER" />
+		<Column id="B_ORDER_VALUE" type="INTEGER" />
+		<Column id="RATIONALE" limits="4000" type="VARCHAR" />
+		<Column id="MODIFICATION_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_REL_LINK_G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />
+		<Constraint schema="OSEE" id="OSEE_FOREIGN_B_ART" type="FOREIGN KEY" appliesTo="B_ART_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="OSEE_DEFINE_FOREIGN_A_ART" type="FOREIGN KEY" appliesTo="A_ART_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Index id="OSEE_REL_LINK_RL_IDX">
+			<AppliesTo id="REL_LINK_ID"/>
+		</Index>
+		<Index id="OSEE_REL_LINK_RL_G_IDX" type="UNIQUE">
+			<AppliesTo id="REL_LINK_ID"/>
+			<AppliesTo id="GAMMA_ID"/>
+		</Index>
+		<Index id="OSEE_REL_LINK_AA_IDX">
+			<AppliesTo id="A_ART_ID"/>
+		</Index>
+		<Index id="OSEE_REL_LINK_BA_IDX">
+			<AppliesTo id="B_ART_ID"/>
+		</Index>
+		<Index id="OSEE_REL_LINK_BA_RL_IDX">
+			<AppliesTo id="B_ART_ID"/>
+			<AppliesTo id="REL_LINK_ID"/>
+		</Index>
+		<Index id="OSEE_REL_LINK_RL_AA_IDX">
+			<AppliesTo id="REL_LINK_ID"/>
+			<AppliesTo id="A_ART_ID"/>
+		</Index>
+		<Index id="OSEE_REL_LINK_AA_BA_IDX">
+			<AppliesTo id="A_ART_ID"/>
+			<AppliesTo id="B_ART_ID"/>
+		</Index>
+		<Index id="OSEE_REL_LINK_BA_AA_IDX">
+			<AppliesTo id="B_ART_ID"/>
+			<AppliesTo id="A_ART_ID"/>
+		</Index>
+		<Index id="OSEE_REL_LINK_AA_G_IDX" type="UNIQUE">
+			<AppliesTo id="A_ART_ID"/>
+			<AppliesTo id="GAMMA_ID"/>
+		</Index>
+		<Index id="OSEE_REL_LINK_BA_G_IDX" type="UNIQUE">
+			<AppliesTo id="B_ART_ID"/>
+			<AppliesTo id="GAMMA_ID"/>
+		</Index>
+		<Index id="OSEE_REL_LINK_RT_IDX">
+			<AppliesTo id="REL_LINK_TYPE_ID"/>
+		</Index>
+	</Table>
+	
+	<Table name="OSEE_DEFINE_REL_LINK_TYPE" schema="OSEE">
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="TYPE_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Column id="A_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Column id="B_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Column id="AB_PHRASING" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Column id="BA_PHRASING" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Column id="SHORT_NAME" defaultValue="not null" limits="20" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
+		<Index id="OSEE_REL_LINK_TYPE_TN_IDX" type="UNIQUE">
+			<AppliesTo id="TYPE_NAME"/>
+		</Index>
+	</Table>
+	
+	<Table name="OSEE_DEFINE_VALID_ATTRIBUTES" schema="OSEE">
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_VALID_ATTR_AR_AT_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, ATTR_TYPE_ID, GAMMA_ID" />
+		<Constraint schema="OSEE" id="ATTR_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_ATTRIBUTE_TYPE" column="ATTR_TYPE_ID" onDelete="CASCADE" />
+		</Constraint>
+	</Table>
+
+	<Table name="OSEE_DEFINE_VALID_RELATIONS" schema="OSEE">
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="SIDE_A_MAX" defaultValue="not null" type="INTEGER" />
+		<Column id="SIDE_B_MAX" defaultValue="not null" type="INTEGER" />
+		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_VALID_REL_AT_RT_G_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, REL_LINK_TYPE_ID, GAMMA_ID" />
+		<Constraint schema="OSEE" id="ODVR__GAMMA_ID_UN" type="UNIQUE" appliesTo="GAMMA_ID" />
+	</Table>
+	
+	<Table name="OSEE_SNAPSHOT" schema="OSEE">
+		<Column id="NAMESPACE" defaultValue="not null" limits="1000" type="VARCHAR" />
+		<Column id="KEY" defaultValue="not null" limits="1000" type="VARCHAR" />
+		<Column id="OBJECT" type="BLOB" />
+		<Column id="LAST_UPDATED" defaultValue="not null" type="TIMESTAMP" />
+		<Column id="LAST_ACCESSED" defaultValue="not null" type="TIMESTAMP" />
+		<Constraint schema="OSEE" id="OSEE_SNAPSHOT__K_N_PK" type="PRIMARY KEY" appliesTo="KEY, NAMESPACE" />
+	</Table>
+
+	<!-- __________________________________________________________ -->
+	<!--                                                            -->
+	<!--  MAIN VERSIONING TABLES - CHANGE, TX, AND BRANCH SUPPORT   -->
+	<!--                                                            -->
+	<!-- __________________________________________________________ -->
+	
+	
+	<Table name="OSEE_DEFINE_BRANCH" schema="OSEE">
+		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_NAME" defaultValue="not null" limits="200" type="VARCHAR" />
+		<Column id="SHORT_NAME" limits="25" type="VARCHAR" />
+		<Column id="PARENT_BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ARCHIVED" defaultValue="not null" type="INTEGER" />
+		<Column id="ASSOCIATED_ART_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_BRANCH_B_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID" />
+		<Index id="OSEE_BRANCH_A_IDX">
+			<AppliesTo id="ARCHIVED" />
+		</Index>
+	</Table>
+	
+	<Table name="OSEE_DEFINE_TXS" schema="OSEE">
+		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="TX_TYPE" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_TXS_G_TX_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID, TRANSACTION_ID"/>
+		<Constraint schema="OSEE" id="OSEE_TRANSACTION_ID_FK" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_TX_DETAILS" column="TRANSACTION_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Index id="OSEE_TXS_TX_G_IDX" type="UNIQUE">
+			<AppliesTo id="TRANSACTION_ID" />
+			<AppliesTo id="GAMMA_ID" />
+		</Index>
+		<Index id="OSEE_TXS_G_IDX">
+			<AppliesTo id="GAMMA_ID" />
+		</Index>
+		<Index id="OSEE_TXS_T_IDX">
+			<AppliesTo id="TX_TYPE" />
+		</Index>
+		<Index id="OSEE_TXS_TX_IDX" >
+			<AppliesTo id="TRANSACTION_ID" />
+		</Index>
+	</Table>
+
+	<Table name="OSEE_DEFINE_TX_DETAILS" schema="OSEE">
+		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="OSEE_COMMENT" limits="1000" type="VARCHAR" />
+		<Column id="TIME" defaultValue="not null" type="TIMESTAMP"/>
+	   <Column id="AUTHOR" defaultValue="not null" type="INTEGER"/>
+		<Column id="COMMIT_ART_ID" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_TX_DETAILS_TX_PK" type="PRIMARY KEY" appliesTo="TRANSACTION_ID" />
+		<Constraint schema="OSEE" id="BRANCH_ID_FK" type="FOREIGN KEY" appliesTo="BRANCH_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Index id="OSEE_TX_DETAILS_B_TX_IDX" type="UNIQUE">
+			<AppliesTo id="BRANCH_ID"/>
+			<AppliesTo id="TRANSACTION_ID" />
+		</Index>
+		<Index id="OSEE_TX_DETAILS_TX_B_IDX" type="UNIQUE">
+			<AppliesTo id="TRANSACTION_ID" />
+			<AppliesTo id="BRANCH_ID"/>
+		</Index>
+		<Index id="OSEE_TX_DETAILS_B_IDX">
+			<AppliesTo id="BRANCH_ID" />
+		</Index>
+	</Table>
+	
+	<Table name="OSEE_DEFINE_TX_NAMES" schema="OSEE">
+		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="NAME" defaultValue="not null" limits="100" type="VARCHAR" />
+		<Constraint schema="OSEE" id="TRANSACTION_ID2_FK" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_TX_DETAILS" column="TRANSACTION_ID"
+				onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="ODTN__NAME_UN" type="UNIQUE" appliesTo="NAME" />
+	</Table>
+	
+	<!-- __________________________________________________________ -->
+	<!--                                                            -->
+	<!--                        ACCESS CONTROL LIST TABLES    -->
+	<!--                                                            -->
+	<!-- __________________________________________________________ -->
+	
+	<Table name="OSEE_DEFINE_ARTIFACT_ACL" schema="OSEE">
+		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
+	   <Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_ARTIFACT_ACL_A_P_B_PK" type="PRIMARY KEY" appliesTo="ART_ID, PRIVILEGE_ENTITY_ID, BRANCH_ID" />
+		<Constraint schema="OSEE" id="ARTIFACT_ACL_PERM_FK" type="FOREIGN KEY" appliesTo="PERMISSION_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_PERMISSION" column="PERMISSION_ID" onDelete="CASCADE" />
+		</Constraint>
+   </Table>
+	   
+   <Table name="OSEE_DEFINE_REL_LINK_TYPE_ACL" schema="OSEE">
+		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
+	   <Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="RELATION_LINK_TYPE_ACL_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID, PRIVILEGE_ENTITY_ID, BRANCH_ID" />
+		<Constraint schema="OSEE" id="RELATION_LINK_TYPE_PERM_FK" type="FOREIGN KEY" appliesTo="PERMISSION_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_PERMISSION" column="PERMISSION_ID" onDelete="CASCADE" />
+		</Constraint>
+   </Table>
+	   
+   <Table name="OSEE_DEFINE_ARTIFACT_TYPE_ACL" schema="OSEE">
+		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
+	   <Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_ART_TYPE_ACL_AT_P_B_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, PRIVILEGE_ENTITY_ID, BRANCH_ID" />
+		<Constraint schema="OSEE" id="ARTIFACT_TYPE_PERM_FK" type="FOREIGN KEY" appliesTo="PERMISSION_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_PERMISSION" column="PERMISSION_ID" onDelete="CASCADE" />
+		</Constraint>
+   </Table>
+	   
+   <Table name="OSEE_DEFINE_ATTRIBUTE_TYPE_ACL" schema="OSEE">
+		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
+	   <Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_ATTR_TYPE_ACL_A_P_B_PK" type="PRIMARY KEY" appliesTo="ATTR_TYPE_ID, PRIVILEGE_ENTITY_ID, BRANCH_ID" />
+		<Constraint schema="OSEE" id="ATTRIBUTE_TYPE_PERM_FK" type="FOREIGN KEY" appliesTo="PERMISSION_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_PERMISSION" column="PERMISSION_ID" onDelete="CASCADE" />
+		</Constraint>
+   </Table>
+	   
+   <Table name="OSEE_DEFINE_BRANCH_ACL" schema="OSEE">
+		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PRIVILEGE_ENTITY_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_BRANCH_ACL_B_P_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID, PRIVILEGE_ENTITY_ID" />
+		<Constraint schema="OSEE" id="BRANCH_ACL_FK" type="FOREIGN KEY" appliesTo="BRANCH_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="BRANCH_ACL_PERM_FK" type="FOREIGN KEY" appliesTo="PERMISSION_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_PERMISSION" column="PERMISSION_ID" onDelete="CASCADE" />
+		</Constraint>
+   </Table>
+	   
+   <Table name="OSEE_DEFINE_PERMISSION" schema="OSEE">
+		<Column id="PERMISSION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="PERMISSION_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Constraint schema="OSEE" id="PERMISSION_PK" type="PRIMARY KEY" appliesTo="PERMISSION_ID" />
+   </Table>
+
+	<!-- __________________________________________________________ -->
+	<!--                                                            -->
+	<!--                      TAGGING TABLES                        -->
+	<!--                                                            -->
+	<!-- __________________________________________________________ -->
+	   
+   <Table name="OSEE_TAG_ART_MAP" schema="OSEE">
+		<Column id="TAG_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="N" type="INTEGER" />
+		<Column id="RELEVANCE" type="REAL" />
+		<Constraint schema="OSEE" id="OTAM__TI_BI_AI_PK" type="PRIMARY KEY" appliesTo="TAG_ID, BRANCH_ID, ART_ID" />
+		<Constraint schema="OSEE" id="OTAM__TI_FK" type="FOREIGN KEY" appliesTo="TAG_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_TAG" column="TAG_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="OTAM__AI_FK" type="FOREIGN KEY" appliesTo="ART_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="OTAM__BI_FK" type="FOREIGN KEY" appliesTo="BRANCH_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Index id="OSEE_TAG_ART_MAP__TI_IDX">
+			<AppliesTo id="TAG_ID"/>
+		</Index>
+   </Table>
+   
+   <Table name="OSEE_TAG" schema="OSEE">
+		<Column id="TAG_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="TAG_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="HIT_COUNT" defaultValue="not null" type="INTEGER" />
+		<Column id="TAG" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Column id="LOWERCASE_TAG" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Index id="OSEE_TAG__T_IDX" type="UNIQUE">
+			<AppliesTo id="TAG"/>
+		</Index>
+		<Index id="OSEE_TAG__LT_IDX">
+			<AppliesTo id="LOWERCASE_TAG"/>
+		</Index>
+		<Constraint schema="OSEE" id="OT__TI_PK" type="PRIMARY KEY" appliesTo="TAG_ID" />
+		<Constraint schema="OSEE" id="OT__TTI_FK" type="FOREIGN KEY" appliesTo="TAG_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_TAG_TYPE" column="TAG_TYPE_ID" onDelete="CASCADE" />
+		</Constraint>
+   </Table>
+   
+   <Table name="OSEE_TAG_TYPE" schema="OSEE">
+		<Column id="TAG_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="TAG_TYPE_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OTT__TTI_PK" type="PRIMARY KEY" appliesTo="TAG_TYPE_ID" />
+   </Table>
+   
+   <Table name="OSEE_TAG_CLOUD_MAP" schema="OSEE">
+		<Column id="TAG_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="CLOUD_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OTCM__TI_CI_PK" type="PRIMARY KEY" appliesTo="TAG_ID, CLOUD_ID" />
+		<Constraint schema="OSEE" id="OTCM__TI_FK" type="FOREIGN KEY" appliesTo="TAG_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_TAG" column="TAG_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="OTCM__CI_FK" type="FOREIGN KEY" appliesTo="CLOUD_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_TAG_CLOUD" column="CLOUD_ID" onDelete="CASCADE" />
+		</Constraint>
+   </Table>
+   
+   <Table name="OSEE_TAG_CLOUD" schema="OSEE">
+		<Column id="CLOUD_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="CLOUD_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="CLOUD_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OTC__CI_PK" type="PRIMARY KEY" appliesTo="CLOUD_ID" />
+		<Constraint schema="OSEE" id="OTC__CTI_FK" type="FOREIGN KEY" appliesTo="CLOUD_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_TAG_CLOUD_TYPE" column="CLOUD_TYPE_ID" onDelete="CASCADE" />
+		</Constraint>
+   </Table>
+   
+   <Table name="OSEE_TAG_CLOUD_TYPE" schema="OSEE">
+		<Column id="CLOUD_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="CLOUD_TYPE_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OTCT__CTI_PK" type="PRIMARY KEY" appliesTo="CLOUD_TYPE_ID" />
+   </Table>
+   
+   <Table name="OSEE_TAG_STALE_ARTS" schema="OSEE">
+		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+   </Table>
+	<!-- __________________________________________________________ -->
+	<!--                                                            -->
+	<!--                                  OSEE Usage                -->
+	<!--                                                            -->
+	<!-- __________________________________________________________ -->
+   
+   <Table name="OSEE_USAGE" schema="OSEE">
+		<Column id="USER_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="TIME" defaultValue="not null" type="TIMESTAMP"/>
+		<Column id="EVENT_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="DETAILS" limits="4000" type="VARCHAR" />
+   </Table>
+	<!-- __________________________________________________________ -->
+	<!--                                                            -->
+	<!--                                  OSEE SEQUENCES-->
+	<!--                                                            -->
+	<!-- __________________________________________________________ -->
+	
+	<Table name="OSEE_DEFINE_SEQUENCE" schema="OSEE">
+		<Column id="LAST_SEQUENCE" defaultValue="not null" type="BIGINT" />
+		<Column id="SEQUENCE_NAME"  defaultValue="not null" type="VARCHAR" limits="128" />
+		<Constraint schema="OSEE" id="SEQUENCE_ID_UN" type="UNIQUE" appliesTo="SEQUENCE_NAME" />
+	</Table>
+
+	<!-- __________________________________________________________ -->
+	<!--                                                            -->
+	<!--                                  OSEE Branch Table         -->
+	<!--                                                            -->
+	<!-- __________________________________________________________ -->
+	
+	<Table name="OSEE_BRANCH_DEFINITIONS" schema="OSEE">
+		<Column id="MAPPED_BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="STATIC_BRANCH_NAME"  defaultValue="not null" type="VARCHAR" limits="128" />
+		<Constraint schema="OSEE" id="BRANCH_DEFINITIONS_SBN_PK" type="PRIMARY KEY" appliesTo="STATIC_BRANCH_NAME" />
+		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__OBD_FK" type="FOREIGN KEY" appliesTo="MAPPED_BRANCH_ID">
+			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
+	</Table>
+	
+	<Table name="OSEE_BRANCH_DELETE_HELPER" schema="OSEE">
+		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="GAMMA_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__OBDH_FK" type="FOREIGN KEY" appliesTo="BRANCH_ID">
+			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
+	</Table>
+
+  <Table name="OSEE_INFO" schema="OSEE">
+    <Column defaultValue="not null" id="OSEE_VALUE" type="VARCHAR" limits="28" />
+    <Column defaultValue="not null" id="OSEE_KEY" type="VARCHAR" limits="28" />
+    <Constraint schema="OSEE" id="KEY_UN" type="UNIQUE" appliesTo="OSEE_KEY" />
+  </Table>
+
+</TableConfig>
