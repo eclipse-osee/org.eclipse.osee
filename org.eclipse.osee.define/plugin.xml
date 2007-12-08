@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="DefineNavigateItem" name="DefineNavigateItem" schema="schema/DefineNavigateItem.exsd"/>
+      <extension
+            point="org.eclipse.ui.importWizards">
+         <category
+               id="org.eclipse.osee.define.import.category"
+               name="OSEE">
+         </category>
+         <wizard
+               category="org.eclipse.osee.define.import.category"
+               class="org.eclipse.osee.define.traceability.ImportTraceabilityWizard"
+               icon="images/relate.gif"
+               id="osee.define.traceability.ImportTraceabilityWizard"
+               name="Traceability into OSEE">
+            <description>
+               Import Skynet relations.
+            </description>
+         </wizard>
+      </extension>
+<extension
+      point="org.eclipse.ui.popupMenus">
+   <objectContribution
+         adaptable="true"
+         id="osee.define.projectContribution"
+         objectClass="org.eclipse.core.resources.IResource">
+      <menu
+            label="Define"
+            path="additions"
+            id="osee.define.menu.main">
+      </menu>
+      <action
+            class="org.eclipse.osee.framework.ui.skynet.artifact.OpenArtifactAction"
+            id="osee.define.popup.open.artifact"
+            label="Open Artifact"
+            menubarPath="osee.define.menu.main/main"/>
+   </objectContribution>
+   
+</extension>
+      <extension
+            point="org.eclipse.ui.perspectives">
+         <perspective
+               class="org.eclipse.osee.define.DefinePerspectiveFactory"
+               fixed="false"
+               icon="images/laser_16_16.gif"
+               id="osee.define.PerspectiveFactory"
+               name="Define"/>
+      </extension>
+      <extension
+            point="org.eclipse.ui.perspectiveExtensions">
+         <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
+         </perspectiveExtension>
+         <perspectiveExtension targetID="osee.ats.ATSPerspective">
+            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
+         </perspectiveExtension>
+         <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
+            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
+         </perspectiveExtension>
+         <perspectiveExtension targetID="osee.define.PerspectiveFactory">
+            <perspectiveShortcut id="org.eclipse.jdt.ui.JavaPerspective"/>
+            <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
+            <perspectiveShortcut id="org.eclipse.osee.ats.ATSPerspective"/>
+         </perspectiveExtension>
+      </extension>
+      <extension
+            id="PublishSrs"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.define.blam.operation.PublishSrs"/>
+      </extension>
+      <extension
+            id="PublishPids"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.define.blam.operation.PublishPids"/>
+      </extension>
+      <extension
+            id="PublishSoftwareTestPlan"
+            name="Publish Software Test Plan"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.define.blam.operation.PublishSoftwareTestPlan"/>
+      </extension>
+      <extension
+            id="ChangeArtifactType"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.define.blam.operation.ChangeArtifactType"/>
+      </extension>
+      <extension
+            id="CheckValidAttributeTypes"
+            name="CheckValidAttributeTypes"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.define.blam.operation.CheckValidAttributeTypes"/>
+      </extension>
+      <extension
+            id="CheckValidArtifactTypes"
+            name="CheckValidArtifactTypes"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.define.blam.operation.CheckValidArtifactTypes"/>
+      </extension>
+   <extension
+         id="AddEveryoneGroupToBranches"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.define.blam.operation.AddEveryoneGroupToBranches">
+      </Operation>
+   </extension>
+      <extension
+            point="org.eclipse.help.toc">
+         <toc
+               file="reference/toc.xml"
+               primary="true"/>
+      </extension>
+   <extension
+      id="org.eclipse.osee.ats"
+      name="OSEE"
+      point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="osee.jdk.core.category"
+            class="org.eclipse.osee.define.navigate.DefineNavigateView"
+            icon="images/defineNav.gif"
+            id="org.eclipse.osee.define.DefineNavigateView"
+            name="Define Navigator"/>
+       </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts file="reference/contexts.xml"/>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute">
+      <attribute
+            name="Word Ole Data">
+      </attribute>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute">
+      <attribute
+            name="Template Map">
+      </attribute>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate">
+      <Template
+            presentationType="ALL"
+            templateFile="support/Work_Instruction_Template.xml"
+            templateName="Work Instruction">
+      </Template>
+   </extension>
+</plugin>
