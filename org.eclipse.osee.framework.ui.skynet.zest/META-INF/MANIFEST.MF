@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Skynet Zest Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.ui.skynet.zest;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.jface,
+ org.eclipse.osee.framework.jdk.core,
+ org.eclipse.osee.framework.plugin.core,
+ org.eclipse.osee.framework.skynet.core,
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.osee.framework.ui.skynet,
+ org.eclipse.mylyn.zest.core,
+ org.eclipse.mylyn.zest.layouts
+Bundle-Vendor: Eclipse.org

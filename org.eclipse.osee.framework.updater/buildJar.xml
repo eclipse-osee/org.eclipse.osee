@@ -1,0 +1,17 @@
+<project name="Runtime" default="testrelease" basedir=".">
+	<target name="createrelease">
+		<jar jarfile="${PATH}/updater.jar" >
+			<fileset dir="src/"/>
+		   <fileset dir="bin/"/>
+		   <fileset dir="payload/"/>
+			<fileset dir="../osee.install.core/src/"/>
+		   <fileset dir="../osee.install.core/bin/"/>
+		</jar>
+	</target>
+
+	<target name="testrelease">
+		<antcall target="createrelease">
+			<param name="PATH" value="../osee.update.container/" />
+		</antcall>
+	</target>
+</project>
