@@ -56,8 +56,8 @@ public class MysqlSqlManager extends SqlManagerImpl {
       String toExecute = "CREATE TABLE " + tableDef.getFullyQualifiedTableName() + " ( \n";
       toExecute += handleColumnCreationSection(connection, tableDef.getColumns());
       toExecute += handleConstraintCreationSection(tableDef.getConstraints(), tableDef.getFullyQualifiedTableName());
-      toExecute += handleConstraintCreationSection(tableDef.getForeignKeyConstraints(),
-            tableDef.getFullyQualifiedTableName());
+      toExecute +=
+            handleConstraintCreationSection(tableDef.getForeignKeyConstraints(), tableDef.getFullyQualifiedTableName());
       toExecute += " \n)\n";
       logger.log(Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       executeStatement(connection, toExecute);

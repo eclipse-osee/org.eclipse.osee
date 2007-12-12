@@ -187,8 +187,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
       this.preferencesService = Platform.getPreferencesService();
 
-      IEclipsePreferences instanceNode = (IEclipsePreferences) preferencesService.getRootNode().node(
-            InstanceScope.SCOPE);
+      IEclipsePreferences instanceNode =
+            (IEclipsePreferences) preferencesService.getRootNode().node(InstanceScope.SCOPE);
 
       try {
          if (instanceNode.nodeExists(VIEW_ID)) {
@@ -370,8 +370,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createOpenArtifactsMenuItem(MenuManager menuManager) {
-      CommandContributionItem openArtifactsCommand = Commands.getLocalCommandContribution(getSite(),
-            "openArtifactsCommand", "Open Artifact(s)...", null, null, null, "O", null, null);
+      CommandContributionItem openArtifactsCommand =
+            Commands.getLocalCommandContribution(getSite(), "openArtifactsCommand", "Open Artifact(s)...", null, null,
+                  null, "O", null, null);
       menuManager.add(openArtifactsCommand);
 
       branchTable.addDoubleClickListener(new IDoubleClickListener() {
@@ -425,8 +426,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createAccessControlMenuItem(MenuManager menuManager) {
-      CommandContributionItem accessControlCommand = Commands.getLocalCommandContribution(getSite(),
-            "accessControlCommand", "Access Control...", null, null, null, "A", null, null);
+      CommandContributionItem accessControlCommand =
+            Commands.getLocalCommandContribution(getSite(), "accessControlCommand", "Access Control...", null, null,
+                  null, "A", null, null);
       menuManager.add(accessControlCommand);
 
       handlerService.activateHandler(accessControlCommand.getId(),
@@ -458,8 +460,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createDeleteTransactionCommand(MenuManager menuManager) {
-      CommandContributionItem deleteTransactionCommand = Commands.getLocalCommandContribution(getSite(),
-            "deleteTransactionCommand", "Delete Transaction", null, null, null, "D", null, null);
+      CommandContributionItem deleteTransactionCommand =
+            Commands.getLocalCommandContribution(getSite(), "deleteTransactionCommand", "Delete Transaction", null,
+                  null, null, "D", null, null);
       menuManager.add(deleteTransactionCommand);
 
       handlerService.activateHandler(deleteTransactionCommand.getId(),
@@ -468,7 +471,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            TransactionData selectedTransaction = (TransactionData) ((JobbedNode) selection.getFirstElement()).getBackingData();
+            TransactionData selectedTransaction =
+                  (TransactionData) ((JobbedNode) selection.getFirstElement()).getBackingData();
 
             if (MessageDialog.openConfirm(HandlerUtil.getActiveShell(event), "Delete Transaction",
                   "Are you sure you want to delete the transaction: " + selectedTransaction.getTransactionNumber())) {
@@ -511,8 +515,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put(BRANCH_ID, Integer.toString(branch.getBranchId()));
 
-            CommandContributionItem branchCommand = Commands.getLocalCommandContribution(getSite(),
-                  menuManager.getId(), branch.getBranchName(), BRANCH_PARAMETER_DEF, parameters, null, null, null, null);
+            CommandContributionItem branchCommand =
+                  Commands.getLocalCommandContribution(getSite(), menuManager.getId(), branch.getBranchName(),
+                        BRANCH_PARAMETER_DEF, parameters, null, null, null, null);
             menuManager.add(branchCommand);
          }
 
@@ -581,8 +586,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    // }
 
    private void createDeleteBranchCommand(MenuManager menuManager) {
-      CommandContributionItem deleteBranchCommand = Commands.getLocalCommandContribution(getSite(),
-            "deleteBranchCommand", "Delete Branch", null, null, null, null, null, null);
+      CommandContributionItem deleteBranchCommand =
+            Commands.getLocalCommandContribution(getSite(), "deleteBranchCommand", "Delete Branch", null, null, null,
+                  null, null, null);
       menuManager.add(deleteBranchCommand);
 
       handlerService.activateHandler(deleteBranchCommand.getId(),
@@ -593,9 +599,10 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
 
-            MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), "Delete Branch", null,
-                  "Are you sure you want to delete the branch: " + selectedBranch.getBranchName(),
-                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+            MessageDialog dialog =
+                  new MessageDialog(Display.getCurrent().getActiveShell(), "Delete Branch", null,
+                        "Are you sure you want to delete the branch: " + selectedBranch.getBranchName(),
+                        MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
             if (dialog.open() == 0) {
                branchManager.deleteBranch(selectedBranch);
@@ -613,8 +620,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createRenameBranchCommand(MenuManager menuManager) {
-      CommandContributionItem renameBranchCommand = Commands.getLocalCommandContribution(getSite(),
-            "renameBranchCommand", "Rename Branch", null, null, null, null, null, null);
+      CommandContributionItem renameBranchCommand =
+            Commands.getLocalCommandContribution(getSite(), "renameBranchCommand", "Rename Branch", null, null, null,
+                  null, null, null);
       menuManager.add(renameBranchCommand);
 
       handlerService.activateHandler(renameBranchCommand.getId(),
@@ -638,8 +646,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                   return null; // to indicate the input is valid
                }
             };
-            InputDialog dialog = new InputDialog(Display.getCurrent().getActiveShell(), "Rename Branch",
-                  "Enter new branch name", selectedBranch.getBranchName(), inputValidator);
+            InputDialog dialog =
+                  new InputDialog(Display.getCurrent().getActiveShell(), "Rename Branch", "Enter new branch name",
+                        selectedBranch.getBranchName(), inputValidator);
 
             if (dialog.open() != Window.CANCEL) {
                try {
@@ -663,8 +672,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createSetBranchShortNameCommand(MenuManager menuManager) {
-      CommandContributionItem setBranchShortNameCommand = Commands.getLocalCommandContribution(getSite(),
-            "setBranchShortNameCommand", "Set Branch Short Name", null, null, null, null, null, null);
+      CommandContributionItem setBranchShortNameCommand =
+            Commands.getLocalCommandContribution(getSite(), "setBranchShortNameCommand", "Set Branch Short Name", null,
+                  null, null, null, null, null);
       menuManager.add(setBranchShortNameCommand);
 
       handlerService.activateHandler(setBranchShortNameCommand.getId(),
@@ -688,10 +698,11 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                   return null; // to indicate the input is valid
                }
             };
-            InputDialog dialog = new InputDialog(Display.getCurrent().getActiveShell(), "Rename Branch Short Name",
-                  "Enter new branch short name",
-                  selectedBranch.getBranchShortName() != null ? selectedBranch.getBranchShortName() : "",
-                  inputValidator);
+            InputDialog dialog =
+                  new InputDialog(Display.getCurrent().getActiveShell(), "Rename Branch Short Name",
+                        "Enter new branch short name",
+                        selectedBranch.getBranchShortName() != null ? selectedBranch.getBranchShortName() : "",
+                        inputValidator);
 
             if (dialog.open() != Window.CANCEL) {
                try {
@@ -716,8 +727,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createSetAssociatedArtifactCommand(MenuManager menuManager) {
-      CommandContributionItem setBranchShortNameCommand = Commands.getLocalCommandContribution(getSite(),
-            "setAssociatedArtifactCommand", "Set Branch Associated Artifact", null, null, null, null, null, null);
+      CommandContributionItem setBranchShortNameCommand =
+            Commands.getLocalCommandContribution(getSite(), "setAssociatedArtifactCommand",
+                  "Set Branch Associated Artifact", null, null, null, null, null, null);
       menuManager.add(setBranchShortNameCommand);
 
       handlerService.activateHandler(setBranchShortNameCommand.getId(),
@@ -729,14 +741,16 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
 
             try {
-               EntryDialog ed = new EntryDialog(
-                     "Set Associated Artifact",
-                     "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getBranchName() + "\"" + (selectedBranch.getAssociatedArtifact() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifact() : ""));
+               EntryDialog ed =
+                     new EntryDialog(
+                           "Set Associated Artifact",
+                           "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getBranchName() + "\"" + (selectedBranch.getAssociatedArtifact() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifact() : ""));
                if (selectedBranch.getAssociatedArtifact() != null) ed.setEntry(String.valueOf(selectedBranch.getAssociatedArtifactId()));
                if (ed.open() == 0) {
                   String artId = ed.getEntry();
-                  Artifact associatedArtifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                        Integer.parseInt(artId), branchManager.getAtsBranch());
+                  Artifact associatedArtifact =
+                        ArtifactPersistenceManager.getInstance().getArtifactFromId(Integer.parseInt(artId),
+                              branchManager.getAtsBranch());
                   if (associatedArtifact == null) throw new IllegalArgumentException(
                         "Invalid artId for Common branch = " + artId);
                   if (MessageDialog.openConfirm(
@@ -762,8 +776,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createOpenAssociatedArtifactCommand(MenuManager menuManager) {
-      CommandContributionItem setBranchShortNameCommand = Commands.getLocalCommandContribution(getSite(),
-            "openAssociatedArtifactCommand", "Open Branch Associated Artifact", null, null, null, null, null, null);
+      CommandContributionItem setBranchShortNameCommand =
+            Commands.getLocalCommandContribution(getSite(), "openAssociatedArtifactCommand",
+                  "Open Branch Associated Artifact", null, null, null, null, null, null);
       menuManager.add(setBranchShortNameCommand);
 
       handlerService.activateHandler(setBranchShortNameCommand.getId(),
@@ -863,9 +878,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createSetDefaultCommand(MenuManager menuManager) {
-      CommandContributionItem setBranchDefaultCommand = Commands.getLocalCommandContribution(getSite(),
-            "setBranchDefaultCommand", "Set Default Branch", null, null, null, "S", null,
-            "branch_manager_default_branch_menu");
+      CommandContributionItem setBranchDefaultCommand =
+            Commands.getLocalCommandContribution(getSite(), "setBranchDefaultCommand", "Set Default Branch", null,
+                  null, null, "S", null, "branch_manager_default_branch_menu");
       menuManager.add(setBranchDefaultCommand);
 
       handlerService.activateHandler(setBranchDefaultCommand.getId(),
@@ -894,9 +909,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createChangeReportCommand(MenuManager menuManager) {
-      CommandContributionItem showChangeReportCommand = Commands.getLocalCommandContribution(getSite(),
-            "createChangeReportCommand", "Show Change Report", null, null, null, "C", null,
-            "branch_manager_show_change_report_menu");
+      CommandContributionItem showChangeReportCommand =
+            Commands.getLocalCommandContribution(getSite(), "createChangeReportCommand", "Show Change Report", null,
+                  null, null, "C", null, "branch_manager_show_change_report_menu");
       menuManager.add(showChangeReportCommand);
 
       handlerService.activateHandler(showChangeReportCommand.getId(),
@@ -921,8 +936,10 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                   TransactionId transaction1 = ((TransactionData) obj).getTransactionId();
                   TransactionId transaction2 = ((TransactionData) iter.next().getBackingData()).getTransactionId();
 
-                  TransactionId base = transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction1 : transaction2;
-                  TransactionId to = transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction2 : transaction1;
+                  TransactionId base =
+                        transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction1 : transaction2;
+                  TransactionId to =
+                        transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction2 : transaction1;
 
                   ChangeReportView.openViewUpon(new ChangeReportInput(base.getBranch().getDisplayName(), base, to));
                }
@@ -1056,7 +1073,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          boolean validBranchSelected = SkynetSelections.oneDescendantBranchSelected(selection) && useParentBranch;
 
          if (validBranchSelected) {
-            validBranchSelected &= !((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).isChangeManaged();
+            validBranchSelected &=
+                  !((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).isChangeManaged();
          }
          return (validBranchSelected) || (!useParentBranch && OseeProperties.getInstance().isDeveloper() && SkynetSelections.oneBranchSelected(selection));
       }
@@ -1069,12 +1087,13 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             String parentBranchName = "";
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             if (SkynetSelections.oneDescendantBranchSelected(selection)) {
-               Branch parent = ((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).getParentBranch();
+               Branch parent =
+                     ((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).getParentBranch();
                parentBranchName = parent.getBranchName();
             }
-            IContributionItem[] myIContributionItems = new IContributionItem[] {Commands.getLocalCommandContribution(
-                  getSite(), "commitIntoParentCommand", "Commit Into Parent Branch: " + parentBranchName, null, null,
-                  null, null, null, null)};
+            IContributionItem[] myIContributionItems =
+                  new IContributionItem[] {Commands.getLocalCommandContribution(getSite(), "commitIntoParentCommand",
+                        "Commit Into Parent Branch: " + parentBranchName, null, null, null, null, null, null)};
 
             return myIContributionItems;
          }
@@ -1085,8 +1104,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createBranchCommand(MenuManager menuManager) {
-      CommandContributionItem createBranchCommand = Commands.getLocalCommandContribution(getSite(),
-            "createBranchCommand", "Branch", null, null, null, "B", null, null);
+      CommandContributionItem createBranchCommand =
+            Commands.getLocalCommandContribution(getSite(), "createBranchCommand", "Branch", null, null, null, "B",
+                  null, null);
       menuManager.add(createBranchCommand);
 
       handlerService.activateHandler(createBranchCommand.getId(), new BranchCreationHandler(menuManager, branchTable,
@@ -1094,8 +1114,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createSelectivelyBranchCommand(MenuManager menuManager) {
-      CommandContributionItem createSelectiveBranchCommand = Commands.getLocalCommandContribution(getSite(),
-            "createSelectiveBranchCommand", "Selectively Branch", null, null, null, "S", null, null);
+      CommandContributionItem createSelectiveBranchCommand =
+            Commands.getLocalCommandContribution(getSite(), "createSelectiveBranchCommand", "Selectively Branch", null,
+                  null, null, "S", null, null);
       menuManager.add(createSelectiveBranchCommand);
 
       handlerService.activateHandler(createSelectiveBranchCommand.getId(), new BranchCreationHandler(menuManager,
@@ -1103,8 +1124,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createViewTableMenuItem(MenuManager menuManager) {
-      CommandContributionItem viewTableReportCommand = Commands.getLocalCommandContribution(getSite(),
-            "viewTableReportCommand", "View Branch Table Report", null, null, null, "V", null, null);
+      CommandContributionItem viewTableReportCommand =
+            Commands.getLocalCommandContribution(getSite(), "viewTableReportCommand", "View Branch Table Report", null,
+                  null, null, "V", null, null);
       menuManager.add(viewTableReportCommand);
 
       handlerService.activateHandler(viewTableReportCommand.getId(),
@@ -1126,8 +1148,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createImportOntoBranchCommand(MenuManager menuManager) {
-      CommandContributionItem importOntoBranchCommand = Commands.getLocalCommandContribution(getSite(),
-            "importOntoBranchCommand", "Import Onto Branch...", null, null, null, "I", null, null);
+      CommandContributionItem importOntoBranchCommand =
+            Commands.getLocalCommandContribution(getSite(), "importOntoBranchCommand", "Import Onto Branch...", null,
+                  null, null, "I", null, null);
       menuManager.add(importOntoBranchCommand);
 
       handlerService.activateHandler(importOntoBranchCommand.getId(),
@@ -1156,9 +1179,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createImportDescendantsOntoBranchCommand(MenuManager menuManager) {
-      CommandContributionItem importDescendantsOntoBranchCommand = Commands.getLocalCommandContribution(getSite(),
-            "importDescendantsOntoBranchCommand", "Import Descendants Onto Branch...", null, null, null, "m", null,
-            null);
+      CommandContributionItem importDescendantsOntoBranchCommand =
+            Commands.getLocalCommandContribution(getSite(), "importDescendantsOntoBranchCommand",
+                  "Import Descendants Onto Branch...", null, null, null, "m", null, null);
       menuManager.add(importDescendantsOntoBranchCommand);
 
       handlerService.activateHandler(importDescendantsOntoBranchCommand.getId(),
@@ -1187,8 +1210,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createExportBranchCommand(MenuManager menuManager) {
-      CommandContributionItem exportBranchAndDescendantsCommand = Commands.getLocalCommandContribution(getSite(),
-            "exportBranchAndDescendantsCommand", "Export Branch and Descendants...", null, null, null, "x", null, null);
+      CommandContributionItem exportBranchAndDescendantsCommand =
+            Commands.getLocalCommandContribution(getSite(), "exportBranchAndDescendantsCommand",
+                  "Export Branch and Descendants...", null, null, null, "x", null, null);
       menuManager.add(exportBranchAndDescendantsCommand);
 
       handlerService.activateHandler(exportBranchAndDescendantsCommand.getId(),
@@ -1217,8 +1241,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    }
 
    private void createExportBranchDescendantsCommand(MenuManager menuManager) {
-      CommandContributionItem exportDescendantsCommand = Commands.getLocalCommandContribution(getSite(),
-            "exportDescendantsCommand", "Export Branch Descendants Only...", null, null, null, "D", null, null);
+      CommandContributionItem exportDescendantsCommand =
+            Commands.getLocalCommandContribution(getSite(), "exportDescendantsCommand",
+                  "Export Branch Descendants Only...", null, null, null, "D", null, null);
       menuManager.add(exportDescendantsCommand);
 
       handlerService.activateHandler(exportDescendantsCommand.getId(),

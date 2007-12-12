@@ -24,7 +24,8 @@ public class StandAloneApplicationFormatter extends ExecutionCommandFormatter {
    @Override
    protected String buildExecString() {
       String toReturn = baseExecString.replace("#JAVA#", "java");
-      toReturn += this.getJvmArgsString() + ServiceItem.EXEC_SEPARATOR + executionString + this.getApplicationArgsString();
+      toReturn +=
+            this.getJvmArgsString() + ServiceItem.EXEC_SEPARATOR + executionString + this.getApplicationArgsString();
       return toReturn;
    }
 

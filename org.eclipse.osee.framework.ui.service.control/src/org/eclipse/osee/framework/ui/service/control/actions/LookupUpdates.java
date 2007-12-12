@@ -88,8 +88,8 @@ public class LookupUpdates implements IRegistrarListener {
          availableReggies.add(reggie.getServiceID());
       }
 
-      List discardedIds = org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(cachedReggies,
-            availableReggies);
+      List discardedIds =
+            org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(cachedReggies, availableReggies);
       Iterator iterator2 = discardedIds.iterator();
       ServiceID toProcess = null;
       while (iterator2.hasNext()) {

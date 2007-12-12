@@ -26,7 +26,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
  */
 public class ArtifactTypeContentProvider implements ITreeContentProvider {
 
-   private static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
    protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactTypeContentProvider.class);
 
    public Object[] getElements(Object inputElement) {

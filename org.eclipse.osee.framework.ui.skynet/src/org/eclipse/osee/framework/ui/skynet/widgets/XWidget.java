@@ -196,7 +196,8 @@ public abstract class XWidget {
    }
 
    public String toXml(String xmlRoot, String xmlSubRoot) {
-      String s = "<" + xmlRoot + ">" + "<" + xmlSubRoot + ">" + AXml.textToXml(getXmlData()) + "</" + xmlSubRoot + ">" + "</" + xmlRoot + ">\n";
+      String s =
+            "<" + xmlRoot + ">" + "<" + xmlSubRoot + ">" + AXml.textToXml(getXmlData()) + "</" + xmlSubRoot + ">" + "</" + xmlRoot + ">\n";
       return s;
    }
 

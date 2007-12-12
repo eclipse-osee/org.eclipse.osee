@@ -41,7 +41,8 @@ public class InRelationFilter extends SearchFilter {
       String type = relationTypeList.getCombo().getText();
       String sideName = relationSideList.getCombo().getText();
 
-      IRelationLinkDescriptor linkDescriptor = (IRelationLinkDescriptor) relationTypeList.getData(relationTypeList.getCombo().getText());
+      IRelationLinkDescriptor linkDescriptor =
+            (IRelationLinkDescriptor) relationTypeList.getData(relationTypeList.getCombo().getText());
       ISearchPrimitive primitive = new InRelationSearch(type, linkDescriptor.isSideAName(sideName));
       if (not) primitive = new NotSearch(primitive);
 

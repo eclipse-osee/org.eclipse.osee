@@ -47,8 +47,9 @@ public class PostgresTasks {//TODO move this to the correct project after the bi
    }
 
    public static void writePasswordFile() throws FileNotFoundException {
-      File postgresqlFolder = new File(
-            System.getProperty("user.home") + File.separator + "Application Data" + File.separator + "postgresql");
+      File postgresqlFolder =
+            new File(
+                  System.getProperty("user.home") + File.separator + "Application Data" + File.separator + "postgresql");
       postgresqlFolder.mkdirs();
       File passWordFile = new File(postgresqlFolder, "pgpass.conf");
       PrintWriter wos = new PrintWriter(passWordFile);

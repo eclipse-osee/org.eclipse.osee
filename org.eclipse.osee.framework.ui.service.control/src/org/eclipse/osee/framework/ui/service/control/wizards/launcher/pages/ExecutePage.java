@@ -159,8 +159,8 @@ public class ExecutePage extends DynamicWizardPage {
                         for (int index = 0; index < execCommands.length; index++) {
                            String temp = execCommands[index];
                            if (temp.contains(TEMPORARY_JINI_GROUP)) {
-                              execCommands[index] = temp.replace(TEMPORARY_JINI_GROUP,
-                                    serviceInfo.getServiceItem().getJiniGroup());
+                              execCommands[index] =
+                                    temp.replace(TEMPORARY_JINI_GROUP, serviceInfo.getServiceItem().getJiniGroup());
                            }
                         }
                      }
@@ -187,8 +187,9 @@ public class ExecutePage extends DynamicWizardPage {
          serviceInfo.getServiceItem().setJiniGroup(TEMPORARY_JINI_GROUP);
       }
 
-      String execute = "cd " + serviceInfo.getUnzipLocation() + "\n" + serviceInfo.getServiceItem().getRemoteExecution().replaceAll(
-            ServiceItem.EXEC_SEPARATOR, " ");
+      String execute =
+            "cd " + serviceInfo.getUnzipLocation() + "\n" + serviceInfo.getServiceItem().getRemoteExecution().replaceAll(
+                  ServiceItem.EXEC_SEPARATOR, " ");
 
       this.cmdText.addText(execute);
 

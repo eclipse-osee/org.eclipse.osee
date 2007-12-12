@@ -131,7 +131,8 @@ public class ArtifactSnapshotManager {
     */
    private boolean isDeleteRequired(ArtifactSnapshot snapshot) throws SQLException {
       boolean oneOrMoreExists = snapshotRemoteRepository.getKeys(snapshot.getNamespace()).size() > 0;
-      boolean snapshotIsNotOneOfThem = snapshotRemoteRepository.getSnapshot(snapshot.getNamespace(), snapshot.getKey()) == null;
+      boolean snapshotIsNotOneOfThem =
+            snapshotRemoteRepository.getSnapshot(snapshot.getNamespace(), snapshot.getKey()) == null;
       return oneOrMoreExists && snapshotIsNotOneOfThem;
    }
 

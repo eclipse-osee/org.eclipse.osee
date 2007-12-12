@@ -38,8 +38,8 @@ public class AddTemplate implements BlamOperation {
       String templateName = variableMap.getString("templateName");
       String templatePath = variableMap.getString("templatePath");
 
-      WordRenderer wordRenderer = (WordRenderer) RendererManager.getInstance().getRendererById(
-            "org.eclipse.osee.framework.ui.skynet.word");
+      WordRenderer wordRenderer =
+            (WordRenderer) RendererManager.getInstance().getRendererById("org.eclipse.osee.framework.ui.skynet.word");
       wordRenderer.addTemplate(PresentationType.valueOf(presentationType), bundleName, templateName, templatePath,
             branch);
    }

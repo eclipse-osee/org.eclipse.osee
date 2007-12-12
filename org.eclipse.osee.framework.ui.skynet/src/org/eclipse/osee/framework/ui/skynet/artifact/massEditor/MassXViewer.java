@@ -161,8 +161,8 @@ public class MassXViewer extends XViewer {
             Collection<Artifact> arts = getSelectedArtifacts();
             if (arts.size() > 0) {
                Artifact artifact = arts.iterator().next();
-               if (artifact.getBranch() == BranchPersistenceManager.getInstance().getDefaultBranch()) event.data = new ArtifactData(
-                     arts.toArray(new Artifact[arts.size()]), "", MassArtifactEditor.EDITOR_ID);
+               if (artifact.getBranch() == BranchPersistenceManager.getInstance().getDefaultBranch()) event.data =
+                     new ArtifactData(arts.toArray(new Artifact[arts.size()]), "", MassArtifactEditor.EDITOR_ID);
             }
          }
 
@@ -298,7 +298,8 @@ public class MassXViewer extends XViewer {
                sortType = SortDataType.Float;
             else if (dam.getDescriptor().getBaseAttributeClass().equals(IntegerAttribute.class))
                sortType = SortDataType.Integer;
-            else if (dam.getDescriptor().getBaseAttributeClass().equals(BooleanAttribute.class)) sortType = SortDataType.Boolean;
+            else if (dam.getDescriptor().getBaseAttributeClass().equals(BooleanAttribute.class)) sortType =
+                  SortDataType.Boolean;
             newCol = new XViewerColumn(this, dam.getDescriptor().getName(), 75, 75, SWT.CENTER);
             newCol.setSortDataType(sortType);
             newCol.setOrderNum(x++);

@@ -97,7 +97,8 @@ public class SkyWalkerLayoutTabItem {
       treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
          public void selectionChanged(SelectionChangedEvent event) {
             if (treeViewer.getSelection().isEmpty()) return;
-            AbstractLayoutAlgorithm layout = (AbstractLayoutAlgorithm) ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
+            AbstractLayoutAlgorithm layout =
+                  (AbstractLayoutAlgorithm) ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
             if (layout != null) options.setLayout(layout);
          }
       });

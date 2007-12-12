@@ -98,8 +98,8 @@ public class SkyWalkerView extends ViewPart implements IActionable {
       IWorkbenchPage page = AWorkbench.getActivePage();
       SkyWalkerView view;
       try {
-         view = (SkyWalkerView) page.showView(SkyWalkerView.VIEW_ID, new GUID().toString(),
-               IWorkbenchPage.VIEW_ACTIVATE);
+         view =
+               (SkyWalkerView) page.showView(SkyWalkerView.VIEW_ID, new GUID().toString(), IWorkbenchPage.VIEW_ACTIVATE);
          view.explore(artifact);
       } catch (Exception ex) {
          throw new RuntimeException(ex);

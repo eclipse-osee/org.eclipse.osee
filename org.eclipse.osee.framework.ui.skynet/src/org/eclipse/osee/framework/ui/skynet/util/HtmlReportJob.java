@@ -85,8 +85,9 @@ public class HtmlReportJob extends Job {
 
                   IFile workingFile;
                   try {
-                     workingFile = FileSystemRenderer.ensureRenderFolderExists(PresentationType.PREVIEW).getFile(
-                           GUID.generateGuidStr() + ".html");
+                     workingFile =
+                           FileSystemRenderer.ensureRenderFolderExists(PresentationType.PREVIEW).getFile(
+                                 GUID.generateGuidStr() + ".html");
                      AIFile.writeToFile(workingFile, html);
                      Program.launch(workingFile.getLocation().toString());
                   } catch (Exception ex) {
@@ -152,8 +153,9 @@ public class HtmlReportJob extends Job {
                               attr.getVarchar()}));
                      } else if (dam.getDescriptor().getName().equals(WordAttribute.CONTENT_NAME)) {
                         try {
-                           ByteArrayInputStream wordMl = new ByteArrayInputStream(
-                                 ("<body>" + attr.getStringData() + "</body>").getBytes("UTF-8"));
+                           ByteArrayInputStream wordMl =
+                                 new ByteArrayInputStream(
+                                       ("<body>" + attr.getStringData() + "</body>").getBytes("UTF-8"));
                            wordHtml = WordConverter.getInstance().toHtml(wordMl);
                         } catch (UnsupportedEncodingException ex) {
                            wordHtml = ex.getLocalizedMessage();

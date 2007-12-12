@@ -37,9 +37,10 @@ import org.eclipse.ui.PlatformUI;
 public class AuthenticationComposite extends Composite {
 
    private static final String LABEL_KEY = "label";
-   private static final String WARNING_MESSAGE = "Saved passwords are stored in your computer in a file that is difficult, but not impossible, for an intruder to read.";
-   private static final Image errorImage = PlatformUI.getWorkbench().getSharedImages().getImage(
-         ISharedImages.IMG_OBJS_ERROR_TSK);
+   private static final String WARNING_MESSAGE =
+         "Saved passwords are stored in your computer in a file that is difficult, but not impossible, for an intruder to read.";
+   private static final Image errorImage =
+         PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 
    private static final OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
 

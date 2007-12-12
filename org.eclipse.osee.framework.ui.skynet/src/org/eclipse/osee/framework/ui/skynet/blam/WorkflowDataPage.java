@@ -157,8 +157,9 @@ public class WorkflowDataPage extends FormPage {
          removeLink.setImage(plugin.getImage("remove.gif"));
          removeLink.addHyperlinkListener(removeListener);
 
-         Text variableWidget = toolkit.createText(variablesComposite,
-               "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Get This\" />");
+         Text variableWidget =
+               toolkit.createText(variablesComposite,
+                     "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Get This\" />");
          removeLink.setData(variableWidget);
          variableTexts.add(variableWidget);
          variableWidget.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));

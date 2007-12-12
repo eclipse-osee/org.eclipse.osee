@@ -141,8 +141,9 @@ public class UploadPage extends DynamicWizardPage {
          public void widgetSelected(SelectionEvent e) {
             PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
                public void run() {
-                  Job job = new UploadRemoteFileJob("Uploading Files", serviceInfo, new TextDisplayHelper(cmdText),
-                        progress, dataMap);
+                  Job job =
+                        new UploadRemoteFileJob("Uploading Files", serviceInfo, new TextDisplayHelper(cmdText),
+                              progress, dataMap);
                   job.setUser(true);
                   job.setPriority(Job.LONG);
                   job.schedule();

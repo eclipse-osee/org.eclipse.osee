@@ -37,8 +37,9 @@ abstract class ExecutionCommandFormatter {
    public String getApplicationArgsString() {
       String applicationArgsString = "";
       if (applicationArgs.size() > 0) {
-         applicationArgsString = ServiceItem.EXEC_SEPARATOR + StringFormat.listToValueSeparatedString(applicationArgs,
-               ServiceItem.EXEC_SEPARATOR);
+         applicationArgsString =
+               ServiceItem.EXEC_SEPARATOR + StringFormat.listToValueSeparatedString(applicationArgs,
+                     ServiceItem.EXEC_SEPARATOR);
       }
       return applicationArgsString;
    }
@@ -46,8 +47,8 @@ abstract class ExecutionCommandFormatter {
    public String getJvmArgsString() {
       String jvmArgsString = "";
       if (jvmArgs.size() > 0) {
-         jvmArgsString = ServiceItem.EXEC_SEPARATOR + StringFormat.listToValueSeparatedString(jvmArgs,
-               ServiceItem.EXEC_SEPARATOR);
+         jvmArgsString =
+               ServiceItem.EXEC_SEPARATOR + StringFormat.listToValueSeparatedString(jvmArgs, ServiceItem.EXEC_SEPARATOR);
       }
       return jvmArgsString;
    }

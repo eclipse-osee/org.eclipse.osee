@@ -53,8 +53,9 @@ public class EmailWizard extends Wizard {
    }
 
    public boolean performFinish() {
-      AEmail emailMessage = new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
-            skynetAuth.getAuthenticatedUser().getEmail(), subject);
+      AEmail emailMessage =
+            new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
+                  skynetAuth.getAuthenticatedUser().getEmail(), subject);
       try {
          emailMessage.setRecipients(Message.RecipientType.TO, wizardPage.getToAddresses());
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());

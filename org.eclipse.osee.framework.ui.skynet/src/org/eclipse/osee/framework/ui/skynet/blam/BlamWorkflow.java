@@ -105,8 +105,8 @@ public class BlamWorkflow extends Artifact {
 
    private String getOperationsListing(IExtensionRegistry registry) {
       StringBuilder strB = new StringBuilder(1000);
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.ui.skynet.BlamOperation");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.BlamOperation");
       IExtension[] extensions = point.getExtensions();
 
       for (IExtension extension : extensions) {

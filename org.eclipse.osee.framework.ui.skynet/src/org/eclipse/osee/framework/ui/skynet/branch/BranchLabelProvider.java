@@ -134,19 +134,23 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
 
    private static synchronized void checkImages() {
       if (defaultBranchImage == null) {
-         favoriteBranchImage = new OverlayImage(branchImage, SkynetGuiPlugin.getInstance().getImageDescriptor(
-               "star_9_9.gif"), 0, 7).createImage();
-         defaultBranchImage = new OverlayImage(branchImage, SkynetGuiPlugin.getInstance().getImageDescriptor(
-               "black_check.gif"), 8, 0).createImage();
-         favoriteDefaultBranchImage = new OverlayImage(defaultBranchImage,
-               SkynetGuiPlugin.getInstance().getImageDescriptor("star_9_9.gif"), 0, 7).createImage();
+         favoriteBranchImage =
+               new OverlayImage(branchImage, SkynetGuiPlugin.getInstance().getImageDescriptor("star_9_9.gif"), 0, 7).createImage();
+         defaultBranchImage =
+               new OverlayImage(branchImage, SkynetGuiPlugin.getInstance().getImageDescriptor("black_check.gif"), 8, 0).createImage();
+         favoriteDefaultBranchImage =
+               new OverlayImage(defaultBranchImage, SkynetGuiPlugin.getInstance().getImageDescriptor("star_9_9.gif"),
+                     0, 7).createImage();
 
-         defaultChangeManagedBranchImage = new OverlayImage(changeManagedBranchImage,
-               SkynetGuiPlugin.getInstance().getImageDescriptor("black_check.gif"), 8, 0).createImage();
-         favoriteChangeManagedBranchImage = new OverlayImage(changeManagedBranchImage,
-               SkynetGuiPlugin.getInstance().getImageDescriptor("star_9_9.gif"), 0, 7).createImage();
-         favoriteDefaultChangedManagedBranchImage = new OverlayImage(defaultChangeManagedBranchImage,
-               SkynetGuiPlugin.getInstance().getImageDescriptor("star_9_9.gif"), 0, 7).createImage();
+         defaultChangeManagedBranchImage =
+               new OverlayImage(changeManagedBranchImage, SkynetGuiPlugin.getInstance().getImageDescriptor(
+                     "black_check.gif"), 8, 0).createImage();
+         favoriteChangeManagedBranchImage =
+               new OverlayImage(changeManagedBranchImage, SkynetGuiPlugin.getInstance().getImageDescriptor(
+                     "star_9_9.gif"), 0, 7).createImage();
+         favoriteDefaultChangedManagedBranchImage =
+               new OverlayImage(defaultChangeManagedBranchImage, SkynetGuiPlugin.getInstance().getImageDescriptor(
+                     "star_9_9.gif"), 0, 7).createImage();
 
          oldSnapshotImage = SkynetGuiPlugin.getInstance().getImage("old.gif");
       }

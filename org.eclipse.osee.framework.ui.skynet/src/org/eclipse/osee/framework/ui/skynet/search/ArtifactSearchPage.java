@@ -62,7 +62,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class ArtifactSearchPage extends DialogPage implements ISearchPage, IReplacePage {
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSearchPage.class);
-   private static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static ISearchPageContainer aContainer;
 
@@ -206,7 +207,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          @Override
          public void widgetSelected(SelectionEvent e) {
             relationSideList.getCombo().removeAll();
-            IRelationLinkDescriptor linkDescriptor = (IRelationLinkDescriptor) relationTypeList.getData(relationTypeList.getCombo().getText());
+            IRelationLinkDescriptor linkDescriptor =
+                  (IRelationLinkDescriptor) relationTypeList.getData(relationTypeList.getCombo().getText());
             relationSideList.add(linkDescriptor.getSideAName());
             relationSideList.add(linkDescriptor.getSideBName());
             relationSideList.getCombo().select(0);
@@ -217,7 +219,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       if (relationTypeList.getCombo().getItemCount() > 0) { // ensure we don't get a null pointer
          // exception when there are no relation types in the db
          relationTypeList.getCombo().select(0);
-         IRelationLinkDescriptor linkDescriptor = (IRelationLinkDescriptor) relationTypeList.getData(relationTypeList.getCombo().getText());
+         IRelationLinkDescriptor linkDescriptor =
+               (IRelationLinkDescriptor) relationTypeList.getData(relationTypeList.getCombo().getText());
          relationSideList.add(linkDescriptor.getSideAName());
          relationSideList.add(linkDescriptor.getSideBName());
          relationSideList.getCombo().select(0);
@@ -387,16 +390,16 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    public boolean performAction() {
       NewSearchUI.activateSearchResultView();
       filterviewer.getFilterList().setAllSelected(allButton.getSelection());
-      AbstractArtifactSearchQuery searchQuery = new FilterArtifactSearchQuery(filterviewer.getFilterList(),
-            branchManager.getDefaultBranch());
+      AbstractArtifactSearchQuery searchQuery =
+            new FilterArtifactSearchQuery(filterviewer.getFilterList(), branchManager.getDefaultBranch());
       NewSearchUI.runQueryInBackground(searchQuery);
       return true;
    }
 
    public boolean performReplace() {
       filterviewer.getFilterList().setAllSelected(allButton.getSelection());
-      AbstractArtifactSearchQuery searchQuery = new FilterArtifactSearchQuery(filterviewer.getFilterList(),
-            branchManager.getDefaultBranch());
+      AbstractArtifactSearchQuery searchQuery =
+            new FilterArtifactSearchQuery(filterviewer.getFilterList(), branchManager.getDefaultBranch());
 
       IStatus status = NewSearchUI.runQueryInForeground(getContainer().getRunnableContext(), searchQuery);
       if (status.matches(IStatus.CANCEL)) {

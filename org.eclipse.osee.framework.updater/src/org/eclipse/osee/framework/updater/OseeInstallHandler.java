@@ -75,8 +75,9 @@ public class OseeInstallHandler extends BaseInstallHandler {
                      Node classNode = installJobElement.getAttributes().getNamedItem("class");
                      if (classNode != null) {
                         System.out.println(String.format("Searching for class [%s].", classNode.getTextContent()));
-                        Class clazz = Platform.getBundle("org.eclipse.osee.framework.updater").loadClass(
-                              classNode.getTextContent());
+                        Class clazz =
+                              Platform.getBundle("org.eclipse.osee.framework.updater").loadClass(
+                                    classNode.getTextContent());
                         IInstallJob job = (IInstallJob) clazz.newInstance();
                         System.out.println(String.format("Class found and instantiated."));
                         job.run();
@@ -103,7 +104,8 @@ public class OseeInstallHandler extends BaseInstallHandler {
          IFeatureContentProvider provider = this.feature.getFeatureContentProvider();
 
          for (int i = 0; i < this.nonPluginEntries.length; i++) {
-            ContentReference[] archives = provider.getNonPluginEntryArchiveReferences(nonPluginEntries[i], this.monitor);
+            ContentReference[] archives =
+                  provider.getNonPluginEntryArchiveReferences(nonPluginEntries[i], this.monitor);
             for (ContentReference archive : archives) {
                try {
                   File destination = new File(copyToFolder, archive.getIdentifier());

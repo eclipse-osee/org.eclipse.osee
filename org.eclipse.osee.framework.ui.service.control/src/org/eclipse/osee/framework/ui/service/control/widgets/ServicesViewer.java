@@ -45,8 +45,8 @@ import org.eclipse.ui.PlatformUI;
 public class ServicesViewer extends Composite {
 
    private static final Image CONFIG_IMAGE = ControlPlugin.getInstance().getImage("config.gif");
-   private static final Image FOLDER_IMAGE = PlatformUI.getWorkbench().getSharedImages().getImage(
-         ISharedImages.IMG_OBJ_FOLDER);
+   private static final Image FOLDER_IMAGE =
+         PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
    private static final Image GROUP_IMAGE = ControlPlugin.getInstance().getImage("group.gif");
    private static final Image CONNECT_FOLDER_IMAGE = ControlPlugin.getInstance().getImage("connect_folder.gif");
    private static final Image CONNECTED_IMAGE = ControlPlugin.getInstance().getImage("connected_plug.gif");

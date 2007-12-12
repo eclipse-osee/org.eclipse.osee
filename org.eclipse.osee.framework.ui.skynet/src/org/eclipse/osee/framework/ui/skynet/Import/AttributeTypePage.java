@@ -100,8 +100,8 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
     * @param descriptors the descriptors to set
     */
    public void setDescriptors(Collection<DynamicAttributeDescriptor> descriptors) {
-      java.util.List<DynamicAttributeDescriptor> sortedDescriptors = new ArrayList<DynamicAttributeDescriptor>(
-            descriptors);
+      java.util.List<DynamicAttributeDescriptor> sortedDescriptors =
+            new ArrayList<DynamicAttributeDescriptor>(descriptors);
       Collections.sort(sortedDescriptors, new Comparator<DynamicAttributeDescriptor>() {
          public int compare(DynamicAttributeDescriptor o1, DynamicAttributeDescriptor o2) {
             return o1.getName().compareToIgnoreCase(o2.getName());
@@ -132,8 +132,8 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
    }
 
    public Collection<DynamicAttributeDescriptor> getSelectedAttributeDescriptors() {
-      Collection<DynamicAttributeDescriptor> selectedAttributeDescriptors = new ArrayList<DynamicAttributeDescriptor>(
-            typeList.getSelectionCount());
+      Collection<DynamicAttributeDescriptor> selectedAttributeDescriptors =
+            new ArrayList<DynamicAttributeDescriptor>(typeList.getSelectionCount());
 
       if (hasDescriptors) {
          for (String attributeName : typeList.getSelection()) {

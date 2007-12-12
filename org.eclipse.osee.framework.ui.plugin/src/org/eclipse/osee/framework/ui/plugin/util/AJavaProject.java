@@ -78,10 +78,10 @@ public class AJavaProject {
                   fileLocation = paths[i].getOutputLocation().toFile();
                }
                File javaFileLocation = paths[i].getPath().toFile();
-               String realClassLocation = fileLocation.toString().replace(projecttricky.toString(),
-                     projectlocation.toString());
-               String realJavaLocation = javaFileLocation.toString().replace(projecttricky.toString(),
-                     projectlocation.toString());
+               String realClassLocation =
+                     fileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
+               String realJavaLocation =
+                     javaFileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
                String packagePath = file.replace(realJavaLocation, "");
                packagePath = packagePath.replace(".java", ".class");
                File theclassfile = new File(realClassLocation, packagePath);
@@ -128,10 +128,10 @@ public class AJavaProject {
                   fileLocation = paths[i].getOutputLocation().toFile();
                }
                File javaFileLocation = paths[i].getPath().toFile();
-               String realClassLocation = fileLocation.toString().replace(projecttricky.toString(),
-                     projectlocation.toString());
-               String realJavaLocation = javaFileLocation.toString().replace(projecttricky.toString(),
-                     projectlocation.toString());
+               String realClassLocation =
+                     fileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
+               String realJavaLocation =
+                     javaFileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
                String packagePath = file.replace(realJavaLocation, "");
                packagePath = packagePath.replace(".java", ".class");
                File theclassfile = new File(realClassLocation, packagePath);
@@ -205,8 +205,8 @@ public class AJavaProject {
                } else {
                   fileLocation = paths[i].getOutputLocation().toFile();
                }
-               String realLocation = fileLocation.toString().replace(projecttricky.toString(),
-                     projectlocation.toString());
+               String realLocation =
+                     fileLocation.toString().replace(projecttricky.toString(), projectlocation.toString());
                urls.add(new File(realLocation));
             }
          }

@@ -26,8 +26,8 @@ public class UpdateTemplates implements BlamOperation {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(BlamVariableMap variableMap, Branch branch, IProgressMonitor monitor) throws Exception {
-      WordRenderer wordRenderer = (WordRenderer) RendererManager.getInstance().getRendererById(
-            "org.eclipse.osee.framework.ui.skynet.word");
+      WordRenderer wordRenderer =
+            (WordRenderer) RendererManager.getInstance().getRendererById("org.eclipse.osee.framework.ui.skynet.word");
 
       monitor.beginTask("Update Templates", PresentationType.values().length);
       for (PresentationType presentationType : PresentationType.values()) {

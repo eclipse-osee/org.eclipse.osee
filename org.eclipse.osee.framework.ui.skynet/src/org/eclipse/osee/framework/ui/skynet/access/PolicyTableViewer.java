@@ -51,8 +51,9 @@ public class PolicyTableViewer {
    public static final int TOTAL_POLICY_LEVEL_NUM = 5;
 
    private final static int[] columnWidths = new int[] {75, 300, 100, 100, 100, 100};
-   private static final String[] columnNames = new String[] {"Remove", "Person", "Branch Permission",
-         "Artifact Type Permission", "Artifact Permission", "Total Permission"};
+   private static final String[] columnNames =
+         new String[] {"Remove", "Person", "Branch Permission", "Artifact Type Permission", "Artifact Permission",
+               "Total Permission"};
 
    /**
     * @param table -
@@ -91,8 +92,8 @@ public class PolicyTableViewer {
 
       CellEditor[] validEditors = new CellEditor[columnNames.length];
       validEditors[DELETE_NUM] = new CheckboxCellEditor(table, SWT.NONE);
-      validEditors[ARTIFACT_POLICY_LEVEL_NUM] = new ComboBoxCellEditor(table, PermissionEnum.getPermissionNames(),
-            SWT.READ_ONLY);
+      validEditors[ARTIFACT_POLICY_LEVEL_NUM] =
+            new ComboBoxCellEditor(table, PermissionEnum.getPermissionNames(), SWT.READ_ONLY);
 
       // Assign the cell editors to the viewer
       tableViewer.setCellEditors(validEditors);

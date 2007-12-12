@@ -41,7 +41,8 @@ public class ArtifactPromptChange {
 
    private final static String VALID_FLOAT_REG_EX = "^[0-9\\.]+$";
    private final static String VALID_INTEGER_REG_EX = "^[0-9]+$";
-   private final static String VALID_PERCENT_REG_EX = "^(0*100{1,1}\\.?((?<=\\.)0*)?%?$)|(^0*\\d{0,2}\\.?((?<=\\.)\\d*)?%?)$";
+   private final static String VALID_PERCENT_REG_EX =
+         "^(0*100{1,1}\\.?((?<=\\.)0*)?%?$)|(^0*\\d{0,2}\\.?((?<=\\.)\\d*)?%?)$";
 
    public static boolean promptChangeAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws SQLException {
       try {
@@ -109,8 +110,9 @@ public class ArtifactPromptChange {
    public static boolean promptChangeDate(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws SQLException {
       // prompt that current release is (get from attribute); want to
       // change
-      DateSelectionDialog diag = new DateSelectionDialog("Select " + displayName, "Select " + displayName,
-            artifacts.size() == 1 ? artifacts.iterator().next().getSoleDateAttributeValue(attributeName) : null);
+      DateSelectionDialog diag =
+            new DateSelectionDialog("Select " + displayName, "Select " + displayName,
+                  artifacts.size() == 1 ? artifacts.iterator().next().getSoleDateAttributeValue(attributeName) : null);
       if (diag.open() == 0) {
          for (Artifact artifact : artifacts) {
             if (diag.isNoneSelected())
@@ -162,8 +164,9 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeStringAttribute(String attributeName, String displayName, String validationRegEx, final Collection<? extends Artifact> smas, boolean persist) throws SQLException {
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
-            "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
+                  "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
       if (smas.size() == 1) ed.setEntry(smas.iterator().next().getSoleAttributeValue(attributeName));
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();
@@ -188,9 +191,10 @@ public class ArtifactPromptChange {
    public static boolean promptChangeBoolean(String attributeName, String displayName, final Collection<? extends Artifact> smas, String toggleMessage, boolean persist) throws SQLException {
       boolean set = false;
       if (smas.size() == 1) set = smas.iterator().next().getSoleBooleanAttributeValue(attributeName);
-      MessageDialogWithToggle md = new MessageDialogWithToggle(Display.getCurrent().getActiveShell(), displayName,
-            null, displayName, MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, MessageDialog.OK,
-            toggleMessage != null ? toggleMessage : displayName, set);
+      MessageDialogWithToggle md =
+            new MessageDialogWithToggle(Display.getCurrent().getActiveShell(), displayName, null, displayName,
+                  MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, MessageDialog.OK,
+                  toggleMessage != null ? toggleMessage : displayName, set);
 
       int result = md.open();
       if (result == 256) {

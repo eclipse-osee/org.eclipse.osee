@@ -20,7 +20,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
  * @author Ryan D. Brooks
  */
 public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
-   protected static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+   protected static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
    private final ArrayList<RoughArtifact> roughArtifacts;
    private final ArrayList<RoughRelation> roughRelations;
    protected final Branch branch;

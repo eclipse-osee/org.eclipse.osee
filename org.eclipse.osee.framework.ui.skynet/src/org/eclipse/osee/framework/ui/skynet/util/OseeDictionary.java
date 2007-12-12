@@ -82,8 +82,8 @@ public class OseeDictionary implements IDictionary {
    @SuppressWarnings("deprecation")
    private static void getIDictionaries() {
       dictionaries = new HashSet<IOseeDictionary>();
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.ui.skynet.OseeDictionary");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.OseeDictionary");
       if (point == null) {
          OSEELog.logSevere(SkynetGuiPlugin.class, "Can't access OseeDictionary extension point", true);
          return;

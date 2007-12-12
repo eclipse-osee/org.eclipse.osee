@@ -158,8 +158,9 @@ public class RelationExplorerWindow {
       Label validLabel = new Label(validComposite, SWT.LEFT);
       validLabel.setText("Valid artifacts - will be added");
 
-      Table validTable = new Table(validComposite,
-            SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+      Table validTable =
+            new Table(validComposite,
+                  SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
       validTable.setLinesVisible(true);
       validTable.setHeaderVisible(true);
 
@@ -173,8 +174,9 @@ public class RelationExplorerWindow {
       Label invalidLabel = new Label(invalidComposite, SWT.LEFT);
       invalidLabel.setText("Invalid artifacts - will not be added");
 
-      Table invalidTable = new Table(invalidComposite,
-            SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+      Table invalidTable =
+            new Table(invalidComposite,
+                  SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
       invalidTable.setLinesVisible(true);
       invalidTable.setHeaderVisible(true);
 

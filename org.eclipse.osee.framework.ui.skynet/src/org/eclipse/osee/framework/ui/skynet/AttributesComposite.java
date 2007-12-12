@@ -142,8 +142,9 @@ public class AttributesComposite extends Composite {
    }
 
    private void createTable(Composite parent) {
-      table = new Table(parent,
-            SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+      table =
+            new Table(parent,
+                  SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
       table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       table.setLinesVisible(true);
       table.setHeaderVisible(true);

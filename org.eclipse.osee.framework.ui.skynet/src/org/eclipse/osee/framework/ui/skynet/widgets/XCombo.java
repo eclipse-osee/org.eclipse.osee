@@ -175,11 +175,13 @@ public class XCombo extends XWidget {
    public void setFromXml(String xml) throws IllegalStateException, SQLException {
       Matcher m;
       if (xmlSubRoot.equals("")) {
-         m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-               xml);
+         m =
+               Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+                     xml);
       } else {
-         m = Pattern.compile("<" + xmlRoot + "><" + xmlSubRoot + ">(.*?)</" + xmlSubRoot + "></" + xmlRoot + ">",
-               Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
+         m =
+               Pattern.compile("<" + xmlRoot + "><" + xmlSubRoot + ">(.*?)</" + xmlSubRoot + "></" + xmlRoot + ">",
+                     Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
       }
       while (m.find()) {
          String str = m.group(1);

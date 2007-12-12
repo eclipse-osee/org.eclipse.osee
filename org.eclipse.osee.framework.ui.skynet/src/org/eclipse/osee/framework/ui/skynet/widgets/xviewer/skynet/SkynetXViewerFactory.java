@@ -66,7 +66,8 @@ public class SkynetXViewerFactory implements IXViewerFactory {
    public IXViewerCustomizeDefaults getXViewerCustomizeDefaults() {
       if (ConnectionHandler.isConnected()) {
          if (xViewerCustDefaults == null) {
-            xViewerCustDefaults = new SkynetCustomizeDefaults(SkynetAuthentication.getInstance().getAuthenticatedUser());
+            xViewerCustDefaults =
+                  new SkynetCustomizeDefaults(SkynetAuthentication.getInstance().getAuthenticatedUser());
          }
          return xViewerCustDefaults;
       }

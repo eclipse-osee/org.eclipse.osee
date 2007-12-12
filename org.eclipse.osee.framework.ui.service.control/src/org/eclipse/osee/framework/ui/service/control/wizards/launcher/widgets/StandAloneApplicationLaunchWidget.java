@@ -147,14 +147,16 @@ public class StandAloneApplicationLaunchWidget implements ILaunchWidget {
          public void widgetSelected(SelectionEvent e) {
             PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
                public void run() {
-                  File localLocation = new File(
-                        localUnzipLocation + File.separator + serviceInfo.getServiceItem().getPlugin() + File.separator);
+                  File localLocation =
+                        new File(
+                              localUnzipLocation + File.separator + serviceInfo.getServiceItem().getPlugin() + File.separator);
                   javaCompiler = javaCompilerText.getText();
                   if (null != groupSelector) {
                      serviceInfo.getServiceItem().setJiniGroup(groupSelector.getJiniGroupVmArg());
                   }
-                  Job job = new StandAloneApplicationLaunchJob("Launch Stand Alone Application", javaCompiler,
-                        localLocation, serviceInfo, displayHelper, progress);
+                  Job job =
+                        new StandAloneApplicationLaunchJob("Launch Stand Alone Application", javaCompiler,
+                              localLocation, serviceInfo, displayHelper, progress);
                   job.setUser(true);
                   job.setPriority(Job.LONG);
                   job.schedule();

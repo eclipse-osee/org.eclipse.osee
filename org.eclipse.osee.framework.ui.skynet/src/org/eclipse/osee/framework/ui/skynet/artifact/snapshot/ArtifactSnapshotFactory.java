@@ -118,9 +118,10 @@ public class ArtifactSnapshotFactory {
          toReturn = ((Renderer) render).generateHtml(artifact, new NullProgressMonitor());
       } else {
          if (!Strings.isValid(toReturn)) {
-            toReturn = String.format(
-                  "Unable to generate html for: %s on branch %s <br><br><form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>",
-                  artifact.getDescriptiveName(), artifact.getBranch());
+            toReturn =
+                  String.format(
+                        "Unable to generate html for: %s on branch %s <br><br><form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>",
+                        artifact.getDescriptiveName(), artifact.getBranch());
          }
       }
       return toReturn;
@@ -147,8 +148,8 @@ public class ArtifactSnapshotFactory {
                   ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                   httpImageProcessor.processRequest(imageKey, outputStream);
                   snapshotData.addBinaryData(imageKey, outputStream.toByteArray());
-                  String result = httpImageRequest.getRequestUrl(snapshotData.getNamespace(), snapshotData.getKey(),
-                        imageKey);
+                  String result =
+                        httpImageRequest.getRequestUrl(snapshotData.getNamespace(), snapshotData.getKey(), imageKey);
                   changeSet.replace(matcher.start(), matcher.end(), result + "\"");
                } catch (Exception ex) {
                   logger.log(Level.SEVERE, String.format("Image processing error. Unable to take a snapshot of: [%s]",

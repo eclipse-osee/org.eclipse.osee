@@ -85,7 +85,8 @@ public abstract class AbstractSelectionHandler extends AbstractHandler {
     */
    @SuppressWarnings("unchecked")
    private void getNeededTypes() {
-      myIStructuredSelection = (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       List<Object> myObjects = Handlers.getBranchesAndArtifactsFromStructuredSelection(myIStructuredSelection);
       mySelectedBranchList = (List<Branch>) myObjects.get(0);
       mySelectedArtifactList = (List<Artifact>) myObjects.get(1);
@@ -94,7 +95,8 @@ public abstract class AbstractSelectionHandler extends AbstractHandler {
       myChangeReportInputNewList = (List<ChangeReportInput>) myObjects.get(4);
       myChangeReportInputOldList = (List<ChangeReportInput>) myObjects.get(5);
 
-      if (transactionDataNeeded) mySelectedTransactionDataList = Handlers.getTransactionDataNeededFromStructuredSelection(myIStructuredSelection);
+      if (transactionDataNeeded) mySelectedTransactionDataList =
+            Handlers.getTransactionDataNeededFromStructuredSelection(myIStructuredSelection);
    }
 
    /**

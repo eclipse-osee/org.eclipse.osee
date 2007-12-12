@@ -114,8 +114,8 @@ public final class ArtifactSnapshot implements Serializable {
       Timestamp toReturn = null;
       TransactionId artifactTxId = artifact.getPersistenceMemo().getTransactionId();
       artifactTxId.getTransactionNumber();
-      List<TransactionData> txData = new ArrayList<TransactionData>(
-            RevisionManager.getInstance().getTransactionsPerArtifact(artifact));
+      List<TransactionData> txData =
+            new ArrayList<TransactionData>(RevisionManager.getInstance().getTransactionsPerArtifact(artifact));
       for (TransactionData data : txData) {
          if (artifact.getArtId() == data.getAssociatedArtId()) {
             toReturn = data.getTimeStamp();

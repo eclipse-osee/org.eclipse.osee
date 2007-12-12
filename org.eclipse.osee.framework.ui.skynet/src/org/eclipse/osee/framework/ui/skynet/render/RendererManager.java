@@ -40,7 +40,8 @@ import org.osgi.framework.Bundle;
 public class RendererManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RendererManager.class);
    private static final RendererManager instance = new RendererManager();
-   private static final ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationManager =
+         ConfigurationPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private final HashMap<String, IRenderer> renderers;
    private HashCollection<ArtifactSubtypeDescriptor, IRenderer> applicableArtifactSubTypes;
@@ -55,8 +56,8 @@ public class RendererManager {
    }
 
    private void registerRendersFromExtensionPoints() {
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.ui.skynet.ArtifactRenderer");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.ArtifactRenderer");
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
@@ -79,8 +80,9 @@ public class RendererManager {
 
                      String applicableArtifactSubType = element.getAttribute("ApplicableArtifactSubtype");
                      if (applicableArtifactSubType != null) {
-                        ArtifactSubtypeDescriptor artifactSubtype = configurationManager.getArtifactSubtypeDescriptor(
-                              applicableArtifactSubType, branchManager.getCommonBranch());
+                        ArtifactSubtypeDescriptor artifactSubtype =
+                              configurationManager.getArtifactSubtypeDescriptor(applicableArtifactSubType,
+                                    branchManager.getCommonBranch());
                         applicableArtifactSubTypes.put(artifactSubtype, renderer);
                      }
                   } catch (Exception ex) {
@@ -140,8 +142,8 @@ public class RendererManager {
    }
 
    private HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, List<Artifact> artifacts) {
-      HashCollection<IRenderer, Artifact> rendererArtifactMap = new HashCollection<IRenderer, Artifact>(false,
-            LinkedList.class);
+      HashCollection<IRenderer, Artifact> rendererArtifactMap =
+            new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
       for (Artifact artifact : artifacts) {
          rendererArtifactMap.put(getBestRenderer(presentationType, artifact), artifact);
       }
@@ -158,8 +160,8 @@ public class RendererManager {
       } else {
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
             public void run(IProgressMonitor monitor) throws Exception {
-               HashCollection<IRenderer, Artifact> rendererArtifactMap = createRenderMap(PresentationType.PREVIEW,
-                     artifacts);
+               HashCollection<IRenderer, Artifact> rendererArtifactMap =
+                     createRenderMap(PresentationType.PREVIEW, artifacts);
 
                for (IRenderer renderer : rendererArtifactMap.keySet()) {
                   renderer.preview((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), option, monitor);
@@ -182,8 +184,8 @@ public class RendererManager {
          } else {
             IExceptionableRunnable runnable = new IExceptionableRunnable() {
                public void run(IProgressMonitor monitor) throws Exception {
-                  HashCollection<IRenderer, Artifact> rendererArtifactMap = createRenderMap(PresentationType.EDIT,
-                        artifacts);
+                  HashCollection<IRenderer, Artifact> rendererArtifactMap =
+                        createRenderMap(PresentationType.EDIT, artifacts);
 
                   for (IRenderer renderer : rendererArtifactMap.keySet()) {
                      renderer.edit((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), option, monitor);

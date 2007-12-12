@@ -26,7 +26,8 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public class SkynetViews {
 
-   private static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
@@ -37,7 +38,8 @@ public class SkynetViews {
     */
    public static List<DynamicAttributeDescriptor> loadAttrTypesFromPreferenceStore(String preferenceKey) throws SQLException {
       List<DynamicAttributeDescriptor> attributeDescriptors = new LinkedList<DynamicAttributeDescriptor>();
-      Collection<DynamicAttributeDescriptor> descriptors = configurationPersistenceManager.getDynamicAttributeDescriptors(transactionIdManager.getEditableTransactionId(branchManager.getDefaultBranch()));
+      Collection<DynamicAttributeDescriptor> descriptors =
+            configurationPersistenceManager.getDynamicAttributeDescriptors(transactionIdManager.getEditableTransactionId(branchManager.getDefaultBranch()));
 
       IPreferenceStore preferenceStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
       for (String attributeType : preferenceStore.getString(preferenceKey).split("\\|")) {

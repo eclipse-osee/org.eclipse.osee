@@ -259,8 +259,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
          searchQuery = new FilterArtifactSearchQuery(filterList, branchManager.getDefaultBranch());
       } else if (radIndexSearch.getSelection()) {
          for (String tag : Tagger.tokenizeAndSplit(txtSearch.getText())) {
-            ISearchPrimitive primitive = new TagSearch(tag, chkCaseSensitive.getSelection(),
-                  chkPartialSearch.getSelection());
+            ISearchPrimitive primitive =
+                  new TagSearch(tag, chkCaseSensitive.getSelection(), chkPartialSearch.getSelection());
 
             filterList.addFilter(new FilterModel(primitive, "", "", ""), false);
          }

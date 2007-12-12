@@ -29,9 +29,10 @@ public class SkynetServiceContributionItem extends SkynetContributionItem {
    private static final SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
    private static final RemoteEventManager remoteManager = RemoteEventManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final Image ENABLED = new OverlayImage(skynetGuiPlugin.getImage("gear.gif"),
-         skynetGuiPlugin.getImageDescriptor("laser_8_8.gif")).createImage();
-   private static final Image DISABLED = new OverlayImage(ENABLED, skynetGuiPlugin.getImageDescriptor("red_slash.gif")).createImage();
+   private static final Image ENABLED =
+         new OverlayImage(skynetGuiPlugin.getImage("gear.gif"), skynetGuiPlugin.getImageDescriptor("laser_8_8.gif")).createImage();
+   private static final Image DISABLED =
+         new OverlayImage(ENABLED, skynetGuiPlugin.getImageDescriptor("red_slash.gif")).createImage();
    private static final String ENABLED_TOOLTIP = "Remote event service is connected.";
    private static final String DISABLED_TOOLTIP = "Remote event service is disconnected.";
 

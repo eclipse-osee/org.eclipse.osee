@@ -30,8 +30,9 @@ public class ColumnData {
    public List<XViewerColumn> setFromXml(String xml, IXViewerFactory xViewerFactory) {
       columns.clear();
       List<XViewerColumn> xCols = new ArrayList<XViewerColumn>();
-      Matcher columnMatch = Pattern.compile(
-            "<" + XViewerColumn.XTREECOLUMN_TAG + ">(.*?)</" + XViewerColumn.XTREECOLUMN_TAG + ">").matcher(xml);
+      Matcher columnMatch =
+            Pattern.compile("<" + XViewerColumn.XTREECOLUMN_TAG + ">(.*?)</" + XViewerColumn.XTREECOLUMN_TAG + ">").matcher(
+                  xml);
       while (columnMatch.find()) {
          String colXml = columnMatch.group(1);
          String colName = XViewerColumn.getSystemName(colXml);

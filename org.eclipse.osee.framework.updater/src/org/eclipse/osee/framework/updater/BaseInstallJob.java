@@ -24,8 +24,9 @@ public abstract class BaseInstallJob implements IInstallJob {
 
    public File getFile(String path) throws IOException {
 
-      URL url = FileLocator.find(Platform.getBundle("org.eclipse.osee.framework.updater"), new Path(
-            "dlResources/" + path), null);
+      URL url =
+            FileLocator.find(Platform.getBundle("org.eclipse.osee.framework.updater"), new Path("dlResources/" + path),
+                  null);
       url = FileLocator.resolve(url);
       return new File(url.getFile());
    }

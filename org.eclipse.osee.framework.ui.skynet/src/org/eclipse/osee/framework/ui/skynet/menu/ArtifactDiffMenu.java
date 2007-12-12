@@ -122,12 +122,16 @@ public class ArtifactDiffMenu {
             TransactionData firstTransactionData = (TransactionData) firstSelection;
             TransactionData secondTransactionData = (TransactionData) secondSelection;
 
-            TransactionId firstTransactionId = transactionIdManager.getPossiblyEditableTransactionIfFromCache(firstTransactionData.getTransactionNumber());
-            TransactionId secondTransactionId = transactionIdManager.getPossiblyEditableTransactionIfFromCache(secondTransactionData.getTransactionNumber());
-            firstArtifact = (WordArtifact) ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                  firstTransactionData.getAssociatedArtId(), firstTransactionId);
-            secondArtifact = (WordArtifact) ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                  secondTransactionData.getAssociatedArtId(), secondTransactionId);
+            TransactionId firstTransactionId =
+                  transactionIdManager.getPossiblyEditableTransactionIfFromCache(firstTransactionData.getTransactionNumber());
+            TransactionId secondTransactionId =
+                  transactionIdManager.getPossiblyEditableTransactionIfFromCache(secondTransactionData.getTransactionNumber());
+            firstArtifact =
+                  (WordArtifact) ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                        firstTransactionData.getAssociatedArtId(), firstTransactionId);
+            secondArtifact =
+                  (WordArtifact) ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                        secondTransactionData.getAssociatedArtId(), secondTransactionId);
          }
       }
       rendererManager.compareInJob(firstArtifact, secondArtifact, option);

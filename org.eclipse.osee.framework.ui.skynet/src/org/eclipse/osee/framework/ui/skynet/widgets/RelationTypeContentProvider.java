@@ -24,7 +24,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManage
  */
 public class RelationTypeContentProvider implements ITreeContentProvider {
    protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationTypeContentProvider.class);
-   private static final RelationPersistenceManager relationPersistenceManager = RelationPersistenceManager.getInstance();
+   private static final RelationPersistenceManager relationPersistenceManager =
+         RelationPersistenceManager.getInstance();
 
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);

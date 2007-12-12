@@ -45,8 +45,10 @@ public class ShowChangeReportHandler extends AbstractSelectionHandler {
          } else if (myTransactionDataList != null && myTransactionDataList.size() == 2) {
             TransactionId transaction1 = myTransactionDataList.get(0).getTransactionId();
             TransactionId transaction2 = myTransactionDataList.get(1).getTransactionId();
-            TransactionId base = transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction1 : transaction2;
-            TransactionId to = transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction2 : transaction1;
+            TransactionId base =
+                  transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction1 : transaction2;
+            TransactionId to =
+                  transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction2 : transaction1;
 
             ChangeReportView.openViewUpon(new ChangeReportInput(base.getBranch().getDisplayName(), base, to));
 

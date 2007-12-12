@@ -51,7 +51,8 @@ public class StreamToTextArea extends Thread {
       try {
          BufferedReader br = new BufferedReader(new InputStreamReader(is));
          String line = null;
-         while (true != isStopped && null != textArea && true != textArea.getStyledText().isDisposed() && null != (line = br.readLine())) {
+         while (true != isStopped && null != textArea && true != textArea.getStyledText().isDisposed() && null != (line =
+               br.readLine())) {
             final String toDisplay = line;
             Display.getDefault().asyncExec(new Runnable() {
                public void run() {

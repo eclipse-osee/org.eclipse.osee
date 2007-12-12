@@ -25,7 +25,8 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  * @author Ryan D. Brooks
  */
 public class UniqueNumberOfCurrentOseeUsers implements BlamOperation {
-   private static final String SELECT_USER_COUNT = "select count(*) from v$session t1 where t1.username='OSEE_CLIENT' and not exists (select null from v$session t2 where t1.machine=t2.machine and t2.sid < t1.sid)";
+   private static final String SELECT_USER_COUNT =
+         "select count(*) from v$session t1 where t1.username='OSEE_CLIENT' and not exists (select null from v$session t2 where t1.machine=t2.machine and t2.sid < t1.sid)";
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UniqueNumberOfCurrentOseeUsers.class);
 
    /* (non-Javadoc)

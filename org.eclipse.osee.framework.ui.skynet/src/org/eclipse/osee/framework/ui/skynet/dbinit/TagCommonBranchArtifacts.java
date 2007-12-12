@@ -43,8 +43,9 @@ public class TagCommonBranchArtifacts extends DbInitializationTask {
             BranchPersistenceManager.getInstance().getAtsBranch()))
          criteria.add(new ArtifactTypeSearch(asd.getName(), Operator.EQUAL));
 
-      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(criteria, false,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> arts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(criteria, false,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
 
       TagArtifactsJob job = new TagArtifactsJob(arts);
       job.setUser(true);

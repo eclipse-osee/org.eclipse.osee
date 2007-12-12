@@ -66,7 +66,8 @@ public class UpdateFromParentBranch implements BlamOperation {
       String childBranchName = variableMap.getString("Child Branch Name");
       Branch childBranch = BranchPersistenceManager.getInstance().getBranch(childBranchName);
 
-      int baselineTransactionNumber = transactionIdManager.getStartEndPoint(childBranch).getKey().getTransactionNumber();
+      int baselineTransactionNumber =
+            transactionIdManager.getStartEndPoint(childBranch).getKey().getTransactionNumber();
 
       Collection<Integer> artIdBlock = new ArrayList<Integer>(1000);
       for (Artifact artifact : artifacts) {
@@ -77,39 +78,47 @@ public class UpdateFromParentBranch implements BlamOperation {
       int parentTransactionNumber = parentTransactionId.getTransactionNumber();
       int parentBranchId = childBranch.getParentBranch().getBranchId();
 
-      String INSERT_UPDATED_ARTIFACTS = "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + ", ?" + " FROM " + ARTIFACT_TABLE + " , " + ARTIFACT_VERSION_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_id") + " IN " + Collections.toString(
-            artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_TABLE.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
+      String INSERT_UPDATED_ARTIFACTS =
+            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + ", ?" + " FROM " + ARTIFACT_TABLE + " , " + ARTIFACT_VERSION_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_id") + " IN " + Collections.toString(
+                  artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_TABLE.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
-      String INSERT_UPDATED_ATTRIBUTES_GAMMAS = "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + ATTRIBUTE_ALIAS_1.columns("gamma_id") + ", ?" + " FROM " + TRANSACTIONS_TABLE + "," + ATTRIBUTE_ALIAS_1 + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + " IN " + Collections.toString(
-            artIdBlock, "(", ",", ")") + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("attr_id") + " = " + ATTRIBUTE_ALIAS_2.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
+      String INSERT_UPDATED_ATTRIBUTES_GAMMAS =
+            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + ATTRIBUTE_ALIAS_1.columns("gamma_id") + ", ?" + " FROM " + TRANSACTIONS_TABLE + "," + ATTRIBUTE_ALIAS_1 + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + " IN " + Collections.toString(
+                  artIdBlock, "(", ",", ")") + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("attr_id") + " = " + ATTRIBUTE_ALIAS_2.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
-      String INSERT_UPDATED_LINKS_GAMMAS = "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + LINK_ALIAS_1.columns("gamma_id") + ", ?" + " FROM " + TRANSACTIONS_TABLE + "," + LINK_ALIAS_1 + " WHERE (" + LINK_ALIAS_1.column("a_art_id") + " IN " + Collections.toString(
-            artIdBlock, "(", ",", ")") + " OR " + LINK_ALIAS_1.column("b_art_id") + " IN " + Collections.toString(
-            artIdBlock, "(", ",", ")") + ") AND " + LINK_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_1.column("rel_link_id") + " = " + LINK_ALIAS_2.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
+      String INSERT_UPDATED_LINKS_GAMMAS =
+            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + LINK_ALIAS_1.columns("gamma_id") + ", ?" + " FROM " + TRANSACTIONS_TABLE + "," + LINK_ALIAS_1 + " WHERE (" + LINK_ALIAS_1.column("a_art_id") + " IN " + Collections.toString(
+                  artIdBlock, "(", ",", ")") + " OR " + LINK_ALIAS_1.column("b_art_id") + " IN " + Collections.toString(
+                  artIdBlock, "(", ",", ")") + ") AND " + LINK_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_1.column("rel_link_id") + " = " + LINK_ALIAS_2.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
-      String DELETE_GAMMAS_FOR_UPDATES = "DELETE FROM " + TRANSACTIONS_TABLE + " WHERE " + TRANSACTIONS_TABLE.column("transaction_id") + " = ? AND " + TRANSACTIONS_TABLE.column("gamma_id") + " IN " + "(SELECT " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " FROM " + RELATION_LINK_VERSION_TABLE + " WHERE " + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " IN " + Collections.toString(
-            artIdBlock, "(", ",", ")") + " OR " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " IN " + Collections.toString(
-            artIdBlock, "(", ",", ")") + " UNION " + "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
-            artIdBlock, "(", ",", ")") + " UNION " + "SELECT " + ARTIFACT_VERSION_TABLE.columns("gamma_id") + " FROM " + ARTIFACT_VERSION_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
-            artIdBlock, "(", ",", ")") + ")";
+      String DELETE_GAMMAS_FOR_UPDATES =
+            "DELETE FROM " + TRANSACTIONS_TABLE + " WHERE " + TRANSACTIONS_TABLE.column("transaction_id") + " = ? AND " + TRANSACTIONS_TABLE.column("gamma_id") + " IN " + "(SELECT " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " FROM " + RELATION_LINK_VERSION_TABLE + " WHERE " + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " IN " + Collections.toString(
+                  artIdBlock, "(", ",", ")") + " OR " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " IN " + Collections.toString(
+                  artIdBlock, "(", ",", ")") + " UNION " + "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
+                  artIdBlock, "(", ",", ")") + " UNION " + "SELECT " + ARTIFACT_VERSION_TABLE.columns("gamma_id") + " FROM " + ARTIFACT_VERSION_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
+                  artIdBlock, "(", ",", ")") + ")";
 
-      int count = ConnectionHandler.runPreparedUpdateReturnCount(DELETE_GAMMAS_FOR_UPDATES, SQL3DataType.INTEGER,
-            baselineTransactionNumber);
+      int count =
+            ConnectionHandler.runPreparedUpdateReturnCount(DELETE_GAMMAS_FOR_UPDATES, SQL3DataType.INTEGER,
+                  baselineTransactionNumber);
       logger.log(Level.INFO, "deleted " + count + " gammas");
 
-      count = ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ARTIFACTS, SQL3DataType.INTEGER,
-            baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
-            parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
+      count =
+            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ARTIFACTS, SQL3DataType.INTEGER,
+                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
+                  SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
       logger.log(Level.INFO, "inserted " + count + " artifacts");
 
-      count = ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
-            baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
-            parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
+      count =
+            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
+                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
+                  SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
       logger.log(Level.INFO, "inserted " + count + " attributes");
 
-      count = ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_LINKS_GAMMAS, SQL3DataType.INTEGER,
-            baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
-            parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
+      count =
+            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_LINKS_GAMMAS, SQL3DataType.INTEGER,
+                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
+                  SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
       logger.log(Level.INFO, "inserted " + count + " relations");
 
       monitor.done();

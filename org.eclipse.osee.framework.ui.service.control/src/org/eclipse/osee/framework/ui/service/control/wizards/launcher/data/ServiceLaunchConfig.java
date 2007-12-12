@@ -92,8 +92,8 @@ public class ServiceLaunchConfig {
 
    private List<ServiceItem> getServicesToLaunch() {
       List<ServiceItem> toReturn = new ArrayList<ServiceItem>();
-      List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(EXTENSION_POINT_NAME,
-            APPLICATION_ELEMENT);
+      List<IConfigurationElement> elements =
+            ExtensionPoints.getExtensionElements(EXTENSION_POINT_NAME, APPLICATION_ELEMENT);
       for (IConfigurationElement element : elements) {
          String serviceName = element.getAttribute("ServiceName");
          if (false != Strings.isValid(serviceName)) {

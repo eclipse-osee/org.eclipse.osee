@@ -33,7 +33,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Ryan D. Brooks
  */
 public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements RowProcessor {
-   private static final String description = "Extract each row as an artifact - header <section #, atrribute1, atrribute2 ...>";
+   private static final String description =
+         "Extract each row as an artifact - header <section #, atrribute1, atrribute2 ...>";
    private ExcelSaxHandler excelHandler;
    private String[] headerRow;
    private ArtifactSubtypeDescriptor primaryDescriptor;

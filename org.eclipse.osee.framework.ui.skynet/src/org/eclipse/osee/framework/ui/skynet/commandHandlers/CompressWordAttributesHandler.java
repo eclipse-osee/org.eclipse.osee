@@ -108,8 +108,8 @@ public class CompressWordAttributesHandler extends AbstractSelectionHandler {
       try {
          List<Artifact> mySelectedArtifactList = super.getArtifactList();
          Artifact mySelectedArtifact = mySelectedArtifactList.get(0);
-         boolean writePermission = myAccessControlManager.checkObjectPermission(mySelectedArtifact,
-               PermissionEnum.WRITE);
+         boolean writePermission =
+               myAccessControlManager.checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
          return writePermission && OseeProperties.getInstance().isDeveloper();
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, true);

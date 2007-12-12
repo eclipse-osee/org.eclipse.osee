@@ -220,7 +220,8 @@ public abstract class AbstractArtifactSearchViewPage extends Page implements ISe
 
    private void updateBusyLabel() {
       AbstractArtifactSearchResult result = getInput();
-      boolean shouldShowBusy = result != null && NewSearchUI.isQueryRunning(result.getQuery()) && result.getMatchCount() == 0;
+      boolean shouldShowBusy =
+            result != null && NewSearchUI.isQueryRunning(result.getQuery()) && result.getMatchCount() == 0;
       if (shouldShowBusy == aIsBusyShown) return;
       aIsBusyShown = shouldShowBusy;
       showBusyLabel(aIsBusyShown);

@@ -47,13 +47,15 @@ public class ShowArtifactInResourceHandler extends AbstractSelectionHandler {
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection());
+      List<Artifact> artifacts =
+            Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection());
 
       for (Artifact artifact : artifacts) {
          IWorkbenchPage page = AWorkbench.getActivePage();
          try {
-            RevisionHistoryView revisionHistoryView = (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID,
-                  artifact.getGuid(), IWorkbenchPage.VIEW_ACTIVATE);
+            RevisionHistoryView revisionHistoryView =
+                  (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, artifact.getGuid(),
+                        IWorkbenchPage.VIEW_ACTIVATE);
             revisionHistoryView.explore(artifact);
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);

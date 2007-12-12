@@ -45,14 +45,15 @@ public final class ConnectionHandler {
    private static final OseeProperties properties = OseeProperties.getInstance();
    private static Connection connection = null;
 
-   private static final ThreadLocal<DbTransactionManager> dbTransactionManager = new ThreadLocal<DbTransactionManager>() {
-      @Override
-      protected DbTransactionManager initialValue() {
-         DbTransactionManager dbTransactionManager = new DbTransactionManager();
+   private static final ThreadLocal<DbTransactionManager> dbTransactionManager =
+         new ThreadLocal<DbTransactionManager>() {
+            @Override
+            protected DbTransactionManager initialValue() {
+               DbTransactionManager dbTransactionManager = new DbTransactionManager();
 
-         return dbTransactionManager;
-      }
-   };
+               return dbTransactionManager;
+            }
+         };
 
    private static final Queue<Connection> pooledConnections = new LinkedList<Connection>();
 
@@ -404,8 +405,9 @@ public final class ConnectionHandler {
 
    public static void runBatchablePreparedUpdate(String query, boolean useBatching, List<Object[]> datas) throws SQLException {
       printSql(query);
-      QueryRecord record = new QueryRecord("<batchable: " + (useBatching ? "" : "not ") + "batched> " + query,
-            SQL3DataType.INTEGER, datas.size());
+      QueryRecord record =
+            new QueryRecord("<batchable: " + (useBatching ? "" : "not ") + "batched> " + query, SQL3DataType.INTEGER,
+                  datas.size());
 
       if (datas.size() < 1) {
          throw new IllegalArgumentException(

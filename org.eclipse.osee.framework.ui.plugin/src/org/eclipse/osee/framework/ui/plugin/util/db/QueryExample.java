@@ -19,14 +19,15 @@ import java.sql.SQLException;
  * @author Ryan D. Brooks
  */
 public class QueryExample {
-   private static final String elementQueryStr = "SELECT SIGNAL_TYPE, LOGIC_ID, STARTING_FRAME, ELEMENT_NAME, WORD_OFFSET, MSB, LSB, TYPE_ID, VERSION_DETAIL FROM ACDB_LMSG_V WHERE SYSTEM_ID = 'MCAP_BLD3' AND DATA_VIEW = 'PROPOSED' AND INTERFACE_NAME = 'MP_NETWORK' AND SIGNAL_TYPE <> 'SPARE' AND SIGNAL_TYPE <> 'RESERVED' AND SIGNAL_TYPE <> '0' AND LMSG_NAME = ? ORDER BY WORD_OFFSET, MSB";
+   private static final String elementQueryStr =
+         "SELECT SIGNAL_TYPE, LOGIC_ID, STARTING_FRAME, ELEMENT_NAME, WORD_OFFSET, MSB, LSB, TYPE_ID, VERSION_DETAIL FROM ACDB_LMSG_V WHERE SYSTEM_ID = 'MCAP_BLD3' AND DATA_VIEW = 'PROPOSED' AND INTERFACE_NAME = 'MP_NETWORK' AND SIGNAL_TYPE <> 'SPARE' AND SIGNAL_TYPE <> 'RESERVED' AND SIGNAL_TYPE <> '0' AND LMSG_NAME = ? ORDER BY WORD_OFFSET, MSB";
    private PreparedStatement elementQuery;
 
    public QueryExample() throws SQLException {
       super();
       Connection connection = ConnectionHandler.getConnection();
-      this.elementQuery = connection.prepareStatement(elementQueryStr, ResultSet.TYPE_SCROLL_INSENSITIVE,
-            ResultSet.CONCUR_READ_ONLY);
+      this.elementQuery =
+            connection.prepareStatement(elementQueryStr, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
    }
 
    public ResultSet getElementResults(String messageName) throws SQLException {

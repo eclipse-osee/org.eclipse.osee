@@ -24,7 +24,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class BranchRevisionListener implements IDataListener {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchRevisionListener.class);
-   private static final ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationManager =
+         ConfigurationPersistenceManager.getInstance();
    private ArtifactSearchComposite parentWindow;
 
    public BranchRevisionListener(ArtifactSearchComposite parentWindow) {
@@ -40,15 +41,16 @@ public class BranchRevisionListener implements IDataListener {
    synchronized private void refreshTypeList() {
       Display.getCurrent().asyncExec(new Runnable() {
          public void run() {
-            int branch = parentWindow.getRevisionWidget().getBranchId(
-                  parentWindow.getRevisionDataManager().getBranchName());
+            int branch =
+                  parentWindow.getRevisionWidget().getBranchId(parentWindow.getRevisionDataManager().getBranchName());
             int revision = parentWindow.getRevisionDataManager().getRevision();
 
             Collection<ArtifactSubtypeDescriptor> descriptors = null;
             if (branch > 0 && revision > 0) {
                try {
-                  descriptors = configurationManager.getArtifactSubtypeDescriptors(BranchPersistenceManager.getInstance().getBranch(
-                        branch));
+                  descriptors =
+                        configurationManager.getArtifactSubtypeDescriptors(BranchPersistenceManager.getInstance().getBranch(
+                              branch));
                } catch (SQLException ex) {
                   logger.log(Level.SEVERE, ex.toString(), ex);
                }

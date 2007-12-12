@@ -156,8 +156,9 @@ public class XList extends XWidget {
          GridLayout gridLayout = new GridLayout();
          gridLayout.numColumns = numColumns;
          composite.setLayout(gridLayout);
-         GridData gd = new GridData(
-               GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+         GridData gd =
+               new GridData(
+                     GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
          gd.horizontalSpan = horizontalSpan;
          composite.setLayoutData(gd);
       } else {
@@ -251,8 +252,8 @@ public class XList extends XWidget {
       Matcher inner, outter;
       String outterXml;
       items.clear();
-      outter = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-            xml);
+      outter =
+            Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
       while (outter.find()) {
          outterXml = outter.group(1);
          inner = Pattern.compile("<" + xmlSubRoot + ">(.*?)</" + xmlSubRoot + ">").matcher(outterXml);

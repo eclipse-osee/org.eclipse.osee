@@ -379,7 +379,8 @@ public class XText extends XWidget {
    }
 
    public String toXml(String xmlRoot, String xmlSubRoot) {
-      String s = "<" + xmlRoot + ">" + "<" + xmlSubRoot + ">" + getXmlData() + "</" + xmlSubRoot + ">" + "</" + xmlRoot + ">\n";
+      String s =
+            "<" + xmlRoot + ">" + "<" + xmlSubRoot + ">" + getXmlData() + "</" + xmlSubRoot + ">" + "</" + xmlRoot + ">\n";
       return s;
    }
 

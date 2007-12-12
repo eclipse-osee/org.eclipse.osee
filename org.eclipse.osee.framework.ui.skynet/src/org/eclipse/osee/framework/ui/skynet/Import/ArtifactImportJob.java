@@ -33,7 +33,8 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public class ArtifactImportJob extends Job {
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationManager =
+         ConfigurationPersistenceManager.getInstance();
    private final File file;
    private final ArtifactSubtypeDescriptor folderDescriptor;
    private final IArtifactImportResolver artifactResolver;
@@ -64,29 +65,29 @@ public class ArtifactImportJob extends Job {
 
          monitor.beginTask("Creating Artifacts", roughArtifacts.size() + roughRelations.size());
 
-         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-               BranchPersistenceManager.getInstance().getAtsBranch()) {
-            @Override
-            protected void handleTxWork() throws Exception {
-               for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
-                  roughArtifact.getReal(branch, monitor, artifactResolver);
-                  importRoot.addChild(roughArtifact.getAssociatedArtifact());
-               }
+         AbstractSkynetTxTemplate txWrapper =
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  @Override
+                  protected void handleTxWork() throws Exception {
+                     for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
+                        roughArtifact.getReal(branch, monitor, artifactResolver);
+                        importRoot.addChild(roughArtifact.getAssociatedArtifact());
+                     }
 
-               monitor.setTaskName("Creating Relations");
-               for (RoughRelation roughRelation : roughRelations) {
-                  roughRelation.makeReal(branch, monitor);
-               }
+                     monitor.setTaskName("Creating Relations");
+                     for (RoughRelation roughRelation : roughRelations) {
+                        roughRelation.makeReal(branch, monitor);
+                     }
 
-               artifactManager.setProgressMonitor(monitor);
-               importRoot.persist(true);
-               artifactManager.setProgressMonitor(null);
+                     artifactManager.setProgressMonitor(monitor);
+                     importRoot.persist(true);
+                     artifactManager.setProgressMonitor(null);
 
-               monitor.setTaskName("Committing Transaction");
-               monitor.subTask(""); // blank out leftover relation subtask
-               monitor.worked(1); // cause the status to update
-            }
-         };
+                     monitor.setTaskName("Committing Transaction");
+                     monitor.subTask(""); // blank out leftover relation subtask
+                     monitor.worked(1); // cause the status to update
+                  }
+               };
          txWrapper.execute();
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {

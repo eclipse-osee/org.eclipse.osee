@@ -296,9 +296,10 @@ public class RelationsComposite extends Composite implements IEventReceiver {
             boolean canBeOnSideB = canBeOnSide(selectedDescriptor, false);
 
             if (canBeOnSideA && canBeOnSideB) {
-               RelationGroupDialog dialog = new RelationGroupDialog(shell, "Select New Relation Side", null,
-                     "Please select the relation side onto which you intend to drag related artifacts.",
-                     selectedDescriptor, artifact);
+               RelationGroupDialog dialog =
+                     new RelationGroupDialog(shell, "Select New Relation Side", null,
+                           "Please select the relation side onto which you intend to drag related artifacts.",
+                           selectedDescriptor, artifact);
                int response = dialog.open();
                if (response == 0) isNewRelationCreated = true;
 
@@ -363,8 +364,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       viewRelationTreeItem.addSelectionListener(new SelectionAdapter() {
 
          public void widgetSelected(SelectionEvent e) {
-            TreeViewerReport report = new TreeViewerReport("Relation View Report for " + artifact.getDescriptiveName(),
-                  treeViewer);
+            TreeViewerReport report =
+                  new TreeViewerReport("Relation View Report for " + artifact.getDescriptiveName(), treeViewer);
             ArrayList<Integer> ignoreCols = new ArrayList<Integer>();
             ignoreCols.add(COLUMN_ORDER);
             report.setIgnoreColumns(ignoreCols);
@@ -760,8 +761,9 @@ public class RelationsComposite extends Composite implements IEventReceiver {
             RelationLinkGroup group;
 
             try {
-               group = artifact.getLinkManager().getSideGroup(dropLink.getLinkDescriptor(),
-                     transferredArtifact.equals(dropLink.getArtifactA()));
+               group =
+                     artifact.getLinkManager().getSideGroup(dropLink.getLinkDescriptor(),
+                           transferredArtifact.equals(dropLink.getArtifactA()));
 
                group.moveLink(targetLink, dropLink, !isFeedbackAfter);
                treeViewer.refresh();

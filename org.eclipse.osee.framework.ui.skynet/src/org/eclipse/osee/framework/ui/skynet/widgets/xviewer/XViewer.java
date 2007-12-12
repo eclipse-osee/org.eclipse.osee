@@ -276,7 +276,8 @@ public class XViewer extends TreeViewer {
    public String getStatusLine1() {
       StringBuffer sb = new StringBuffer();
       int loadedNum = 0;
-      if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) loadedNum = ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
+      if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) loadedNum =
+            ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
       sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
       sb.append(customize.getStatusLabelAddition());
       sb.append(filterDataUI.getStatusLabelAddition());

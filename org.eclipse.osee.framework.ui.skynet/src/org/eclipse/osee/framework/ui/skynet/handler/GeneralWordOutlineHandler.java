@@ -23,8 +23,9 @@ import org.eclipse.osee.framework.ui.skynet.Import.WordOutlineExtractor;
  * @author Robert A. Fisher
  */
 public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
-   private static final Pattern listPrKiller = Pattern.compile("<((\\w+:)?listPr)(\\s+.*?)((/>)|(>(.*?)</\\1>))",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern listPrKiller =
+         Pattern.compile("<((\\w+:)?listPr)(\\s+.*?)((/>)|(>(.*?)</\\1>))",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private HashMap<String, RoughArtifact> duplicateCatcher;
 
    private RoughArtifact previousNamedArtifact;

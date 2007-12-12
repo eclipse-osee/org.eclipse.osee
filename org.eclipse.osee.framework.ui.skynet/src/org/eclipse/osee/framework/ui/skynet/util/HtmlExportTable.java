@@ -61,19 +61,22 @@ public class HtmlExportTable {
          StringBuilder sb = new StringBuilder();
          sb.append(title + "\n");
          String htmlStr = AHTML.htmlToText(html);
-         Matcher m = Pattern.compile("<table.*?</table>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(
-               htmlStr);
+         Matcher m =
+               Pattern.compile("<table.*?</table>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(
+                     htmlStr);
          if (m.find()) {
             String csv = m.group();
-            Matcher rowM = Pattern.compile("<tr.*?>(.*?)</tr>",
-                  Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(csv);
+            Matcher rowM =
+                  Pattern.compile("<tr.*?>(.*?)</tr>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(
+                        csv);
             while (rowM.find()) {
                String row = rowM.group(1);
                row = row.replaceAll("[\n\r]*", "");
                // Handle all the headers
                for (String tag : elementTags) {
-                  Matcher thM = Pattern.compile("<" + tag + ".*?>(.*?)</" + tag + ">",
-                        Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(row);
+                  Matcher thM =
+                        Pattern.compile("<" + tag + ".*?>(.*?)</" + tag + ">",
+                              Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(row);
                   String csvRow = "";
                   while (thM.find()) {
                      csvRow += "\"" + removeLeadTrailSpaces(thM.group(1)) + "\",";

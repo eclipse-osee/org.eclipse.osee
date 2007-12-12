@@ -34,9 +34,10 @@ public class InspectReggieDialogHelper implements Runnable {
    }
 
    public void run() {
-      InspectReggieDialog dlg = new InspectReggieDialog(shell, reggie, reggieParser, "Inspect Lookup Server", null,
-            String.format("Services Registered on %s:%s", reggieParser.getHost(), reggieParser.getPort()),
-            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      InspectReggieDialog dlg =
+            new InspectReggieDialog(shell, reggie, reggieParser, "Inspect Lookup Server", null, String.format(
+                  "Services Registered on %s:%s", reggieParser.getHost(), reggieParser.getPort()),
+                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
 
       result = dlg.open();
       if (result == Window.OK) {

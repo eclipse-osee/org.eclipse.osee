@@ -26,8 +26,8 @@ public class OperationsPage {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(OperationsPage.class);
 
    public void findAllOperations() {
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.ui.skynet.BlamOperation");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.BlamOperation");
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
          extension.getUniqueIdentifier();

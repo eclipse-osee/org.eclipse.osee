@@ -41,7 +41,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class OseePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OseePreferencePage.class);
-   public static final String INETADDRESS_KEY = "org.eclipse.osee.framework.jdk.core.OseePreferencePage.InetAddressDefault";
+   public static final String INETADDRESS_KEY =
+         "org.eclipse.osee.framework.jdk.core.OseePreferencePage.InetAddressDefault";
    public static final String WORDWRAP_KEY = "org.eclipse.osee.framework.jdk.core.OseePreferencePage.WordWrap";
    private HashMap<InetAddress, Button> networkButtons;
    private Button wordWrapChkBox;

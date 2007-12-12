@@ -62,10 +62,12 @@ public class ViewWordChangeReportHandler extends AbstractSelectionHandler {
          // selectedItem = (ArtifactChange) ((ITreeNode) iterator.next()).getBackingData();
 
          try {
-            Artifact baseArtifact = selectedItem.getModType() == NEW ? null : artifactManager.getArtifactFromId(
-                  selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
-            Artifact newerArtifact = selectedItem.getModType() == DELETE ? null : artifactManager.getArtifactFromId(
-                  selectedItem.getArtifact().getArtId(), selectedItem.getToTransactionId());
+            Artifact baseArtifact =
+                  selectedItem.getModType() == NEW ? null : artifactManager.getArtifactFromId(
+                        selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
+            Artifact newerArtifact =
+                  selectedItem.getModType() == DELETE ? null : artifactManager.getArtifactFromId(
+                        selectedItem.getArtifact().getArtId(), selectedItem.getToTransactionId());
 
             baseArtifacts.add(baseArtifact);
             newerArtifacts.add(newerArtifact);
@@ -76,8 +78,8 @@ public class ViewWordChangeReportHandler extends AbstractSelectionHandler {
 
       // This is a HACK ... I needed a way to ask the renderManager for the wordRender. There
       // should exist such a method on the manager
-      WordRenderer renderer = (WordRenderer) RendererManager.getInstance().getRendererById(
-            "org.eclipse.osee.framework.ui.skynet.word");
+      WordRenderer renderer =
+            (WordRenderer) RendererManager.getInstance().getRendererById("org.eclipse.osee.framework.ui.skynet.word");
 
       try {
          renderer.compareArtifacts(baseArtifacts, newerArtifacts, DIFF_ARTIFACT, null,

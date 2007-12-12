@@ -84,8 +84,9 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
                "Backing data for the jobbed node in the branchview was not of the expected type");
       }
 
-      final EntryDialog dialog = new EntryDialog(Display.getCurrent().getActiveShell(), "Branch", null,
-            "Enter the name of the new Branch", MessageDialog.INFORMATION, new String[] {"OK", "Cancel"}, 0);
+      final EntryDialog dialog =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Branch", null, "Enter the name of the new Branch",
+                  MessageDialog.INFORMATION, new String[] {"OK", "Cancel"}, 0);
       int result = dialog.open();
 
       if (result == 0 && dialog.getEntry() != null) {

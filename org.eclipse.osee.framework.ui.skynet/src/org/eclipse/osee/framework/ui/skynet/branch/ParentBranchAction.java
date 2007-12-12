@@ -47,8 +47,9 @@ public class ParentBranchAction extends Action {
     */
    @Override
    public void run() {
-      InputDialog dialog = new InputDialog(Display.getCurrent().getActiveShell(), "Name Branch", "Enter branch name",
-            "parent branch", inputValidator);
+      InputDialog dialog =
+            new InputDialog(Display.getCurrent().getActiveShell(), "Name Branch", "Enter branch name", "parent branch",
+                  inputValidator);
 
       if (dialog.open() == Window.CANCEL) {
          return;

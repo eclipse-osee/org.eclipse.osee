@@ -156,8 +156,9 @@ public class ArtifactRequest implements IHttpServerRequest {
          FileSystemRenderer fileSystemRenderer = (FileSystemRenderer) render;
          Branch branch = artifact.getBranch();
          IFolder baseFolder = fileSystemRenderer.getRenderFolder(branch, PresentationType.EDIT);
-         IFile iFile = fileSystemRenderer.renderToFileSystem(new NullProgressMonitor(), baseFolder, artifact, branch,
-               null, PresentationType.EDIT);
+         IFile iFile =
+               fileSystemRenderer.renderToFileSystem(new NullProgressMonitor(), baseFolder, artifact, branch, null,
+                     PresentationType.EDIT);
 
          File file = iFile.getLocation().toFile();
          String fileName = artifact.getDescriptiveName() + "." + iFile.getFileExtension();

@@ -61,40 +61,47 @@ public class WordTemplateProcessor {
    private static final String EXTENSION_PROCESSOR = "Extension_Processor";
    private static final String KEY = "Key";
 
-   private static final Pattern namePattern = Pattern.compile("<((\\w+:)?(Name))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern outlineTypePattern = Pattern.compile("<((\\w+:)?(OutlineType))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern outlineNumberPattern = Pattern.compile("<((\\w+:)?(Number))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern argumentElementsPattern = Pattern.compile("<((\\w+:)?(Argument))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern keyValueElementsPattern = Pattern.compile("<((\\w+:)?(Key|Value))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern subDocElementsPattern = Pattern.compile("<((\\w+:)?(SubDoc))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern namePattern =
+         Pattern.compile("<((\\w+:)?(Name))>(.*?)</\\1>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern outlineTypePattern =
+         Pattern.compile("<((\\w+:)?(OutlineType))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern outlineNumberPattern =
+         Pattern.compile("<((\\w+:)?(Number))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern argumentElementsPattern =
+         Pattern.compile("<((\\w+:)?(Argument))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern keyValueElementsPattern =
+         Pattern.compile("<((\\w+:)?(Key|Value))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern subDocElementsPattern =
+         Pattern.compile("<((\\w+:)?(SubDoc))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
-   private static final Pattern setNamePattern = Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>",
-         Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern headElementsPattern = Pattern.compile(
-         "<((\\w+:)?(" + ARTIFACT + "|" + EXTENSION_PROCESSOR + "))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern attributeElementsPattern = Pattern.compile("<((\\w+:)?(Attribute))>(.*?)</\\3>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern internalAttributeElementsPattern = Pattern.compile(
-         "<((\\w+:)?(Label|Outline|Name|Format|Editable))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern setNamePattern =
+         Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>", Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern headElementsPattern =
+         Pattern.compile("<((\\w+:)?(" + ARTIFACT + "|" + EXTENSION_PROCESSOR + "))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern attributeElementsPattern =
+         Pattern.compile("<((\\w+:)?(Attribute))>(.*?)</\\3>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern internalAttributeElementsPattern =
+         Pattern.compile("<((\\w+:)?(Label|Outline|Name|Format|Editable))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
-   private static final Pattern outlineElementsPattern = Pattern.compile("<((\\w+:)?(Outline))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern internalOutlineElementsPattern = Pattern.compile(
-         "<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern outlineElementsPattern =
+         Pattern.compile("<((\\w+:)?(Outline))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern internalOutlineElementsPattern =
+         Pattern.compile("<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
-   private static final String[] NUMBER = new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
-         "Eight", "Nine"};
+   private static final String[] NUMBER =
+         new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
 
    private String masterTemplate;
    private String slaveTemplate;
@@ -281,13 +288,14 @@ public class WordTemplateProcessor {
          extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
 
          if (updateParagraphNumbers) {
-            AbstractSkynetTxTemplate artifactProcessTx = new AbstractSkynetTxTemplate(branchManager.getDefaultBranch()) {
+            AbstractSkynetTxTemplate artifactProcessTx =
+                  new AbstractSkynetTxTemplate(branchManager.getDefaultBranch()) {
 
-               @Override
-               protected void handleTxWork() throws Exception {
-                  processTreeHelper(tree, wordMl, outlineType);
-               }
-            };
+                     @Override
+                     protected void handleTxWork() throws Exception {
+                        processTreeHelper(tree, wordMl, outlineType);
+                     }
+                  };
             artifactProcessTx.execute();
          } else {
             processTreeHelper(tree, wordMl, outlineType);
@@ -388,7 +396,8 @@ public class WordTemplateProcessor {
       }
 
       IExtensionRegistry registry = Platform.getExtensionRegistry();
-      IExtension extension = registry.getExtension("org.eclipse.osee.framework.ui.skynet.WordMlProducer", extensionName);
+      IExtension extension =
+            registry.getExtension("org.eclipse.osee.framework.ui.skynet.WordMlProducer", extensionName);
 
       if (extension != null) {
          matcher = subDocElementsPattern.matcher(elementValue);
@@ -773,7 +782,8 @@ public class WordTemplateProcessor {
    private void loadIgnoreAttributeExtensions() throws CoreException {
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
       if (extensionRegistry != null) {
-         IExtensionPoint point = extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute");
+         IExtensionPoint point =
+               extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute");
          if (point != null) {
             IExtension[] extensions = point.getExtensions();
             for (IExtension extension : extensions) {

@@ -93,8 +93,9 @@ public class UploadRemoteFileJob extends Job {
                   serviceInfo.getUnzipLocation());
             incrementProgress(1);
 
-            String toExec = String.format("cd %s\nunzip -o %s", serviceInfo.getUnzipLocation(),
-                  serviceInfo.getServiceItem().getZipName());
+            String toExec =
+                  String.format("cd %s\nunzip -o %s", serviceInfo.getUnzipLocation(),
+                        serviceInfo.getServiceItem().getZipName());
 
             display.addText("\n\tUnzip Cmd: ", SWT.BOLD, SWT.COLOR_DARK_BLUE, true);
             display.addText("\t" + toExec.split("\n")[1] + "\n", SWT.NORMAL, SWT.COLOR_BLACK, false);
@@ -148,8 +149,9 @@ public class UploadRemoteFileJob extends Job {
 
    private boolean confirmRemoteHostLocation() {
       try {
-         String output = serviceInfo.getSSHConnection().executeCommandList(
-               new String[] {"ls -la " + serviceInfo.getUnzipLocation()});
+         String output =
+               serviceInfo.getSSHConnection().executeCommandList(
+                     new String[] {"ls -la " + serviceInfo.getUnzipLocation()});
          output = output.replaceAll("\r", "");
          Pattern p = Pattern.compile(".*?No\\ssuch\\sfile\\sor\\sdirectory.*", Pattern.DOTALL);
          Matcher m = p.matcher(output);
@@ -169,8 +171,8 @@ public class UploadRemoteFileJob extends Job {
 
    private boolean mkdir(String path) {
       try {
-         String output = serviceInfo.getSSHConnection().executeCommandList(
-               new String[] {"mkdir -p " + path, "ls -la " + path});
+         String output =
+               serviceInfo.getSSHConnection().executeCommandList(new String[] {"mkdir -p " + path, "ls -la " + path});
          output = output.replaceAll("\r", "");
          if (output.contains("Permission denied") || output.contains("Operation not applicable")) {
             display.addText(output.toString(), SWT.NORMAL, SWT.COLOR_RED, false);

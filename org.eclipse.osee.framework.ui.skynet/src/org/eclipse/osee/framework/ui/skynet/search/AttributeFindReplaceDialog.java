@@ -61,7 +61,8 @@ import org.eclipse.swt.widgets.Text;
 public class AttributeFindReplaceDialog extends Dialog {
 
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(AttributeFindReplaceDialog.class);
-   private static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
 
    private ComboViewer cmbAttributeDescriptors;
    private Text txtFindRegEx;
@@ -150,7 +151,8 @@ public class AttributeFindReplaceDialog extends Dialog {
    }
 
    private void checkEnabled() {
-      boolean enable = (cmbAttributeDescriptors.getInput() instanceof DynamicAttributeDescriptor[]) && (txtFindRegEx.getText().length() > 0) && (artifacts.length > 0);
+      boolean enable =
+            (cmbAttributeDescriptors.getInput() instanceof DynamicAttributeDescriptor[]) && (txtFindRegEx.getText().length() > 0) && (artifacts.length > 0);
 
       getButton(IDialogConstants.OK_ID).setEnabled(enable);
    }
@@ -159,7 +161,8 @@ public class AttributeFindReplaceDialog extends Dialog {
    protected void okPressed() {
       final Pattern pattern = Pattern.compile(txtFindRegEx.getText());
       final String replaceText = txtReplaceStr.getText();
-      final String attributeName = ((DynamicAttributeDescriptor) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement()).getName();
+      final String attributeName =
+            ((DynamicAttributeDescriptor) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement()).getName();
 
       Job job = new Job("Find/Replace") {
 

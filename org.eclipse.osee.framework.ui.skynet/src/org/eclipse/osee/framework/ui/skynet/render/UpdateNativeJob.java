@@ -47,8 +47,9 @@ public class UpdateNativeJob extends UpdateJob {
          // expected file name format: guid_branchId_origionalFileName
          String fileName = workingFile.getName();
          String guid = fileName.substring(0, 22);
-         Branch branch = BranchPersistenceManager.getInstance().getBranch(
-               Integer.parseInt(fileName.substring(23, fileName.indexOf('_', 23))));
+         Branch branch =
+               BranchPersistenceManager.getInstance().getBranch(
+                     Integer.parseInt(fileName.substring(23, fileName.indexOf('_', 23))));
          Artifact artifact = persistenceManager.getArtifact(guid, branch);
          if (artifact == null) {
             return new Status(Status.ERROR, Platform.PI_RUNTIME, -1,

@@ -29,7 +29,8 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Paul K. Waldfogel
  */
 public class WordChangesMadeToHandler extends AbstractSelectionHandler {
-   private static final ArtifactPersistenceManager myArtifactPersistenceManager = ArtifactPersistenceManager.getInstance();
+   private static final ArtifactPersistenceManager myArtifactPersistenceManager =
+         ArtifactPersistenceManager.getInstance();
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
 
@@ -48,10 +49,13 @@ public class WordChangesMadeToHandler extends AbstractSelectionHandler {
       if (mySelectedArtifactChangeList.size() > 0) {
          ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
          try {
-            Artifact firstArtifact = selectedArtifactChange.getModType() == NEW ? null : myArtifactPersistenceManager.getArtifactFromId(
-                  selectedArtifactChange.getArtifact().getArtId(), selectedArtifactChange.getBaselineTransactionId());
-            Artifact secondArtifact = selectedArtifactChange.getModType() == DELETE ? null : myArtifactPersistenceManager.getArtifactFromId(
-                  selectedArtifactChange.getArtifact().getArtId(), selectedArtifactChange.getToTransactionId());
+            Artifact firstArtifact =
+                  selectedArtifactChange.getModType() == NEW ? null : myArtifactPersistenceManager.getArtifactFromId(
+                        selectedArtifactChange.getArtifact().getArtId(),
+                        selectedArtifactChange.getBaselineTransactionId());
+            Artifact secondArtifact =
+                  selectedArtifactChange.getModType() == DELETE ? null : myArtifactPersistenceManager.getArtifactFromId(
+                        selectedArtifactChange.getArtifact().getArtId(), selectedArtifactChange.getToTransactionId());
 
             RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
 

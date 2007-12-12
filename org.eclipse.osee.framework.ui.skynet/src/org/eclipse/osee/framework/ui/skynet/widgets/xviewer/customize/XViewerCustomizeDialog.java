@@ -575,8 +575,9 @@ public class XViewerCustomizeDialog extends MessageDialog {
 
    private void handleRenameButton() {
       XViewerColumn xCol = getVisibleTableSelection().iterator().next();
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), "Rename Column", null, "Enter new name",
-            MessageDialog.QUESTION, new String[] {"OK", "Use Default", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Rename Column", null, "Enter new name",
+                  MessageDialog.QUESTION, new String[] {"OK", "Use Default", "Cancel"}, 0);
       int result = ed.open();
       if (result == 2) return;
       if (result == 0)

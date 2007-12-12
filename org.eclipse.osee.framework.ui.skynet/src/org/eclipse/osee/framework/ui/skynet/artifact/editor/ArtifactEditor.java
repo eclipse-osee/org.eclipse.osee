@@ -80,7 +80,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactEditor.class);
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-   private static final ArtifactPersistenceManager artifactPersistenceManager = ArtifactPersistenceManager.getInstance();
+   private static final ArtifactPersistenceManager artifactPersistenceManager =
+         ArtifactPersistenceManager.getInstance();
    private int previewPageIndex;
    private int attributesPageIndex;
    private int relationsPageIndex;
@@ -246,8 +247,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    private int createAttributesPage() {
       Composite composite = createCommonPageComposite();
-      attributeComposite = new AttributesComposite(this, composite, SWT.NONE, getEditorInput().getArtifact(),
-            createToolBar(composite));
+      attributeComposite =
+            new AttributesComposite(this, composite, SWT.NONE, getEditorInput().getArtifact(), createToolBar(composite));
 
       return addPage(composite);
    }
@@ -265,8 +266,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    private int createRelationsPage() {
       Composite composite = createCommonPageComposite();
-      relationsComposite = new RelationsComposite(this, composite, SWT.NONE, getEditorInput().getArtifact(),
-            createToolBar(composite));
+      relationsComposite =
+            new RelationsComposite(this, composite, SWT.NONE, getEditorInput().getArtifact(), createToolBar(composite));
 
       return addPage(composite);
    }

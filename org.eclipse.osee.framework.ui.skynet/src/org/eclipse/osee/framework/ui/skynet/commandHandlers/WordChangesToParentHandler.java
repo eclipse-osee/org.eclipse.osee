@@ -53,15 +53,18 @@ public class WordChangesToParentHandler extends AbstractSelectionHandler {
          ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
          System.out.println("firstArtifactChange selectedArtifactChange.getModType()" + selectedArtifactChange.getModType().toString());
          try {
-            Artifact firstArtifact = selectedArtifactChange.getModType() == NEW ? null : artifactManager.getArtifactFromId(
-                  selectedArtifactChange.getArtifact().getArtId(), selectedArtifactChange.getBaselineTransactionId());
+            Artifact firstArtifact =
+                  selectedArtifactChange.getModType() == NEW ? null : artifactManager.getArtifactFromId(
+                        selectedArtifactChange.getArtifact().getArtId(),
+                        selectedArtifactChange.getBaselineTransactionId());
 
             Artifact secondArtifact = null;
             Branch parentBranch = firstArtifact.getBranch().getParentBranch();
 
             TransactionId transactionId = TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
-            secondArtifact = selectedArtifactChange.getModType() == DELETE ? null : artifactManager.getArtifactFromId(
-                  selectedArtifactChange.getArtifact().getArtId(), transactionId);
+            secondArtifact =
+                  selectedArtifactChange.getModType() == DELETE ? null : artifactManager.getArtifactFromId(
+                        selectedArtifactChange.getArtifact().getArtId(), transactionId);
 
             RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
 

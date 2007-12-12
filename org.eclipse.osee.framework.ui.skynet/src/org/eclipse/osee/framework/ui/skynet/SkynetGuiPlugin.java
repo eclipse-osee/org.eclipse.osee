@@ -26,8 +26,10 @@ import org.eclipse.osee.framework.ui.skynet.access.OseeSecurityManager;
 public class SkynetGuiPlugin extends OseeFormActivator implements IEventReceiver {
    private static SkynetGuiPlugin pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.skynet";
-   public static final String CHANGE_REPORT_ATTRIBUTES_PREF = "org.eclipse.osee.framework.ui.skynet.changeReportAttributes";
-   public static final String ARTIFACT_EXPLORER_ATTRIBUTES_PREF = "org.eclipse.osee.framework.ui.skynet.artifactExplorerAttributes";
+   public static final String CHANGE_REPORT_ATTRIBUTES_PREF =
+         "org.eclipse.osee.framework.ui.skynet.changeReportAttributes";
+   public static final String ARTIFACT_EXPLORER_ATTRIBUTES_PREF =
+         "org.eclipse.osee.framework.ui.skynet.artifactExplorerAttributes";
    public static OseeSecurityManager securityManager;
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetGuiPlugin.class);
 

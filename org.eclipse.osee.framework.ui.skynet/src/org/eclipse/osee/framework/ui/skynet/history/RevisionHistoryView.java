@@ -83,8 +83,9 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
    public static void open(Artifact artifact) {
       IWorkbenchPage page = AWorkbench.getActivePage();
       try {
-         RevisionHistoryView revisionHistoryView = (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID,
-               artifact.getGuid(), IWorkbenchPage.VIEW_ACTIVATE);
+         RevisionHistoryView revisionHistoryView =
+               (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, artifact.getGuid(),
+                     IWorkbenchPage.VIEW_ACTIVATE);
          revisionHistoryView.explore(artifact);
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -209,8 +210,9 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
 
       try {
          if (memento != null) {
-            Artifact previousArtifact = ArtifactPersistenceManager.getInstance().getArtifact(
-                  memento.getString(ARTIFACT_GUID), BranchPersistenceManager.getInstance().getDefaultBranch());
+            Artifact previousArtifact =
+                  ArtifactPersistenceManager.getInstance().getArtifact(memento.getString(ARTIFACT_GUID),
+                        BranchPersistenceManager.getInstance().getDefaultBranch());
             if (previousArtifact != null) {
                artifact = previousArtifact;
                return;
@@ -241,8 +243,9 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
 
       if (event instanceof ArtifactModifiedEvent) {
          ArtifactModifiedEvent artModEvent = (ArtifactModifiedEvent) event;
-         closeView = artifact != null && artModEvent.getType() == ModType.Deleted && artModEvent.getGuid().equals(
-               artifact.getGuid());
+         closeView =
+               artifact != null && artModEvent.getType() == ModType.Deleted && artModEvent.getGuid().equals(
+                     artifact.getGuid());
       }
 
       if (event instanceof PostCommitEvent) {

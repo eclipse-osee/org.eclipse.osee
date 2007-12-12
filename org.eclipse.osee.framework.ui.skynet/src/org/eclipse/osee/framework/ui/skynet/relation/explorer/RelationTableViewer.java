@@ -37,7 +37,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 public class RelationTableViewer {
-   private static final ConfigurationPersistenceManager configurationManger = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationManger =
+         ConfigurationPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationTableViewer.class);
 
@@ -71,8 +72,9 @@ public class RelationTableViewer {
    public RelationTableViewer(Table validTable, Table invalidTable) {
       Branch defaultBranch = branchPersistenceManager.getDefaultBranch();
       try {
-         fullDescriptorList = new ArrayList<ArtifactSubtypeDescriptor>(
-               configurationManger.getArtifactSubtypeDescriptors(defaultBranch));
+         fullDescriptorList =
+               new ArrayList<ArtifactSubtypeDescriptor>(
+                     configurationManger.getArtifactSubtypeDescriptors(defaultBranch));
          defaultArtifactType = configurationManger.getArtifactSubtypeDescriptor("Test Script", defaultBranch);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);

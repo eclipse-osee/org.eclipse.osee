@@ -142,8 +142,9 @@ public class SkyWalkerView extends ViewPart {
       // Restore current artifact if stored upon shutdown
       try {
          if (storedGuid != null) {
-            Artifact art = ArtifactPersistenceManager.getInstance().getArtifact(storedGuid,
-                  BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(storedBrandId)));
+            Artifact art =
+                  ArtifactPersistenceManager.getInstance().getArtifact(storedGuid,
+                        BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(storedBrandId)));
             if (art != null) explore(art);
          }
       } catch (Exception ex) {
@@ -317,8 +318,8 @@ public class SkyWalkerView extends ViewPart {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       SkyWalkerView view;
       try {
-         view = (SkyWalkerView) page.showView(SkyWalkerView.VIEW_ID, new GUID().toString(),
-               IWorkbenchPage.VIEW_ACTIVATE);
+         view =
+               (SkyWalkerView) page.showView(SkyWalkerView.VIEW_ID, new GUID().toString(), IWorkbenchPage.VIEW_ACTIVATE);
          view.explore(artifact);
       } catch (Exception ex) {
          throw new RuntimeException(ex);

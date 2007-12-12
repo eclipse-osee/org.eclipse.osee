@@ -86,9 +86,10 @@ public class SkynetDatabase {
 
    public static final String TXD_COMMENT = "OSEE_COMMENT";
 
-   public static final View CURRENT_VERSION_VIEW = new View(
-         "CURRENT_VERSION_ARTIFACT",
-         " AS" + " SELECT branch_id, MAX(transaction_id) AS largest_transaction_id FROM " + TRANSACTION_DETAIL_TABLE + " GROUP BY branch_id");
+   public static final View CURRENT_VERSION_VIEW =
+         new View(
+               "CURRENT_VERSION_ARTIFACT",
+               " AS" + " SELECT branch_id, MAX(transaction_id) AS largest_transaction_id FROM " + TRANSACTION_DETAIL_TABLE + " GROUP BY branch_id");
 
    private static final View[] skynetViews = new View[] {};
 
@@ -111,10 +112,10 @@ public class SkynetDatabase {
 
    public static final String TTE_SESSION_SEQ = "TTE_SESSION_SEQ";
 
-   public static final String[] sequences = new String[] {ART_ID_SEQ, ART_TYPE_ID_SEQ, ATTR_BASE_TYPE_ID_SEQ,
-         ATTR_ID_SEQ, ATTR_TYPE_ID_SEQ, FACTORY_ID_SEQ, BRANCH_ID_SEQ, REL_LINK_TYPE_ID_SEQ, REL_LINK_ID_SEQ,
-         GAMMA_ID_SEQ, TRANSACTION_ID_SEQ, TAG_ID_SEQ, TAG_TYPE_ID_SEQ, CLOUD_ID_SEQ, CLOUD_TYPE_ID_SEQ,
-         TTE_SESSION_SEQ};
+   public static final String[] sequences =
+         new String[] {ART_ID_SEQ, ART_TYPE_ID_SEQ, ATTR_BASE_TYPE_ID_SEQ, ATTR_ID_SEQ, ATTR_TYPE_ID_SEQ,
+               FACTORY_ID_SEQ, BRANCH_ID_SEQ, REL_LINK_TYPE_ID_SEQ, REL_LINK_ID_SEQ, GAMMA_ID_SEQ, TRANSACTION_ID_SEQ,
+               TAG_ID_SEQ, TAG_TYPE_ID_SEQ, CLOUD_ID_SEQ, CLOUD_TYPE_ID_SEQ, TTE_SESSION_SEQ};
 
    public enum ModificationType implements Serializable {
       NEW(1), CHANGE(2), DELETE(3);

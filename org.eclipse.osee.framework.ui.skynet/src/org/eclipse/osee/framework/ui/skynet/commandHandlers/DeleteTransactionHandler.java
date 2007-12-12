@@ -53,7 +53,8 @@ public class DeleteTransactionHandler extends AbstractSelectionHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       IStructuredSelection myIStructuredSelection = super.getIStructuredSelection();
       List<TransactionData> myTransactionDataList = super.getTransactionDataList();
-      TransactionData selectedTransaction = (TransactionData) ((JobbedNode) myIStructuredSelection.getFirstElement()).getBackingData();
+      TransactionData selectedTransaction =
+            (TransactionData) ((JobbedNode) myIStructuredSelection.getFirstElement()).getBackingData();
       if (selectedTransaction == myTransactionDataList.get(0)) {
          System.out.println("selectedTransaction == myTransactionDataList.get(0)");
       }

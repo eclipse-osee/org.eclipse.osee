@@ -51,7 +51,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    public static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactImportPage.class);
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationManager =
+         ConfigurationPersistenceManager.getInstance();
    private final Artifact destinationArtifact;
    private List typeList;
    private List branchList;
@@ -403,8 +404,9 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       if (radImportUnderDhRoot.getSelection()) {
          importRoot = artifactManager.getDefaultHierarchyRootArtifact(getSelectedBranch());
       } else if (radImportUnderNamedRootFolder.getSelection()) {
-         importRoot = artifactManager.getDefaultHierarchyRootArtifact(getSelectedBranch()).getChild(
-               txtImportUnderFolderName.getText());
+         importRoot =
+               artifactManager.getDefaultHierarchyRootArtifact(getSelectedBranch()).getChild(
+                     txtImportUnderFolderName.getText());
       } else if (radImportUnderSelection.getSelection()) {
          importRoot = destinationArtifact;
       } else {

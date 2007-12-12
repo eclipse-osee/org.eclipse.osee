@@ -25,8 +25,9 @@ public class HTMLTransferFormatter {
    private static IPreferenceStore prefStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
 
    public static String getHtml(Artifact... artifacts) {
-      boolean applyWordTagWrap = prefStore.getString(OseePreferencePage.WORDWRAP_KEY) != null && prefStore.getString(
-            OseePreferencePage.WORDWRAP_KEY).equals(IPreferenceStore.TRUE);
+      boolean applyWordTagWrap =
+            prefStore.getString(OseePreferencePage.WORDWRAP_KEY) != null && prefStore.getString(
+                  OseePreferencePage.WORDWRAP_KEY).equals(IPreferenceStore.TRUE);
 
       if (artifacts != null) {
          StringBuilder sb = new StringBuilder();

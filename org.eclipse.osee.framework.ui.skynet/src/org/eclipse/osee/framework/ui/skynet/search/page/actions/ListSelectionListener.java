@@ -38,8 +38,8 @@ public class ListSelectionListener implements ISelectionChangedListener, Selecti
    public void addCurrentSelectionToTree() {
       if (parentWindow.getTreeWidget() != null && selectedArtifact != null) {
          int revision = parentWindow.getRevisionDataManager().getRevision();
-         int branchId = parentWindow.getRevisionWidget().getBranchId(
-               parentWindow.getRevisionDataManager().getBranchName());
+         int branchId =
+               parentWindow.getRevisionWidget().getBranchId(parentWindow.getRevisionDataManager().getBranchName());
          parentWindow.getTreeWidget().getInputManager().addNode(
                SkynetArtifactAdapter.getInstance().createArtifactTypeNode(selectedArtifact, branchId, revision));
          parentWindow.getTreeWidget().refresh();

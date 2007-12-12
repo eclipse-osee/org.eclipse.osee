@@ -193,11 +193,13 @@ public class XMembersCombo extends XWidget {
    public void setFromXml(String xml) {
       Matcher matcher;
       if (xmlSubRoot.equals("")) {
-         matcher = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-               xml);
+         matcher =
+               Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+                     xml);
       } else {
-         matcher = Pattern.compile("<" + xmlRoot + "><" + xmlSubRoot + ">(.*?)</" + xmlSubRoot + "></" + xmlRoot + ">",
-               Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
+         matcher =
+               Pattern.compile("<" + xmlRoot + "><" + xmlSubRoot + ">(.*?)</" + xmlSubRoot + "></" + xmlRoot + ">",
+                     Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
       }
       while (matcher.find()) {
          String userId = matcher.group(1);

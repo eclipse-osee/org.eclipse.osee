@@ -103,10 +103,11 @@ public class LocalRemotePage extends DynamicWizardPage {
          String executeServiceTitle = "Execute Remote Service";
 
          servicePage.setNextPage(hostInformationTitle);
-         IWizardPage[] pagesToAdd = new IWizardPage[] {
-               new HostInfoPage(hostInformationTitle, servicePage.getName(), uploadServiceTitle, serviceInfo),
-               new UploadPage(uploadServiceTitle, hostInformationTitle, executeServiceTitle, serviceInfo),
-               new ExecutePage(executeServiceTitle, uploadServiceTitle, "", serviceInfo)};
+         IWizardPage[] pagesToAdd =
+               new IWizardPage[] {
+                     new HostInfoPage(hostInformationTitle, servicePage.getName(), uploadServiceTitle, serviceInfo),
+                     new UploadPage(uploadServiceTitle, hostInformationTitle, executeServiceTitle, serviceInfo),
+                     new ExecutePage(executeServiceTitle, uploadServiceTitle, "", serviceInfo)};
          for (IWizardPage page : pagesToAdd) {
             wizard.addPage(page);
          }

@@ -39,7 +39,8 @@ public class RootAndAttributeBasedArtifactResolver implements IArtifactImportRes
       if (identifyingAttributeDescriptors.isEmpty()) throw new IllegalArgumentException(
             "identifyingAttributeDescriptors can not be empty");
 
-      this.identifyingAttributeDescriptors = new LinkedList<DynamicAttributeDescriptor>(identifyingAttributeDescriptors);
+      this.identifyingAttributeDescriptors =
+            new LinkedList<DynamicAttributeDescriptor>(identifyingAttributeDescriptors);
    }
 
    private boolean attributeValuesMatch(RoughArtifact roughArtifact, Artifact artifact) throws SQLException {

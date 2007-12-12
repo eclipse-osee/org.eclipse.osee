@@ -183,8 +183,9 @@ public class OseeAts {
 
    public static void openATSArtifact(String guid) {
       try {
-         Artifact art = ArtifactPersistenceManager.getInstance().getArtifact(guid,
-               BranchPersistenceManager.getInstance().getCommonBranch());
+         Artifact art =
+               ArtifactPersistenceManager.getInstance().getArtifact(guid,
+                     BranchPersistenceManager.getInstance().getCommonBranch());
          if (art.getArtifactTypeName().equals("Action"))
             atsLib.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
          else
@@ -210,8 +211,8 @@ public class OseeAts {
 
    public static IAtsLib getAtsLib() throws ClassNotFoundException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
       if (atsLib == null) {
-         IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-               "org.eclipse.osee.framework.skynet.core.AtsLib");
+         IExtensionPoint point =
+               Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.skynet.core.AtsLib");
          IExtension[] extensions = point.getExtensions();
          for (IExtension extension : extensions) {
             IConfigurationElement[] elements = extension.getConfigurationElements();

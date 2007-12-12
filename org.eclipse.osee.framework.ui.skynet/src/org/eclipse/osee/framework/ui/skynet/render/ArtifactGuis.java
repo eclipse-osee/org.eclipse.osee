@@ -28,9 +28,10 @@ public class ArtifactGuis {
    }
 
    public static boolean promptToDeleteArtifactAndChildren() {
-      MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), "Confirm Artifact Deletion",
-            null, " Are you sure you want to delete this artifact and all of the default hierarchy children?",
-            MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+      MessageDialog dialog =
+            new MessageDialog(Display.getCurrent().getActiveShell(), "Confirm Artifact Deletion", null,
+                  " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
       return dialog.open() == 0;
    }
@@ -99,8 +100,9 @@ public class ArtifactGuis {
 
       public void run() {
          synchronized (notifee) {
-            yes = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
-                  question);
+            yes =
+                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+                        question);
             done = true;
             notifee.notifyAll();
          }

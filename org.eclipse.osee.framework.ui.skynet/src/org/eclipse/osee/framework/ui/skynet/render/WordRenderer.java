@@ -127,12 +127,14 @@ public class WordRenderer extends FileRenderer {
                String fileName = null;
 
                for (int i = 0; i < newerArtifact.size(); i++) {
-                  IFile baseFile = renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF),
-                        branch, getRenderInputStream(monitor, baseArtifacts.get(i), option, PresentationType.DIFF),
-                        PresentationType.DIFF);
-                  IFile newerFile = renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF),
-                        branch, getRenderInputStream(monitor, newerArtifact.get(i), option, PresentationType.DIFF),
-                        PresentationType.DIFF);
+                  IFile baseFile =
+                        renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
+                              getRenderInputStream(monitor, baseArtifacts.get(i), option, PresentationType.DIFF),
+                              PresentationType.DIFF);
+                  IFile newerFile =
+                        renderToFile(baseFolder, getFilenameFromArtifact(null, PresentationType.DIFF), branch,
+                              getRenderInputStream(monitor, newerArtifact.get(i), option, PresentationType.DIFF),
+                              PresentationType.DIFF);
 
                   baseFileStr = changeReportFolder.getLocation().toOSString();
                   fileName = baseFileStr + "/" + GUID.generateGuidStr() + ".xml";
@@ -218,24 +220,28 @@ public class WordRenderer extends FileRenderer {
 
       if (baseVersion != null) {
          String baseFileStr = baseFile.getLocation().toOSString();
-         diffPath = baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getPersistenceMemo().getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
+         diffPath =
+               baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getPersistenceMemo().getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
       } else {
          String baseFileStr = newerFile.getLocation().toOSString();
-         diffPath = baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
+         diffPath =
+               baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
       }
 
       compare(baseFile, newerFile, diffPath, true);
    }
 
    private void compare(IFile baseFile, IFile newerFile, String diffPath, boolean visible) throws IOException, InterruptedException {
-      File vbDiffScript = visible ? plugin.getPluginFile("support/compareDocs.vbs") : plugin.getPluginFile("support/notVisiblecompareDocs.vbs");
+      File vbDiffScript =
+            visible ? plugin.getPluginFile("support/compareDocs.vbs") : plugin.getPluginFile("support/notVisiblecompareDocs.vbs");
 
       // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
-      String cmd[] = {
-            "cmd",
-            "/s /c",
-            "\"" + vbDiffScript.getPath() + "\"",
-            "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getLocation().toOSString() + "\" /ver2:\"" + newerFile.getLocation().toOSString()};
+      String cmd[] =
+            {
+                  "cmd",
+                  "/s /c",
+                  "\"" + vbDiffScript.getPath() + "\"",
+                  "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getLocation().toOSString() + "\" /ver2:\"" + newerFile.getLocation().toOSString()};
 
       Process proc = Runtime.getRuntime().exec(cmd);
 
@@ -423,9 +429,10 @@ public class WordRenderer extends FileRenderer {
          if (isSingleEdit) {
             if (!firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME).equals("")) {
                template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
-               template = template.replaceAll(
-                     STYLES_END,
-                     STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME) + OLE_END);
+               template =
+                     template.replaceAll(
+                           STYLES_END,
+                           STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME) + OLE_END);
             }
          } else {
             for (Artifact artifact : artifacts) {
@@ -448,7 +455,8 @@ public class WordRenderer extends FileRenderer {
    @SuppressWarnings("unchecked")
    private String getTemplate(Artifact artifact, PresentationType presentationType, String option, Branch branch) throws SQLException, IOException, ClassNotFoundException {
       Artifact document = getDocumentArtifact(presentationType, branch);
-      JavaObjectAttribute javaAttribute = (JavaObjectAttribute) document.getAttributeManager("Template Map").getSoleAttribute();
+      JavaObjectAttribute javaAttribute =
+            (JavaObjectAttribute) document.getAttributeManager("Template Map").getSoleAttribute();
       HashMap<String, String> templateMap = (HashMap<String, String>) javaAttribute.getObject();
       String template = null;
 
@@ -471,7 +479,8 @@ public class WordRenderer extends FileRenderer {
    @SuppressWarnings("unchecked")
    public void addTemplate(PresentationType presentationType, String bundleName, String templateName, String templatePath, Branch branch) throws SQLException, IOException, ClassNotFoundException {
       Artifact document = getDocumentArtifact(presentationType, branch);
-      JavaObjectAttribute javaAttribute = (JavaObjectAttribute) document.getAttributeManager("Template Map").getSoleAttribute();
+      JavaObjectAttribute javaAttribute =
+            (JavaObjectAttribute) document.getAttributeManager("Template Map").getSoleAttribute();
       HashMap<String, String> templateMap = (HashMap<String, String>) javaAttribute.getObject();
       if (templateMap == null) {
          templateMap = new HashMap<String, String>();
@@ -494,8 +503,8 @@ public class WordRenderer extends FileRenderer {
       Artifact document = documentMap.get(branch, presentationType);
       if (document == null) {
          try {
-            document = artifactManager.getArtifactFromTypeName("Document", getId() + " " + presentationType.name(),
-                  branch);
+            document =
+                  artifactManager.getArtifactFromTypeName("Document", getId() + " " + presentationType.name(), branch);
          } catch (IllegalStateException ex) {
             if (branch == branchManager.getCommonBranch()) {
                document = null;
@@ -519,11 +528,13 @@ public class WordRenderer extends FileRenderer {
          document.setDescriptiveName("org.eclipse.osee.framework.ui.skynet.word " + presentationType);
       }
 
-      JavaObjectAttribute javaAttribute = (JavaObjectAttribute) document.getAttributeManager("Template Map").getSoleAttribute();
+      JavaObjectAttribute javaAttribute =
+            (JavaObjectAttribute) document.getAttributeManager("Template Map").getSoleAttribute();
       HashMap<String, String> templateMap = new HashMap<String, String>();
 
-      List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(
-            "org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate", "Template");
+      List<IConfigurationElement> elements =
+            ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate",
+                  "Template");
 
       for (IConfigurationElement element : elements) {
          String bundleName = element.getContributor().getName();

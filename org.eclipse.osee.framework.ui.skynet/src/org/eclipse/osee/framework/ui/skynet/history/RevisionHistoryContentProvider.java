@@ -38,8 +38,8 @@ public class RevisionHistoryContentProvider implements ITreeContentProvider, Art
       if (parentElement instanceof Artifact) {
          Artifact parentItem = (Artifact) parentElement;
 
-         Collection<TransactionData> transactions = RevisionManager.getInstance().getTransactionsPerArtifact(
-               parentItem, true);
+         Collection<TransactionData> transactions =
+               RevisionManager.getInstance().getTransactionsPerArtifact(parentItem, true);
          if (transactions != null) {
             return transactions.toArray();
          }

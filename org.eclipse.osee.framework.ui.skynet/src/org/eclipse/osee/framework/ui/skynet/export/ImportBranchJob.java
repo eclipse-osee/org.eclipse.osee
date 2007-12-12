@@ -96,13 +96,14 @@ public class ImportBranchJob extends Job {
 
                // Compare ImportFile to Export File
                final boolean result = compareFiles(monitor, importFile, verificationFile);
-               final String message = String.format("Branch Import Verification: %s\n",
-                     true != result ? "FAILED" : "PASSED");
+               final String message =
+                     String.format("Branch Import Verification: %s\n", true != result ? "FAILED" : "PASSED");
                Display.getDefault().syncExec(new Runnable() {
                   public void run() {
                      if (true != result) {
-                        String errorMessage = String.format("%s%s\n%s", message, verificationErrorInfo.getKey(),
-                              verificationErrorInfo.getValue());
+                        String errorMessage =
+                              String.format("%s%s\n%s", message, verificationErrorInfo.getKey(),
+                                    verificationErrorInfo.getValue());
                         logger.log(Level.SEVERE, errorMessage);
                         console.writeError(errorMessage);
                      }

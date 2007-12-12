@@ -51,13 +51,15 @@ public class XViewerCustomizationArtifact extends BasicArtifact {
    public static XViewerCustomizationArtifact getAtsCustArtifactOrCreate(boolean create) {
       if (xViewerCustomizationArtifact == null) {
          try {
-            Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(
-                  ARTIFACT_TYPE_NAME, BranchPersistenceManager.getInstance().getCommonBranch());
+            Collection<Artifact> arts =
+                  ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(ARTIFACT_TYPE_NAME,
+                        BranchPersistenceManager.getInstance().getCommonBranch());
             if (arts.size() == 1) {
                xViewerCustomizationArtifact = (XViewerCustomizationArtifact) arts.iterator().next();
             } else if (arts.size() == 0 && create) {
-               xViewerCustomizationArtifact = (XViewerCustomizationArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME, branchManager.getCommonBranch()).makeNewArtifact();
+               xViewerCustomizationArtifact =
+                     (XViewerCustomizationArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                           XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME, branchManager.getCommonBranch()).makeNewArtifact();
                xViewerCustomizationArtifact.persist();
             } else if (arts.size() != 1) throw new IllegalArgumentException(
                   "Should only be one " + ARTIFACT_TYPE_NAME + ".  Found " + arts.size() + ".  ATS not configured in OSEE?.");

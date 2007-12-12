@@ -36,7 +36,8 @@ public class OracleSqlManager extends SqlManager {
    }
 
    private void createSequence(Connection connection, String sequenceName) throws SQLException, Exception {
-      String sequenceCreate = SqlManager.CREATE_STRING + " SEQUENCE " + formatQuotedString(sequenceName, "\\.") + " MINVALUE 1" + " MAXVALUE 999999999999999999999999999" + " INCREMENT BY 1" + " NOCYCLE" + " NOORDER" + " NOCACHE";
+      String sequenceCreate =
+            SqlManager.CREATE_STRING + " SEQUENCE " + formatQuotedString(sequenceName, "\\.") + " MINVALUE 1" + " MAXVALUE 999999999999999999999999999" + " INCREMENT BY 1" + " NOCYCLE" + " NOORDER" + " NOCACHE";
       executeStatement(connection, sequenceCreate);
    }
 
@@ -53,8 +54,8 @@ public class OracleSqlManager extends SqlManager {
 
    @Override
    public void createTable(Connection connection, TableElement tableDef) throws SQLException, Exception {
-      String toExecute = SqlManager.CREATE_STRING + " TABLE " + formatQuotedString(
-            tableDef.getFullyQualifiedTableName(), "\\.") + " ( \n";
+      String toExecute =
+            SqlManager.CREATE_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.") + " ( \n";
       // String toExecute = "CREATE TABLE " + tableDef.getFullyQualifiedTableName() + " ( \n";
       toExecute += handleColumnCreationSection(connection, tableDef.getColumns());
       toExecute += handleConstraintCreationSection(tableDef.getConstraints(), tableDef.getName());
@@ -98,8 +99,8 @@ public class OracleSqlManager extends SqlManager {
          }
 
       }
-      String toExecute = SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
-            "\\.");
+      String toExecute =
+            SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.");
       logger.log(Level.INFO, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       executeStatement(connection, toExecute);
    }

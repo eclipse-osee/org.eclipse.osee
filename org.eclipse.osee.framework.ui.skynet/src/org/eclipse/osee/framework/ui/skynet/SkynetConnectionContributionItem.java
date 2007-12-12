@@ -26,13 +26,15 @@ import org.eclipse.ui.part.ViewPart;
  * @author Jeff C. Phillips
  */
 public class SkynetConnectionContributionItem extends SkynetContributionItem {
-   private static final DbDetailData dbData = ConfigUtil.getConfigFactory().getOseeConfig().getDefaultClientData().getDatabaseDetails();
+   private static final DbDetailData dbData =
+         ConfigUtil.getConfigFactory().getOseeConfig().getDefaultClientData().getDatabaseDetails();
    private static final String dbName = dbData.getFieldValue(DbDetailData.ConfigField.DatabaseName);
    private static final String userName = dbData.getFieldValue(DbDetailData.ConfigField.UserName);
    private static final String ID = "skynet.connection";
    private static final SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
    private static final Image ENABLED = skynetGuiPlugin.getImage("repository.gif");
-   private static final Image DISABLED = new OverlayImage(ENABLED, skynetGuiPlugin.getImageDescriptor("red_slash.gif")).createImage();
+   private static final Image DISABLED =
+         new OverlayImage(ENABLED, skynetGuiPlugin.getImageDescriptor("red_slash.gif")).createImage();
    private static final String ENABLED_TOOLTIP = "Database is connected to " + dbName + " as " + userName + ".";
    private static final String DISABLED_TOOLTIP = "Database is disconnected.";
    private static final CoreEventManager eventManager = CoreEventManager.getInstance();

@@ -57,17 +57,20 @@ public class CustomizeData {
       String index = "" + personal + isDefault;
       if (imageMap.containsKey(index)) return imageMap.get(index);
       Image image = SkynetGuiPlugin.getInstance().getImage("customize.gif");
-      if (!personal) image = new OverlayImage(image,
-            SkynetGuiPlugin.getInstance().getImageDescriptor("customizeG.gif"), Location.BOT_RIGHT).createImage();
-      if (isDefault) image = new OverlayImage(image,
-            SkynetGuiPlugin.getInstance().getImageDescriptor("customizeD.gif"), Location.TOP_RIGHT).createImage();
+      if (!personal) image =
+            new OverlayImage(image, SkynetGuiPlugin.getInstance().getImageDescriptor("customizeG.gif"),
+                  Location.BOT_RIGHT).createImage();
+      if (isDefault) image =
+            new OverlayImage(image, SkynetGuiPlugin.getInstance().getImageDescriptor("customizeD.gif"),
+                  Location.TOP_RIGHT).createImage();
       imageMap.put(index, image);
       return image;
    }
 
    public String getXml() {
-      StringBuffer sb = new StringBuffer(
-            "<XTreeProperties name=\"" + name + "\" namespace=\"" + nameSpace + "\" guid=\"" + guid + "\">");
+      StringBuffer sb =
+            new StringBuffer(
+                  "<XTreeProperties name=\"" + name + "\" namespace=\"" + nameSpace + "\" guid=\"" + guid + "\">");
       sb.append(sortingData.getXml());
       sb.append(filterData.getXml());
       sb.append(columnData.getXml());

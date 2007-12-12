@@ -47,9 +47,11 @@ public class Transaction2ClickListener implements IDoubleClickListener {
 
    private void openArtifact(TransactionData transactionData) {
       try {
-         TransactionId transactionId = transactionIdManager.getPossiblyEditableTransactionIfFromCache(transactionData.getTransactionNumber());
-         Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(
-               transactionData.getAssociatedArtId(), transactionId);
+         TransactionId transactionId =
+               transactionIdManager.getPossiblyEditableTransactionIfFromCache(transactionData.getTransactionNumber());
+         Artifact artifact =
+               ArtifactPersistenceManager.getInstance().getArtifactFromId(transactionData.getAssociatedArtId(),
+                     transactionId);
          ArtifactEditor.editArtifact(artifact);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);

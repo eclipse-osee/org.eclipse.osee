@@ -63,7 +63,8 @@ public class UpdateToolTip implements MouseTrackListener {
          } else if (elementData instanceof ReggieMonitorServiceNode) {
             ReggieMonitorServiceNode monitorNode = (ReggieMonitorServiceNode) elementData;
 
-            toSet = "Right-Click and select Kill from pop-up menu \n" + "to terminate Lookup Server.\n" + "On: " + monitorNode.getSpawnedReggieOnHost() + "\n" + "Service Id: " + monitorNode.getSpawnedReggieServiceId();
+            toSet =
+                  "Right-Click and select Kill from pop-up menu \n" + "to terminate Lookup Server.\n" + "On: " + monitorNode.getSpawnedReggieOnHost() + "\n" + "Service Id: " + monitorNode.getSpawnedReggieServiceId();
             mainWindow.getServicesViewer().getViewer().getControl().setToolTipText(toSet);
          } else if (elementData instanceof ServiceNode) {
             ServiceNode serviceNode = (ServiceNode) elementData;

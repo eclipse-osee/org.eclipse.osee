@@ -175,8 +175,9 @@ public class XListViewer extends XWidget {
          }
       }
 
-      listViewer = new TableViewer(composite,
-            (multiSelect ? SWT.MULTI : SWT.SINGLE) | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+      listViewer =
+            new TableViewer(composite,
+                  (multiSelect ? SWT.MULTI : SWT.SINGLE) | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
       listViewer.setContentProvider(contentProvider);
       listViewer.setLabelProvider(labelProvider);
       if (sorter != null) listViewer.setSorter(sorter);

@@ -84,8 +84,8 @@ public class GenerateParagraphNumbersAction extends Action {
                if (ex.getMessage().contains("USER CANCELLED")) {
                   toReturn = Status.CANCEL_STATUS;
                } else {
-                  toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(),
-                        ex);
+                  toReturn =
+                        new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
                }
             } finally {
                monitor.done();

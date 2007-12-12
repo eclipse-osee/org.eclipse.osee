@@ -28,13 +28,15 @@ public class XPromptChange {
 
    private final static String VALID_FLOAT_REG_EX = "^[0-9\\.]+$";
    private final static String VALID_INTEGER_REG_EX = "^[0-9]+$";
-   private final static String VALID_PERCENT_REG_EX = "^(0*100{1,1}\\.?((?<=\\.)0*)?%?$)|(^0*\\d{0,2}\\.?((?<=\\.)\\d*)?%?)$";
+   private final static String VALID_PERCENT_REG_EX =
+         "^(0*100{1,1}\\.?((?<=\\.)0*)?%?$)|(^0*\\d{0,2}\\.?((?<=\\.)\\d*)?%?)$";
 
    public static Date promptChangeDate(String displayName, Date currDate) throws SQLException {
       // prompt that current release is (get from attribute); want to
       // change
-      DateSelectionDialog diag = new DateSelectionDialog("Select " + displayName, "Select " + displayName,
-            currDate != null ? currDate : null);
+      DateSelectionDialog diag =
+            new DateSelectionDialog("Select " + displayName, "Select " + displayName,
+                  currDate != null ? currDate : null);
       if (diag.open() == 0) {
          return diag.getSelectedDate();
       }
@@ -42,8 +44,8 @@ public class XPromptChange {
    }
 
    public static EnumStringSingleSelectionDialog promptChangeSingleSelectEnumeration(String displayName, Collection<String> enums, String currSelected) throws SQLException {
-      final EnumStringSingleSelectionDialog diag = new EnumStringSingleSelectionDialog(displayName, displayName, enums,
-            currSelected);
+      final EnumStringSingleSelectionDialog diag =
+            new EnumStringSingleSelectionDialog(displayName, displayName, enums, currSelected);
       if (diag.open() == 0) {
          return diag;
       }
@@ -79,8 +81,9 @@ public class XPromptChange {
    }
 
    public static String promptChangeString(String displayName, String currEntry, String validationRegEx) throws SQLException {
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
-            "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
+                  "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
       if (currEntry != null && !currEntry.equals("")) ed.setEntry(currEntry);
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();
@@ -91,9 +94,10 @@ public class XPromptChange {
    }
 
    public static Boolean promptChangeBoolean(String displayName, String toggleMessage, boolean currSelection) throws SQLException {
-      MessageDialogWithToggle md = new MessageDialogWithToggle(Display.getCurrent().getActiveShell(), displayName,
-            null, displayName, MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, MessageDialog.OK,
-            (toggleMessage != null ? toggleMessage : displayName), currSelection);
+      MessageDialogWithToggle md =
+            new MessageDialogWithToggle(Display.getCurrent().getActiveShell(), displayName, null, displayName,
+                  MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, MessageDialog.OK,
+                  (toggleMessage != null ? toggleMessage : displayName), currSelection);
       int result = md.open();
       if (result == 256) {
          return md.getToggleState();

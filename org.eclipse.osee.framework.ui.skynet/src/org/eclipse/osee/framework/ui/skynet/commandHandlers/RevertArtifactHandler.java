@@ -132,8 +132,9 @@ public class RevertArtifactHandler extends AbstractSelectionHandler {
 
          monitor.subTask("Calculating change set");
 
-         Collection<RevisionChange> revisionChanges = myRevisionManager.getAllTransactionChanges(OUTGOING,
-               baseTransactionId.getTransactionNumber(), toTransactionId.getTransactionNumber(), artId, null);
+         Collection<RevisionChange> revisionChanges =
+               myRevisionManager.getAllTransactionChanges(OUTGOING, baseTransactionId.getTransactionNumber(),
+                     toTransactionId.getTransactionNumber(), artId, null);
          int worstSize = revisionChanges.size();
          Collection<Long> attributeGammas = new ArrayList<Long>(worstSize);
          Collection<Long> linkGammas = new ArrayList<Long>(worstSize);
@@ -246,8 +247,8 @@ public class RevertArtifactHandler extends AbstractSelectionHandler {
       try {
          List<Artifact> mySelectedArtifactList = super.getArtifactList();
          Artifact mySelectedArtifact = mySelectedArtifactList.get(0);
-         boolean writePermission = myAccessControlManager.checkObjectPermission(mySelectedArtifact,
-               PermissionEnum.WRITE);
+         boolean writePermission =
+               myAccessControlManager.checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
          return mySelectedArtifactList.size() > 0 && writePermission;
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, true);

@@ -172,8 +172,8 @@ public class SkynetCustomizations implements IXViewerCustomizations {
             DynamicAttributeManager dam = customizationArtifact.getAttributeManager(CUSTOMIZATION_ATTRIBUTE_NAME);
             for (Attribute attr : dam.getAttributes()) {
                String str = attr.getStringData();
-               Matcher m = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + xViewer.getViewerNamespace() + "\"").matcher(
-                     str);
+               Matcher m =
+                     Pattern.compile("name=\"(.*?)\".*?namespace=\"" + xViewer.getViewerNamespace() + "\"").matcher(str);
                if (m.find()) {
                   CustomizeData custData = new CustomizeData(str, xViewer.getXViewerFactory());
                   custDatas.add(custData);

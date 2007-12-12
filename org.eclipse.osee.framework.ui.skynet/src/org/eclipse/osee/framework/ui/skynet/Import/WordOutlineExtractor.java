@@ -31,20 +31,22 @@ import org.eclipse.osee.framework.skynet.core.util.WordUtil;
  * @author Robert A. Fisher
  */
 public class WordOutlineExtractor extends WordExtractor {
-   private static final String description = "Extract data from a Word XML file with an outline, making an artifact for each outline numbered section";
+   private static final String description =
+         "Extract data from a Word XML file with an outline, making an artifact for each outline numbered section";
    private static final String PARAGRAPH_TAG_WITH_ATTRS = "<w:p ";
    private static final String PARAGRAPH_TAG_EMPTY = "<w:p/>";
    private static final String PARAGRAPH_TAG = "<w:p>";
    private static final String TABLE_TAG_WITH_ATTRS = "<w:tbl ";
    private static final String TABLE_TAG_EMPTY = "<w:tbl/>";
    private static final String TABLE_TAG = "<w:tbl>";
-   private static final CharSequence[] BODY_TAGS = new CharSequence[] {PARAGRAPH_TAG, PARAGRAPH_TAG_EMPTY,
-         PARAGRAPH_TAG_WITH_ATTRS, TABLE_TAG, TABLE_TAG_EMPTY, TABLE_TAG_WITH_ATTRS, BODY_END};
+   private static final CharSequence[] BODY_TAGS =
+         new CharSequence[] {PARAGRAPH_TAG, PARAGRAPH_TAG_EMPTY, PARAGRAPH_TAG_WITH_ATTRS, TABLE_TAG, TABLE_TAG_EMPTY,
+               TABLE_TAG_WITH_ATTRS, BODY_END};
 
    // A regex for reading xml elements. Assumes that an element never has a descendant with the same name as itself
-   private static final Pattern internalAttributeElementsPattern = Pattern.compile(
-         "<((\\w+:)?(\\w+))(\\s+.*?)((/>)|(>(.*?)</\\1>))",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern internalAttributeElementsPattern =
+         Pattern.compile("<((\\w+:)?(\\w+))(\\s+.*?)((/>)|(>(.*?)</\\1>))",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern proofErrTagKiller = Pattern.compile("</?w:proofErr.*?/?>");
    private static final int NAMESPACE_GROUP = 2;
    private static final int ELEMENT_NAME_GROUP = 3;
@@ -196,8 +198,8 @@ public class WordOutlineExtractor extends WordExtractor {
                }
             } else if (reqListMatcher.matches()) {
                if (isListStyle(parentElementNames)) {
-                  listIdentifier = processListId(Integer.parseInt(getAttributeValue("w:val", elementAttributes)),
-                        numberCandidate);
+                  listIdentifier =
+                        processListId(Integer.parseInt(getAttributeValue("w:val", elementAttributes)), numberCandidate);
                }
             }
          }

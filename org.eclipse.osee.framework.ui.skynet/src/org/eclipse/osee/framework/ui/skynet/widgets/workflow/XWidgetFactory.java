@@ -98,8 +98,8 @@ public class XWidgetFactory {
          checkBox.setLabelAfter(labelAfter);
          xWidget = checkBox;
       } else if (xWidgetName.startsWith("XComboDam")) {
-         String values[] = xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(
-               xWidgetLayoutData);
+         String values[] =
+               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
          if (values.length > 0) {
             xWidget = new XComboDam(name);
             XComboDam combo = new XComboDam(name);
@@ -109,8 +109,8 @@ public class XWidgetFactory {
             throw new IllegalArgumentException(
                   "Invalid XComboDam.  " + "Must be \"XComboDam(option1,option2,option3)\"");
       } else if (xWidgetName.startsWith("XCombo")) {
-         String values[] = xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(
-               xWidgetLayoutData);
+         String values[] =
+               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
          if (values.length > 0) {
             XCombo combo = new XCombo(name);
             combo.setDataStrings(values);
@@ -118,8 +118,8 @@ public class XWidgetFactory {
          } else
             throw new IllegalArgumentException("Invalid XCombo.  " + "Must be \"XCombo(option1,option2,option3)\"");
       } else if (xWidgetName.startsWith("XListDam")) {
-         String values[] = xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(
-               xWidgetLayoutData);
+         String values[] =
+               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
          if (values.length > 0) {
             XListDam list = new XListDam(name);
             list.add(values);
@@ -139,8 +139,8 @@ public class XWidgetFactory {
       } else if (xWidgetName.equals("XBranchListViewer")) {
          xWidget = new XBranchListViewer();
       } else if (xWidgetName.startsWith("XList")) {
-         String values[] = xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(
-               xWidgetLayoutData);
+         String values[] =
+               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
          if (values.length > 0) {
             XList list = new XList(name);
             list.add(values);
@@ -161,8 +161,8 @@ public class XWidgetFactory {
    @SuppressWarnings("deprecation")
    private static Set<IXWidgetProvider> getXWidgetProviders() {
       widgetProviders = new HashSet<IXWidgetProvider>();
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.ui.skynet.XWidgetProvider");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.XWidgetProvider");
       if (point == null) {
          OSEELog.logSevere(SkynetGuiPlugin.class, "Can't access XWidgetProvider extension point", true);
          return null;

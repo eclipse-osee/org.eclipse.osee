@@ -125,8 +125,9 @@ public class XRadioButtons extends XWidget {
          super.setFromXml(xml);
       else {
          Matcher m;
-         m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-               xml);
+         m =
+               Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+                     xml);
          if (m.find()) {
             String str = m.group(1);
             String strs[] = str.split(",");

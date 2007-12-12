@@ -244,8 +244,8 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
 
          // Get a new cache with a backup mechanism to the parent if it is available
          if (input.getBaseParentTransactionId() != null) {
-            artifactNameDescriptorCache = new ArtifactNameDescriptorCache(
-                  input.getBaseParentTransactionId().getBranch());
+            artifactNameDescriptorCache =
+                  new ArtifactNameDescriptorCache(input.getBaseParentTransactionId().getBranch());
          }
 
          items = getArtifactChanges(input);
@@ -279,13 +279,16 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       // revisionManager.getNewAndModifiedArtifacts(baseTransaction, toTransaction,
       // true);
 
-      TransactionId headParentTransaction = baseParentTransaction == null ? null : transactionIdManager.getStartEndPoint(
-            baseParentTransaction.getBranch()).getValue();
+      TransactionId headParentTransaction =
+            baseParentTransaction == null ? null : transactionIdManager.getStartEndPoint(
+                  baseParentTransaction.getBranch()).getValue();
 
-      Collection<ArtifactChange> deletedArtChanges = revisionManager.getDeletedArtifactChanges(baseParentTransaction,
-            headParentTransaction, baseTransaction, toTransaction, artifactNameDescriptorCache);
-      Collection<ArtifactChange> newAndModArtChanges = revisionManager.getNewAndModArtifactChanges(
-            baseParentTransaction, headParentTransaction, baseTransaction, toTransaction, artifactNameDescriptorCache);
+      Collection<ArtifactChange> deletedArtChanges =
+            revisionManager.getDeletedArtifactChanges(baseParentTransaction, headParentTransaction, baseTransaction,
+                  toTransaction, artifactNameDescriptorCache);
+      Collection<ArtifactChange> newAndModArtChanges =
+            revisionManager.getNewAndModArtifactChanges(baseParentTransaction, headParentTransaction, baseTransaction,
+                  toTransaction, artifactNameDescriptorCache);
 
       // Combine both the collections into one of them to return one continuous data set
       newAndModArtChanges.addAll(deletedArtChanges);
@@ -301,20 +304,23 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             Map<Integer, Artifact> parentBranchModConflicts = new HashMap<Integer, Artifact>();
             Collection<Integer> parentBranchDelConflicts = new HashSet<Integer>();
 
-            ISearchPrimitive conflictCriteria = new ConflictingArtifactSearch(
-                  baseParentTransaction.getBranch().getBranchId(), baseParentTransaction.getTransactionNumber(),
-                  headParentTransaction.getTransactionNumber(), baseTransaction.getBranch().getBranchId(),
-                  baseTransaction.getTransactionNumber(), toTransaction.getTransactionNumber());
+            ISearchPrimitive conflictCriteria =
+                  new ConflictingArtifactSearch(baseParentTransaction.getBranch().getBranchId(),
+                        baseParentTransaction.getTransactionNumber(), headParentTransaction.getTransactionNumber(),
+                        baseTransaction.getBranch().getBranchId(), baseTransaction.getTransactionNumber(),
+                        toTransaction.getTransactionNumber());
 
             // Collection<Artifact> artModConflicts = artifactManager.getArtifacts(new
             // PrefetchSearch(conflictCriteria, headParentTransaction.getBranch()),
             // headParentTransaction);
-            Collection<Artifact> artModConflicts = artifactManager.getArtifacts(conflictCriteria, headParentTransaction);
+            Collection<Artifact> artModConflicts =
+                  artifactManager.getArtifacts(conflictCriteria, headParentTransaction);
             for (Artifact artifact : artModConflicts)
                parentBranchModConflicts.put(artifact.getArtId(), artifact);
 
-            Collection<ArtifactChange> artDelConflicts = revisionManager.getDeletedArtifactChanges(null, null,
-                  baseParentTransaction, headParentTransaction, null);
+            Collection<ArtifactChange> artDelConflicts =
+                  revisionManager.getDeletedArtifactChanges(null, null, baseParentTransaction, headParentTransaction,
+                        null);
             for (ArtifactChange change : artDelConflicts) {
                parentBranchDelConflicts.add(change.getArtId());
             }

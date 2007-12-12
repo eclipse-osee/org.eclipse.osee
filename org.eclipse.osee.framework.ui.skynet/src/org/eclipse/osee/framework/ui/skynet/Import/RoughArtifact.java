@@ -391,8 +391,8 @@ public class RoughArtifact {
          Artifact artifact = null;
          if (doSearch) {
             try {
-               Collection<Artifact> artifacts = ArtifactPersistenceManager.getInstance().getArtifacts(criteria, true,
-                     branch);
+               Collection<Artifact> artifacts =
+                     ArtifactPersistenceManager.getInstance().getArtifacts(criteria, true, branch);
                if (artifacts.size() > 1) {
                   // throw new IllegalStateException("There is more than one Rough artifact so we'll
                   // just add another new one.");

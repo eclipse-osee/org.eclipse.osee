@@ -51,8 +51,8 @@ public class OseeAuthentication extends AbstractAuthentication {
    private OseeAuthentication() {
       super();
       authenticationProvider = null;
-      authenticationStrategies = new ExtensionDefinedObjects<IAuthenticationStrategy>(EXTENSION_ID, ELEMENT_NAME,
-            "classname");
+      authenticationStrategies =
+            new ExtensionDefinedObjects<IAuthenticationStrategy>(EXTENSION_ID, ELEMENT_NAME, "classname");
       authenticateFromStorage();
    }
 

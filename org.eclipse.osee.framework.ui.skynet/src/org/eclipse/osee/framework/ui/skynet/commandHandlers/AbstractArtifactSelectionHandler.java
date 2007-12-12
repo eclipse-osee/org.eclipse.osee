@@ -47,12 +47,14 @@ public abstract class AbstractArtifactSelectionHandler extends AbstractHandler {
           * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
           */
          public void selectionChanged(SelectionChangedEvent event) {
-            mySelectedArtifactList = Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection());
+            mySelectedArtifactList =
+                  Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection());
             fireHandlerChanged(enabledChangedEvent);
 
          }
       });
-      artifacts = Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection());
+      artifacts =
+            Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection());
    }
 
    /**
@@ -77,8 +79,8 @@ public abstract class AbstractArtifactSelectionHandler extends AbstractHandler {
       boolean permitted = true;
 
       for (Artifact artifact : artifacts) {
-         permitted &= accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), artifact,
-               permissionLevel());
+         permitted &=
+               accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), artifact, permissionLevel());
       }
       return permitted;
    }

@@ -55,8 +55,9 @@ public class ArtifactTreeSearchWidget extends Composite implements IViewer {
 
    private void createTreeArea(Composite parent) {
       inputManager = new InputManager<ArtifactTypeNode>();
-      treeViewer = new CheckboxTreeViewer(parent,
-            SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+      treeViewer =
+            new CheckboxTreeViewer(parent,
+                  SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.setContentProvider(new TreeContentProvider());
       treeViewer.setLabelProvider(new TreeLableProvider());

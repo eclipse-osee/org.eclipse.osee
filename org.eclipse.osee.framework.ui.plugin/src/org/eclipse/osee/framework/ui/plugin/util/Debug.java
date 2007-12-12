@@ -163,7 +163,8 @@ public abstract class Debug {
       if (timeStampOn) {
          Calendar cal = Calendar.getInstance();
          cal.setTime(new Date());
-         timeStr = "(" + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND) + ") ";
+         timeStr =
+               "(" + cal.get(Calendar.HOUR) + ":" + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND) + ") ";
       }
       if (!nameSpace.equals("")) {
          String instStr = "";

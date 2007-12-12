@@ -74,7 +74,8 @@ public abstract class SqlManager {
          columnTypes.add(type);
       }
 
-      String toExecute = "INSERT INTO " + formatQuotedString(tableMetadata.getFullyQualifiedTableName(), "\\.") + " (\n";
+      String toExecute =
+            "INSERT INTO " + formatQuotedString(tableMetadata.getFullyQualifiedTableName(), "\\.") + " (\n";
       toExecute += StringFormat.listToCommaSeparatedString(columnNames);
       toExecute += "\n) VALUES (\n";
       toExecute += StringFormat.listToCommaSeparatedString(placeHolders);
@@ -264,8 +265,9 @@ public abstract class SqlManager {
                appliesTo.append(", ");
             }
          }
-         String toExecute = String.format(CREATE_STRING + " " + iData.getIndexType() + " INDEX %s ON %s (%s)", indexId,
-               tableName, appliesTo);
+         String toExecute =
+               String.format(CREATE_STRING + " " + iData.getIndexType() + " INDEX %s ON %s (%s)", indexId, tableName,
+                     appliesTo);
          logger.log(Level.INFO, toExecute + "\n");
          executeStatement(connection, toExecute);
       }

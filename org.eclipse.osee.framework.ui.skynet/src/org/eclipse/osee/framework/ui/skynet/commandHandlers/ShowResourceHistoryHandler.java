@@ -44,10 +44,11 @@ public class ShowResourceHistoryHandler extends AbstractSelectionHandler {
          try {
             Artifact selectedArtifact = mySelectedArtifactChange.getArtifact();
 
-            RevisionHistoryView revisionHistoryView = (RevisionHistoryView) page.showView(
-                  RevisionHistoryView.VIEW_ID,
-                  selectedArtifact != null ? selectedArtifact.getGuid() : Integer.toString(mySelectedArtifactChange.getArtId()),
-                  IWorkbenchPage.VIEW_ACTIVATE);
+            RevisionHistoryView revisionHistoryView =
+                  (RevisionHistoryView) page.showView(
+                        RevisionHistoryView.VIEW_ID,
+                        selectedArtifact != null ? selectedArtifact.getGuid() : Integer.toString(mySelectedArtifactChange.getArtId()),
+                        IWorkbenchPage.VIEW_ACTIVATE);
             revisionHistoryView.explore(selectedArtifact);
          } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, true);

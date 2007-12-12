@@ -77,7 +77,8 @@ public class WordCompareTest {
       if (result == null) {
          // Try to find class definition as a resource
          final ClassLoader classLoader = classToFind.getClassLoader();
-         result = classLoader != null ? classLoader.getResource(classAsResource) : ClassLoader.getSystemResource(classAsResource);
+         result =
+               classLoader != null ? classLoader.getResource(classAsResource) : ClassLoader.getSystemResource(classAsResource);
       }
       return result;
    }
@@ -118,11 +119,12 @@ public class WordCompareTest {
          }
 
          // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
-         String cmd[] = {
-               "cmd",
-               "/s /c",
-               "\"" + vbDiffScript.getPath() + "\"",
-               "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getAbsolutePath() + "\" /ver2:\"" + newerFile.getAbsolutePath()};
+         String cmd[] =
+               {
+                     "cmd",
+                     "/s /c",
+                     "\"" + vbDiffScript.getPath() + "\"",
+                     "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getAbsolutePath() + "\" /ver2:\"" + newerFile.getAbsolutePath()};
 
          Process proc = Runtime.getRuntime().exec(cmd);
 

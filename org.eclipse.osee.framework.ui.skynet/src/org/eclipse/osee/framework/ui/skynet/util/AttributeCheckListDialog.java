@@ -87,8 +87,9 @@ public class AttributeCheckListDialog extends SelectionDialog {
       comp.setLayout(new GridLayout(2, false));
       comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      treeViewer = new CheckboxTreeViewer(comp,
-            SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+      treeViewer =
+            new CheckboxTreeViewer(comp,
+                  SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.setContentProvider(new ArtifactTreeContentProvider());
       treeViewer.setSorter(new AttributeViewerSorter());

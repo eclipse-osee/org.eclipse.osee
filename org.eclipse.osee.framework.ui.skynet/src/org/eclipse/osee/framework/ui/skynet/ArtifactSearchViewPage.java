@@ -130,8 +130,9 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    private ArtifactLabelProvider artifactLabelProvider;
    private IGlobalMenuHelper globalMenuHelper;
 
-   private static String[] partitions = new String[] {"ACS", "ARC201", "ARC231", "ASE", "CND", "COMM", "HM", "IOP",
-         "MPEGP", "MPEGR", "MSM", "NAV", "NCO", "REND_H", "REND_L", "REND_R", "REND_T", "SSRD_GW", "USM", "VAM", "WPS"};
+   private static String[] partitions =
+         new String[] {"ACS", "ARC201", "ARC231", "ASE", "CND", "COMM", "HM", "IOP", "MPEGP", "MPEGR", "MSM", "NAV",
+               "NCO", "REND_H", "REND_L", "REND_R", "REND_T", "SSRD_GW", "USM", "VAM", "WPS"};
 
    public static class DecoratorIgnoringViewerSorter extends ViewerSorter {
       private final ILabelProvider aLabelProvider;
@@ -298,9 +299,9 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    }
 
    private void createViewTableMenuItem(MenuManager menuManager, final TableViewer viewer) {
-      CommandContributionItem openArtifactsCommand = Commands.getLocalCommandContribution(
-            ArtifactSearchViewPage.VIEW_ID, getSite(), "viewTableCommand", "View Table Report", null, null, null, "V",
-            null, null);
+      CommandContributionItem openArtifactsCommand =
+            Commands.getLocalCommandContribution(ArtifactSearchViewPage.VIEW_ID, getSite(), "viewTableCommand",
+                  "View Table Report", null, null, null, "V", null, null);
 
       menuManager.add(openArtifactsCommand);
 
@@ -321,8 +322,8 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    }
 
    private void createDynamicReportMenuItems(Menu parentMenu, SelectionListener listener) {
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.ui.skynet.ArtifactReport");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.ArtifactReport");
       for (IExtension extension : point.getExtensions()) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
          String classname = null;
@@ -390,9 +391,9 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    //   }
 
    private void createExportMenuItem(MenuManager menuManager, final TableViewer viewer) {
-      CommandContributionItem openArtifactsCommand = Commands.getLocalCommandContribution(
-            ArtifactSearchViewPage.VIEW_ID, getSite(), "createExportCommand", "Export Artifact(s)", null, null, null,
-            "V", null, null);
+      CommandContributionItem openArtifactsCommand =
+            Commands.getLocalCommandContribution(ArtifactSearchViewPage.VIEW_ID, getSite(), "createExportCommand",
+                  "Export Artifact(s)", null, null, null, "V", null, null);
       menuManager.add(openArtifactsCommand);
 
       handlerService.activateHandler(openArtifactsCommand.getId(),
@@ -465,8 +466,9 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
             Artifact selectedArtifact = getSelectedArtifact(viewer);
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
-               RevisionHistoryView revisionHistoryView = (RevisionHistoryView) page.showView(
-                     RevisionHistoryView.VIEW_ID, selectedArtifact.getGuid(), IWorkbenchPage.VIEW_ACTIVATE);
+               RevisionHistoryView revisionHistoryView =
+                     (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, selectedArtifact.getGuid(),
+                           IWorkbenchPage.VIEW_ACTIVATE);
                revisionHistoryView.explore(selectedArtifact);
             } catch (Exception ex) {
                logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -476,9 +478,9 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    }
 
    private void createShowInExplorerMenuItem(MenuManager menuManager, final TableViewer viewer) {
-      CommandContributionItem openArtifactsCommand = Commands.getLocalCommandContribution(
-            ArtifactSearchViewPage.VIEW_ID, getSite(), "showInArtifactExplorerCommand", "Show in Artifact Explorer",
-            null, null, null, "V", null, null);
+      CommandContributionItem openArtifactsCommand =
+            Commands.getLocalCommandContribution(ArtifactSearchViewPage.VIEW_ID, getSite(),
+                  "showInArtifactExplorerCommand", "Show in Artifact Explorer", null, null, null, "V", null, null);
       menuManager.add(openArtifactsCommand);
 
       handlerService.activateHandler(openArtifactsCommand.getId(),

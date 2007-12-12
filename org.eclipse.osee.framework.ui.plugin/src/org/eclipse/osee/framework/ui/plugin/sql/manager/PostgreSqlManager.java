@@ -56,8 +56,8 @@ public class PostgreSqlManager extends SqlManagerImpl {
       String toExecute = "CREATE TABLE " + tableDef.getFullyQualifiedTableName() + " ( \n";
       toExecute += handleColumnCreationSection(connection, tableDef.getColumns());
       toExecute += handleConstraintCreationSection(tableDef.getConstraints(), tableDef.getFullyQualifiedTableName());
-      toExecute += handleConstraintCreationSection(tableDef.getForeignKeyConstraints(),
-            tableDef.getFullyQualifiedTableName());
+      toExecute +=
+            handleConstraintCreationSection(tableDef.getForeignKeyConstraints(), tableDef.getFullyQualifiedTableName());
       toExecute += " \n)\n";
       logger.log(Level.INFO, "Creating Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       executeStatement(connection, toExecute);
@@ -177,8 +177,9 @@ public class PostgreSqlManager extends SqlManagerImpl {
                appliesTo.append(", ");
             }
          }
-         String toExecute = String.format(CREATE_STRING + " " + iData.getIndexType() + " INDEX %s ON %s (%s)", indexId,
-               tableName, appliesTo);
+         String toExecute =
+               String.format(CREATE_STRING + " " + iData.getIndexType() + " INDEX %s ON %s (%s)", indexId, tableName,
+                     appliesTo);
          logger.log(Level.INFO, toExecute);
          executeStatement(connection, toExecute);
       }

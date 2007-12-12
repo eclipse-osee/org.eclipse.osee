@@ -55,7 +55,8 @@ public class SkynetArtifactAdapter {
    public Map<String, Map<String, Integer>> getBranchRevisions() {
       Map<String, Map<String, Integer>> map = new HashMap<String, Map<String, Integer>>();
       try {
-         ConnectionHandlerStatement statement = ConnectionHandler.runPreparedQuery(SkynetRevisionControl.SELECT_REVISION);
+         ConnectionHandlerStatement statement =
+               ConnectionHandler.runPreparedQuery(SkynetRevisionControl.SELECT_REVISION);
          ResultSet rSet = statement.getRset();
          while (rSet.next()) {
             int branchId = rSet.getInt("branchId");
@@ -79,8 +80,9 @@ public class SkynetArtifactAdapter {
 
    private Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactTypeId(int artTypeid, int branchId, int revision) throws SQLException {
       Collection<DynamicAttributeDescriptor> attributes = new LinkedList<DynamicAttributeDescriptor>();
-      String sql = skynetSql.getMetaDataSql().getAttributeTypeBy("art_type_id", Integer.toString(artTypeid), branchId,
-            revision);
+      String sql =
+            skynetSql.getMetaDataSql().getAttributeTypeBy("art_type_id", Integer.toString(artTypeid), branchId,
+                  revision);
       try {
          Query.acquireCollection(attributes, sql, new DynamicAttributeTypeProcessor(branchManager.getBranch(branchId)));
       } catch (SQLException ex) {
@@ -91,19 +93,21 @@ public class SkynetArtifactAdapter {
 
    private Collection<IRelationLinkDescriptor> getIRelationLinkDescriptorsFromArtifactTypeId(int artTypeid, int branchId, final int revision) throws SQLException {
       Collection<IRelationLinkDescriptor> relationsTypes = new LinkedList<IRelationLinkDescriptor>();
-      String sql = skynetSql.getMetaDataSql().getRelationTypeBy("art_type_id", Integer.toString(artTypeid), branchId,
-            revision);
+      String sql =
+            skynetSql.getMetaDataSql().getRelationTypeBy("art_type_id", Integer.toString(artTypeid), branchId, revision);
       try {
          Query.acquireCollection(relationsTypes, sql, new RsetProcessor<IRelationLinkDescriptor>() {
             public IRelationLinkDescriptor process(ResultSet set) throws SQLException {
                IRelationLinkDescriptor descriptor = null;
                try {
 
-                  TransactionId transactionId = transactionIdManager.getEditableTransactionId(branchManager.getDefaultBranch());
+                  TransactionId transactionId =
+                        transactionIdManager.getEditableTransactionId(branchManager.getDefaultBranch());
 
-                  descriptor = new DynamicRelationLinkDescriptor(set.getString("type_name"), set.getString("a_name"),
-                        set.getString("b_name"), set.getString("ab_phrasing"), set.getString("ba_phrasing"),
-                        set.getString("short_name"), transactionId);
+                  descriptor =
+                        new DynamicRelationLinkDescriptor(set.getString("type_name"), set.getString("a_name"),
+                              set.getString("b_name"), set.getString("ab_phrasing"), set.getString("ba_phrasing"),
+                              set.getString("short_name"), transactionId);
                   descriptor.setPersistenceMemo(new LinkDescriptorPersistenceMemo(set.getInt("rel_link_type_id")));
 
                } catch (Exception ex) {
@@ -127,8 +131,9 @@ public class SkynetArtifactAdapter {
    private Collection<ArtifactSubtypeDescriptor> getArtifactTypeDescriptorsFromRelationLinkId(int relationLinkId, int branchId, int revision) throws SQLException {
       Collection<ArtifactSubtypeDescriptor> descriptors = new LinkedList<ArtifactSubtypeDescriptor>();
 
-      String sql = skynetSql.getMetaDataSql().getArtifactTypesWithRelationTypesById("rel_link_type_id",
-            Integer.toString(relationLinkId), branchId, revision);
+      String sql =
+            skynetSql.getMetaDataSql().getArtifactTypesWithRelationTypesById("rel_link_type_id",
+                  Integer.toString(relationLinkId), branchId, revision);
       try {
          Query.acquireCollection(descriptors, sql, new ArtifactSubtypeProcessor(branchManager.getDefaultBranch()));
       } catch (SQLException ex) {

@@ -129,7 +129,8 @@ public class XResultPage {
 
    public String getManipulatedHtml(Collection<Manipulations> manipulations) {
       if (manipulatedHtml == null) {
-         String str = (manipulations.contains(Manipulations.ERROR_WARNING_HEADER) ? getErrorWarningHtml() : "") + getText();
+         String str =
+               (manipulations.contains(Manipulations.ERROR_WARNING_HEADER) ? getErrorWarningHtml() : "") + getText();
          if (manipulations.contains(Manipulations.RAW_HTML)) {
             str = AHTML.simplePage(str);
          } else {
@@ -182,8 +183,9 @@ public class XResultPage {
                }
             }
             if (manipulations.contains(Manipulations.HRID_ATS_HYPER)) {
-               Matcher m = Pattern.compile(
-                     "(?<![A-Za-z0-9])([A-Z0-9]{1}[B-DF-HJ-NP-TV-Z0-9]{3}[A-Z0-9]{1})(?![A-Za-z0-9])").matcher(str);
+               Matcher m =
+                     Pattern.compile("(?<![A-Za-z0-9])([A-Z0-9]{1}[B-DF-HJ-NP-TV-Z0-9]{3}[A-Z0-9]{1})(?![A-Za-z0-9])").matcher(
+                           str);
                Set<String> hrids = new HashSet<String>();
                while (m.find())
                   hrids.add(m.group(1));

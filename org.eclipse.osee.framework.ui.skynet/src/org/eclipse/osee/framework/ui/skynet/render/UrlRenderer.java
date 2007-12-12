@@ -28,7 +28,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
  */
 public class UrlRenderer extends Renderer {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UrlRenderer.class);
-   private static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
    private Collection<ArtifactSubtypeDescriptor> descriptors;
 
    /**
@@ -36,8 +37,9 @@ public class UrlRenderer extends Renderer {
     */
    public UrlRenderer() {
       try {
-         descriptors = configurationPersistenceManager.getArtifactSubtypeDescriptorsForAttribute(configurationPersistenceManager.getDynamicAttributeType(
-               "Content URL", BranchPersistenceManager.getInstance().getCommonBranch()));
+         descriptors =
+               configurationPersistenceManager.getArtifactSubtypeDescriptorsForAttribute(configurationPersistenceManager.getDynamicAttributeType(
+                     "Content URL", BranchPersistenceManager.getInstance().getCommonBranch()));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, "", ex);
       }

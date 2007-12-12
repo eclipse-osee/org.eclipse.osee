@@ -86,15 +86,15 @@ public class DBConnection {
 
    private static void populateConnections() {
       Bundle bundle = PluginCoreActivator.getInstance().getBundle();
-      List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(
-            bundle.getSymbolicName() + ".JdbcConnection", "Connection");
+      List<IConfigurationElement> elements =
+            ExtensionPoints.getExtensionElements(bundle.getSymbolicName() + ".JdbcConnection", "Connection");
 
       for (IConfigurationElement element : elements) {
          String connectionClass = element.getAttribute("ConnectionFactory");
          String driver = element.getAttribute("Driver");
          try {
-            IConnection connection = (IConnection) Platform.getBundle(element.getContributor().getName()).loadClass(
-                  connectionClass).newInstance();
+            IConnection connection =
+                  (IConnection) Platform.getBundle(element.getContributor().getName()).loadClass(connectionClass).newInstance();
             connections.put(driver, connection);
          } catch (InstantiationException ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
@@ -125,10 +125,10 @@ public class DBConnection {
    }
 
    public static void insertDbVersion() throws SQLException {
-      String query = String.format("INSERT INTO %s (OSEE_KEY,OSEE_VALUE) VALUES ('version', '%s')", OSEE_INFO_TABLE,
-            codeVersion);
-      Statement statement = getNewConnection(ConfigUtil.getConfigFactory().getOseeConfig().getDefaultClientData(),
-            false).createStatement();
+      String query =
+            String.format("INSERT INTO %s (OSEE_KEY,OSEE_VALUE) VALUES ('version', '%s')", OSEE_INFO_TABLE, codeVersion);
+      Statement statement =
+            getNewConnection(ConfigUtil.getConfigFactory().getOseeConfig().getDefaultClientData(), false).createStatement();
       statement.executeUpdate(query);
       statement.close();
    }

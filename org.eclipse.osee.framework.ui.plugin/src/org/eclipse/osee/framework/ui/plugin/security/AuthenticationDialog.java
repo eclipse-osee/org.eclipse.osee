@@ -128,7 +128,8 @@ public class AuthenticationDialog extends OseeMessageDialog {
                   toReturn = "User Id not found.\n" + "Enter your user id.";
                   break;
                case InvalidPassword:
-                  toReturn = "Invalid Password.\n" + "Make sure <CAPS LOCK> is not enabled.\n" + "Enter a valid password.";
+                  toReturn =
+                        "Invalid Password.\n" + "Make sure <CAPS LOCK> is not enabled.\n" + "Enter a valid password.";
                   break;
                case NoResponse:
                   toReturn = "Please enter a valid user id and password.";
@@ -175,7 +176,8 @@ public class AuthenticationDialog extends OseeMessageDialog {
                      message = "Maximum number of Retries reached.\n" + endMsg;
                      shutdown = true;
                   } else {
-                     message = "Please log in as Guest or with your credentials.\n" + "A Log-in account is required to continue.";
+                     message =
+                           "Please log in as Guest or with your credentials.\n" + "A Log-in account is required to continue.";
                   }
 
                   MessageDialog.openError(shell, "Authentication Cancelled", message);

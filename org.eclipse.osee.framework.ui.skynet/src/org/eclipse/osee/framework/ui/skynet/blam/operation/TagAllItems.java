@@ -35,8 +35,8 @@ public class TagAllItems implements BlamOperation {
          Branch branch = (Branch) variableMap.getValue("Branch");
 
          monitor.setTaskName("Loading Artifact Type Descriptors");
-         Collection<ArtifactSubtypeDescriptor> descriptors = ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors(
-               branch);
+         Collection<ArtifactSubtypeDescriptor> descriptors =
+               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors(branch);
 
          monitor.beginTask("Tagging Artifacts", descriptors.size());
 

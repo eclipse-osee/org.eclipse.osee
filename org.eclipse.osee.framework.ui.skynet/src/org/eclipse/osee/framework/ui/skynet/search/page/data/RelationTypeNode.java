@@ -58,8 +58,9 @@ public class RelationTypeNode extends TreeParent implements Comparable<RelationT
    }
 
    public void populateChildArtifactTypeNodes() {
-      Collection<ArtifactSubtypeDescriptor> descriptors = SkynetArtifactAdapter.getInstance().getValidArtifactTypesForRelationLink(
-            relationLinkDescriptor, branchId, revision);
+      Collection<ArtifactSubtypeDescriptor> descriptors =
+            SkynetArtifactAdapter.getInstance().getValidArtifactTypesForRelationLink(relationLinkDescriptor, branchId,
+                  revision);
       if (descriptors != null && (descriptors.size() > 0)) {
          childArtifactTypeNodes.clear();
          for (ArtifactSubtypeDescriptor descriptor : descriptors) {

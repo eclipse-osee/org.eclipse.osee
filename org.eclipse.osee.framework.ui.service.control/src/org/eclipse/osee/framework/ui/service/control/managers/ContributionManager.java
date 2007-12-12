@@ -66,7 +66,8 @@ public class ContributionManager extends ClassLoader {
       if (extensionRegistryMap.size() != 0) return;
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
       if (extensionRegistry != null) {
-         IExtensionPoint point = extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.ui.service.control.ServiceView");
+         IExtensionPoint point =
+               extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.ui.service.control.ServiceView");
          if (point != null) {
             IExtension[] extensions = point.getExtensions();
             for (IExtension extension : extensions) {

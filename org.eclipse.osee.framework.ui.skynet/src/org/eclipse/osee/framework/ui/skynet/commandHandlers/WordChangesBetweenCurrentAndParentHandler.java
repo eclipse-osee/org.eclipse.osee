@@ -31,7 +31,8 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Paul K. Waldfogel
  */
 public class WordChangesBetweenCurrentAndParentHandler extends AbstractSelectionHandler {
-   private static final ArtifactPersistenceManager myArtifactPersistenceManager = ArtifactPersistenceManager.getInstance();
+   private static final ArtifactPersistenceManager myArtifactPersistenceManager =
+         ArtifactPersistenceManager.getInstance();
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
 
@@ -52,8 +53,9 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractSelection
          ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
          TransactionId toTransactionId = getChangeReportInputNewList.get(0).getToTransaction();
          try {
-            Artifact secondArtifact = myArtifactPersistenceManager.getArtifactFromId(
-                  selectedArtifactChange.getArtifact().getArtId(), toTransactionId);
+            Artifact secondArtifact =
+                  myArtifactPersistenceManager.getArtifactFromId(selectedArtifactChange.getArtifact().getArtId(),
+                        toTransactionId);
             RendererManager.getInstance().compareInJob(selectedArtifactChange.getConflictingModArtifact(),
                   secondArtifact, DIFF_ARTIFACT);
          } catch (Exception ex) {
@@ -84,7 +86,8 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractSelection
          boolean readPermission = myAccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
          boolean wordArtifactSelected = changedArtifact instanceof WordArtifact;
          boolean modifiedWordArtifactSelected = wordArtifactSelected && mySelectedArtifactChange.getModType() == CHANGE;
-         boolean conflictedWordArtifactSelected = modifiedWordArtifactSelected && mySelectedArtifactChange.getChangeType() == ChangeType.CONFLICTING;
+         boolean conflictedWordArtifactSelected =
+               modifiedWordArtifactSelected && mySelectedArtifactChange.getChangeType() == ChangeType.CONFLICTING;
          return readPermission && conflictedWordArtifactSelected;
       } catch (SQLException ex) {
          OSEELog.logException(getClass(), ex, true);

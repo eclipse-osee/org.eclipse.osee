@@ -143,8 +143,9 @@ public class EclipseApplicationLaunchWidget implements ILaunchWidget {
             if (null != groupSelector) {
                serviceInfo.getServiceItem().setJiniGroup(groupSelector.getJiniGroupVmArg());
             }
-            Job job = new EclipseApplicationLaunchJob("Eclipse Application Launch", javaCompiler, latestPlugin,
-                  serviceInfo, displayHelper);
+            Job job =
+                  new EclipseApplicationLaunchJob("Eclipse Application Launch", javaCompiler, latestPlugin,
+                        serviceInfo, displayHelper);
             job.setUser(true);
             job.setPriority(Job.LONG);
             job.schedule();

@@ -102,14 +102,17 @@ public class ArtifactPreviewMenu {
                   } else if (object instanceof TransactionData) {
                      TransactionData firstTransactionData = (TransactionData) object;
 
-                     TransactionId firstTransactionId = transactionIdManager.getNonEditableTransactionId(firstTransactionData.getTransactionNumber());
-                     artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                           firstTransactionData.getAssociatedArtId(), firstTransactionId);
+                     TransactionId firstTransactionId =
+                           transactionIdManager.getNonEditableTransactionId(firstTransactionData.getTransactionNumber());
+                     artifact =
+                           ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                                 firstTransactionData.getAssociatedArtId(), firstTransactionId);
                   }
 
                   if (artifact != null) {
-                     permitted &= accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), artifact,
-                           PermissionEnum.READ);
+                     permitted &=
+                           accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), artifact,
+                                 PermissionEnum.READ);
                   }
 
                   previewMenuItem.setEnabled(permitted);
@@ -142,7 +145,8 @@ public class ArtifactPreviewMenu {
                else if (firstElement instanceof TransactionData) {
                   TransactionData firstTransactionData = (TransactionData) firstElement;
 
-                  TransactionId firstTransactionId = transactionIdManager.getNonEditableTransactionId(firstTransactionData.getTransactionNumber());
+                  TransactionId firstTransactionId =
+                        transactionIdManager.getNonEditableTransactionId(firstTransactionData.getTransactionNumber());
                   selectedItems.add(ArtifactPersistenceManager.getInstance().getArtifactFromId(
                         firstTransactionData.getAssociatedArtId(), firstTransactionId));
                } else {

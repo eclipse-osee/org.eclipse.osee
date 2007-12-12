@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 public class WordTemplateManager {
 
    public static void addWordTemplates(Branch programBranch) throws Exception {
-      Artifact programRoot = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch,
-            true);
+      Artifact programRoot =
+            ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch, true);
 
-      ArtifactSubtypeDescriptor descriptor = ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            "Folder", programBranch);
+      ArtifactSubtypeDescriptor descriptor =
+            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Folder", programBranch);
       Artifact documentFolder = descriptor.makeNewArtifact();
       documentFolder.setDescriptiveName("Document Templates");
       programRoot.addChild(documentFolder);
@@ -43,8 +43,8 @@ public class WordTemplateManager {
    }
 
    private static void createDocumentTemplates(Artifact documentFolder, ArtifactSubtypeDescriptor documentDescriptor) throws SQLException, IOException {
-      WordRenderer wordRenderer = (WordRenderer) RendererManager.getInstance().getRendererById(
-            "org.eclipse.osee.framework.ui.skynet.word");
+      WordRenderer wordRenderer =
+            (WordRenderer) RendererManager.getInstance().getRendererById("org.eclipse.osee.framework.ui.skynet.word");
       for (PresentationType presentationType : PresentationType.values()) {
          Artifact document = documentDescriptor.makeNewArtifact();
          documentFolder.addChild(document);

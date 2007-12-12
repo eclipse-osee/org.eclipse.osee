@@ -157,7 +157,8 @@ public class AWorkspace {
                   } else if ((delta.getKind() & IResourceDelta.REMOVED) > 0) {
                      removeFile(file);
                   }
-                  IResourceDelta[] deltas = delta.getAffectedChildren(IResourceDelta.ADDED | IResourceDelta.REMOVED | IResourceDelta.CHANGED);
+                  IResourceDelta[] deltas =
+                        delta.getAffectedChildren(IResourceDelta.ADDED | IResourceDelta.REMOVED | IResourceDelta.CHANGED);
                   for (IResourceDelta d : deltas) {
                      recDeltaInfo(d);
                   }
@@ -176,8 +177,8 @@ public class AWorkspace {
                   logger.log(Level.INFO, "saving...");
 
                   try {
-                     ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
-                           OseeData.getFile("serializedFileFinder")));
+                     ObjectOutputStream oos =
+                           new ObjectOutputStream(new FileOutputStream(OseeData.getFile("serializedFileFinder")));
                      oos.writeObject(fileSearch);
 
                      oos = new ObjectOutputStream(new FileOutputStream(OseeData.getFile("fileFindMap")));
@@ -320,8 +321,8 @@ public class AWorkspace {
       }
       IWorkbenchPage page = AWorkbench.getActivePage();
       try {
-         IViewPart viewPart = page.showView("org.eclipse.ui.views.ResourceNavigator", null,
-               IWorkbenchPage.VIEW_ACTIVATE);
+         IViewPart viewPart =
+               page.showView("org.eclipse.ui.views.ResourceNavigator", null, IWorkbenchPage.VIEW_ACTIVATE);
 
          if (viewPart != null && viewPart instanceof ResourceNavigator) {
             ResourceNavigator resourceNavigator = (ResourceNavigator) viewPart;
@@ -354,8 +355,9 @@ public class AWorkspace {
 
    public static boolean showInPackageExplorer(IFile file) {
       if (file == null) return false;
-      IViewPart p = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-            "org.eclipse.jdt.ui.PackageExplorer");
+      IViewPart p =
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                  "org.eclipse.jdt.ui.PackageExplorer");
       if (p != null && p instanceof IPackagesViewPart) {
          StructuredSelection ss = new StructuredSelection(file);
          IPackagesViewPart rn = (IPackagesViewPart) p;

@@ -20,9 +20,12 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 public class OseeSequenceManager {
    private static final String SEQUENCE_NAME = "SEQUENCE_NAME";
    private static final String LAST_SEQUENCE = "LAST_SEQUENCE";
-   private static final String QUERY_SEQUENCE = "SELECT " + LAST_SEQUENCE + " FROM " + SEQUENCE_TABLE + " WHERE " + SEQUENCE_NAME + " = ? ";
-   private static final String INSERT_SEQUENCE = "INSERT INTO " + SEQUENCE_TABLE + " ( " + LAST_SEQUENCE + ", " + SEQUENCE_NAME + ") VALUES (?,?)";
-   private static final String UPDATE_SEQUENCE = "UPDATE " + SEQUENCE_TABLE + " SET " + LAST_SEQUENCE + " = ? WHERE " + SEQUENCE_NAME + " = ? AND " + LAST_SEQUENCE + " = ?";
+   private static final String QUERY_SEQUENCE =
+         "SELECT " + LAST_SEQUENCE + " FROM " + SEQUENCE_TABLE + " WHERE " + SEQUENCE_NAME + " = ? ";
+   private static final String INSERT_SEQUENCE =
+         "INSERT INTO " + SEQUENCE_TABLE + " ( " + LAST_SEQUENCE + ", " + SEQUENCE_NAME + ") VALUES (?,?)";
+   private static final String UPDATE_SEQUENCE =
+         "UPDATE " + SEQUENCE_TABLE + " SET " + LAST_SEQUENCE + " = ? WHERE " + SEQUENCE_NAME + " = ? AND " + LAST_SEQUENCE + " = ?";
 
    private HashMap<String, SequenceRange> sequences;
 
@@ -59,14 +62,16 @@ public class OseeSequenceManager {
    }
 
    private boolean updateSequenceValue(String sequenceName, long value, long lastValue) throws SQLException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.runPreparedUpdateReturnStmt(true, UPDATE_SEQUENCE,
-            SQL3DataType.BIGINT, value, SQL3DataType.VARCHAR, sequenceName, SQL3DataType.BIGINT, lastValue);
+      ConnectionHandlerStatement chStmt =
+            ConnectionHandler.runPreparedUpdateReturnStmt(true, UPDATE_SEQUENCE, SQL3DataType.BIGINT, value,
+                  SQL3DataType.VARCHAR, sequenceName, SQL3DataType.BIGINT, lastValue);
       return modifySequenceValue(chStmt);
    }
 
    private boolean insertSequenceValue(String sequenceName, long value) throws SQLException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.runPreparedUpdateReturnStmt(true, INSERT_SEQUENCE,
-            SQL3DataType.BIGINT, value, SQL3DataType.VARCHAR, sequenceName);
+      ConnectionHandlerStatement chStmt =
+            ConnectionHandler.runPreparedUpdateReturnStmt(true, INSERT_SEQUENCE, SQL3DataType.BIGINT, value,
+                  SQL3DataType.VARCHAR, sequenceName);
       return modifySequenceValue(chStmt);
    }
 

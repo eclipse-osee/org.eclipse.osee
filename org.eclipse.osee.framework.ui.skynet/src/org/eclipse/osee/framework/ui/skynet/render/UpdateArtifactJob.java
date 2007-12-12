@@ -178,8 +178,8 @@ public class UpdateArtifactJob extends UpdateJob {
                         WordRenderer.getFormattedContent(oleDataElement)));
                }
 
-               String content = Lib.inputStreamToString(new ByteArrayInputStream(
-                     WordRenderer.getFormattedContent(artElement)));
+               String content =
+                     Lib.inputStreamToString(new ByteArrayInputStream(WordRenderer.getFormattedContent(artElement)));
                StringBuilder stringBuffer = new StringBuilder();
 
                // Decided not to support multi edit of artifacts that contain equations.

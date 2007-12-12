@@ -72,15 +72,18 @@ public class GlobalMenuPermissions {
 
       for (Artifact objectArtifact : artifacts) {
 
-         writePermission &= accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), objectArtifact,
-               PermissionEnum.WRITE);
-         readPermission &= accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), objectArtifact,
-               PermissionEnum.READ);
-         fullAccess &= accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), objectArtifact,
-               PermissionEnum.FULLACCESS);
+         writePermission &=
+               accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), objectArtifact,
+                     PermissionEnum.WRITE);
+         readPermission &=
+               accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), objectArtifact,
+                     PermissionEnum.READ);
+         fullAccess &=
+               accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), objectArtifact,
+                     PermissionEnum.FULLACCESS);
          isLocked |= accessManager.hasLock(objectArtifact);
-         defaultBranchReadable = accessManager.checkObjectPermission(branchManager.getDefaultBranch(),
-               PermissionEnum.READ);
+         defaultBranchReadable =
+               accessManager.checkObjectPermission(branchManager.getDefaultBranch(), PermissionEnum.READ);
          accessToRemoveLock &= accessManager.canUnlockObject(objectArtifact, skynetAuth.getAuthenticatedUser());
 
          // acquire the name of the subject that has the lock

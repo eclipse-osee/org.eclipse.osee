@@ -106,8 +106,9 @@ public class OutlineContentHandlerPage extends WizardDataTransferPage implements
    private void initList() {
       java.util.List<IWordOutlineContentHandler> extensionPointHandlers = new LinkedList<IWordOutlineContentHandler>();
 
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.ui.skynet.WordOutlineContentHandler");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint(
+                  "org.eclipse.osee.framework.ui.skynet.WordOutlineContentHandler");
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();

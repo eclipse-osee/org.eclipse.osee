@@ -28,8 +28,8 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
  */
 public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
 
-   private XRadioButton addSelectedRadioButton = new XRadioButton(
-         "Add selected item(s) to existing if not already chosen.");
+   private XRadioButton addSelectedRadioButton =
+         new XRadioButton("Add selected item(s) to existing if not already chosen.");
    private XRadioButton replaceAllRadioButton = new XRadioButton("Replace all existing with selected item(s)");
    private XRadioButton deleteSelectedRadioButton = new XRadioButton("Remove selected item(s) if already chosen.");
    public static enum Selection {

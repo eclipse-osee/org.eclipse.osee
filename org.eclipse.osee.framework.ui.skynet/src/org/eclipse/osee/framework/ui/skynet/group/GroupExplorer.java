@@ -286,8 +286,9 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
    }
 
    private void handleNewGroup() {
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Group", null,
-            "Enter Group Name", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Group", null, "Enter Group Name",
+                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
             UniversalGroup.addGroup(ed.getEntry());
@@ -557,7 +558,8 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
    public void onEvent(final Event event) {
       try {
          if (event instanceof TransactionEvent) {
-            EventData ed = ((TransactionEvent) event).getEventData(UniversalGroup.getTopUniversalGroupArtifact(branchPersistenceManager.getDefaultBranch()));
+            EventData ed =
+                  ((TransactionEvent) event).getEventData(UniversalGroup.getTopUniversalGroupArtifact(branchPersistenceManager.getDefaultBranch()));
             if (ed.isRelChange()) {
                refresh();
             }
@@ -618,8 +620,9 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
       super.init(site, memento);
       if (memento != null) {
          try {
-            Artifact previousArtifact = ArtifactPersistenceManager.getInstance().getArtifact(
-                  memento.getString(ROOT_GUID), BranchPersistenceManager.getInstance().getCommonBranch());
+            Artifact previousArtifact =
+                  ArtifactPersistenceManager.getInstance().getArtifact(memento.getString(ROOT_GUID),
+                        BranchPersistenceManager.getInstance().getCommonBranch());
             if (previousArtifact != null) {
                explore(previousArtifact);
                return;

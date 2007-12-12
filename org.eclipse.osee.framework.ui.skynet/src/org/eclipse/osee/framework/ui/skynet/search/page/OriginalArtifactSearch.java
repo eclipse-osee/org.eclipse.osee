@@ -127,7 +127,8 @@ public class OriginalArtifactSearch {
 
       List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
       try {
-         Collection<Artifact> artifacts = artifactManager.getArtifacts(criteria, true, branchManager.getDefaultBranch());
+         Collection<Artifact> artifacts =
+               artifactManager.getArtifacts(criteria, true, branchManager.getDefaultBranch());
          Iterator<Artifact> artifact = artifacts.iterator();
          while (artifact.hasNext()) {
 
@@ -176,7 +177,8 @@ public class OriginalArtifactSearch {
             }
          }
          System.out.println("hello 5");
-         Collection<Artifact> artifacts = artifactManager.getArtifacts(criteria, true, branchManager.getDefaultBranch());
+         Collection<Artifact> artifacts =
+               artifactManager.getArtifacts(criteria, true, branchManager.getDefaultBranch());
          System.out.println("hello 6");
          artifactTree.getRoot().addChildren(artifacts);
 
@@ -192,7 +194,8 @@ public class OriginalArtifactSearch {
          if (search != null) {
             criteria.add(search);
          }
-         Collection<Artifact> artifacts = artifactManager.getArtifacts(criteria, true, branchManager.getDefaultBranch());
+         Collection<Artifact> artifacts =
+               artifactManager.getArtifacts(criteria, true, branchManager.getDefaultBranch());
          artifactTree.getRoot().addChildren(artifacts);
 
       }

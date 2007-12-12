@@ -74,7 +74,8 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
       Artifact reuseArtifactRoot = mainPage.getReuseArtifactRoot();
       if (reuseArtifactRoot != null) { // only non-null when reuse artifacts is checked
-         Collection<DynamicAttributeDescriptor> identifyingAttributes = attributeTypePage.getSelectedAttributeDescriptors();
+         Collection<DynamicAttributeDescriptor> identifyingAttributes =
+               attributeTypePage.getSelectedAttributeDescriptors();
          artifactResolver = new RootAndAttributeBasedArtifactResolver(identifyingAttributes);
       }
 
@@ -149,15 +150,16 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
             ArtifactSubtypeDescriptor rootDescriptor = mainPage.getReuseArtifactRoot().getDescriptor();
             ArtifactSubtypeDescriptor importDescriptor = mainPage.getSelectedType();
 
-            HashSet<DynamicAttributeDescriptor> rootAttributes = new HashSet<DynamicAttributeDescriptor>(
-                  manager.getAttributeTypesFromArtifactType(rootDescriptor));
+            HashSet<DynamicAttributeDescriptor> rootAttributes =
+                  new HashSet<DynamicAttributeDescriptor>(manager.getAttributeTypesFromArtifactType(rootDescriptor));
 
             if (rootDescriptor == importDescriptor) {
                attributeTypePage.setDescription("Identifying attributes for " + rootDescriptor.getName() + " artifacts");
                attributeTypePage.setDescriptors(rootAttributes);
             } else {
-               HashSet<DynamicAttributeDescriptor> importAttributes = new HashSet<DynamicAttributeDescriptor>(
-                     manager.getAttributeTypesFromArtifactType(importDescriptor));
+               HashSet<DynamicAttributeDescriptor> importAttributes =
+                     new HashSet<DynamicAttributeDescriptor>(
+                           manager.getAttributeTypesFromArtifactType(importDescriptor));
 
                attributeTypePage.setDescription("Identifying attributes common to " + rootDescriptor.getName() + " and " + importDescriptor.getName() + " artifacts");
 

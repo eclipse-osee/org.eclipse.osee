@@ -140,10 +140,10 @@ public class GlobalMenu {
       public void run() {
          try {
             final Collection<Artifact> artifactsToBeDeleted = globalMenuHelper.getArtifacts();
-            MessageDialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(),
-                  "Confirm Artifact Deletion", null,
-                  " Are you sure you want to delete this artifact and all of the default hierarchy children?",
-                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+            MessageDialog dialog =
+                  new MessageDialog(Display.getCurrent().getActiveShell(), "Confirm Artifact Deletion", null,
+                        " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+                        MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == 0) {
                try {
                   for (GlobalMenuListener listener : listeners) {
@@ -201,20 +201,20 @@ public class GlobalMenu {
                   monitor.beginTask("Purge artifact", artifactsToBePurged.size());
                   final IProgressMonitor fMonitor = monitor;
 
-                  AbstractSkynetTxTemplate purgeTx = new AbstractSkynetTxTemplate(
-                        artifactsToBePurged.iterator().next().getBranch()) {
-                     @Override
-                     protected void handleTxWork() throws Exception {
-                        for (Artifact artifactToPurge : artifactsToBePurged) {
-                           if (!artifactToPurge.isDeleted()) {
-                              fMonitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
-                              artifactToPurge.purge();
+                  AbstractSkynetTxTemplate purgeTx =
+                        new AbstractSkynetTxTemplate(artifactsToBePurged.iterator().next().getBranch()) {
+                           @Override
+                           protected void handleTxWork() throws Exception {
+                              for (Artifact artifactToPurge : artifactsToBePurged) {
+                                 if (!artifactToPurge.isDeleted()) {
+                                    fMonitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
+                                    artifactToPurge.purge();
+                                 }
+                                 fMonitor.worked(1);
+                              }
+                              fMonitor.done();
                            }
-                           fMonitor.worked(1);
-                        }
-                        fMonitor.done();
-                     }
-                  };
+                        };
 
                   // Perform the purge transaction
                   try {

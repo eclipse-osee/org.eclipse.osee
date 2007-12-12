@@ -109,8 +109,10 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
    private void createToolBarActions(ScrolledForm form) {
       Action runAction = new Action("Run Workflow in Job", Action.AS_PUSH_BUTTON) {
          public void run() {
-            BlamJob blamJob = new BlamJob(editor.getBlamVariableMap(), editor.getWorkflow(),
-                  BranchPersistenceManager.getInstance().getDefaultBranch(), editor.getWorkflow().getDescriptiveName());
+            BlamJob blamJob =
+                  new BlamJob(editor.getBlamVariableMap(), editor.getWorkflow(),
+                        BranchPersistenceManager.getInstance().getDefaultBranch(),
+                        editor.getWorkflow().getDescriptiveName());
             blamJob.addListener(editor);
             Jobs.startJob(blamJob);
          }

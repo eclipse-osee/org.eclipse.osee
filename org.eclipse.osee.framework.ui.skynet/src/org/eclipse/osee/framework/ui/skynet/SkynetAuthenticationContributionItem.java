@@ -38,8 +38,8 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
    private static final SkynetAuthentication skynetAuthentication = SkynetAuthentication.getInstance();
 
    private static final Image ENABLED_IMAGE = SkynetGuiPlugin.getInstance().getImage("user.gif");
-   private static final Image DISABLED_IMAGE = new OverlayImage(ENABLED_IMAGE,
-         SkynetGuiPlugin.getInstance().getImageDescriptor("red_slash.gif")).createImage();
+   private static final Image DISABLED_IMAGE =
+         new OverlayImage(ENABLED_IMAGE, SkynetGuiPlugin.getInstance().getImageDescriptor("red_slash.gif")).createImage();
 
    private static String ENABLED_TOOLTIP = "Authenticated as: ";
    private static String DISABLED_TOOLTIP = "Not Authenticated.\n" + "Double-Click to Log On.";
@@ -54,8 +54,9 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
 
          public void run() {
             if (oseeAuthentication.isAuthenticated()) {
-               boolean result = MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-                     "Log Off...", "Are you sure you want to log off and exit OSEE?");
+               boolean result =
+                     MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Log Off...",
+                           "Are you sure you want to log off and exit OSEE?");
                if (result) {
                   oseeAuthentication.logOff();
                   PlatformUI.getWorkbench().close();

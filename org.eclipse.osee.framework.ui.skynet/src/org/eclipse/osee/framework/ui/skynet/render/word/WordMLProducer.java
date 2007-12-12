@@ -31,9 +31,12 @@ public class WordMLProducer {
    public static final String RGB_BLUE = "0000FF";
 
    private static final String FILE_NAME = "fileName";
-   private static final String LISTNUM_FIELD = "<w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:instrText> LISTNUM \"listreset\"  \\l 1 \\s 0 </w:instrText></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\" .\"/></w:r>";
-   private static final String SUB_DOC = "<wx:sect><w:p><w:pPr><w:sectPr><w:pgSz w:w=\"12240\" w:h=\"15840\"/><w:pgMar w:top=\"1440\" w:right=\"1800\" w:bottom=\"1440\" w:left=\"1800\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/><w:cols w:space=\"720\"/><w:docGrid w:line-pitch=\"360\"/></w:sectPr></w:pPr></w:p><w:subDoc w:link=\"" + FILE_NAME + "\"/></wx:sect><wx:sect><wx:sub-section><w:p><w:pPr><w:pStyle w:val=\"Heading1\"/></w:pPr></w:p><w:sectPr><w:type w:val=\"continuous\"/><w:pgSz w:w=\"12240\" w:h=\"15840\"/><w:pgMar w:top=\"1440\" w:right=\"1800\" w:bottom=\"1440\" w:left=\"1800\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/><w:cols w:space=\"720\"/><w:docGrid w:line-pitch=\"360\"/></w:sectPr></wx:sub-section></wx:sect>";
-   private static final String HYPER_LINK_DOC = "<w:p><w:hlink w:dest=\"fileName\"><w:r wsp:rsidRPr=\"00CE6681\"><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>fileName</w:t></w:r></w:hlink></w:p>";
+   private static final String LISTNUM_FIELD =
+         "<w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:instrText> LISTNUM \"listreset\"  \\l 1 \\s 0 </w:instrText></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\" .\"/></w:r>";
+   private static final String SUB_DOC =
+         "<wx:sect><w:p><w:pPr><w:sectPr><w:pgSz w:w=\"12240\" w:h=\"15840\"/><w:pgMar w:top=\"1440\" w:right=\"1800\" w:bottom=\"1440\" w:left=\"1800\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/><w:cols w:space=\"720\"/><w:docGrid w:line-pitch=\"360\"/></w:sectPr></w:pPr></w:p><w:subDoc w:link=\"" + FILE_NAME + "\"/></wx:sect><wx:sect><wx:sub-section><w:p><w:pPr><w:pStyle w:val=\"Heading1\"/></w:pPr></w:p><w:sectPr><w:type w:val=\"continuous\"/><w:pgSz w:w=\"12240\" w:h=\"15840\"/><w:pgMar w:top=\"1440\" w:right=\"1800\" w:bottom=\"1440\" w:left=\"1800\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/><w:cols w:space=\"720\"/><w:docGrid w:line-pitch=\"360\"/></w:sectPr></wx:sub-section></wx:sect>";
+   private static final String HYPER_LINK_DOC =
+         "<w:p><w:hlink w:dest=\"fileName\"><w:r wsp:rsidRPr=\"00CE6681\"><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>fileName</w:t></w:r></w:hlink></w:p>";
    private Appendable strB;
    private final int[] outlineNumber;
    private int outlineLevel;
@@ -96,8 +99,9 @@ public class WordMLProducer {
       String[] numbers = outLineNumber.split("\\.");
 
       for (String number : numbers) {
-         template = template.replaceAll("<w:start w:val=\"1\"/><w:pStyle w:val=\"Heading" + index + "\"/>",
-               "<w:start w:val=\"" + number + "\"/><w:pStyle w:val=\"Heading" + index + "\"/>");
+         template =
+               template.replaceAll("<w:start w:val=\"1\"/><w:pStyle w:val=\"Heading" + index + "\"/>",
+                     "<w:start w:val=\"" + number + "\"/><w:pStyle w:val=\"Heading" + index + "\"/>");
 
          index++;
       }
@@ -105,9 +109,10 @@ public class WordMLProducer {
    }
 
    public String setAppendixStartLetter(char chr, String template) {
-      template = template.replace(
-            "<w:start w:val=\"1\"/><w:nfc w:val=\"3\"/><w:pStyle w:val=\"APPENDIX1\"/>",
-            "<w:start w:val=\"" + (Character.toLowerCase(chr) - 'a' + 1) + "\"/><w:nfc w:val=\"3\"/><w:pStyle w:val=\"APPENDIX1\"/>");
+      template =
+            template.replace(
+                  "<w:start w:val=\"1\"/><w:nfc w:val=\"3\"/><w:pStyle w:val=\"APPENDIX1\"/>",
+                  "<w:start w:val=\"" + (Character.toLowerCase(chr) - 'a' + 1) + "\"/><w:nfc w:val=\"3\"/><w:pStyle w:val=\"APPENDIX1\"/>");
       return template;
    }
 
