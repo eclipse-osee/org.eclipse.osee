@@ -71,8 +71,9 @@ public class NextVersionSearchItem extends WorldSearchItem {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition() + "\"");
          return;
       }
-      Set<Artifact> arts = getTeamDefinition().getNextReleaseVersion().getArtifacts(
-            RelationSide.TeamWorkflowTargetedForVersion_Workflow);
+      Set<Artifact> arts =
+            getTeamDefinition().getNextReleaseVersion().getArtifacts(
+                  RelationSide.TeamWorkflowTargetedForVersion_Workflow);
       if (isCancelled()) return;
       addResultArtifacts(arts);
    }

@@ -194,8 +194,9 @@ public class DefectXViewer extends XViewer {
                }
             }
          } else if (aCol == DefectColumn.Severity_Col) {
-            EnumStringSingleSelectionDialog enumDialog = XPromptChange.promptChangeSingleSelectEnumeration(
-                  aCol.getName(), Severity.strValues(), defectItem.getSeverity().name());
+            EnumStringSingleSelectionDialog enumDialog =
+                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Severity.strValues(),
+                        defectItem.getSeverity().name());
             if (enumDialog != null) {
                if (enumDialog.getResult()[0] != null) {
                   modified = true;
@@ -203,8 +204,9 @@ public class DefectXViewer extends XViewer {
                }
             }
          } else if (aCol == DefectColumn.Disposition_Col) {
-            EnumStringSingleSelectionDialog enumDialog = XPromptChange.promptChangeSingleSelectEnumeration(
-                  aCol.getName(), Disposition.strValues(), defectItem.getDisposition().name());
+            EnumStringSingleSelectionDialog enumDialog =
+                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Disposition.strValues(),
+                        defectItem.getDisposition().name());
             if (enumDialog != null) {
                if (enumDialog.getResult()[0] != null) {
                   modified = true;
@@ -212,8 +214,9 @@ public class DefectXViewer extends XViewer {
                }
             }
          } else if (aCol == DefectColumn.Injection_Activity_Col) {
-            EnumStringSingleSelectionDialog enumDialog = XPromptChange.promptChangeSingleSelectEnumeration(
-                  aCol.getName(), InjectionActivity.strValues(), defectItem.getInjectionActivity().name());
+            EnumStringSingleSelectionDialog enumDialog =
+                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), InjectionActivity.strValues(),
+                        defectItem.getInjectionActivity().name());
             if (enumDialog != null) {
                if (enumDialog.getResult()[0] != null) {
                   modified = true;

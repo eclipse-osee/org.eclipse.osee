@@ -34,17 +34,19 @@ public class Subscribe {
    public void toggleSubscribe() {
       try {
          if (((ISubscribableArtifact) sma).amISubscribed()) {
-            boolean result = MessageDialog.openQuestion(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Un-Subscribe",
-                  "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
+            boolean result =
+                  MessageDialog.openQuestion(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Un-Subscribe",
+                        "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
             if (result) {
                ((ISubscribableArtifact) sma).removeSubscribed(SkynetAuthentication.getInstance().getAuthenticatedUser());
             }
          } else {
-            boolean result = MessageDialog.openQuestion(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Subscribe",
-                  "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
+            boolean result =
+                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Subscribe",
+                        "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
             if (result) {
                ((ISubscribableArtifact) sma).addSubscribed(SkynetAuthentication.getInstance().getAuthenticatedUser());
             }

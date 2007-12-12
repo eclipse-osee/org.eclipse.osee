@@ -67,20 +67,21 @@ public class NewActionJob extends Job {
 
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(
-               BranchPersistenceManager.getInstance().getAtsBranch()) {
+         AbstractSkynetTxTemplate newActionTx =
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
 
-            @Override
-            protected void handleTxWork() throws Exception {
-               if (title.equals("tt")) title += " " + getAtsDeveloperTTNum();
-               actionArt = createAction(monitor, title, desc, changeType, priority, userComms, validationRequired,
-                     needByDate, actionableItems);
+                  @Override
+                  protected void handleTxWork() throws Exception {
+                     if (title.equals("tt")) title += " " + getAtsDeveloperTTNum();
+                     actionArt =
+                           createAction(monitor, title, desc, changeType, priority, userComms, validationRequired,
+                                 needByDate, actionableItems);
 
-               if (wizard != null) wizard.notifyAtsWizardItemExtensions(actionArt);
+                     if (wizard != null) wizard.notifyAtsWizardItemExtensions(actionArt);
 
-               monitor.subTask("Persisting");
-            }
-         };
+                     monitor.subTask("Persisting");
+                  }
+               };
          newActionTx.execute();
 
          // Because this is a job, it will automatically kill any popups that are created during.
@@ -123,8 +124,9 @@ public class NewActionJob extends Job {
       // make it easier, all fields are automatically filled in for ATS developer
 
       if (monitor != null) monitor.subTask("Creating Action");
-      ActionArtifact actionArt = (ActionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            ActionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+      ActionArtifact actionArt =
+            (ActionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                  ActionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
             validationRequired, needByDate);
 
@@ -134,7 +136,8 @@ public class NewActionJob extends Job {
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       if (monitor != null) monitor.subTask("Creating WorkFlows");
-      Set<TeamDefinitionArtifact> teams = TeamDefinitionArtifact.getImpactedTeamDefs(actionArt.getActionableItemsDam().getActionableItems());
+      Set<TeamDefinitionArtifact> teams =
+            TeamDefinitionArtifact.getImpactedTeamDefs(actionArt.getActionableItemsDam().getActionableItems());
       if (teams == null || teams.size() == 0) {
          StringBuffer sb = new StringBuffer();
          for (ActionableItemArtifact aia : actionableItems)

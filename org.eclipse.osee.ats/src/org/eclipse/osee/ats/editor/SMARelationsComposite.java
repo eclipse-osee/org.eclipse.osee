@@ -34,9 +34,10 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class SMARelationsComposite extends Composite {
 
    private final XFormToolkit toolkit;
-   private static RelationSide sides[] = new RelationSide[] {RelationSide.TeamWorkflowToReview_Review,
-         RelationSide.Supercedes_Superceded, RelationSide.Supercedes_Supercedes,
-         RelationSide.SupportingInfo_SupportedBy, RelationSide.SupportingInfo_SupportingInfo};
+   private static RelationSide sides[] =
+         new RelationSide[] {RelationSide.TeamWorkflowToReview_Review, RelationSide.Supercedes_Superceded,
+               RelationSide.Supercedes_Supercedes, RelationSide.SupportingInfo_SupportedBy,
+               RelationSide.SupportingInfo_SupportingInfo};
 
    /**
     * @param parent
@@ -80,13 +81,14 @@ public class SMARelationsComposite extends Composite {
             toolkit.createLabel(
                   this,
                   name + " \"" + thisArt.getArtifactTypeName() + "\" " + rel.getSidePhrasingFor(thisArt) + " \"" + art.getArtifactTypeName() + "\" ");
-            Hyperlink link = toolkit.createHyperlink(
-                  this,
-                  String.format(
-                        "%s - %s",
-                        art.getHumanReadableId(),
-                        art.getDescriptiveName().length() < 60 ? art.getDescriptiveName() : art.getDescriptiveName().substring(
-                              0, 60)), SWT.NONE);
+            Hyperlink link =
+                  toolkit.createHyperlink(
+                        this,
+                        String.format(
+                              "%s - %s",
+                              art.getHumanReadableId(),
+                              art.getDescriptiveName().length() < 60 ? art.getDescriptiveName() : art.getDescriptiveName().substring(
+                                    0, 60)), SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                public void linkEntered(HyperlinkEvent e) {

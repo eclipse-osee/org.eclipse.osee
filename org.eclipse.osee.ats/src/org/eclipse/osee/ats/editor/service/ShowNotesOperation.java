@@ -52,7 +52,8 @@ public class ShowNotesOperation extends WorkPageService {
          }
 
          public void linkActivated(HyperlinkEvent e) {
-            String title = "Notes for " + smaMgr.getSma().getHumanReadableId() + " - \"" + smaMgr.getSma().getDescriptiveName() + "\"";
+            String title =
+                  "Notes for " + smaMgr.getSma().getHumanReadableId() + " - \"" + smaMgr.getSma().getDescriptiveName() + "\"";
             Overview logOver = new Overview();
             logOver.addHtml(AHTML.heading(3, title));
             logOver.addNotes(smaMgr.getSma(), "ALL");

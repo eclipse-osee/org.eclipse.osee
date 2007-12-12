@@ -103,8 +103,10 @@ public class VersionReportJob extends Job {
    public static String getReleasedString(VersionArtifact verArt) throws IllegalStateException, SQLException {
       String released = "";
       if (verArt.getSoleDateAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName()) != null) {
-         released = " - " + "Released: " + XDate.getDateStr(
-               verArt.getSoleDateAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName()), XDate.MMDDYY);
+         released =
+               " - " + "Released: " + XDate.getDateStr(
+                     verArt.getSoleDateAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName()),
+                     XDate.MMDDYY);
       }
       return released;
    }

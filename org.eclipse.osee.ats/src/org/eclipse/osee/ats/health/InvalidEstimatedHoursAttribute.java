@@ -83,8 +83,9 @@ public class InvalidEstimatedHoursAttribute extends XNavigateItemAction {
             for (String artType : artTypeNames)
                artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
 
-            Collection<Artifact> artifacts = ArtifactPersistenceManager.getInstance().getArtifacts(
-                  artifactTypeCriteria, false, BranchPersistenceManager.getInstance().getAtsBranch());
+            Collection<Artifact> artifacts =
+                  ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
+                        BranchPersistenceManager.getInstance().getAtsBranch());
 
             int x = 0;
             for (Artifact art : artifacts) {

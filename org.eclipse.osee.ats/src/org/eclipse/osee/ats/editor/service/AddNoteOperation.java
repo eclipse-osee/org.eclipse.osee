@@ -62,8 +62,8 @@ public class AddNoteOperation extends WorkPageService {
                for (WorkPage page : smaMgr.getWorkFlow().getPages())
                   if (!page.equals(DefaultTeamState.Cancelled.name()) && !page.equals(DefaultTeamState.Completed.name())) artifactNames.add(page.getName());
                NewNoteWizard noteWizard = new NewNoteWizard(artifactNames);
-               WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     noteWizard);
+               WizardDialog dialog =
+                     new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), noteWizard);
                dialog.create();
                if (dialog.open() == 0) {
                   String selected = noteWizard.mainPage.artifactList.getSelected().iterator().next().getName();

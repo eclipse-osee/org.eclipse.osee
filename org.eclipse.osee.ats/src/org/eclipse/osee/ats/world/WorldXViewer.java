@@ -287,14 +287,14 @@ public class WorldXViewer extends XViewer {
       try {
          if (useArts.size() > 0) {
             if (persist) {
-               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                     BranchPersistenceManager.getInstance().getAtsBranch()) {
+               AbstractSkynetTxTemplate txWrapper =
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
 
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     ArtifactPromptChange.promptChangeAttribute(attrName, aCol.getName(), useArts, persist);
-                  }
-               };
+                        @Override
+                        protected void handleTxWork() throws Exception {
+                           ArtifactPromptChange.promptChangeAttribute(attrName, aCol.getName(), useArts, persist);
+                        }
+                     };
                txWrapper.execute();
             } else {
                ArtifactPromptChange.promptChangeAttribute(attrName, aCol.getName(), useArts, persist);
@@ -629,11 +629,12 @@ public class WorldXViewer extends XViewer {
          if (selectedArts.size() >= 30) {
             artBuilder.append(" < " + selectedArts.size() + " artifacts>");
          }
-         MessageDialogWithToggle md = MessageDialogWithToggle.openOkCancelConfirm(
-               Display.getCurrent().getActiveShell(),
-               "Delete/Purge ATS Object",
-               "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$", "") + "\n\nAnd ALL it's ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
-               "Purge", false, null, null);
+         MessageDialogWithToggle md =
+               MessageDialogWithToggle.openOkCancelConfirm(
+                     Display.getCurrent().getActiveShell(),
+                     "Delete/Purge ATS Object",
+                     "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$", "") + "\n\nAnd ALL it's ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
+                     "Purge", false, null, null);
          if (md.getReturnCode() == 0) {
             final boolean purge = md.getToggleState();
             StringBuilder delBuilder = new StringBuilder();
@@ -655,23 +656,24 @@ public class WorldXViewer extends XViewer {
             String results = (purge ? "Purge" : "Delete") + " ATS Objects, Are You Sure?\n" + delBuilder.toString();
             results = results.replaceAll("\n", "<br>");
             if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete/Purge Artifact(s)", results)) return;
-            HtmlDialog wd = new HtmlDialog((purge ? "Purge" : "Delete") + " ATS Objects", "", AHTML.simplePage(results));
+            HtmlDialog wd =
+                  new HtmlDialog((purge ? "Purge" : "Delete") + " ATS Objects", "", AHTML.simplePage(results));
             wd.open();
             if (wd.getReturnCode() == 0) {
-               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                     BranchPersistenceManager.getInstance().getAtsBranch()) {
+               AbstractSkynetTxTemplate txWrapper =
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
 
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     for (Artifact loopArt : deleteArts) {
-                        if (purge)
-                           loopArt.purge();
-                        else {
-                           loopArt.delete();
+                        @Override
+                        protected void handleTxWork() throws Exception {
+                           for (Artifact loopArt : deleteArts) {
+                              if (purge)
+                                 loopArt.purge();
+                              else {
+                                 loopArt.delete();
+                              }
+                           }
                         }
-                     }
-                  }
-               };
+                     };
                txWrapper.execute();
                removeItems(items);
             }
@@ -763,8 +765,9 @@ public class WorldXViewer extends XViewer {
          else if (aCol == AtsXColumn.Priority_Col)
             modified = smaMgr.promptChangePriority(persist);
          else if (aCol == AtsXColumn.Metrics_from_Tasks_Col) {
-            modified = smaMgr.promptChangeBoolean(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE,
-                  AtsXColumn.Metrics_from_Tasks_Col.getDesc(), persist);
+            modified =
+                  smaMgr.promptChangeBoolean(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE,
+                        AtsXColumn.Metrics_from_Tasks_Col.getDesc(), persist);
             if (modified) handleMetricsFromTasksToggle(smaMgr.getSma());
          }
          if (modified) {

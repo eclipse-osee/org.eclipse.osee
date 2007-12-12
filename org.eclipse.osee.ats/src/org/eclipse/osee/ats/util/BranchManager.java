@@ -218,7 +218,8 @@ public class BranchManager implements IActionBranchStateChange {
          }
          Branch parentBranch = getParentBranchForWorkingBranchCreation();
          if (parentBranch == null) {
-            String errorStr = "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.";
+            String errorStr =
+                  "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.";
             if (popup) AWorkbench.popup("ERROR", errorStr);
             return new Result(errorStr);
          }
@@ -246,7 +247,8 @@ public class BranchManager implements IActionBranchStateChange {
       if (smaMgr.isTeamUsesVersions()) {
          VersionArtifact verArt = smaMgr.getTargetedForVersion();
          if (verArt != null) {
-            Integer branchId = verArt.getSoleIntegerAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+            Integer branchId =
+                  verArt.getSoleIntegerAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
             if (branchId != null && branchId > 0) {
                parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
             }
@@ -255,8 +257,9 @@ public class BranchManager implements IActionBranchStateChange {
 
       // If not defined in version, check for parent branch from team definition
       if (parentBranch == null && (smaMgr.getSma() instanceof TeamWorkFlowArtifact)) {
-         Integer branchId = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleIntegerAttributeValue(
-               ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+         Integer branchId =
+               ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleIntegerAttributeValue(
+                     ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
          if (branchId != null && branchId > 0) {
             parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
          }
@@ -279,8 +282,9 @@ public class BranchManager implements IActionBranchStateChange {
       final IActionBranchStateChange callback = this;
       String title = stateMachineArtifact.getDescriptiveName();
       if (title.length() > 40) title = title.substring(0, 39) + "...";
-      final String branchName = String.format("%s - %s - %s", stateMachineArtifact.getHumanReadableId(),
-            stateMachineArtifact.getDescriptiveName(), title);
+      final String branchName =
+            String.format("%s - %s - %s", stateMachineArtifact.getHumanReadableId(),
+                  stateMachineArtifact.getDescriptiveName(), title);
       String branchShortName = "";
       if (pageId != null && !pageId.equals("")) {
          List<IAtsStateItem> stateItems = smaMgr.getStateItems().getStateItems(pageId);
@@ -289,8 +293,8 @@ public class BranchManager implements IActionBranchStateChange {
          }
       }
       final String finalBranchShortName = branchShortName;
-      final TransactionId parentTransactionId = TransactionIdManager.getInstance().getEditableTransactionId(
-            parentBranch);
+      final TransactionId parentTransactionId =
+            TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
 
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
@@ -527,8 +531,9 @@ public class BranchManager implements IActionBranchStateChange {
       Integer transId = getTransactionIdInt();
       if ((transId == null) || (transId == 0)) return arts;
       TransactionId trans = getTransactionId();
-      Collection<Artifact> transArts = ArtifactPersistenceManager.getInstance().getArtifacts(
-            new ArtifactInTransactionSearch(trans), trans.getBranch());
+      Collection<Artifact> transArts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(new ArtifactInTransactionSearch(trans),
+                  trans.getBranch());
       return transArts;
    }
 }

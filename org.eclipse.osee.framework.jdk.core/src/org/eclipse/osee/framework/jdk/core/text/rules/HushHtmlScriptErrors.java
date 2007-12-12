@@ -27,7 +27,8 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 public class HushHtmlScriptErrors extends Rule {
 
    // This is the code that must be entered in to the HTML to hush script errors
-   private final static String HUSH = "\nfunction handleError() {\n" + "return true;\n" + "}\n\n" + "window.onerror = handleError;\n";
+   private final static String HUSH =
+         "\nfunction handleError() {\n" + "return true;\n" + "}\n\n" + "window.onerror = handleError;\n";
 
    public HushHtmlScriptErrors() {
       super(null);

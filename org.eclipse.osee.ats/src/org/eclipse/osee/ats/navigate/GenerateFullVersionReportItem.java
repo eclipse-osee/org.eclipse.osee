@@ -71,8 +71,9 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    public TeamDefinitionArtifact getTeamDefinition() throws SQLException {
       if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {
-         ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName,
-               BranchPersistenceManager.getInstance().getAtsBranch());
+         ArtifactTypeNameSearch srch =
+               new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName,
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          TeamDefinitionArtifact teamDef = srch.getSingletonArtifactOrException(TeamDefinitionArtifact.class);
          if (teamDef != null) return teamDef;
       }

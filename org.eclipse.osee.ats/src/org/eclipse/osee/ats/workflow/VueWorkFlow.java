@@ -34,12 +34,14 @@ public class VueWorkFlow {
    private static String INHERITED_WORKFLOW_TAG = "InheritedWorkflow";
    private static String PAGE_REPLACE_ALL_TAG = "PageIdReplaceAll";
    private static Pattern workPagePattern = Pattern.compile("<WorkPage +pageId=\"(.*?)\".*?\\/>");
-   private static Pattern inheritedPattern = Pattern.compile(
-         "&lt;" + INHERITED_WORKFLOW_TAG + " workflowId=\"(.*?)\"/&gt;", Pattern.DOTALL | Pattern.MULTILINE);
-   private static Pattern childPattern = Pattern.compile("<child(.*?)>(.*?)</child>",
-         Pattern.DOTALL | Pattern.MULTILINE);
-   private static Pattern replaceAllPageIdsPattern = Pattern.compile(
-         "&lt;" + PAGE_REPLACE_ALL_TAG + " search=\"(.*?)\" replace=\"(.*?)\"/&gt;", Pattern.DOTALL | Pattern.MULTILINE);
+   private static Pattern inheritedPattern =
+         Pattern.compile("&lt;" + INHERITED_WORKFLOW_TAG + " workflowId=\"(.*?)\"/&gt;",
+               Pattern.DOTALL | Pattern.MULTILINE);
+   private static Pattern childPattern =
+         Pattern.compile("<child(.*?)>(.*?)</child>", Pattern.DOTALL | Pattern.MULTILINE);
+   private static Pattern replaceAllPageIdsPattern =
+         Pattern.compile("&lt;" + PAGE_REPLACE_ALL_TAG + " search=\"(.*?)\" replace=\"(.*?)\"/&gt;",
+               Pattern.DOTALL | Pattern.MULTILINE);
    private static Pattern inheritedDataPattern = Pattern.compile("<notes>(&lt;InheritedWorkflow .*?)</notes>");
 
    /**

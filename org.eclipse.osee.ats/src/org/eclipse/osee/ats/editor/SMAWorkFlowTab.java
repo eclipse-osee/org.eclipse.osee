@@ -301,8 +301,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             Label errorLabel = toolkit.createLabel(actionComp, "Error: No Actionable Items identified.");
             errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
-            actionActionableItemsLabel = toolkit.createLabel(actionComp,
-                  teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItemsStr());
+            actionActionableItemsLabel =
+                  toolkit.createLabel(actionComp,
+                        teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItemsStr());
             actionActionableItemsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          }
       } else {
@@ -310,9 +311,10 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             Label errorLabel = toolkit.createLabel(actionComp, "Error: No Actionable Items identified.");
             errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
-            Label label = toolkit.createLabel(
-                  actionComp,
-                  "     " + ACTION_ACTIONABLE_ITEMS + teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItemsStr());
+            Label label =
+                  toolkit.createLabel(
+                        actionComp,
+                        "     " + ACTION_ACTIONABLE_ITEMS + teamWf.getParentActionArtifact().getActionableItemsDam().getActionableItemsStr());
             label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          }
       }
@@ -349,8 +351,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             Label errorLabel = toolkit.createLabel(teamComp, "Error: No Actionable Items identified.");
             errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
-            teamActionableItemLabel = toolkit.createLabel(teamComp,
-                  teamWf.getActionableItemsDam().getActionableItemsStr());
+            teamActionableItemLabel =
+                  toolkit.createLabel(teamComp, teamWf.getActionableItemsDam().getActionableItemsStr());
             teamActionableItemLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          }
       } else {
@@ -358,8 +360,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             Label errorLabel = toolkit.createLabel(teamComp, "Error: No Actionable Items identified.");
             errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
-            Label label = toolkit.createLabel(teamComp,
-                  "     " + TEAM_ACTIONABLE_ITEMS + teamWf.getActionableItemsDam().getActionableItemsStr());
+            Label label =
+                  toolkit.createLabel(teamComp,
+                        "     " + TEAM_ACTIONABLE_ITEMS + teamWf.getActionableItemsDam().getActionableItemsStr());
             label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          }
       }
@@ -367,9 +370,10 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void createLatestHeader(Composite comp, XFormToolkit toolkit) {
       if (smaMgr.isHistoricalVersion()) {
-         Label label = toolkit.createLabel(
-               comp,
-               "This is a historical version of this " + smaMgr.getSma().getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
+         Label label =
+               toolkit.createLabel(
+                     comp,
+                     "This is a historical version of this " + smaMgr.getSma().getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
    }

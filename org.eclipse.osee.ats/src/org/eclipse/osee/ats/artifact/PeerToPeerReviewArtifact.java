@@ -55,8 +55,8 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
 
    public TeamWorkFlowArtifact getParentTeamWorkflow() {
       try {
-         Set<TeamWorkFlowArtifact> teams = getArtifacts(RelationSide.TeamWorkflowToReview_Team,
-               TeamWorkFlowArtifact.class);
+         Set<TeamWorkFlowArtifact> teams =
+               getArtifacts(RelationSide.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
          if (teams.size() > 0) return teams.iterator().next();
          return null;
       } catch (SQLException ex) {

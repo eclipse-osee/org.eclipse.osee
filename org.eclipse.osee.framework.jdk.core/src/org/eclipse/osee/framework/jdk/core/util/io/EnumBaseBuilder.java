@@ -22,8 +22,10 @@ public class EnumBaseBuilder extends JavaFileBuilder {
 
    protected PriorityQueue<EnumRecord> enums;
 
-   private static final String stringTableMethod = "\tprotected String[] getStringTable() {\n" + "\t\treturn stringTable;\n" + "\t}";
-   private static final String enumTableMethod = "\tprotected EnumSyntax[] getEnumValueTable() {\n" + "\t\treturn enumValueTable;\n" + "\t}";
+   private static final String stringTableMethod =
+         "\tprotected String[] getStringTable() {\n" + "\t\treturn stringTable;\n" + "\t}";
+   private static final String enumTableMethod =
+         "\tprotected EnumSyntax[] getEnumValueTable() {\n" + "\t\treturn enumValueTable;\n" + "\t}";
 
    public EnumBaseBuilder(String packageName, String className, String classJavaDoc) {
       super(packageName, className, classJavaDoc, "EnumBase");

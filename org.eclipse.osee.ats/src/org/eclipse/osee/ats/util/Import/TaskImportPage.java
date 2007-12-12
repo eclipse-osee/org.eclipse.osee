@@ -142,8 +142,8 @@ public class TaskImportPage extends WizardDataTransferPage {
       if (currentResourceSelection != null) fileSelector.setText(currentResourceSelection.getLocation().toString());
       setPageComplete(determinePageCompletion());
    } /*
-               * @see WizardPage#becomesVisible
-               */
+                 * @see WizardPage#becomesVisible
+                 */
 
    public void setVisible(boolean visible) {
       super.setVisible(visible);
@@ -166,8 +166,9 @@ public class TaskImportPage extends WizardDataTransferPage {
       }
       Collection<Artifact> arts;
       try {
-         arts = ArtifactPersistenceManager.getInstance().getArtifactsFromHrid(hrid,
-               BranchPersistenceManager.getInstance().getAtsBranch());
+         arts =
+               ArtifactPersistenceManager.getInstance().getArtifactsFromHrid(hrid,
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          if (arts.size() != 1) {
             setErrorMessage("Can't retrieve artifact for entered HRID");
             actionLabel.setText("");
@@ -193,8 +194,9 @@ public class TaskImportPage extends WizardDataTransferPage {
       System.out.println("Not Implemented Yet");
 
       try {
-         ExcelAtsTaskArtifactExtractor extractor = new ExcelAtsTaskArtifactExtractor(hridText.getText(),
-               BranchPersistenceManager.getInstance().getAtsBranch(), emailPocs.getSelection());
+         ExcelAtsTaskArtifactExtractor extractor =
+               new ExcelAtsTaskArtifactExtractor(hridText.getText(),
+                     BranchPersistenceManager.getInstance().getAtsBranch(), emailPocs.getSelection());
          Jobs.startJob(new TaskImportJob(file, hridText.getText(), extractor,
                BranchPersistenceManager.getInstance().getAtsBranch()));
       } catch (Exception ex) {

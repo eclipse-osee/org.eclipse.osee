@@ -50,8 +50,9 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
    @Override
    public void create(Group workComp) {
       if (smaMgr.getCurrentStateName().equals(page.getName())) {
-         link = toolkit.createHyperlink(workComp,
-               "Commit Working Branch" + (overrideStateValidation ? "\nOverride State Validation" : ""), SWT.NONE);
+         link =
+               toolkit.createHyperlink(workComp,
+                     "Commit Working Branch" + (overrideStateValidation ? "\nOverride State Validation" : ""), SWT.NONE);
          if (smaMgr.getSma().isReadOnly())
             link.addHyperlinkListener(readOnlyHyperlinkListener);
          else

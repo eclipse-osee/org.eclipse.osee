@@ -84,8 +84,9 @@ public class UserCommunitySearchItem extends WorldSearchItem {
       List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
       actionCriteria.add(new InRelationSearch(criteriaSearch, RelationSide.ActionToWorkflow_Action));
 
-      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> arts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
 
       if (isCancelled()) return;
       addResultArtifacts(arts);

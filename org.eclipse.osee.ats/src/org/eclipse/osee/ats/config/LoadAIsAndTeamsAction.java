@@ -89,8 +89,8 @@ public class LoadAIsAndTeamsAction extends Action {
 
       for (Entry<String, String> entry : loadResources().entrySet()) {
          // System.out.println(" Loading " + entry.getKey());
-         AtsWorkFlow workFlow = WorkflowDiagramFactory.getInstance().getWorkFlowFromFileContents(entry.getKey(),
-               entry.getValue());
+         AtsWorkFlow workFlow =
+               WorkflowDiagramFactory.getInstance().getWorkFlowFromFileContents(entry.getKey(), entry.getValue());
          processWorkflow(workFlow);
       }
    }
@@ -98,8 +98,8 @@ public class LoadAIsAndTeamsAction extends Action {
    @SuppressWarnings("deprecation")
    private Map<String, String> loadResources() {
       Map<String, String> resources = new HashMap<String, String>();
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.ats.AtsAIandTeamConfig");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsAIandTeamConfig");
       if (point == null) {
          OSEELog.logSevere(AtsPlugin.class, "Can't access AtsAIandTeamConfig extension point", true);
          return resources;
@@ -134,26 +134,26 @@ public class LoadAIsAndTeamsAction extends Action {
       if (workFlow == null) throw new IllegalArgumentException("ATS config items can't be loaded.");
 
       try {
-         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-               BranchPersistenceManager.getInstance().getAtsBranch()) {
+         AbstractSkynetTxTemplate txWrapper =
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
 
-            @Override
-            protected void handleTxWork() throws Exception {
-               // Get or create ATS root artifact
-               Artifact atsHeading = AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
+                  @Override
+                  protected void handleTxWork() throws Exception {
+                     // Get or create ATS root artifact
+                     Artifact atsHeading = AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
 
-               // Create Actionable Items
-               AtsWorkPage workPage = workFlow.getAtsPage("Actionable Items");
-               addActionableItem(atsHeading, workPage);
-               atsHeading.persist(true);
+                     // Create Actionable Items
+                     AtsWorkPage workPage = workFlow.getAtsPage("Actionable Items");
+                     addActionableItem(atsHeading, workPage);
+                     atsHeading.persist(true);
 
-               // Create Teams
-               workPage = workFlow.getAtsPage("Teams");
-               addTeam(atsHeading, workPage);
-               atsHeading.persist(true);
+                     // Create Teams
+                     workPage = workFlow.getAtsPage("Teams");
+                     addTeam(atsHeading, workPage);
+                     atsHeading.persist(true);
 
-            }
-         };
+                  }
+               };
          txWrapper.execute();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
@@ -219,8 +219,9 @@ public class LoadAIsAndTeamsAction extends Action {
          }
          // If getOrCreate has been specified, search to see if team already exists to reuse
          if (getOrCreate) {
-            ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME,
-                  page.getName(), BranchPersistenceManager.getInstance().getAtsBranch());
+            ArtifactTypeNameSearch srch =
+                  new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, page.getName(),
+                        BranchPersistenceManager.getInstance().getAtsBranch());
             teamDefArt = srch.getSingletonArtifact(TeamDefinitionArtifact.class);
 
             if (teamDefArt != null) {
@@ -228,8 +229,9 @@ public class LoadAIsAndTeamsAction extends Action {
             }
          }
          if (teamDefArt == null) {
-            teamDefArt = TeamDefinitionArtifact.createNewTeamDefinition(page.getName(), fullName, desc, leads, members,
-                  teamUsesVersions, actionableItems, parent);
+            teamDefArt =
+                  TeamDefinitionArtifact.createNewTeamDefinition(page.getName(), fullName, desc, leads, members,
+                        teamUsesVersions, actionableItems, parent);
          }
          for (String staticId : staticIds) {
             teamDefArt.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setStringData(
@@ -237,9 +239,9 @@ public class LoadAIsAndTeamsAction extends Action {
          }
 
          if (!workflowId.equals("")) {
-            ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(
-                  WorkflowDiagramFactory.GENERAL_DOCUMENT_ARTIFACT_NAME, workflowId,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+            ArtifactTypeNameSearch srch =
+                  new ArtifactTypeNameSearch(WorkflowDiagramFactory.GENERAL_DOCUMENT_ARTIFACT_NAME, workflowId,
+                        BranchPersistenceManager.getInstance().getAtsBranch());
             Artifact workflowArt = srch.getSingletonArtifactOrException(Artifact.class);
             teamDefArt.relate(RelationSide.TeamDefinitionToWorkflowDiagram_WorkflowDiagram, workflowArt);
          }
@@ -276,13 +278,15 @@ public class LoadAIsAndTeamsAction extends Action {
          aia = AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact();
       } else {
          if (getOrCreate) {
-            ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(ActionableItemArtifact.ARTIFACT_NAME,
-                  page.getName(), BranchPersistenceManager.getInstance().getAtsBranch());
+            ArtifactTypeNameSearch srch =
+                  new ArtifactTypeNameSearch(ActionableItemArtifact.ARTIFACT_NAME, page.getName(),
+                        BranchPersistenceManager.getInstance().getAtsBranch());
             aia = srch.getSingletonArtifact(ActionableItemArtifact.class);
          }
          if (aia == null) {
-            aia = (ActionableItemArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  ActionableItemArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+            aia =
+                  (ActionableItemArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                        ActionableItemArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
             aia.setDescriptiveName(page.getName());
             for (String staticId : staticIds) {
                aia.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setStringData(

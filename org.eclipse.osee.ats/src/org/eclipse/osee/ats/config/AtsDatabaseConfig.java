@@ -39,18 +39,21 @@ public class AtsDatabaseConfig extends DbInitializationTask {
       TeamDefinitionArtifact teamDef = TeamDefinitionArtifact.getHeadTeamDefinition();
 
       // Relate task workflow
-      Artifact taskWorkflow = (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.DEFAULT_TASK_WORKFLOW,
-            BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
+      Artifact taskWorkflow =
+            (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.DEFAULT_TASK_WORKFLOW,
+                  BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
       teamDef.relate(RelationSide.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram, taskWorkflow);
 
       // Relate peer to Peer review
-      Artifact peerWorkflow = (new ArtifactTypeNameSearch("General Document",
-            AtsWorkFlowFactory.PEERTOPEER_REVIEW_WORKFLOW, BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
+      Artifact peerWorkflow =
+            (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.PEERTOPEER_REVIEW_WORKFLOW,
+                  BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
       teamDef.relate(RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram, peerWorkflow);
 
       // Relate peer to Peer review
-      Artifact decisionWorkflow = (new ArtifactTypeNameSearch("General Document",
-            AtsWorkFlowFactory.DECISION_REVIEW_WORKFLOW, BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
+      Artifact decisionWorkflow =
+            (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.DECISION_REVIEW_WORKFLOW,
+                  BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
       teamDef.relate(RelationSide.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram, decisionWorkflow);
 
       teamDef.persist(true);
@@ -64,11 +67,14 @@ public class AtsDatabaseConfig extends DbInitializationTask {
    }
 
    private void createXViewerGlobalCustomization() throws SQLException {
-      ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME, "",
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      ArtifactTypeNameSearch srch =
+            new ArtifactTypeNameSearch(XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME, "",
+                  BranchPersistenceManager.getInstance().getAtsBranch());
       if (srch.getArtifacts(XViewerCustomizationArtifact.class).size() == 0) {
-         XViewerCustomizationArtifact art = (XViewerCustomizationArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-               XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+         XViewerCustomizationArtifact art =
+               (XViewerCustomizationArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                     XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME,
+                     BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
          art.persist();
       }
    }

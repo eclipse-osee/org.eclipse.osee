@@ -35,10 +35,10 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
  * @author Ryan D. Brooks
  */
 public class ConnectWorkflowToBranchOrTransaction implements BlamOperation {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(
-         ConnectWorkflowToBranchOrTransaction.class);
-   private static final String SELECT_COMMIT_TRANSACTIONS = "SELECT " + TRANSACTION_DETAIL_TABLE.columns(
-         "transaction_id", "osee_comment") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("osee_comment") + " LIKE ?";
+   private static final Logger logger =
+         ConfigUtil.getConfigFactory().getLogger(ConnectWorkflowToBranchOrTransaction.class);
+   private static final String SELECT_COMMIT_TRANSACTIONS =
+         "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "osee_comment") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("osee_comment") + " LIKE ?";
    private static final Pattern hridPattern = Pattern.compile("Commit Branch ([A-Z0-9]{5})");
 
    /* (non-Javadoc)
@@ -50,8 +50,9 @@ public class ConnectWorkflowToBranchOrTransaction implements BlamOperation {
       if (monitor.isCanceled()) return;
 
       monitor.subTask("Aquiring Team Workflow");
-      Collection<Artifact> teamWorkflows = artifactManager.getArtifactsFromSubtypeName("Lba B3 Req Team Workflow",
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> teamWorkflows =
+            artifactManager.getArtifactsFromSubtypeName("Lba B3 Req Team Workflow",
+                  BranchPersistenceManager.getInstance().getAtsBranch());
 
       ConnectionHandlerStatement chStmt = null;
       try {

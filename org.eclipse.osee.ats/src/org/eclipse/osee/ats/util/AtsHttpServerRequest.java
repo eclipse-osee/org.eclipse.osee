@@ -64,8 +64,9 @@ public class AtsHttpServerRequest implements IHttpServerRequest {
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
       String guid = httpRequest.getParameter("guid");
       try {
-         final Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifact(guid,
-               BranchPersistenceManager.getInstance().getAtsBranch());
+         final Artifact artifact =
+               ArtifactPersistenceManager.getInstance().getArtifact(guid,
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          if (artifact == null) {
             httpResponse.outputStandardError(400, "Artifact Can Not Be Found In OSEE");
             // TODO Display if artifact was deleted
@@ -81,7 +82,8 @@ public class AtsHttpServerRequest implements IHttpServerRequest {
                   }
                });
             }
-            String html = AHTML.simplePage("Action has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+            String html =
+                  AHTML.simplePage("Action has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
             httpResponse.getPrintStream().println(html);
          }
       } catch (Exception ex) {

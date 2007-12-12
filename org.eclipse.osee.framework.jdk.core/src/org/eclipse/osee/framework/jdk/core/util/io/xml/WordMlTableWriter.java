@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter;
  * @author Jeff C. Phillips
  */
 public class WordMlTableWriter implements ISheetWriter {
-   private static final String TABLE_START = "<w:tbl><w:tblPr><w:tblBorders><w:top w:val=\"single\" w:sz=\"1\" /><w:left w:val=\"single\" w:sz=\"1\" /><w:bottom w:val=\"single\" w:sz=\"1\" /><w:right w:val=\"single\" w:sz=\"1\" /><w:insideH w:val=\"single\" w:sz=\"1\" /><w:insideV w:val=\"single\" w:sz=\"1\" /></w:tblBorders></w:tblPr>";
+   private static final String TABLE_START =
+         "<w:tbl><w:tblPr><w:tblBorders><w:top w:val=\"single\" w:sz=\"1\" /><w:left w:val=\"single\" w:sz=\"1\" /><w:bottom w:val=\"single\" w:sz=\"1\" /><w:right w:val=\"single\" w:sz=\"1\" /><w:insideH w:val=\"single\" w:sz=\"1\" /><w:insideV w:val=\"single\" w:sz=\"1\" /></w:tblBorders></w:tblPr>";
    private static final String TABLE_END = "</w:tbl>";
    private static final String START_TABLE_GRID = "<w:tblGrid>";
    private static final String END_TABLE_GRID = "</w:tblGrid>";

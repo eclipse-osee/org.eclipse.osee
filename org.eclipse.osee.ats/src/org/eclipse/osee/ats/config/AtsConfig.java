@@ -90,8 +90,9 @@ public class AtsConfig {
       Artifact art = getOrCreateHeadingArtifact(HEADING_ARTIFACT, ATS_HEADING);
       if (art.getParent() == null) {
          try {
-            Artifact rootArt = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                  BranchPersistenceManager.getInstance().getAtsBranch(), true);
+            Artifact rootArt =
+                  ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
+                        BranchPersistenceManager.getInstance().getAtsBranch(), true);
             rootArt.addChild(art);
             rootArt.persist(true);
          } catch (SQLException ex) {
@@ -105,8 +106,9 @@ public class AtsConfig {
       Artifact art = getOrCreateHeadingArtifact(HEADING_ARTIFACT, MSA_TOOLS_HEADING);
       if (art.getParent() == null) {
          try {
-            Artifact rootArt = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                  BranchPersistenceManager.getInstance().getAtsBranch(), true);
+            Artifact rootArt =
+                  ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
+                        BranchPersistenceManager.getInstance().getAtsBranch(), true);
             rootArt.addChild(art);
             rootArt.persist(true);
          } catch (SQLException ex) {
@@ -119,8 +121,8 @@ public class AtsConfig {
    private static Artifact getOrCreateHeadingArtifact(String artifactTypeName, String name) throws SQLException {
 
       // Get if it already exists
-      ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(artifactTypeName, name,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      ArtifactTypeNameSearch srch =
+            new ArtifactTypeNameSearch(artifactTypeName, name, BranchPersistenceManager.getInstance().getAtsBranch());
       Collection<NativeArtifact> arts = srch.getArtifacts(NativeArtifact.class);
       if (arts.size() == 1) return arts.iterator().next();
       if (arts.size() > 0) throw new IllegalArgumentException(
@@ -128,8 +130,9 @@ public class AtsConfig {
 
       Artifact rootArt = null;
       try {
-         rootArt = (Artifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-               artifactTypeName, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+         rootArt =
+               (Artifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName,
+                     BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
          rootArt.setDescriptiveName(name);
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

@@ -184,8 +184,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(new ArtifactImpactToActionSearchItem(null));
 
       XNavigateItem reportItems = new XNavigateItem(null, "Reports");
-      XNavigateItem atsReportItems = new XNavigateItem(reportItems,
-            "ATS World Reports - Input from Actions in ATS World");
+      XNavigateItem atsReportItems =
+            new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World");
       new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
 
       XNavigateItem emailItems = new XNavigateItem(null, "Email");

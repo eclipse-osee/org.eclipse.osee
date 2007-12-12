@@ -58,8 +58,9 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, boolean usesVersions, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef) throws SQLException {
       TeamDefinitionArtifact tda = null;
-      tda = (TeamDefinitionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            TeamDefinitionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+      tda =
+            (TeamDefinitionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                  TeamDefinitionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
       tda.setDescriptiveName(name);
       tda.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       tda.setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
@@ -130,8 +131,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public static Set<TeamDefinitionArtifact> getTeamDefinitions(Active active) throws SQLException {
-      ActiveArtifactTypeSearch search = new ActiveArtifactTypeSearch(ARTIFACT_NAME, active,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      ActiveArtifactTypeSearch search =
+            new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getInstance().getAtsBranch());
       return search.getArtifacts(TeamDefinitionArtifact.class);
    }
 
@@ -150,8 +151,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws SQLException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
-      ActiveArtifactTypeSearch search = new ActiveArtifactTypeSearch(ARTIFACT_NAME, active,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      ActiveArtifactTypeSearch search =
+            new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getInstance().getAtsBranch());
       for (TeamDefinitionArtifact teamDef : search.getArtifacts(TeamDefinitionArtifact.class)) {
          if (teamDef.getVersionsArtifacts().size() > 0 && teamDef.getSoleBooleanAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName())) teamDefs.add(teamDef);
       }
@@ -286,8 +287,9 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public VersionArtifact createVersion(String name) {
       try {
-         VersionArtifact versionArt = (VersionArtifact) configurationPersistenceManager.getArtifactSubtypeDescriptor(
-               VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+         VersionArtifact versionArt =
+               (VersionArtifact) configurationPersistenceManager.getArtifactSubtypeDescriptor(
+                     VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
          versionArt.setDescriptiveName(name);
          versionArt.persist();
 

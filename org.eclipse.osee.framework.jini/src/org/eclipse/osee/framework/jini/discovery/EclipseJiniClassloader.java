@@ -44,8 +44,8 @@ public class EclipseJiniClassloader extends ClassLoader {
       bundleList = new ArrayList<String>();
       bundleList.add("net.jini");
 
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.jini.JiniInterface");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.jini.JiniInterface");
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();

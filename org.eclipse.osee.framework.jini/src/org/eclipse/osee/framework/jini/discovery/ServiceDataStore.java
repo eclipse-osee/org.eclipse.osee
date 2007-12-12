@@ -96,8 +96,8 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
 
          LookupLocator[] locator = null;
          lookupDiscoveryManager = new LookupDiscoveryManager(filterGroups, locator, this, new OseeJiniConfiguration());
-         serviceDiscoveryManager = new ServiceDiscoveryManager(lookupDiscoveryManager, null,
-               new OseeJiniConfiguration());
+         serviceDiscoveryManager =
+               new ServiceDiscoveryManager(lookupDiscoveryManager, null, new OseeJiniConfiguration());
 
          // We will maintain our own cache, so this call just registers
          // ourselves for lookup

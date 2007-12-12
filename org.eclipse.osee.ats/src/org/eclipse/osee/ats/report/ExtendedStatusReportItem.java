@@ -43,9 +43,9 @@ public class ExtendedStatusReportItem extends XNavigateItemAction {
                "Can't access ATS World\n\nNOTE: This report is driven off data populated in ATS World.");
          return;
       }
-      ExtendedStatusReportJob job = new ExtendedStatusReportJob(
-            "ATS Extended Status Report - " + worldView.getxViewer().getTitle(),
-            worldView.getxViewer().getLoadedArtifacts());
+      ExtendedStatusReportJob job =
+            new ExtendedStatusReportJob("ATS Extended Status Report - " + worldView.getxViewer().getTitle(),
+                  worldView.getxViewer().getLoadedArtifacts());
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();

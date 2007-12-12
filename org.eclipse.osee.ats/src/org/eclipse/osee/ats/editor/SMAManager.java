@@ -301,16 +301,18 @@ public class SMAManager {
                return false;
             }
          }
-         if (teamDefHoldingVersions == null) teamDefHoldingVersions = teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions();
+         if (teamDefHoldingVersions == null) teamDefHoldingVersions =
+               teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions();
       }
       if (teamDefHoldingVersions == null) {
          AWorkbench.popup("ERROR", "No versions configured for impacted team(s).");
          return false;
       }
-      final VersionListDialog vld = new VersionListDialog(
-            "Select Version",
-            "Select Version",
-            teamDefHoldingVersions.getVersionsArtifacts(AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased));
+      final VersionListDialog vld =
+            new VersionListDialog(
+                  "Select Version",
+                  "Select Version",
+                  teamDefHoldingVersions.getVersionsArtifacts(AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased));
       if (smas.size() == 1 && smas.iterator().next().getTargetedForVersion() != null) {
          Object[] objs = new Object[1];
          objs[0] = smas.iterator().next().getTargetedForVersion();
@@ -322,13 +324,13 @@ public class SMAManager {
       }
       try {
          if (persist) {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                  BranchPersistenceManager.getInstance().getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws Exception {
-                  promptChangeVersionHelper(smas, vld, persist);
-               }
-            };
+            AbstractSkynetTxTemplate txWrapper =
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     @Override
+                     protected void handleTxWork() throws Exception {
+                        promptChangeVersionHelper(smas, vld, persist);
+                     }
+                  };
             txWrapper.execute();
          } else {
             promptChangeVersionHelper(smas, vld, persist);
@@ -370,19 +372,19 @@ public class SMAManager {
       if (ald.open() == 0) {
 
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                  BranchPersistenceManager.getInstance().getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws Exception {
+            AbstractSkynetTxTemplate txWrapper =
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     @Override
+                     protected void handleTxWork() throws Exception {
 
-                  for (TeamWorkFlowArtifact team : teams) {
-                     if (team.getChangeType() != ald.getSelection()) {
-                        team.setChangeType(ald.getSelection());
-                        team.saveSMA();
+                        for (TeamWorkFlowArtifact team : teams) {
+                           if (team.getChangeType() != ald.getSelection()) {
+                              team.setChangeType(ald.getSelection());
+                              team.saveSMA();
+                           }
+                        }
                      }
-                  }
-               }
-            };
+                  };
             txWrapper.execute();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
@@ -413,18 +415,18 @@ public class SMAManager {
       }
       if (ald.open() == 0) {
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                  BranchPersistenceManager.getInstance().getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws Exception {
-                  for (TeamWorkFlowArtifact team : teams) {
-                     if (team.getPriority() != ald.getSelection()) {
-                        team.setPriority(ald.getSelection());
-                        team.saveSMA();
+            AbstractSkynetTxTemplate txWrapper =
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     @Override
+                     protected void handleTxWork() throws Exception {
+                        for (TeamWorkFlowArtifact team : teams) {
+                           if (team.getPriority() != ald.getSelection()) {
+                              team.setPriority(ald.getSelection());
+                              team.saveSMA();
+                           }
+                        }
                      }
-                  }
-               }
-            };
+                  };
             txWrapper.execute();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
@@ -453,10 +455,11 @@ public class SMAManager {
             }
          }
          if (options != null) {
-            TaskOptionStatusDialog tsd = new TaskOptionStatusDialog(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter State Status",
-                  "Select resolution, enter percent complete and number of hours you spent since last status.", true,
-                  options, smas);
+            TaskOptionStatusDialog tsd =
+                  new TaskOptionStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Enter State Status",
+                        "Select resolution, enter percent complete and number of hours you spent since last status.",
+                        true, options, smas);
             int result = tsd.open();
             if (result == 0) {
                double hours = tsd.getHours().getFloat();
@@ -473,9 +476,10 @@ public class SMAManager {
                return true;
             }
          } else {
-            SMAStatusDialog tsd = new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Enter State Status", "Enter percent complete and number of hours you spent since last status.",
-                  true, smas);
+            SMAStatusDialog tsd =
+                  new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Enter State Status",
+                        "Enter percent complete and number of hours you spent since last status.", true, smas);
             int result = tsd.open();
             if (result == 0) {
                double hours = tsd.getHours().getFloat();
@@ -569,10 +573,11 @@ public class SMAManager {
          if (verArt != null) {
             // prompt that this object is assigned to a version that is targeted
             // for release xxx - want to change?
-            DateSelectionDialog diag = new DateSelectionDialog(
-                  "Select Release Date Date",
-                  "Warning: " + sma.getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getDescriptiveName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
-                  verArt.getReleaseDate());
+            DateSelectionDialog diag =
+                  new DateSelectionDialog(
+                        "Select Release Date Date",
+                        "Warning: " + sma.getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getDescriptiveName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
+                        verArt.getReleaseDate());
             if (verArt.getReleaseDate() != null) diag.setSelectedDate(verArt.getReleaseDate());
             if (diag.open() == 0) {
                verArt.setAttribute(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
@@ -582,8 +587,8 @@ public class SMAManager {
             }
          } else {
             // prompt that current release is (get from attribute) - want to change?
-            DateSelectionDialog diag = new DateSelectionDialog("Select Release Date", "Select Release Date",
-                  sma.getWorldViewReleaseDate());
+            DateSelectionDialog diag =
+                  new DateSelectionDialog("Select Release Date", "Select Release Date", sma.getWorldViewReleaseDate());
             if (getSma().getWorldViewReleaseDate() != null) diag.setSelectedDate(sma.getWorldViewReleaseDate());
             if (diag.open() == 0) {
                sma.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
@@ -604,10 +609,11 @@ public class SMAManager {
          if (verArt != null) {
             // prompt that this object is assigned to a version that is targeted for release xxx -
             // want to change?
-            DateSelectionDialog diag = new DateSelectionDialog(
-                  "Select Estimated Release Date Date",
-                  "Warning: " + sma.getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getDescriptiveName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
-                  verArt.getEstimatedReleaseDate());
+            DateSelectionDialog diag =
+                  new DateSelectionDialog(
+                        "Select Estimated Release Date Date",
+                        "Warning: " + sma.getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getDescriptiveName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
+                        verArt.getEstimatedReleaseDate());
             if (verArt.getEstimatedReleaseDate() != null) diag.setSelectedDate(verArt.getEstimatedReleaseDate());
             if (diag.open() == 0) {
                verArt.setAttribute(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
@@ -618,8 +624,9 @@ public class SMAManager {
          } else {
             // prompt that current est release is (get from attribute); want to
             // change
-            DateSelectionDialog diag = new DateSelectionDialog("Select Estimate Release Date",
-                  "Select Estimated Release Date", sma.getWorldViewEstimatedReleaseDate());
+            DateSelectionDialog diag =
+                  new DateSelectionDialog("Select Estimate Release Date", "Select Estimated Release Date",
+                        sma.getWorldViewEstimatedReleaseDate());
             if (getSma().getWorldViewEstimatedReleaseDate() != null) diag.setSelectedDate(sma.getWorldViewEstimatedReleaseDate());
             if (diag.open() == 0) {
                sma.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
@@ -783,8 +790,8 @@ public class SMAManager {
    }
 
    public Result transitionToCancelled(String reason, boolean persist) throws SQLException {
-      Result result = transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), persist, reason,
-            false);
+      Result result =
+            transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), persist, reason, false);
       if (result.isTrue()) {
          for (VersionArtifact verArt : sma.getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version,
                VersionArtifact.class)) {
@@ -811,7 +818,8 @@ public class SMAManager {
 
          // Validate transition from fromPage to toPage
          if (!overrideTransitionCheck && !fromPage.getToPages().contains(toPage)) {
-            String errStr = "According to transition configuration, can't transition to \"" + toStateName + "\" from \"" + fromPage.getName() + "\"";
+            String errStr =
+                  "According to transition configuration, can't transition to \"" + toStateName + "\" from \"" + fromPage.getName() + "\"";
             OSEELog.logSevere(AtsPlugin.class, errStr, false);
             return new Result(errStr);
          }
@@ -827,15 +835,15 @@ public class SMAManager {
          }
 
          if (persist) {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                  BranchPersistenceManager.getInstance().getAtsBranch()) {
+            AbstractSkynetTxTemplate txWrapper =
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
 
-               @Override
-               protected void handleTxWork() throws Exception {
-                  transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
-               }
+                     @Override
+                     protected void handleTxWork() throws Exception {
+                        transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
+                     }
 
-            };
+                  };
             txWrapper.execute();
          } else {
             transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
@@ -876,8 +884,8 @@ public class SMAManager {
 
       // Notify Users; NOTE: Assignees are notified as part of
       // StateMachineArtifact.persist
-      NotifyUsersJob job = new NotifyUsersJob(sma, NotifyUsersJob.NotifyType.Subscribers,
-            NotifyUsersJob.NotifyType.Completed);
+      NotifyUsersJob job =
+            new NotifyUsersJob(sma, NotifyUsersJob.NotifyType.Subscribers, NotifyUsersJob.NotifyType.Completed);
       job.setPriority(Job.SHORT);
       job.schedule();
 

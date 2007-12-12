@@ -31,8 +31,8 @@ public class VueWorkLink {
    public VueWorkLink(String xml) {
       super();
       this.xml = xml;
-      Matcher m = Pattern.compile("<ID1>(.*?)</ID1>.*?<ID2>(.*?)</ID2>", Pattern.DOTALL | Pattern.MULTILINE).matcher(
-            xml);
+      Matcher m =
+            Pattern.compile("<ID1>(.*?)</ID1>.*?<ID2>(.*?)</ID2>", Pattern.DOTALL | Pattern.MULTILINE).matcher(xml);
       while (m.find()) {
          if (xml.contains("arrowState=\"2\"")) {
             fromVueId = m.group(1);

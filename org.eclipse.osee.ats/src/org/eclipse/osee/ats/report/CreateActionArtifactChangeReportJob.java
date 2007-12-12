@@ -57,8 +57,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
          if (teamArts.size() == 0) throw new IllegalStateException("No Actions/Workflows Specified");
          retrieveData(monitor, teamArts, byAttribute, rd);
          if (rd.toString().equals("")) rd.log("No Problems Found");
-         final String html = rd.getReport(jobName).getManipulatedHtml(
-               Arrays.asList(new Manipulations[] {Manipulations.NONE}));
+         final String html =
+               rd.getReport(jobName).getManipulatedHtml(Arrays.asList(new Manipulations[] {Manipulations.NONE}));
          final String title = jobName;
          Displays.ensureInDisplayThread(new Runnable() {
             /*
@@ -98,8 +98,9 @@ public class CreateActionArtifactChangeReportJob extends Job {
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", byAttribute, "RPCR", "Change"}));
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          String rcprId = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName());
-         String result = (String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
-               teamArt.getTeamDefinition().getDescriptiveName()));
+         String result =
+               (String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
+                     teamArt.getTeamDefinition().getDescriptiveName()));
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
          VersionArtifact verArt = teamArt.getSmaMgr().getTargetedForVersion();

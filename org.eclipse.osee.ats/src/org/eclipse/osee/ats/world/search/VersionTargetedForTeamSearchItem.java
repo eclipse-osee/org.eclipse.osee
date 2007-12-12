@@ -85,10 +85,11 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
                return false;
          }
          if (versionArt == null && selectedTeamDef != null) {
-            final VersionListDialog vld = new VersionListDialog(
-                  "Select Version",
-                  "Select Version",
-                  selectedTeamDef.getVersionsArtifacts(AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased));
+            final VersionListDialog vld =
+                  new VersionListDialog(
+                        "Select Version",
+                        "Select Version",
+                        selectedTeamDef.getVersionsArtifacts(AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased));
             if (vld.open() == 0) {
                selectedVersionArt = (VersionArtifact) vld.getResult()[0];
                return true;

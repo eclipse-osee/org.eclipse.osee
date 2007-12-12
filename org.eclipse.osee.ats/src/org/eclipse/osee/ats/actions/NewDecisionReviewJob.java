@@ -74,8 +74,9 @@ public class NewDecisionReviewJob extends Job {
    }
 
    public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, boolean againstCurrentState) throws SQLException {
-      DecisionReviewArtifact decRev = (DecisionReviewArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            DecisionReviewArtifact.ARTIFACT_NAME, branchManager.getAtsBranch()).makeNewArtifact();
+      DecisionReviewArtifact decRev =
+            (DecisionReviewArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                  DecisionReviewArtifact.ARTIFACT_NAME, branchManager.getAtsBranch()).makeNewArtifact();
 
       if (teamParent != null) teamParent.relate(RelationSide.TeamWorkflowToReview_Review, decRev);
       if (againstCurrentState) decRev.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),

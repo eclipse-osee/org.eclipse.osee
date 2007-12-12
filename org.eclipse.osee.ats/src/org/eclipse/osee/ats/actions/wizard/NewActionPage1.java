@@ -72,7 +72,8 @@ public class NewActionPage1 extends WizardPage {
 
    public void createControl(Composite parent) {
 
-      String xWidgetXml = "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + ATSAttributes.TITLE_ATTRIBUTE.getDescription() + "\"/></WorkPage>";
+      String xWidgetXml =
+            "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + ATSAttributes.TITLE_ATTRIBUTE.getDescription() + "\"/></WorkPage>";
       Composite comp = new Composite(parent, SWT.NONE);
       comp.setLayout(new GridLayout(1, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -85,8 +86,9 @@ public class NewActionPage1 extends WizardPage {
       aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       (new Label(aiComp, SWT.NONE)).setText("Select Actionable Items:");
-      treeViewer = new CheckboxTreeViewer(aiComp,
-            SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+      treeViewer =
+            new CheckboxTreeViewer(aiComp,
+                  SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.setContentProvider(new AITreeContentProvider(Active.Active));
       treeViewer.setLabelProvider(new ArtifactLabelProvider());

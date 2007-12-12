@@ -86,8 +86,9 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
 
       if (isReturnTeams()) {
          debug.report("Perform Search...", true);
-         Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(bothCriteria, true,
-               BranchPersistenceManager.getInstance().getAtsBranch());
+         Collection<Artifact> arts =
+               ArtifactPersistenceManager.getInstance().getArtifacts(bothCriteria, true,
+                     BranchPersistenceManager.getInstance().getAtsBranch());
 
          debug.report("Processing artifacts", true);
          addResultArtifacts(arts);
@@ -96,8 +97,9 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
          actionCriteria.add(new InRelationSearch(bothSearch, RelationSide.ActionToWorkflow_Action));
 
          debug.report("Perform Search...", true);
-         Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
-               BranchPersistenceManager.getInstance().getAtsBranch());
+         Collection<Artifact> arts =
+               ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
+                     BranchPersistenceManager.getInstance().getAtsBranch());
 
          debug.report("Processing artifacts", true);
          addResultArtifacts(arts);

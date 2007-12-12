@@ -81,13 +81,13 @@ public class AssignedActiveActions extends XNavigateItemAction {
          final XResultData rd = new XResultData(AtsPlugin.getLogger());
          try {
             if (fixIt) {
-               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                     BranchPersistenceManager.getInstance().getAtsBranch()) {
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     assignedActiveActionsHelper(rd);
-                  }
-               };
+               AbstractSkynetTxTemplate txWrapper =
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                        @Override
+                        protected void handleTxWork() throws Exception {
+                           assignedActiveActionsHelper(rd);
+                        }
+                     };
                txWrapper.execute();
             } else {
                assignedActiveActionsHelper(rd);
@@ -111,8 +111,9 @@ public class AssignedActiveActions extends XNavigateItemAction {
       for (String artType : artTypeNames)
          artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
 
-      Collection<Artifact> artifacts = ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria,
-            false, BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> artifacts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
 
       for (Artifact art : artifacts) {
          StateMachineArtifact sma = (StateMachineArtifact) art;

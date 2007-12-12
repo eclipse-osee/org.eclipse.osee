@@ -107,7 +107,8 @@ public class Zip {
             progressBar.setValue(++size);
          }
       } catch (Exception ex) {
-         String information = "ZipFile: " + (zipFile != null ? zipFile.getAbsolutePath() : "NULL") + "\n" + "DestinationDir: " + (destinationDir != null ? destinationDir.getAbsolutePath() : "NULL") + "\n" + "Entry Processed: " + (entry != null ? entry.toString() : "NULL") + "\n";
+         String information =
+               "ZipFile: " + (zipFile != null ? zipFile.getAbsolutePath() : "NULL") + "\n" + "DestinationDir: " + (destinationDir != null ? destinationDir.getAbsolutePath() : "NULL") + "\n" + "Entry Processed: " + (entry != null ? entry.toString() : "NULL") + "\n";
          throw new IOException(information + ex.getMessage());
       }
    }

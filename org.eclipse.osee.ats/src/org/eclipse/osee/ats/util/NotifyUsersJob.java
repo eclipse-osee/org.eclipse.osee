@@ -127,12 +127,14 @@ public class NotifyUsersJob extends Job {
       String subjectStr = sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"";
       String notifyStr = sma.getArtifactTypeName() + " " + stateName + " - " + sma.getDescriptiveName() + "<br><br>";
       String cancelledStr = "";
-      if (smaMgr.isCancelled() && cancelledItem != null) cancelledStr = String.format(
-            sma.getArtifactTypeName() + " was cancelled from \"%s\" state on \"%s\".<br>Reason: \"%s\"<br><br>",
-            cancelledItem.getState(), cancelledItem.getDate(XDate.MMDDYYHHMM), cancelledItem.getMsg());
+      if (smaMgr.isCancelled() && cancelledItem != null) cancelledStr =
+            String.format(
+                  sma.getArtifactTypeName() + " was cancelled from \"%s\" state on \"%s\".<br>Reason: \"%s\"<br><br>",
+                  cancelledItem.getState(), cancelledItem.getDate(XDate.MMDDYYHHMM), cancelledItem.getMsg());
 
-      AEmail emailMessage = new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
-            skynetAuth.getAuthenticatedUser().getEmail(), "ATS " + stateName + " Alert: " + subjectStr);
+      AEmail emailMessage =
+            new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
+                  skynetAuth.getAuthenticatedUser().getEmail(), "ATS " + stateName + " Alert: " + subjectStr);
 
       try {
          emailMessage.setRecipients(Message.RecipientType.TO, emails);
@@ -169,9 +171,10 @@ public class NotifyUsersJob extends Job {
          return;
       }
       String headerStr = "You have been set as the originator of this " + sma.getArtifactTypeName() + ".<br><br>";
-      AEmail emailMessage = new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
-            skynetAuth.getAuthenticatedUser().getEmail(),
-            "ATS Originator Alert: " + sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"\n");
+      AEmail emailMessage =
+            new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
+                  skynetAuth.getAuthenticatedUser().getEmail(),
+                  "ATS Originator Alert: " + sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"\n");
       try {
          emailMessage.setRecipients(Message.RecipientType.TO, emails);
          emailMessage.setHTMLBody(headerStr);
@@ -214,10 +217,12 @@ public class NotifyUsersJob extends Job {
             if (testing) System.out.println("notifyAssignees = not sending; no emails to send");
             return;
          }
-         String headerStr = "You have been identified as an assignee for this " + sma.getArtifactTypeName() + ".<br><br>";
-         AEmail emailMessage = new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
-               skynetAuth.getAuthenticatedUser().getEmail(),
-               "ATS Assignee Alert: " + sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"\n");
+         String headerStr =
+               "You have been identified as an assignee for this " + sma.getArtifactTypeName() + ".<br><br>";
+         AEmail emailMessage =
+               new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
+                     skynetAuth.getAuthenticatedUser().getEmail(),
+                     "ATS Assignee Alert: " + sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"\n");
 
          emailMessage.setRecipients(Message.RecipientType.TO, emails);
          emailMessage.setHTMLBody(headerStr);
@@ -269,11 +274,16 @@ public class NotifyUsersJob extends Job {
             if (testing) System.out.println("notifySubscribers = not sending; emails to send");
             return;
          }
-         AEmail emailMessage = new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
-               skynetAuth.getAuthenticatedUser().getEmail(),
-               "ATS Subscription Alert: " + sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"\n");
-         String notifyStr = sma.getArtifactTypeName() + " Transitioned to \"" + sma.getCurrentStateName() + "\"<br><br>";
-         String unsubscribeStr = "<br><br>You are subscribed to receive notification of transition for this " + sma.getArtifactTypeName() + ".  <br>Enter OSEE ATS to un-subscribe.";
+         AEmail emailMessage =
+               new AEmail(
+                     null,
+                     skynetAuth.getAuthenticatedUser().getEmail(),
+                     skynetAuth.getAuthenticatedUser().getEmail(),
+                     "ATS Subscription Alert: " + sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"\n");
+         String notifyStr =
+               sma.getArtifactTypeName() + " Transitioned to \"" + sma.getCurrentStateName() + "\"<br><br>";
+         String unsubscribeStr =
+               "<br><br>You are subscribed to receive notification of transition for this " + sma.getArtifactTypeName() + ".  <br>Enter OSEE ATS to un-subscribe.";
 
          emailMessage.setRecipients(Message.RecipientType.TO, emails);
          // Remove hyperlinks cause they won't work in email.

@@ -56,8 +56,9 @@ public class OpenLatestVersion extends WorkPageService {
 
          public void linkActivated(HyperlinkEvent e) {
             try {
-               Artifact art = ArtifactPersistenceManager.getInstance().getArtifact(smaMgr.getSma().getGuid(),
-                     smaMgr.getSma().getBranch());
+               Artifact art =
+                     ArtifactPersistenceManager.getInstance().getArtifact(smaMgr.getSma().getGuid(),
+                           smaMgr.getSma().getBranch());
                if (art == null) {
                   AWorkbench.popup("ERROR", "Can't retrieve latest version of artifact; may have been deleted");
                   return;

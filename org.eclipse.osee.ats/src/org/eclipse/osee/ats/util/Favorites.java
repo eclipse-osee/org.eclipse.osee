@@ -34,14 +34,14 @@ public class Favorites {
    public void toggleFavorite() {
       try {
          if (((IFavoriteableArtifact) sma).amIFavorite()) {
-            boolean result = MessageDialog.openQuestion(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Remove Favorite",
-                  "Are You sure you wish to remove this as Favorite?");
+            boolean result =
+                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
             if (result) ((IFavoriteableArtifact) sma).removeFavorite(SkynetAuthentication.getInstance().getAuthenticatedUser());
          } else {
-            boolean result = MessageDialog.openQuestion(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Favorite",
-                  "Are you sure you wish add this as a Favorite?");
+            boolean result =
+                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        "Favorite", "Are you sure you wish add this as a Favorite?");
             if (result) ((IFavoriteableArtifact) sma).addFavorite(SkynetAuthentication.getInstance().getAuthenticatedUser());
          }
       } catch (SQLException ex) {

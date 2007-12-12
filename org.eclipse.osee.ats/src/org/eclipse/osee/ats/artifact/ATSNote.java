@@ -70,8 +70,9 @@ public class ATSNote {
                } catch (SQLException ex) {
                   OSEELog.logException(AtsPlugin.class, ex, false);
                }
-               NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
-                     element.getAttribute("date"), user, element.getAttribute("msg"));
+               NoteItem item =
+                     new NoteItem(element.getAttribute("type"), element.getAttribute("state"),
+                           element.getAttribute("date"), user, element.getAttribute("msg"));
                logItems.add(item);
             }
          } catch (Exception ex) {

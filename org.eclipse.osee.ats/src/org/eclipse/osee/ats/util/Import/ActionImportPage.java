@@ -118,8 +118,8 @@ public class ActionImportPage extends WizardDataTransferPage {
       if (currentResourceSelection != null) fileSelector.setText(currentResourceSelection.getLocation().toString());
       setPageComplete(determinePageCompletion());
    } /*
-               * @see WizardPage#becomesVisible
-               */
+                 * @see WizardPage#becomesVisible
+                 */
 
    public void setVisible(boolean visible) {
       super.setVisible(visible);
@@ -136,19 +136,20 @@ public class ActionImportPage extends WizardDataTransferPage {
    public boolean finish() {
       final File file = fileSelector.getFile();
       try {
-         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-               BranchPersistenceManager.getInstance().getAtsBranch()) {
+         AbstractSkynetTxTemplate txWrapper =
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
 
-            @Override
-            protected void handleTxWork() throws Exception {
-               ExcelAtsActionArtifactExtractor extractor = new ExcelAtsActionArtifactExtractor(
-                     BranchPersistenceManager.getInstance().getAtsBranch(), emailPocs.getSelection());
-               extractor.discoverArtifactAndRelationData(file);
-               if (extractor.dataIsValid()) extractor.createArtifactsAndNotify();
-               WorldView.loadIt("Imported Action Artifacts", extractor.getActionArts());
-               AWorkbench.popup("Complete", "Action Import Complete");
-            }
-         };
+                  @Override
+                  protected void handleTxWork() throws Exception {
+                     ExcelAtsActionArtifactExtractor extractor =
+                           new ExcelAtsActionArtifactExtractor(BranchPersistenceManager.getInstance().getAtsBranch(),
+                                 emailPocs.getSelection());
+                     extractor.discoverArtifactAndRelationData(file);
+                     if (extractor.dataIsValid()) extractor.createArtifactsAndNotify();
+                     WorldView.loadIt("Imported Action Artifacts", extractor.getActionArts());
+                     AWorkbench.popup("Complete", "Action Import Complete");
+                  }
+               };
          txWrapper.execute();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

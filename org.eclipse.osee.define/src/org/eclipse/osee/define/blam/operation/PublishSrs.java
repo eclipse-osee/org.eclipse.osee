@@ -31,10 +31,10 @@ public class PublishSrs implements BlamOperation {
       // Master Template <XWidget xwidgetType="XText" displayName="masterTemplate" />
       // Slave Template <XWidget xwidgetType="XText" displayName="slaveTemplate" />
 
-      String masterTemplate = new String(Streams.getByteArray(new FileInputStream(
-            variableMap.getString("masterTemplate"))), "UTF-8");
-      String slaveTemplate = new String(
-            Streams.getByteArray(new FileInputStream(variableMap.getString("slaveTemplate"))), "UTF-8");
+      String masterTemplate =
+            new String(Streams.getByteArray(new FileInputStream(variableMap.getString("masterTemplate"))), "UTF-8");
+      String slaveTemplate =
+            new String(Streams.getByteArray(new FileInputStream(variableMap.getString("slaveTemplate"))), "UTF-8");
 
       WordTemplateProcessor processor = new WordTemplateProcessor(masterTemplate, slaveTemplate);
 

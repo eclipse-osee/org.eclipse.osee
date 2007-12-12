@@ -118,7 +118,8 @@ public class ExtendedStatusReportJob extends Job {
       for (Artifact art : arts) {
          if (art instanceof ActionArtifact) {
             ActionArtifact actionArt = (ActionArtifact) art;
-            String str = String.format("Processing %s/%s \"%s\"", x++ + "", arts.size(), actionArt.getDescriptiveName());
+            String str =
+                  String.format("Processing %s/%s \"%s\"", x++ + "", arts.size(), actionArt.getDescriptiveName());
             System.out.println(str);
             monitor.subTask(str);
             for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
@@ -168,7 +169,8 @@ public class ExtendedStatusReportJob extends Job {
             String desc = sma.getDescription();
             if (sma instanceof TaskArtifact) {
                TaskArtifact taskArt = (TaskArtifact) sma;
-               desc = taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
+               desc =
+                     taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
             }
             if (desc.matches("^ *$"))
                values.add(".");

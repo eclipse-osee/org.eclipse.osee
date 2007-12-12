@@ -51,8 +51,9 @@ public class DefaultTeamWorkflowManager {
          if (popup) result.popup();
          return result;
       }
-      result = smaMgr.transition(DefaultTeamState.Analyze.name(),
-            (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
+      result =
+            smaMgr.transition(DefaultTeamState.Analyze.name(),
+                  (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -64,8 +65,9 @@ public class DefaultTeamWorkflowManager {
          if (popup) result.popup();
          return result;
       }
-      result = smaMgr.transition(DefaultTeamState.Authorize.name(),
-            (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
+      result =
+            smaMgr.transition(DefaultTeamState.Authorize.name(),
+                  (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -78,16 +80,18 @@ public class DefaultTeamWorkflowManager {
          return result;
       }
 
-      result = smaMgr.transition(DefaultTeamState.Implement.name(),
-            (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
+      result =
+            smaMgr.transition(DefaultTeamState.Implement.name(),
+                  (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
       }
       if (toState == DefaultTeamState.Implement) return Result.TrueResult;
 
-      result = smaMgr.transition(DefaultTeamState.Completed.name(),
-            (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
+      result =
+            smaMgr.transition(DefaultTeamState.Completed.name(),
+                  (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;

@@ -85,8 +85,10 @@ public class SMAWorkFlowSection extends SectionPart {
       this.toolkit = toolkit;
       this.page = page;
       this.smaMgr = smaMgr;
-      isEditable = !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.isCurrentState(page) && (smaMgr.getEditor().getPriviledgedEditMode() != SMAEditor.PriviledgedEditMode.Off || smaMgr.isAssigneeMe() || AtsPlugin.isAtsAdmin());
-      isGlobalEditable = !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.getEditor().getPriviledgedEditMode() == SMAEditor.PriviledgedEditMode.Global;
+      isEditable =
+            !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.isCurrentState(page) && (smaMgr.getEditor().getPriviledgedEditMode() != SMAEditor.PriviledgedEditMode.Off || smaMgr.isAssigneeMe() || AtsPlugin.isAtsAdmin());
+      isGlobalEditable =
+            !smaMgr.getSma().isReadOnly() && smaMgr.isAccessControlWrite() && smaMgr.getEditor().getPriviledgedEditMode() == SMAEditor.PriviledgedEditMode.Global;
       isCurrentState = smaMgr.isCurrentState(page);
       // parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
       createPage(parent);
@@ -274,8 +276,9 @@ public class SMAWorkFlowSection extends SectionPart {
             errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          }
       } else if (smaMgr.getAssignees().size() > 0) {
-         Label errorLabel = toolkit.createLabel(comp,
-               "Error: Non-current/Cancelled/Completed state still assigned to " + smaMgr.getAssigneesStr());
+         Label errorLabel =
+               toolkit.createLabel(comp,
+                     "Error: Non-current/Cancelled/Completed state still assigned to " + smaMgr.getAssigneesStr());
          errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
    }
@@ -559,9 +562,11 @@ public class SMAWorkFlowSection extends SectionPart {
       }
 
       // Otherwise, open dialog to ask for hours complete
-      String msg = smaMgr.getCurrentStateName() + " State\n\n" + smaMgr.getSma().getCurrentState().getHoursSpentStr() + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
-      SMAStatusDialog tsd = new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Enter Hours Spent", msg, false, Arrays.asList(new StateMachineArtifact[] {smaMgr.getSma()}));
+      String msg =
+            smaMgr.getCurrentStateName() + " State\n\n" + smaMgr.getSma().getCurrentState().getHoursSpentStr() + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
+      SMAStatusDialog tsd =
+            new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent",
+                  msg, false, Arrays.asList(new StateMachineArtifact[] {smaMgr.getSma()}));
       int result = tsd.open();
       if (result == 0) {
          smaMgr.getCurrentStateDam().setPercentComplete(100);

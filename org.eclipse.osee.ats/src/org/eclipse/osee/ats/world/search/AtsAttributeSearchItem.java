@@ -74,15 +74,17 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
       bothCriteria.add(stringCriteria);
       bothCriteria.add(atsObjectSearch);
 
-      Collection<Artifact> artifacts = ArtifactPersistenceManager.getInstance().getArtifacts(bothCriteria, true,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> artifacts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(bothCriteria, true,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
       addResultArtifacts(artifacts);
    }
 
    @Override
    public boolean performUI() {
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), "Search by Ats Attribute", null,
-            "Enter string to search for.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Search by Ats Attribute", null,
+                  "Enter string to search for.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          searchStr = ed.getEntry();
          return true;

@@ -52,8 +52,9 @@ public class WorkflowDiagramFactory {
    public NativeArtifact importWorkflowDiagramToSkynet(InputStream inputStream, String name) throws SQLException, IOException {
       NativeArtifact art = null;
       // System.out.println("Importing diagram " + name);
-      art = (NativeArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            GENERAL_DOCUMENT_ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+      art =
+            (NativeArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                  GENERAL_DOCUMENT_ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
       art.setDescriptiveName(name);
       art.setSoleAttributeValue("Extension", "vue");
       art.setNativeContent(inputStream);
@@ -71,14 +72,16 @@ public class WorkflowDiagramFactory {
    }
 
    public NativeArtifact getAtsWorkflowArtifact(String diagramName) throws SQLException {
-      ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      ArtifactTypeNameSearch srch =
+            new ArtifactTypeNameSearch(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
       return srch.getSingletonArtifactOrException(NativeArtifact.class);
    }
 
    public boolean atsWorkflowArtifactExists(String diagramName) throws SQLException {
-      ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      ArtifactTypeNameSearch srch =
+            new ArtifactTypeNameSearch(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
       return srch.getArtifacts(NativeArtifact.class).size() == 1;
    }
 

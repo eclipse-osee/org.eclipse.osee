@@ -39,8 +39,9 @@ public class AddEveryoneGroupToBranches implements BlamOperation {
       for (Branch brnch : branchPersistenceManager.getBranches()) {
 
          if (!accessControlManager.getAccessControlList(brnch).isEmpty()) {
-            artifacts = artifactPersistenceManager.getArtifactsFromAttribute("Name", "Everyone",
-                  branchPersistenceManager.getCommonBranch());
+            artifacts =
+                  artifactPersistenceManager.getArtifactsFromAttribute("Name", "Everyone",
+                        branchPersistenceManager.getCommonBranch());
 
             if (!artifacts.isEmpty()) {
                accessControlManager.setPermission(artifacts.iterator().next(), brnch, PermissionEnum.READ);

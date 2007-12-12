@@ -86,7 +86,8 @@ public class StartJini extends JiniService {
          String host = InetAddress.getLocalHost().getHostAddress();
          System.out.println("Host Address: " + host);
          String javaexeBigMem = quote + javaHome + fs + "bin" + fs + "java" + quote + " -Xmx512M ";
-         String startServices = javaexeBigMem + " -Dlookupcomponent " + " -Dosee.jini.lookup.groups=" + allowedGroups + " " + " -Dosee.jini.install=" + quote + jiniHome + "/jini2_1" + quote + " " + " -Dosee.jini.config=" + quote + jiniHome + "/jini_config" + quote + " " + " -Dosee.classserver.host=" + host + " " + " -Dosee.classserver.port=" + port + " " + " -Djava.security.policy=" + quote + jiniHome + "/jini_config/jsk-all.policy" + quote + " " + " -jar " + quote + jiniHome + "/jini2_1/lib/start.jar" + quote + " " + quote + jiniHome + "/jini_config/start-transient-jeri-services.config" + quote;
+         String startServices =
+               javaexeBigMem + " -Dlookupcomponent " + " -Dosee.jini.lookup.groups=" + allowedGroups + " " + " -Dosee.jini.install=" + quote + jiniHome + "/jini2_1" + quote + " " + " -Dosee.jini.config=" + quote + jiniHome + "/jini_config" + quote + " " + " -Dosee.classserver.host=" + host + " " + " -Dosee.classserver.port=" + port + " " + " -Djava.security.policy=" + quote + jiniHome + "/jini_config/jsk-all.policy" + quote + " " + " -jar " + quote + jiniHome + "/jini2_1/lib/start.jar" + quote + " " + quote + jiniHome + "/jini_config/start-transient-jeri-services.config" + quote;
 
          logger.log(Level.INFO, "RUN REGGIE ***************************************************");
          logger.log(Level.INFO, startServices);

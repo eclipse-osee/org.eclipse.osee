@@ -272,14 +272,16 @@ public class Overview {
    }
 
    public static String getOpenHyperlinkHtml(Artifact art, int transId) {
-      String str = AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openTransAction,
-            String.format("%s,%s", art.getGuid(), transId + "")), art.getDescriptiveName());
+      String str =
+            AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openTransAction,
+                  String.format("%s,%s", art.getGuid(), transId + "")), art.getDescriptiveName());
       return str;
    }
 
    public static String getOpenHyperlinkHtml(String name, String guidOrHrid, int branchId) {
-      String str = AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openArtifctBranch,
-            String.format("%s,%s", guidOrHrid, branchId + "")), name);
+      String str =
+            AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openArtifctBranch,
+                  String.format("%s,%s", guidOrHrid, branchId + "")), name);
       return str;
    }
 

@@ -61,8 +61,9 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
    public ExcelAtsTaskArtifactExtractor(String hrid, Branch branch, boolean emailPOCs) throws SQLException, IllegalArgumentException {
       super(branch);
       this.emailPOCs = emailPOCs;
-      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifactsFromHrid(hrid,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> arts =
+            ArtifactPersistenceManager.getInstance().getArtifactsFromHrid(hrid,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
       if (arts.size() == 0) throw new IllegalArgumentException("Can't find artifact associated with " + hrid);
       if (arts.size() > 1) throw new IllegalArgumentException("Found two artifacts for HRID " + hrid);
       if (!(arts.iterator().next() instanceof StateMachineArtifact)) throw new IllegalArgumentException(

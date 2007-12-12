@@ -82,14 +82,16 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
          boolean enabled;
          if (smaMgr.getBranchMgr().isWorkingBranch()) {
             try {
-               Pair<TransactionId, TransactionId> transactionToFrom = transactionIdManager.getStartEndPoint(smaMgr.getBranchMgr().getBranch());
+               Pair<TransactionId, TransactionId> transactionToFrom =
+                     transactionIdManager.getStartEndPoint(smaMgr.getBranchMgr().getBranch());
                enabled = !transactionToFrom.getKey().equals(transactionToFrom.getValue());
             } catch (SQLException ex) {
                OSEELog.logException(getClass(), ex, false);
                enabled = false;
             }
          } else {
-            enabled = ((smaMgr.getBranchMgr().getTransactionIdInt() != null) && (smaMgr.getBranchMgr().getTransactionIdInt() > 0));
+            enabled =
+                  ((smaMgr.getBranchMgr().getTransactionIdInt() != null) && (smaMgr.getBranchMgr().getTransactionIdInt() > 0));
          }
 
          link.setText(enabled ? "Show Change Report" : "Show Change Report\n(no changes)");

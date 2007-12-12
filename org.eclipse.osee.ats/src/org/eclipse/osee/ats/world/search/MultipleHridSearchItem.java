@@ -68,8 +68,8 @@ public class MultipleHridSearchItem extends WorldSearchItem {
 
       // If items were entered that are not HRIDs or Guids, attempt to open via legacy pcr field
       if (nonHridGuids.size() > 0) {
-         Collection<ActionArtifact> actionArts = LegacyPCRActions.getTeamsActionArtifacts(nonHridGuids,
-               (Collection<TeamDefinitionArtifact>) null);
+         Collection<ActionArtifact> actionArts =
+               LegacyPCRActions.getTeamsActionArtifacts(nonHridGuids, (Collection<TeamDefinitionArtifact>) null);
          if (actionArts.size() == 0) {
             // Attempt to open off legacy PCR field
             OSEELog.logException(AtsPlugin.class,
@@ -83,8 +83,9 @@ public class MultipleHridSearchItem extends WorldSearchItem {
       }
 
       if (idCriteria.size() > 0) {
-         Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(idCriteria, false,
-               BranchPersistenceManager.getInstance().getAtsBranch());
+         Collection<Artifact> arts =
+               ArtifactPersistenceManager.getInstance().getArtifacts(idCriteria, false,
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          debug.report("Processing artifacts", true);
          if (isCancelled()) return;
          addResultArtifacts(arts);
@@ -95,9 +96,10 @@ public class MultipleHridSearchItem extends WorldSearchItem {
 
    @Override
    public boolean performUI() {
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), getName(), null,
-            "Enter GUID(s) or 5 Character ID(s) (comma separated)", MessageDialog.QUESTION, new String[] {"OK",
-                  "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), getName(), null,
+                  "Enter GUID(s) or 5 Character ID(s) (comma separated)", MessageDialog.QUESTION, new String[] {"OK",
+                        "Cancel"}, 0);
       int response = ed.open();
       if (response == 0) {
          id = ed.getEntry();

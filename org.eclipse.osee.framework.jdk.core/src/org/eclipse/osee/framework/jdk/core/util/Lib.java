@@ -95,9 +95,9 @@ public final class Lib {
    }
 
    public static boolean validateEmail(String toValidate) {
-      Pattern pattern = Pattern.compile(
-            "^[a-z0-9\\._-]" + "+@([a-z0-9][a-z0-9-]*" + "[a-z0-9]\\.)+" + "([a-z]+\\.)?([a-z]+)$",
-            Pattern.CASE_INSENSITIVE);
+      Pattern pattern =
+            Pattern.compile("^[a-z0-9\\._-]" + "+@([a-z0-9][a-z0-9-]*" + "[a-z0-9]\\.)+" + "([a-z]+\\.)?([a-z]+)$",
+                  Pattern.CASE_INSENSITIVE);
       Matcher matcher = pattern.matcher(toValidate);
       return matcher.find();
    }
@@ -414,10 +414,10 @@ public final class Lib {
 
    public static int handleProcess(Process proc, Writer output, String errName, String outName, boolean verbose) {
       try {
-         IOOutputThread errThread = new IOOutputThread(output, new BufferedReader(new InputStreamReader(
-               proc.getErrorStream())), verbose);
-         IOOutputThread outThread = new IOOutputThread(output, new BufferedReader(new InputStreamReader(
-               proc.getInputStream())), verbose);
+         IOOutputThread errThread =
+               new IOOutputThread(output, new BufferedReader(new InputStreamReader(proc.getErrorStream())), verbose);
+         IOOutputThread outThread =
+               new IOOutputThread(output, new BufferedReader(new InputStreamReader(proc.getInputStream())), verbose);
 
          errThread.setName(errName);
          outThread.setName(outName);
@@ -468,11 +468,11 @@ public final class Lib {
     *         --index 2 = input stream<br>
     */
    public static Thread[] handleMinicomProcess(Process proc, Writer output, Reader input) {
-      IOOutputThread errThread = new IOOutputThread(output, new BufferedReader(new InputStreamReader(
-            proc.getErrorStream())));
+      IOOutputThread errThread =
+            new IOOutputThread(output, new BufferedReader(new InputStreamReader(proc.getErrorStream())));
 
-      InputBufferThread outThread = new InputBufferThread(new BufferedReader(new InputStreamReader(
-            proc.getInputStream())));
+      InputBufferThread outThread =
+            new InputBufferThread(new BufferedReader(new InputStreamReader(proc.getInputStream())));
 
       errThread.setName("err");
       outThread.setName("out");
@@ -480,8 +480,8 @@ public final class Lib {
       outThread.start();
 
       if (input != null) {
-         IOInputThread inThread = new IOInputThread(input, new BufferedWriter(new OutputStreamWriter(
-               proc.getOutputStream())));
+         IOInputThread inThread =
+               new IOInputThread(input, new BufferedWriter(new OutputStreamWriter(proc.getOutputStream())));
          inThread.setName("in");
          inThread.start();
          return new Thread[] {errThread, outThread, inThread};
@@ -506,17 +506,17 @@ public final class Lib {
    }
 
    public static Thread[] handleProcessNoWait(Process proc, Writer outputWriter, Writer errorWriter, Reader reader, String errName, String outName, boolean verbose) {
-      IOOutputThread errThread = new IOOutputThread(errorWriter, new BufferedReader(new InputStreamReader(
-            proc.getErrorStream())), verbose);
-      IOOutputThread outThread = new IOOutputThread(outputWriter, new BufferedReader(new InputStreamReader(
-            proc.getInputStream())), verbose);
+      IOOutputThread errThread =
+            new IOOutputThread(errorWriter, new BufferedReader(new InputStreamReader(proc.getErrorStream())), verbose);
+      IOOutputThread outThread =
+            new IOOutputThread(outputWriter, new BufferedReader(new InputStreamReader(proc.getInputStream())), verbose);
       errThread.setName(errName);
       outThread.setName(outName);
       errThread.start();
       outThread.start();
       if (reader != null) {
-         IOInputThread inThread = new IOInputThread(reader, new BufferedWriter(new OutputStreamWriter(
-               proc.getOutputStream())));
+         IOInputThread inThread =
+               new IOInputThread(reader, new BufferedWriter(new OutputStreamWriter(proc.getOutputStream())));
          inThread.setName("in");
          inThread.start();
          return new Thread[] {errThread, outThread, inThread};
@@ -946,9 +946,10 @@ public final class Lib {
 
    public static String determineGroup() {
       try {
-         Process proc = Runtime.getRuntime().exec(
-               new String[] {"/usr/bin/bash", "-c", "touch whichGroup; ls -g whichGroup; rm whichGroup"}, null,
-               new File("/tmp"));
+         Process proc =
+               Runtime.getRuntime().exec(
+                     new String[] {"/usr/bin/bash", "-c", "touch whichGroup; ls -g whichGroup; rm whichGroup"}, null,
+                     new File("/tmp"));
          BufferedReader inOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
          String line = inOutput.readLine();
          return line.substring(15, line.indexOf(' ', 16)); // 15 based on
@@ -1224,7 +1225,8 @@ public final class Lib {
          dest.close();
          is.close();
       } catch (Exception ex) {
-         String information = "JarFile: " + (jarFile != null ? jarFile.getAbsolutePath() : "NULL") + "\n" + "Entry: " + (entry != null ? entry.toString() : "NULL") + "\n" + "Destination: " + (destination != null ? destination.getAbsoluteFile().toString() : "NULL") + "\n";
+         String information =
+               "JarFile: " + (jarFile != null ? jarFile.getAbsolutePath() : "NULL") + "\n" + "Entry: " + (entry != null ? entry.toString() : "NULL") + "\n" + "Destination: " + (destination != null ? destination.getAbsoluteFile().toString() : "NULL") + "\n";
          throw new IOException(information + ex.getMessage());
       }
    }

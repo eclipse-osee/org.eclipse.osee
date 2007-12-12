@@ -41,8 +41,8 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       for (String importFromDbService : importConnections) {
          System.out.println("Import Table Data from Db: " + importFromDbService);
 
-         DbInformation databaseService = ConfigUtil.getConfigFactory().getOseeConfig().getDatabaseService(
-               importFromDbService);
+         DbInformation databaseService =
+               ConfigUtil.getConfigFactory().getOseeConfig().getDatabaseService(importFromDbService);
 
          Connection importConnection = null;
          try {
@@ -59,15 +59,15 @@ public class ImportDataFromDbService implements IDbInitializationTask {
                Set<String> schemasToGet = new TreeSet<String>();
                schemasToGet.add(userName.toUpperCase());
 
-               Map<String, Set<String>> dataToImport = getTablesToImport(importConnection, userName.toUpperCase(),
-                     schemasToGet);
+               Map<String, Set<String>> dataToImport =
+                     getTablesToImport(importConnection, userName.toUpperCase(), schemasToGet);
                if (dataToImport.size() > 0) {
                   System.out.println(dataToImport.toString().replaceAll(", ", "\n"));
                   makeBackupDirectoryIfItDoesntExist();
 
                   System.out.println("Backing up Files to: " + backupDirectory.getAbsolutePath());
-                  DatabaseDataExtractor dbDataExtractor = new DatabaseDataExtractor(importConnection, schemasToGet,
-                        backupDirectory);
+                  DatabaseDataExtractor dbDataExtractor =
+                        new DatabaseDataExtractor(importConnection, schemasToGet, backupDirectory);
 
                   Set<String> tablesToImport;
                   if (importFromDbService.equals(determineDefaultConnection())) {

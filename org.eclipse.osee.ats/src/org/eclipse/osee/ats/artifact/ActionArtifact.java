@@ -109,7 +109,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    private void resetValidationOffChildren() throws SQLException {
       boolean validationRequired = false;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (team.getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) validationRequired = true;
+         if (team.getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) validationRequired =
+               true;
       }
       if (validationRequired != getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) setSoleBooleanAttributeValue(
             ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), validationRequired);
@@ -746,10 +747,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public Result addActionableItems() throws Exception {
-      final AICheckTreeDialog diag = new AICheckTreeDialog(
-            "Add Impacted Actionable Items",
-            "Select New Impacted Actionable Items\n\n" + "Note: Un-selecting existing items will NOT remove the impact.\n" + "Team Workflow with no impact should be transitioned to Cancelled.",
-            Active.Active);
+      final AICheckTreeDialog diag =
+            new AICheckTreeDialog(
+                  "Add Impacted Actionable Items",
+                  "Select New Impacted Actionable Items\n\n" + "Note: Un-selecting existing items will NOT remove the impact.\n" + "Team Workflow with no impact should be transitioned to Cancelled.",
+                  Active.Active);
       if (diag.open() != 0) return Result.FalseResult;
 
       final StringBuffer sb = new StringBuffer();
@@ -839,11 +841,13 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
       TeamWorkFlowArtifact twa = null;
       if (guid == null)
-         twa = (TeamWorkFlowArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-               artifactName, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+         twa =
+               (TeamWorkFlowArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                     artifactName, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
       else
-         twa = (TeamWorkFlowArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-               artifactName, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact(guid, hrid);
+         twa =
+               (TeamWorkFlowArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                     artifactName, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact(guid, hrid);
       setArtifactIdentifyData(this, twa);
 
       twa.getLog().addLog(LogType.Originated, "", "");
@@ -1257,7 +1261,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       boolean metricsFromTasks = false;
       try {
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (team.getSoleBooleanAttributeValue(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE.getStoreName())) metricsFromTasks = true;
+            if (team.getSoleBooleanAttributeValue(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE.getStoreName())) metricsFromTasks =
+                  true;
          }
       } catch (SQLException ex) {
          // do nothing

@@ -71,8 +71,9 @@ public class StateWorldSearchItem extends WorldSearchItem {
       baseCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), stateClass,
             Operator.CONTAINS));
 
-      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(baseCriteria, true,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> arts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(baseCriteria, true,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
       if (isCancelled()) return;
       addResultArtifacts(arts);
 

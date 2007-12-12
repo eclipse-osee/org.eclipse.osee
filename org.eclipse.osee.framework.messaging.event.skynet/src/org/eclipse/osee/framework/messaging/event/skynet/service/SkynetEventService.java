@@ -142,10 +142,10 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
 
          @Override
          public void run() {
-            HashCollection<ISkynetEventListener, ISkynetEvent> eventSets = new HashCollection<ISkynetEventListener, ISkynetEvent>(
-                  false, HashSet.class);
-            HashSet<ISkynetEventListener> exceptList = new HashSet<ISkynetEventListener>(
-                  (int) (except.length / .75f) + 1, .75f);
+            HashCollection<ISkynetEventListener, ISkynetEvent> eventSets =
+                  new HashCollection<ISkynetEventListener, ISkynetEvent>(false, HashSet.class);
+            HashSet<ISkynetEventListener> exceptList =
+                  new HashSet<ISkynetEventListener>((int) (except.length / .75f) + 1, .75f);
             for (ISkynetEventListener listener : except)
                exceptList.add(listener);
 

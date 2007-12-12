@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.plugin.core.config.HeadlessEclipseConfiguratio
  */
 public class SkynetEventServicePlatformRunnable implements IApplication {
 
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(
-         SkynetEventServicePlatformRunnable.class);
+   private static final Logger logger =
+         ConfigUtil.getConfigFactory().getLogger(SkynetEventServicePlatformRunnable.class);
    private SkynetEventService skynetEventService;
 
    public SkynetEventServicePlatformRunnable() {

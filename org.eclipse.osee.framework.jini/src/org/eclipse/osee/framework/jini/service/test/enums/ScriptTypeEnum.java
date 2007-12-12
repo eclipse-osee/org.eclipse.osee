@@ -23,11 +23,11 @@ public class ScriptTypeEnum extends EnumBase {
    public static final ScriptTypeEnum UNKNOWN = new ScriptTypeEnum(2);
    public static final ScriptTypeEnum INVALID = new ScriptTypeEnum(3);
 
-   private static final String[] stringTable = new String[] {"MSG_FUNCTIONAL", "UNIT_TEST", "FUNCTIONAL_TEST",
-         "UNKNOWN", "INVALID"};
+   private static final String[] stringTable =
+         new String[] {"MSG_FUNCTIONAL", "UNIT_TEST", "FUNCTIONAL_TEST", "UNKNOWN", "INVALID"};
 
-   private static final ScriptTypeEnum[] enumValueTable = new ScriptTypeEnum[] {MSG_FUNCTIONAL, UNIT_TEST,
-         FUNCTIONAL_TEST, UNKNOWN, INVALID};
+   private static final ScriptTypeEnum[] enumValueTable =
+         new ScriptTypeEnum[] {MSG_FUNCTIONAL, UNIT_TEST, FUNCTIONAL_TEST, UNKNOWN, INVALID};
 
    private ScriptTypeEnum(int value) {
       super(value);

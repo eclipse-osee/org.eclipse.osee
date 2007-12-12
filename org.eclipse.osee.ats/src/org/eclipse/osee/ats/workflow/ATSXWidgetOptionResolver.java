@@ -46,8 +46,9 @@ public class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
             "ACTIVE_USER_COMMUNITIES")) {
          Set<String> options;
          try {
-            options = ConfigurationPersistenceManager.getInstance().getValidEnumerationAttributeValues(
-                  xWidgetData.getLayoutName(), BranchPersistenceManager.getInstance().getAtsBranch());
+            options =
+                  ConfigurationPersistenceManager.getInstance().getValidEnumerationAttributeValues(
+                        xWidgetData.getLayoutName(), BranchPersistenceManager.getInstance().getAtsBranch());
          } catch (SQLException ex) {
             options = new HashSet<String>();
             options.add(ex.getLocalizedMessage());

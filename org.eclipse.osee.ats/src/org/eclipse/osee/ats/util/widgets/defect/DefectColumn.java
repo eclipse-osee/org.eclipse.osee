@@ -59,8 +59,9 @@ public enum DefectColumn {
    }
 
    public XViewerColumn getXViewerColumn(DefectColumn atsXCol) {
-      XViewerColumn xCol = new XViewerColumn(atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align,
-            atsXCol.isShow(), atsXCol.sortDataType, 0);
+      XViewerColumn xCol =
+            new XViewerColumn(atsXCol.name, atsXCol.width, atsXCol.width, atsXCol.align, atsXCol.isShow(),
+                  atsXCol.sortDataType, 0);
       if (atsXCol.getDesc() != null)
          xCol.setToolTip(atsXCol.getName() + ":\n" + atsXCol.getDesc());
       else

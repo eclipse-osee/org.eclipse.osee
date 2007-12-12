@@ -47,8 +47,8 @@ public class NewPeerToPeerReviewJob extends Job {
             protected void handleTxWork() throws Exception {
 
                SMAManager smaMgr = new SMAManager(teamParent);
-               PeerToPeerReviewArtifact peerToPeerRev = smaMgr.getReviewManager().createNewPeerToPeerReview(
-                     againstState);
+               PeerToPeerReviewArtifact peerToPeerRev =
+                     smaMgr.getReviewManager().createNewPeerToPeerReview(againstState);
 
                monitor.subTask("Persisting");
 

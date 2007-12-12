@@ -170,8 +170,9 @@ public class UserRoleXViewer extends XViewer {
                }
             }
          } else if (aCol == UserRoleColumn.Role_Col) {
-            EnumStringSingleSelectionDialog enumDialog = XPromptChange.promptChangeSingleSelectEnumeration(
-                  aCol.getName(), Role.strValues(), userRole.getRole().name());
+            EnumStringSingleSelectionDialog enumDialog =
+                  XPromptChange.promptChangeSingleSelectEnumeration(aCol.getName(), Role.strValues(),
+                        userRole.getRole().name());
             if (enumDialog != null) {
                if (enumDialog.getResult()[0] != null) {
                   modified = true;

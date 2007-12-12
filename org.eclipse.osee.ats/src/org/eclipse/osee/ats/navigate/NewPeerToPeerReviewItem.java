@@ -51,17 +51,18 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
       int result = ld.open();
       if (result == 0) {
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                  BranchPersistenceManager.getInstance().getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws Exception {
-                  PeerToPeerReviewArtifact peerArt = ReviewManager.createNewPeerToPeerReview(null, null,
-                        SkynetAuthentication.getInstance().getAuthenticatedUser(), new Date());
-                  peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
-                  peerArt.persist(true);
-                  AtsLib.openAtsAction(peerArt, AtsOpenOption.OpenAll);
-               }
-            };
+            AbstractSkynetTxTemplate txWrapper =
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     @Override
+                     protected void handleTxWork() throws Exception {
+                        PeerToPeerReviewArtifact peerArt =
+                              ReviewManager.createNewPeerToPeerReview(null, null,
+                                    SkynetAuthentication.getInstance().getAuthenticatedUser(), new Date());
+                        peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
+                        peerArt.persist(true);
+                        AtsLib.openAtsAction(peerArt, AtsOpenOption.OpenAll);
+                     }
+                  };
             txWrapper.execute();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);

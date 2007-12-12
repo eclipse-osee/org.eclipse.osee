@@ -313,7 +313,8 @@ public class Jaxp {
          Element nextElement = null;
          for (int i = 0; i < a.getLength() && nextElement == null; i++) {
             Node n = a.item(i);
-            if (n.getNodeType() == Node.ELEMENT_NODE && ((Element) n).getTagName().equals(tag)) nextElement = (Element) n;
+            if (n.getNodeType() == Node.ELEMENT_NODE && ((Element) n).getTagName().equals(tag)) nextElement =
+                  (Element) n;
          }
          if (nextElement == null)
             return null;

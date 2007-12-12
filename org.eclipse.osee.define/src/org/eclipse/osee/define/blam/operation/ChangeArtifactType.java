@@ -43,8 +43,10 @@ import org.eclipse.swt.widgets.Display;
 public class ChangeArtifactType implements BlamOperation {
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ChangeArtifactType.class);
-   private static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
-   private static final RelationPersistenceManager relationPersistenceManager = RelationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
+   private static final RelationPersistenceManager relationPersistenceManager =
+         RelationPersistenceManager.getInstance();
    private List<Attribute> attributesToPurge;
    private List<RelationLinkBase> linksToPurge;
 
@@ -82,7 +84,8 @@ public class ChangeArtifactType implements BlamOperation {
       attributesToPurge = new LinkedList<Attribute>();
 
       try {
-         Collection<DynamicAttributeDescriptor> descriptorAttrTypes = configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor);
+         Collection<DynamicAttributeDescriptor> descriptorAttrTypes =
+               configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor);
 
          for (DynamicAttributeManager attributeManager : artifact.getAttributes()) {
 
@@ -146,12 +149,13 @@ public class ChangeArtifactType implements BlamOperation {
       }
 
       public void run() {
-         accept = MessageDialog.openQuestion(
-               Display.getCurrent().getActiveShell(),
-               "Confirm Artifact Type Change ",
-               "There has been a conflict in changing " + artifact.getDescriptiveName() + " to " + descriptor.getName() + " type. \n" + "The following data will need to be purged " + (linksToPurge.isEmpty() ? "" : Collections.toString(
-                     linksToPurge, ":", ",", null)) + (attributesToPurge.isEmpty() ? "" : Collections.toString(
-                     attributesToPurge, ":", ",", null)));
+         accept =
+               MessageDialog.openQuestion(
+                     Display.getCurrent().getActiveShell(),
+                     "Confirm Artifact Type Change ",
+                     "There has been a conflict in changing " + artifact.getDescriptiveName() + " to " + descriptor.getName() + " type. \n" + "The following data will need to be purged " + (linksToPurge.isEmpty() ? "" : Collections.toString(
+                           linksToPurge, ":", ",", null)) + (attributesToPurge.isEmpty() ? "" : Collections.toString(
+                           attributesToPurge, ":", ",", null)));
       }
 
       /**

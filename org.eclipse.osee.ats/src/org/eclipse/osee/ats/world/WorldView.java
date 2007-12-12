@@ -276,8 +276,9 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
 
          public void dragSetData(DragSourceEvent event) {
             String item = "work";
-            event.data = new ArtifactData(xViewer.getSelectedArtifacts().toArray(
-                  new Artifact[xViewer.getSelectedArtifacts().size()]), item, WorldView.VIEW_ID);
+            event.data =
+                  new ArtifactData(xViewer.getSelectedArtifacts().toArray(
+                        new Artifact[xViewer.getSelectedArtifacts().size()]), item, WorldView.VIEW_ID);
          }
 
          public void dragStart(DragSourceEvent event) {
@@ -369,7 +370,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
 
          catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
-            if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str += " => " + ex.getLocalizedMessage();
+            if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
+                  " => " + ex.getLocalizedMessage();
             setTableTitle("Searching Error - " + searchItem.getSelectedName(), false);
             logger.log(Level.SEVERE, "Searching Error - " + ex.getLocalizedMessage(), ex);
             monitor.done();

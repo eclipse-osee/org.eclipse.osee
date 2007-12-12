@@ -39,8 +39,8 @@ public class ImportActionsViaSpreadsheet extends XNavigateItemAction {
    @Override
    public void run() throws SQLException {
       ActionImportWizard actionWizard = new ActionImportWizard();
-      WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            actionWizard);
+      WizardDialog dialog =
+            new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), actionWizard);
       dialog.create();
       dialog.open();
    }

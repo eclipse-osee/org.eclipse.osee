@@ -264,7 +264,8 @@ public class DatabaseDataExtractor {
          value = value.replaceAll("\0", "");
          value = value.replaceAll("'", "''");
          // value = value.replaceAll("\"", "\\\\\""); No need to do this.
-         Pattern pattern = Pattern.compile("[^" + "a-zA-Z0-9" + "!@#$%\\^&*\\(\\)" + "+ _.-=" + "\'\"<>{}\\[\\]|:;,\n\r\t\b?/`~\\\\]+");
+         Pattern pattern =
+               Pattern.compile("[^" + "a-zA-Z0-9" + "!@#$%\\^&*\\(\\)" + "+ _.-=" + "\'\"<>{}\\[\\]|:;,\n\r\t\b?/`~\\\\]+");
          Matcher matcher = pattern.matcher(value);
 
          while (matcher.find()) {

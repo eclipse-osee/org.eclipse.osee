@@ -73,8 +73,9 @@ public class ATSLog {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
-               LogItem item = new LogItem(element.getAttribute("type"), element.getAttribute("date"),
-                     element.getAttribute("userId"), element.getAttribute("state"), element.getAttribute("msg"));
+               LogItem item =
+                     new LogItem(element.getAttribute("type"), element.getAttribute("date"),
+                           element.getAttribute("userId"), element.getAttribute("state"), element.getAttribute("msg"));
                logItems.add(item);
             }
          } catch (Exception ex) {

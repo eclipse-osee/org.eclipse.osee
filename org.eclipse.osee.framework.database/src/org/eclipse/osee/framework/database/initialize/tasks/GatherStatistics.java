@@ -15,7 +15,8 @@ import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 
 public class GatherStatistics extends DbInitializationTask {
-   private static final String gatherStats = "begin" + " DBMS_STATS.GATHER_SCHEMA_STATS (ownname => '', estimate_percent => 99," + " granularity => 'ALL', degree => NULL , cascade => TRUE);" + "end;";
+   private static final String gatherStats =
+         "begin" + " DBMS_STATS.GATHER_SCHEMA_STATS (ownname => '', estimate_percent => 99," + " granularity => 'ALL', degree => NULL , cascade => TRUE);" + "end;";
 
    private SupportedDatabase database;
 

@@ -86,13 +86,14 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
       ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
       BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
-      String[] subsystems = new String[] {"Video Processing", "Robot API", "Other Device API", "Calibration",
-            "Registration", "Tool Tracking", "Telesurgery", "Volume", "Hardware", "Imaging", "Electrical", "Sensors",
-            "Hydraulics", "Navigation", "Backup", "Accuracy", "Propulsion", "Unknown"};
+      String[] subsystems =
+            new String[] {"Video Processing", "Robot API", "Other Device API", "Calibration", "Registration",
+                  "Tool Tracking", "Telesurgery", "Volume", "Hardware", "Imaging", "Electrical", "Sensors",
+                  "Hydraulics", "Navigation", "Backup", "Accuracy", "Propulsion", "Unknown"};
 
       Branch programBranch = branchManager.getKeyedBranch(branchName);
-      ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor("Component",
-            programBranch);
+      ArtifactSubtypeDescriptor descriptor =
+            configurationManager.getArtifactSubtypeDescriptor("Component", programBranch);
       Artifact sawProduct = descriptor.makeNewArtifact();
       sawProduct.setDescriptiveName("SAW Product Decomposition");
 
@@ -102,8 +103,8 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          sawProduct.addChild(artifact);
       }
 
-      Artifact programRoot = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch,
-            true);
+      Artifact programRoot =
+            ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch, true);
       programRoot.addChild(sawProduct);
 
       descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder", programBranch);
@@ -137,8 +138,9 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramBranch");
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.Demo_Program_Skynet_Types");
 
-      Branch branch = BranchPersistenceManager.getInstance().createRootBranch(null, branchName, branchName,
-            skynetTypeImport, true);
+      Branch branch =
+            BranchPersistenceManager.getInstance().createRootBranch(null, branchName, branchName, skynetTypeImport,
+                  true);
 
       WordTemplateManager.addWordTemplates(branch);
 
@@ -149,8 +151,9 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
       // Setup some sample builds for Widget A
       for (String verName : new String[] {SawBuilds.SAW_Bld_1.name(), SawBuilds.SAW_Bld_2.name(),
             SawBuilds.SAW_Bld_3.name()}) {
-         VersionArtifact ver = (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-               VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+         VersionArtifact ver =
+               (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                     VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
          ver.setDescriptiveName(verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setAttribute(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), "yes");
@@ -161,8 +164,9 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
       // Setup some sample builds for Widget B
       for (String verName : new String[] {CISBuilds.CIS_Bld_1.name(), CISBuilds.CIS_Bld_2.name(),
             CISBuilds.CIS_Bld_3.name()}) {
-         VersionArtifact ver = (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-               VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+         VersionArtifact ver =
+               (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                     VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
          ver.setDescriptiveName(verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setAttribute(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), "yes");

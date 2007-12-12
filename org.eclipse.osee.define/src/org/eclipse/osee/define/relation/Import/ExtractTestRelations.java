@@ -31,7 +31,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 
 public class ExtractTestRelations {
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
    //   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
    private String scriptsDir;
@@ -117,10 +118,12 @@ public class ExtractTestRelations {
    }
 
    private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws SQLException {
-      Artifact testArtifact = artifactManager.getArtifactFromTypeName("Test Script", testArtifactFile.getName(), branch);
+      Artifact testArtifact =
+            artifactManager.getArtifactFromTypeName("Test Script", testArtifactFile.getName(), branch);
 
       if (testArtifact == null) {
-         testArtifact = configurationPersistenceManager.getArtifactSubtypeDescriptor("Test Script", branch).makeNewArtifact();
+         testArtifact =
+               configurationPersistenceManager.getArtifactSubtypeDescriptor("Test Script", branch).makeNewArtifact();
          testArtifact.setAttribute("Name", testArtifactFile.getName());
          testArtifact.setAttribute("Content URL", testArtifactFile.getFullPath().toString());
          testArtifact.persist();

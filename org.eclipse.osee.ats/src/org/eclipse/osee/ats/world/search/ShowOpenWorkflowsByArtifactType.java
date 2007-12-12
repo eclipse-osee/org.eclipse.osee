@@ -65,8 +65,9 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
 
       if (!showWorkflow) {
          if (isCancelled()) return;
-         Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(allReviewCriteria, true,
-               BranchPersistenceManager.getInstance().getAtsBranch());
+         Collection<Artifact> arts =
+               ArtifactPersistenceManager.getInstance().getArtifacts(allReviewCriteria, true,
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          debug.report("Processing artifacts", true);
          if (isCancelled()) return;
          addResultArtifacts(arts);
@@ -79,8 +80,9 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
 
       if (isCancelled()) return;
       debug.report("Perform Search...", true);
-      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(teamCriteria, true,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> arts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(teamCriteria, true,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
 
       if (isCancelled()) return;
       debug.report("Processing artifacts", true);

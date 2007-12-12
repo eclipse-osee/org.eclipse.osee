@@ -77,12 +77,13 @@ public class PrivilegedEditService extends WorkPageService {
                         buttons = new String[] {"OK", "Override and Edit", "Override and Edit All", "Cancel"};
                      else
                         buttons = new String[] {"OK", "Cancel"};
-                     MessageDialog ed = new MessageDialog(
-                           Display.getCurrent().getActiveShell(),
-                           "Privileged Edit",
-                           null,
-                           "The following users have the ability to edit this " + smaMgr.getSma().getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),
-                           MessageDialog.QUESTION, buttons, 0);
+                     MessageDialog ed =
+                           new MessageDialog(
+                                 Display.getCurrent().getActiveShell(),
+                                 "Privileged Edit",
+                                 null,
+                                 "The following users have the ability to edit this " + smaMgr.getSma().getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),
+                                 MessageDialog.QUESTION, buttons, 0);
                      int result = ed.open();
                      if (iAmPrivileged) {
                         if (result == 1)

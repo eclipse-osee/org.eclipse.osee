@@ -56,8 +56,9 @@ public class CreateNewVersionItem extends XNavigateItemAction {
    public void run() throws SQLException {
       final TeamDefinitionArtifact teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();
       if (teamDefHoldingVersions == null) return;
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Version", null,
-            "Enter Version Name", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Version", null, "Enter Version Name",
+                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          String newVer = ed.getEntry();
          if (newVer.equals("")) {
@@ -109,8 +110,9 @@ public class CreateNewVersionItem extends XNavigateItemAction {
        */
       @Override
       protected void handleTxWork() throws Exception {
-         VersionArtifact ver = (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-               VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+         VersionArtifact ver =
+               (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                     VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
          ver.setDescriptiveName(newVersionName);
          teamDefHoldingVersions.relate(RelationSide.TeamDefinitionToVersion_Version, ver);
          ver.persist(true);

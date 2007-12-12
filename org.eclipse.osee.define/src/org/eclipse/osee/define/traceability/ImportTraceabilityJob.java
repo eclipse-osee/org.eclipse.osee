@@ -49,7 +49,8 @@ import org.eclipse.swt.program.Program;
 public class ImportTraceabilityJob extends Job {
    private static final Pattern ofpReqTraceP = Pattern.compile("\\^SRS\\s*([^;\n\r]+);");
    private final Matcher ofpReqTraceMatcher;
-   private static final Pattern scriptReqTraceP = Pattern.compile("addTraceability\\s*\\(\\\"(?:SubDD|SRS|CSID)?\\s*([^\\\"]+)\\\"");
+   private static final Pattern scriptReqTraceP =
+         Pattern.compile("addTraceability\\s*\\(\\\"(?:SubDD|SRS|CSID)?\\s*([^\\\"]+)\\\"");
    private final Matcher scriptReqTraceMatcher;
    private static final Pattern structuredReqNameP = Pattern.compile("\\[?(\\{[^\\}]+\\})(.*)");
    private static final Pattern filePattern = Pattern.compile(".*\\.(java|ada|ads|adb|c|h)");
@@ -235,7 +236,8 @@ public class ImportTraceabilityJob extends Job {
                } else {
                   // for local data and procedures search requirement text for traceMark
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
-                  String textContent = WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME)).toUpperCase();
+                  String textContent =
+                        WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME)).toUpperCase();
                   if (textContent.contains(getCanonicalReqName(structuredReqNameMatcher.group(2)))) {
                      foundStr = "req body match";
                   } else {

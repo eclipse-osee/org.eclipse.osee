@@ -77,8 +77,8 @@ public class ATSPerspective implements IPerspectiveFactory {
       }
 
       if (AtsPlugin.isAtsAdmin()) {
-         IFolderLayout bottomRight = layout.createFolder("bottomRight", IPageLayout.RIGHT, (float) 0.75,
-               WorldView.VIEW_ID);
+         IFolderLayout bottomRight =
+               layout.createFolder("bottomRight", IPageLayout.RIGHT, (float) 0.75, WorldView.VIEW_ID);
          bottomRight.addView("org.eclipse.pde.runtime.LogView");
       }
    }

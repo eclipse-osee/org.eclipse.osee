@@ -41,8 +41,9 @@ public class DatabaseActivator extends OseeUiActivator {
    }
 
    public boolean isProductionDb() {
-      List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(DatabaseActivator.getInstance(),
-            "ProductionDatabase", "ProductionDatabase");
+      List<IConfigurationElement> elements =
+            ExtensionPoints.getExtensionElements(DatabaseActivator.getInstance(), "ProductionDatabase",
+                  "ProductionDatabase");
 
       String dbServiceId = ConfigUtil.getConfigFactory().getOseeConfig().getServiceID();
       for (IConfigurationElement element : elements) {

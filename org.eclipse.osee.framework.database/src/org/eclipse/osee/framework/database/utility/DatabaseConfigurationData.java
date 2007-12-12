@@ -44,7 +44,8 @@ public class DatabaseConfigurationData {
    }
 
    public Map<String, SchemaData> getUserSpecifiedSchemas() {
-      Map<String, SchemaData> schemasFromUserFiles = SchemaConfigUtility.getUserDefinedConfig(getUserSchemaFilesToProcess());
+      Map<String, SchemaData> schemasFromUserFiles =
+            SchemaConfigUtility.getUserDefinedConfig(getUserSchemaFilesToProcess());
       if (!useFileSpecifiedSchemas()) {
          try {
             DatabaseMetaData meta = connection.getMetaData();

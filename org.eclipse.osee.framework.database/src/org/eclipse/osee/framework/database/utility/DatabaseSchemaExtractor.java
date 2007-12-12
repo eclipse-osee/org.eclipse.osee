@@ -136,8 +136,9 @@ public class DatabaseSchemaExtractor {
       Set<String> keys = database.keySet();
       for (String schema : keys) {
          SchemaData tableData = database.get(schema);
-         File xmlFile = new File(
-               directory.getAbsolutePath() + File.separator + schema + DbConfigFileInformation.getSchemaFileExtension());
+         File xmlFile =
+               new File(
+                     directory.getAbsolutePath() + File.separator + schema + DbConfigFileInformation.getSchemaFileExtension());
          try {
             Jaxp.writeXmlDocument(tableData.getXmlDocument(), xmlFile);
          } catch (TransformerException ex) {
@@ -354,8 +355,8 @@ public class DatabaseSchemaExtractor {
 
       Set<String> keys = constraintKeyMap.keySet();
       for (String pk : keys) {
-         ConstraintElement constraint = ConstraintFactory.getConstraint(ConstraintTypes.PRIMARY_KEY,
-               aTable.getSchema(), pk, false);
+         ConstraintElement constraint =
+               ConstraintFactory.getConstraint(ConstraintTypes.PRIMARY_KEY, aTable.getSchema(), pk, false);
          Set<String> columnSet = constraintKeyMap.get(pk);
          for (String column : columnSet) {
             constraint.addColumn(column);
@@ -454,8 +455,8 @@ public class DatabaseSchemaExtractor {
             refersToTableAddress = aTable.getSchema();
          }
 
-         ConstraintElement constraint = ConstraintFactory.getConstraint(ConstraintTypes.FOREIGN_KEY, fKeyAddress,
-               fkeyId, deferrable);
+         ConstraintElement constraint =
+               ConstraintFactory.getConstraint(ConstraintTypes.FOREIGN_KEY, fKeyAddress, fkeyId, deferrable);
          constraint.addColumn(appliesToColumnId);
 
          ReferenceClause ref = new ReferenceClause(refersToTableAddress, refersToTable);

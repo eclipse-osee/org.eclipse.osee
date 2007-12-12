@@ -169,8 +169,9 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          }
          if (!aData.version.equals("")) {
             try {
-               ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(VersionArtifact.ARTIFACT_NAME, aData.version,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+               ArtifactTypeNameSearch srch =
+                     new ArtifactTypeNameSearch(VersionArtifact.ARTIFACT_NAME, aData.version,
+                           BranchPersistenceManager.getInstance().getAtsBranch());
                if (srch.getSingletonArtifactOrException(VersionArtifact.class) == null) rd.logError("Row " + rowNum + ": Can't find single version \"" + aData.version + "\"");
             } catch (SQLException ex) {
                rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
@@ -202,13 +203,15 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
       try {
          for (ActionData aData : actionDatas) {
-            ActionArtifact actionArt = NewActionJob.createAction(null, aData.title, aData.desc,
-                  ChangeType.getChangeType(aData.changeType), AtsPriority.PriorityType.getPriority(aData.priorityStr),
-                  aData.userComms, false, null, ActionableItemArtifact.getActionableItems(aData.actionableItems));
+            ActionArtifact actionArt =
+                  NewActionJob.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
+                        AtsPriority.PriorityType.getPriority(aData.priorityStr), aData.userComms, false, null,
+                        ActionableItemArtifact.getActionableItems(aData.actionableItems));
             actionArts.add(actionArt);
             if (!aData.version.equals("")) {
-               ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(VersionArtifact.ARTIFACT_NAME, aData.version,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+               ArtifactTypeNameSearch srch =
+                     new ArtifactTypeNameSearch(VersionArtifact.ARTIFACT_NAME, aData.version,
+                           BranchPersistenceManager.getInstance().getAtsBranch());
                VersionArtifact verArt = srch.getSingletonArtifactOrException(VersionArtifact.class);
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts())
                   verArt.relate(RelationSide.TeamWorkflowTargetedForVersion_Workflow, team, true);

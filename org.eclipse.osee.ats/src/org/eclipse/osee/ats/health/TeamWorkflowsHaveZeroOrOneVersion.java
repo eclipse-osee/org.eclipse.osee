@@ -73,8 +73,8 @@ public class TeamWorkflowsHaveZeroOrOneVersion extends XNavigateItemAction {
       public IStatus run(IProgressMonitor monitor) {
          IStatus toReturn = Status.CANCEL_STATUS;
          try {
-            SearchWorkFlowsTx searchWorkFlowsTx = new SearchWorkFlowsTx(
-                  BranchPersistenceManager.getInstance().getAtsBranch(), getName(), monitor);
+            SearchWorkFlowsTx searchWorkFlowsTx =
+                  new SearchWorkFlowsTx(BranchPersistenceManager.getInstance().getAtsBranch(), getName(), monitor);
             searchWorkFlowsTx.execute();
             toReturn = Status.OK_STATUS;
          } catch (Exception ex) {
@@ -114,8 +114,8 @@ public class TeamWorkflowsHaveZeroOrOneVersion extends XNavigateItemAction {
          for (String artType : artTypeNames)
             artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
 
-         Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
-               getTxBranch());
+         Collection<Artifact> arts =
+               ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false, getTxBranch());
 
          int x = 0;
 

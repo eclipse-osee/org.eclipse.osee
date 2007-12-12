@@ -132,7 +132,8 @@ public class JiniJoinManager implements IRegistrarListener {
    }
 
    public void reggieAdded(List<ServiceRegistrar> serviceRegistrars) {
-      ServiceRegistrar[] reggies = (ServiceRegistrar[]) serviceRegistrars.toArray(new ServiceRegistrar[serviceRegistrars.size()]);
+      ServiceRegistrar[] reggies =
+            (ServiceRegistrar[]) serviceRegistrars.toArray(new ServiceRegistrar[serviceRegistrars.size()]);
       try {
          for (int i = 0; i < reggies.length; i++) {
             ServiceRegistration registration;
@@ -152,7 +153,8 @@ public class JiniJoinManager implements IRegistrarListener {
    }
 
    public void reggieRemoved(List<ServiceRegistrar> serviceRegistrars) {
-      ServiceRegistrar[] reggies = (ServiceRegistrar[]) serviceRegistrars.toArray(new ServiceRegistrar[serviceRegistrars.size()]);
+      ServiceRegistrar[] reggies =
+            (ServiceRegistrar[]) serviceRegistrars.toArray(new ServiceRegistrar[serviceRegistrars.size()]);
       for (int i = 0; i < reggies.length; i++) {
          idToReggie.remove(reggies[i].getServiceID());
       }

@@ -75,8 +75,9 @@ public class OrphanedTasks extends XNavigateItemAction {
          final XResultData rd = new XResultData(AtsPlugin.getLogger());
          final List<TaskArtifact> orphanedTasks = new ArrayList<TaskArtifact>();
          try {
-            Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(
-                  TaskArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch());
+            Collection<Artifact> arts =
+                  ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(TaskArtifact.ARTIFACT_NAME,
+                        BranchPersistenceManager.getInstance().getAtsBranch());
             int x = 0;
             for (Artifact art : arts) {
                TaskArtifact taskArt = (TaskArtifact) art;

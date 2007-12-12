@@ -77,13 +77,13 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAction {
          IStatus toReturn = Status.CANCEL_STATUS;
          try {
             if (fixIt) {
-               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                     BranchPersistenceManager.getInstance().getAtsBranch()) {
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     getUnassignedAtsObjectHelper();
-                  }
-               };
+               AbstractSkynetTxTemplate txWrapper =
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                        @Override
+                        protected void handleTxWork() throws Exception {
+                           getUnassignedAtsObjectHelper();
+                        }
+                     };
                txWrapper.execute();
 
             } else {

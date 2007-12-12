@@ -56,7 +56,8 @@ public class NewAction extends Action {
          if (actionableItem != null) {
             wizard.setCheckedArtifacts(getTeamActionableItems());
          }
-         WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
+         WizardDialog dialog =
+               new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
          dialog.create();
          if (dialog.open() == 0) {
             Result result = wizard.isActionValid();
@@ -65,9 +66,10 @@ public class NewAction extends Action {
                return;
             }
             NewActionJob job = null;
-            job = new NewActionJob(wizard.getTitle(), wizard.getDescription(), wizard.getChangeType(),
-                  wizard.getPriority(), wizard.getNeedBy(), wizard.getValidation(), wizard.getUserCommunities(),
-                  wizard.getSelectedActionableItemArtifacts(), wizard);
+            job =
+                  new NewActionJob(wizard.getTitle(), wizard.getDescription(), wizard.getChangeType(),
+                        wizard.getPriority(), wizard.getNeedBy(), wizard.getValidation(), wizard.getUserCommunities(),
+                        wizard.getSelectedActionableItemArtifacts(), wizard);
             job.setUser(true);
             job.setPriority(Job.LONG);
             job.schedule();

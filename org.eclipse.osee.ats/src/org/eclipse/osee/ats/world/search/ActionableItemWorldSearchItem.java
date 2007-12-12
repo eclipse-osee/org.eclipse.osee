@@ -88,8 +88,9 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       if (actionItems == null) {
          actionItems = new HashSet<ActionableItemArtifact>();
          for (String name : actionItemNames) {
-            ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(ActionableItemArtifact.ARTIFACT_NAME, name,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+            ArtifactTypeNameSearch srch =
+                  new ArtifactTypeNameSearch(ActionableItemArtifact.ARTIFACT_NAME, name,
+                        BranchPersistenceManager.getInstance().getAtsBranch());
             actionItems.add(srch.getSingletonArtifactOrException(ActionableItemArtifact.class));
          }
       }
@@ -148,8 +149,9 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
 
       if (!showAction) {
          if (isCancelled()) return;
-         Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(allProductCriteria, true,
-               BranchPersistenceManager.getInstance().getAtsBranch());
+         Collection<Artifact> arts =
+               ArtifactPersistenceManager.getInstance().getArtifacts(allProductCriteria, true,
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          debug.report("Processing artifacts", true);
          if (isCancelled()) return;
          addResultArtifacts(arts);
@@ -162,8 +164,9 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
 
       if (isCancelled()) return;
       debug.report("Perform Search...", true);
-      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> arts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
 
       if (isCancelled()) return;
       debug.report("Processing artifacts", true);

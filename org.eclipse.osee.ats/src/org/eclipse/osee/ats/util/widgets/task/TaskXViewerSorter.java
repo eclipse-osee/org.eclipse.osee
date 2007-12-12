@@ -42,16 +42,17 @@ public class TaskXViewerSorter extends WorldXViewerSorter {
    @Override
    public int compare(Viewer viewer, Object o1, Object o2, int sortXColIndex) {
       if (xViewer == null || !xViewer.getCustomize().getCurrentCustData().getSortingData().isSorting()) return 0;
-      XViewerColumn sortXCol = xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(
-            sortXColIndex);
+      XViewerColumn sortXCol =
+            xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
       AtsXColumn aCol = AtsXColumn.getAtsXColumn(sortXCol);
       IWorldViewArtifact m1 = (IWorldViewArtifact) ((WorldArtifactItem) o1).getArtifact();
       IWorldViewArtifact m2 = (IWorldViewArtifact) ((WorldArtifactItem) o2).getArtifact();
 
       if (aCol == AtsXColumn.Assignees_Col) {
-         int compareInt = getComparator().compare(
-               (new SMAManager((StateMachineArtifact) m1)).getAssigneesWasIsStr().replaceFirst("\\(", ""),
-               (new SMAManager((StateMachineArtifact) m2)).getAssigneesWasIsStr().replaceFirst("\\(", ""));
+         int compareInt =
+               getComparator().compare(
+                     (new SMAManager((StateMachineArtifact) m1)).getAssigneesWasIsStr().replaceFirst("\\(", ""),
+                     (new SMAManager((StateMachineArtifact) m2)).getAssigneesWasIsStr().replaceFirst("\\(", ""));
          return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
       }
 

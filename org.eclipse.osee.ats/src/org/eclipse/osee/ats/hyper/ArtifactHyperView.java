@@ -139,7 +139,8 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
                   String tip = grp.getDescriptor().getName();
                   if (!link.getRationale().equals("")) tip += "(" + link.getRationale() + ")";
                   ahi.setRelationToolTip(tip);
-                  String label = (isShowOrder() ? "(" + thisOrder + ") " : "") + grp.getDescriptor().getShortName() + (isShowOrder() ? "(" + otherOrder + ") " : "");
+                  String label =
+                        (isShowOrder() ? "(" + thisOrder + ") " : "") + grp.getDescriptor().getShortName() + (isShowOrder() ? "(" + otherOrder + ") " : "");
                   if (!link.getRationale().equals("")) label += "(" + link.getRationale() + ")";
                   ahi.setRelationLabel(label);
                   ahi.setLink(link);
@@ -273,7 +274,8 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
    public void handleOpenArtifact() {
 
       ArtifactSelectWizard selWizard = new ArtifactSelectWizard();
-      WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), selWizard);
+      WizardDialog dialog =
+            new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), selWizard);
       dialog.create();
       if (dialog.open() == 0) {
          load(selWizard.getSelectedArtifact());

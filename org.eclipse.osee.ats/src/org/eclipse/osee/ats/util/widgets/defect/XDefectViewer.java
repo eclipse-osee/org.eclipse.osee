@@ -244,8 +244,9 @@ public class XDefectViewer extends XWidget implements IDamWidget, IEventReceiver
    }
 
    public void handleImportDefectsViaList() {
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), "Create Defects", null,
-            "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Create Defects", null,
+                  "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       ed.setFillVertically(true);
       if (ed.open() == 0) {
          for (String str : ed.getEntry().split("\n")) {
@@ -269,19 +270,20 @@ public class XDefectViewer extends XWidget implements IDamWidget, IEventReceiver
       for (DefectItem defectItem : items)
          builder.append("\"" + defectItem.getDescription() + "\"\n");
 
-      boolean delete = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Delete Defects", "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
+      boolean delete =
+            MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  "Delete Defects", "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
       if (delete) {
          try {
             if (persist) {
-               AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                     BranchPersistenceManager.getInstance().getAtsBranch()) {
+               AbstractSkynetTxTemplate txWrapper =
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
 
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     deleteDefectHelper(items);
-                  }
-               };
+                        @Override
+                        protected void handleTxWork() throws Exception {
+                           deleteDefectHelper(items);
+                        }
+                     };
                txWrapper.execute();
             } else {
                deleteDefectHelper(items);
@@ -302,8 +304,9 @@ public class XDefectViewer extends XWidget implements IDamWidget, IEventReceiver
    }
 
    public void handleNewDefect() {
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Defect", null,
-            "Enter Defect Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Defect", null,
+                  "Enter Defect Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
             reviewArt.getDefectManager().addDefectItem(ed.getEntry(), false);

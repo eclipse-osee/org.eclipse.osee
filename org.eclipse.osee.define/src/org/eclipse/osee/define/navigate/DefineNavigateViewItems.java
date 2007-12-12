@@ -68,8 +68,8 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
 
    @SuppressWarnings("deprecation")
    public void addExtensionPointItems(List<XNavigateItem> items) {
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.define.DefineNavigateItem");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.define.DefineNavigateItem");
       if (point == null) OSEELog.logSevere(DefinePlugin.class, "Can't access DefineNavigateItem extension point", true);
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {

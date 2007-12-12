@@ -69,10 +69,12 @@ import org.eclipse.swt.widgets.Display;
  */
 public class PopulateDemoActions extends XNavigateItemAction {
 
-   private String[] TITLE_PREFIX = new String[] {"Problem with the", "Can't see the", "Button A doesn't work on",
-         "Add to the", "Make new Button for ", "User can't load "};
-   private ChangeType[] CHANGE_TYPE = new ChangeType[] {ChangeType.Problem, ChangeType.Problem, ChangeType.Problem,
-         ChangeType.Improvement, ChangeType.Improvement, ChangeType.Support, ChangeType.Improvement, ChangeType.Support};
+   private String[] TITLE_PREFIX =
+         new String[] {"Problem with the", "Can't see the", "Button A doesn't work on", "Add to the",
+               "Make new Button for ", "User can't load "};
+   private ChangeType[] CHANGE_TYPE =
+         new ChangeType[] {ChangeType.Problem, ChangeType.Problem, ChangeType.Problem, ChangeType.Improvement,
+               ChangeType.Improvement, ChangeType.Support, ChangeType.Improvement, ChangeType.Support};
    private enum DemoAIs {
       Computers,
       Network,
@@ -103,8 +105,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
    public void run() throws SQLException {
       if (SkynetDbInit.isDbInit() || (!SkynetDbInit.isDbInit() && MessageDialog.openConfirm(
             Display.getCurrent().getActiveShell(), getName(), getName()))) {
-         PopulateTx populateTx = new PopulateTx(BranchPersistenceManager.getInstance().getAtsBranch(),
-               !SkynetDbInit.isDbInit());
+         PopulateTx populateTx =
+               new PopulateTx(BranchPersistenceManager.getInstance().getAtsBranch(), !SkynetDbInit.isDbInit());
          try {
             populateTx.execute();
          } catch (Exception ex) {
@@ -159,15 +161,16 @@ public class PopulateDemoActions extends XNavigateItemAction {
       private Branch createChildMainWorkingBranch(String parentBrachName, String childBranchName) throws Exception {
          Branch parentBranch = BranchPersistenceManager.getInstance().getKeyedBranch(parentBrachName);
 
-         Branch childBranch = BranchPersistenceManager.getInstance().createWorkingBranch(
-               TransactionIdManager.getInstance().getEditableTransactionId(parentBranch), childBranchName,
-               childBranchName, null, SkynetAuthentication.getInstance().getUser(UserEnum.NoOne));
+         Branch childBranch =
+               BranchPersistenceManager.getInstance().createWorkingBranch(
+                     TransactionIdManager.getInstance().getEditableTransactionId(parentBranch), childBranchName,
+                     childBranchName, null, SkynetAuthentication.getInstance().getUser(UserEnum.NoOne));
          return childBranch;
       }
 
       private void createSawBld2ReqChangeDemoActions() throws Exception {
-         Set<ActionArtifact> actionArts = createActions(getReqSawActionsData(),
-               AtsConfigDemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null);
+         Set<ActionArtifact> actionArts =
+               createActions(getReqSawActionsData(), AtsConfigDemoDatabaseConfig.SawBuilds.SAW_Bld_2.toString(), null);
 
          // Sleep to wait for the persist of the actions
          Thread.sleep(3000);
@@ -203,8 +206,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
             art.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.name(), "A");
             art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Navigation.name());
 
-            ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch("Component", "Navigation",
-                  BranchPersistenceManager.getInstance().getDefaultBranch());
+            ArtifactTypeNameSearch srch =
+                  new ArtifactTypeNameSearch("Component", "Navigation",
+                        BranchPersistenceManager.getInstance().getDefaultBranch());
             art.relate(RelationSide.ALLOCATION__COMPONENT, srch.getSingletonArtifactOrException(Artifact.class));
          }
 
@@ -215,8 +219,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
             art.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.name(), "D");
             art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
 
-            ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch("Component", "Robot API",
-                  BranchPersistenceManager.getInstance().getDefaultBranch());
+            ArtifactTypeNameSearch srch =
+                  new ArtifactTypeNameSearch("Component", "Robot API",
+                        BranchPersistenceManager.getInstance().getDefaultBranch());
             art.relate(RelationSide.ALLOCATION__COMPONENT, srch.getSingletonArtifactOrException(Artifact.class));
          }
 
@@ -234,14 +239,16 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
 
       private Set<Artifact> getRobotSoftwareRequirements() {
-         ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch("Software Requirement", "Robot",
-               AtsPlugin.getAtsBranch(), SearchOperator.LIKE);
+         ArtifactTypeNameSearch srch =
+               new ArtifactTypeNameSearch("Software Requirement", "Robot", AtsPlugin.getAtsBranch(),
+                     SearchOperator.LIKE);
          return srch.getArtifacts(Artifact.class);
       }
 
       private Set<Artifact> getEventSoftwareRequirements() {
-         ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch("Software Requirement", "Event",
-               AtsPlugin.getAtsBranch(), SearchOperator.LIKE);
+         ArtifactTypeNameSearch srch =
+               new ArtifactTypeNameSearch("Software Requirement", "Event", AtsPlugin.getAtsBranch(),
+                     SearchOperator.LIKE);
          return srch.getArtifacts(Artifact.class);
       }
 
@@ -277,10 +284,11 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Artifact systemReq = srch.getSingletonArtifactOrException(Artifact.class);
          File file = OseeAtsConfigDemoPlugin.getInstance().getPluginFile(filename);
          IArtifactImportResolver artifactResolver = null;
-         ArtifactSubtypeDescriptor mainDescriptor = ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-               requirementArtifactName, branch);
-         ArtifactExtractor extractor = new WordOutlineExtractor(mainDescriptor, branch, 0,
-               new GeneralWordOutlineHandler());
+         ArtifactSubtypeDescriptor mainDescriptor =
+               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(requirementArtifactName,
+                     branch);
+         ArtifactExtractor extractor =
+               new WordOutlineExtractor(mainDescriptor, branch, 0, new GeneralWordOutlineHandler());
          Job job = new ArtifactImportJob(file, systemReq, extractor, branch, artifactResolver);
          job.setPriority(Job.LONG);
          job.schedule();
@@ -293,17 +301,19 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Creating " + currNum++ + "/" + total, false);
             int x = 0;
             for (String prefixTitle : aData.prefixTitles) {
-               ActionArtifact actionArt = NewActionJob.createAction(null, prefixTitle + " " + aData.postFixTitle,
-                     TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], PriorityType.Priority_1,
-                     aData.getUserCommunities(), false, null, aData.getActionableItems());
+               ActionArtifact actionArt =
+                     NewActionJob.createAction(null, prefixTitle + " " + aData.postFixTitle,
+                           TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], PriorityType.Priority_1,
+                           aData.getUserCommunities(), false, null, aData.getActionableItems());
                actionArts.add(actionArt);
                for (TeamWorkFlowArtifact teamWf : actionArt.getTeamWorkFlowArtifacts()) {
                   DefaultTeamWorkflowManager dtwm = new DefaultTeamWorkflowManager(teamWf);
                   dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false);
                   teamWf.persist(true);
                   if (versionStr != null && !versionStr.equals("")) {
-                     VersionArtifact verArt = ((new ArtifactTypeNameSearch(VersionArtifact.ARTIFACT_NAME, versionStr,
-                           BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(VersionArtifact.class));
+                     VersionArtifact verArt =
+                           ((new ArtifactTypeNameSearch(VersionArtifact.ARTIFACT_NAME, versionStr,
+                                 BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(VersionArtifact.class));
                      teamWf.relate(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt);
                      teamWf.persist(true);
                   }
@@ -398,8 +408,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       public Set<String> getUserCommunities() {
          if (configuredUserCommunities == null) {
-            configuredUserCommunities = UserCommunity.getInstance().getUserCommunityNames().toArray(
-                  new String[UserCommunity.getInstance().getUserCommunityNames().size()]);
+            configuredUserCommunities =
+                  UserCommunity.getInstance().getUserCommunityNames().toArray(
+                        new String[UserCommunity.getInstance().getUserCommunityNames().size()]);
          }
          Set<String> userComms = new HashSet<String>();
          for (Integer index : userCommunityIndecies)

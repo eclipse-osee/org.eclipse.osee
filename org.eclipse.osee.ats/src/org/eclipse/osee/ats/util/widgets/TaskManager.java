@@ -71,8 +71,9 @@ public class TaskManager {
 
    public TaskArtifact createNewTask(Collection<User> assignees, String title, boolean persist) throws SQLException {
       TaskArtifact taskArt = null;
-      taskArt = (TaskArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            TaskArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+      taskArt =
+            (TaskArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                  TaskArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
       taskArt.getLog().addLog(LogType.Originated, "", "");
       taskArt.setDescriptiveName(title);
 

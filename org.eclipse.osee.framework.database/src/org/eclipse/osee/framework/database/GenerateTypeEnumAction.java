@@ -81,9 +81,9 @@ public class GenerateTypeEnumAction implements IActionDelegate {
    }
 
    private Object getFolderToStoreAutoGenFilesIn(IResource resource) {
-      CheckedTreeSelectionDialog resourceDialog = new ResourceSelectionTree(
-            PlatformUI.getWorkbench().getDisplay().getActiveShell(), new WorkbenchLabelProvider(),
-            new WorkbenchContentProvider());
+      CheckedTreeSelectionDialog resourceDialog =
+            new ResourceSelectionTree(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                  new WorkbenchLabelProvider(), new WorkbenchContentProvider());
 
       resourceDialog.setInput(resource.getWorkspace().getRoot());
       resourceDialog.addFilter(new ViewerFilter() {

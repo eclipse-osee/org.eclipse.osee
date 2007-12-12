@@ -29,7 +29,8 @@ public class XDecisionOptions {
    }
 
    public DecisionOption getDecisionOption(String stateName, boolean create) {
-      String decisionOptions = sma.getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
+      String decisionOptions =
+            sma.getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
       for (String decsionOpt : decisionOptions.split("\n")) {
          DecisionOption state = new DecisionOption();
          state.setFromXml(decsionOpt);

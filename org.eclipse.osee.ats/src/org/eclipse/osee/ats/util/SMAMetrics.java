@@ -81,7 +81,8 @@ public class SMAMetrics {
          TeamWorkFlowArtifact selTeam = null;
          if (art instanceof TeamWorkFlowArtifact)
             selTeam = (TeamWorkFlowArtifact) art;
-         else if ((art instanceof ActionArtifact) && ((ActionArtifact) art).getTeamWorkFlowArtifacts().size() == 1) selTeam = ((ActionArtifact) art).getTeamWorkFlowArtifacts().iterator().next();
+         else if ((art instanceof ActionArtifact) && ((ActionArtifact) art).getTeamWorkFlowArtifacts().size() == 1) selTeam =
+               ((ActionArtifact) art).getTeamWorkFlowArtifacts().iterator().next();
          if (selTeam != null) {
             if (selTeam.getTargetedForVersion() != null) {
                VersionArtifact verArt = selTeam.getTargetedForVersion();

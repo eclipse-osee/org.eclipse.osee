@@ -50,8 +50,9 @@ public class AXml {
    public static String[] getTagDataArray(String xmlStr, String xmlRoot) {
       Vector<String> v = new Vector<String>();
       Matcher m;
-      m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-            xmlStr);
+      m =
+            Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+                  xmlStr);
       while (m.find()) {
          v.add(xmlToText(m.group(1)));
       }

@@ -98,7 +98,8 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    public boolean isUnCancellable() {
       try {
          StateMachineArtifact parentSMA = getParentSMA();
-         boolean unCancellable = (parentSMA.getCurrentStateName().equals(getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName())));
+         boolean unCancellable =
+               (parentSMA.getCurrentStateName().equals(getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName())));
          if (!unCancellable) return false;
          return super.isUnCancellable();
       } catch (SQLException ex) {

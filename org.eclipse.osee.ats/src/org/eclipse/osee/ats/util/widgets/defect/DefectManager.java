@@ -50,8 +50,8 @@ public class DefectManager {
    public Set<DefectItem> getDefectItems() {
       Set<DefectItem> defectItems = new HashSet<DefectItem>();
       String xml = artifact.getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME);
-      Matcher m = java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(
-            xml);
+      Matcher m =
+            java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(xml);
       while (m.find()) {
          DefectItem item = new DefectItem(m.group());
          defectItems.add(item);

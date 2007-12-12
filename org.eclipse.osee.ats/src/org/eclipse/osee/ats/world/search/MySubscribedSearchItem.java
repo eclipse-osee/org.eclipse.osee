@@ -62,8 +62,9 @@ public class MySubscribedSearchItem extends UserSearchItem {
       List<ISearchPrimitive> subscribedCriteria = new LinkedList<ISearchPrimitive>();
       subscribedCriteria.add(new InRelationSearch(userSearch, RelationSide.SubscribedUser_Artifact));
 
-      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(subscribedCriteria, true,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> arts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(subscribedCriteria, true,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
 
       if (isCancelled()) return;
       debug.report("Processing artifacts", true);

@@ -57,8 +57,9 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       TeamDefinitionArtifact teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();
       if (teamDefHoldingVersions == null) return;
       try {
-         VersionListDialog ld = new VersionListDialog("Select Version", "Select Version to Release",
-               teamDefHoldingVersions.getVersionsArtifacts());
+         VersionListDialog ld =
+               new VersionListDialog("Select Version", "Select Version to Release",
+                     teamDefHoldingVersions.getVersionsArtifacts());
          int result = ld.open();
          if (result == 0) {
             VersionArtifact verArt = (VersionArtifact) ld.getResult()[0];
@@ -74,7 +75,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
                SMAManager smaMgr = new SMAManager(team);
                if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
-                  errorStr = "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getCurrentStateName() + "\" state.";
+                  errorStr =
+                        "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getCurrentStateName() + "\" state.";
                }
             }
             if (errorStr != null) AWorkbench.popup("ERROR", errorStr);
@@ -92,8 +94,9 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
             if (MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Select NEW Next Release Version",
                   "Release Complete.\n\nSelect NEW Next Release Version?")) {
-               ld = new VersionListDialog("Select Next Release Version", "Select New Next Release Version",
-                     teamDefHoldingVersions.getVersionsArtifacts());
+               ld =
+                     new VersionListDialog("Select Next Release Version", "Select New Next Release Version",
+                           teamDefHoldingVersions.getVersionsArtifacts());
                result = ld.open();
                if (result == 0) {
                   verArt = (VersionArtifact) ld.getResult()[0];

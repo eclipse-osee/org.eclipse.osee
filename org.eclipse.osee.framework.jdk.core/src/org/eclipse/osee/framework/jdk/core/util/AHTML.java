@@ -24,7 +24,8 @@ import java.util.List;
  * @author Michael A. Winston
  */
 public class AHTML {
-   private static final String HTTP_CHARSET_ENCODING = "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
+   private static final String HTTP_CHARSET_ENCODING =
+         "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
    private static final String begin = "<table ";
    public final static String LABEL_FONT = "<font color=\"darkcyan\" face=\"Arial\" size=\"-1\">";
 
@@ -335,7 +336,8 @@ public class AHTML {
          if (show == null || show.equals("")) show = AHTML.addSpace(1);
          String colOptionStr = "";
          if (colOptions != null) colOptionStr = colOptions[i];
-         s += "<td" + ((colOptionStr != null && !colOptionStr.equals("")) ? colOptionStr : "") + ">" + show + "</td>\r\n";
+         s +=
+               "<td" + ((colOptionStr != null && !colOptionStr.equals("")) ? colOptionStr : "") + ">" + show + "</td>\r\n";
       }
       s += "</tr>";
       return s;

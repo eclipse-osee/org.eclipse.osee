@@ -121,8 +121,8 @@ public class AtsLib implements IAtsLib {
          Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
          Artifact art = null;
          if (guidOrHrid.length() == 5) {
-            Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifactsFromHrid(guidOrHrid,
-                  branch);
+            Collection<Artifact> arts =
+                  ArtifactPersistenceManager.getInstance().getArtifactsFromHrid(guidOrHrid, branch);
             if (arts.size() > 0) art = arts.iterator().next();
          } else {
             art = ArtifactPersistenceManager.getInstance().getArtifact(guidOrHrid, branch);
@@ -142,8 +142,8 @@ public class AtsLib implements IAtsLib {
       Artifact art = null;
       try {
          if (guid.length() == 5) {
-            Collection<Artifact> arts = apm.getArtifactsFromHrid(guid,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+            Collection<Artifact> arts =
+                  apm.getArtifactsFromHrid(guid, BranchPersistenceManager.getInstance().getAtsBranch());
             if (arts.size() > 1) {
                OSEELog.logSevere(AtsPlugin.class, "Action in DB more than once " + guid, true);
             } else if (arts.size() == 1) art = arts.iterator().next();

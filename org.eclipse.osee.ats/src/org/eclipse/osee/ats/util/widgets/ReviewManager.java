@@ -95,8 +95,9 @@ public class ReviewManager {
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String againstState, User origUser, Date origDate) throws SQLException {
-      PeerToPeerReviewArtifact peerToPeerRev = (PeerToPeerReviewArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            PeerToPeerReviewArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+      PeerToPeerReviewArtifact peerToPeerRev =
+            (PeerToPeerReviewArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                  PeerToPeerReviewArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
 
       if (teamParent != null) {
          teamParent.relate(RelationSide.TeamWorkflowToReview_Review, peerToPeerRev);

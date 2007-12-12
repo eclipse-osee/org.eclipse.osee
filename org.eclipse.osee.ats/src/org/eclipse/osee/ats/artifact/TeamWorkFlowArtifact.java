@@ -327,10 +327,11 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
 
    public Result addActionableItems() {
       Result toReturn = Result.FalseResult;
-      AICheckTreeDialog diag = new AICheckTreeDialog(
-            "Add/Remove Impacted Actionable Items",
-            "Select/De-Select Impacted Actionable Items\n\n" + "Note: At least one Actionable Item must remain.\nTeam should be cancelled if no impact exists.",
-            Active.Both);
+      AICheckTreeDialog diag =
+            new AICheckTreeDialog(
+                  "Add/Remove Impacted Actionable Items",
+                  "Select/De-Select Impacted Actionable Items\n\n" + "Note: At least one Actionable Item must remain.\nTeam should be cancelled if no impact exists.",
+                  Active.Both);
 
       try {
          diag.setInput(getTeamDefinition().getArtifacts(RelationSide.TeamActionableItem_ActionableItem,
@@ -347,8 +348,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
                selectedAlias.add((ActionableItemArtifact) obj);
             }
 
-            ActionableItemsTx txWrapper = new ActionableItemsTx(BranchPersistenceManager.getInstance().getAtsBranch(),
-                  selectedAlias, null);
+            ActionableItemsTx txWrapper =
+                  new ActionableItemsTx(BranchPersistenceManager.getInstance().getAtsBranch(), selectedAlias, null);
             txWrapper.execute();
             toReturn = txWrapper.getResult();
          }
@@ -361,10 +362,11 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
 
    public Result convertActionableItems() throws SQLException {
       Result toReturn = Result.FalseResult;
-      AICheckTreeDialog diag = new AICheckTreeDialog(
-            "Convert Impacted Actionable Items",
-            "NOTE: This should NOT be the normal path to changing actionable items.\n\nIf a team has determined " + "that there is NO impact and that another actionable items IS impacted:\n" + "   1) Cancel this operation\n" + "   2) Select \"Edit Actionable Items\" to add/remove impacted items \n" + "      which will create new teams as needed.\n" + "   3) Then cancel the team that has no impacts.\n" + "   Doing this will show that the original team analyzed the impact\n" + "   and determined that there was no change.\n\n" + "However, there are some cases where an impacted item was incorrectly chosen\n" + "and the original team does not need to do anything, this dialog will purge the\n" + "team from the DB as if it was never chosen.\n\n" + "Current Actionable Item(s): " + getWorldViewActionableItems() + "\n" + "Current Team: " + getTeamDefinition().getDescriptiveName() + "\n" + "Select SINGLE Actionable Item below to convert this workflow to.\n\n" + "You will be prompted to confirm this conversion.",
-            Active.Both);
+      AICheckTreeDialog diag =
+            new AICheckTreeDialog(
+                  "Convert Impacted Actionable Items",
+                  "NOTE: This should NOT be the normal path to changing actionable items.\n\nIf a team has determined " + "that there is NO impact and that another actionable items IS impacted:\n" + "   1) Cancel this operation\n" + "   2) Select \"Edit Actionable Items\" to add/remove impacted items \n" + "      which will create new teams as needed.\n" + "   3) Then cancel the team that has no impacts.\n" + "   Doing this will show that the original team analyzed the impact\n" + "   and determined that there was no change.\n\n" + "However, there are some cases where an impacted item was incorrectly chosen\n" + "and the original team does not need to do anything, this dialog will purge the\n" + "team from the DB as if it was never chosen.\n\n" + "Current Actionable Item(s): " + getWorldViewActionableItems() + "\n" + "Current Team: " + getTeamDefinition().getDescriptiveName() + "\n" + "Select SINGLE Actionable Item below to convert this workflow to.\n\n" + "You will be prompted to confirm this conversion.",
+                  Active.Both);
 
       try {
          diag.setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Both));
@@ -378,8 +380,9 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
          } else {
             TeamDefinitionArtifact newTeamDef = teamDefs.iterator().next();
             if (newTeamDef.equals(getTeamDefinition())) {
-               toReturn = new Result(
-                     "Actionable Item selected belongs to same team as currently selected team.\n" + "Use \"Edit Actionable Items\" instaed.");
+               toReturn =
+                     new Result(
+                           "Actionable Item selected belongs to same team as currently selected team.\n" + "Use \"Edit Actionable Items\" instaed.");
             } else {
                StringBuffer sb = new StringBuffer();
                sb.append("Converting...");
@@ -390,8 +393,9 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
                if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Confirm Convert", sb.toString())) {
                   Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
                   toProcess.add(selectedAia);
-                  ActionableItemsTx txWrapper = new ActionableItemsTx(
-                        BranchPersistenceManager.getInstance().getAtsBranch(), toProcess, newTeamDef);
+                  ActionableItemsTx txWrapper =
+                        new ActionableItemsTx(BranchPersistenceManager.getInstance().getAtsBranch(), toProcess,
+                              newTeamDef);
                   txWrapper.execute();
                   toReturn = txWrapper.getResult();
                }
@@ -428,8 +432,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * null.
     */
    public Date getWorldViewEstimatedReleaseDate() throws Exception {
-      Collection<VersionArtifact> vers = getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version,
-            VersionArtifact.class);
+      Collection<VersionArtifact> vers =
+            getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       Date date = null;
       if (vers.size() > 0) {
          date = vers.iterator().next().getEstimatedReleaseDate();
@@ -496,8 +500,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * null.
     */
    public Date getWorldViewReleaseDate() throws Exception {
-      Collection<VersionArtifact> vers = getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version,
-            VersionArtifact.class);
+      Collection<VersionArtifact> vers =
+            getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       Date date = null;
       if (vers.size() > 0) {
          date = vers.iterator().next().getReleaseDate();

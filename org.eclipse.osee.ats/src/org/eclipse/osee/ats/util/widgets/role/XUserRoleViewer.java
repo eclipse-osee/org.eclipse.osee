@@ -218,20 +218,21 @@ public class XUserRoleViewer extends XWidget implements IDamWidget, IEventReceiv
       for (UserRole userRole : items)
          builder.append("\"" + userRole.toString() + "\"\n");
 
-      boolean delete = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Delete Roles", "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
+      boolean delete =
+            MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Roles",
+                  "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
       if (delete) {
          try {
             if (persist) {
-               AbstractSkynetTxTemplate transactionWrapper = new AbstractSkynetTxTemplate(
-                     BranchPersistenceManager.getInstance().getAtsBranch()) {
+               AbstractSkynetTxTemplate transactionWrapper =
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
 
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     removeUserRoleHelper(items);
-                  }
+                        @Override
+                        protected void handleTxWork() throws Exception {
+                           removeUserRoleHelper(items);
+                        }
 
-               };
+                     };
                transactionWrapper.execute();
             } else {
                removeUserRoleHelper(items);

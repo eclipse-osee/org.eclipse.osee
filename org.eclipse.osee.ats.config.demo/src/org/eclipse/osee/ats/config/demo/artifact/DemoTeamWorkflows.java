@@ -74,8 +74,9 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
     */
    public Collection<String> getTeamWorkflowArtifactNames() {
       if (workflowArtifactNames == null) {
-         workflowArtifactNames = Arrays.asList(new String[] {DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
-               DemoTestTeamWorkflowArtifact.ARTIFACT_NAME, DemoReqTeamWorkflowArtifact.ARTIFACT_NAME});
+         workflowArtifactNames =
+               Arrays.asList(new String[] {DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME,
+                     DemoTestTeamWorkflowArtifact.ARTIFACT_NAME, DemoReqTeamWorkflowArtifact.ARTIFACT_NAME});
       }
       return workflowArtifactNames;
    }

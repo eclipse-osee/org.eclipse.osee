@@ -192,7 +192,8 @@ public abstract class JiniService implements IService {
       PathResourceFinder resource = new PathResourceFinder(jarsToServe, true);
       messageClassServer.addResourceFinder(resource);
       messageClassServer.start();
-      codeBase = "http://" + InetAddress.getLocalHost().getCanonicalHostName() + ":" + messageClassServer.getPort() + "/";
+      codeBase =
+            "http://" + InetAddress.getLocalHost().getCanonicalHostName() + ":" + messageClassServer.getPort() + "/";
       hostName = InetAddress.getLocalHost().getHostAddress();
       System.setProperty("java.rmi.server.hostname", hostName);
       System.setProperty("java.rmi.server.codebase", codeBase);

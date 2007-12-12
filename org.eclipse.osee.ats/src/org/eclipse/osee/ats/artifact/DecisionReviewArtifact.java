@@ -54,8 +54,8 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
 
    public TeamWorkFlowArtifact getParentTeamWorkflow() {
       try {
-         Collection<TeamWorkFlowArtifact> teamArts = getArtifacts(RelationSide.TeamWorkflowToReview_Team,
-               TeamWorkFlowArtifact.class);
+         Collection<TeamWorkFlowArtifact> teamArts =
+               getArtifacts(RelationSide.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
          if (teamArts.size() == 0) throw new IllegalStateException(
                "Decision Review " + getHumanReadableId() + " has no parent workflow");
          if (teamArts.size() > 1) throw new IllegalStateException(

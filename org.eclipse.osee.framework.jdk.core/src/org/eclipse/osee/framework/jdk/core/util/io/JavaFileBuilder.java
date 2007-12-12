@@ -160,7 +160,8 @@ public class JavaFileBuilder {
 
       @Override
       public String toString() {
-         String declaration = "\t" + ((isPublic) ? "public " : "private ") + ((isStatic) ? "static " : "") + ((isFinal) ? "final " : "") + type + " " + name;
+         String declaration =
+               "\t" + ((isPublic) ? "public " : "private ") + ((isStatic) ? "static " : "") + ((isFinal) ? "final " : "") + type + " " + name;
 
          if (initialValue != null) declaration += " = " + initialValue;
          return declaration + ";";

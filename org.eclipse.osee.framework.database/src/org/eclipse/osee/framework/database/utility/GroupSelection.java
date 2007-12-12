@@ -50,14 +50,14 @@ public class GroupSelection {
    }
 
    private void populateDbInitChoices() {
-      List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(DatabaseActivator.getInstance(),
-            "AddDbInitChoice", "dbInitChoice");
+      List<IConfigurationElement> elements =
+            ExtensionPoints.getExtensionElements(DatabaseActivator.getInstance(), "AddDbInitChoice", "dbInitChoice");
 
       for (IConfigurationElement element : elements) {
          String choiceClass = element.getAttribute("classname");
          try {
-            IAddDbInitChoice choice = (IAddDbInitChoice) Platform.getBundle(element.getContributor().getName()).loadClass(
-                  choiceClass).newInstance();
+            IAddDbInitChoice choice =
+                  (IAddDbInitChoice) Platform.getBundle(element.getContributor().getName()).loadClass(choiceClass).newInstance();
             choice.addDbInitChoice(this);
          } catch (InstantiationException ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);

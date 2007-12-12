@@ -70,8 +70,8 @@ public class TaskMetrics implements BlamOperation {
 
       ArtifactSubtypeDescriptor descriptor = variableMap.getArtifactSubtypeDescriptor("descriptor");
 
-      FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(),
-            Operator.EQUAL));
+      FromArtifactsSearch teamWorkflowSearch =
+            new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(), Operator.EQUAL));
       LinkedList<ISearchPrimitive> relatedCriteria = new LinkedList<ISearchPrimitive>();
       relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, RelationSide.SmaToTask_Task));
 

@@ -81,29 +81,33 @@ public class AtsWorkFlowFactory {
          // if not found
          NativeArtifact nativeArt = null;
          if (sma instanceof TaskArtifact) {
-            nativeArt = getTeamDefinitionWorkflowDiagram(
-                  RelationSide.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram,
-                  ((TeamWorkFlowArtifact) ((TaskArtifact) sma).getParentSMA()).getTeamDefinition());
+            nativeArt =
+                  getTeamDefinitionWorkflowDiagram(RelationSide.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram,
+                        ((TeamWorkFlowArtifact) ((TaskArtifact) sma).getParentSMA()).getTeamDefinition());
          } else if (sma instanceof DecisionReviewArtifact) {
-            nativeArt = getTeamDefinitionWorkflowDiagram(
-                  RelationSide.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram,
-                  ((TeamWorkFlowArtifact) ((DecisionReviewArtifact) sma).getParentSMA()).getTeamDefinition());
+            nativeArt =
+                  getTeamDefinitionWorkflowDiagram(
+                        RelationSide.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram,
+                        ((TeamWorkFlowArtifact) ((DecisionReviewArtifact) sma).getParentSMA()).getTeamDefinition());
          } else if (sma instanceof PeerToPeerReviewArtifact) {
             PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) sma;
             if (peerArt.getParentSMA() == null)
-               nativeArt = getTeamDefinitionWorkflowDiagram(
-                     RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
-                     TeamDefinitionArtifact.getHeadTeamDefinition());
+               nativeArt =
+                     getTeamDefinitionWorkflowDiagram(
+                           RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
+                           TeamDefinitionArtifact.getHeadTeamDefinition());
             else
-               nativeArt = getTeamDefinitionWorkflowDiagram(
-                     RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
-                     ((TeamWorkFlowArtifact) ((PeerToPeerReviewArtifact) sma).getParentSMA()).getTeamDefinition());
+               nativeArt =
+                     getTeamDefinitionWorkflowDiagram(
+                           RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
+                           ((TeamWorkFlowArtifact) ((PeerToPeerReviewArtifact) sma).getParentSMA()).getTeamDefinition());
          }
          // If TeamWorkflowArtifact, walk up team tree till find a workflow diagram or exception
          // if not found
          else if (sma instanceof TeamWorkFlowArtifact) {
-            nativeArt = getTeamDefinitionWorkflowDiagram(RelationSide.TeamDefinitionToWorkflowDiagram_WorkflowDiagram,
-                  ((TeamWorkFlowArtifact) sma).getTeamDefinition());
+            nativeArt =
+                  getTeamDefinitionWorkflowDiagram(RelationSide.TeamDefinitionToWorkflowDiagram_WorkflowDiagram,
+                        ((TeamWorkFlowArtifact) sma).getTeamDefinition());
          }
          if (nativeArt != null)
             return WorkflowDiagramFactory.getInstance().getAtsWorkflowFromArtifact(nativeArt);

@@ -72,9 +72,10 @@ public class MyOrigSearchItem extends UserSearchItem {
       FromArtifactsSearch smaOrigSearch = new FromArtifactsSearch(smaOrigCriteria, true);
 
       if (isCancelled()) return;
-      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(
-            new InRelationSearch(smaOrigSearch, RelationSide.ActionToWorkflow_Action),
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> arts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(
+                  new InRelationSearch(smaOrigSearch, RelationSide.ActionToWorkflow_Action),
+                  BranchPersistenceManager.getInstance().getAtsBranch());
 
       if (isCancelled()) return;
       addResultArtifacts(arts);

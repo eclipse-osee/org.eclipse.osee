@@ -126,8 +126,9 @@ public class XTaskViewer extends XWidget implements IEventReceiver {
 
       createTaskActionBar(mainComp);
 
-      xViewer = new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(),
-            iXTaskViewer.isUsingTaskResolutionOptions(), iXTaskViewer.getResOptions(), this);
+      xViewer =
+            new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(),
+                  iXTaskViewer.isUsingTaskResolutionOptions(), iXTaskViewer.getResOptions(), this);
       xViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
       xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
@@ -406,25 +407,27 @@ public class XTaskViewer extends XWidget implements IEventReceiver {
    }
 
    public void handleImportTasksViaList() {
-      final EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), "Create Tasks", null,
-            "Enter task titles, one per line.\nNOTE: For more complex import use import via spreadsheet.",
-            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      final EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Create Tasks", null,
+                  "Enter task titles, one per line.\nNOTE: For more complex import use import via spreadsheet.",
+                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       ed.setFillVertically(true);
       if (ed.open() == 0) {
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                  BranchPersistenceManager.getInstance().getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws Exception {
-                  for (String str : ed.getEntry().split("\n")) {
-                     str = str.replaceAll("\r", "");
-                     if (!str.equals("")) {
-                        TaskArtifact taskArt = iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(str, true);
-                        taskArt.persist(true);
+            AbstractSkynetTxTemplate txWrapper =
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     @Override
+                     protected void handleTxWork() throws Exception {
+                        for (String str : ed.getEntry().split("\n")) {
+                           str = str.replaceAll("\r", "");
+                           if (!str.equals("")) {
+                              TaskArtifact taskArt =
+                                    iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(str, true);
+                              taskArt.persist(true);
+                           }
+                        }
                      }
-                  }
-               }
-            };
+                  };
             txWrapper.execute();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
@@ -435,8 +438,8 @@ public class XTaskViewer extends XWidget implements IEventReceiver {
    public void handleImportTasksViaSpreadsheet() {
       TaskImportWizard actionWizard = new TaskImportWizard();
       actionWizard.setHrid(iXTaskViewer.getParentSmaMgr().getSma().getHumanReadableId());
-      WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            actionWizard);
+      WizardDialog dialog =
+            new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), actionWizard);
       dialog.create();
       dialog.open();
    }
@@ -451,26 +454,27 @@ public class XTaskViewer extends XWidget implements IEventReceiver {
       for (TaskArtifactItem taskItem : items) {
          builder.append("\"" + taskItem.getTaskArtifact().getDescriptiveName() + "\"\n");
       }
-      boolean delete = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Delete Task", "Are You Sure You Wish to Delete the Task(s):\n\n" + builder.toString());
+      boolean delete =
+            MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Task",
+                  "Are You Sure You Wish to Delete the Task(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                  BranchPersistenceManager.getInstance().getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws Exception {
-                  // Done for concurrent modification purposes
-                  ArrayList<TaskArtifactItem> delItems = new ArrayList<TaskArtifactItem>();
-                  delItems.addAll(items);
-                  for (TaskArtifactItem taskItem : delItems) {
-                     SMAEditor.close(taskItem.getTaskArtifact(), false);
-                     TaskArtifact taskArt = taskItem.getTaskArtifact();
-                     taskArt.delete();
-                  }
-                  xViewer.removeItems(delItems);
-                  xViewer.refresh();
-               }
-            };
+            AbstractSkynetTxTemplate txWrapper =
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     @Override
+                     protected void handleTxWork() throws Exception {
+                        // Done for concurrent modification purposes
+                        ArrayList<TaskArtifactItem> delItems = new ArrayList<TaskArtifactItem>();
+                        delItems.addAll(items);
+                        for (TaskArtifactItem taskItem : delItems) {
+                           SMAEditor.close(taskItem.getTaskArtifact(), false);
+                           TaskArtifact taskArt = taskItem.getTaskArtifact();
+                           taskArt.delete();
+                        }
+                        xViewer.removeItems(delItems);
+                        xViewer.refresh();
+                     }
+                  };
             txWrapper.execute();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
@@ -480,8 +484,9 @@ public class XTaskViewer extends XWidget implements IEventReceiver {
 
    public TaskArtifact handleNewTask() {
       TaskArtifact taskArt = null;
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Task", null,
-            "Enter Task Title/Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Task", null,
+                  "Enter Task Title/Description", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
             taskArt = iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(ed.getEntry(), false);
@@ -507,7 +512,8 @@ public class XTaskViewer extends XWidget implements IEventReceiver {
 
    public void storeSelection() {
       // Store selected so can re-select after event re-draw
-      if (xViewer.getSelectedTaskArtifactItems().size() > 0) selected = xViewer.getSelectedTaskArtifactItems().iterator().next().getTaskArtifact();
+      if (xViewer.getSelectedTaskArtifactItems().size() > 0) selected =
+            xViewer.getSelectedTaskArtifactItems().iterator().next().getTaskArtifact();
    }
 
    public void restoreSelection() {
@@ -688,20 +694,20 @@ public class XTaskViewer extends XWidget implements IEventReceiver {
          if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
          final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(
-                  BranchPersistenceManager.getInstance().getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws Exception {
-                  for (Artifact art : artsToRelate) {
-                     if (art instanceof TaskArtifact) {
-                        TaskArtifact taskArt = (TaskArtifact) art;
-                        if (taskArt.getParentSMA() != null) taskArt.unrelate(RelationSide.SmaToTask_Sma,
-                              taskArt.getParentSMA(), true);
-                        taskArt.relate(RelationSide.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma(), true);
+            AbstractSkynetTxTemplate txWrapper =
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     @Override
+                     protected void handleTxWork() throws Exception {
+                        for (Artifact art : artsToRelate) {
+                           if (art instanceof TaskArtifact) {
+                              TaskArtifact taskArt = (TaskArtifact) art;
+                              if (taskArt.getParentSMA() != null) taskArt.unrelate(RelationSide.SmaToTask_Sma,
+                                    taskArt.getParentSMA(), true);
+                              taskArt.relate(RelationSide.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma(), true);
+                           }
+                        }
                      }
-                  }
-               }
-            };
+                  };
             txWrapper.execute();
          } catch (Exception ex) {
             OSEELog.logException(SkynetActivator.class, ex, true);

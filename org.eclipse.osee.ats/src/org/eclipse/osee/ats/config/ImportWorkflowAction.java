@@ -87,8 +87,8 @@ public class ImportWorkflowAction extends Action {
 
    private static Map<String, URL> loadWorkflowIdToURL(String pluginId) {
       Map<String, URL> resources = new HashMap<String, URL>();
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.ats.AtsVueWorkflowDiagram");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsVueWorkflowDiagram");
       if (point == null) {
          OSEELog.logSevere(AtsPlugin.class, "Can't access AtsVueWorkflowDiagram extension point", true);
          return resources;

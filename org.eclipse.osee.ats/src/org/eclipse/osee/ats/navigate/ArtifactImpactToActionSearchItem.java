@@ -53,9 +53,10 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
     */
    @Override
    public void run() throws SQLException {
-      EntryDialog ed = new EntryDialog(
-            getName(),
-            "Searching on current default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch().getBranchName() + "\"\n\nEnter Artifact Name (or string) to search");
+      EntryDialog ed =
+            new EntryDialog(
+                  getName(),
+                  "Searching on current default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch().getBranchName() + "\"\n\nEnter Artifact Name (or string) to search");
       if (ed.open() == 0) {
          ActionToArtifactImpactJob job = new ActionToArtifactImpactJob(ed.getEntry());
          job.setUser(true);
@@ -87,8 +88,9 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       }
 
       private void getMatrixItems() throws SQLException {
-         ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(null, artifactName,
-               BranchPersistenceManager.getInstance().getDefaultBranch(), SearchOperator.LIKE);
+         ArtifactTypeNameSearch srch =
+               new ArtifactTypeNameSearch(null, artifactName,
+                     BranchPersistenceManager.getInstance().getDefaultBranch(), SearchOperator.LIKE);
          Collection<Artifact> srchArts = srch.getArtifacts(Artifact.class);
          if (srchArts.size() == 0) return;
          int x = 1;
@@ -99,8 +101,8 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             System.out.println(str);
             rd.log("\n" + AHTML.bold(srchArt.getDescriptiveName()));
             monitor.subTask(str);
-            Collection<TransactionData> transactions = RevisionManager.getInstance().getTransactionsPerArtifact(
-                  srchArt, true);
+            Collection<TransactionData> transactions =
+                  RevisionManager.getInstance().getTransactionsPerArtifact(srchArt, true);
             int y = 1;
             boolean found = false;
             StringBuffer sb = new StringBuffer();
@@ -111,8 +113,9 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                System.out.println(transStr);
                monitor.subTask(transStr);
                if (transData.getCommitArtId() > 0) {
-                  Artifact assocArt = ArtifactPersistenceManager.getInstance().getArtifactFromId(
-                        transData.getCommitArtId(), BranchPersistenceManager.getInstance().getAtsBranch());
+                  Artifact assocArt =
+                        ArtifactPersistenceManager.getInstance().getArtifactFromId(transData.getCommitArtId(),
+                              BranchPersistenceManager.getInstance().getAtsBranch());
                   if (assocArt instanceof TeamWorkFlowArtifact) {
                      sb.append(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(),
                            assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));

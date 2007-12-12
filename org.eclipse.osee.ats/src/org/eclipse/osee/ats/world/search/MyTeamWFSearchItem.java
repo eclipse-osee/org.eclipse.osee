@@ -76,8 +76,9 @@ public class MyTeamWFSearchItem extends UserSearchItem {
       // debug.report(ArtifactPersistenceManager.getSql(inActionSearch, true));
 
       if (isCancelled()) return;
-      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(allCriteria, true,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      Collection<Artifact> arts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(allCriteria, true,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
       debug.report("Processing artifacts", true);
       if (isCancelled()) return;
       addResultArtifacts(arts);

@@ -45,9 +45,10 @@ public class TaskResolutionOptions {
 
    public void setFromXml(String xmlStr) {
       String optionsXml = AXml.getTagData(xmlStr, ATS_TASK_OPTIONS_TAG);
-      Matcher m = Pattern.compile(
-            "<" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">.*?</" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">",
-            Pattern.DOTALL | Pattern.MULTILINE).matcher(optionsXml);
+      Matcher m =
+            Pattern.compile(
+                  "<" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">.*?</" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">",
+                  Pattern.DOTALL | Pattern.MULTILINE).matcher(optionsXml);
       while (m.find()) {
          TaskResOptionDefinition trd = new TaskResOptionDefinition();
          trd.setFromXml(m.group());

@@ -54,8 +54,8 @@ public class UserRoleManager {
    public Set<UserRole> getUserRoles() {
       Set<UserRole> uRoles = new HashSet<UserRole>();
       String xml = artifact.getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME);
-      Matcher m = java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(
-            xml);
+      Matcher m =
+            java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(xml);
       while (m.find()) {
          UserRole item = new UserRole(m.group());
          uRoles.add(item);

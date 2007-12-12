@@ -51,8 +51,8 @@ public class ActionableItemArtifact extends BasicArtifact {
    }
 
    public static Set<ActionableItemArtifact> getActionableItems(Active active) throws SQLException {
-      ActiveArtifactTypeSearch search = new ActiveArtifactTypeSearch(ARTIFACT_NAME, active,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      ActiveArtifactTypeSearch search =
+            new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getInstance().getAtsBranch());
       return search.getArtifacts(ActionableItemArtifact.class);
    }
 
@@ -74,8 +74,9 @@ public class ActionableItemArtifact extends BasicArtifact {
    }
 
    public static Set<ActionableItemArtifact> getActionableItems() throws SQLException {
-      ActiveArtifactTypeSearch search = new ActiveArtifactTypeSearch(ARTIFACT_NAME, Active.Active,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      ActiveArtifactTypeSearch search =
+            new ActiveArtifactTypeSearch(ARTIFACT_NAME, Active.Active,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
       return search.getArtifacts(ActionableItemArtifact.class);
    }
 
@@ -95,8 +96,8 @@ public class ActionableItemArtifact extends BasicArtifact {
     * @throws SQLException
     */
    public static ActionableItemArtifact getSoleActionableItem(String name) throws SQLException {
-      ArtifactTypeNameSearch search = new ArtifactTypeNameSearch(ARTIFACT_NAME, name,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+      ArtifactTypeNameSearch search =
+            new ArtifactTypeNameSearch(ARTIFACT_NAME, name, BranchPersistenceManager.getInstance().getAtsBranch());
       return search.getSingletonArtifactOrException(ActionableItemArtifact.class);
    }
 
