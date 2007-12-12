@@ -30,13 +30,17 @@ public final class TransactionCompressor extends AbstractDbTxTemplate {
    private static final String TABLE_TOKEN = "<table>";
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(TransactionCompressor.class);
 
-   private static final String GET_ARTIFACTS_TO_COMPRESS = "select t1.transaction_id, t1.gamma_id, t1.tx_type" + " from " + SkynetDatabase.TRANSACTIONS_TABLE + " t1, " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t2" + " WHERE t1.gamma_id = t2.gamma_id" + " and t1.transaction_id = ?" + " and exists (" + " select 'x' from " + SkynetDatabase.TRANSACTIONS_TABLE + " t3, " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t4" + " where t1.transaction_id = t3.transaction_id" + " and t3.gamma_id = t4.gamma_id" + " and t2.art_id = t4.art_id" + " and t1.gamma_id < t3.gamma_id )";
+   private static final String GET_ARTIFACTS_TO_COMPRESS =
+         "select t1.transaction_id, t1.gamma_id, t1.tx_type" + " from " + SkynetDatabase.TRANSACTIONS_TABLE + " t1, " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t2" + " WHERE t1.gamma_id = t2.gamma_id" + " and t1.transaction_id = ?" + " and exists (" + " select 'x' from " + SkynetDatabase.TRANSACTIONS_TABLE + " t3, " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t4" + " where t1.transaction_id = t3.transaction_id" + " and t3.gamma_id = t4.gamma_id" + " and t2.art_id = t4.art_id" + " and t1.gamma_id < t3.gamma_id )";
 
-   private static final String GET_RELATIONS_TO_COMPRESS = "select t1.transaction_id, t1.gamma_id, t1.tx_type" + " from " + SkynetDatabase.TRANSACTIONS_TABLE + " t1, " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2" + " WHERE t1.gamma_id = t2.gamma_id" + " and t1.transaction_id = ?" + " and exists (" + " select 'x' from " + SkynetDatabase.TRANSACTIONS_TABLE + " t3, " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t4" + " where t1.transaction_id = t3.transaction_id" + " and t3.gamma_id = t4.gamma_id" + " and t2.rel_link_id = t4.rel_link_id" + " and t1.gamma_id < t3.gamma_id )";
+   private static final String GET_RELATIONS_TO_COMPRESS =
+         "select t1.transaction_id, t1.gamma_id, t1.tx_type" + " from " + SkynetDatabase.TRANSACTIONS_TABLE + " t1, " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2" + " WHERE t1.gamma_id = t2.gamma_id" + " and t1.transaction_id = ?" + " and exists (" + " select 'x' from " + SkynetDatabase.TRANSACTIONS_TABLE + " t3, " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t4" + " where t1.transaction_id = t3.transaction_id" + " and t3.gamma_id = t4.gamma_id" + " and t2.rel_link_id = t4.rel_link_id" + " and t1.gamma_id < t3.gamma_id )";
 
-   private static final String GET_ATTRIBUTES_TO_COMPRESS = "select t1.transaction_id, t1.gamma_id, t1.tx_type" + " from " + SkynetDatabase.TRANSACTIONS_TABLE + " t1, " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + " t2" + " WHERE t1.gamma_id = t2.gamma_id" + " and t1.transaction_id = ?" + " and exists (" + " select 'x' from " + SkynetDatabase.TRANSACTIONS_TABLE + " t3, " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + " t4" + " where t1.transaction_id = t3.transaction_id" + " and t3.gamma_id = t4.gamma_id" + " and t2.attr_id = t4.attr_id" + " and t1.gamma_id < t3.gamma_id )";
+   private static final String GET_ATTRIBUTES_TO_COMPRESS =
+         "select t1.transaction_id, t1.gamma_id, t1.tx_type" + " from " + SkynetDatabase.TRANSACTIONS_TABLE + " t1, " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + " t2" + " WHERE t1.gamma_id = t2.gamma_id" + " and t1.transaction_id = ?" + " and exists (" + " select 'x' from " + SkynetDatabase.TRANSACTIONS_TABLE + " t3, " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + " t4" + " where t1.transaction_id = t3.transaction_id" + " and t3.gamma_id = t4.gamma_id" + " and t2.attr_id = t4.attr_id" + " and t1.gamma_id < t3.gamma_id )";
 
-   private static String DELETE_COMPRESSED_DATA = "DELETE FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " t1 WHERE t1.transaction_id = ? AND EXISTS(SELECT 'x' FROM " + TABLE_TOKEN + " t2 WHERE t1.gamma_id = t2.gamma_id)";
+   private static String DELETE_COMPRESSED_DATA =
+         "DELETE FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " t1 WHERE t1.transaction_id = ? AND EXISTS(SELECT 'x' FROM " + TABLE_TOKEN + " t2 WHERE t1.gamma_id = t2.gamma_id)";
 
    private boolean isDeleteEnabled;
    private int[] transactionIds;
@@ -74,15 +78,18 @@ public final class TransactionCompressor extends AbstractDbTxTemplate {
 
          // Load transactions and gammas to temporary tables to save time for
          // deleting from the attribute, relation and artifact_version tables.
-         int insertCount = ConnectionHandler.runPreparedUpdateReturnCount(
-               "INSERT INTO " + attributeTempTable + " (transaction_id, gamma_id, tx_type) " + GET_ATTRIBUTES_TO_COMPRESS,
-               SQL3DataType.INTEGER, transactionId);
-         insertCount += ConnectionHandler.runPreparedUpdateReturnCount(
-               "INSERT INTO " + artifactTempTable + " (transaction_id, gamma_id, tx_type) " + GET_ARTIFACTS_TO_COMPRESS,
-               SQL3DataType.INTEGER, transactionId);
-         insertCount += ConnectionHandler.runPreparedUpdateReturnCount(
-               "INSERT INTO " + relationTempTable + " (transaction_id, gamma_id, tx_type) " + GET_RELATIONS_TO_COMPRESS,
-               SQL3DataType.INTEGER, transactionId);
+         int insertCount =
+               ConnectionHandler.runPreparedUpdateReturnCount(
+                     "INSERT INTO " + attributeTempTable + " (transaction_id, gamma_id, tx_type) " + GET_ATTRIBUTES_TO_COMPRESS,
+                     SQL3DataType.INTEGER, transactionId);
+         insertCount +=
+               ConnectionHandler.runPreparedUpdateReturnCount(
+                     "INSERT INTO " + artifactTempTable + " (transaction_id, gamma_id, tx_type) " + GET_ARTIFACTS_TO_COMPRESS,
+                     SQL3DataType.INTEGER, transactionId);
+         insertCount +=
+               ConnectionHandler.runPreparedUpdateReturnCount(
+                     "INSERT INTO " + relationTempTable + " (transaction_id, gamma_id, tx_type) " + GET_RELATIONS_TO_COMPRESS,
+                     SQL3DataType.INTEGER, transactionId);
 
          if (insertCount > 0) {
             ConnectionHandler.runPreparedUpdateReturnCount(DELETE_COMPRESSED_DATA.replace(TABLE_TOKEN,

@@ -61,7 +61,8 @@ public class NativeArtifact extends Artifact {
    }
 
    public InputStream getNativeContent() throws IOException, SQLException {
-      CompressedContentAttribute attribute = (CompressedContentAttribute) getAttributeManager("Native Content").getSoleAttribute();
+      CompressedContentAttribute attribute =
+            (CompressedContentAttribute) getAttributeManager("Native Content").getSoleAttribute();
       return attribute.getUncompressedStream();
    }
 

@@ -26,7 +26,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManage
  * @author Ryan D. Brooks
  */
 public class RelationValidity {
-   private static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
    private static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationValidity.class);
    private final HashSet<ValidityConstraint> validitySet;
@@ -92,14 +93,14 @@ public class RelationValidity {
       for (ValidityRow row : validityArray) {
          for (String artifactTypeName : importer.determineConcreateTypes(row.artifactSuperTypeName)) {
 
-            ArtifactSubtypeDescriptor artifactType = configurationPersistenceManager.getArtifactSubtypeDescriptor(
-                  artifactTypeName, branch);
+            ArtifactSubtypeDescriptor artifactType =
+                  configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName, branch);
             if (artifactType == null) {
                logger.log(Level.SEVERE, "ArtifactSubtypeDescriptor == null ( " + artifactTypeName + " )");
                continue;
             }
-            IRelationLinkDescriptor linkDescriptor = relationManager.getIRelationLinkDescriptor(row.relationTypeName,
-                  branch);
+            IRelationLinkDescriptor linkDescriptor =
+                  relationManager.getIRelationLinkDescriptor(row.relationTypeName, branch);
             if (linkDescriptor == null) {
                logger.log(Level.SEVERE, "IRelationLinkDescriptor == null ( " + row.relationTypeName + " )");
                continue;

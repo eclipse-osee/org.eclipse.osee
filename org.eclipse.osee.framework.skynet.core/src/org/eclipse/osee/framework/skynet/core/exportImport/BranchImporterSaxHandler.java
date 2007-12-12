@@ -54,20 +54,30 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
 public class BranchImporterSaxHandler extends BranchSaxHandler {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchImporterSaxHandler.class);
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationManager =
+         ConfigurationPersistenceManager.getInstance();
    private static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
    private static final TransactionIdManager transactionManager = TransactionIdManager.getInstance();
 
-   private static final String INSERT_ARTIFACT_VERSION = "INSERT INTO " + ARTIFACT_VERSION_TABLE + " (art_id, gamma_id, modification_id) VALUES (?,?,?)";
-   private static final String INSERT_ATTRIBUTE = "INSERT INTO " + ATTRIBUTE_VERSION_TABLE + " (art_id, attr_id, attr_type_id, value, gamma_id, content, modification_id) VALUES (?,?,?,?,?,?,?)";
-   private static final String INSERT_ATTRIBUTE_GUID = "INSERT INTO " + ATTRIBUTE_TABLE + " (attr_id, guid) VALUES (?,?)";
-   private static final String INSERT_NEW_ARTIFACT = "INSERT INTO " + ARTIFACT_TABLE + " (art_id, human_readable_id, art_type_id, guid) VALUES (?,?,?,?)";
-   private static final String INSERT_RELATION_LINK = "INSERT INTO " + RELATION_LINK_VERSION_TABLE + " (rel_link_id, rel_link_type_id, a_art_id, b_art_id, a_order_value, b_order_value, rationale, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
-   private static final String INSERT_RELATION_LINK_GUID = "INSERT INTO " + RELATION_LINK_TABLE + " (rel_link_id, guid) VALUES (?,?)";
-   private static final String INSERT_TX_ADDRESS = "INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id) VALUES (?,?)";
-   private static final String INSERT_TX_DETAIL = "INSERT INTO " + TRANSACTION_DETAIL_TABLE + " (transaction_id, time, osee_comment, author, branch_id) VALUES (?,?,?,?,?)";
+   private static final String INSERT_ARTIFACT_VERSION =
+         "INSERT INTO " + ARTIFACT_VERSION_TABLE + " (art_id, gamma_id, modification_id) VALUES (?,?,?)";
+   private static final String INSERT_ATTRIBUTE =
+         "INSERT INTO " + ATTRIBUTE_VERSION_TABLE + " (art_id, attr_id, attr_type_id, value, gamma_id, content, modification_id) VALUES (?,?,?,?,?,?,?)";
+   private static final String INSERT_ATTRIBUTE_GUID =
+         "INSERT INTO " + ATTRIBUTE_TABLE + " (attr_id, guid) VALUES (?,?)";
+   private static final String INSERT_NEW_ARTIFACT =
+         "INSERT INTO " + ARTIFACT_TABLE + " (art_id, human_readable_id, art_type_id, guid) VALUES (?,?,?,?)";
+   private static final String INSERT_RELATION_LINK =
+         "INSERT INTO " + RELATION_LINK_VERSION_TABLE + " (rel_link_id, rel_link_type_id, a_art_id, b_art_id, a_order_value, b_order_value, rationale, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
+   private static final String INSERT_RELATION_LINK_GUID =
+         "INSERT INTO " + RELATION_LINK_TABLE + " (rel_link_id, guid) VALUES (?,?)";
+   private static final String INSERT_TX_ADDRESS =
+         "INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id) VALUES (?,?)";
+   private static final String INSERT_TX_DETAIL =
+         "INSERT INTO " + TRANSACTION_DETAIL_TABLE + " (transaction_id, time, osee_comment, author, branch_id) VALUES (?,?,?,?,?)";
 
-   private static final String UPDATE_BRANCH_ASSOCIATION = "UPDATE " + BRANCH_TABLE + " SET associated_art_id=? WHERE branch_id=?";
+   private static final String UPDATE_BRANCH_ASSOCIATION =
+         "UPDATE " + BRANCH_TABLE + " SET associated_art_id=? WHERE branch_id=?";
 
    private final IProgressMonitor monitor;
    private final Branch supportingBranch;
@@ -236,8 +246,8 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          }
          currentArtifactId = Query.getNextSeqVal(null, ART_ID_SEQ);
 
-         ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(type,
-               curBranch.peek());
+         ArtifactSubtypeDescriptor artifactType =
+               configurationManager.getArtifactSubtypeDescriptor(type, curBranch.peek());
          if (artifactType == null) {
             logger.log(Level.WARNING, "The artifact type " + type + " was not found for artifact " + guid);
             currentArtifactId = null;

@@ -35,11 +35,12 @@ import org.eclipse.osee.framework.ui.plugin.util.db.Query;
  * @author Robert A. Fisher
  */
 public class DynamicAttributeDescriptorCache {
-   private static final String SELECT_ATTRIBUTE_TYPES = "SELECT " + ATTRIBUTE_BASE_TYPE_TABLE.column("attribute_class") + ", " + ATTRIBUTE_TYPE_TABLE.columns(
-         "attr_type_id", "name", "default_value", "validity_xml", "min_occurence", "max_occurence", "tip_text") + " FROM " + ATTRIBUTE_TYPE_TABLE + ", " + ATTRIBUTE_BASE_TYPE_TABLE + "," + TRANSACTIONS_TABLE + ", (SELECT " + TRANSACTION_DETAIL_TABLE.max(
-         "transaction_id", "transaction_id") + ", " + ATTRIBUTE_TYPE_TABLE.columns("attr_type_id") + " FROM " + ATTRIBUTE_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_TYPE_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=" + "?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " GROUP BY " + ATTRIBUTE_TYPE_TABLE.columns("attr_type_id") + ") T1 "
+   private static final String SELECT_ATTRIBUTE_TYPES =
+         "SELECT " + ATTRIBUTE_BASE_TYPE_TABLE.column("attribute_class") + ", " + ATTRIBUTE_TYPE_TABLE.columns(
+               "attr_type_id", "name", "default_value", "validity_xml", "min_occurence", "max_occurence", "tip_text") + " FROM " + ATTRIBUTE_TYPE_TABLE + ", " + ATTRIBUTE_BASE_TYPE_TABLE + "," + TRANSACTIONS_TABLE + ", (SELECT " + TRANSACTION_DETAIL_TABLE.max(
+               "transaction_id", "transaction_id") + ", " + ATTRIBUTE_TYPE_TABLE.columns("attr_type_id") + " FROM " + ATTRIBUTE_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_TYPE_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=" + "?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " GROUP BY " + ATTRIBUTE_TYPE_TABLE.columns("attr_type_id") + ") T1 "
 
-   + " WHERE " + ATTRIBUTE_BASE_TYPE_TABLE.column("attr_base_type_id") + EQUAL + ATTRIBUTE_TYPE_TABLE.column("attr_base_type_id") + " AND " + ATTRIBUTE_TYPE_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=T1.transaction_id" + " AND " + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + "=T1.attr_type_id";
+         + " WHERE " + ATTRIBUTE_BASE_TYPE_TABLE.column("attr_base_type_id") + EQUAL + ATTRIBUTE_TYPE_TABLE.column("attr_base_type_id") + " AND " + ATTRIBUTE_TYPE_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=T1.transaction_id" + " AND " + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + "=T1.attr_type_id";
 
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private final HashCollection<TransactionId, DynamicAttributeDescriptor> allDescriptors;
@@ -63,9 +64,11 @@ public class DynamicAttributeDescriptorCache {
 
    private void populateCache(TransactionId transactionId) {
       try {
-         int currentTransactionNumber = transactionIdManager.getEditableTransactionId(transactionId.getBranch()).getTransactionNumber();
+         int currentTransactionNumber =
+               transactionIdManager.getEditableTransactionId(transactionId.getBranch()).getTransactionNumber();
          // don't populate the cache using a transaction number that is not yet in the DB
-         int transactionNumber = transactionId.getTransactionNumber() > currentTransactionNumber ? currentTransactionNumber : transactionId.getTransactionNumber();
+         int transactionNumber =
+               transactionId.getTransactionNumber() > currentTransactionNumber ? currentTransactionNumber : transactionId.getTransactionNumber();
 
          Collection<DynamicAttributeDescriptor> savedDescriptors = new LinkedList<DynamicAttributeDescriptor>();
          Query.acquireCollection(savedDescriptors, new DynamicAttributeTypeProcessor(transactionId),

@@ -73,7 +73,8 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
     */
    protected Attribute createAttribute() throws IllegalStateException {
       try {
-         Attribute attribute = getBaseAttributeClass().getConstructor(reflectionSignature).newInstance(reflectionParams);
+         Attribute attribute =
+               getBaseAttributeClass().getConstructor(reflectionSignature).newInstance(reflectionParams);
 
          if (defaultValue != null && !defaultValue.equals("null")) attribute.swagValue(defaultValue);
          attribute.setValidityXml(validityXml);

@@ -35,7 +35,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(Branch.class);
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
-   private static final String UPDATE_BRANCH_SHORT_NAME = "UPDATE " + BRANCH_TABLE + " SET short_name = ? WHERE branch_id = ?";
+   private static final String UPDATE_BRANCH_SHORT_NAME =
+         "UPDATE " + BRANCH_TABLE + " SET short_name = ? WHERE branch_id = ?";
    private final int branchId;
    private Branch parentBranch;
    private final int parentBranchId;
@@ -239,8 +240,9 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    public Artifact getAssociatedArtifact() throws SQLException {
       if (associatedArtifact == null && associatedArtifactId > 0) {
-         associatedArtifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(associatedArtifactId,
-               branchManager.getCommonBranch());
+         associatedArtifact =
+               ArtifactPersistenceManager.getInstance().getArtifactFromId(associatedArtifactId,
+                     branchManager.getCommonBranch());
          // TODO: this method must get the artifact based on an art id and use the
          // right branch when doing so (the artifact is not necessarily a user artifact)
       }

@@ -47,9 +47,10 @@ public class DynamicAttributeTypeProcessor implements RsetProcessor<DynamicAttri
          throw new RuntimeException(e);
       }
 
-      descriptor = new DynamicAttributeDescriptor(baseClass, set.getString("name"), set.getString("default_value"),
-            set.getString("validity_xml"), set.getInt("min_occurence"), set.getInt("max_occurence"),
-            set.getString("tip_text"), set.getInt("attr_type_id"), transactionId);
+      descriptor =
+            new DynamicAttributeDescriptor(baseClass, set.getString("name"), set.getString("default_value"),
+                  set.getString("validity_xml"), set.getInt("min_occurence"), set.getInt("max_occurence"),
+                  set.getString("tip_text"), set.getInt("attr_type_id"), transactionId);
 
       return descriptor;
    }

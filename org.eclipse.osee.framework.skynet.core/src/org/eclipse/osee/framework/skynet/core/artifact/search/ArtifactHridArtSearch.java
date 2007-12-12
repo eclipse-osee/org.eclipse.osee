@@ -48,8 +48,8 @@ public class ArtifactHridArtSearch {
       for (String hrid : hrids)
          activeCriteria.add(new org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactHridSearch(hrid));
       try {
-         Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, false,
-               branch);
+         Collection<Artifact> arts =
+               ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, false, branch);
          for (Artifact art : arts)
             results.add((A) art);
       } catch (SQLException ex) {

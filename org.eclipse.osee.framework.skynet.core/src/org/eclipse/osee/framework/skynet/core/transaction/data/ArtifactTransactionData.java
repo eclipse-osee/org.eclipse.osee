@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
  * @author Jeff C. Phillips
  */
 public class ArtifactTransactionData implements ITransactionData {
-   private static final String INSERT_INTO_ARTIFACT_VERSION_TABLE = "INSERT INTO " + ARTIFACT_VERSION_TABLE + "(art_id, gamma_id, modification_id) VALUES (?,?,?)";
+   private static final String INSERT_INTO_ARTIFACT_VERSION_TABLE =
+         "INSERT INTO " + ARTIFACT_VERSION_TABLE + "(art_id, gamma_id, modification_id) VALUES (?,?,?)";
    private static final int PRIME_NUMBER = 3;
 
    private List<Object> dataItems;

@@ -43,8 +43,8 @@ import org.osgi.framework.Bundle;
  * @author Andrew M. Finkbeiner
  */
 public class SkynetDbInit extends DbInitializationTask {
-   private static final String ADD_PERMISSION = "INSERT INTO " + PERMISSION_TABLE.columnsForInsert("PERMISSION_ID",
-         "PERMISSION_NAME"); // + ")
+   private static final String ADD_PERMISSION =
+         "INSERT INTO " + PERMISSION_TABLE.columnsForInsert("PERMISSION_ID", "PERMISSION_NAME"); // + ")
    // VALUES
    // (?,?)";
    private static boolean isInDbInit;
@@ -81,8 +81,8 @@ public class SkynetDbInit extends DbInitializationTask {
 
    private List<URL> getSchemaFiles() {
       List<URL> toReturn = new ArrayList<URL>();
-      List<IConfigurationElement> list = ExtensionPoints.getExtensionElements(
-            "org.eclipse.osee.framework.skynet.core.SkynetDbSchema", "Schema");
+      List<IConfigurationElement> list =
+            ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.SkynetDbSchema", "Schema");
       for (IConfigurationElement element : list) {
          String fileName = element.getAttribute("SchemaFile");
          String bundleName = element.getContributor().getName();

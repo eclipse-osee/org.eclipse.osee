@@ -90,8 +90,8 @@ public class GuidCache {
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(2000,
-               "SELECT " + table.columns("guid", idColumn) + " FROM " + table);
+         chStmt =
+               ConnectionHandler.runPreparedQuery(2000, "SELECT " + table.columns("guid", idColumn) + " FROM " + table);
          ResultSet rset = chStmt.getRset();
 
          while (rset.next()) {

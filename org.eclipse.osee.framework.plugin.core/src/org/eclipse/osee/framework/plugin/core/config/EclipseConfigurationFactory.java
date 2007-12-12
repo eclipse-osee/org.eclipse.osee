@@ -61,7 +61,8 @@ public class EclipseConfigurationFactory extends BaseConfigurationFactory {
    private void loadExtensionHandlers() throws CoreException {
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
       if (extensionRegistry != null) {
-         IExtensionPoint point = extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.plugin.core.logHandler");
+         IExtensionPoint point =
+               extensionRegistry.getExtensionPoint("org.eclipse.osee.framework.plugin.core.logHandler");
          if (point != null) {
             IExtension[] extensions = point.getExtensions();
             for (IExtension extension : extensions) {

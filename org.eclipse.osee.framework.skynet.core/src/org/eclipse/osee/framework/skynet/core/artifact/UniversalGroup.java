@@ -79,11 +79,12 @@ public class UniversalGroup {
    }
 
    public static void createTopUniversalGroupArtifact(Branch branch) throws SQLException {
-      ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(UniversalGroup.ARTIFACT_TYPE_NAME,
-            ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
+      ArtifactTypeNameSearch srch =
+            new ArtifactTypeNameSearch(UniversalGroup.ARTIFACT_TYPE_NAME,
+                  ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
       if (srch.getArtifacts(Artifact.class).size() == 0) {
-         Artifact art = ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(ARTIFACT_TYPE_NAME,
-               branch).makeNewArtifact();
+         Artifact art =
+               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(ARTIFACT_TYPE_NAME, branch).makeNewArtifact();
          art.setDescriptiveName(ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME);
          art.persist();
       }
@@ -104,8 +105,9 @@ public class UniversalGroup {
        */
       @Override
       protected void handleTxWork() throws Exception {
-         Artifact groupArt = ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-               UniversalGroup.ARTIFACT_TYPE_NAME, getTxBranch()).makeNewArtifact();
+         Artifact groupArt =
+               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                     UniversalGroup.ARTIFACT_TYPE_NAME, getTxBranch()).makeNewArtifact();
          groupArt.setDescriptiveName(name);
          groupArt.persist();
          Artifact groupRoot = getTopUniversalGroupArtifact(getTxBranch());

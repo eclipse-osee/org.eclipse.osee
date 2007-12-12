@@ -38,7 +38,8 @@ public abstract class TransactionEvent extends Event {
    private Set<Artifact> purged = new HashSet<Artifact>();
    private Set<Artifact> relChanged = new HashSet<Artifact>();
    private Set<Artifact> artifactVersionIncremented = new HashSet<Artifact>();
-   private Map<Artifact, ArtifactVersionIncrementedEvent> artifactVersionIncrementedEvent = new HashMap<Artifact, ArtifactVersionIncrementedEvent>();
+   private Map<Artifact, ArtifactVersionIncrementedEvent> artifactVersionIncrementedEvent =
+         new HashMap<Artifact, ArtifactVersionIncrementedEvent>();
 
    /**
     * @param events

@@ -61,7 +61,8 @@ public class ServerConfigUtil {
       if (servicesMap.containsKey(servicesId)) {
          DbSetupData serviceData = servicesMap.get(servicesId);
          DbDetailData dbInfo = dbInfoMap.get(serviceData.getDbInfo());
-         DbConnectionData connectionData = connectionMap.get(serviceData.getServerInfoValue(DbSetupData.ServerInfoFields.connectsWith));
+         DbConnectionData connectionData =
+               connectionMap.get(serviceData.getServerInfoValue(DbSetupData.ServerInfoFields.connectsWith));
          if (dbInfo != null && connectionData != null) {
             return new DbInformation(dbInfo, serviceData, connectionData);
          }
@@ -104,7 +105,8 @@ public class ServerConfigUtil {
    private DbInformation buildDbInformation(String id) {
       DbSetupData serviceData = servicesMap.get(id);
       DbDetailData dbInfo = dbInfoMap.get(serviceData.getDbInfo());
-      DbConnectionData connectionData = connectionMap.get(serviceData.getServerInfoValue(DbSetupData.ServerInfoFields.connectsWith));
+      DbConnectionData connectionData =
+            connectionMap.get(serviceData.getServerInfoValue(DbSetupData.ServerInfoFields.connectsWith));
       if (dbInfo != null && connectionData != null) {
          return new DbInformation(dbInfo, serviceData, connectionData);
       } else {
@@ -220,10 +222,11 @@ public class ServerConfigUtil {
                      }
                      break;
                   case UrlAttributes:
-                     Element urlAttributes = Jaxp.getChild(element,
-                           DbConnectionData.ConnectionFields.UrlAttributes.name());
+                     Element urlAttributes =
+                           Jaxp.getChild(element, DbConnectionData.ConnectionFields.UrlAttributes.name());
                      if (urlAttributes != null) {
-                        NodeList attributes = urlAttributes.getElementsByTagName(DbConnectionData.UrlAttributes.Entry.name());
+                        NodeList attributes =
+                              urlAttributes.getElementsByTagName(DbConnectionData.UrlAttributes.Entry.name());
                         if (attributes != null) {
                            for (int index = 0; index < attributes.getLength(); index++) {
                               Node node = attributes.item(index);

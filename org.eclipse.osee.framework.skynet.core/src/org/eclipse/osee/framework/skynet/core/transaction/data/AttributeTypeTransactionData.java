@@ -20,7 +20,8 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
  * @author Robert A. Fisher
  */
 public class AttributeTypeTransactionData implements ITransactionData {
-   private static final String INSERT_ATTRIBUTE_TYPE = "INSERT INTO " + ATTRIBUTE_TYPE_TABLE + " (attr_type_id, attr_base_type_id, name, default_value, validity_xml, min_occurence, max_occurence, tip_text, gamma_id)" + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+   private static final String INSERT_ATTRIBUTE_TYPE =
+         "INSERT INTO " + ATTRIBUTE_TYPE_TABLE + " (attr_type_id, attr_base_type_id, name, default_value, validity_xml, min_occurence, max_occurence, tip_text, gamma_id)" + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
    private final int attrTypeId;
    private final int attrBaseTypeId;

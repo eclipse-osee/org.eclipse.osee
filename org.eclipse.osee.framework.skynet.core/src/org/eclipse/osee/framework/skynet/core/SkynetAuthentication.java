@@ -144,8 +144,9 @@ public class SkynetAuthentication implements PersistenceManager {
                         try {
                            currentUser = getUserByIdWithError(userId);
                         } catch (IllegalArgumentException ex1) {
-                           currentUser = createUser(oseeAuthentication.getCredentials().getField(
-                                 UserCredentialEnum.Name), "spawnedBySkynet", userId, true);
+                           currentUser =
+                                 createUser(oseeAuthentication.getCredentials().getField(UserCredentialEnum.Name),
+                                       "spawnedBySkynet", userId, true);
                            persistUser(currentUser); // this is done outside of the crateUser call
                            // to avoid recursion
                         }
@@ -194,8 +195,9 @@ public class SkynetAuthentication implements PersistenceManager {
       duringUserCreation = true;
       User user = null;
       try {
-         user = (User) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(User.ARTIFACT_NAME,
-               branchManager.getCommonBranch()).makeNewArtifact();
+         user =
+               (User) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(User.ARTIFACT_NAME,
+                     branchManager.getCommonBranch()).makeNewArtifact();
          user.setActive(active);
          user.setUserID(userID);
          user.setName(name);
@@ -219,8 +221,9 @@ public class SkynetAuthentication implements PersistenceManager {
    public ArrayList<User> getUsers() {
       if (activeUsers.size() == 0) {
          try {
-            Collection<Artifact> dbUsers = artifactManager.getArtifacts(new ArtifactTypeSearch(User.ARTIFACT_NAME,
-                  Operator.EQUAL), branchManager.getCommonBranch());
+            Collection<Artifact> dbUsers =
+                  artifactManager.getArtifacts(new ArtifactTypeSearch(User.ARTIFACT_NAME, Operator.EQUAL),
+                        branchManager.getCommonBranch());
             for (Artifact a : dbUsers) {
                User user = (User) a;
                if (user.isActive()) {
@@ -246,8 +249,8 @@ public class SkynetAuthentication implements PersistenceManager {
       User user = nameOrIdToUserMap.get(userId);
 
       if (user == null) {
-         Collection<Artifact> users = artifactManager.getArtifacts(new UserIdSearch(userId, Operator.EQUAL),
-               branchManager.getCommonBranch());
+         Collection<Artifact> users =
+               artifactManager.getArtifacts(new UserIdSearch(userId, Operator.EQUAL), branchManager.getCommonBranch());
          if (users.size() == 1) {
             user = (User) users.iterator().next();
             addUserToMap(user);
@@ -286,8 +289,9 @@ public class SkynetAuthentication implements PersistenceManager {
       User user = nameOrIdToUserMap.get(name);
       if (user == null) {
          try {
-            user = (User) artifactManager.getArtifactFromTypeName(User.ARTIFACT_NAME, name,
-                  branchManager.getCommonBranch());
+            user =
+                  (User) artifactManager.getArtifactFromTypeName(User.ARTIFACT_NAME, name,
+                        branchManager.getCommonBranch());
          } catch (IllegalStateException ex) {
             if (create && ex.getLocalizedMessage().contains("There must be exactly one")) {
                user = createUser(name, "", name, true);

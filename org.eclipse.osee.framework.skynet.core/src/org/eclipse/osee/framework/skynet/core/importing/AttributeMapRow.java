@@ -23,7 +23,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescript
  * @author Ryan D. Brooks
  */
 public class AttributeMapRow {
-   private static final ConfigurationPersistenceManager configurationPersistencManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistencManager =
+         ConfigurationPersistenceManager.getInstance();
    private final Branch branch;
    private SkynetTypesImporter importer;
    private String artifactSuperTypeName;
@@ -42,15 +43,15 @@ public class AttributeMapRow {
    }
 
    public void persist() throws SQLException {
-      DynamicAttributeDescriptor attributeType = configurationPersistencManager.getDynamicAttributeType(attributeName,
-            branch);
+      DynamicAttributeDescriptor attributeType =
+            configurationPersistencManager.getDynamicAttributeType(attributeName, branch);
       if (attributeType == null) {
          throw new IllegalArgumentException("The attribute " + attributeName + " is not defined.");
       }
 
       for (String artifactTypeName : importer.determineConcreateTypes(artifactSuperTypeName)) {
-         ArtifactSubtypeDescriptor artifactType = configurationPersistencManager.getArtifactSubtypeDescriptor(
-               artifactTypeName, branch);
+         ArtifactSubtypeDescriptor artifactType =
+               configurationPersistencManager.getArtifactSubtypeDescriptor(artifactTypeName, branch);
          if (artifactType != null) {
             configurationPersistencManager.persistAttributeValidity(attributeType, artifactType);
          } else {

@@ -159,8 +159,9 @@ public class DbTableViewer {
     * Create the Table
     */
    private void createTable(Composite parent, int numColumns) {
-      table = new Table(parent,
-            SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+      table =
+            new Table(parent,
+                  SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
       gridData.horizontalSpan = numColumns;
       table.setLayoutData(gridData);

@@ -52,7 +52,8 @@ public class ActiveArtifactTypeSearch {
             "ats.Active", (active == Active.Active ? "yes" : "no"), Operator.EQUAL));
 
       try {
-         Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, branch);
+         Collection<Artifact> arts =
+               ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, branch);
          for (Artifact art : arts)
             results.add((A) art);
       } catch (SQLException ex) {

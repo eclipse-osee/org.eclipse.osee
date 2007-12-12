@@ -45,13 +45,17 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
 
    private static final LocalAliasTable TAG_MAP_ALIAS_1 = TAG_ART_MAP_TABLE.aliasAs("map1");
    private static final LocalAliasTable TAG_ALIAS_1 = TAG_TABLE.aliasAs("tag1");
-   private static final String ADD_ART_TO_STALE = "INSERT INTO " + TAG_STALE_ARTIFACT_TABLE + " (art_id, branch_id) VALUES (?,?)";
-   private static final String ADD_TAG_TO_ARTIFACT = "INSERT INTO " + TAG_ART_MAP_TABLE + " (ART_ID, RELEVANCE, N, BRANCH_ID, TAG_ID) VALUES (?,?,?,?,?)";
-   private static final String DROP_ART_FROM_STALE = "DELETE FROM " + TAG_STALE_ARTIFACT_TABLE + " WHERE art_id=? AND branch_id=?";
-   private static final String DROP_TAGS_FROM_ARTIFACT = "DELETE FROM " + TAG_ART_MAP_TABLE + " WHERE EXISTS(SELECT 'x' FROM " + Collections.toString(
-         ",", TAG_MAP_ALIAS_1, TAG_ALIAS_1) + " WHERE " + TAG_ART_MAP_TABLE.join(TAG_MAP_ALIAS_1, "art_id") + " AND " + TAG_ART_MAP_TABLE.join(
-         TAG_MAP_ALIAS_1, "branch_id") + " AND " + TAG_ART_MAP_TABLE.join(TAG_MAP_ALIAS_1, "tag_id") + " AND " + TAG_MAP_ALIAS_1.join(
-         TAG_ALIAS_1, "tag_id") + " AND " + TAG_MAP_ALIAS_1.column("art_id") + "=? AND " + TAG_MAP_ALIAS_1.column("branch_id") + "=? AND " + TAG_ALIAS_1.column("tag_type_id") + "=?)";
+   private static final String ADD_ART_TO_STALE =
+         "INSERT INTO " + TAG_STALE_ARTIFACT_TABLE + " (art_id, branch_id) VALUES (?,?)";
+   private static final String ADD_TAG_TO_ARTIFACT =
+         "INSERT INTO " + TAG_ART_MAP_TABLE + " (ART_ID, RELEVANCE, N, BRANCH_ID, TAG_ID) VALUES (?,?,?,?,?)";
+   private static final String DROP_ART_FROM_STALE =
+         "DELETE FROM " + TAG_STALE_ARTIFACT_TABLE + " WHERE art_id=? AND branch_id=?";
+   private static final String DROP_TAGS_FROM_ARTIFACT =
+         "DELETE FROM " + TAG_ART_MAP_TABLE + " WHERE EXISTS(SELECT 'x' FROM " + Collections.toString(",",
+               TAG_MAP_ALIAS_1, TAG_ALIAS_1) + " WHERE " + TAG_ART_MAP_TABLE.join(TAG_MAP_ALIAS_1, "art_id") + " AND " + TAG_ART_MAP_TABLE.join(
+               TAG_MAP_ALIAS_1, "branch_id") + " AND " + TAG_ART_MAP_TABLE.join(TAG_MAP_ALIAS_1, "tag_id") + " AND " + TAG_MAP_ALIAS_1.join(
+               TAG_ALIAS_1, "tag_id") + " AND " + TAG_MAP_ALIAS_1.column("art_id") + "=? AND " + TAG_MAP_ALIAS_1.column("branch_id") + "=? AND " + TAG_ALIAS_1.column("tag_type_id") + "=?)";
    private static final SkynetActivator plugin = SkynetActivator.getInstance();
 
    private TaggerManager taggerManager;

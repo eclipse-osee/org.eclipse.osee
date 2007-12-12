@@ -211,8 +211,8 @@ public class ArtifactDescriptorDialog extends IconAndMessageDialog {
       errorLabel.setText("");
 
       new Label(composite, SWT.NULL).setText("Select artifact descriptor:");
-      descriptorsList = new ObjectList<ArtifactSubtypeDescriptor>(composite,
-            SWT.BORDER | SWT.READ_ONLY | SWT.SCROLL_PAGE);
+      descriptorsList =
+            new ObjectList<ArtifactSubtypeDescriptor>(composite, SWT.BORDER | SWT.READ_ONLY | SWT.SCROLL_PAGE);
       descriptorsList.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, true));
 
       if (descriptors != null) {

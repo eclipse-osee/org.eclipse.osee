@@ -43,7 +43,8 @@ public class RelationLinkGroup {
    private boolean sideA;
    private TreeSet<IRelationLink> groupSide;
    private SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final RelationPersistenceManager relationPersistenceManager = RelationPersistenceManager.getInstance();
+   private static final RelationPersistenceManager relationPersistenceManager =
+         RelationPersistenceManager.getInstance();
 
    protected RelationLinkGroup(LinkManager linkManager, IRelationLinkDescriptor descriptor, boolean sideA) {
       super();

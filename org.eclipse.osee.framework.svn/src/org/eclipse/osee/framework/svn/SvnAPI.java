@@ -77,8 +77,8 @@ public class SvnAPI {
       if (info.kind >= 0 && info.kind < NodeKind.NAMES.length) {
          entryType = NodeKind.NAMES[info.kind];
       }
-      DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT,
-            Locale.getDefault());
+      DateFormat dateFormat =
+            DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
       RepositoryEntry entry = new RepositoryEntry(entryType, getVersionControlSystem());
       entry.addField(EntryFields.checksum, info.checksum);
       entry.addField(EntryFields.committedRev, Long.toString(info.lastChangedRevision));
@@ -201,12 +201,14 @@ public class SvnAPI {
          CheckoutOperation toReturn = null;
          if (checkoutMap != null) {
             HashMap resources2names = CheckoutAction.getResources2Names(checkoutMap);
-            ArrayList operateResources = CheckoutAction.getOperateResources(checkoutMap, resources2names,
-                  PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-                  ResourcesPlugin.getWorkspace().getRoot().getLocation().toString(), true);
+            ArrayList operateResources =
+                  CheckoutAction.getOperateResources(checkoutMap, resources2names,
+                        PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+                        ResourcesPlugin.getWorkspace().getRoot().getLocation().toString(), true);
 
             if (operateResources.size() > 0) {
-               IRepositoryResource[] checkoutSet = (IRepositoryResource[]) operateResources.toArray(new IRepositoryResource[operateResources.size()]);
+               IRepositoryResource[] checkoutSet =
+                     (IRepositoryResource[]) operateResources.toArray(new IRepositoryResource[operateResources.size()]);
                HashMap operateMap = new HashMap();
                for (int i = 0; i < checkoutSet.length; i++) {
                   operateMap.put(resources2names.get(checkoutSet[i]), checkoutSet[i]);

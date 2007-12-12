@@ -77,8 +77,9 @@ public abstract class RelationModifiedEvent extends Event {
    public boolean effectsArtifact(Artifact artifact) {
       boolean isEffected = false;
 
-      isEffected = (getLink().getArtifactA() != null && getLink().getArtifactA().equals(artifact)) || (getLink().getArtifactB() != null && getLink().getArtifactB().equals(
-            artifact));
+      isEffected =
+            (getLink().getArtifactA() != null && getLink().getArtifactA().equals(artifact)) || (getLink().getArtifactB() != null && getLink().getArtifactB().equals(
+                  artifact));
 
       return isEffected;
    }

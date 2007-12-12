@@ -36,8 +36,9 @@ public class HttpImageProcessor {
 
    private HttpImageProcessor() {
       this.imageDirectory = OseeData.getFile(".images");
-      this.extensionDefinedObjects = new ExtensionDefinedObjects<IHtmlImageHandler>(
-            "org.eclipse.osee.framework.skynet.core.HtmlImageHandler", "HtmlImageHandler", "ClassName");
+      this.extensionDefinedObjects =
+            new ExtensionDefinedObjects<IHtmlImageHandler>("org.eclipse.osee.framework.skynet.core.HtmlImageHandler",
+                  "HtmlImageHandler", "ClassName");
    }
 
    public static HttpImageProcessor getInstance() {

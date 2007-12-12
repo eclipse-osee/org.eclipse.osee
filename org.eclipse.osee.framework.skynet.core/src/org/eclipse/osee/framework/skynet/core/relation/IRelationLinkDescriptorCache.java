@@ -49,20 +49,22 @@ public class IRelationLinkDescriptorCache {
 
    private static final LocalAliasTable LINK_TYPE_ALIAS_1 = new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "t1");
    private static final LocalAliasTable LINK_TYPE_ALIAS_2 = new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "t2");
-   private static final String SELECT_LINK_TYPES = "SELECT " + LINK_TYPE_ALIAS_1.columns("type_name", "a_name",
-         "b_name", "ab_phrasing", "ba_phrasing", "short_name", "rel_link_type_id") + " FROM " + LINK_TYPE_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + LINK_TYPE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id")
-   // TODO the RELATION_LINK_TYPE_TABLE does not have a modification_id to mark deleted types
-   //   + " AND " + LINK_TYPE_ALIAS_1.column("modification_id") + "<>?"
-   + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_TYPE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_TYPE_ALIAS_2.column("rel_link_type_id") + "=" + LINK_TYPE_ALIAS_1.column("rel_link_type_id") + " AND " + LINK_TYPE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)";
+   private static final String SELECT_LINK_TYPES =
+         "SELECT " + LINK_TYPE_ALIAS_1.columns("type_name", "a_name", "b_name", "ab_phrasing", "ba_phrasing",
+               "short_name", "rel_link_type_id") + " FROM " + LINK_TYPE_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + LINK_TYPE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id")
+         // TODO the RELATION_LINK_TYPE_TABLE does not have a modification_id to mark deleted types
+         //   + " AND " + LINK_TYPE_ALIAS_1.column("modification_id") + "<>?"
+         + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_TYPE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_TYPE_ALIAS_2.column("rel_link_type_id") + "=" + LINK_TYPE_ALIAS_1.column("rel_link_type_id") + " AND " + LINK_TYPE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)";
 
    // TODO this does not handle deleted validities
    private static final LocalAliasTable VALIDITY_ALIAS_1 = new LocalAliasTable(VALID_RELATIONS_TABLE, "t1");
    private static final LocalAliasTable VALIDITY_ALIAS_2 = new LocalAliasTable(VALID_RELATIONS_TABLE, "t2");
-   private static final String SELECT_LINK_VALIDITY = "SELECT /*+ ordered */" + VALIDITY_ALIAS_1.columns(
-         "rel_link_type_id", "art_type_id", "side_a_max", "side_b_max") + " FROM " + VALIDITY_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + VALIDITY_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id")
-   // TODO the VALID_RELATIONS_TABLE does not have a modification_id to mark deleted validity
-   // + " AND " + VALIDITY_ALIAS_1.column("modification_id") + "<>?"
-   + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + VALIDITY_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + VALIDITY_ALIAS_2.column("art_type_id") + "=" + VALIDITY_ALIAS_1.column("art_type_id") + " AND " + VALIDITY_ALIAS_2.column("rel_link_type_id") + "=" + VALIDITY_ALIAS_1.column("rel_link_type_id") + " AND " + VALIDITY_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=" + "?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)" + " ORDER BY " + VALIDITY_ALIAS_1.column("rel_link_type_id");
+   private static final String SELECT_LINK_VALIDITY =
+         "SELECT /*+ ordered */" + VALIDITY_ALIAS_1.columns("rel_link_type_id", "art_type_id", "side_a_max",
+               "side_b_max") + " FROM " + VALIDITY_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + VALIDITY_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id")
+         // TODO the VALID_RELATIONS_TABLE does not have a modification_id to mark deleted validity
+         // + " AND " + VALIDITY_ALIAS_1.column("modification_id") + "<>?"
+         + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + VALIDITY_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + VALIDITY_ALIAS_2.column("art_type_id") + "=" + VALIDITY_ALIAS_1.column("art_type_id") + " AND " + VALIDITY_ALIAS_2.column("rel_link_type_id") + "=" + VALIDITY_ALIAS_1.column("rel_link_type_id") + " AND " + VALIDITY_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=" + "?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)" + " ORDER BY " + VALIDITY_ALIAS_1.column("rel_link_type_id");
 
    /**
     * 
@@ -102,8 +104,10 @@ public class IRelationLinkDescriptorCache {
    private void loadLinkValidities(TransactionId transactionId) {
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(2000, SELECT_LINK_VALIDITY, SQL3DataType.INTEGER,
-               transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER, transactionId.getTransactionNumber());
+         chStmt =
+               ConnectionHandler.runPreparedQuery(2000, SELECT_LINK_VALIDITY, SQL3DataType.INTEGER,
+                     transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
+                     transactionId.getTransactionNumber());
          ResultSet rset = chStmt.getRset();
          IRelationLinkDescriptor descriptor = null;
 
@@ -201,9 +205,10 @@ public class IRelationLinkDescriptorCache {
       }
 
       public IRelationLinkDescriptor process(ResultSet rset) throws SQLException {
-         IRelationLinkDescriptor descriptor = new DynamicRelationLinkDescriptor(rset.getString("type_name"),
-               rset.getString("a_name"), rset.getString("b_name"), rset.getString("ab_phrasing"),
-               rset.getString("ba_phrasing"), rset.getString("short_name"), transactionId);
+         IRelationLinkDescriptor descriptor =
+               new DynamicRelationLinkDescriptor(rset.getString("type_name"), rset.getString("a_name"),
+                     rset.getString("b_name"), rset.getString("ab_phrasing"), rset.getString("ba_phrasing"),
+                     rset.getString("short_name"), transactionId);
 
          descriptor.setPersistenceMemo(new LinkDescriptorPersistenceMemo(rset.getInt("rel_link_type_id")));
 

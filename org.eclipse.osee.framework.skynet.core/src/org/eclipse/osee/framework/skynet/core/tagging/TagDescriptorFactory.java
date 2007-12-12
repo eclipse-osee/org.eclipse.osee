@@ -34,9 +34,10 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
  */
 /*default*/class TagDescriptorFactory {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(TagDescriptorFactory.class);
-   private static final String SELECT_TAG_TYPES = "SELECT " + TAG_TYPE_TABLE.aliasAs("t1").columns("tag_type_name",
-         "tag_type_id") + " FROM " + TAG_TYPE_TABLE.aliasAs("t1");
-   private static final String INSERT_TAG_TYPE = "INSERT INTO " + TAG_TYPE_TABLE + " (tag_type_name, tag_type_id) VALUES (?, ?)";
+   private static final String SELECT_TAG_TYPES =
+         "SELECT " + TAG_TYPE_TABLE.aliasAs("t1").columns("tag_type_name", "tag_type_id") + " FROM " + TAG_TYPE_TABLE.aliasAs("t1");
+   private static final String INSERT_TAG_TYPE =
+         "INSERT INTO " + TAG_TYPE_TABLE + " (tag_type_name, tag_type_id) VALUES (?, ?)";
    private Map<String, TagDescriptor> descriptors;
 
    /**
@@ -81,8 +82,9 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
       TagDescriptor tagDescriptor = null;
 
       try {
-         tagDescriptor = new TagDescriptor(descriptorName, Query.getNextSeqVal(ConnectionHandler.getConnection(),
-               SkynetDatabase.TAG_TYPE_ID_SEQ));
+         tagDescriptor =
+               new TagDescriptor(descriptorName, Query.getNextSeqVal(ConnectionHandler.getConnection(),
+                     SkynetDatabase.TAG_TYPE_ID_SEQ));
          ConnectionHandler.runPreparedUpdate(true, INSERT_TAG_TYPE, SQL3DataType.VARCHAR, tagDescriptor.getName(),
                SQL3DataType.INTEGER, tagDescriptor.getTagTypeId());
 

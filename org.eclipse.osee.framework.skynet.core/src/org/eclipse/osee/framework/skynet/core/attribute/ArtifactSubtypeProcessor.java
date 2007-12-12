@@ -43,8 +43,9 @@ public class ArtifactSubtypeProcessor implements RsetProcessor<ArtifactSubtypeDe
 
       factory = configManager.getFactoryFromName(set.getString("factory_class"));
 
-      artifactDescriptor = new ArtifactSubtypeDescriptor(set.getInt("art_type_id"), set.getString("factory_key"),
-            factory, set.getString("name"), transactionId, new InputStreamImageDescriptor(set.getBinaryStream("image")));
+      artifactDescriptor =
+            new ArtifactSubtypeDescriptor(set.getInt("art_type_id"), set.getString("factory_key"), factory,
+                  set.getString("name"), transactionId, new InputStreamImageDescriptor(set.getBinaryStream("image")));
 
       return artifactDescriptor;
    }

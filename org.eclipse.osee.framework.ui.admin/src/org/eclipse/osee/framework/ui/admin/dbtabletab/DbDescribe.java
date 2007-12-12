@@ -38,7 +38,8 @@ public class DbDescribe {
    public ArrayList<Describe> getDescription() throws SQLException {
       ArrayList<Describe> desc = new ArrayList<Describe>();
       open();
-      String sql = "SELECT  column_name, nullable, " + " concat(concat(concat(data_type,'('),data_length),')') \"type\"" + " FROM " + " user_tab_columns" + " WHERE " + " table_name='" + dbItem.getTableName() + "'";
+      String sql =
+            "SELECT  column_name, nullable, " + " concat(concat(concat(data_type,'('),data_length),')') \"type\"" + " FROM " + " user_tab_columns" + " WHERE " + " table_name='" + dbItem.getTableName() + "'";
       System.out.println("sql *" + sql + "*");
       Query.acquireCollection(desc, sql, new RsetProcessor<Describe>() {
 

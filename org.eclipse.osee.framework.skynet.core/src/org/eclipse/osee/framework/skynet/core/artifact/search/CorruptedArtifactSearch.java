@@ -22,8 +22,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  * @author Ryan D. Brooks
  */
 public class CorruptedArtifactSearch implements ISearchPrimitive {
-   private static final String tableSql = ATTRIBUTE_VERSION_TABLE + " t0," + ARTIFACT_TABLE + " t1," + ARTIFACT_TYPE_TABLE + " t4," + ATTRIBUTE_TYPE_TABLE + " t5";
-   private static final String criteriaSql = "t0.art_id = t1.art_id AND NOT EXISTS" + " (SELECT NULL FROM " + VALID_ATTRIBUTES_TABLE + " t2" + " WHERE t0.attr_type_id = t2.attr_type_id AND t1.art_type_id = t2.art_type_id)" + " AND t4.art_type_id = t1.art_type_id AND t5.attr_type_id = t0.attr_type_id";
+   private static final String tableSql =
+         ATTRIBUTE_VERSION_TABLE + " t0," + ARTIFACT_TABLE + " t1," + ARTIFACT_TYPE_TABLE + " t4," + ATTRIBUTE_TYPE_TABLE + " t5";
+   private static final String criteriaSql =
+         "t0.art_id = t1.art_id AND NOT EXISTS" + " (SELECT NULL FROM " + VALID_ATTRIBUTES_TABLE + " t2" + " WHERE t0.attr_type_id = t2.attr_type_id AND t1.art_type_id = t2.art_type_id)" + " AND t4.art_type_id = t1.art_type_id AND t5.attr_type_id = t0.attr_type_id";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getSql(java.util.List, org.eclipse.osee.framework.skynet.core.artifact.Branch)

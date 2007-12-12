@@ -45,15 +45,19 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
  */
 public class FullPortableExport {
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationManager =
+         ConfigurationPersistenceManager.getInstance();
    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-   private static final String LATEST_REL_LINK = "(SELECT rl.rel_link_id, txd.branch_id, Max(rl.gamma_id) AS last_gamma_id" + " FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " rl, " + SkynetDatabase.TRANSACTIONS_TABLE + " tx, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " txd" + " WHERE tx.transaction_id = txd.transaction_id AND tx.gamma_id = rl.gamma_id" + " GROUP BY rl.rel_link_id, txd.branch_id) rel_table";
-   private static final String queryAllRelations = String.format(
-         "SELECT type_name, (SELECT guid FROM %s WHERE a_art_id = art_id) AS guid_a, (SELECT guid FROM %s WHERE b_art_id = art_id) AS guid_b, rationale, order_value FROM %s,%s,%s WHERE %s=%s AND %s=%s ORDER BY order_value",
-         ARTIFACT_TABLE.toString(), ARTIFACT_TABLE.toString(), RELATION_LINK_VERSION_TABLE.toString(),
-         RELATION_LINK_TYPE_TABLE.toString(), LATEST_REL_LINK, RELATION_LINK_VERSION_TABLE.column("rel_link_type_id"),
-         RELATION_LINK_TYPE_TABLE.column("rel_link_type_id"), "rel_table.last_gamma_id",
-         RELATION_LINK_VERSION_TABLE.column("gamma_id"));
+   private static final String LATEST_REL_LINK =
+         "(SELECT rl.rel_link_id, txd.branch_id, Max(rl.gamma_id) AS last_gamma_id" + " FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " rl, " + SkynetDatabase.TRANSACTIONS_TABLE + " tx, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " txd" + " WHERE tx.transaction_id = txd.transaction_id AND tx.gamma_id = rl.gamma_id" + " GROUP BY rl.rel_link_id, txd.branch_id) rel_table";
+   private static final String queryAllRelations =
+         String.format(
+               "SELECT type_name, (SELECT guid FROM %s WHERE a_art_id = art_id) AS guid_a, (SELECT guid FROM %s WHERE b_art_id = art_id) AS guid_b, rationale, order_value FROM %s,%s,%s WHERE %s=%s AND %s=%s ORDER BY order_value",
+               ARTIFACT_TABLE.toString(), ARTIFACT_TABLE.toString(), RELATION_LINK_VERSION_TABLE.toString(),
+               RELATION_LINK_TYPE_TABLE.toString(), LATEST_REL_LINK,
+               RELATION_LINK_VERSION_TABLE.column("rel_link_type_id"),
+               RELATION_LINK_TYPE_TABLE.column("rel_link_type_id"), "rel_table.last_gamma_id",
+               RELATION_LINK_VERSION_TABLE.column("gamma_id"));
    private final ExcelXmlWriter excelWriter;
    private CharBackedInputStream charBak;
    private String[] row;
@@ -151,7 +155,8 @@ public class FullPortableExport {
    }
 
    private void writeArtifactHeader(ArtifactSubtypeDescriptor descriptor) throws IOException, SQLException {
-      Collection<DynamicAttributeDescriptor> allAttributeTypes = configurationManager.getAttributeTypesFromArtifactType(descriptor);
+      Collection<DynamicAttributeDescriptor> allAttributeTypes =
+            configurationManager.getAttributeTypesFromArtifactType(descriptor);
 
       int columnIndex = 0;
       row = new String[2 + allAttributeTypes.size()];

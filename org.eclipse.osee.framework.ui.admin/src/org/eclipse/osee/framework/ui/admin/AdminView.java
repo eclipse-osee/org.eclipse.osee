@@ -123,9 +123,9 @@ public class AdminView extends ViewPart implements IActionable {
    }
 
    public void handleBroadcastMessage() {
-      EntryDialog ed = new EntryDialog(Display.getCurrent().getActiveShell(),
-            "Broadcast Message to OSEE Instantiations", null, "Enter Message", MessageDialog.QUESTION, new String[] {
-                  "OK", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(Display.getCurrent().getActiveShell(), "Broadcast Message to OSEE Instantiations", null,
+                  "Enter Message", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          String message = ed.getEntry();
          if (!message.equals("")) {

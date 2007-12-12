@@ -89,24 +89,36 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
    private static final LocalAliasTable TX_ALIAS_1 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx1");
    private static final LocalAliasTable TX_ALIAS_2 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx2");
 
-   private static final String READ_BRANCH_TABLE = "SELECT * FROM " + BRANCH_TABLE + " t1, " + TRANSACTION_DETAIL_TABLE + " t2 WHERE t1.branch_id = t2.branch_id and t2.transaction_id = (SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "= t1.branch_id)";
+   private static final String READ_BRANCH_TABLE =
+         "SELECT * FROM " + BRANCH_TABLE + " t1, " + TRANSACTION_DETAIL_TABLE + " t2 WHERE t1.branch_id = t2.branch_id and t2.transaction_id = (SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "= t1.branch_id)";
 
-   private static final String CHANGED_RELATIONS = "SELECT t1.gamma_id, t2.rel_link_id, t2.a_art_id, t2.b_art_id, t2.modification_id, t2.rel_link_type_id, t2.a_order_value, t2.b_order_value, t2.rationale FROM (SELECT tx1.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx1, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td1 WHERE tx1.transaction_id = td1.transaction_id AND td1.branch_id = ? AND tx1.gamma_id NOT IN (SELECT tx2.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td2 WHERE tx2.transaction_id = td2.transaction_id AND td2.branch_id = ?)) t1 INNER JOIN " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2 ON (t1.gamma_id=t2.gamma_id)";
-   private static final String CHANGED_ARTIFACTS = "SELECT t1.gamma_id, t2.art_id, t2.modification_id FROM (SELECT tx1.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx1, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td1 WHERE tx1.transaction_id = td1.transaction_id AND td1.branch_id = ? AND tx1.gamma_id NOT IN (SELECT tx2.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td2 WHERE tx2.transaction_id = td2.transaction_id AND td2.branch_id = ?)) t1 INNER JOIN " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t2 ON (t1.gamma_id=t2.gamma_id)";
-   private static final String COMMIT_TRANSACTION = "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert(
-         "branch_id", "transaction_id", TXD_COMMENT, "time", "author", "commit_art_id");
+   private static final String CHANGED_RELATIONS =
+         "SELECT t1.gamma_id, t2.rel_link_id, t2.a_art_id, t2.b_art_id, t2.modification_id, t2.rel_link_type_id, t2.a_order_value, t2.b_order_value, t2.rationale FROM (SELECT tx1.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx1, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td1 WHERE tx1.transaction_id = td1.transaction_id AND td1.branch_id = ? AND tx1.gamma_id NOT IN (SELECT tx2.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td2 WHERE tx2.transaction_id = td2.transaction_id AND td2.branch_id = ?)) t1 INNER JOIN " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2 ON (t1.gamma_id=t2.gamma_id)";
+   private static final String CHANGED_ARTIFACTS =
+         "SELECT t1.gamma_id, t2.art_id, t2.modification_id FROM (SELECT tx1.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx1, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td1 WHERE tx1.transaction_id = td1.transaction_id AND td1.branch_id = ? AND tx1.gamma_id NOT IN (SELECT tx2.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td2 WHERE tx2.transaction_id = td2.transaction_id AND td2.branch_id = ?)) t1 INNER JOIN " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t2 ON (t1.gamma_id=t2.gamma_id)";
+   private static final String COMMIT_TRANSACTION =
+         "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT, "time",
+               "author", "commit_art_id");
 
-   private static final String UPDATE_TRANSACTION_BRANCH = "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
-   private static final String SELECT_GAMMAS_FROM_TRANSACTION = "SELECT " + TX_ALIAS_1.column("gamma_id") + " FROM " + TX_ALIAS_1 + " WHERE " + TX_ALIAS_1.column("transaction_id") + "=?" + " AND NOT EXISTS (SELECT 'x' FROM " + TX_ALIAS_2 + " WHERE " + TX_ALIAS_2.column("gamma_id") + "=" + TX_ALIAS_1.column("gamma_id") + " AND " + TX_ALIAS_2.column("transaction_id") + "<>" + TX_ALIAS_1.column("transaction_id") + ")";
-   private static final String DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS = "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id = ?";
-   private static final String DELETE_GAMMA_FROM_ARTIFACT_VERSION = "DELETE FROM " + ARTIFACT_VERSION_TABLE + " WHERE gamma_id = ?";
-   private static final String DELETE_GAMMA_FROM_RELATION_TABLE = "DELETE FROM " + RELATION_LINK_VERSION_TABLE + " WHERE gamma_id = ?";
-   private static final String DELETE_GAMMA_FROM_ATTRIBUTE = "DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE gamma_id = ?";
+   private static final String UPDATE_TRANSACTION_BRANCH =
+         "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
+   private static final String SELECT_GAMMAS_FROM_TRANSACTION =
+         "SELECT " + TX_ALIAS_1.column("gamma_id") + " FROM " + TX_ALIAS_1 + " WHERE " + TX_ALIAS_1.column("transaction_id") + "=?" + " AND NOT EXISTS (SELECT 'x' FROM " + TX_ALIAS_2 + " WHERE " + TX_ALIAS_2.column("gamma_id") + "=" + TX_ALIAS_1.column("gamma_id") + " AND " + TX_ALIAS_2.column("transaction_id") + "<>" + TX_ALIAS_1.column("transaction_id") + ")";
+   private static final String DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS =
+         "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id = ?";
+   private static final String DELETE_GAMMA_FROM_ARTIFACT_VERSION =
+         "DELETE FROM " + ARTIFACT_VERSION_TABLE + " WHERE gamma_id = ?";
+   private static final String DELETE_GAMMA_FROM_RELATION_TABLE =
+         "DELETE FROM " + RELATION_LINK_VERSION_TABLE + " WHERE gamma_id = ?";
+   private static final String DELETE_GAMMA_FROM_ATTRIBUTE =
+         "DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE gamma_id = ?";
 
-   private static final String SELECT_BRANCH_FOR_TRANSACTION = "SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id = ?";
+   private static final String SELECT_BRANCH_FOR_TRANSACTION =
+         "SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id = ?";
    public static final String NEW_BRANCH_COMMENT = "New Branch from ";
    private static final String ARCHIVE_BRANCH = "UPDATE " + BRANCH_TABLE + " set archived = 1 WHERE branch_id = ?";
-   private static final String UPDATE_ASSOCIATED_ART_BRANCH = "UPDATE " + BRANCH_TABLE + " set associated_art_id = ? WHERE branch_id = ?";
+   private static final String UPDATE_ASSOCIATED_ART_BRANCH =
+         "UPDATE " + BRANCH_TABLE + " set associated_art_id = ? WHERE branch_id = ?";
 
    private static final String GET_BRANCH_NAMES_FROM_CONFIG = "SELECT * FROM " + BRANCH_DEFINITIONS;
 
@@ -316,8 +328,9 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
       } else {
          ConnectionHandlerStatement chStmt = null;
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(SELECT_BRANCH_FOR_TRANSACTION, SQL3DataType.INTEGER,
-                  transactionNumber);
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(SELECT_BRANCH_FOR_TRANSACTION, SQL3DataType.INTEGER,
+                        transactionNumber);
 
             if (chStmt.next()) {
                branch = getBranch(chStmt.getRset().getInt("branch_id"));
@@ -456,8 +469,9 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
       String toBranchName;
 
       if (fromTransactionId == null) {
-         fromTransactionId = TransactionIdManager.getInstance().getNonEditableTransactionId(
-               TransactionIdManager.getParentBaseTransactionNumber(fromBranch.getCreationComment()));
+         fromTransactionId =
+               TransactionIdManager.getInstance().getNonEditableTransactionId(
+                     TransactionIdManager.getParentBaseTransactionNumber(fromBranch.getCreationComment()));
          toBranchName = fromBranch.getBranchName() + " Copy " + GlobalTime.GreenwichMeanTimestamp();
       } else {
          toBranchName = fromTransactionId.getBranch().getBranchName() + " Copy " + GlobalTime.GreenwichMeanTimestamp();
@@ -487,11 +501,14 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
       boolean conflicts = false;
       boolean hasBranch = fromBranch != null;
 
-      String ATTRIBUTE_CONFLICT = "SELECT 'x' from osee_define_txs t1, osee_Define_tx_details t2, osee_define_attribute t3," + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id," + " t6.attr_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_attribute t6" + " WHERE t4.gamma_id = t6.gamma_id" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = ?" + " GROUP BY t6.attr_id" + " ORDER BY transaction_id) t44" + " where t1.transaction_id = t2.transaction_id" + (hasBranch ? " AND t2.transaction_id > ? AND t2.branch_id = ?" : "t2.transaction_id = ?") + " AND t1.gamma_id = t3.gamma_id and t3.attr_id = t44.attr_id  AND exists (SELECT txs.gamma_id  FROM osee_define_txs txs, osee_define_attribute attr WHERE attr.attr_id = t44.attr_id AND attr.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id and t3.gamma_id <> txs.gamma_id and txs.gamma_id not in (select gamma_id from osee_define_txs where transaction_id = ?))";
+      String ATTRIBUTE_CONFLICT =
+            "SELECT 'x' from osee_define_txs t1, osee_Define_tx_details t2, osee_define_attribute t3," + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id," + " t6.attr_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_attribute t6" + " WHERE t4.gamma_id = t6.gamma_id" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = ?" + " GROUP BY t6.attr_id" + " ORDER BY transaction_id) t44" + " where t1.transaction_id = t2.transaction_id" + (hasBranch ? " AND t2.transaction_id > ? AND t2.branch_id = ?" : "t2.transaction_id = ?") + " AND t1.gamma_id = t3.gamma_id and t3.attr_id = t44.attr_id  AND exists (SELECT txs.gamma_id  FROM osee_define_txs txs, osee_define_attribute attr WHERE attr.attr_id = t44.attr_id AND attr.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id and t3.gamma_id <> txs.gamma_id and txs.gamma_id not in (select gamma_id from osee_define_txs where transaction_id = ?))";
 
-      String DELETE_ARTIFACT_CONFLICT = " SELECT t1.gamma_id from osee_define_txs t1, osee_Define_tx_details t2, osee_define_artifact_version t3," + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id," + " t6.art_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_artifact_version t6" + " WHERE t4.gamma_id = t6.gamma_id" + " and t6.modification_id = 3" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = ?" + " GROUP BY t6.art_id" + " ORDER BY transaction_id) t44" + " where t1.transaction_id = t2.transaction_id" + (hasBranch ? " AND t2.transaction_id > ? AND t2.branch_id = ?" : "t2.transaction_id = ?") + " AND t1.gamma_id = t3.gamma_id and t3.art_id = t44.art_id and exists (select txs.gamma_id from osee_define_txs txs, osee_define_artifact_version attr where attr.art_id = t44.art_id and attr.gamma_id = txs.gamma_id and txs.transaction_id = t44.transaction_id and t3.gamma_id <> txs.gamma_id and txs.gamma_id not in (select gamma_id from osee_define_txs where transaction_id = ?))";
+      String DELETE_ARTIFACT_CONFLICT =
+            " SELECT t1.gamma_id from osee_define_txs t1, osee_Define_tx_details t2, osee_define_artifact_version t3," + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id," + " t6.art_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_artifact_version t6" + " WHERE t4.gamma_id = t6.gamma_id" + " and t6.modification_id = 3" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = ?" + " GROUP BY t6.art_id" + " ORDER BY transaction_id) t44" + " where t1.transaction_id = t2.transaction_id" + (hasBranch ? " AND t2.transaction_id > ? AND t2.branch_id = ?" : "t2.transaction_id = ?") + " AND t1.gamma_id = t3.gamma_id and t3.art_id = t44.art_id and exists (select txs.gamma_id from osee_define_txs txs, osee_define_artifact_version attr where attr.art_id = t44.art_id and attr.gamma_id = txs.gamma_id and txs.transaction_id = t44.transaction_id and t3.gamma_id <> txs.gamma_id and txs.gamma_id not in (select gamma_id from osee_define_txs where transaction_id = ?))";
 
-      String RELATION_CONFLICT = "SELECT 'x' from osee_define_txs t1, osee_Define_tx_details t2, osee_define_rel_link t3," + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id," + " t6.rel_link_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_rel_link t6" + " WHERE t4.gamma_id = t6.gamma_id" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = ?" + " GROUP BY t6.rel_link_id" + " ORDER BY transaction_id) t44" + " where t1.transaction_id = t2.transaction_id" + (hasBranch ? " AND t2.transaction_id > ? AND t2.branch_id = ?" : "t2.transaction_id = ?") + " AND t1.gamma_id = t3.gamma_id and t3.rel_link_id = t44.rel_link_id and exists (select txs.gamma_id from osee_define_txs txs, osee_Define_rel_link rel where rel.rel_link_id = t44.rel_link_id and rel.gamma_id = txs.gamma_id and txs.transaction_id = t44.transaction_id and t3.gamma_id <> txs.gamma_id and txs.gamma_id not in (select gamma_id from osee_define_txs where transaction_id = ?))";
+      String RELATION_CONFLICT =
+            "SELECT 'x' from osee_define_txs t1, osee_Define_tx_details t2, osee_define_rel_link t3," + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id," + " t6.rel_link_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_rel_link t6" + " WHERE t4.gamma_id = t6.gamma_id" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = ?" + " GROUP BY t6.rel_link_id" + " ORDER BY transaction_id) t44" + " where t1.transaction_id = t2.transaction_id" + (hasBranch ? " AND t2.transaction_id > ? AND t2.branch_id = ?" : "t2.transaction_id = ?") + " AND t1.gamma_id = t3.gamma_id and t3.rel_link_id = t44.rel_link_id and exists (select txs.gamma_id from osee_define_txs txs, osee_Define_rel_link rel where rel.rel_link_id = t44.rel_link_id and rel.gamma_id = txs.gamma_id and txs.transaction_id = t44.transaction_id and t3.gamma_id <> txs.gamma_id and txs.gamma_id not in (select gamma_id from osee_define_txs where transaction_id = ?))";
 
       ConnectionHandlerStatement chStmt = null;
 
@@ -499,8 +516,8 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
          List<Object> datas = new LinkedList<Object>();
 
          if (hasBranch) {
-            int baselineTransactionNumber = ((TransactionId) TransactionIdManager.getInstance().getStartEndPoint(
-                  fromBranch).getKey()).getTransactionNumber();
+            int baselineTransactionNumber =
+                  ((TransactionId) TransactionIdManager.getInstance().getStartEndPoint(fromBranch).getKey()).getTransactionNumber();
 
             datas.add(SQL3DataType.INTEGER);
             datas.add(toBranch.getBranchId());
@@ -594,21 +611,22 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
             aArtifact = artifactManager.getArtifactFromId(aArtId, parentBranch);
             bArtifact = artifactManager.getArtifactFromId(bArtId, parentBranch);
 
-            remoteRelationEvent = new RemoteRelationLinkDeletedEvent(gammaId, parentBranch.getBranchId(),
-                  newTransactionNumber, relId, aArtifact.getArtId(), aArtifact.getArtTypeId(), bArtifact.getArtId(),
-                  bArtifact.getArtTypeId(), aArtifact.getFactory().getClass().getCanonicalName(),
-                  bArtifact.getFactory().getClass().getCanonicalName(),
-                  SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
+            remoteRelationEvent =
+                  new RemoteRelationLinkDeletedEvent(gammaId, parentBranch.getBranchId(), newTransactionNumber, relId,
+                        aArtifact.getArtId(), aArtifact.getArtTypeId(), bArtifact.getArtId(), bArtifact.getArtTypeId(),
+                        aArtifact.getFactory().getClass().getCanonicalName(),
+                        bArtifact.getFactory().getClass().getCanonicalName(),
+                        SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
          } else if (modType == SkynetDatabase.ModificationType.CHANGE.getValue()) {
             aArtifact = artifactManager.getArtifactFromId(aArtId, parentBranch);
             bArtifact = artifactManager.getArtifactFromId(bArtId, parentBranch);
 
-            remoteRelationEvent = new RemoteRelationLinkModifiedEvent(gammaId, parentBranch.getBranchId(),
-                  newTransactionNumber, relId, aArtifact.getArtId(), aArtifact.getArtTypeId(), bArtifact.getArtId(),
-                  bArtifact.getArtTypeId(), rationale, aOrderValue, bOrderValue,
-                  aArtifact.getFactory().getClass().getCanonicalName(),
-                  bArtifact.getFactory().getClass().getCanonicalName(),
-                  SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
+            remoteRelationEvent =
+                  new RemoteRelationLinkModifiedEvent(gammaId, parentBranch.getBranchId(), newTransactionNumber, relId,
+                        aArtifact.getArtId(), aArtifact.getArtTypeId(), bArtifact.getArtId(), bArtifact.getArtTypeId(),
+                        rationale, aOrderValue, bOrderValue, aArtifact.getFactory().getClass().getCanonicalName(),
+                        bArtifact.getFactory().getClass().getCanonicalName(),
+                        SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
          } else if (modType == SkynetDatabase.ModificationType.NEW.getValue()) {
             aArtifact = artifactManager.getArtifactFromId(aArtId, childBranch);
             bArtifact = artifactManager.getArtifactFromId(bArtId, childBranch);
@@ -632,8 +650,9 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(CHANGED_RELATIONS, SQL3DataType.INTEGER,
-               childBranch.getBranchId(), SQL3DataType.INTEGER, parentBranch.getBranchId());
+         chStmt =
+               ConnectionHandler.runPreparedQuery(CHANGED_RELATIONS, SQL3DataType.INTEGER, childBranch.getBranchId(),
+                     SQL3DataType.INTEGER, parentBranch.getBranchId());
 
          int relId;
          int relTypeId;
@@ -659,8 +678,9 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
             rationale = rSet.getString("rationale");
             gammaId = rSet.getInt("gamma_id");
 
-            remoteRelationEvent = createRemoteRelationEvent(gammaId, relId, modType, aArtId, bArtId, relTypeId,
-                  aOrderValue, bOrderValue, rationale, parentBranch, childBranch, newTransactionNumber);
+            remoteRelationEvent =
+                  createRemoteRelationEvent(gammaId, relId, modType, aArtId, bArtId, relTypeId, aOrderValue,
+                        bOrderValue, rationale, parentBranch, childBranch, newTransactionNumber);
 
             if (!remoteEvents.contains(remoteRelationEvent) && remoteRelationEvent != null) {
                remoteEvents.add(remoteRelationEvent);
@@ -675,8 +695,9 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
       ConnectionHandlerStatement chStmt = null;
       try {
 
-         chStmt = ConnectionHandler.runPreparedQuery(CHANGED_ARTIFACTS, SQL3DataType.INTEGER,
-               childBranch.getBranchId(), SQL3DataType.INTEGER, parentBranch.getBranchId());
+         chStmt =
+               ConnectionHandler.runPreparedQuery(CHANGED_ARTIFACTS, SQL3DataType.INTEGER, childBranch.getBranchId(),
+                     SQL3DataType.INTEGER, parentBranch.getBranchId());
 
          if (!chStmt.next()) throw new NoChangesToCommitException("No Changes To Commit");
 
@@ -698,9 +719,11 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
             }
 
             if (modificationId == SkynetDatabase.ModificationType.DELETE.getValue()) {
-               remoteEvent = new RemoteArtifactDeletedEvent(parentBranch.getBranchId(), newTransactionNumber,
-                     artifact.getArtId(), artifact.getArtTypeId(), artifact.getFactory().getClass().getCanonicalName(),
-                     SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
+               remoteEvent =
+                     new RemoteArtifactDeletedEvent(parentBranch.getBranchId(), newTransactionNumber,
+                           artifact.getArtId(), artifact.getArtTypeId(),
+                           artifact.getFactory().getClass().getCanonicalName(),
+                           SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
             } else {
                remoteEvent = RemoteArtifactEventFactory.makeEvent(artifact, newTransactionNumber);
             }
@@ -750,8 +773,9 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
             ConnectionHandlerStatement chStmt = null;
 
             try {
-               chStmt = ConnectionHandler.runPreparedQuery(SELECT_GAMMAS_FROM_TRANSACTION, SQL3DataType.INTEGER,
-                     transactionIdNumber);
+               chStmt =
+                     ConnectionHandler.runPreparedQuery(SELECT_GAMMAS_FROM_TRANSACTION, SQL3DataType.INTEGER,
+                           transactionIdNumber);
 
                int gammaId;
 
@@ -842,7 +866,8 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
     * @throws SQLException
     */
    public Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final IActionBranchStateChange actionBranchStateChange, final Artifact associatedArtifact) throws Exception {
-      Set<ArtifactSubtypeDescriptor> compressArtTypes = configurationManager.getArtifactSubtypeDescriptors(parentTransactionId);
+      Set<ArtifactSubtypeDescriptor> compressArtTypes =
+            configurationManager.getArtifactSubtypeDescriptors(parentTransactionId);
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             actionBranchStateChange, associatedArtifact, false, compressArtTypes, null);
@@ -856,7 +881,8 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
     * @throws SQLException
     */
    public Branch createTestBranch(TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final IActionBranchStateChange actionBranchStateChange, final Artifact associatedArtifact) throws Exception {
-      Set<ArtifactSubtypeDescriptor> preserveArtTypes = configurationManager.getArtifactSubtypeDescriptors(parentTransactionId);
+      Set<ArtifactSubtypeDescriptor> preserveArtTypes =
+            configurationManager.getArtifactSubtypeDescriptors(parentTransactionId);
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             actionBranchStateChange, associatedArtifact, false, null, preserveArtTypes);
@@ -882,8 +908,10 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
     */
    public Branch createBranchWithFiltering(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact, String[] compressArtTypeNames, String[] preserveArtTypeNames) throws Exception {
 
-      Set<ArtifactSubtypeDescriptor> compressArtTypes = getSubtypeDescriptors(compressArtTypeNames, parentTransactionId);
-      Set<ArtifactSubtypeDescriptor> preserveArtTypes = getSubtypeDescriptors(preserveArtTypeNames, parentTransactionId);
+      Set<ArtifactSubtypeDescriptor> compressArtTypes =
+            getSubtypeDescriptors(compressArtTypeNames, parentTransactionId);
+      Set<ArtifactSubtypeDescriptor> preserveArtTypes =
+            getSubtypeDescriptors(preserveArtTypeNames, parentTransactionId);
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName, null,
             associatedArtifact, true, compressArtTypes, preserveArtTypes);
@@ -1001,8 +1029,9 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
    private Branch getDefaultInitialBranch() throws SQLException {
       List<IDefaultInitialBranchesProvider> defaultBranchProviders = new LinkedList<IDefaultInitialBranchesProvider>();
 
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint(
+                  "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider");
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();

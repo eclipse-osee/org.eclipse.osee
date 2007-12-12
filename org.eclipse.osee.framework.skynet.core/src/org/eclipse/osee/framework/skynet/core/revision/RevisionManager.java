@@ -70,39 +70,40 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
  * @author Jeff C. Phillips
  */
 public class RevisionManager implements PersistenceManager {
-   private static final String SELECT_TRANSACTIONS = "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id",
-         "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
+   private static final String SELECT_TRANSACTIONS =
+         "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
 
-   private static final String GET_CHANGED_ARTIFACTS = " SELECT arv2.modification_id, arv2.gamma_id, ar1.art_type_id FROM osee_define_artifact ar1, osee_define_artifact_version arv2, osee_define_txs txs3, osee_define_tx_details txd4 WHERE ar1.art_id = ? AND ar1.art_id = arv2.art_id AND arv2.gamma_id = txs3.gamma_id AND txs3.transaction_id = txd4.transaction_id AND txd4.transaction_id > ? AND txd4.transaction_id <= ? AND txd4.branch_id = ?";
+   private static final String GET_CHANGED_ARTIFACTS =
+         " SELECT arv2.modification_id, arv2.gamma_id, ar1.art_type_id FROM osee_define_artifact ar1, osee_define_artifact_version arv2, osee_define_txs txs3, osee_define_tx_details txd4 WHERE ar1.art_id = ? AND ar1.art_id = arv2.art_id AND arv2.gamma_id = txs3.gamma_id AND txs3.transaction_id = txd4.transaction_id AND txd4.transaction_id > ? AND txd4.transaction_id <= ? AND txd4.branch_id = ?";
 
    private static final Table TX_DATA = new Table("tx_data");
-   private static final String SELECT_TRANSACTIONS_FOR_ARTIFACT = "SELECT DISTINCT " + TX_DATA.columns(
-         "transaction_id", TXD_COMMENT, "time", "author", "commit_art_id") + " FROM " + "(" + " SELECT " + TRANSACTION_DETAIL_TABLE.columns(
-         "transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + Collections.toString(",",
-         TRANSACTION_DETAIL_TABLE, TRANSACTIONS_TABLE, ARTIFACT_VERSION_TABLE) + " WHERE " + TRANSACTIONS_TABLE.join(
-         TRANSACTION_DETAIL_TABLE, "transaction_id") + " AND " + ARTIFACT_VERSION_TABLE.join(TRANSACTIONS_TABLE,
-         "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.column("art_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " UNION ALL" + " SELECT " + TRANSACTION_DETAIL_TABLE.columns(
-         "transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + Collections.toString(",",
-         TRANSACTION_DETAIL_TABLE, TRANSACTIONS_TABLE, RELATION_LINK_VERSION_TABLE) + " WHERE " + TRANSACTIONS_TABLE.join(
-         TRANSACTION_DETAIL_TABLE, "transaction_id") + " AND " + RELATION_LINK_VERSION_TABLE.join(TRANSACTIONS_TABLE,
-         "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("a_art_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " UNION ALL" + " SELECT " + TRANSACTION_DETAIL_TABLE.columns(
-         "transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + Collections.toString(",",
-         TRANSACTION_DETAIL_TABLE, TRANSACTIONS_TABLE, RELATION_LINK_VERSION_TABLE) + " WHERE " + TRANSACTIONS_TABLE.join(
-         TRANSACTION_DETAIL_TABLE, "transaction_id") + " AND " + RELATION_LINK_VERSION_TABLE.join(TRANSACTIONS_TABLE,
-         "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + ")" + TX_DATA + " WHERE " + TX_DATA.column("transaction_id") + "<?" + " ORDER BY " + TX_DATA.column("transaction_id") + " DESC";
+   private static final String SELECT_TRANSACTIONS_FOR_ARTIFACT =
+         "SELECT DISTINCT " + TX_DATA.columns("transaction_id", TXD_COMMENT, "time", "author", "commit_art_id") + " FROM " + "(" + " SELECT " + TRANSACTION_DETAIL_TABLE.columns(
+               "transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + Collections.toString(",",
+               TRANSACTION_DETAIL_TABLE, TRANSACTIONS_TABLE, ARTIFACT_VERSION_TABLE) + " WHERE " + TRANSACTIONS_TABLE.join(
+               TRANSACTION_DETAIL_TABLE, "transaction_id") + " AND " + ARTIFACT_VERSION_TABLE.join(TRANSACTIONS_TABLE,
+               "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.column("art_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " UNION ALL" + " SELECT " + TRANSACTION_DETAIL_TABLE.columns(
+               "transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + Collections.toString(",",
+               TRANSACTION_DETAIL_TABLE, TRANSACTIONS_TABLE, RELATION_LINK_VERSION_TABLE) + " WHERE " + TRANSACTIONS_TABLE.join(
+               TRANSACTION_DETAIL_TABLE, "transaction_id") + " AND " + RELATION_LINK_VERSION_TABLE.join(
+               TRANSACTIONS_TABLE, "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("a_art_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " UNION ALL" + " SELECT " + TRANSACTION_DETAIL_TABLE.columns(
+               "transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + Collections.toString(",",
+               TRANSACTION_DETAIL_TABLE, TRANSACTIONS_TABLE, RELATION_LINK_VERSION_TABLE) + " WHERE " + TRANSACTIONS_TABLE.join(
+               TRANSACTION_DETAIL_TABLE, "transaction_id") + " AND " + RELATION_LINK_VERSION_TABLE.join(
+               TRANSACTIONS_TABLE, "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + ")" + TX_DATA + " WHERE " + TX_DATA.column("transaction_id") + "<?" + " ORDER BY " + TX_DATA.column("transaction_id") + " DESC";
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RevisionManager.class);
    private ArtifactPersistenceManager artifactManager;
    private ConfigurationPersistenceManager configurationManager;
    private BranchPersistenceManager branchManager;
    private TransactionIdManager transactionIdManager;
-   private static final Pair<String, ArtifactSubtypeDescriptor> UNKNOWN_DATA = new Pair<String, ArtifactSubtypeDescriptor>(
-         null, null);
+   private static final Pair<String, ArtifactSubtypeDescriptor> UNKNOWN_DATA =
+         new Pair<String, ArtifactSubtypeDescriptor>(null, null);
 
-   private static final LocalAliasTable TRANSACTION_DETAIL_ALIAS_1 = new LocalAliasTable(TRANSACTION_DETAIL_TABLE,
-         "td1");
-   private static final LocalAliasTable TRANSACTION_DETAIL_ALIAS_2 = new LocalAliasTable(TRANSACTION_DETAIL_TABLE,
-         "td2");
+   private static final LocalAliasTable TRANSACTION_DETAIL_ALIAS_1 =
+         new LocalAliasTable(TRANSACTION_DETAIL_TABLE, "td1");
+   private static final LocalAliasTable TRANSACTION_DETAIL_ALIAS_2 =
+         new LocalAliasTable(TRANSACTION_DETAIL_TABLE, "td2");
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_1 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "av1");
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_2 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "av2");
    private static final LocalAliasTable TRANSACTIONS_ALIAS_1 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx1");
@@ -183,10 +184,11 @@ public class RevisionManager implements PersistenceManager {
          Integer limit = Integer.MAX_VALUE;
 
          while (cursor != null) {
-            chStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, SQL3DataType.INTEGER, artId,
-                  SQL3DataType.INTEGER, cursor.getBranchId(), SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
-                  cursor.getBranchId(), SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, cursor.getBranchId(),
-                  SQL3DataType.INTEGER, limit);
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_FOR_ARTIFACT, SQL3DataType.INTEGER, artId,
+                        SQL3DataType.INTEGER, cursor.getBranchId(), SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
+                        cursor.getBranchId(), SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, cursor.getBranchId(),
+                        SQL3DataType.INTEGER, limit);
 
             ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
@@ -240,13 +242,15 @@ public class RevisionManager implements PersistenceManager {
     * @throws SQLException
     */
    public Collection<RevisionChange> getTransactionChanges(ArtifactChange artChange, IArtifactNameDescriptorResolver artifactNameDescriptorCache) throws SQLException {
-      Collection<RevisionChange> changes = getTransactionChanges(OUTGOING, artChange.getFromTransactionId(),
-            artChange.getToTransactionId(), artChange.getArtifact().getArtId(), artifactNameDescriptorCache);
+      Collection<RevisionChange> changes =
+            getTransactionChanges(OUTGOING, artChange.getFromTransactionId(), artChange.getToTransactionId(),
+                  artChange.getArtifact().getArtId(), artifactNameDescriptorCache);
 
       if (artChange.hasConflictingModArtifact()) {
-         Collection<RevisionChange> incomingChanges = getTransactionChanges(INCOMING,
-               artChange.getBaseParentTransactionId(), artChange.getHeadParentTransactionId(),
-               artChange.getArtifact().getArtId(), artifactNameDescriptorCache);
+         Collection<RevisionChange> incomingChanges =
+               getTransactionChanges(INCOMING, artChange.getBaseParentTransactionId(),
+                     artChange.getHeadParentTransactionId(), artChange.getArtifact().getArtId(),
+                     artifactNameDescriptorCache);
 
          changes.addAll(incomingChanges);
       }
@@ -264,24 +268,27 @@ public class RevisionManager implements PersistenceManager {
     */
    public Collection<RevisionChange> getAllTransactionChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException {
 
-      TransactionId fromTransactionId = transactionIdManager.getPossiblyEditableTransactionIfFromCache(fromTransactionNumber);
-      TransactionId toTransactionId = transactionIdManager.getPossiblyEditableTransactionIfFromCache(toTransactionNumber);
+      TransactionId fromTransactionId =
+            transactionIdManager.getPossiblyEditableTransactionIfFromCache(fromTransactionNumber);
+      TransactionId toTransactionId =
+            transactionIdManager.getPossiblyEditableTransactionIfFromCache(toTransactionNumber);
 
-      Collection<RevisionChange> changes = getTransactionChanges(changeType, fromTransactionId, toTransactionId, artId,
-            artifactNameDescriptorResolver);
+      Collection<RevisionChange> changes =
+            getTransactionChanges(changeType, fromTransactionId, toTransactionId, artId, artifactNameDescriptorResolver);
       changes.addAll(getArtifactChanges(fromTransactionId, toTransactionId, artId));
 
       return changes;
    }
 
    public Collection<RevisionChange> getTransactionChanges(ChangeType changeType, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) throws SQLException {
-      Collection<AttributeChange> attributeChanges = getAttributeChanges(changeType,
-            fromTransactionId.getTransactionNumber(), toTransactionId.getTransactionNumber(), artId);
-      Collection<RelationLinkChange> linkChanges = getRelationLinkChanges(changeType,
-            fromTransactionId.getTransactionNumber(), toTransactionId.getTransactionNumber(), artId,
-            artifactNameDescriptorResolver);
-      Collection<ArtifactChange> artifactChanges = getArtifactChanges(changeType, fromTransactionId, toTransactionId,
-            artId);
+      Collection<AttributeChange> attributeChanges =
+            getAttributeChanges(changeType, fromTransactionId.getTransactionNumber(),
+                  toTransactionId.getTransactionNumber(), artId);
+      Collection<RelationLinkChange> linkChanges =
+            getRelationLinkChanges(changeType, fromTransactionId.getTransactionNumber(),
+                  toTransactionId.getTransactionNumber(), artId, artifactNameDescriptorResolver);
+      Collection<ArtifactChange> artifactChanges =
+            getArtifactChanges(changeType, fromTransactionId, toTransactionId, artId);
 
       Collection<RevisionChange> changes = new ArrayList<RevisionChange>(attributeChanges.size() + linkChanges.size());
       changes.addAll(attributeChanges);
@@ -294,14 +301,15 @@ public class RevisionManager implements PersistenceManager {
    private Collection<AttributeChange> getAttributeChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId) {
 
       Collection<AttributeChange> revisions = new LinkedList<AttributeChange>();
-      String sql = "SELECT data_table.*, " + Table.alias(
-            "(SELECT " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + ".VALUE " + "FROM " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + " " + "WHERE gamma_id = data_table.was_gamma)",
-            "was_value") + "," + Table.alias(
-            "(SELECT " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + ".content " + "FROM " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + " " + "WHERE gamma_id = data_table.was_gamma)",
-            "was_content") + " FROM " + "(SELECT attr1.gamma_id," + Table.alias("attr1.value", "is_value") + "," + Table.alias(
-            "attr1.content", "is_content") + "," + "attr1.modification_id," + "attr1.attr_id," + ATTRIBUTE_TYPE_TABLE.column("name") + "," + Table.alias(
-            "(SELECT MAX(attr2.gamma_id) " + "FROM " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + " attr2, " + SkynetDatabase.TRANSACTIONS_TABLE + " t3, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t4 " + "WHERE attr1.attr_id = attr2.attr_id and attr2.gamma_id = t3.gamma_id and t3.transaction_id = t4.transaction_id and t1.branch_id = t4.branch_id " + "AND attr2.gamma_id < attr1.gamma_id)",
-            "was_gamma") + " FROM " + ATTRIBUTE_VERSION_TABLE + " attr1," + ATTRIBUTE_TYPE_TABLE + "," + TRANSACTIONS_TABLE + ", " + TRANSACTION_DETAIL_TABLE + "," + " (SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?) T1" + " WHERE attr1.gamma_id = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND attr1.attr_type_id=" + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + " AND " + (fromTransactionNumber == toTransactionNumber ? TRANSACTIONS_TABLE.column("transaction_id") + " = ?" : TRANSACTIONS_TABLE.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + " <= ?") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T1.branch_id" + " AND art_id = ?) data_table" + " ORDER BY gamma_id DESC";
+      String sql =
+            "SELECT data_table.*, " + Table.alias(
+                  "(SELECT " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + ".VALUE " + "FROM " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + " " + "WHERE gamma_id = data_table.was_gamma)",
+                  "was_value") + "," + Table.alias(
+                  "(SELECT " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + ".content " + "FROM " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + " " + "WHERE gamma_id = data_table.was_gamma)",
+                  "was_content") + " FROM " + "(SELECT attr1.gamma_id," + Table.alias("attr1.value", "is_value") + "," + Table.alias(
+                  "attr1.content", "is_content") + "," + "attr1.modification_id," + "attr1.attr_id," + ATTRIBUTE_TYPE_TABLE.column("name") + "," + Table.alias(
+                  "(SELECT MAX(attr2.gamma_id) " + "FROM " + SkynetDatabase.ATTRIBUTE_VERSION_TABLE + " attr2, " + SkynetDatabase.TRANSACTIONS_TABLE + " t3, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t4 " + "WHERE attr1.attr_id = attr2.attr_id and attr2.gamma_id = t3.gamma_id and t3.transaction_id = t4.transaction_id and t1.branch_id = t4.branch_id " + "AND attr2.gamma_id < attr1.gamma_id)",
+                  "was_gamma") + " FROM " + ATTRIBUTE_VERSION_TABLE + " attr1," + ATTRIBUTE_TYPE_TABLE + "," + TRANSACTIONS_TABLE + ", " + TRANSACTION_DETAIL_TABLE + "," + " (SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?) T1" + " WHERE attr1.gamma_id = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND attr1.attr_type_id=" + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + " AND " + (fromTransactionNumber == toTransactionNumber ? TRANSACTIONS_TABLE.column("transaction_id") + " = ?" : TRANSACTIONS_TABLE.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + " <= ?") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T1.branch_id" + " AND art_id = ?) data_table" + " ORDER BY gamma_id DESC";
 
       Collection<Object> dataList = new LinkedList<Object>();
       dataList.add(SQL3DataType.BIGINT);
@@ -327,14 +335,16 @@ public class RevisionManager implements PersistenceManager {
 
    private Collection<RelationLinkChange> getRelationLinkChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId, IArtifactNameDescriptorResolver artifactNameDescriptorResolver) {
 
-      String transactionCheck = fromTransactionNumber == toTransactionNumber ? TRANSACTIONS_TABLE.column("transaction_id") + " = ?" : TRANSACTIONS_TABLE.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + " <= ?";
+      String transactionCheck =
+            fromTransactionNumber == toTransactionNumber ? TRANSACTIONS_TABLE.column("transaction_id") + " = ?" : TRANSACTIONS_TABLE.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + " <= ?";
 
       Collection<RelationLinkChange> revisions = new LinkedList<RelationLinkChange>();
-      String sql = "SELECT gamma_id, rationale, modification_id, art_id, rel_link_id, order_val, type_name, side_name FROM " + Table.alias(
-            "(SELECT " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "," + RELATION_LINK_VERSION_TABLE.column("rationale") + "," + RELATION_LINK_VERSION_TABLE.column("modification_id") + "," + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " AS art_id, " + RELATION_LINK_VERSION_TABLE.column("rel_link_id") + "," + RELATION_LINK_VERSION_TABLE.column("a_order_value") + " AS order_val, " + RELATION_LINK_TYPE_TABLE.column("type_name") + "," + RELATION_LINK_TYPE_TABLE.column("a_name") + " AS side_name" + " FROM " + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + "," + Table.alias(
-                  " (SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?)", "T2") + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T2.branch_id" + " AND " + RELATION_LINK_VERSION_TABLE.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND b_art_id = ?)",
-            "aliasForSyntax") + " UNION ALL " + "(SELECT " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "," + RELATION_LINK_VERSION_TABLE.column("rationale") + "," + RELATION_LINK_VERSION_TABLE.column("modification_id") + "," + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " AS art_id, " + RELATION_LINK_VERSION_TABLE.column("rel_link_id") + "," + RELATION_LINK_VERSION_TABLE.column("b_order_value") + " AS order_val, " + RELATION_LINK_TYPE_TABLE.column("type_name") + "," + RELATION_LINK_TYPE_TABLE.column("b_name") + " AS side_name" + " FROM " + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + "," + Table.alias(
-            " (SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?)", "T2") + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T2.branch_id" + " AND " + RELATION_LINK_VERSION_TABLE.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND a_art_id = ?)" + " ORDER BY gamma_id DESC";
+      String sql =
+            "SELECT gamma_id, rationale, modification_id, art_id, rel_link_id, order_val, type_name, side_name FROM " + Table.alias(
+                  "(SELECT " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "," + RELATION_LINK_VERSION_TABLE.column("rationale") + "," + RELATION_LINK_VERSION_TABLE.column("modification_id") + "," + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " AS art_id, " + RELATION_LINK_VERSION_TABLE.column("rel_link_id") + "," + RELATION_LINK_VERSION_TABLE.column("a_order_value") + " AS order_val, " + RELATION_LINK_TYPE_TABLE.column("type_name") + "," + RELATION_LINK_TYPE_TABLE.column("a_name") + " AS side_name" + " FROM " + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + "," + Table.alias(
+                        " (SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?)", "T2") + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T2.branch_id" + " AND " + RELATION_LINK_VERSION_TABLE.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND b_art_id = ?)",
+                  "aliasForSyntax") + " UNION ALL " + "(SELECT " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + "," + RELATION_LINK_VERSION_TABLE.column("rationale") + "," + RELATION_LINK_VERSION_TABLE.column("modification_id") + "," + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " AS art_id, " + RELATION_LINK_VERSION_TABLE.column("rel_link_id") + "," + RELATION_LINK_VERSION_TABLE.column("b_order_value") + " AS order_val, " + RELATION_LINK_TYPE_TABLE.column("type_name") + "," + RELATION_LINK_TYPE_TABLE.column("b_name") + " AS side_name" + " FROM " + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + "," + Table.alias(
+                  " (SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id=?)", "T2") + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + transactionCheck + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=T2.branch_id" + " AND " + RELATION_LINK_VERSION_TABLE.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND a_art_id = ?)" + " ORDER BY gamma_id DESC";
 
       Collection<Object> dataList = new LinkedList<Object>();
       dataList.add(SQL3DataType.BIGINT);
@@ -378,7 +388,8 @@ public class RevisionManager implements PersistenceManager {
       String name = bemsToName.get(artId);
 
       if (name == null) {
-         String sql = "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("value") + " FROM " + ATTRIBUTE_VERSION_TABLE + ", " + ATTRIBUTE_TYPE_TABLE + " WHERE art_id = ? AND " + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + " = " + ATTRIBUTE_VERSION_TABLE.column("attr_type_id") + " AND " + ATTRIBUTE_TYPE_TABLE.column("name") + " = 'Name'";
+         String sql =
+               "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("value") + " FROM " + ATTRIBUTE_VERSION_TABLE + ", " + ATTRIBUTE_TYPE_TABLE + " WHERE art_id = ? AND " + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + " = " + ATTRIBUTE_VERSION_TABLE.column("attr_type_id") + " AND " + ATTRIBUTE_TYPE_TABLE.column("name") + " = 'Name'";
 
          ConnectionHandlerStatement chStmt = null;
          try {
@@ -404,10 +415,11 @@ public class RevisionManager implements PersistenceManager {
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(GET_CHANGED_ARTIFACTS, SQL3DataType.INTEGER, artId,
-               SQL3DataType.INTEGER, fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-               toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-               fromTransactionId.getBranch().getBranchId());
+         chStmt =
+               ConnectionHandler.runPreparedQuery(GET_CHANGED_ARTIFACTS, SQL3DataType.INTEGER, artId,
+                     SQL3DataType.INTEGER, fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                     toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                     fromTransactionId.getBranch().getBranchId());
 
          while (chStmt.next()) {
             changes.add(new ArtifactChange(changeType, artId, chStmt.getRset().getInt("modification_id"),
@@ -435,10 +447,11 @@ public class RevisionManager implements PersistenceManager {
       Collection<ArtifactChange> deletedArtifacts = new LinkedList<ArtifactChange>();
 
       try {
-         String sql = "SELECT " + TRANSACTION_DETAIL_ALIAS_1.columns("branch_id") + "," + ATTRIBUTE_VERSION_TABLE.column("value") + " AS name," + ARTIFACT_TABLE.column("art_id") + "," + ARTIFACT_TYPE_TABLE.column("name") + " AS type_name," + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + ", " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + "," + Table.alias(
-               "(SELECT MAX(" + TRANSACTION_DETAIL_ALIAS_2.column("transaction_id") + ")" + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_ALIAS_2 + "," + TRANSACTION_DETAIL_ALIAS_2 + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("modification_id") + "<> " + ModificationType.DELETE.getValue() + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + "=" + TRANSACTION_DETAIL_ALIAS_2.column("transaction_id") + " AND " + TRANSACTION_DETAIL_ALIAS_2.column("branch_id") + "=" + TRANSACTION_DETAIL_ALIAS_1.column("branch_id") + " AND " + TRANSACTION_DETAIL_ALIAS_2.column("transaction_id") + "<" + TRANSACTION_DETAIL_ALIAS_1.column("transaction_id") + ")",
-               "last_good_transaction") + " FROM " + ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + "," + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_ALIAS_1 + "," + Table.alias(
-               "(SELECT MAX(" + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + ")", "gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + ATTRIBUTE_TYPE_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("attr_type_id") + "=" + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + " AND " + ATTRIBUTE_TYPE_TABLE.column("name") + "=?" + " GROUP BY " + ATTRIBUTE_VERSION_TABLE.column("art_id") + ") ATTR_GAMMA" + " WHERE " + TRANSACTION_DETAIL_ALIAS_1.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_ALIAS_1.column("transaction_id") + "=" + TRANSACTIONS_ALIAS_1.column("transaction_id") + " AND " + (fromTransactionId == toTransactionId ? TRANSACTIONS_ALIAS_1.column("transaction_id") + " = ?" : TRANSACTIONS_ALIAS_1.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " <= ?") + " AND " + TRANSACTIONS_ALIAS_1.column("gamma_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + "=" + ARTIFACT_TABLE.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "=?" + " AND " + ARTIFACT_TABLE.column("art_type_id") + "=" + ARTIFACT_TYPE_TABLE.column("art_type_id") + " AND " + ARTIFACT_TABLE.column("art_id") + "=" + ATTRIBUTE_VERSION_TABLE.column("art_id") + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + "= ATTR_GAMMA.gamma_id";
+         String sql =
+               "SELECT " + TRANSACTION_DETAIL_ALIAS_1.columns("branch_id") + "," + ATTRIBUTE_VERSION_TABLE.column("value") + " AS name," + ARTIFACT_TABLE.column("art_id") + "," + ARTIFACT_TYPE_TABLE.column("name") + " AS type_name," + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + ", " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + "," + Table.alias(
+                     "(SELECT MAX(" + TRANSACTION_DETAIL_ALIAS_2.column("transaction_id") + ")" + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_ALIAS_2 + "," + TRANSACTION_DETAIL_ALIAS_2 + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("modification_id") + "<> " + ModificationType.DELETE.getValue() + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + "=" + TRANSACTION_DETAIL_ALIAS_2.column("transaction_id") + " AND " + TRANSACTION_DETAIL_ALIAS_2.column("branch_id") + "=" + TRANSACTION_DETAIL_ALIAS_1.column("branch_id") + " AND " + TRANSACTION_DETAIL_ALIAS_2.column("transaction_id") + "<" + TRANSACTION_DETAIL_ALIAS_1.column("transaction_id") + ")",
+                     "last_good_transaction") + " FROM " + ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + "," + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_ALIAS_1 + "," + Table.alias(
+                     "(SELECT MAX(" + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + ")", "gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + ATTRIBUTE_TYPE_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("attr_type_id") + "=" + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + " AND " + ATTRIBUTE_TYPE_TABLE.column("name") + "=?" + " GROUP BY " + ATTRIBUTE_VERSION_TABLE.column("art_id") + ") ATTR_GAMMA" + " WHERE " + TRANSACTION_DETAIL_ALIAS_1.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_ALIAS_1.column("transaction_id") + "=" + TRANSACTIONS_ALIAS_1.column("transaction_id") + " AND " + (fromTransactionId == toTransactionId ? TRANSACTIONS_ALIAS_1.column("transaction_id") + " = ?" : TRANSACTIONS_ALIAS_1.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " <= ?") + " AND " + TRANSACTIONS_ALIAS_1.column("gamma_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + "=" + ARTIFACT_TABLE.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "=?" + " AND " + ARTIFACT_TABLE.column("art_type_id") + "=" + ARTIFACT_TYPE_TABLE.column("art_type_id") + " AND " + ARTIFACT_TABLE.column("art_id") + "=" + ATTRIBUTE_VERSION_TABLE.column("art_id") + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + "= ATTR_GAMMA.gamma_id";
 
          Collection<Object> dataList = new LinkedList<Object>();
          dataList.add(SQL3DataType.VARCHAR);
@@ -514,13 +527,15 @@ public class RevisionManager implements PersistenceManager {
                artIdQueue.clear();
             }
 
-            String sql = "SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
-                  artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
+            String sql =
+                  "SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
+                        artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
 
-            chStmt = ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-                  fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                  toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                  fromTransactionId.getBranch().getBranchId());
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
+                        fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                        toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                        fromTransactionId.getBranch().getBranchId());
 
             ResultSet rset = chStmt.getRset();
             while (rset.next()) {
@@ -528,12 +543,14 @@ public class RevisionManager implements PersistenceManager {
                      transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
             }
 
-            sql = "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
-                  artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
+            sql =
+                  "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
+                        artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
 
-            chStmt = ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-                  fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                  fromTransactionId.getBranch().getBranchId());
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
+                        fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                        fromTransactionId.getBranch().getBranchId());
 
             rset = chStmt.getRset();
             while (rset.next()) {
@@ -616,15 +633,17 @@ public class RevisionManager implements PersistenceManager {
       }
 
       public ArtifactChange process(ResultSet set) throws SQLException {
-         SkynetDatabase.ModificationType modType = SkynetDatabase.ModificationType.getMod(set.getInt("modification_id"));
+         SkynetDatabase.ModificationType modType =
+               SkynetDatabase.ModificationType.getMod(set.getInt("modification_id"));
          if (modType == DELETE) {
             int lastGoodTransactionNumber = set.getInt("last_good_transaction");
             TransactionId lastGoodTransactionId = null;
-            if (!set.wasNull()) lastGoodTransactionId = TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
-                  lastGoodTransactionNumber);
+            if (!set.wasNull()) lastGoodTransactionId =
+                  TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
+                        lastGoodTransactionNumber);
             Branch branch = BranchPersistenceManager.getInstance().getBranch(set.getInt("branch_id"));
-            ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor(
-                  set.getString("type_name"), branch);
+            ArtifactSubtypeDescriptor descriptor =
+                  configurationManager.getArtifactSubtypeDescriptor(set.getString("type_name"), branch);
             String name = set.getString("name");
 
             if (artifactNameDescriptorCache != null) artifactNameDescriptorCache.cache(set.getInt("art_id"), name,
@@ -633,8 +652,9 @@ public class RevisionManager implements PersistenceManager {
             return new ArtifactChange(OUTGOING, name, descriptor, set.getInt("art_id"), set.getInt("gamma_id"),
                   baseParentTransactionId, headParentTransactionId, lastGoodTransactionId);
          } else {
-            TransactionId transactionId = TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
-                  set.getInt("transaction_id"));
+            TransactionId transactionId =
+                  TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
+                        set.getInt("transaction_id"));
             int artId = set.getInt("art_id");
             Artifact artifact = artifactManager.getArtifactFromId(artId, transactionId);
 
@@ -676,7 +696,8 @@ public class RevisionManager implements PersistenceManager {
       }
 
       public AttributeChange process(ResultSet set) throws SQLException {
-         SkynetDatabase.ModificationType modType = SkynetDatabase.ModificationType.getMod(set.getInt("modification_id"));
+         SkynetDatabase.ModificationType modType =
+               SkynetDatabase.ModificationType.getMod(set.getInt("modification_id"));
          if (modType == DELETE) {
             String wasValue = set.getString("was_value");
             return new AttributeChange(changeType, set.getInt("attr_id"), set.getLong("gamma_id"),
@@ -726,7 +747,8 @@ public class RevisionManager implements PersistenceManager {
 
       public RelationLinkChange process(ResultSet set) throws SQLException {
 
-         SkynetDatabase.ModificationType modType = SkynetDatabase.ModificationType.getMod(set.getInt("modification_id"));
+         SkynetDatabase.ModificationType modType =
+               SkynetDatabase.ModificationType.getMod(set.getInt("modification_id"));
 
          Pair<String, ArtifactSubtypeDescriptor> artifactData;
          if (artifactNameDescriptorResolver != null)
@@ -755,8 +777,9 @@ public class RevisionManager implements PersistenceManager {
       return transactions.getKey() != transactions.getValue();
    }
 
-   private static final String OTHER_EDIT_SQL = "SELECT distinct(t3.branch_id) " + "FROM " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3, " + "    (SELECT " + TRANSACTION_DETAIL_TABLE.min(
-         "transaction_id", "min_tx_id") + ", branch_id " + "   FROM " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " " + "   GROUP BY branch_id) t4, " + "   osee_define_branch t5 " + "WHERE t1.art_id = ? " + " AND t1.gamma_id = t2.gamma_id " + " AND t2.transaction_id <> t4.min_tx_id " + " AND t2.transaction_id = t3.transaction_id " + " and t3.branch_id = t4.branch_id " + " and t4.branch_id <> ?" + " and t5.parent_branch_id = ?" + " and t4.branch_id = t5.branch_id" + " and t5.archived = 0";
+   private static final String OTHER_EDIT_SQL =
+         "SELECT distinct(t3.branch_id) " + "FROM " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3, " + "    (SELECT " + TRANSACTION_DETAIL_TABLE.min(
+               "transaction_id", "min_tx_id") + ", branch_id " + "   FROM " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " " + "   GROUP BY branch_id) t4, " + "   osee_define_branch t5 " + "WHERE t1.art_id = ? " + " AND t1.gamma_id = t2.gamma_id " + " AND t2.transaction_id <> t4.min_tx_id " + " AND t2.transaction_id = t3.transaction_id " + " and t3.branch_id = t4.branch_id " + " and t4.branch_id <> ?" + " and t5.parent_branch_id = ?" + " and t4.branch_id = t5.branch_id" + " and t5.archived = 0";
 
    /**
     * Returns all the other branches this artifact has been editted on, besides modifications to program branch.
@@ -771,9 +794,11 @@ public class RevisionManager implements PersistenceManager {
          ConnectionHandlerStatement chStmt = null;
 
          try {
-            chStmt = ConnectionHandler.runPreparedQuery(OTHER_EDIT_SQL, SQL3DataType.INTEGER,
-                  artifact.getPersistenceMemo().getArtId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId(),
-                  SQL3DataType.INTEGER, artifact.getBranch().getParentBranchId());
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(OTHER_EDIT_SQL, SQL3DataType.INTEGER,
+                        artifact.getPersistenceMemo().getArtId(), SQL3DataType.INTEGER,
+                        artifact.getBranch().getBranchId(), SQL3DataType.INTEGER,
+                        artifact.getBranch().getParentBranchId());
 
             ResultSet rset = chStmt.getRset();
 
@@ -805,8 +830,9 @@ public class RevisionManager implements PersistenceManager {
       boolean hasConflicts = true;
 
       try {
-         ISearchPrimitive conflict = new ConflictingArtifactSearch(parentBranch, parentBase, parentHead,
-               childBranch.getBranchId(), childBase, childHead);
+         ISearchPrimitive conflict =
+               new ConflictingArtifactSearch(parentBranch, parentBase, parentHead, childBranch.getBranchId(),
+                     childBase, childHead);
 
          hasConflicts = artifactManager.getArtifactCount(conflict, childBranch) > 0;
       } catch (SQLException e) {

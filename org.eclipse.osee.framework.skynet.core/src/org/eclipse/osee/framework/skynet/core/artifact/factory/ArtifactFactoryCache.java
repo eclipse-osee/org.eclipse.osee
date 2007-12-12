@@ -176,8 +176,9 @@ public class ArtifactFactoryCache implements PersistenceManager {
    }
 
    private void loadFactoryBundleMap() {
-      List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(
-            "org.eclipse.osee.framework.skynet.core.ArtifactFactory", "ArtifactFactory");
+      List<IConfigurationElement> elements =
+            ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.ArtifactFactory",
+                  "ArtifactFactory");
 
       for (IConfigurationElement element : elements) {
          factoryBundleMap.put(element.getAttribute("classname"), element.getContributor().getName());

@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
  * @author Robert A. Fisher
  */
 public class AttributeValidityTransactionData implements ITransactionData {
-   private static final String INSERT_VALID_ATTRIBUTE = "INSERT INTO " + VALID_ATTRIBUTES_TABLE + " (art_type_id, attr_type_id, gamma_id) VALUES (? , ? , ?)";
+   private static final String INSERT_VALID_ATTRIBUTE =
+         "INSERT INTO " + VALID_ATTRIBUTES_TABLE + " (art_type_id, attr_type_id, gamma_id) VALUES (? , ? , ?)";
 
    private final int artTypeId;
    private final int attrTypeId;

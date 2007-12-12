@@ -45,8 +45,9 @@ public class WorkspaceFileArtifact extends Artifact {
       Collection<Artifact> artifacts;
 
       try {
-         artifacts = artifactManager.getArtifacts(new AttributeValueSearch("Content URL", location, EQUAL),
-               branchManager.getDefaultBranch());
+         artifacts =
+               artifactManager.getArtifacts(new AttributeValueSearch("Content URL", location, EQUAL),
+                     branchManager.getDefaultBranch());
       } catch (SQLException ex) {
          throw new IllegalStateException("Sql exception: " + ex.getMessage());
       }
@@ -56,14 +57,16 @@ public class WorkspaceFileArtifact extends Artifact {
 
       else if (artifacts.isEmpty()) {
          try {
-            Collection<ArtifactSubtypeDescriptor> descriptors = configurationPersistenceManager.getArtifactSubtypeDescriptorsForAttribute(configurationPersistenceManager.getDynamicAttributeType(
-                  "Content URL", branchManager.getDefaultBranch()));
-            dialog = new ArtifactDescriptorDialog(
-                  shell,
-                  "Artifact Descriptor",
-                  null,
-                  "No Artifact could be found for this file. To create a new artifact please" + " select an artfact descriptor.",
-                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0, descriptors);
+            Collection<ArtifactSubtypeDescriptor> descriptors =
+                  configurationPersistenceManager.getArtifactSubtypeDescriptorsForAttribute(configurationPersistenceManager.getDynamicAttributeType(
+                        "Content URL", branchManager.getDefaultBranch()));
+            dialog =
+                  new ArtifactDescriptorDialog(
+                        shell,
+                        "Artifact Descriptor",
+                        null,
+                        "No Artifact could be found for this file. To create a new artifact please" + " select an artfact descriptor.",
+                        MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0, descriptors);
          } catch (SQLException ex) {
             ex.printStackTrace();
          }

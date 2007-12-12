@@ -79,8 +79,10 @@ public class BranchCreator implements PersistenceManager {
    private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_TYPE_TABLE, "t1");
    private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_2 = new LocalAliasTable(ATTRIBUTE_TYPE_TABLE, "t2");
 
-   private static final LocalAliasTable RELATION_LINK_TYPE_ALIAS_1 = new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "t1");
-   private static final LocalAliasTable RELATION_LINK_TYPE_ALIAS_2 = new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "t2");
+   private static final LocalAliasTable RELATION_LINK_TYPE_ALIAS_1 =
+         new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "t1");
+   private static final LocalAliasTable RELATION_LINK_TYPE_ALIAS_2 =
+         new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "t2");
 
    private static final LocalAliasTable VALID_ATTRIBUTES_ALIAS_1 = new LocalAliasTable(VALID_ATTRIBUTES_TABLE, "t1");
    private static final LocalAliasTable VALID_ATTRIBUTES_ALIAS_2 = new LocalAliasTable(VALID_ATTRIBUTES_TABLE, "t2");
@@ -107,30 +109,35 @@ public class BranchCreator implements PersistenceManager {
 
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_13 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t13");
 
-   private static final String BRANCH_TABLE_INSERT = "INSERT INTO " + BRANCH_TABLE.columnsForInsert("branch_id",
-         "short_name", "branch_name", "parent_branch_id", "archived", "associated_art_id");
+   private static final String BRANCH_TABLE_INSERT =
+         "INSERT INTO " + BRANCH_TABLE.columnsForInsert("branch_id", "short_name", "branch_name", "parent_branch_id",
+               "archived", "associated_art_id");
    private static final String SELECT_BRANCH_BY_NAME = "SELECT * FROM " + BRANCH_TABLE + " WHERE branch_name = ?";
 
    /* TODO: DISTINCT */
-   private static final String INSERT_LINK_GAMMAS = "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + LINK_ALIAS_1.columns("gamma_id") + ", ?" + " FROM " + TRANSACTIONS_ALIAS_1 + "," + ARTIFACT_VERSION_ALIAS_1 + "," + TRANSACTIONS_ALIAS_2 + "," + ARTIFACT_VERSION_ALIAS_2 + "," + LINK_ALIAS_1 + "," + TRANSACTIONS_ALIAS_3 + " WHERE " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " = ?" + " AND " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " = " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " = " + LINK_ALIAS_1.column("a_art_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + " = ?" + " AND " + TRANSACTIONS_ALIAS_2.column("gamma_id") + " = " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + " = " + LINK_ALIAS_1.column("b_art_id") + " AND " + LINK_ALIAS_1.column("modification_id") + " <> " + ModificationType.DELETE.getValue() + " AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_3.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_3.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_ALIAS_4 + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_4.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_4.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
+   private static final String INSERT_LINK_GAMMAS =
+         "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + LINK_ALIAS_1.columns("gamma_id") + ", ?" + " FROM " + TRANSACTIONS_ALIAS_1 + "," + ARTIFACT_VERSION_ALIAS_1 + "," + TRANSACTIONS_ALIAS_2 + "," + ARTIFACT_VERSION_ALIAS_2 + "," + LINK_ALIAS_1 + "," + TRANSACTIONS_ALIAS_3 + " WHERE " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " = ?" + " AND " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " = " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " = " + LINK_ALIAS_1.column("a_art_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + " = ?" + " AND " + TRANSACTIONS_ALIAS_2.column("gamma_id") + " = " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + " = " + LINK_ALIAS_1.column("b_art_id") + " AND " + LINK_ALIAS_1.column("modification_id") + " <> " + ModificationType.DELETE.getValue() + " AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_3.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_3.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_ALIAS_4 + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_4.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_4.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
-   private static final String INSERT_ATTRIBUTES_GAMMAS = "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + ATTRIBUTE_ALIAS_1.columns("gamma_id") + ", ?" + " FROM " + TRANSACTIONS_ALIAS_1 + "," + ARTIFACT_VERSION_TABLE + "," + ATTRIBUTE_ALIAS_1 + "," + TRANSACTIONS_ALIAS_2 + " WHERE " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " =? AND " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " = " + ARTIFACT_VERSION_TABLE.column("gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.column("art_id") + " = " + ATTRIBUTE_ALIAS_1.column("art_id") + " AND " + ATTRIBUTE_ALIAS_1.column("modification_id") + " <> " + ModificationType.DELETE.getValue() + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_ALIAS_3 + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("attr_id") + "=" + ATTRIBUTE_ALIAS_2.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_3.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_3.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " <= ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
+   private static final String INSERT_ATTRIBUTES_GAMMAS =
+         "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + ATTRIBUTE_ALIAS_1.columns("gamma_id") + ", ?" + " FROM " + TRANSACTIONS_ALIAS_1 + "," + ARTIFACT_VERSION_TABLE + "," + ATTRIBUTE_ALIAS_1 + "," + TRANSACTIONS_ALIAS_2 + " WHERE " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " =? AND " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " = " + ARTIFACT_VERSION_TABLE.column("gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.column("art_id") + " = " + ATTRIBUTE_ALIAS_1.column("art_id") + " AND " + ATTRIBUTE_ALIAS_1.column("modification_id") + " <> " + ModificationType.DELETE.getValue() + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_ALIAS_3 + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("attr_id") + "=" + ATTRIBUTE_ALIAS_2.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_3.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_3.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " <= ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
    // insert the artifact versions and attributes for all non-deleted artifact of a given type on a
    // given branch
-   private static final String SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED = "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + ", ?" + " FROM " + ARTIFACT_TABLE + " , " + ARTIFACT_VERSION_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_type_id") + " =? AND " + ARTIFACT_TABLE.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + " <> " + ModificationType.DELETE.getValue() + " AND " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
+   private static final String SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED =
+         "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + ", ?" + " FROM " + ARTIFACT_TABLE + " , " + ARTIFACT_VERSION_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_type_id") + " =? AND " + ARTIFACT_TABLE.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + " <> " + ModificationType.DELETE.getValue() + " AND " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
-   private static final String SELECT_ARTIFACT_HISTORY = "SELECT " + TRANSACTIONS_ALIAS_1.columns("transaction_id",
-         "gamma_id") + " AS art_gamma_id, " + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AS attr_gamma_id" + " FROM " + ARTIFACT_TABLE + " , " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_TABLE + "," + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_2 + " WHERE " + ARTIFACT_TABLE.column("art_type_id") + " =?" + " AND " + ARTIFACT_TABLE.column("art_id") + " = " + ARTIFACT_VERSION_TABLE.column("art_id") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " = " + TRANSACTIONS_ALIAS_2.column("transaction_id") + " AND " + TRANSACTIONS_ALIAS_2.column("gamma_id") + " = " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + " AND " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " = " + ARTIFACT_TABLE.column("art_id");
+   private static final String SELECT_ARTIFACT_HISTORY =
+         "SELECT " + TRANSACTIONS_ALIAS_1.columns("transaction_id", "gamma_id") + " AS art_gamma_id, " + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AS attr_gamma_id" + " FROM " + ARTIFACT_TABLE + " , " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_TABLE + "," + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_2 + " WHERE " + ARTIFACT_TABLE.column("art_type_id") + " =?" + " AND " + ARTIFACT_TABLE.column("art_id") + " = " + ARTIFACT_VERSION_TABLE.column("art_id") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " = " + TRANSACTIONS_ALIAS_2.column("transaction_id") + " AND " + TRANSACTIONS_ALIAS_2.column("gamma_id") + " = " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + " AND " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " = " + ARTIFACT_TABLE.column("art_id");
 
-   private static final String INSERT_TX_DETAILS_FOR_HISTORY = "INSERT INTO " + TRANSACTION_DETAIL_TABLE + " (branch_id, transaction_id, " + TXD_COMMENT + ", time, author)" + " SELECT ?, ?, " + TRANSACTION_DETAIL_TABLE.columns(
-         TXD_COMMENT, "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = ?";
+   private static final String INSERT_TX_DETAILS_FOR_HISTORY =
+         "INSERT INTO " + TRANSACTION_DETAIL_TABLE + " (branch_id, transaction_id, " + TXD_COMMENT + ", time, author)" + " SELECT ?, ?, " + TRANSACTION_DETAIL_TABLE.columns(
+               TXD_COMMENT, "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = ?";
 
-   private static final String INSERT_TX_FOR_HISTORY = "INSERT INTO " + TRANSACTIONS_TABLE.columnsForInsert(
-         "transaction_id", "gamma_id", "tx_type");
+   private static final String INSERT_TX_FOR_HISTORY =
+         "INSERT INTO " + TRANSACTIONS_TABLE.columnsForInsert("transaction_id", "gamma_id", "tx_type");
 
-   private static final String INSERT_DEFAULT_BRANCH_NAMES = "INSERT INTO " + BRANCH_DEFINITIONS.columnsForInsert(
-         "static_branch_name", "mapped_branch_id");
+   private static final String INSERT_DEFAULT_BRANCH_NAMES =
+         "INSERT INTO " + BRANCH_DEFINITIONS.columnsForInsert("static_branch_name", "mapped_branch_id");
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
    private SkynetAuthentication skynetAuth;
@@ -184,18 +191,20 @@ public class BranchCreator implements PersistenceManager {
     * @throws SQLException
     */
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
-      HashCollection<Integer, Integer> historyMap = new HashCollection<Integer /*
-                                                                                                           * parent
-                                                                                                           * transactoin_id
-                                                                                                           */, Integer /* gamma_id */>(
-            false, HashSet.class);
+      HashCollection<Integer, Integer> historyMap =
+            new HashCollection<Integer /*
+                                                                                                                      * parent
+                                                                                                                      * transactoin_id
+                                                                                                                      */, Integer /* gamma_id */>(
+                  false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
          for (ArtifactSubtypeDescriptor artifactType : preserveArtTypes) {
 
-            chStmt = ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_HISTORY, SQL3DataType.INTEGER,
-                  artifactType.getArtTypeId(), SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(),
-                  SQL3DataType.INTEGER, parentTransactionId.getBranch().getBranchId());
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_HISTORY, SQL3DataType.INTEGER,
+                        artifactType.getArtTypeId(), SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(),
+                        SQL3DataType.INTEGER, parentTransactionId.getBranch().getBranchId());
 
             ResultSet rSet = chStmt.getRset();
             while (chStmt.next()) {
@@ -251,30 +260,33 @@ public class BranchCreator implements PersistenceManager {
 
       if (compressArtTypes != null && compressArtTypes.size() > 0) {
          // Handles the case C | P | true
-         String cpSql = "SELECT " + TRANSACTIONS_ALIAS_1.columns("transaction_id", "gamma_id") + " AS link_gamma_id" + " FROM " + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + "," + RELATION_LINK_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_TABLE + "," + ARTIFACT_VERSION_ALIAS_13 + " WHERE " + ARTIFACT_ALIAS_1.column("art_type_id") + " IN " + compressTypeSet + " AND " + ARTIFACT_ALIAS_1.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " AND " + ARTIFACT_ALIAS_1.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_13.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_13.column("modification_id") + " <> " + ModificationType.DELETE
+         String cpSql =
+               "SELECT " + TRANSACTIONS_ALIAS_1.columns("transaction_id", "gamma_id") + " AS link_gamma_id" + " FROM " + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + "," + RELATION_LINK_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_TABLE + "," + ARTIFACT_VERSION_ALIAS_13 + " WHERE " + ARTIFACT_ALIAS_1.column("art_type_id") + " IN " + compressTypeSet + " AND " + ARTIFACT_ALIAS_1.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " AND " + ARTIFACT_ALIAS_1.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_13.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_13.column("modification_id") + " <> " + ModificationType.DELETE
 
-         + " AND " + ARTIFACT_ALIAS_2.column("art_type_id") + " IN " + preservedTypeSet + " AND " + ARTIFACT_ALIAS_2.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("b_art_id")
+               + " AND " + ARTIFACT_ALIAS_2.column("art_type_id") + " IN " + preservedTypeSet + " AND " + ARTIFACT_ALIAS_2.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("b_art_id")
 
-         + " AND " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?";
+               + " AND " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?";
 
          historyMap = populateHistoryMapWithRelations(historyMap, cpSql, parentTransactionId);
 
          // Handles the case P | C | true
-         String pcSql = "SELECT " + TRANSACTIONS_ALIAS_1.columns("transaction_id", "gamma_id") + " AS link_gamma_id" + " FROM " + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + "," + RELATION_LINK_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_TABLE + "," + ARTIFACT_VERSION_ALIAS_13 + " WHERE " + ARTIFACT_ALIAS_1.column("art_type_id") + " IN " + compressTypeSet + " AND " + ARTIFACT_ALIAS_1.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " AND " + ARTIFACT_ALIAS_1.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_13.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_13.column("modification_id") + " <> " + ModificationType.DELETE
+         String pcSql =
+               "SELECT " + TRANSACTIONS_ALIAS_1.columns("transaction_id", "gamma_id") + " AS link_gamma_id" + " FROM " + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + "," + RELATION_LINK_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_TABLE + "," + ARTIFACT_VERSION_ALIAS_13 + " WHERE " + ARTIFACT_ALIAS_1.column("art_type_id") + " IN " + compressTypeSet + " AND " + ARTIFACT_ALIAS_1.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " AND " + ARTIFACT_ALIAS_1.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_13.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_13.column("modification_id") + " <> " + ModificationType.DELETE
 
-         + " AND " + ARTIFACT_ALIAS_2.column("art_type_id") + " IN " + preservedTypeSet + " AND " + ARTIFACT_ALIAS_2.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("a_art_id")
+               + " AND " + ARTIFACT_ALIAS_2.column("art_type_id") + " IN " + preservedTypeSet + " AND " + ARTIFACT_ALIAS_2.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("a_art_id")
 
-         + " AND " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?";
+               + " AND " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?";
 
          historyMap = populateHistoryMapWithRelations(historyMap, pcSql, parentTransactionId);
       }
 
       // Handles the case P | P | true
-      String ppSql = "SELECT " + TRANSACTIONS_ALIAS_1.columns("transaction_id", "gamma_id") + " AS link_gamma_id" + " FROM " + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + "," + RELATION_LINK_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_ALIAS_1.column("art_type_id") + " IN " + preservedTypeSet + " AND " + ARTIFACT_ALIAS_1.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("b_art_id")
+      String ppSql =
+            "SELECT " + TRANSACTIONS_ALIAS_1.columns("transaction_id", "gamma_id") + " AS link_gamma_id" + " FROM " + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + "," + RELATION_LINK_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_ALIAS_1.column("art_type_id") + " IN " + preservedTypeSet + " AND " + ARTIFACT_ALIAS_1.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("b_art_id")
 
-      + " AND " + ARTIFACT_ALIAS_2.column("art_type_id") + " IN " + preservedTypeSet + " AND " + ARTIFACT_ALIAS_2.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("a_art_id")
+            + " AND " + ARTIFACT_ALIAS_2.column("art_type_id") + " IN " + preservedTypeSet + " AND " + ARTIFACT_ALIAS_2.column("art_id") + " = " + RELATION_LINK_VERSION_TABLE.column("a_art_id")
 
-      + " AND " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?";
+            + " AND " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " = " + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?";
 
       historyMap = populateHistoryMapWithRelations(historyMap, ppSql, parentTransactionId);
 
@@ -284,9 +296,10 @@ public class BranchCreator implements PersistenceManager {
    private static HashCollection<Integer, Integer> populateHistoryMapWithRelations(HashCollection<Integer, Integer> historyMap, String sql, TransactionId parentTransactionId) {
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-               parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-               parentTransactionId.getBranch().getBranchId());
+         chStmt =
+               ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
+                     parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                     parentTransactionId.getBranch().getBranchId());
          ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
             historyMap.put(rSet.getInt("transaction_id"), rSet.getInt("link_gamma_id"));
@@ -313,25 +326,28 @@ public class BranchCreator implements PersistenceManager {
 
    private void createBaselineTransaction(int newTransactionNumber, TransactionId parentTransactionId, Set<ArtifactSubtypeDescriptor> compressArtTypes) throws SQLException {
       for (ArtifactSubtypeDescriptor artifactType : compressArtTypes) {
-         int count = ConnectionHandler.runPreparedUpdateReturnCount(SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED,
-               SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
-               SQL3DataType.INTEGER, artifactType.getArtTypeId(), SQL3DataType.INTEGER,
-               parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-               parentTransactionId.getBranch().getBranchId());
+         int count =
+               ConnectionHandler.runPreparedUpdateReturnCount(SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED,
+                     SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
+                     TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER, artifactType.getArtTypeId(),
+                     SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                     parentTransactionId.getBranch().getBranchId());
          logger.log(Level.INFO, "inserted " + count + " " + artifactType.getName() + " artifacts");
       }
 
-      int count = ConnectionHandler.runPreparedUpdateReturnCount(INSERT_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
-            newTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
-            newTransactionNumber, SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(),
-            SQL3DataType.INTEGER, parentTransactionId.getBranch().getBranchId());
+      int count =
+            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
+                  newTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
+                  newTransactionNumber, SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(),
+                  SQL3DataType.INTEGER, parentTransactionId.getBranch().getBranchId());
       logger.log(Level.INFO, "inserted " + count + " attributes");
 
-      count = ConnectionHandler.runPreparedUpdateReturnCount(INSERT_LINK_GAMMAS, SQL3DataType.INTEGER,
-            newTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
-            newTransactionNumber, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
-            parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-            parentTransactionId.getBranch().getBranchId());
+      count =
+            ConnectionHandler.runPreparedUpdateReturnCount(INSERT_LINK_GAMMAS, SQL3DataType.INTEGER,
+                  newTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
+                  newTransactionNumber, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
+                  parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                  parentTransactionId.getBranch().getBranchId());
       logger.log(Level.INFO, "inserted " + count + " relations");
    }
 
@@ -342,12 +358,14 @@ public class BranchCreator implements PersistenceManager {
          joinParallelColumns.append(" AND ");
       }
 
-      String insert = "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + table1.column("gamma_id") + ", ?" + " FROM " + table1 + ", " + TRANSACTIONS_ALIAS_1 + " WHERE " + table1.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + table2 + "," + TRANSACTIONS_ALIAS_2 + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + joinParallelColumns + table2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=" + "?)";
+      String insert =
+            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + table1.column("gamma_id") + ", ?" + " FROM " + table1 + ", " + TRANSACTIONS_ALIAS_1 + " WHERE " + table1.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + table2 + "," + TRANSACTIONS_ALIAS_2 + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + joinParallelColumns + table2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=" + "?)";
 
-      int count = ConnectionHandler.runPreparedUpdateReturnCount(insert, SQL3DataType.INTEGER, newTransactionNumber,
-            SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
-            parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-            parentTransactionId.getBranch().getBranchId());
+      int count =
+            ConnectionHandler.runPreparedUpdateReturnCount(insert, SQL3DataType.INTEGER, newTransactionNumber,
+                  SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
+                  parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                  parentTransactionId.getBranch().getBranchId());
       logger.log(Level.INFO, "inserted row count for " + table1 + ": " + count);
    }
 
@@ -392,8 +410,8 @@ public class BranchCreator implements PersistenceManager {
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
    public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, IllegalArgumentException {
-      Branch branch = initializeBranch(shortBranchName, branchName, null, -1, GlobalTime.GreenwichMeanTimestamp(), "",
-            null);
+      Branch branch =
+            initializeBranch(shortBranchName, branchName, null, -1, GlobalTime.GreenwichMeanTimestamp(), "", null);
       if (staticBranchName != null) ConnectionHandler.runPreparedUpdate(INSERT_DEFAULT_BRANCH_NAMES,
             SQL3DataType.VARCHAR, staticBranchName, SQL3DataType.INTEGER, branch.getBranchId());
       return branch;
@@ -408,8 +426,8 @@ public class BranchCreator implements PersistenceManager {
     * @throws SQLException
     */
    private Branch initializeBranch(String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact) throws SQLException, IllegalArgumentException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.runPreparedQuery(SELECT_BRANCH_BY_NAME,
-            SQL3DataType.VARCHAR, branchName);
+      ConnectionHandlerStatement chStmt =
+            ConnectionHandler.runPreparedQuery(SELECT_BRANCH_BY_NAME, SQL3DataType.VARCHAR, branchName);
       ResultSet rset = chStmt.getRset();
       branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
 
@@ -422,7 +440,8 @@ public class BranchCreator implements PersistenceManager {
       }
 
       int branchId = Query.getNextSeqVal(null, BRANCH_ID_SEQ);
-      int parentBranchNumber = parentBranchId == null ? Branch.NULL_PARENT_BRANCH_ID : parentBranchId.getBranch().getBranchId();
+      int parentBranchNumber =
+            parentBranchId == null ? Branch.NULL_PARENT_BRANCH_ID : parentBranchId.getBranch().getBranchId();
       int associatedArtifactId = -1;
 
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
@@ -440,11 +459,13 @@ public class BranchCreator implements PersistenceManager {
       // this needs to be after the insert in case there is an exception on insert
       Branch branch;
       if (associatedArtifact == null) {
-         branch = new Branch(branchShortName, branchName, branchId, parentBranchNumber, false, authorId, creationDate,
-               creationComment, associatedArtifactId);
+         branch =
+               new Branch(branchShortName, branchName, branchId, parentBranchNumber, false, authorId, creationDate,
+                     creationComment, associatedArtifactId);
       } else {
-         branch = new Branch(branchShortName, branchName, branchId, parentBranchNumber, false, authorId, creationDate,
-               creationComment, associatedArtifact);
+         branch =
+               new Branch(branchShortName, branchName, branchId, parentBranchNumber, false, authorId, creationDate,
+                     creationComment, associatedArtifact);
       }
 
       return branch;
@@ -459,8 +480,9 @@ public class BranchCreator implements PersistenceManager {
     */
    public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final IActionBranchStateChange actionBranchStateChange, final Artifact associatedArtifact, boolean preserveMetaData, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) throws Exception {
 
-      CreateChildBranchTx createChildBranchTx = new CreateChildBranchTx(parentTransactionId, childBranchShortName,
-            childBranchName, actionBranchStateChange, associatedArtifact, compressArtTypes, preserveArtTypes);
+      CreateChildBranchTx createChildBranchTx =
+            new CreateChildBranchTx(parentTransactionId, childBranchShortName, childBranchName,
+                  actionBranchStateChange, associatedArtifact, compressArtTypes, preserveArtTypes);
       createChildBranchTx.execute();
       return createChildBranchTx.getChildBranch();
    }
@@ -491,15 +513,18 @@ public class BranchCreator implements PersistenceManager {
          User userToBlame = skynetAuth.getAuthenticatedUser();
          Branch parentBranch = parentTransactionId.getBranch();
          int userId = (userToBlame == null) ? skynetAuth.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
-         String comment = BranchPersistenceManager.NEW_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + parentTransactionId.getTransactionNumber() + ")";
+         String comment =
+               BranchPersistenceManager.NEW_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + parentTransactionId.getTransactionNumber() + ")";
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-         childBranch = initializeBranch(childBranchShortName, childBranchName, parentTransactionId, userId, timestamp,
-               comment, associatedArtifact);
+         childBranch =
+               initializeBranch(childBranchShortName, childBranchName, parentTransactionId, userId, timestamp, comment,
+                     associatedArtifact);
 
          // insert the new transaction data first.
          int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
-         String query = "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id",
-               TXD_COMMENT, "time", "author");
+         String query =
+               "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
+                     "time", "author");
          ConnectionHandler.runPreparedUpdate(query, SQL3DataType.INTEGER, childBranch.getBranchId(),
                SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, childBranch.getCreationComment(),
                SQL3DataType.TIMESTAMP, childBranch.getCreationDate(), SQL3DataType.INTEGER, childBranch.getAuthorId());

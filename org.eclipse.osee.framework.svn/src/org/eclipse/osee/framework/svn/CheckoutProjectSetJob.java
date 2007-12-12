@@ -92,7 +92,8 @@ public class CheckoutProjectSetJob extends Job {
       if (target instanceof Error) {
          throw (Error) target;
       }
-      String message = target instanceof SAXException ? TeamUIMessages.ProjectSetImportWizard_2 : TeamUIMessages.ProjectSetImportWizard_3;
+      String message =
+            target instanceof SAXException ? TeamUIMessages.ProjectSetImportWizard_2 : TeamUIMessages.ProjectSetImportWizard_3;
       displayErrorMessage(false, message, target);
       return false;
    }

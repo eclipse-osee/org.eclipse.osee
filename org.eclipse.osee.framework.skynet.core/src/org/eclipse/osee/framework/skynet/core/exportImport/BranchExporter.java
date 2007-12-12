@@ -73,27 +73,31 @@ public class BranchExporter {
    private static final LocalAliasTable TX_DETAIL_ALIAS_1 = TRANSACTION_DETAIL_TABLE.aliasAs("txd1");
    private static final LocalAliasTable TX_DETAIL_ALIAS_2 = TRANSACTION_DETAIL_TABLE.aliasAs("txd2");
 
-   private static final String SELECT_CHILD_BRANCHES = "SELECT " + BRANCH_TABLE.columns("branch_id", "branch_name",
-         "associated_art_id") + "," + TX_DETAIL_ALIAS_1.columns("osee_comment", "time") + " FROM " + BRANCH_TABLE + "," + TX_DETAIL_ALIAS_1 + " WHERE " + BRANCH_TABLE.column("archived") + "=0 AND " + BRANCH_TABLE.column("parent_branch_id") + "=? AND " + BRANCH_TABLE.join(
-         TX_DETAIL_ALIAS_1, "branch_id") + " AND " + TX_DETAIL_ALIAS_1.column("transaction_id") + "=(SELECT MIN(" + TX_DETAIL_ALIAS_2.column("transaction_id") + ") FROM " + TX_DETAIL_ALIAS_2 + " WHERE " + TX_DETAIL_ALIAS_2.join(
-         BRANCH_TABLE, "branch_id") + ")";
-   private static final String SELECT_TRANSACTIONS_STATS = "SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id",
-         "min_transaction") + "," + TRANSACTION_DETAIL_TABLE.max("transaction_id", "max_transaction") + "," + "COUNT(*) AS transaction_count FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id=? AND time>? AND time<=?";
-   private static final String SELECT_ARTIFACTS = "SELECT " + ARTIFACT_TABLE.columns("art_id", "guid",
-         "human_readable_id") + "," + ARTIFACT_TYPE_TABLE.column("name") + "," + ARTIFACT_VERSION_TABLE.column("modification_id") + "," + TRANSACTION_DETAIL_TABLE.columns(
-         "transaction_id", "osee_comment", "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ARTIFACT_VERSION_TABLE + "," + ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
-         TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(ARTIFACT_VERSION_TABLE, "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.join(
-         ARTIFACT_TABLE, "art_id") + " AND " + ARTIFACT_TABLE.join(ARTIFACT_TYPE_TABLE, "art_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
-   private static final String SELECT_ATTRIBUTES = "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("attr_id", "art_id",
-         "modification_id", "value", "content") + "," + ATTRIBUTE_TYPE_TABLE.column("name") + "," + TRANSACTION_DETAIL_TABLE.columns(
-         "transaction_id", "osee_comment", "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ATTRIBUTE_VERSION_TABLE + "," + ATTRIBUTE_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
-         TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(ATTRIBUTE_VERSION_TABLE, "gamma_id") + " AND " + ATTRIBUTE_VERSION_TABLE.join(
-         ATTRIBUTE_TYPE_TABLE, "attr_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
-   private static final String SELECT_LINKS = "SELECT " + RELATION_LINK_VERSION_TABLE.columns("rel_link_id",
-         "a_order_value", "b_order_value", "rationale", "modification_id") + "," + RELATION_LINK_TYPE_TABLE.columns("type_name") + "," + ARTIFACT_ALIAS_1.column("guid as a_guid") + "," + ARTIFACT_ALIAS_2.column("guid as b_guid") + "," + TRANSACTION_DETAIL_TABLE.columns(
-         "transaction_id", "osee_comment", "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
-         TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(RELATION_LINK_VERSION_TABLE,
-         "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.join(RELATION_LINK_TYPE_TABLE, "rel_link_type_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("a_art_id") + "=" + ARTIFACT_ALIAS_1.column("art_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + "=" + ARTIFACT_ALIAS_2.column("art_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
+   private static final String SELECT_CHILD_BRANCHES =
+         "SELECT " + BRANCH_TABLE.columns("branch_id", "branch_name", "associated_art_id") + "," + TX_DETAIL_ALIAS_1.columns(
+               "osee_comment", "time") + " FROM " + BRANCH_TABLE + "," + TX_DETAIL_ALIAS_1 + " WHERE " + BRANCH_TABLE.column("archived") + "=0 AND " + BRANCH_TABLE.column("parent_branch_id") + "=? AND " + BRANCH_TABLE.join(
+               TX_DETAIL_ALIAS_1, "branch_id") + " AND " + TX_DETAIL_ALIAS_1.column("transaction_id") + "=(SELECT MIN(" + TX_DETAIL_ALIAS_2.column("transaction_id") + ") FROM " + TX_DETAIL_ALIAS_2 + " WHERE " + TX_DETAIL_ALIAS_2.join(
+               BRANCH_TABLE, "branch_id") + ")";
+   private static final String SELECT_TRANSACTIONS_STATS =
+         "SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id", "min_transaction") + "," + TRANSACTION_DETAIL_TABLE.max(
+               "transaction_id", "max_transaction") + "," + "COUNT(*) AS transaction_count FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id=? AND time>? AND time<=?";
+   private static final String SELECT_ARTIFACTS =
+         "SELECT " + ARTIFACT_TABLE.columns("art_id", "guid", "human_readable_id") + "," + ARTIFACT_TYPE_TABLE.column("name") + "," + ARTIFACT_VERSION_TABLE.column("modification_id") + "," + TRANSACTION_DETAIL_TABLE.columns(
+               "transaction_id", "osee_comment", "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ARTIFACT_VERSION_TABLE + "," + ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(ARTIFACT_VERSION_TABLE,
+               "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.join(ARTIFACT_TABLE, "art_id") + " AND " + ARTIFACT_TABLE.join(
+               ARTIFACT_TYPE_TABLE, "art_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
+   private static final String SELECT_ATTRIBUTES =
+         "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("attr_id", "art_id", "modification_id", "value", "content") + "," + ATTRIBUTE_TYPE_TABLE.column("name") + "," + TRANSACTION_DETAIL_TABLE.columns(
+               "transaction_id", "osee_comment", "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ATTRIBUTE_VERSION_TABLE + "," + ATTRIBUTE_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(ATTRIBUTE_VERSION_TABLE,
+               "gamma_id") + " AND " + ATTRIBUTE_VERSION_TABLE.join(ATTRIBUTE_TYPE_TABLE, "attr_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
+   private static final String SELECT_LINKS =
+         "SELECT " + RELATION_LINK_VERSION_TABLE.columns("rel_link_id", "a_order_value", "b_order_value", "rationale",
+               "modification_id") + "," + RELATION_LINK_TYPE_TABLE.columns("type_name") + "," + ARTIFACT_ALIAS_1.column("guid as a_guid") + "," + ARTIFACT_ALIAS_2.column("guid as b_guid") + "," + TRANSACTION_DETAIL_TABLE.columns(
+               "transaction_id", "osee_comment", "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + RELATION_LINK_VERSION_TABLE + "," + RELATION_LINK_TYPE_TABLE + "," + ARTIFACT_ALIAS_1 + "," + ARTIFACT_ALIAS_2 + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(RELATION_LINK_VERSION_TABLE,
+               "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.join(RELATION_LINK_TYPE_TABLE, "rel_link_type_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("a_art_id") + "=" + ARTIFACT_ALIAS_1.column("art_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + "=" + ARTIFACT_ALIAS_2.column("art_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
 
    private static final RsetProcessor<ArtifactData> ARTIFACT_PROCESSOR = new ArtifactProcessor();
    private static final RsetProcessor<LinkData> LINK_PROCESSOR = new LinkProcessor();
@@ -151,8 +155,8 @@ public class BranchExporter {
    }
 
    public void export() throws SQLException, IOException {
-      Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"), (int) Math.pow(2,
-            24));
+      Writer writer =
+            new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"), (int) Math.pow(2, 24));
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
 
       // Force all users to be mapped
@@ -184,8 +188,9 @@ public class BranchExporter {
       try {
          monitor.setTaskName("Acquiring transactions for branch " + branch.getName());
 
-         statStmt = ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_STATS, SQL3DataType.INTEGER,
-               branch.getBranchId(), SQL3DataType.TIMESTAMP, from, SQL3DataType.TIMESTAMP, to);
+         statStmt =
+               ConnectionHandler.runPreparedQuery(SELECT_TRANSACTIONS_STATS, SQL3DataType.INTEGER,
+                     branch.getBranchId(), SQL3DataType.TIMESTAMP, from, SQL3DataType.TIMESTAMP, to);
 
          ResultSet statSet = statStmt.getRset();
          statSet.next(); // All aggregate returns, guaranteed 1 row
@@ -197,14 +202,17 @@ public class BranchExporter {
                branch.getBranchId(), totalTransactions, startTransaction, endTransaction));
 
          monitor.subTask("Acquiring artifact data");
-         artChStmt = ConnectionHandler.runPreparedQuery(4000, SELECT_ARTIFACTS, SQL3DataType.INTEGER,
-               branch.getBranchId(), SQL3DataType.INTEGER, startTransaction, SQL3DataType.INTEGER, endTransaction);
+         artChStmt =
+               ConnectionHandler.runPreparedQuery(4000, SELECT_ARTIFACTS, SQL3DataType.INTEGER, branch.getBranchId(),
+                     SQL3DataType.INTEGER, startTransaction, SQL3DataType.INTEGER, endTransaction);
          monitor.subTask("Acquiring attribute data");
-         attrChStmt = ConnectionHandler.runPreparedQuery(4000, SELECT_ATTRIBUTES, SQL3DataType.INTEGER,
-               branch.getBranchId(), SQL3DataType.INTEGER, startTransaction, SQL3DataType.INTEGER, endTransaction);
+         attrChStmt =
+               ConnectionHandler.runPreparedQuery(4000, SELECT_ATTRIBUTES, SQL3DataType.INTEGER, branch.getBranchId(),
+                     SQL3DataType.INTEGER, startTransaction, SQL3DataType.INTEGER, endTransaction);
          monitor.subTask("Acquiring relation link data");
-         linkChStmt = ConnectionHandler.runPreparedQuery(4000, SELECT_LINKS, SQL3DataType.INTEGER,
-               branch.getBranchId(), SQL3DataType.INTEGER, startTransaction, SQL3DataType.INTEGER, endTransaction);
+         linkChStmt =
+               ConnectionHandler.runPreparedQuery(4000, SELECT_LINKS, SQL3DataType.INTEGER, branch.getBranchId(),
+                     SQL3DataType.INTEGER, startTransaction, SQL3DataType.INTEGER, endTransaction);
 
          RSetHelper artSet = new RSetHelper(artChStmt.getRset());
          RSetHelper attrSet = new RSetHelper(attrChStmt.getRset());
@@ -240,7 +248,8 @@ public class BranchExporter {
                continue;
             }
 
-            String task = "Processing transaction " + (++count) + " of " + totalTransactions + " for branch " + branch.getName();
+            String task =
+                  "Processing transaction " + (++count) + " of " + totalTransactions + " for branch " + branch.getName();
             monitor.subTask(task);
 
             if (useTheseTransactions) {
@@ -435,7 +444,8 @@ public class BranchExporter {
       public BranchData(Branch branch) throws SQLException, IOException {
          this.branchId = branch.getBranchId();
          this.name = branch.getBranchName();
-         this.baseParentTransactionId = TransactionIdManager.getParentBaseTransactionNumber(branch.getCreationComment());
+         this.baseParentTransactionId =
+               TransactionIdManager.getParentBaseTransactionNumber(branch.getCreationComment());
          this.time = new Timestamp(branch.getCreationDate().getTime());
          this.associatedArtGuid = artGuidCache.getGuid(branch.getAssociatedArtifactId());
       }

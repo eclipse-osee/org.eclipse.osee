@@ -71,7 +71,8 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable {
    public static final String UNNAMED = "Unnamed";
    public static final Artifact[] EMPTY_ARRAY = new Artifact[0];
    protected static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   protected static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+   protected static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
    protected static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
    protected static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(Artifact.class);
@@ -1168,11 +1169,12 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable {
       humanReadableId = generateHumanReadableId();
    }
 
-   private static final char[][] chars = new char[][] {
-         {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
-               'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
-         {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P',
-               'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}};
+   private static final char[][] chars =
+         new char[][] {
+               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
+                     'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
+               {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
+                     'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}};
    private static final int[] charsIndexLookup = new int[] {0, 1, 1, 1, 0};
 
    /**
@@ -1369,8 +1371,8 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable {
     * @throws SQLException
     */
    protected ArtifactSubtypeDescriptor getDescriptor(Branch branch) throws SQLException {
-      ArtifactSubtypeDescriptor descriptor = configurationPersistenceManager.getArtifactSubtypeDescriptor(
-            getArtifactTypeName(), branch);
+      ArtifactSubtypeDescriptor descriptor =
+            configurationPersistenceManager.getArtifactSubtypeDescriptor(getArtifactTypeName(), branch);
       if (descriptor == null) {
          throw new IllegalArgumentException(
                "Artifact type " + getArtifactTypeName() + " does not exist on branch " + branch);
@@ -1391,8 +1393,8 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable {
 
       try {
          // Need another way to create artifacts
-         clonedArtifact = getFactory().getNewArtifact(getGuid(), getHumanReadableId(), getDescriptor().getName(),
-               getBranch());
+         clonedArtifact =
+               getFactory().getNewArtifact(getGuid(), getHumanReadableId(), getDescriptor().getName(), getBranch());
          clonedArtifact.setDescriptor(getDescriptor());
          clonedArtifact.setPersistenceMemo(new ArtifactPersistenceMemo(
                TransactionIdManager.getInstance().getEditableTransactionId(getBranch()), getArtId(),
@@ -1468,8 +1470,8 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable {
    }
 
    private static final Pattern safeNamePattern = Pattern.compile("[^A-Za-z0-9 ]");
-   private static final String[] NUMBER = new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
-         "Eight", "Nine"};
+   private static final String[] NUMBER =
+         new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
 
    public String getSafeName() {
       // Since artifact names are free text it is important to reformat the name
@@ -1503,8 +1505,9 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable {
    private Set<IArtifactAnnotation> getAnnotationExtensions() {
       if (artifactAnnotationExtensions != null) return artifactAnnotationExtensions;
       artifactAnnotationExtensions = new HashSet<IArtifactAnnotation>();
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint(
+                  "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
       if (point == null) {
          System.err.println("Can't access ArtifactAnnotation extension point");
          return artifactAnnotationExtensions;
@@ -1558,9 +1561,10 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable {
       if (!attributesNotLoaded()) throw new IllegalStateException(
             "Can't perform attribute initialization on artifacts with loaded attributes");
 
-      Collection<DynamicAttributeDescriptor> attributeTypeDescriptors = configurationPersistenceManager.getAttributeTypesFromArtifactType(getDescriptor());
-      Collection<DynamicAttributeManager> attributes = new ArrayList<DynamicAttributeManager>(
-            attributeTypeDescriptors.size());
+      Collection<DynamicAttributeDescriptor> attributeTypeDescriptors =
+            configurationPersistenceManager.getAttributeTypesFromArtifactType(getDescriptor());
+      Collection<DynamicAttributeManager> attributes =
+            new ArrayList<DynamicAttributeManager>(attributeTypeDescriptors.size());
 
       DynamicAttributeManager attribute;
       for (DynamicAttributeDescriptor attributeType : attributeTypeDescriptors) {

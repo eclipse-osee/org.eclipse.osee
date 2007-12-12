@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
  * @author Robert A. Fisher
  */
 public class RelationLinkValidityTransactionData implements ITransactionData {
-   private static final String INSERT_VALID_RELATION = "INSERT INTO " + VALID_RELATIONS_TABLE + " (art_type_id, rel_link_type_id, side_a_max, side_b_max, gamma_id) VALUES (?, ?, ?, ?, ?)";
+   private static final String INSERT_VALID_RELATION =
+         "INSERT INTO " + VALID_RELATIONS_TABLE + " (art_type_id, rel_link_type_id, side_a_max, side_b_max, gamma_id) VALUES (?, ?, ?, ?, ?)";
 
    private final int artTypeId;
    private final int relLinkTypeId;

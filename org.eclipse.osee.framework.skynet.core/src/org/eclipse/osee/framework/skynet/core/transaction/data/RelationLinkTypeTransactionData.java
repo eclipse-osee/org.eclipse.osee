@@ -20,7 +20,8 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
  * @author Robert A. Fisher
  */
 public class RelationLinkTypeTransactionData implements ITransactionData {
-   private static final String INSERT_RELATION_LINK_TYPE = "INSERT INTO " + RELATION_LINK_TYPE_TABLE + "(rel_link_type_id, type_name, a_name, b_name, ab_phrasing, ba_phrasing, short_name, gamma_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+   private static final String INSERT_RELATION_LINK_TYPE =
+         "INSERT INTO " + RELATION_LINK_TYPE_TABLE + "(rel_link_type_id, type_name, a_name, b_name, ab_phrasing, ba_phrasing, short_name, gamma_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
    private final int relLinkTypeId;
    private final String linkTypeName;

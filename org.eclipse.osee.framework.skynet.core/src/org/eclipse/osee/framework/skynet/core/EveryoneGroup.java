@@ -35,7 +35,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 public class EveryoneGroup extends Group {
    private static final String GROUP_NAME = "Everyone";
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationManager =
+         ConfigurationPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final EveryoneGroup reference = new EveryoneGroup();
    private Artifact everyoneGroup;
@@ -54,14 +55,14 @@ public class EveryoneGroup extends Group {
       searchCriteria.add(new AttributeValueSearch("Name", GROUP_NAME, Operator.EQUAL));
 
       try {
-         Collection<Artifact> searchResults = artifactManager.getArtifacts(searchCriteria, true,
-               branchManager.getCommonBranch());
+         Collection<Artifact> searchResults =
+               artifactManager.getArtifacts(searchCriteria, true, branchManager.getCommonBranch());
 
          if (searchResults != null && searchResults.size() != 0) {
             everyoneGroup = searchResults.iterator().next();
          } else {
-            ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor("User Group",
-                  branchManager.getCommonBranch());
+            ArtifactSubtypeDescriptor descriptor =
+                  configurationManager.getArtifactSubtypeDescriptor("User Group", branchManager.getCommonBranch());
 
             if (descriptor != null) {
                everyoneGroup = descriptor.makeNewArtifact();

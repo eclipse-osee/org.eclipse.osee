@@ -13,7 +13,8 @@ package org.eclipse.osee.framework.skynet.core.sql;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 
 public class SkynetRevisionControl {
-   public static final String SELECT_REVISION = "\n\nSELECT DISTINCT branch_id as branchId, " + "(SELECT MIN(transaction_id) FROM ( " + SkynetDatabase.TRANSACTIONS_TABLE + " txs1)" + " WHERE (txs2.branch_id = txs1.branch_id)) as minTX, " + "(SELECT MAX(transaction_id) FROM ( " + SkynetDatabase.TRANSACTIONS_TABLE + " txs1)" + " WHERE (txs2.branch_id = txs1.branch_id)) as maxTX, " + "(SELECT branch_name FROM ( " + SkynetDatabase.BRANCH_TABLE + " branchTable)" + " WHERE  (txs2.branch_id = branchTable.branch_id)) as branchName" + " FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " txs2 \n\n";
+   public static final String SELECT_REVISION =
+         "\n\nSELECT DISTINCT branch_id as branchId, " + "(SELECT MIN(transaction_id) FROM ( " + SkynetDatabase.TRANSACTIONS_TABLE + " txs1)" + " WHERE (txs2.branch_id = txs1.branch_id)) as minTX, " + "(SELECT MAX(transaction_id) FROM ( " + SkynetDatabase.TRANSACTIONS_TABLE + " txs1)" + " WHERE (txs2.branch_id = txs1.branch_id)) as maxTX, " + "(SELECT branch_name FROM ( " + SkynetDatabase.BRANCH_TABLE + " branchTable)" + " WHERE  (txs2.branch_id = branchTable.branch_id)) as branchName" + " FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " txs2 \n\n";
 
    private static final SkynetRevisionControl instance = new SkynetRevisionControl();
 

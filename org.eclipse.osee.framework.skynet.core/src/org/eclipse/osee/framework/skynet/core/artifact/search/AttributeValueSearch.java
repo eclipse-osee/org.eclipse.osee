@@ -32,8 +32,8 @@ public class AttributeValueSearch implements ISearchPrimitive {
    private static final LocalAliasTable ATTRIBUTE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_1");
    private static final LocalAliasTable ATTRIBUTE_ALIAS_2 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_2");
    private static final LocalAliasTable ATTRIBUTE_ALIAS_3 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_3");
-   private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_TYPE_TABLE,
-         "attr_type_1");
+   private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_1 =
+         new LocalAliasTable(ATTRIBUTE_TYPE_TABLE, "attr_type_1");
    private static final String tables = ATTRIBUTE_ALIAS_1 + "," + ATTRIBUTE_TYPE_ALIAS_1 + "," + TRANSACTIONS_TABLE;
    private final static String TOKEN = ";";
 
@@ -92,14 +92,16 @@ public class AttributeValueSearch implements ISearchPrimitive {
       dataList.add(SQL3DataType.VARCHAR);
       dataList.add(attributeName);
 
-      sql += " AND " + ATTRIBUTE_TYPE_ALIAS_1.column("attr_type_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_type_id") + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTIONS_TABLE.max("transaction_id") + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
+      sql +=
+            " AND " + ATTRIBUTE_TYPE_ALIAS_1.column("attr_type_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_type_id") + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTIONS_TABLE.max("transaction_id") + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
       dataList.add(SQL3DataType.INTEGER);
       dataList.add(branch.getBranchId());
 
       if (attributeValue != null) {
          if (operator == NOT_EQUAL) {
-            sql += " AND NOT EXISTS " + "(SELECT 'x' FROM " + ATTRIBUTE_ALIAS_3 + " WHERE " + ATTRIBUTE_ALIAS_3.column("art_id") + "=" + ATTRIBUTE_ALIAS_1.column("art_id") + " AND " + ATTRIBUTE_ALIAS_3.column("value") + "=?)";
+            sql +=
+                  " AND NOT EXISTS " + "(SELECT 'x' FROM " + ATTRIBUTE_ALIAS_3 + " WHERE " + ATTRIBUTE_ALIAS_3.column("art_id") + "=" + ATTRIBUTE_ALIAS_1.column("art_id") + " AND " + ATTRIBUTE_ALIAS_3.column("value") + "=?)";
          } else {
             sql += " AND " + ATTRIBUTE_ALIAS_1.column("value") + operator + " ?";
          }

@@ -24,8 +24,10 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 
 public class OseeInfo {
    public static Logger logger = ConfigUtil.getConfigFactory().getLogger(OseeInfo.class);
-   private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM " + SkynetDatabase.OSEE_INFO_TABLE + " where OSEE_KEY=?";
-   private static final String INSERT_KEY_VALUE_SQL = "INSERT INTO " + SkynetDatabase.OSEE_INFO_TABLE + "(OSEE_VALUE, OSEE_KEY) VALUES (?,?)";
+   private static final String GET_VALUE_SQL =
+         "Select OSEE_VALUE FROM " + SkynetDatabase.OSEE_INFO_TABLE + " where OSEE_KEY=?";
+   private static final String INSERT_KEY_VALUE_SQL =
+         "INSERT INTO " + SkynetDatabase.OSEE_INFO_TABLE + "(OSEE_VALUE, OSEE_KEY) VALUES (?,?)";
    private static final String DELETE_KEY_SQL = "DELETE FROM " + SkynetDatabase.OSEE_INFO_TABLE + " WHERE OSEE_KEY=?";
 
    public static final String SAVE_OUTFILE_IN_DB = "SAVE_OUTFILE_IN_DB";

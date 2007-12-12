@@ -80,7 +80,8 @@ public class SkynetTypesImporter implements RowProcessor {
 
    private Branch branch;
 
-   private static final ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationManager =
+         ConfigurationPersistenceManager.getInstance();
 
    /**
     * @throws SAXException
@@ -204,8 +205,9 @@ public class SkynetTypesImporter implements RowProcessor {
       String tipText = row[6];
 
       String basePackageName = Attribute.class.getPackage().getName();
-      Class<? extends Attribute> baseAttributeClass = Class.forName(basePackageName + "." + attrBaseType, true,
-            Attribute.class.getClassLoader()).asSubclass(Attribute.class);
+      Class<? extends Attribute> baseAttributeClass =
+            Class.forName(basePackageName + "." + attrBaseType, true, Attribute.class.getClassLoader()).asSubclass(
+                  Attribute.class);
 
       configurationManager.makePersistent(baseAttributeClass, attributeName, defaultValue, validityXml, minOccurrence,
             maxOccurrence, tipText);
@@ -233,16 +235,18 @@ public class SkynetTypesImporter implements RowProcessor {
       sideAName = nonJavaCharP.matcher(sideAName).replaceAll("_").toUpperCase();
       sideBName = nonJavaCharP.matcher(sideBName).replaceAll("_").toUpperCase();
       String enumPrefix = nonJavaCharP.matcher(relationTypeName).replaceAll("_").toUpperCase();
-      upCaseEnums += String.format("%s__%s(true, \"%s\"), %s__%s(false, \"%s\"), ", enumPrefix, sideAName,
-            relationTypeName, enumPrefix, sideBName, relationTypeName);
+      upCaseEnums +=
+            String.format("%s__%s(true, \"%s\"), %s__%s(false, \"%s\"), ", enumPrefix, sideAName, relationTypeName,
+                  enumPrefix, sideBName, relationTypeName);
    }
 
    private void generateNormalRelationSideEnum(String relationTypeName, String sideAName, String sideBName) {
       sideAName = nonJavaCharP.matcher(sideAName).replaceAll("");
       sideBName = nonJavaCharP.matcher(sideBName).replaceAll("");
       String enumPrefix = nonJavaCharP.matcher(relationTypeName).replaceAll("");
-      normalEnums += String.format("%s_%s(true, \"%s\"), %s_%s(false, \"%s\"),\n", enumPrefix, sideAName,
-            relationTypeName, enumPrefix, sideBName, relationTypeName);
+      normalEnums +=
+            String.format("%s_%s(true, \"%s\"), %s_%s(false, \"%s\"),\n", enumPrefix, sideAName, relationTypeName,
+                  enumPrefix, sideBName, relationTypeName);
    }
 
    private void associateWithSuperType(String artifactTypeName, String superTypeName) {
@@ -295,21 +299,22 @@ public class SkynetTypesImporter implements RowProcessor {
       if (superTypeName.equals("Artifact")) {
          superTypeName = "Root Artifact"; // this is a concrete type that should be on every branch
       }
-      ArtifactSubtypeDescriptor superArtifactType = configurationManager.getArtifactSubtypeDescriptor(superTypeName,
-            branch);
-      ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(artifactTypeName,
-            branch);
+      ArtifactSubtypeDescriptor superArtifactType =
+            configurationManager.getArtifactSubtypeDescriptor(superTypeName, branch);
+      ArtifactSubtypeDescriptor artifactType =
+            configurationManager.getArtifactSubtypeDescriptor(artifactTypeName, branch);
 
       if (superArtifactType != null) {
 
-         Collection<DynamicAttributeDescriptor> parentAttributes = configurationManager.getAttributeTypesFromArtifactType(superArtifactType);
+         Collection<DynamicAttributeDescriptor> parentAttributes =
+               configurationManager.getAttributeTypesFromArtifactType(superArtifactType);
          Iterator<DynamicAttributeDescriptor> it = parentAttributes.iterator();
          while (it.hasNext()) {
             configurationManager.persistAttributeValidity(it.next(), artifactType);
          }
 
-         Collection<IRelationLinkDescriptor> links = RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(
-               superArtifactType);
+         Collection<IRelationLinkDescriptor> links =
+               RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(superArtifactType);
          Iterator<IRelationLinkDescriptor> linksIt = links.iterator();
          while (linksIt.hasNext()) {
             IRelationLinkDescriptor desc = linksIt.next();

@@ -179,7 +179,8 @@ public class HttpResponse {
    public void outputStandardError(int errorCode, String reason) {
       String errorStr = getStatus(errorCode);
       String reasonStr = (reason != null ? "Reason: " + reason : "");
-      String html = AHTML.simplePage("<h1>Error " + errorStr + "</h1><h2>OSEE was unable to handle the request.</h2>" + reasonStr + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+      String html =
+            AHTML.simplePage("<h1>Error " + errorStr + "</h1><h2>OSEE was unable to handle the request.</h2>" + reasonStr + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
       SkynetActivator.getLogger().log(Level.SEVERE, "HttpServer Request failed. " + reasonStr);
       try {
          printStream.println(html);

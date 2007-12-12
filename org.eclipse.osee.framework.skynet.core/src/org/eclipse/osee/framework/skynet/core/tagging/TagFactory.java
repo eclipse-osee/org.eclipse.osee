@@ -29,8 +29,10 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
 /*default*/class TagFactory {
 
    private static final LocalAliasTable TAG_ALIAS_1 = TAG_TABLE.aliasAs("tag1");
-   private static final String SELECT_TAG = "SELECT " + TAG_ALIAS_1.column("tag_id") + " FROM " + TAG_ALIAS_1 + " WHERE " + TAG_ALIAS_1.column("tag") + "=? AND " + TAG_ALIAS_1.column("tag_type_id") + "=?";
-   private static final String INSERT_TAG = "INSERT INTO " + TAG_TABLE + "(LOWERCASE_TAG, TAG, HIT_COUNT, TAG_TYPE_ID, TAG_ID) VALUES (?,?,?,?,?)";
+   private static final String SELECT_TAG =
+         "SELECT " + TAG_ALIAS_1.column("tag_id") + " FROM " + TAG_ALIAS_1 + " WHERE " + TAG_ALIAS_1.column("tag") + "=? AND " + TAG_ALIAS_1.column("tag_type_id") + "=?";
+   private static final String INSERT_TAG =
+         "INSERT INTO " + TAG_TABLE + "(LOWERCASE_TAG, TAG, HIT_COUNT, TAG_TYPE_ID, TAG_ID) VALUES (?,?,?,?,?)";
 
    /**
     * 
@@ -43,8 +45,9 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(1, SELECT_TAG, SQL3DataType.VARCHAR, tag, SQL3DataType.INTEGER,
-               tagDescriptor.getTagTypeId());
+         chStmt =
+               ConnectionHandler.runPreparedQuery(1, SELECT_TAG, SQL3DataType.VARCHAR, tag, SQL3DataType.INTEGER,
+                     tagDescriptor.getTagTypeId());
 
          ResultSet rset = chStmt.getRset();
 

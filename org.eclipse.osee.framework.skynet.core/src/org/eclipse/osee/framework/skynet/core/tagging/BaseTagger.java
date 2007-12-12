@@ -34,8 +34,9 @@ public class BaseTagger extends Tagger {
 
    private static List<String> customizeTaggerFromExtensionPoints() {
       List<String> ignoreAttributes = new ArrayList<String>();
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.skynet.core.TaggerCustomization");
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint(
+                  "org.eclipse.osee.framework.skynet.core.TaggerCustomization");
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();

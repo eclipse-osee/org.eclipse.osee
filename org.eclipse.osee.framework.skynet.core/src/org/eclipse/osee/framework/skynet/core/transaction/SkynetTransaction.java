@@ -61,17 +61,22 @@ public class SkynetTransaction {
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final ArtifactPersistenceManager artifactPersistenceManager = ArtifactPersistenceManager.getInstance();
-   private static final String INSERT_INTO_TRANSACTION_DETAIL_TABLE = "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert(
-         "transaction_id", TXD_COMMENT, "time", "author", "branch_id");
-   private static final String INSERT_INTO_TRANSACTION_TABLE = " INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id) VALUES (?, ?)";
+   private static final ArtifactPersistenceManager artifactPersistenceManager =
+         ArtifactPersistenceManager.getInstance();
+   private static final String INSERT_INTO_TRANSACTION_DETAIL_TABLE =
+         "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("transaction_id", TXD_COMMENT, "time", "author",
+               "branch_id");
+   private static final String INSERT_INTO_TRANSACTION_TABLE =
+         " INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id) VALUES (?, ?)";
 
-   private static final String DELETE_TRANSACTION_DETAIL = "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id =?";
+   private static final String DELETE_TRANSACTION_DETAIL =
+         "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id =?";
 
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-   private static final String SELECT_MAX_TRANSACTION = "SELECT art_id, " + TRANSACTION_DETAIL_TABLE.max(
-         "transaction_id", "transaction_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.join(
-         TRANSACTIONS_TABLE, "gamma_id") + " AND " + TRANSACTIONS_TABLE.join(TRANSACTION_DETAIL_TABLE, "transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + ARTIFACT_VERSION_TABLE.column("art_id") + " in (";
+   private static final String SELECT_MAX_TRANSACTION =
+         "SELECT art_id, " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "transaction_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.join(
+               TRANSACTIONS_TABLE, "gamma_id") + " AND " + TRANSACTIONS_TABLE.join(TRANSACTION_DETAIL_TABLE,
+               "transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + ARTIFACT_VERSION_TABLE.column("art_id") + " in (";
    private final List<Object[]> batchToTransactionTable;
    private final Map<String, List<Object[]>> preparedBatch;
    private String transactionName;
@@ -239,8 +244,9 @@ public class SkynetTransaction {
       while (!tempArts.isEmpty()) {
          Branch branch = tempArts.get(0).getBranch();
          String artIdList = artifactPersistenceManager.getArtIdList(tempArts);
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_MAX_TRANSACTION + artIdList + ") group by art_id",
-               SQL3DataType.INTEGER, branch.getBranchId());
+         chStmt =
+               ConnectionHandler.runPreparedQuery(SELECT_MAX_TRANSACTION + artIdList + ") group by art_id",
+                     SQL3DataType.INTEGER, branch.getBranchId());
          local_transaction_id = transactionId.getLastSavedTransactionNumber();
 
          while (chStmt.next()) {

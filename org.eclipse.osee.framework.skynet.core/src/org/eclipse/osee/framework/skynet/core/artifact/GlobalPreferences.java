@@ -36,20 +36,23 @@ public class GlobalPreferences extends Artifact {
 
    public static GlobalPreferences get() throws SQLException {
       if (instance == null) {
-         ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(ARTIFACT_NAME, ARTIFACT_NAME,
-               BranchPersistenceManager.getInstance().getCommonBranch());
+         ArtifactTypeNameSearch srch =
+               new ArtifactTypeNameSearch(ARTIFACT_NAME, ARTIFACT_NAME,
+                     BranchPersistenceManager.getInstance().getCommonBranch());
          instance = srch.getSingletonArtifactOrException(GlobalPreferences.class);
       }
       return instance;
    }
 
    public static void createGlobalPreferencesArtifact() throws SQLException {
-      ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch(GlobalPreferences.ARTIFACT_NAME,
-            ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME,
-            BranchPersistenceManager.getInstance().getCommonBranch());
+      ArtifactTypeNameSearch srch =
+            new ArtifactTypeNameSearch(GlobalPreferences.ARTIFACT_NAME,
+                  ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME,
+                  BranchPersistenceManager.getInstance().getCommonBranch());
       if (srch.getArtifacts(Artifact.class).size() == 0) {
-         Artifact art = ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-               GlobalPreferences.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getCommonBranch()).makeNewArtifact();
+         Artifact art =
+               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+                     GlobalPreferences.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getCommonBranch()).makeNewArtifact();
          art.setDescriptiveName(GlobalPreferences.ARTIFACT_NAME);
          art.persist();
       }

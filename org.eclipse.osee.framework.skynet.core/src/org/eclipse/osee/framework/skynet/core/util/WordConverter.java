@@ -52,8 +52,10 @@ public class WordConverter {
    private IWordMLConversionHandler getWordMLConversionHandler() throws FileNotFoundException, TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
       if (wordMLConversionHandler == null) {
          IWordMLConversionHandler toReturn = null;
-         ExtensionDefinedObjects<IWordMLConversionHandler> extensionDefinedObjects = new ExtensionDefinedObjects<IWordMLConversionHandler>(
-               "org.eclipse.osee.framework.skynet.core.WordMLConversionHandler", "WordMLConversionHandler", "ClassName");
+         ExtensionDefinedObjects<IWordMLConversionHandler> extensionDefinedObjects =
+               new ExtensionDefinedObjects<IWordMLConversionHandler>(
+                     "org.eclipse.osee.framework.skynet.core.WordMLConversionHandler", "WordMLConversionHandler",
+                     "ClassName");
 
          try {
             List<IWordMLConversionHandler> objects = extensionDefinedObjects.getObjects();
@@ -105,8 +107,8 @@ public class WordConverter {
       private final Transformer transformer;
 
       private DefaultWordMLConversionHandler() throws FileNotFoundException, IOException, TransformerConfigurationException, TransformerFactoryConfigurationError {
-         FileInputStream xsl = new FileInputStream(SkynetActivator.getInstance().getPluginFile(
-               "support/xslt/word2html.xsl"));
+         FileInputStream xsl =
+               new FileInputStream(SkynetActivator.getInstance().getPluginFile("support/xslt/word2html.xsl"));
          transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xsl));
          if (xsl != null) {
             xsl.close();

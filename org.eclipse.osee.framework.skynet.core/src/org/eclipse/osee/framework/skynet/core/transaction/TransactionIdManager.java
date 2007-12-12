@@ -40,16 +40,21 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 public class TransactionIdManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(TransactionIdManager.class);
    public static final String NO_TRANSACTIONS_MESSAGE = "No transactions where found in the database for branch: ";
-   private static final String largestTransIdSql = "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id",
-         "largest_transaction_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?";
-   private static final String SELECT_COMMENT = "SELECT " + TRANSACTION_DETAIL_TABLE.column(TXD_COMMENT) + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = ?";
-   private static final String SELECT_MAX_MIN_TX = "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "max_id") + "," + TRANSACTION_DETAIL_TABLE.min(
-         "transaction_id", "min_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id = ?";
-   private static final String SELECT_TX_GAMMAS = "SELECT " + TRANSACTIONS_TABLE.columns("transaction_id", "gamma_id") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.join(
-         TRANSACTIONS_TABLE, "transaction_id") + " ORDER BY " + TRANSACTIONS_TABLE.columns("transaction_id", "gamma_id");
-   private static final String SELECT_TX_GAMMAS_RANGE = "SELECT " + TRANSACTIONS_TABLE.columns("transaction_id",
-         "gamma_id") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
-         TRANSACTIONS_TABLE, "transaction_id") + " ORDER BY " + TRANSACTIONS_TABLE.columns("transaction_id", "gamma_id");
+   private static final String largestTransIdSql =
+         "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "largest_transaction_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?";
+   private static final String SELECT_COMMENT =
+         "SELECT " + TRANSACTION_DETAIL_TABLE.column(TXD_COMMENT) + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = ?";
+   private static final String SELECT_MAX_MIN_TX =
+         "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "max_id") + "," + TRANSACTION_DETAIL_TABLE.min(
+               "transaction_id", "min_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE branch_id = ?";
+   private static final String SELECT_TX_GAMMAS =
+         "SELECT " + TRANSACTIONS_TABLE.columns("transaction_id", "gamma_id") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               TRANSACTIONS_TABLE, "transaction_id") + " ORDER BY " + TRANSACTIONS_TABLE.columns("transaction_id",
+               "gamma_id");
+   private static final String SELECT_TX_GAMMAS_RANGE =
+         "SELECT " + TRANSACTIONS_TABLE.columns("transaction_id", "gamma_id") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
+               TRANSACTIONS_TABLE, "transaction_id") + " ORDER BY " + TRANSACTIONS_TABLE.columns("transaction_id",
+               "gamma_id");
    private final Map<Branch, TransactionId> editableTransactionCache;
    private final Map<Integer, TransactionId> nonEditableTransactionIdCache;
    private static final TransactionIdManager reference = new TransactionIdManager();
@@ -196,8 +201,8 @@ public class TransactionIdManager {
    }
 
    private TransactionId createTransactionId(int transactionNumber, Branch branch, boolean head) {
-      TransactionId transactionId = new TransactionId(transactionNumber, branch, head,
-            getTransactionComment(transactionNumber));
+      TransactionId transactionId =
+            new TransactionId(transactionNumber, branch, head, getTransactionComment(transactionNumber));
 
       if (head) {
          editableTransactionCache.put(branch, transactionId);
@@ -340,9 +345,10 @@ public class TransactionIdManager {
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(
-               "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("time") + " < ?",
-               SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.TIMESTAMP, time);
+         chStmt =
+               ConnectionHandler.runPreparedQuery(
+                     "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("time") + " < ?",
+                     SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.TIMESTAMP, time);
 
          ResultSet rset = chStmt.getRset();
          if (rset.next()) {
@@ -366,10 +372,11 @@ public class TransactionIdManager {
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(
-               "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " < ?",
-               SQL3DataType.INTEGER, transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
-               transactionId.getTransactionNumber());
+         chStmt =
+               ConnectionHandler.runPreparedQuery(
+                     "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "prior_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " < ?",
+                     SQL3DataType.INTEGER, transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
+                     transactionId.getTransactionNumber());
 
          ResultSet rset = chStmt.getRset();
          if (rset.next()) {
@@ -389,10 +396,11 @@ public class TransactionIdManager {
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(
-               "SELECT MIN(transaction_id) next_id " + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " > ?",
-               SQL3DataType.INTEGER, transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
-               transactionId.getTransactionNumber());
+         chStmt =
+               ConnectionHandler.runPreparedQuery(
+                     "SELECT MIN(transaction_id) next_id " + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " > ?",
+                     SQL3DataType.INTEGER, transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
+                     transactionId.getTransactionNumber());
 
          ResultSet rset = chStmt.getRset();
          if (rset.next()) {
@@ -451,14 +459,16 @@ public class TransactionIdManager {
 
       try {
          if (startTransactionId.getTransactionNumber() == endTransactionId.getTransactionNumber()) {
-            chStmt = ConnectionHandler.runPreparedQuery(SELECT_TX_GAMMAS, SQL3DataType.INTEGER,
-                  startTransactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
-                  startTransactionId.getTransactionNumber());
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(SELECT_TX_GAMMAS, SQL3DataType.INTEGER,
+                        startTransactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
+                        startTransactionId.getTransactionNumber());
          } else {
-            chStmt = ConnectionHandler.runPreparedQuery(SELECT_TX_GAMMAS_RANGE, SQL3DataType.INTEGER,
-                  startTransactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
-                  startTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                  endTransactionId.getTransactionNumber());
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(SELECT_TX_GAMMAS_RANGE, SQL3DataType.INTEGER,
+                        startTransactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
+                        startTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                        endTransactionId.getTransactionNumber());
          }
 
          ResultSet rset = chStmt.getRset();

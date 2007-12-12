@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
  * @author Jeff C. Phillips
  */
 public class RelationTransactionData implements ITransactionData {
-   private static final String INSERT_INTO_RELATION_TABLE = "INSERT INTO " + RELATION_LINK_VERSION_TABLE + " (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, a_order_value, b_order_value, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
+   private static final String INSERT_INTO_RELATION_TABLE =
+         "INSERT INTO " + RELATION_LINK_VERSION_TABLE + " (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, a_order_value, b_order_value, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
    private static final int PRIME_NUMBER = 7;
 
    private IRelationLink link;

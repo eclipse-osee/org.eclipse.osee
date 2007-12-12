@@ -42,9 +42,12 @@ import org.eclipse.osee.framework.ui.plugin.util.db.StringRsetProcessor;
 public class SnapshotPersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SnapshotPersistenceManager.class);
    private static final String DROP_SNAPSHOT = "DELETE FROM " + SNAPSHOT_TABLE + " WHERE namespace=? and key=?";
-   private static final String INSERT_SNAPSHOT = "INSERT INTO " + SNAPSHOT_TABLE + " (NAMESPACE, KEY, LAST_UPDATED, LAST_ACCESSED, OBJECT) VALUES (?,?,?,?,?)";
-   private static final String UPDATE_LAST_ACCESSED = "UPDATE " + SNAPSHOT_TABLE + " SET last_accessed=? WHERE namespace=? AND key=?";
-   private static final String SELECT_SNAPSHOT = "SELECT object, last_updated FROM " + SNAPSHOT_TABLE + " WHERE namespace=? AND key=?";
+   private static final String INSERT_SNAPSHOT =
+         "INSERT INTO " + SNAPSHOT_TABLE + " (NAMESPACE, KEY, LAST_UPDATED, LAST_ACCESSED, OBJECT) VALUES (?,?,?,?,?)";
+   private static final String UPDATE_LAST_ACCESSED =
+         "UPDATE " + SNAPSHOT_TABLE + " SET last_accessed=? WHERE namespace=? AND key=?";
+   private static final String SELECT_SNAPSHOT =
+         "SELECT object, last_updated FROM " + SNAPSHOT_TABLE + " WHERE namespace=? AND key=?";
    private static final String SELECT_KEYS = "SELECT key FROM " + SNAPSHOT_TABLE + " WHERE namespace=?";
    private static final SnapshotPersistenceManager instance = new SnapshotPersistenceManager();
 
@@ -85,8 +88,9 @@ public class SnapshotPersistenceManager {
       ConnectionHandlerStatement chStmt = null;
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(1, SELECT_SNAPSHOT, SQL3DataType.VARCHAR, namespace,
-               SQL3DataType.VARCHAR, key);
+         chStmt =
+               ConnectionHandler.runPreparedQuery(1, SELECT_SNAPSHOT, SQL3DataType.VARCHAR, namespace,
+                     SQL3DataType.VARCHAR, key);
 
          ResultSet rset = chStmt.getRset();
 

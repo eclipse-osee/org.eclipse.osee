@@ -35,7 +35,8 @@ public class ArtifactSubtypeDescriptorCache {
    private final DoubleKeyHashMap<String, TransactionId, ArtifactSubtypeDescriptor> nameToDescriptors;
    private final DoubleKeyHashMap<Integer, TransactionId, ArtifactSubtypeDescriptor> idToDescriptors;
 
-   private static final String SELECT_ARTIFACT_TYPES = "SELECT aty1.art_type_id, aty1.factory_key, aty1.name, aty1.image, fac2.factory_class FROM osee_define_artifact_type aty1, osee_define_factory fac2 WHERE aty1.factory_id = fac2.factory_id AND EXISTS (SELECT MAX(txs3.transaction_id) FROM osee_define_txs txs3, osee_define_tx_details txd4 WHERE aty1.gamma_id = txs3.gamma_id AND txs3.transaction_id = txd4.transaction_id AND txd4.branch_id = ? AND txd4.transaction_id <= ?) ORDER BY aty1.name";
+   private static final String SELECT_ARTIFACT_TYPES =
+         "SELECT aty1.art_type_id, aty1.factory_key, aty1.name, aty1.image, fac2.factory_class FROM osee_define_artifact_type aty1, osee_define_factory fac2 WHERE aty1.factory_id = fac2.factory_id AND EXISTS (SELECT MAX(txs3.transaction_id) FROM osee_define_txs txs3, osee_define_tx_details txd4 WHERE aty1.gamma_id = txs3.gamma_id AND txs3.transaction_id = txd4.transaction_id AND txd4.branch_id = ? AND txd4.transaction_id <= ?) ORDER BY aty1.name";
 
    protected ArtifactSubtypeDescriptorCache() {
       this.allDescriptors = new HashCollection<TransactionId, ArtifactSubtypeDescriptor>(false, LinkedHashSet.class);

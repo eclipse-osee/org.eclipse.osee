@@ -225,7 +225,8 @@ public class ChangeReportInput implements Serializable {
             priorToTransactionId = transactionManager.getNonEditableTransactionId(transactionNumber);
 
             if (priorBranchInput) {
-               priorToTransactionId = transactionManager.getNonEditableStartEndPoint(priorToTransactionId.getBranch()).getValue();
+               priorToTransactionId =
+                     transactionManager.getNonEditableStartEndPoint(priorToTransactionId.getBranch()).getValue();
             }
          }
 

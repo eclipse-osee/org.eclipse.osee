@@ -46,17 +46,28 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 
 public class AccessControlManager implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AccessControlManager.class);
-   private static final String INSERT_INTO_ARTIFACT_ACL = "INSERT INTO " + SkynetDatabase.ARTIFACT_TABLE_ACL + " (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
-   private static final String INSERT_INTO_BRANCH_ACL = "INSERT INTO " + SkynetDatabase.BRANCH_TABLE_ACL + " (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
-   private static final String UPDATE_ARTIFACT_ACL = "UPDATE " + SkynetDatabase.ARTIFACT_TABLE_ACL + " SET permission_id = ? WHERE privilege_entity_id =? AND art_id = ? AND branch_id = ?";
-   private static final String UPDATE_BRANCH_ACL = "UPDATE " + SkynetDatabase.BRANCH_TABLE_ACL + " SET permission_id = ? WHERE privilege_entity_id =? AND branch_id = ?";
-   private static final String GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST = "SELECT t2.permission_id, t2.privilege_entity_id, t2.art_id, t2.branch_id, t3.name FROM " + SkynetDatabase.ARTIFACT_TABLE + " t1, " + SkynetDatabase.ARTIFACT_TABLE_ACL + " t2, " + SkynetDatabase.ARTIFACT_TYPE_TABLE + " t3 WHERE t1.art_id = t2.privilege_entity_id AND t1.art_type_id = t3.art_type_id";
-   private static final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST = "SELECT t2.permission_id,t2.privilege_entity_id, t2.branch_id, t3.name FROM " + SkynetDatabase.ARTIFACT_TABLE + " t1, " + SkynetDatabase.BRANCH_TABLE_ACL + " t2, " + SkynetDatabase.ARTIFACT_TYPE_TABLE + " t3 WHERE t1.art_id = t2.privilege_entity_id AND t1.art_type_id = t3.art_type_id";
-   private static final String DELETE_ARTIFACT_ACL = "DELETE FROM " + SkynetDatabase.ARTIFACT_TABLE_ACL + " WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
-   private static final String DELETE_BRANCH_ACL = "DELETE FROM " + SkynetDatabase.BRANCH_TABLE_ACL + " WHERE privilege_entity_id = ? AND branch_id =?";
-   private static final String DELETE_ARTIFACT_ACL_FROM_BRANCH = "DELETE FROM " + SkynetDatabase.ARTIFACT_TABLE_ACL + " WHERE  branch_id =?";
-   private static final String DELETE_BRANCH_ACL_FROM_BRANCH = "DELETE FROM " + SkynetDatabase.BRANCH_TABLE_ACL + " WHERE branch_id =?";
-   private static final String USER_GROUP_MEMBERS = "SELECT t2.b_art_id AS user_id FROM " + SkynetDatabase.RELATION_LINK_TYPE_TABLE + " t1, " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2 WHERE t1.type_name = 'Users' AND t1.rel_link_type_id = t2.rel_link_type_id AND t2.a_art_id =? ORDER BY user_id";
+   private static final String INSERT_INTO_ARTIFACT_ACL =
+         "INSERT INTO " + SkynetDatabase.ARTIFACT_TABLE_ACL + " (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
+   private static final String INSERT_INTO_BRANCH_ACL =
+         "INSERT INTO " + SkynetDatabase.BRANCH_TABLE_ACL + " (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
+   private static final String UPDATE_ARTIFACT_ACL =
+         "UPDATE " + SkynetDatabase.ARTIFACT_TABLE_ACL + " SET permission_id = ? WHERE privilege_entity_id =? AND art_id = ? AND branch_id = ?";
+   private static final String UPDATE_BRANCH_ACL =
+         "UPDATE " + SkynetDatabase.BRANCH_TABLE_ACL + " SET permission_id = ? WHERE privilege_entity_id =? AND branch_id = ?";
+   private static final String GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST =
+         "SELECT t2.permission_id, t2.privilege_entity_id, t2.art_id, t2.branch_id, t3.name FROM " + SkynetDatabase.ARTIFACT_TABLE + " t1, " + SkynetDatabase.ARTIFACT_TABLE_ACL + " t2, " + SkynetDatabase.ARTIFACT_TYPE_TABLE + " t3 WHERE t1.art_id = t2.privilege_entity_id AND t1.art_type_id = t3.art_type_id";
+   private static final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST =
+         "SELECT t2.permission_id,t2.privilege_entity_id, t2.branch_id, t3.name FROM " + SkynetDatabase.ARTIFACT_TABLE + " t1, " + SkynetDatabase.BRANCH_TABLE_ACL + " t2, " + SkynetDatabase.ARTIFACT_TYPE_TABLE + " t3 WHERE t1.art_id = t2.privilege_entity_id AND t1.art_type_id = t3.art_type_id";
+   private static final String DELETE_ARTIFACT_ACL =
+         "DELETE FROM " + SkynetDatabase.ARTIFACT_TABLE_ACL + " WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
+   private static final String DELETE_BRANCH_ACL =
+         "DELETE FROM " + SkynetDatabase.BRANCH_TABLE_ACL + " WHERE privilege_entity_id = ? AND branch_id =?";
+   private static final String DELETE_ARTIFACT_ACL_FROM_BRANCH =
+         "DELETE FROM " + SkynetDatabase.ARTIFACT_TABLE_ACL + " WHERE  branch_id =?";
+   private static final String DELETE_BRANCH_ACL_FROM_BRANCH =
+         "DELETE FROM " + SkynetDatabase.BRANCH_TABLE_ACL + " WHERE branch_id =?";
+   private static final String USER_GROUP_MEMBERS =
+         "SELECT t2.b_art_id AS user_id FROM " + SkynetDatabase.RELATION_LINK_TYPE_TABLE + " t1, " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2 WHERE t1.type_name = 'Users' AND t1.rel_link_type_id = t2.rel_link_type_id AND t2.a_art_id =? ORDER BY user_id";
 
    public static enum ObjectTypeEnum {
       ALL, BRANCH, REL_TYPE, ART_TYPE, ATTR_TYPE, ART;
@@ -228,8 +239,8 @@ public class AccessControlManager implements PersistenceManager {
       if (!groupToSubjectsCache.containsKey(groupId)) {
          Integer groupMember;
 
-         ConnectionHandlerStatement chStmt = ConnectionHandler.runPreparedQuery(USER_GROUP_MEMBERS,
-               SQL3DataType.INTEGER, groupId);
+         ConnectionHandlerStatement chStmt =
+               ConnectionHandler.runPreparedQuery(USER_GROUP_MEMBERS, SQL3DataType.INTEGER, groupId);
 
          // get group members and populate subjectToGroupCache
          while (chStmt.next()) {
@@ -442,8 +453,9 @@ public class AccessControlManager implements PersistenceManager {
                }
 
                if (recurse) {
-                  Artifact artifact = artifactManager.getArtifactFromId(artifactAccessObject.getArtId(),
-                        branchManager.getBranch(artifactAccessObject.getBranchId()));
+                  Artifact artifact =
+                        artifactManager.getArtifactFromId(artifactAccessObject.getArtId(),
+                              branchManager.getBranch(artifactAccessObject.getBranchId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {
@@ -513,8 +525,8 @@ public class AccessControlManager implements PersistenceManager {
       try {
          if (object instanceof Artifact) {
             Artifact artifact = (Artifact) object;
-            accessObject = (ArtifactAccessObject) accessObjectCache.get(artifact.getArtId(),
-                  artifact.getBranch().getBranchId());
+            accessObject =
+                  (ArtifactAccessObject) accessObjectCache.get(artifact.getArtId(), artifact.getBranch().getBranchId());
          } else if (object instanceof Branch) {
             Branch branch = (Branch) object;
             accessObject = (BranchAccessObject) branchAccessObjectCache.get(branch.getBranchId());

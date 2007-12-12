@@ -51,11 +51,13 @@ public class SkynetArtifactViews {
          String tempAttribute = attributes.get(index);
          String columnAlias = getAttributeColumnAlias(tempAttribute);
          toReturn += ",\n";
-         toReturn += "(" + getColumn(tempAttribute, outerTable + ".art_id", branchId, revision) + ")" + " as " + columnAlias;
+         toReturn +=
+               "(" + getColumn(tempAttribute, outerTable + ".art_id", branchId, revision) + ")" + " as " + columnAlias;
       }
       toReturn += " FROM ";
       toReturn += "(";
-      toReturn += "SELECT " + artifactTable + ".* FROM " + "(" + skynetSql.getDataSql().getArtifacts(branchId, revision) + ")" + artifactTable + " WHERE " + "(" + artifactTable + ".name = '" + artifactName + "'" + ")";
+      toReturn +=
+            "SELECT " + artifactTable + ".* FROM " + "(" + skynetSql.getDataSql().getArtifacts(branchId, revision) + ")" + artifactTable + " WHERE " + "(" + artifactTable + ".name = '" + artifactName + "'" + ")";
       toReturn += ")";
       toReturn += outerTable;
       return toReturn;

@@ -144,8 +144,9 @@ public class OseeClientsTab {
 
    private void processShutdownRequest(String reason, String[] selectedUsers) {
       if (reason != null && reason.length() > 0 && selectedUsers.length > 0) {
-         boolean result = MessageDialog.openConfirm(mainComposite.getShell(), "Disconnect OSEE Clients",
-               "Are you sure you want to shutdown the selected OSEE clients?");
+         boolean result =
+               MessageDialog.openConfirm(mainComposite.getShell(), "Disconnect OSEE Clients",
+                     "Are you sure you want to shutdown the selected OSEE clients?");
          if (false != result) {
             remoteEventManager.kick(new SkynetDisconnectClientsEvent(selectedUsers, 0, 0, reason,
                   SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
@@ -185,8 +186,8 @@ public class OseeClientsTab {
       group.setLayout(new GridLayout());
       group.setText("Select Users to Shutdown");
 
-      peopleCheckboxTreeViewer = new CheckboxTreeViewer(group,
-            SWT.BORDER | SWT.MULTI | SWT.CHECK | SWT.V_SCROLL | SWT.H_SCROLL);
+      peopleCheckboxTreeViewer =
+            new CheckboxTreeViewer(group, SWT.BORDER | SWT.MULTI | SWT.CHECK | SWT.V_SCROLL | SWT.H_SCROLL);
       peopleCheckboxTreeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       peopleCheckboxTreeViewer.setContentProvider(new TreeContentProvider());

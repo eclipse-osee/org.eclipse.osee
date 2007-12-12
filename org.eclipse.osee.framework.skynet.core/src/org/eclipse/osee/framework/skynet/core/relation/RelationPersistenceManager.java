@@ -72,31 +72,34 @@ public class RelationPersistenceManager implements PersistenceManager {
    private static final LocalAliasTable LINK_ALIAS_1 = new LocalAliasTable(RELATION_LINK_VERSION_TABLE, "t1");
    private static final LocalAliasTable LINK_ALIAS_2 = new LocalAliasTable(RELATION_LINK_VERSION_TABLE, "t2");
 
-   private static final String SELECT_LINKS = "SELECT DISTINCT " + RELATION_LINK_TYPE_TABLE.columns("type_name",
-         "a_name", "b_name", "ab_phrasing", "ba_phrasing", "short_name") + ", " + LINK_ALIAS_1.columns("rel_link_id",
-         "a_art_id", "b_art_id", "rationale", "a_order_value", "b_order_value", "gamma_id")
+   private static final String SELECT_LINKS =
+         "SELECT DISTINCT " + RELATION_LINK_TYPE_TABLE.columns("type_name", "a_name", "b_name", "ab_phrasing",
+               "ba_phrasing", "short_name") + ", " + LINK_ALIAS_1.columns("rel_link_id", "a_art_id", "b_art_id",
+               "rationale", "a_order_value", "b_order_value", "gamma_id")
 
-   + " FROM " + LINK_ALIAS_1 + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE
+         + " FROM " + LINK_ALIAS_1 + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE
 
-   + " WHERE " + LINK_ALIAS_1.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND " + LINK_ALIAS_1.column("a_art_id") + "= ?" + " AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + LINK_ALIAS_1.column("modification_id") + "<> ?" + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)"
+         + " WHERE " + LINK_ALIAS_1.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND " + LINK_ALIAS_1.column("a_art_id") + "= ?" + " AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + LINK_ALIAS_1.column("modification_id") + "<> ?" + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)"
 
-   + " UNION ALL "
+         + " UNION ALL "
 
-   + "SELECT DISTINCT " + RELATION_LINK_TYPE_TABLE.columns("type_name", "a_name", "b_name", "ab_phrasing",
-         "ba_phrasing", "short_name") + ", " + LINK_ALIAS_1.columns("rel_link_id", "a_art_id", "b_art_id", "rationale",
-         "a_order_value", "b_order_value", "gamma_id")
+         + "SELECT DISTINCT " + RELATION_LINK_TYPE_TABLE.columns("type_name", "a_name", "b_name", "ab_phrasing",
+               "ba_phrasing", "short_name") + ", " + LINK_ALIAS_1.columns("rel_link_id", "a_art_id", "b_art_id",
+               "rationale", "a_order_value", "b_order_value", "gamma_id")
 
-   + " FROM " + LINK_ALIAS_1 + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE
+         + " FROM " + LINK_ALIAS_1 + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE
 
-   + " WHERE " + LINK_ALIAS_1.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND " + LINK_ALIAS_1.column("b_art_id") + "= ?" + " AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + LINK_ALIAS_1.column("modification_id") + "<> ?" + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)";
+         + " WHERE " + LINK_ALIAS_1.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND " + LINK_ALIAS_1.column("b_art_id") + "= ?" + " AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + LINK_ALIAS_1.column("modification_id") + "<> ?" + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)";
 
-   private static final String UPDATE_RELATION_ORDERS = "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order_value=?, b_order_value=? WHERE gamma_id=?";
+   private static final String UPDATE_RELATION_ORDERS =
+         "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order_value=?, b_order_value=? WHERE gamma_id=?";
    private TransactionIdManager transactionIdManager;
    private ArtifactPersistenceManager artifactManager;
    private ConfigurationPersistenceManager configurationManager;
 
    // This must be declared here cause it can't be declared in enum RelationSide
-   public static DoubleKeyHashMap<String, Boolean, IRelationEnumeration> sideHash = new DoubleKeyHashMap<String, Boolean, IRelationEnumeration>();
+   public static DoubleKeyHashMap<String, Boolean, IRelationEnumeration> sideHash =
+         new DoubleKeyHashMap<String, Boolean, IRelationEnumeration>();
    public enum Direction {
       Back, Forward
    };
@@ -284,8 +287,8 @@ public class RelationPersistenceManager implements PersistenceManager {
 
       // TODO this will fail if over 1000 links are removed at once ... consider handling this by
       // breaking into chunks
-      StringBuffer deleteSql = new StringBuffer(
-            " Delete from " + RELATION_LINK_VERSION_TABLE + " WHERE REL_LINK_ID in ( ");
+      StringBuffer deleteSql =
+            new StringBuffer(" Delete from " + RELATION_LINK_VERSION_TABLE + " WHERE REL_LINK_ID in ( ");
 
       for (RelationLinkBase link : links) {
          if (!firstTime) deleteSql.append(" , ");
@@ -524,8 +527,10 @@ public class RelationPersistenceManager implements PersistenceManager {
                return null;
             }
 
-            link = new DynamicRelationLink(artA, artB, descriptor, new LinkPersistenceMemo(relId, gammaId),
-                  (rationale != null && !rationale.equals("null")) ? rationale : "", aOrderValue, bOrderValue, false);
+            link =
+                  new DynamicRelationLink(artA, artB, descriptor, new LinkPersistenceMemo(relId, gammaId),
+                        (rationale != null && !rationale.equals("null")) ? rationale : "", aOrderValue, bOrderValue,
+                        false);
 
             relationsCache.put(relId, transactionId, link);
 
@@ -565,7 +570,8 @@ public class RelationPersistenceManager implements PersistenceManager {
 
             if (event instanceof RemoteRelationLinkModifiedEvent) {
 
-               RemoteRelationLinkModifiedEvent remoteRelationLinkModifiedEvent = (RemoteRelationLinkModifiedEvent) event;
+               RemoteRelationLinkModifiedEvent remoteRelationLinkModifiedEvent =
+                     (RemoteRelationLinkModifiedEvent) event;
 
                if (link.isDirty()) {
                   String msg = "There has been a conflict with a relationLink";
@@ -596,26 +602,28 @@ public class RelationPersistenceManager implements PersistenceManager {
             RemoteNewRelationLinkEvent newRelationEvent = (RemoteNewRelationLinkEvent) event;
 
             try {
-               ArtifactFactory<?> aFactory = (ArtifactFactory<?>) configurationManager.getFactoryFromName(newRelationEvent.getAFactoryName());
-               ArtifactFactory<?> bFactory = (ArtifactFactory<?>) configurationManager.getFactoryFromName(newRelationEvent.getBFactoryName());
+               ArtifactFactory<?> aFactory =
+                     (ArtifactFactory<?>) configurationManager.getFactoryFromName(newRelationEvent.getAFactoryName());
+               ArtifactFactory<?> bFactory =
+                     (ArtifactFactory<?>) configurationManager.getFactoryFromName(newRelationEvent.getBFactoryName());
 
                if (aFactory.containsArtifact(artAId, branch.getBranchId()) || bFactory.containsArtifact(artBId,
                      branch.getBranchId())) {
-                  Artifact artA = artifactManager.getArtifactFromId(artAId,
-                        transactionIdManager.getEditableTransactionId(branch));
-                  Artifact artB = artifactManager.getArtifactFromId(artBId,
-                        transactionIdManager.getEditableTransactionId(branch));
+                  Artifact artA =
+                        artifactManager.getArtifactFromId(artAId, transactionIdManager.getEditableTransactionId(branch));
+                  Artifact artB =
+                        artifactManager.getArtifactFromId(artBId, transactionIdManager.getEditableTransactionId(branch));
 
-                  IRelationLinkDescriptor descriptor = relationLinkDescriptorCache.getDescriptor(
-                        newRelationEvent.getRelTypeId(), branch);
+                  IRelationLinkDescriptor descriptor =
+                        relationLinkDescriptorCache.getDescriptor(newRelationEvent.getRelTypeId(), branch);
 
                   LinkPersistenceMemo memo = new LinkPersistenceMemo(relId, gammaId);
                   String rationale = newRelationEvent.getRationale();
                   int aOrder = newRelationEvent.getAOrder();
                   int bOrder = newRelationEvent.getBOrder();
 
-                  DynamicRelationLink link = new DynamicRelationLink(artA, artB, descriptor, memo, rationale, aOrder,
-                        bOrder, false);
+                  DynamicRelationLink link =
+                        new DynamicRelationLink(artA, artB, descriptor, memo, rationale, aOrder, bOrder, false);
 
                   if (artA.isLinkManagerLoaded()) artA.getLinkManager().addLink(link);
                   if (artB.isLinkManagerLoaded()) artB.getLinkManager().addLink(link);

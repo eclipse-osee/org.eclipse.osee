@@ -78,7 +78,8 @@ public class ArtifactStaticIdSearch {
       else
          activeCriteria.add(new AttributeValueSearch(STATIC_ID_ATTRIBUTE, "%" + artifactName + "%", Operator.LIKE));
       try {
-         Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, branch);
+         Collection<Artifact> arts =
+               ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, branch);
          for (Artifact art : arts)
             results.add((A) art);
       } catch (SQLException ex) {

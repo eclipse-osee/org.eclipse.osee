@@ -73,8 +73,8 @@ public class HttpResourceRequest implements IHttpMethod {
    private URL findResource(String urlRequested) {
       URL resource = null;
       if (Strings.isValid(urlRequested)) {
-         List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(
-               "org.eclipse.osee.framework.skynet.core.WebPage", "WebPageFolder");
+         List<IConfigurationElement> elements =
+               ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.WebPage", "WebPageFolder");
          for (IConfigurationElement element : elements) {
             String resourceName = element.getAttribute("Path");
             String bundleName = element.getContributor().getName();

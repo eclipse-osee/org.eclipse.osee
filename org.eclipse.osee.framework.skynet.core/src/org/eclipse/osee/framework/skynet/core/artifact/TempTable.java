@@ -23,7 +23,8 @@ public class TempTable extends Table {
 
    public TempTable(String tableName) throws SQLException {
       super(tableName);
-      this.CREATE_TABLE = "CREATE GLOBAL TEMPORARY TABLE " + tableName + " (transaction_id DECIMAL, gamma_id DECIMAL, tx_type DECIMAL) ";
+      this.CREATE_TABLE =
+            "CREATE GLOBAL TEMPORARY TABLE " + tableName + " (transaction_id DECIMAL, gamma_id DECIMAL, tx_type DECIMAL) ";
       this.DROP_TABLE = "DROP TABLE " + tableName;
 
       create();

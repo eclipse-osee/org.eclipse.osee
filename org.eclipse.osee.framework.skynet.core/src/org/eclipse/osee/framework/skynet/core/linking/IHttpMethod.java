@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.linking;
 
-
 /**
  * @author Roberto E. Escobar
  */

@@ -46,8 +46,9 @@ public class HeadlessEclipseConfigurationFactory extends BaseConfigurationFactor
       createDir(new File(logDir + instanceName));
 
       try {
-         handler = new FileHandler(logDir + File.separator + instanceName + File.separator + instanceName + ".log",
-               5000000, 1, true);
+         handler =
+               new FileHandler(logDir + File.separator + instanceName + File.separator + instanceName + ".log",
+                     5000000, 1, true);
       } catch (SecurityException ex) {
          ex.printStackTrace();
       } catch (IOException ex) {

@@ -45,8 +45,10 @@ import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
  * @author Jeff C. Phillips
  */
 public class WordUtil {
-   private static final String SELECT_WORD_VALUES = "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("content", "gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE art_id=? AND attr_type_id=? AND " + ATTRIBUTE_VERSION_TABLE.join(
-         TRANSACTIONS_TABLE, "gamma_id") + " AND " + TRANSACTIONS_TABLE.join(TRANSACTION_DETAIL_TABLE, "transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? ORDER BY gamma_id DESC";
+   private static final String SELECT_WORD_VALUES =
+         "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("content", "gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE art_id=? AND attr_type_id=? AND " + ATTRIBUTE_VERSION_TABLE.join(
+               TRANSACTIONS_TABLE, "gamma_id") + " AND " + TRANSACTIONS_TABLE.join(TRANSACTION_DETAIL_TABLE,
+               "transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? ORDER BY gamma_id DESC";
    private static final Pattern binDataIdPattern = Pattern.compile("wordml://(.+?)[.]");
    private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
@@ -91,13 +93,15 @@ public class WordUtil {
       if (branch == null) throw new IllegalArgumentException("branch can not be null");
 
       ConfigurationPersistenceManager manager = ConfigurationPersistenceManager.getInstance();
-      DynamicAttributeDescriptor attributeDescriptor = manager.getDynamicAttributeType(WordAttribute.CONTENT_NAME,
-            branch);
+      DynamicAttributeDescriptor attributeDescriptor =
+            manager.getDynamicAttributeType(WordAttribute.CONTENT_NAME, branch);
 
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_WORD_VALUES, SQL3DataType.INTEGER, artId,
-               SQL3DataType.INTEGER, attributeDescriptor.getAttrTypeId(), SQL3DataType.INTEGER, branch.getBranchId());
+         chStmt =
+               ConnectionHandler.runPreparedQuery(SELECT_WORD_VALUES, SQL3DataType.INTEGER, artId,
+                     SQL3DataType.INTEGER, attributeDescriptor.getAttrTypeId(), SQL3DataType.INTEGER,
+                     branch.getBranchId());
 
          ResultSet rset = chStmt.getRset();
          List<Pair<String, Integer>> values = new LinkedList<Pair<String, Integer>>();

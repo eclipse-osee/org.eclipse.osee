@@ -33,7 +33,8 @@ import org.eclipse.swt.graphics.Image;
 public class ArtifactChange extends RevisionChange {
    private static final long serialVersionUID = 1L;
    static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactChange.class);
-   private static final ArtifactPersistenceManager artifactPersistenceManager = ArtifactPersistenceManager.getInstance();
+   private static final ArtifactPersistenceManager artifactPersistenceManager =
+         ArtifactPersistenceManager.getInstance();
    private String name;
    private TransactionId baseParentTransactionId;
    private TransactionId headParentTransactionId;
@@ -141,8 +142,8 @@ public class ArtifactChange extends RevisionChange {
 
    private Artifact loadArtifact(TransactionId transactionId, Artifact artifact, int artId) throws SQLException {
       // Let the transactionId be editable if possible
-      transactionId = TransactionIdManager.getInstance().getPossiblyEditableTransactionId(
-            transactionId.getTransactionNumber());
+      transactionId =
+            TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactionId.getTransactionNumber());
 
       // the memo is checked on the cached artifact in case our original artifact was editable,
       // modified, and no longer on the transaction

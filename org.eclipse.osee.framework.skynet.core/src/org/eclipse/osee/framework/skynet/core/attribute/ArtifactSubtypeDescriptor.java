@@ -55,16 +55,16 @@ public class ArtifactSubtypeDescriptor implements Serializable {
    private static final ImageDescriptor incDeleted = SkynetActivator.getInstance().getImageDescriptor("inc_delete.gif");
    private static final ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change.gif");
    private static final ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete.gif");
-   private static final ImageDescriptor lockedAccess = SkynetActivator.getInstance().getImageDescriptor(
-         "green_lock.gif");
-   private static final ImageDescriptor lockedNoAccess = SkynetActivator.getInstance().getImageDescriptor(
-         "red_lock.gif");
-   private static final ImageDescriptor nextImageDesc = SkynetActivator.getInstance().getImageDescriptor(
-         "yellowN_8_8.gif");
-   private static final ImageDescriptor releasedImageDesc = SkynetActivator.getInstance().getImageDescriptor(
-         "orangeR_8_8.gif");
-   private static final ImageDescriptor metricsFromTasks = SkynetActivator.getInstance().getImageDescriptor(
-         "yellowT_8_8.gif");
+   private static final ImageDescriptor lockedAccess =
+         SkynetActivator.getInstance().getImageDescriptor("green_lock.gif");
+   private static final ImageDescriptor lockedNoAccess =
+         SkynetActivator.getInstance().getImageDescriptor("red_lock.gif");
+   private static final ImageDescriptor nextImageDesc =
+         SkynetActivator.getInstance().getImageDescriptor("yellowN_8_8.gif");
+   private static final ImageDescriptor releasedImageDesc =
+         SkynetActivator.getInstance().getImageDescriptor("orangeR_8_8.gif");
+   private static final ImageDescriptor metricsFromTasks =
+         SkynetActivator.getInstance().getImageDescriptor("yellowT_8_8.gif");
    private static final String LOCKED_ACCESS = "locked access";
    private static final String LOCKED_NO_ACCESS = "locked No access";
    private static final String SUBSCRIBED = "subscribed";
@@ -210,7 +210,8 @@ public class ArtifactSubtypeDescriptor implements Serializable {
 
    public Image getImage(boolean isSubscribed, boolean isFavorite, ArtifactAnnotation.Type notifyType, boolean isMetricsFromTasks) {
       checkImageRegistry();
-      String hashKey = BASE + (isSubscribed ? SUBSCRIBED : "") + (isFavorite ? FAVORITE : "") + ((notifyType == null || notifyType == ArtifactAnnotation.Type.None) ? "" : (notifyType == ArtifactAnnotation.Type.Error ? ERROR : WARNING) + (isMetricsFromTasks ? METRICS_FROM_TASKS : ""));
+      String hashKey =
+            BASE + (isSubscribed ? SUBSCRIBED : "") + (isFavorite ? FAVORITE : "") + ((notifyType == null || notifyType == ArtifactAnnotation.Type.None) ? "" : (notifyType == ArtifactAnnotation.Type.Error ? ERROR : WARNING) + (isMetricsFromTasks ? METRICS_FROM_TASKS : ""));
       Image image = imageRegistry.get(hashKey);
       if (image == null) {
 
@@ -218,10 +219,12 @@ public class ArtifactSubtypeDescriptor implements Serializable {
          if (isSubscribed) imageDesc = new OverlayImage(imageDesc.createImage(), subscribed, 8, 6);
          if (isFavorite) imageDesc = new OverlayImage(imageDesc.createImage(), favorite, 7, 0);
          if (notifyType == ArtifactAnnotation.Type.Error)
-            imageDesc = new OverlayImage(imageDesc.createImage(),
-                  ArtifactAnnotation.Type.Error.getImageOverlayDescriptor(), 0, 8);
-         else if (notifyType == ArtifactAnnotation.Type.Warning) imageDesc = new OverlayImage(imageDesc.createImage(),
-               ArtifactAnnotation.Type.Warning.getImageOverlayDescriptor(), 0, 8);
+            imageDesc =
+                  new OverlayImage(imageDesc.createImage(), ArtifactAnnotation.Type.Error.getImageOverlayDescriptor(),
+                        0, 8);
+         else if (notifyType == ArtifactAnnotation.Type.Warning) imageDesc =
+               new OverlayImage(imageDesc.createImage(), ArtifactAnnotation.Type.Warning.getImageOverlayDescriptor(),
+                     0, 8);
          if (isMetricsFromTasks) imageDesc = new OverlayImage(imageDesc.createImage(), metricsFromTasks, 0, 0);
          imageRegistry.put(hashKey, imageDesc);
          image = imageRegistry.get(hashKey);

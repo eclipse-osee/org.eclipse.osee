@@ -511,8 +511,10 @@ public class DynamicAttributeManager {
 
       for (Attribute attribute : getAttributes()) {
          boolean containsBlobData = attribute.getBlobData() == null;
-         newAttribute = attributeManager.injectFromDb(containsBlobData ? null : new ByteArrayInputStream(
-               attribute.getBlobData()), attribute.getStringData());
+         newAttribute =
+               attributeManager.injectFromDb(
+                     containsBlobData ? null : new ByteArrayInputStream(attribute.getBlobData()),
+                     attribute.getStringData());
 
          memo = attribute.getPersistenceMemo();
 

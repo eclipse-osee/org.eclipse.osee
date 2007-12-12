@@ -193,7 +193,8 @@ public class ClassServer extends Thread {
                         break;
                      case 0xE:
                         n = 9;
-                        c = (char) (((c & 0x0f) << 12) | ((decode(path, i + 3) & 0x3F) << 6) | (decode(path, i + 6) & 0x3F));
+                        c =
+                              (char) (((c & 0x0f) << 12) | ((decode(path, i + 3) & 0x3F) << 6) | (decode(path, i + 6) & 0x3F));
                         break;
                      default:
                         return null;

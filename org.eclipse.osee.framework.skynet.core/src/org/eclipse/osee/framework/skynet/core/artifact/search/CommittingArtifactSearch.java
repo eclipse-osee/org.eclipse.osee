@@ -24,7 +24,8 @@ import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
  */
 public class CommittingArtifactSearch implements ISearchPrimitive {
    private Integer artId;
-   private static final String tables = TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + "," + ARTIFACT_VERSION_TABLE;
+   private static final String tables =
+         TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + "," + ARTIFACT_VERSION_TABLE;
 
    public CommittingArtifactSearch(Integer artId) {
       if (artId == null) throw new IllegalArgumentException("artId can not be null");
@@ -37,8 +38,9 @@ public class CommittingArtifactSearch implements ISearchPrimitive {
    }
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
-      String whereConditions = TRANSACTION_DETAIL_TABLE.join(TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(
-            ARTIFACT_VERSION_TABLE, "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.column("art_id") + "=?";
+      String whereConditions =
+            TRANSACTION_DETAIL_TABLE.join(TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(
+                  ARTIFACT_VERSION_TABLE, "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.column("art_id") + "=?";
 
       dataList.add(SQL3DataType.INTEGER);
       dataList.add(artId);

@@ -34,9 +34,10 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
  */
 /*default*/class CloudDescriptorFactory {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(CloudDescriptorFactory.class);
-   private static final String SELECT_CLOUD_TYPES = "SELECT " + TAG_CLOUD_TYPE_TABLE.columns("tag_cloud_name",
-         "cloud_type_id") + " FROM " + TAG_CLOUD_TYPE_TABLE;
-   private static final String INSERT_CLOUD_TYPE = "INSERT INTO " + TAG_CLOUD_TYPE_TABLE + " (tag_cloud_name, cloud_type_id) VALUES (?, ?)";
+   private static final String SELECT_CLOUD_TYPES =
+         "SELECT " + TAG_CLOUD_TYPE_TABLE.columns("tag_cloud_name", "cloud_type_id") + " FROM " + TAG_CLOUD_TYPE_TABLE;
+   private static final String INSERT_CLOUD_TYPE =
+         "INSERT INTO " + TAG_CLOUD_TYPE_TABLE + " (tag_cloud_name, cloud_type_id) VALUES (?, ?)";
    private Map<String, CloudDescriptor> descriptors;
 
    /**
@@ -81,8 +82,9 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
       CloudDescriptor cloudDescriptor = null;
 
       try {
-         cloudDescriptor = new CloudDescriptor(descriptorName, Query.getNextSeqVal(ConnectionHandler.getConnection(),
-               SkynetDatabase.CLOUD_TYPE_ID_SEQ));
+         cloudDescriptor =
+               new CloudDescriptor(descriptorName, Query.getNextSeqVal(ConnectionHandler.getConnection(),
+                     SkynetDatabase.CLOUD_TYPE_ID_SEQ));
          ConnectionHandler.runPreparedQuery(INSERT_CLOUD_TYPE, SQL3DataType.VARCHAR, cloudDescriptor.getName(),
                SQL3DataType.INTEGER, cloudDescriptor.getCloudTypeId());
 

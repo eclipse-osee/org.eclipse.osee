@@ -217,8 +217,9 @@ public class EncrypterView extends ViewPart implements IActionable {
    private String getPassWord() {
       String passWord = "";
       int result = -1;
-      EntryDialog ed = new EntryDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Pass Phrase",
-            null, "Enter pass phrase", MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, 0);
+      EntryDialog ed =
+            new EntryDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Pass Phrase", null,
+                  "Enter pass phrase", MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, 0);
       result = ed.open();
 
       if (result == 0) {

@@ -28,7 +28,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFactory {
    public static ArtifactFactory<?> factory = null;
-   private static final ConfigurationPersistenceManager configurationManger = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationManger =
+         ConfigurationPersistenceManager.getInstance();
 
    private final int factoryId;
 
@@ -65,8 +66,9 @@ public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFa
          throw new IllegalArgumentException("The supplied descriptor is not appropriate for this factory");
       }
 
-      A artifact = getNewArtifact(guid, humandReadableId, descriptor.getFactoryKey(),
-            descriptor.getTransactionId().getBranch());
+      A artifact =
+            getNewArtifact(guid, humandReadableId, descriptor.getFactoryKey(),
+                  descriptor.getTransactionId().getBranch());
 
       // For now, the only difference we make is the ID, all other initialization is the same
       artifact.setDescriptor(descriptor);
@@ -152,8 +154,9 @@ public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFa
 
          artifact = artifactIdCache.get(desc.getArtId(), transactionId);
          if (artifact == null) {
-            artifact = getNewArtifact(desc.getGuid(), desc.getHumandReadableId(), desc.getFactoryKey(),
-                  transactionId.getBranch());
+            artifact =
+                  getNewArtifact(desc.getGuid(), desc.getHumandReadableId(), desc.getFactoryKey(),
+                        transactionId.getBranch());
             artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, desc.getArtId(), desc.getGammaId()));
             artifact.setDescriptor(configurationManger.getArtifactSubtypeDescriptor(desc.getArtTypeId(), transactionId));
             cache(artifact);
