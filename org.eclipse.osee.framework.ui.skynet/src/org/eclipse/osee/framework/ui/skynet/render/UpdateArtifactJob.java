@@ -24,7 +24,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -43,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.VisitorEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
-import org.eclipse.osee.framework.skynet.core.util.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -214,9 +215,6 @@ public class UpdateArtifactJob extends UpdateJob {
                   }
                   content = stringBuffer.toString();
                }
-
-               //remove smart after each save
-               content = WordUtil.removeWordMarkupSmartTags(content);
 
                artifact.setAttribute(WordAttribute.CONTENT_NAME, content);
                if (artifact.isDirty()) {
