@@ -3,4 +3,5 @@
 <plugin>
 <extension-point id="logHandler" name="Log Handler" schema="schema/logHandler.exsd"/>
      <extension-point id="JdbcConnection" name="JdbcConnection" schema="schema/JdbcConnection.exsd"/>
+     <extension-point id="OseeConfigFile" name="OseeConfigFile" schema="schema/OseeConfigFile.exsd"/>
 </plugin>
