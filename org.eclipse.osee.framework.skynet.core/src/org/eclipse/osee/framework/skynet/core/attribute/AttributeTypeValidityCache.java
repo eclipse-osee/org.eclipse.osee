@@ -21,8 +21,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
@@ -85,12 +88,16 @@ public class AttributeTypeValidityCache {
                new HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor>(100);
 
          while (rSet.next()) {
-            ArtifactSubtypeDescriptor artifactType =
-                  configurationManager.getArtifactSubtypeDescriptor(rSet.getInt("art_type_id"), transactionId);
-            DynamicAttributeDescriptor attributeType =
-                  configurationManager.getDynamicAttributeType(rSet.getInt("attr_type_id"), transactionId);
-
-            map.put(artifactType, attributeType);
+        	 try{
+	            ArtifactSubtypeDescriptor artifactType =
+	                  configurationManager.getArtifactSubtypeDescriptor(rSet.getInt("art_type_id"), transactionId);
+	            DynamicAttributeDescriptor attributeType =
+	                  configurationManager.getDynamicAttributeType(rSet.getInt("attr_type_id"), transactionId);
+	
+	            map.put(artifactType, attributeType);
+        	 }catch(IllegalArgumentException ex){
+        		 SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+        	 }
          }
 
          for (ArtifactSubtypeDescriptor artifactType : map.keySet()) {
