@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.ui.security;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.KeySpec;
+import java.security.spec.InvalidKeySpecException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
@@ -24,51 +24,54 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-
 
 /**
  * Encrypts and Decrypts inputStreams using DES and MD5 hashing.
  * 
- *@author Jeff C. Phillips
+ * @author Jeff C. Phillips
  */
 
 public class DESEncrypter {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(DESEncrypter.class);
    private static final String KEY_FORMAT = "PBEWithMD5AndDES";
-   private int iterationCount = 15;
+   private static int iterationCount = 15;
    private Cipher encryptCipher;
    private Cipher decryptCipher;
+   private SecretKey key;
 
-   private byte[] salt = {
-       (byte)0x8E, (byte)0x45, (byte)0x77, (byte)0x94,
-       (byte)0x21, (byte)0x32, (byte)0x90, (byte)0x22
-   };
+   private static byte[] salt =
+         {(byte) 0x8E, (byte) 0x45, (byte) 0x77, (byte) 0x94, (byte) 0x21, (byte) 0x32, (byte) 0x90, (byte) 0x22};
 
-   /**
-    * 
-    * @param passPhrase
-    */
-   public DESEncrypter(String passPhrase) {
-      try {
-         KeySpec keySpec = new PBEKeySpec(passPhrase.toCharArray(), salt, iterationCount);
-         SecretKey key = SecretKeyFactory.getInstance(KEY_FORMAT).generateSecret(keySpec);
-         configureCipher(key);
-      }
-      catch (Exception ex) {
-         logger.log(Level.SEVERE, "", ex);
-      }
+   public DESEncrypter() throws InvalidKeySpecException, NoSuchAlgorithmException {
+      this(GUID.generateGuidStr());
    }
 
    /**
-    * 
+    * @param passPhrase
+    * @throws NoSuchAlgorithmException
+    * @throws InvalidKeySpecException
+    */
+   public DESEncrypter(String passPhrase) throws InvalidKeySpecException, NoSuchAlgorithmException {
+      this(SecretKeyFactory.getInstance(KEY_FORMAT).generateSecret(
+            new PBEKeySpec(passPhrase.toCharArray(), salt, iterationCount)));
+   }
+
+   /**
     * @param key
-    * 
-    * Key example: SecretKey key = KeyGenerator.getInstance("DES").generateKey();
     */
    public DESEncrypter(SecretKey key) {
+      this.key = key;
+
       configureCipher(key);
+   }
+
+   /**
+    * @return
+    */
+   public SecretKey getKey() {
+      return key;
    }
 
    private void configureCipher(SecretKey key) {
@@ -77,11 +80,10 @@ public class DESEncrypter {
          decryptCipher = Cipher.getInstance(key.getAlgorithm());
 
          AlgorithmParameterSpec paramSpec = new PBEParameterSpec(salt, iterationCount);
-         
+
          encryptCipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
          decryptCipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
          logger.log(Level.SEVERE, "", ex);
       }
    }
@@ -104,8 +106,7 @@ public class DESEncrypter {
          }
          in.close();
          out.close();
-      }
-      catch (java.io.IOException ex) {
+      } catch (java.io.IOException ex) {
          logger.log(Level.SEVERE, "", ex);
       }
    }
@@ -122,7 +123,6 @@ public class DESEncrypter {
    }
 
    /**
-    * 
     * @param in - inputStream
     * @param out - outputStream
     */
@@ -137,8 +137,7 @@ public class DESEncrypter {
             out.write(buffer, 0, index);
          }
          out.close();
-      }
-      catch (java.io.IOException ex) {
+      } catch (java.io.IOException ex) {
          logger.log(Level.SEVERE, "", ex);
       }
    }
