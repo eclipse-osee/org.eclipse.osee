@@ -134,8 +134,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactExplorer.class);
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final AccessControlManager accessManager = AccessControlManager.getInstance();
@@ -182,9 +181,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       IWorkbenchPage page = AWorkbench.getActivePage();
       ArtifactExplorer artifactExplorer;
       try {
-         artifactExplorer =
-               (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
-                     IWorkbenchPage.VIEW_ACTIVATE);
+         artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
+               IWorkbenchPage.VIEW_ACTIVATE);
          artifactExplorer.setPartName("Artifacts");
          artifactExplorer.setContentDescription("These artifact must be edited singly");
          artifactExplorer.treeViewer.setInput(artifacts);
@@ -438,9 +436,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             IWorkbenchPage page = AWorkbench.getActivePage();
             ArtifactExplorer artifactExplorer;
             try {
-               artifactExplorer =
-                     (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
-                           IWorkbenchPage.VIEW_ACTIVATE);
+               artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
+                     IWorkbenchPage.VIEW_ACTIVATE);
                artifactExplorer.explore(artifactManager.getDefaultHierarchyRootArtifact(branchManager.getDefaultBranch()));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
@@ -524,8 +521,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       createMenuItem.setEnabled(true);
 
       try {
-         Collection<ArtifactSubtypeDescriptor> descriptors =
-               configurationPersistenceManager.getArtifactSubtypeDescriptors(branchManager.getDefaultBranch());
+         Collection<ArtifactSubtypeDescriptor> descriptors = configurationPersistenceManager.getArtifactSubtypeDescriptors(branchManager.getDefaultBranch());
          for (ArtifactSubtypeDescriptor descriptor : descriptors) {
             if (!descriptor.getName().equals("Root Artifact")) {
                MenuItem item = new MenuItem(subMenu, SWT.PUSH);
@@ -667,9 +663,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
-               RevisionHistoryView revisionHistoryView =
-                     (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, selectedArtifact.getGuid(),
-                           IWorkbenchPage.VIEW_ACTIVATE);
+               RevisionHistoryView revisionHistoryView = (RevisionHistoryView) page.showView(
+                     RevisionHistoryView.VIEW_ID, selectedArtifact.getGuid(), IWorkbenchPage.VIEW_ACTIVATE);
                revisionHistoryView.explore(selectedArtifact);
             } catch (Exception ex) {
                logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -1155,8 +1150,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       try {
          if (memento != null) {
 
-            Artifact previousArtifact =
-                  artifactManager.getArtifact(memento.getString(ROOT_GUID), branchManager.getDefaultBranch());
+            Artifact previousArtifact = artifactManager.getArtifact(memento.getString(ROOT_GUID),
+                  branchManager.getDefaultBranch());
             if (previousArtifact != null) {
                explore(previousArtifact);
                return;
@@ -1343,12 +1338,5 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
    private void setHelpContexts() {
       SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer");
-   }
-
-   /**
-    * @return the treeViewer
-    */
-   public TreeViewer getTreeViewer() {
-      return treeViewer;
    }
 }
