@@ -11,11 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.IHelpContextIds;
@@ -23,6 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
@@ -44,7 +42,6 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Ryan D. Brooks
  */
 public class OverviewPage extends FormPage implements IActionable, XModifiedListener {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(OverviewPage.class);
    private static final SkynetGuiPlugin plugin = SkynetGuiPlugin.getInstance();
    private final BlamWorkflow workflow;
    private final DynamicXWidgetLayout dynamicXWidgetLayout;
@@ -84,7 +81,7 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
       try {
          layoutDatas = workflow.getLayoutDatas();
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
       if (layoutDatas != null && !layoutDatas.isEmpty()) {
