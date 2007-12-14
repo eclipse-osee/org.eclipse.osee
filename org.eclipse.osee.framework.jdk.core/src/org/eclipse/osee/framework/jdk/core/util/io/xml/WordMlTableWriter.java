@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
+import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter;
 
 /**
@@ -90,33 +88,13 @@ public class WordMlTableWriter implements ISheetWriter {
       str.append(CELL_END);
    }
 
-   /**
-    * @param args
-    */
-   public static void main(String[] args) {
-      CharBackedInputStream charBak;
-      try {
-         charBak = new CharBackedInputStream();
-         WordMlTableWriter wordMl = new WordMlTableWriter(charBak);
-
-         wordMl.startSheet("hello");
-         wordMl.writeRow("hi", "there");
-         wordMl.writeRow("hi", "there");
-
-         wordMl.endSheet();
-
-         StringBuffer buffer = new StringBuffer();
-         buffer.append(System.getProperty("user.home"));
-         buffer.append(File.separator);
-         buffer.append(WordMlTableWriter.class.getName());
-         buffer.append(".test.xml");
-
-         Lib.inputStreamToFile(charBak, new File(buffer.toString()));
-      } catch (Exception ex) {
-         System.out.println(ex.getMessage());
-      }
+   public void endWorkbook() throws IOException {
    }
 
-   public void endWorkbook() throws IOException {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter#writeRow(java.util.Collection)
+    */
+   public void writeRow(Collection<String> row) throws IOException {
+      writeRow(row.toArray(new String[row.size()]));
    }
 }

@@ -11,9 +11,11 @@
 package org.eclipse.osee.framework.jdk.core.util.io.xml.excel;
 
 import java.io.IOException;
+import java.util.Collection;
 
 /**
  * @author Robert A. Fisher
+ * @author Ryan D. Brooks
  */
 public interface ISheetWriter {
 
@@ -24,6 +26,8 @@ public interface ISheetWriter {
    public void endSheet() throws IOException;
 
    public void writeRow(String... row) throws IOException;
+
+   public void writeRow(Collection<String> row) throws IOException;
 
    public void endWorkbook() throws IOException;
 

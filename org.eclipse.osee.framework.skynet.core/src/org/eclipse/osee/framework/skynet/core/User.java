@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 /**
  * @author Donald G. Dunne
  */
-public class User extends Artifact implements Serializable, Comparable<User> {
+public class User extends Artifact implements Serializable {
    private static final long serialVersionUID = 834749078806388387L;
    public static final String userIdAttributeName = "User Id";
    public static final String favoriteBranchAttributeName = "Favorite Branch";
@@ -150,18 +150,6 @@ public class User extends Artifact implements Serializable, Comparable<User> {
    @Override
    public boolean isVersionControlled() {
       return true;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Comparable#compareTo(T)
-    */
-   public int compareTo(User user) {
-      if (user == null) {
-         return -1;
-      }
-      return getName().compareTo(user.getName());
    }
 
    /**

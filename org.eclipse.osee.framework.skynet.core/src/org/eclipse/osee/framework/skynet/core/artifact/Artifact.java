@@ -67,7 +67,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 
-public class Artifact implements Unique, PersistenceObject, IAdaptable {
+public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparable<Artifact> {
    public static final String UNNAMED = "Unnamed";
    public static final Artifact[] EMPTY_ARRAY = new Artifact[0];
    protected static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
@@ -1624,5 +1624,15 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable {
          return this;
       }
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Comparable#compareTo(java.lang.Object)
+    */
+   public int compareTo(Artifact otherArtifact) {
+      if (otherArtifact == null) {
+         return -1;
+      }
+      return getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
    }
 }

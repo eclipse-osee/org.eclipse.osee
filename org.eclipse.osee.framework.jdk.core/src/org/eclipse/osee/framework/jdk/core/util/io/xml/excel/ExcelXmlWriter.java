@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 
 /**
@@ -96,9 +97,6 @@ public class ExcelXmlWriter implements ISheetWriter {
          if (columnCount < 0) {
             columnCount = row.length;
          }
-         if (columnCount > 256) {
-            throw new IllegalArgumentException("Excel does not support more than 256 columns: " + columnCount);
-         }
          out.write("  <Table x:FullColumns=\"1\" x:FullRows=\"1\" ss:ExpandedColumnCount=\"" + columnCount + "\">\n");
          startTable = false;
       }
@@ -136,5 +134,12 @@ public class ExcelXmlWriter implements ISheetWriter {
          }
       }
       out.write("   </Row>\n");
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter#writeRow(java.util.Collection)
+    */
+   public void writeRow(Collection<String> row) throws IOException {
+      writeRow(row.toArray(new String[row.size()]));
    }
 }

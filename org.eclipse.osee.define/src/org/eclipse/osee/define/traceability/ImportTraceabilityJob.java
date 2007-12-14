@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +29,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ExcelXmlWriter;
@@ -49,8 +51,7 @@ import org.eclipse.swt.program.Program;
 public class ImportTraceabilityJob extends Job {
    private static final Pattern ofpReqTraceP = Pattern.compile("\\^SRS\\s*([^;\n\r]+);");
    private final Matcher ofpReqTraceMatcher;
-   private static final Pattern scriptReqTraceP =
-         Pattern.compile("addTraceability\\s*\\(\\\"(?:SubDD|SRS|CSID)?\\s*([^\\\"]+)\\\"");
+   private static final Pattern scriptReqTraceP = Pattern.compile("addTraceability\\s*\\(\\\"(?:SubDD|SRS|CSID)?\\s*([^\\\"]+)\\\"");
    private final Matcher scriptReqTraceMatcher;
    private static final Pattern structuredReqNameP = Pattern.compile("\\[?(\\{[^\\}]+\\})(.*)");
    private static final Pattern filePattern = Pattern.compile(".*\\.(java|ada|ads|adb|c|h)");
@@ -65,6 +66,7 @@ public class ImportTraceabilityJob extends Job {
    private final HashMap<String, Artifact> softwareReqs;
    private final HashMap<String, Artifact> indirectReqs;
    private final CountingMap<Artifact> reqsTraceCounts;
+   private final HashCollection<Artifact, String> requirementToCodeUnitsMap;
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
    private int pathPrefixLength;
@@ -74,9 +76,10 @@ public class ImportTraceabilityJob extends Job {
       this.file = file;
       this.branch = branch;
       noTraceabilityFiles = new ArrayList<String>(200);
-      softwareReqs = new HashMap<String, Artifact>(3000);
+      softwareReqs = new HashMap<String, Artifact>(3500);
       indirectReqs = new HashMap<String, Artifact>(700);
       reqsTraceCounts = new CountingMap<Artifact>();
+      requirementToCodeUnitsMap = new HashCollection<Artifact, String>(false, LinkedList.class);
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
       ofpReqTraceMatcher = ofpReqTraceP.matcher("");
@@ -236,8 +239,7 @@ public class ImportTraceabilityJob extends Job {
                } else {
                   // for local data and procedures search requirement text for traceMark
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
-                  String textContent =
-                        WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME)).toUpperCase();
+                  String textContent = WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME)).toUpperCase();
                   if (textContent.contains(getCanonicalReqName(structuredReqNameMatcher.group(2)))) {
                      foundStr = "req body match";
                   } else {
@@ -252,7 +254,12 @@ public class ImportTraceabilityJob extends Job {
          }
       }
 
-      excelWriter.writeRow(foundStr, path, reqArtifact == null ? null : reqArtifact.getDescriptiveName(), traceMark);
+      String name = null;
+      if (reqArtifact != null) {
+         name = reqArtifact.getDescriptiveName();
+         requirementToCodeUnitsMap.put(reqArtifact, path);
+      }
+      excelWriter.writeRow(foundStr, path, name, traceMark);
    }
 
    private Artifact getRequirementArtifact(String traceMark) {
@@ -267,5 +274,9 @@ public class ImportTraceabilityJob extends Job {
    private String fullMatch(Artifact reqArtifact) {
       reqsTraceCounts.put(reqArtifact);
       return "full match";
+   }
+
+   public HashCollection<Artifact, String> getRequirementToCodeUnitsMap() {
+      return requirementToCodeUnitsMap;
    }
 }

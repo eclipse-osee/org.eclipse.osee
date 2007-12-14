@@ -20,7 +20,6 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.sql.ResultSet;
@@ -34,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -147,12 +145,12 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    // this query implicitly filters out transactions were an artifact was deleted because those transactions will not also contain matching attribute value
    private static final String SELECT_HISTORICAL_ARTIFACTS =
          String.format(
-         "SELECT att1.art_id, %s FROM osee_define_attribute att1, osee_define_txs txs2, osee_define_tx_details txd3, osee_define_branch br4 WHERE att1.VALUE LIKE ? AND att1.gamma_id = txs2.gamma_id AND txs2.tx_type <> ? AND txs2.transaction_id = txd3.transaction_id AND txd3.branch_id = br4.branch_id AND br4.archived = 0 GROUP BY txd3.branch_id, att1.art_id",
-         Table.alias("MAX(txs2.transaction_id)", "tx"));
+               "SELECT att1.art_id, %s FROM osee_define_attribute att1, osee_define_txs txs2, osee_define_tx_details txd3, osee_define_branch br4 WHERE att1.VALUE LIKE ? AND att1.gamma_id = txs2.gamma_id AND txs2.tx_type <> ? AND txs2.transaction_id = txd3.transaction_id AND txd3.branch_id = br4.branch_id AND br4.archived = 0 GROUP BY txd3.branch_id, att1.art_id",
+               Table.alias("MAX(txs2.transaction_id)", "tx"));
    private static final String SELECT_HISTORICAL_ARTIFACT_DELETED =
          String.format(
-         "SELECT tx from osee_define_txs txs3, osee_define_artifact_version arv4, (SELECT %s, arv1.art_id alpha from osee_define_artifact_version arv1, osee_define_txs txs2, osee_define_tx_details txd3 WHERE arv1.art_id = ? AND arv1.gamma_id = txs2.gamma_id and txs2.transaction_id = txd3.transaction_id and txd3.branch_id = ? group by arv1.art_id) t5 where t5.tx = txs3.transaction_id AND txs3.gamma_id = arv4.gamma_id and arv4.art_id = t5.alpha and arv4.modification_id = ?",
-         Table.alias("MAX(txd3.transaction_id)", "tx"));
+               "SELECT tx from osee_define_txs txs3, osee_define_artifact_version arv4, (SELECT %s, arv1.art_id alpha from osee_define_artifact_version arv1, osee_define_txs txs2, osee_define_tx_details txd3 WHERE arv1.art_id = ? AND arv1.gamma_id = txs2.gamma_id and txs2.transaction_id = txd3.transaction_id and txd3.branch_id = ? group by arv1.art_id) t5 where t5.tx = txs3.transaction_id AND txs3.gamma_id = arv4.gamma_id and arv4.art_id = t5.alpha and arv4.modification_id = ?",
+               Table.alias("MAX(txd3.transaction_id)", "tx"));
 
    private static final String SELECT_ARTIFACT_BY_ID =
          "SELECT art1.art_id, art1.art_type_id, art1.guid, art1.human_readable_id, ary2.factory_id, ary2.factory_key, fac3.factory_class FROM osee_define_artifact art1, osee_define_artifact_type ary2, osee_define_factory fac3 WHERE art1.art_id = ? AND art1.art_type_id = ary2.art_type_id AND ary2.factory_id = fac3.factory_id";
@@ -193,7 +191,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       this.artifactDhChildCountCache = new ArtifactDhChildCountCache();
       this.attributeSaveListeners =
             new ExtensionDefinedObjects<IAttributeSaveListener>(
-            "org.eclipse.osee.framework.skynet.core.AttributeSaveListener", "AttributeSaveListener", "classname");
+                  "org.eclipse.osee.framework.skynet.core.AttributeSaveListener", "AttributeSaveListener", "classname");
       if (!plugin.isAutoTaggingEnabled()) {
          System.err.println("tagging on all artifacts being skipped");
       }
@@ -268,7 +266,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       if (!accessControlManager.checkObjectPermission(artifact.getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
             "No write permissions for the branch that this artifact belongs to:" + artifact.getBranch());
       if (artifact.getPersistenceMemo() != null && !artifact.getPersistenceMemo().getTransactionId().isEditable()) throw new IllegalArgumentException(
-            "The artifact must be at the head of the branch to be edited.");
+            "The artifact " + artifact.getGuid() + " must be at the head of the branch to be edited.");
 
       if (artifact.isDirty() && !artifact.isInTransaction()) {
          builder.addArtifact(artifact);
@@ -312,7 +310,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
          Collection<DynamicAttributeManager> userAttributes = artifact.getAttributes();
          String content;
-         
+
          for (DynamicAttributeManager attributeManager : userAttributes) {
             for (Attribute attribute : attributeManager.getAttributes()) {
                if (attribute.isDirty()){
@@ -382,7 +380,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          if (attribute.getPersistenceMemo() == null) {
             memo =
                   createAttributeMemo(attribute.getManager().getDescriptor().getAttrTypeId(),
-                  SkynetDatabase.getNextGammaId());
+                        SkynetDatabase.getNextGammaId());
             attribute.setPersistenceMemo(memo);
             modType = ModType.Added;
             attrModType = SkynetDatabase.ModificationType.NEW;
@@ -402,7 +400,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          if (attribute.getPersistenceMemo() == null) {
             memo =
                   createAttributeMemo(attribute.getManager().getDescriptor().getAttrTypeId(),
-                  SkynetDatabase.getNextGammaId());
+                        SkynetDatabase.getNextGammaId());
             attribute.setPersistenceMemo(memo);
             attrModType = SkynetDatabase.ModificationType.NEW;
 
@@ -484,7 +482,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          try {
             chStmt =
                   ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_BY_GUID, SQL3DataType.VARCHAR, guid,
-                  SQL3DataType.INTEGER, SkynetDatabase.ModificationType.DELETE.getValue(), SQL3DataType.INTEGER,
+                        SQL3DataType.INTEGER, SkynetDatabase.ModificationType.DELETE.getValue(), SQL3DataType.INTEGER,
                         transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                         transactionId.getBranch().getBranchId());
 
@@ -822,7 +820,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                   if (type == null) {
                      type =
                            configurationPersistenceManager.getDynamicAttributeType(attrTypeId, transactionId).createAttributeManager(
-                           artifact, false);
+                                 artifact, false);
                      type.setupForInitialization(false);
                      typeHash.put(attrTypeId, type);
                   }
@@ -865,7 +863,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       try {
          chStmt =
                ConnectionHandler.runPreparedQuery(
-               "SELECT " + ARTIFACT_TABLE.columns("art_id", "art_type_id") + ", " + TRANSACTIONS_TABLE.column("gamma_id") + " FROM " + ARTIFACT_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + "," + ARTIFACT_TYPE_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("guid") + "=?" + " AND " + ARTIFACT_TABLE.column("art_type_id") + "=" + ARTIFACT_TYPE_TABLE.column("art_type_id") + " AND " + ARTIFACT_TABLE.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "<>" + SkynetDatabase.ModificationType.DELETE + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTIONS_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)"
+                     "SELECT " + ARTIFACT_TABLE.columns("art_id", "art_type_id") + ", " + TRANSACTIONS_TABLE.column("gamma_id") + " FROM " + ARTIFACT_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + "," + ARTIFACT_TYPE_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("guid") + "=?" + " AND " + ARTIFACT_TABLE.column("art_type_id") + "=" + ARTIFACT_TYPE_TABLE.column("art_type_id") + " AND " + ARTIFACT_TABLE.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "<>" + SkynetDatabase.ModificationType.DELETE + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTIONS_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)"
 
                      , SQL3DataType.VARCHAR, artifact.getGuid(), SQL3DataType.INTEGER,
                      transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
@@ -938,9 +936,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                      "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("art_id", "attr_id", "attr_type_id", "gamma_id",
                            "value", "content") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE
 
-               + ", (SELECT " + ATTRIBUTE_VERSION_TABLE.column("attr_id") + ", MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ") AS last_transaction_id FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN (" + artIdList + ") " + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + EQUAL + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + EQUAL + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY attr_id) t1 " + " WHERE " + TRANSACTIONS_TABLE.column("transaction_id") + "= t1.last_transaction_id" + " AND " + ATTRIBUTE_VERSION_TABLE.column("attr_id") + "= t1.attr_id" + " AND " + ATTRIBUTE_VERSION_TABLE.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN (" + artIdList + ")" + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " ORDER BY " + TRANSACTIONS_TABLE.column("transaction_id") + " DESC",
-               SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-               transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER, ModificationType.DELETE.getValue());
+                     + ", (SELECT " + ATTRIBUTE_VERSION_TABLE.column("attr_id") + ", MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ") AS last_transaction_id FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN (" + artIdList + ") " + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + EQUAL + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + EQUAL + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY attr_id) t1 " + " WHERE " + TRANSACTIONS_TABLE.column("transaction_id") + "= t1.last_transaction_id" + " AND " + ATTRIBUTE_VERSION_TABLE.column("attr_id") + "= t1.attr_id" + " AND " + ATTRIBUTE_VERSION_TABLE.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN (" + artIdList + ")" + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " ORDER BY " + TRANSACTIONS_TABLE.column("transaction_id") + " DESC",
+                     SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                     transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER, ModificationType.DELETE.getValue());
 
          Attribute attribute;
          int artId;
@@ -964,7 +962,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             if (attributeManager == null) {
                attributeManager =
                      configurationPersistenceManager.getDynamicAttributeType(attrTypeId, transactionId).createAttributeManager(
-                     artifact, false);
+                           artifact, false);
                typeHash.put(artId, attrTypeId, attributeManager);
                attributeManager.setupForInitialization(false);
             }
@@ -1307,7 +1305,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       try {
          chStmt =
                ConnectionHandler.runPreparedQuery(SELECT_HISTORICAL_ARTIFACTS, SQL3DataType.VARCHAR, attributeValue,
-               SQL3DataType.INTEGER, TransactionType.BRANCHED.getId());
+                     SQL3DataType.INTEGER, TransactionType.BRANCHED.getId());
 
          ResultSet rSet = chStmt.getRset();
          while (rSet.next()) {
