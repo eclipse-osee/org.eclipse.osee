@@ -27,46 +27,40 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
  * @author Donald G. Dunne
  */
 public class NewPeerToPeerReviewJob extends Job {
-	private static final BranchPersistenceManager branchManager = BranchPersistenceManager
-			.getInstance();
+   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
-	private final TeamWorkFlowArtifact teamParent;
-	private final String againstState;
-	private PeerToPeerReviewArtifact peerToPeerReviewArtifact;
+   private final TeamWorkFlowArtifact teamParent;
+   private final String againstState;
+   private PeerToPeerReviewArtifact peerToPeerReviewArtifact;
 
-	public NewPeerToPeerReviewJob(TeamWorkFlowArtifact teamParent,
-			String againstState) {
-		super("Creating New PeerToPeer Review");
-		this.teamParent = teamParent;
-		this.againstState = againstState;
-	}
+   public NewPeerToPeerReviewJob(TeamWorkFlowArtifact teamParent, String againstState) {
+      super("Creating New PeerToPeer Review");
+      this.teamParent = teamParent;
+      this.againstState = againstState;
+   }
 
-	@Override
-	public IStatus run(final IProgressMonitor monitor) {
-		try {
-			AbstractSkynetTxTemplate newPeerToPeerTx = new AbstractSkynetTxTemplate(
-					branchManager.getAtsBranch()) {
+   @Override
+   public IStatus run(final IProgressMonitor monitor) {
+      try {
+         AbstractSkynetTxTemplate newPeerToPeerTx = new AbstractSkynetTxTemplate(branchManager.getAtsBranch()) {
 
-				@Override
-				protected void handleTxWork() throws Exception {
-					peerToPeerReviewArtifact = teamParent.getSmaMgr()
-							.getReviewManager().createNewPeerToPeerReview(
-									againstState);
-					peerToPeerReviewArtifact.persist(true);
-				}
+            @Override
+            protected void handleTxWork() throws Exception {
+               peerToPeerReviewArtifact =
+                     teamParent.getSmaMgr().getReviewManager().createNewPeerToPeerReview(againstState);
+               peerToPeerReviewArtifact.persist(true);
+            }
 
-			};
-			newPeerToPeerTx.execute();
+         };
+         newPeerToPeerTx.execute();
 
-			AtsLib.openAtsAction(peerToPeerReviewArtifact,
-					AtsOpenOption.OpenOneOrPopupSelect);
-		} catch (Exception ex) {
-			monitor.done();
-			return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1,
-					"Error creating PeerToPeer Review", ex);
-		} finally {
-			monitor.done();
-		}
-		return Status.OK_STATUS;
-	}
+         AtsLib.openAtsAction(peerToPeerReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
+      } catch (Exception ex) {
+         monitor.done();
+         return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "Error creating PeerToPeer Review", ex);
+      } finally {
+         monitor.done();
+      }
+      return Status.OK_STATUS;
+   }
 }
