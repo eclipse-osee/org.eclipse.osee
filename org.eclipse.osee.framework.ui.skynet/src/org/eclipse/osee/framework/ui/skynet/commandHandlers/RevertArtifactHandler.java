@@ -16,9 +16,11 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,7 +28,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -40,13 +41,10 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.ui.IWorkbenchPage;
 
 /**
  * @author Paul K. Waldfogel
@@ -215,21 +213,6 @@ public class RevertArtifactHandler extends AbstractSelectionHandler {
          monitor.done();
       }
 
-   }
-
-   /**
-    * Reveal an artifact in the viewer and select it.
-    */
-   public static void revealArtifact(Artifact artifact) {
-      IWorkbenchPage page = AWorkbench.getActivePage();
-      ArtifactExplorer artifactExplorer;
-      try {
-         artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID);
-         artifactExplorer.getTreeViewer().setSelection(new StructuredSelection(artifact), true);
-         // artifactExplorer.treeViewer.setSelection(new StructuredSelection(artifact), true);
-      } catch (Exception ex) {
-         throw new RuntimeException(ex);
-      }
    }
 
    /*

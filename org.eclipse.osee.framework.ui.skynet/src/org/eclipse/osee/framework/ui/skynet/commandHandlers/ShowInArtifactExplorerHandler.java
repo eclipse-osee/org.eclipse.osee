@@ -12,18 +12,16 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.sql.SQLException;
 import java.util.List;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.ui.IWorkbenchPage;
 
 /**
  * @author Paul K. Waldfogel
@@ -49,19 +47,6 @@ public class ShowInArtifactExplorerHandler extends AbstractSelectionHandler {
       return null;
    }
 
-   /**
-    * Reveal an artifact in the viewer and select it.
-    */
-   public static void revealArtifact(Artifact artifact) {
-      IWorkbenchPage page = AWorkbench.getActivePage();
-      ArtifactExplorer artifactExplorer;
-      try {
-         artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID);
-         artifactExplorer.getTreeViewer().setSelection(new StructuredSelection(artifact), true);
-      } catch (Exception ex) {
-         throw new RuntimeException(ex);
-      }
-   }
 
    /*
     * (non-Javadoc)
