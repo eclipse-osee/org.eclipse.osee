@@ -675,10 +675,10 @@
          <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateFromParentBranch"/>
       </extension>
       <extension
-            id="CommonRequirementProducer"
-            name="CommonRequirementProducer"
-            point="org.eclipse.osee.framework.ui.skynet.WordMlProducer">
-         <producer class="org.eclipse.osee.framework.ui.skynet.render.word.CommonRequirementProducer"/>
+            id="DeleteErroneousTagsFromWorkingBranches"
+            name="Delete Erroneous Tags From Working Branches"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteErroneousTagsFromWorkingBranches"/>
       </extension>
       <extension
             id="native"
@@ -775,12 +775,6 @@
          <IHttpServerRequest
                classname="org.eclipse.osee.framework.ui.skynet.httpRequests.HttpImageRequest">
          </IHttpServerRequest>
-      </extension>
-      <extension
-            point="org.eclipse.osee.framework.skynet.core.WebPage">
-         <WebPageFolder
-               Path="overWebArtifactExplorer/">
-         </WebPageFolder>
       </extension>
       <extension
             id="SkynetHttpServer"
