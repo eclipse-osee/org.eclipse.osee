@@ -70,10 +70,9 @@ public class Collections {
     * @param subList
     * @return Return complement list reference
     */
-   @SuppressWarnings("unchecked")
-   public static List setComplement(Collection superSet, Collection subList) {
-      ArrayList<Object> complement = new ArrayList<Object>(superSet.size());
-      for (Object obj : superSet) {
+   public static <T> List<T> setComplement(Collection<T> superSet, Collection<T> subList) {
+      ArrayList<T> complement = new ArrayList<T>(superSet.size());
+      for (T obj : superSet) {
          if (!subList.contains(obj)) {
             complement.add(obj);
          }
@@ -86,11 +85,10 @@ public class Collections {
     * @param listB
     * @return The intersection of two sets A and B is the set of elements common to A and B
     */
-   @SuppressWarnings("unchecked")
-   public static ArrayList setIntersection(Collection listA, Collection listB) {
-      ArrayList<Object> intersection = new ArrayList<Object>(listA.size());
+   public static <T> ArrayList<T> setIntersection(Collection<T> listA, Collection<T> listB) {
+      ArrayList<T> intersection = new ArrayList<T>(listA.size());
 
-      for (Object obj : listA) {
+      for (T obj : listA) {
          if (listB.contains(obj)) {
             intersection.add(obj);
          }
