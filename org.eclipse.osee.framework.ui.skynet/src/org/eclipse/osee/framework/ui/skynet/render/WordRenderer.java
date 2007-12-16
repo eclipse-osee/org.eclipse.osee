@@ -23,6 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -86,6 +88,9 @@ public class WordRenderer extends FileRenderer {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WordRenderer.class);
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
+   private static final Pattern pattern =
+         Pattern.compile("<v:imagedata[^>]*src=\"wordml://(\\d+\\.\\w+)\"[^>]*>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
    private WordTemplateProcessor templateProcessor;
@@ -172,6 +177,13 @@ public class WordRenderer extends FileRenderer {
          endIndex = data.indexOf("</w:body>");
 
          data = data.substring(startIndex, endIndex);
+
+         Matcher m = pattern.matcher(data);
+         while (m.find()) {
+            String name = m.group(1);
+            data = data.replace(name, GUID.generateGuidStr() + name);
+         }
+
          datas.add(data);
       }
 
