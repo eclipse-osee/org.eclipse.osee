@@ -80,6 +80,7 @@ public class OSEEConfig {
          parseServiceLookup(rootElement);
          parseDisableRemoteEvents(rootElement);
          parseMode(rootElement);
+         parseLogger(rootElement);
          ServerConfigUtil.getInstance().parseDatabaseConfigFile(rootElement);
          getDefaultClientData();
          parseWebServers(rootElement);
