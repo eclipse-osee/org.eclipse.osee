@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
+import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -63,8 +65,10 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
    private static Image favoriteDefaultChangedManagedBranchImage = null;
    private static Image defaultChangeManagedBranchImage = null;
    private static Image favoriteChangeManagedBranchImage = null;
+   private boolean showChangeType = false;
 
    private final ShowAttributeAction attributeAction;
+   private Collection<Artifact> attributeModifiedArtifacts;
 
    public BranchLabelProvider() {
       this(null);
@@ -222,22 +226,23 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
       } else if (element instanceof ArtifactChange) {
          if (columnIndex == 0) {
             ArtifactChange artifactChange = (ArtifactChange) element;
-            String txt = artifactChange.getName();
-            if (artifactChange.getModType() != ModificationType.DELETE) {
-               if (attributeAction != null && !attributeAction.noneSelected()) {
-                  try {
+            try {
+               String txt =
+                     artifactChange.getName() + (showChangeType ? " (" + getChangeType(artifactChange) + ")" : "");
+               if (artifactChange.getModType() != ModificationType.DELETE) {
+                  if (attributeAction != null && !attributeAction.noneSelected()) {
                      String attributeText = attributeAction.getSelectedAttributeData(artifactChange.getArtifact());
                      if (attributeText != null) {
                         return txt + attributeText;
                      }
-                  } catch (SQLException ex) {
-                     OSEELog.logException(getClass(), ex, false);
                   }
+               } else if (artifactChange.getChangeType() == ChangeType.INCOMING) {
+                  txt = "Artifact Deleted";
                }
-            } else if (artifactChange.getChangeType() == ChangeType.INCOMING) {
-               txt = "Artifact Deleted";
+               return txt;
+            } catch (SQLException ex) {
+               OSEELog.logException(getClass(), ex, false);
             }
-            return txt;
          }
       } else if (element instanceof IAttributeChange) {
          IAttributeChange change = (IAttributeChange) element;
@@ -267,6 +272,11 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          return element.toString();
       }
       return "";
+   }
+
+   private String getChangeType(ArtifactChange artifactChange) throws SQLException {
+      if ((artifactChange.getModType() == SkynetDatabase.ModificationType.CHANGE) && attributeModifiedArtifacts != null && !attributeModifiedArtifacts.contains(artifactChange.getArtifact())) return artifactChange.getModType().getDisplayName() + " Relation Only";
+      return artifactChange.getModType().getDisplayName();
    }
 
    public void addListener(ILabelProviderListener listener) {
@@ -318,5 +328,20 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
       }
 
       return branch.isChangeManaged() ? changeManagedBranchImage : branchImage;
+   }
+
+   /**
+    * @return the showChangeType
+    */
+   public boolean isShowChangeType() {
+      return showChangeType;
+   }
+
+   /**
+    * @param showChangeType the showChangeType to set
+    */
+   public void setShowChangeType(boolean showChangeType, Collection<Artifact> attributeModifiedArtifacts) {
+      this.showChangeType = showChangeType;
+      this.attributeModifiedArtifacts = attributeModifiedArtifacts;
    }
 }

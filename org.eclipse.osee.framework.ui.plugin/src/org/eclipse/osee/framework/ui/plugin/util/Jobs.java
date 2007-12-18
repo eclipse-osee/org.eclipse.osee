@@ -25,14 +25,15 @@ public final class Jobs {
    private Jobs() {
    };
 
-   public static void startJob(Job job) {
-      startJob(job, true);
+   public static Job startJob(Job job) {
+      return startJob(job, true);
    }
 
-   public static void startJob(Job job, boolean user) {
+   public static Job startJob(Job job, boolean user) {
       job.setUser(user);
       job.setPriority(Job.LONG);
       job.schedule();
+      return job;
    }
 
    public static void run(String name, IExceptionableRunnable runnable, Logger logger, String pluginId) {

@@ -37,6 +37,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -69,6 +71,7 @@ import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
+import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.LabelSorter;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
@@ -93,6 +96,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
+import org.eclipse.osee.framework.ui.swt.TreeNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -134,6 +138,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
    private static final RevisionManager revisionManager = RevisionManager.getInstance();
    private static final String SHOW_FINAL_VERSION_TXT = "Show Final &Version";
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
+   private Action sortAction = null;
+   private Collection<Artifact> attributeModifiedArtifacts = null;
 
    private TreeViewer changeTable;
    private MenuItem diffMenuItem;
@@ -280,10 +286,107 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       };
       refreshAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif"));
       refreshAction.setToolTipText("Refresh");
+
+      sortAction = new Action("Sort", Action.AS_CHECK_BOX) {
+
+         @Override
+         public void run() {
+            if (sortAction.isChecked()) {
+               if (attributeModifiedArtifacts == null) {
+                  try {
+                     TransactionId baseTransId = ((ChangeReportInput) changeTable.getInput()).getBaseTransaction();
+                     TransactionId toTransId = ((ChangeReportInput) changeTable.getInput()).getToTransaction();
+                     attributeModifiedArtifacts =
+                           RevisionManager.getInstance().getNewAndModifiedArtifacts(baseTransId, toTransId, false);
+                  } catch (SQLException ex) {
+                     // Don't want to repeat the errored search
+                     attributeModifiedArtifacts = new ArrayList<Artifact>();
+                     OSEELog.logSevere(SkynetGuiPlugin.class, "Error getting modified artifacts", true);
+                  }
+               }
+               ((BranchLabelProvider) changeTable.getLabelProvider()).setShowChangeType(true,
+                     attributeModifiedArtifacts);
+               changeTable.setSorter(viewerSorter);
+            } else {
+               ((BranchLabelProvider) changeTable.getLabelProvider()).setShowChangeType(false,
+                     new ArrayList<Artifact>());
+               changeTable.setSorter(new LabelSorter());
+            }
+         }
+      };
+      sortAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("sort.gif"));
+      sortAction.setToolTipText("Sort changes by Modified, Modified by Relation Only, New and Deleted");
+      Action expandAllAction = new Action("Expand All") {
+
+         @Override
+         public void run() {
+            changeTable.expandAll();
+         }
+      };
+      expandAllAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("expandAll.gif"));
+      expandAllAction.setToolTipText("Expand All");
+      Action collapseAllAction = new Action("Collapse All") {
+
+         @Override
+         public void run() {
+            changeTable.collapseAll();
+         }
+      };
+      collapseAllAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("collapseAll.gif"));
+      collapseAllAction.setToolTipText("Collapse All");
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+      toolbarManager.add(expandAllAction);
+      toolbarManager.add(collapseAllAction);
       toolbarManager.add(refreshAction);
+      toolbarManager.add(sortAction);
       OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Change Report");
    }
+
+   ViewerSorter viewerSorter = new ViewerSorter() {
+
+      @SuppressWarnings("unchecked")
+      public int compare(Viewer viewer, Object o1, Object o2) {
+         if ((o1 instanceof TreeNode) && (o2 instanceof TreeNode)) {
+            if ((((TreeNode) o1).getBackingData() instanceof ArtifactChange) && (((TreeNode) o2).getBackingData() instanceof ArtifactChange)) {
+               ArtifactChange artChg1 = (ArtifactChange) ((TreeNode) o1).getBackingData();
+               ArtifactChange artChg2 = (ArtifactChange) ((TreeNode) o2).getBackingData();
+               if (artChg1.getModType() == artChg2.getModType()) {
+                  boolean art1RelChgOnly = false;
+                  boolean art2RelChgOnly = false;
+                  try {
+                     art1RelChgOnly = !attributeModifiedArtifacts.contains(artChg1.getArtifact());
+                     art2RelChgOnly = !attributeModifiedArtifacts.contains(artChg2.getArtifact());
+                     // sort relation change only artifacts last
+                     if ((art1RelChgOnly && art2RelChgOnly) || (!art1RelChgOnly && !art2RelChgOnly))
+                        getComparator().compare(artChg1.getName(), artChg2.getName());
+                     else if (art1RelChgOnly)
+                        return 1;
+                     else
+                        return -1;
+                  } catch (SQLException ex) {
+                     // do nothing since this is comparator, errors will be too many
+                  }
+                  return getComparator().compare(artChg1.getName(), artChg2.getName());
+               } else if (artChg1.getModType() == SkynetDatabase.ModificationType.CHANGE)
+                  return -1;
+               else if (artChg2.getModType() == SkynetDatabase.ModificationType.CHANGE)
+                  return 1;
+               else if (artChg1.getModType() == SkynetDatabase.ModificationType.NEW)
+                  return -1;
+               else if (artChg2.getModType() == SkynetDatabase.ModificationType.NEW)
+                  return 1;
+               else if (artChg1.getModType() == SkynetDatabase.ModificationType.DELETE)
+                  return -1;
+               else if (artChg2.getModType() == SkynetDatabase.ModificationType.DELETE)
+                  return 1;
+               else
+                  return getComparator().compare(artChg1.getName(), artChg2.getName());
+            }
+         }
+         return 0;
+      }
+
+   };
 
    private void createColumns() {
       Tree tree = changeTable.getTree();

@@ -118,11 +118,13 @@ public class SkynetDatabase {
                TAG_ID_SEQ, TAG_TYPE_ID_SEQ, CLOUD_ID_SEQ, CLOUD_TYPE_ID_SEQ, TTE_SESSION_SEQ};
 
    public enum ModificationType implements Serializable {
-      NEW(1), CHANGE(2), DELETE(3);
+      NEW("New", 1), CHANGE("Modified", 2), DELETE("Deleted", 3);
 
       private int value;
+      private String displayName;
 
-      ModificationType(int value) {
+      ModificationType(String displayName, int value) {
+         this.displayName = displayName;
          this.value = value;
       }
 
@@ -135,6 +137,10 @@ public class SkynetDatabase {
 
       public String toString() {
          return String.valueOf(value);
+      }
+
+      public String getDisplayName() {
+         return displayName;
       }
 
       /**

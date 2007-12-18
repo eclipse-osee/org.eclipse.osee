@@ -22,6 +22,7 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -68,6 +69,8 @@ import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.PostCommitEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
@@ -173,6 +176,14 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
          keynameBranchMap.put(rset.getString("static_branch_name").toLowerCase(),
                getBranch(rset.getInt("mapped_branch_id")));
       }
+   }
+
+   public Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact) throws SQLException {
+      ensurePopulatedCache(false);
+      Set<Branch> branches = new HashSet<Branch>();
+      for (Branch branch : getBranches())
+         if (branch.getAssociatedArtifact() != null && branch.getAssociatedArtifact().equals(associatedArtifact)) branches.add(branch);
+      return branches;
    }
 
    private void checkBranchNames() throws SQLException {
@@ -352,8 +363,8 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
     * 
     * @param branch
     */
-   public void deleteBranch(final Branch branch) {
-      Jobs.startJob(new DeleteBranchJob(branch));
+   public Job deleteBranch(final Branch branch) {
+      return Jobs.startJob(new DeleteBranchJob(branch));
    }
 
    public void removeBranchFromCache(int branchId) {
@@ -562,12 +573,17 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
    int addTransactionToDatabase(Branch parentBranch, Branch childBranch, User userToBlame) throws SQLException {
       int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
 
+      Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
+      String comment = "Commit Branch " + childBranch.getBranchName();
+      int authorId = (userToBlame == null) ? -1 : userToBlame.getArtId();
       ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, SQL3DataType.INTEGER, parentBranch.getBranchId(),
-            SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR,
-            "Commit Branch " + childBranch.getBranchName(), SQL3DataType.TIMESTAMP,
-            GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER,
-            (userToBlame == null) ? -1 : userToBlame.getArtId(), SQL3DataType.INTEGER,
-            childBranch.getAssociatedArtifactId());
+            SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, comment, SQL3DataType.TIMESTAMP,
+            timestamp, SQL3DataType.INTEGER, authorId, SQL3DataType.INTEGER, childBranch.getAssociatedArtifactId());
+      // Update commit artifact cache with new information
+      RevisionManager.getInstance().cacheTransactionDataPerCommitArtifact(
+            childBranch.getAssociatedArtifactId(),
+            new TransactionData(comment, timestamp, authorId, newTransactionNumber, -1, parentBranch.getBranchId(),
+                  childBranch.getAssociatedArtifactId()));
 
       return newTransactionNumber;
    }

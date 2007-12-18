@@ -29,10 +29,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -73,6 +75,9 @@ public class RevisionManager implements PersistenceManager {
    private static final String SELECT_TRANSACTIONS =
          "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
 
+   private static final String SELECT_COMMIT_ART_TRANSACTIONS =
+         "SELECT transaction_id, commit_art_id, osee_comment, time, author, branch_id from osee_define_tx_details where commit_art_id is not null";
+
    private static final String GET_CHANGED_ARTIFACTS =
          " SELECT arv2.modification_id, arv2.gamma_id, ar1.art_type_id FROM osee_define_artifact ar1, osee_define_artifact_version arv2, osee_define_txs txs3, osee_define_tx_details txd4 WHERE ar1.art_id = ? AND ar1.art_id = arv2.art_id AND arv2.gamma_id = txs3.gamma_id AND txs3.transaction_id = txd4.transaction_id AND txd4.transaction_id > ? AND txd4.transaction_id <= ? AND txd4.branch_id = ?";
 
@@ -108,6 +113,7 @@ public class RevisionManager implements PersistenceManager {
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_2 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "av2");
    private static final LocalAliasTable TRANSACTIONS_ALIAS_1 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx1");
    private static final LocalAliasTable TRANSACTIONS_ALIAS_2 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx2");
+   private static Map<Integer, Set<TransactionData>> commitArtifactIdToTransactionData;
 
    private static final RevisionManager instance = new RevisionManager();
 
@@ -154,6 +160,40 @@ public class RevisionManager implements PersistenceManager {
          DbUtil.close(chStmt);
       }
       return transactionDetails;
+   }
+
+   public Set<TransactionData> getTransactionDataPerCommitArtifact(Artifact commitArtifact) throws SQLException {
+      if (commitArtifactIdToTransactionData == null) {
+         commitArtifactIdToTransactionData = new HashMap<Integer, Set<TransactionData>>();
+
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            chStmt = ConnectionHandler.runPreparedQuery(SELECT_COMMIT_ART_TRANSACTIONS);
+            ResultSet rSet = chStmt.getRset();
+            while (chStmt.next()) {
+               int commitArtId = rSet.getInt("commit_art_id");
+               cacheTransactionDataPerCommitArtifact(commitArtId, new TransactionData(rSet.getString("osee_comment"),
+                     rSet.getTimestamp("time"), rSet.getInt("author"), rSet.getInt("transaction_id"), -1,
+                     rSet.getInt("branch_id"), commitArtId));
+            }
+         } finally {
+            DbUtil.close(chStmt);
+         }
+      }
+      if (commitArtifactIdToTransactionData.containsKey(commitArtifact.getArtId())) return commitArtifactIdToTransactionData.get(commitArtifact.getArtId());
+      return new HashSet<TransactionData>();
+   }
+
+   public void cacheTransactionDataPerCommitArtifact(Artifact commitArtifact, TransactionData transactionData) {
+      cacheTransactionDataPerCommitArtifact(commitArtifact.getArtId(), transactionData);
+   }
+
+   public void cacheTransactionDataPerCommitArtifact(int commitArtifactId, TransactionData transactionData) {
+      Set<TransactionData> transactionDatas;
+      transactionDatas = commitArtifactIdToTransactionData.get(commitArtifactId);
+      if (transactionDatas == null) transactionDatas = new HashSet<TransactionData>();
+      transactionDatas.add(transactionData);
+      commitArtifactIdToTransactionData.put(commitArtifactId, transactionDatas);
    }
 
    /**

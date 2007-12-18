@@ -43,6 +43,7 @@ public class ArtifactChange extends RevisionChange {
    private TransactionId toTransactionId;
    private TransactionId lastGoodTransactionId; // Only for deleted artifacts
    private ArtifactSubtypeDescriptor descriptor;
+   private Boolean relationOnlyChange;
 
    transient private Artifact artifact;
    private int artId;
@@ -247,5 +248,27 @@ public class ArtifactChange extends RevisionChange {
     */
    public TransactionId getFromTransactionId() {
       return fromTransactionId;
+   }
+
+   /**
+    * Potentially expensive way to determing if this artifactchange is relation only
+    * 
+    * @return
+    * @throws SQLException
+    */
+   public boolean isRelationOnlyChange() throws SQLException {
+      if (relationOnlyChange == null) {
+         try {
+            TransactionId baseTransId = getFromTransactionId();
+            TransactionId toTransId = getToTransactionId();
+            relationOnlyChange =
+                  !RevisionManager.getInstance().getNewAndModifiedArtifacts(baseTransId, toTransId, false).contains(
+                        getArtifact());
+         } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error getting isRelationOnlyChange()");
+            return relationOnlyChange = false;
+         }
+      }
+      return relationOnlyChange;
    }
 }
