@@ -11,8 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -22,10 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractSkynetTxTemplate {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AbstractSkynetTxTemplate.class);
    private static final SkynetTransactionManager transactionManager = SkynetTransactionManager.getInstance();
-
    private final Branch branch;
 
    /**
@@ -95,12 +91,12 @@ public abstract class AbstractSkynetTxTemplate {
    public void execute() throws Exception {
       try {
          transactionManager.startBatchLevel(this, branch);
-         logger.log(Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
+         SkynetActivator.getLogger().log(Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
 
          handleTxWork();
 
          transactionManager.setBatchLevelAsSuccessful(this, branch);
-         logger.log(Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
+         SkynetActivator.getLogger().log(Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } finally {
          transactionManager.endBatchLevel(this, branch);
          handleTxFinally();

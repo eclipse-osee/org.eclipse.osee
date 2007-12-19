@@ -51,7 +51,8 @@ import org.eclipse.swt.program.Program;
 public class ImportTraceabilityJob extends Job {
    private static final Pattern ofpReqTraceP = Pattern.compile("\\^SRS\\s*([^;\n\r]+);");
    private final Matcher ofpReqTraceMatcher;
-   private static final Pattern scriptReqTraceP = Pattern.compile("addTraceability\\s*\\(\\\"(?:SubDD|SRS|CSID)?\\s*([^\\\"]+)\\\"");
+   private static final Pattern scriptReqTraceP =
+         Pattern.compile("addTraceability\\s*\\(\\\"(?:SubDD|SRS|CSID)?\\s*([^\\\"]+)\\\"");
    private final Matcher scriptReqTraceMatcher;
    private static final Pattern structuredReqNameP = Pattern.compile("\\[?(\\{[^\\}]+\\})(.*)");
    private static final Pattern filePattern = Pattern.compile(".*\\.(java|ada|ads|adb|c|h)");
@@ -202,7 +203,7 @@ public class ImportTraceabilityJob extends Job {
    private void writeTraceCountsSheet() throws IOException, SQLException {
       excelWriter.startSheet("trace counts", 3);
       excelWriter.writeRow("SRS Requirement from Database", "Trace Count", "Partitions");
-      excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF($B:$B,\"0\")/COUNTA($B:$B)");
+      excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)");
       StringBuffer partitionStrB = new StringBuffer(100);
       for (Artifact artifact : softwareReqs.values()) {
          Collection<Attribute> partitions = artifact.getAttributeManager("Partition").getAttributes();
@@ -239,7 +240,8 @@ public class ImportTraceabilityJob extends Job {
                } else {
                   // for local data and procedures search requirement text for traceMark
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
-                  String textContent = WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME)).toUpperCase();
+                  String textContent =
+                        WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME)).toUpperCase();
                   if (textContent.contains(getCanonicalReqName(structuredReqNameMatcher.group(2)))) {
                      foundStr = "req body match";
                   } else {

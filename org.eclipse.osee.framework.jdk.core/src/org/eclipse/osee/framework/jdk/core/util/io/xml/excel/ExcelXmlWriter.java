@@ -113,22 +113,25 @@ public class ExcelXmlWriter implements ISheetWriter {
                out.write(" ss:Index=\"" + (cellIndex + 1) + "\"");
                cellSkipped = false;
             }
-            out.write(">");
-            out.write("<Data ss:Type=\"String\">");
-            if (cellData.equals("")) {
-               out.write(emptyStringRepresentation);
+            if (!cellData.equals("") && cellData.charAt(0) == '=') {
+               out.write(" ss:Formula=\"" + cellData + "\">");
             } else {
-               if (cellData.length() > 32767) {
-                  out.write(blobMessage);
+               out.write("><Data ss:Type=\"String\">");
+               if (cellData.equals("")) {
+                  out.write(emptyStringRepresentation);
                } else {
-                  Xml.writeAsCdata(out, cellData);
+                  if (cellData.length() > 32767) {
+                     out.write(blobMessage);
+                  } else {
+                     Xml.writeAsCdata(out, cellData);
+                  }
                }
-            }
-            out.write("</Data>");
-            if (cellData.length() > 32767) {
-               out.write("<EmbeddedClob>");
-               Xml.writeAsCdata(out, cellData);
-               out.write("</EmbeddedClob>");
+               out.write("</Data>");
+               if (cellData.length() > 32767) {
+                  out.write("<EmbeddedClob>");
+                  Xml.writeAsCdata(out, cellData);
+                  out.write("</EmbeddedClob>");
+               }
             }
             out.write("</Cell>\n");
          }

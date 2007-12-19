@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -58,36 +57,39 @@ public class ArtifactImportJob extends Job {
    }
 
    public IStatus run(final IProgressMonitor monitor) {
-      IStatus toReturn = Status.CANCEL_STATUS;
+      IStatus toReturn;
       try {
          final RoughArtifact rootRoughArtifact = new RoughArtifact(importRoot);
          extractArtifacts(new File[] {file}, rootRoughArtifact);
 
+         if (monitor.isCanceled()) {
+            return new Status(Status.CANCEL, SkynetGuiPlugin.PLUGIN_ID, "User Cancled the operation.");
+         }
+
          monitor.beginTask("Creating Artifacts", roughArtifacts.size() + roughRelations.size());
 
-         AbstractSkynetTxTemplate txWrapper =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
-                        roughArtifact.getReal(branch, monitor, artifactResolver);
-                        importRoot.addChild(roughArtifact.getAssociatedArtifact());
-                     }
+         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(branch) {
+            @Override
+            protected void handleTxWork() throws Exception {
+               for (RoughArtifact roughArtifact : rootRoughArtifact.getChildren()) {
+                  // the getReal call with recursively call get real on all descendants of roughArtifact
+                  importRoot.addChild(roughArtifact.getReal(branch, monitor, artifactResolver));
+               }
 
-                     monitor.setTaskName("Creating Relations");
-                     for (RoughRelation roughRelation : roughRelations) {
-                        roughRelation.makeReal(branch, monitor);
-                     }
+               monitor.setTaskName("Creating Relations");
+               for (RoughRelation roughRelation : roughRelations) {
+                  roughRelation.makeReal(branch, monitor);
+               }
 
-                     artifactManager.setProgressMonitor(monitor);
-                     importRoot.persist(true);
-                     artifactManager.setProgressMonitor(null);
+               artifactManager.setProgressMonitor(monitor);
+               importRoot.persist(true);
+               artifactManager.setProgressMonitor(null);
 
-                     monitor.setTaskName("Committing Transaction");
-                     monitor.subTask(""); // blank out leftover relation subtask
-                     monitor.worked(1); // cause the status to update
-                  }
-               };
+               monitor.setTaskName("Committing Transaction");
+               monitor.subTask(""); // blank out leftover relation subtask
+               monitor.worked(1); // cause the status to update
+            }
+         };
          txWrapper.execute();
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {

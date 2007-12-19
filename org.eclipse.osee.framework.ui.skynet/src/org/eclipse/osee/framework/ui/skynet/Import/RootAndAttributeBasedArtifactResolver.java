@@ -64,9 +64,11 @@ public class RootAndAttributeBasedArtifactResolver implements IArtifactImportRes
                boolean attributeEqual = false;
                Iterator<String> iter = roughAttributes.iterator();
 
+               String normalizedAttributeValue = normalizeAttributeValue(attribute.getStringData());
                while (iter.hasNext()) {
                   String otherAttribute = iter.next();
-                  if (attribute.getStringData().trim().equals(otherAttribute.trim())) {
+
+                  if (normalizedAttributeValue.equals(normalizeAttributeValue(otherAttribute))) {
                      // Make sure we don't count this attribute more than once for equality
                      iter.remove();
                      attributeEqual = true;
@@ -82,6 +84,10 @@ public class RootAndAttributeBasedArtifactResolver implements IArtifactImportRes
       }
 
       return true;
+   }
+
+   private String normalizeAttributeValue(String value) {
+      return value.trim().replaceAll("\\.$", "").toLowerCase();
    }
 
    public Artifact resolve(RoughArtifact roughArtifact) throws SQLException {

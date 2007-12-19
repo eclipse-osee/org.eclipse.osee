@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,7 +17,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -26,12 +24,8 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.PolymorphicArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
@@ -209,14 +203,6 @@ public class RoughArtifact {
       return children;
    }
 
-   public Artifact getReal(Branch branch, IProgressMonitor monitor, boolean reuseArtifacts) throws Exception {
-      if (reuseArtifacts) {
-         return getReal(branch, monitor, new BasicArtifactResolver(getDescriptorForGetReal(), branch));
-      } else {
-         return getReal(branch, monitor, null);
-      }
-   }
-
    public Artifact getReal(Branch branch, IProgressMonitor monitor, IArtifactImportResolver artifactResolver) throws Exception {
       if (realArtifact != null) {
          return realArtifact;
@@ -224,9 +210,8 @@ public class RoughArtifact {
 
       ArtifactSubtypeDescriptor descriptor = getDescriptorForGetReal();
 
-      if (artifactResolver != null) {
-         realArtifact = artifactResolver.resolve(this);
-      }
+      realArtifact = artifactResolver.resolve(this);
+
       if (realArtifact != null) {
          logger.log(Level.INFO, "found artifact already : " + realArtifact.toString());
          updateValues(realArtifact);
@@ -264,7 +249,6 @@ public class RoughArtifact {
             throw new IllegalStateException("Artifact already has a parent that is not inline with the import parent");
          }
       }
-      System.out.println("Artifact " + realArtifact.getHumanReadableId());
 
       realArtifact.persist(true);
       return realArtifact;
@@ -336,20 +320,6 @@ public class RoughArtifact {
       return "";
    }
 
-   public boolean isEqual(RoughArtifact artifact) {
-      if (artifact.attributes.size() == attributes.size()) {
-         for (int i = 0; i < attributes.size(); i++) {
-            if (attributes.get(i).getType() == AttributeImportType.UNIQUE) {
-               if (!attributes.get(i).getValue().equals(artifact.attributes.get(i).getValue())) {
-                  return false;
-               }
-            }
-         }
-         return true;
-      }
-      return false;
-   }
-
    /**
     * @return the usePolymorphicArtifactFactory
     */
@@ -362,50 +332,5 @@ public class RoughArtifact {
     */
    public static void setUsePolymorphicArtifactFactory(boolean usePolymorphicArtifactFactory) {
       RoughArtifact.usePolymorphicArtifactFactory = usePolymorphicArtifactFactory;
-   }
-
-   private class BasicArtifactResolver implements IArtifactImportResolver {
-      private final ArtifactSubtypeDescriptor descriptor;
-      private final Branch branch;
-
-      /**
-       * @param descriptor
-       * @param branch
-       */
-      public BasicArtifactResolver(final ArtifactSubtypeDescriptor descriptor, final Branch branch) {
-         super();
-         this.descriptor = descriptor;
-         this.branch = branch;
-      }
-
-      public Artifact resolve(RoughArtifact roughArtifact) throws Exception {
-         boolean doSearch = false;
-         List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(descriptor.getName(), EQUAL));
-         for (NameAndVal value : attributes) {
-            if (value.getType() == AttributeImportType.UNIQUE) {
-               criteria.add(new AttributeValueSearch(value.getName(), value.getValue(), EQUAL));
-               doSearch = true;
-            }
-         }
-         Artifact artifact = null;
-         if (doSearch) {
-            try {
-               Collection<Artifact> artifacts =
-                     ArtifactPersistenceManager.getInstance().getArtifacts(criteria, true, branch);
-               if (artifacts.size() > 1) {
-                  // throw new IllegalStateException("There is more than one Rough artifact so we'll
-                  // just add another new one.");
-                  logger.log(Level.SEVERE,
-                        "we found more than one rough artifact match so we are going to add a new artifact");
-               } else if (artifacts.size() == 1) {
-                  artifact = (Artifact) artifacts.iterator().next();
-               }
-            } catch (SQLException ex) {
-               ex.printStackTrace();
-            }
-         }
-         return artifact;
-      }
    }
 }

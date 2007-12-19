@@ -45,7 +45,7 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
  */
 public class ArtifactImportPage extends WizardDataTransferPage {
    public enum ImportMethod {
-      EXCEL, GENERAL, POWER_POINT, WHOLE_WORD, WORD_OUTLINE, VISIO
+      EXCEL, GENERAL, WHOLE_WORD, WORD_OUTLINE
    };
 
    public static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
@@ -79,15 +79,11 @@ public class ArtifactImportPage extends WizardDataTransferPage {
     */
    public ArtifactImportPage(File importResource, Artifact reuseRootArtifact) {
       super(PAGE_NAME);
-      if (importResource == null) throw new IllegalArgumentException("importResource can not be null");
-      if (reuseRootArtifact == null) throw new IllegalArgumentException("reuseRootArtifact can not be null");
-
-      Assert.isNotNull(importResource, "importResource");
-      Assert.isNotNull(reuseRootArtifact, "reuseRootArtifact");
+      Assert.isNotNull(importResource, "importResource can not be null");
+      Assert.isNotNull(reuseRootArtifact, "reuseRootArtifact can not be null");
 
       this.importResource = importResource;
       this.destinationArtifact = reuseRootArtifact;
-
       this.built = false;
    }
 
@@ -410,7 +406,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       } else if (radImportUnderSelection.getSelection()) {
          importRoot = destinationArtifact;
       } else {
-         throw new IllegalStateException("Expect that one of the 3 radio buttons is selected");
+         throw new IllegalStateException("One of the 3 radio buttons should be selected.");
       }
 
       return importRoot;

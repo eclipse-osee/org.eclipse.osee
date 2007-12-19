@@ -92,7 +92,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       } catch (SQLException ex) {
          ErrorDialog.openError(getShell(), "Define Import Error", "An error has occured while importing a document.",
                new Status(IStatus.ERROR, "org.eclipse.osee.framework.jdk.core", IStatus.ERROR,
-                     "Unknown exception occured in the import", ex));
+                     "Exception occured during artifact import", ex));
       }
       return true;
    }

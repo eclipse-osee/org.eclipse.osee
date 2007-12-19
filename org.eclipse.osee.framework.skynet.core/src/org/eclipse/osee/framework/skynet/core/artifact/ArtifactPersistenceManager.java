@@ -313,13 +313,13 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
          for (DynamicAttributeManager attributeManager : userAttributes) {
             for (Attribute attribute : attributeManager.getAttributes()) {
-               if (attribute.isDirty()){
-            	   if(attribute.getName().equals(WordAttribute.CONTENT_NAME)){
-                       //remove smart after each save
-                       content = WordUtil.removeWordMarkupSmartTags(attribute.getStringData());
-                       attribute.setStringData(content);
-            	   }
-            	   addAttributeData(attribute, artifact, transaction, artGamma);
+               if (attribute.isDirty()) {
+                  if (attribute.getName().equals(WordAttribute.CONTENT_NAME)) {
+                     //remove smart after each save
+                     content = WordUtil.removeWordMarkupSmartTags(attribute.getStringData());
+                     attribute.setStringData(content);
+                  }
+                  addAttributeData(attribute, artifact, transaction, artGamma);
                }
             }
 
@@ -1150,6 +1150,21 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    /**
+    * this method does not update the in memory model or send events. It also does not purge any child artifacts. The
+    * more full featured version of this method takes an artifact as an argument rather than and artifact id.
+    * 
+    * @param artifactId
+    * @throws SQLException
+    */
+   public void purgeArtifact(int artifactId) throws SQLException {
+      ConnectionHandler.runPreparedUpdate(PURGE_ARTIFACT_GAMMAS, SQL3DataType.INTEGER, artifactId,
+            SQL3DataType.INTEGER, artifactId, SQL3DataType.INTEGER, artifactId);
+      ConnectionHandler.runPreparedUpdate(PURGE_ARTIFACT, SQL3DataType.INTEGER, artifactId);
+      // System.out.println("Purge empty transactions");
+      // ConnectionHandler.runPreparedUpdate(PURGE_EMPTY_TRANSACTIONS);
+   }
+
+   /**
     * Removes an artifact, it's attributes and any relations that have become invalid from the removal of this artifact
     * from the database. It also removes all history associated with this artifact (i.e. all transactions and gamma ids
     * will also be removed from the database).
@@ -1160,13 +1175,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       artifact.checkDeleted();
 
       try {
-         System.out.println("Purge artifact gammas");
-         ConnectionHandler.runPreparedUpdate(PURGE_ARTIFACT_GAMMAS, SQL3DataType.INTEGER, artifact.getArtId(),
-               SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER, artifact.getArtId());
-         System.out.println("Purge artifact");
-         ConnectionHandler.runPreparedUpdate(PURGE_ARTIFACT, SQL3DataType.INTEGER, artifact.getArtId());
-         // System.out.println("Purge empty transactions");
-         // ConnectionHandler.runPreparedUpdate(PURGE_EMPTY_TRANSACTIONS);
+         purgeArtifact(artifact.getArtId());
 
          System.out.println("number of children:" + artifact.getChildren().size());
          for (Artifact child : artifact.getChildren()) {

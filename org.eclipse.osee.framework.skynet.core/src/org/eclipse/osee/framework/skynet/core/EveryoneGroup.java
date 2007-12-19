@@ -96,8 +96,9 @@ public class EveryoneGroup extends Group {
     * This does not persist the newly created relation that is the callers responsibility.
     * 
     * @param user
+    * @throws SQLException
     */
-   public void addGroupMember(User user) {
+   public void addGroupMember(User user) throws SQLException {
       everyoneGroup.relate(RelationSide.Users_User, user);
    }
 }

@@ -681,6 +681,12 @@
          <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteErroneousTagsFromWorkingBranches"/>
       </extension>
       <extension
+            id="PurgeArtifactType"
+            name="Purge Artifact Type"
+            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+         <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeArtifactType"/>
+      </extension>
+      <extension
             id="native"
             point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
          <Renderer classname="org.eclipse.osee.framework.ui.skynet.render.NativeRenderer"/>

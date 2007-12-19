@@ -349,18 +349,13 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
       return null;
    }
 
-   public Artifact getChild(String descriptiveName) {
-      try {
-         for (Artifact artifact : getChildren()) {
-            if (artifact.getDescriptiveName().equals(descriptiveName)) {
-               return artifact;
-            }
+   public Artifact getChild(String descriptiveName) throws SQLException {
+      for (Artifact artifact : getChildren()) {
+         if (artifact.getDescriptiveName().equals(descriptiveName)) {
+            return artifact;
          }
-         throw new IllegalArgumentException("No child with the name " + descriptiveName + " exists");
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
-      return null;
+      throw new IllegalArgumentException("No child with the name \"" + descriptiveName + "\" exists");
    }
 
    /**
@@ -455,9 +450,6 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
          DynamicAttributeManager userAttr = getAttributeManager(attributeName);
          userAttr.setValue(value);
       } catch (Exception ex) {
-         // throw new IllegalStateException("The attribute " + attributeName + " can't be set on " +
-         // getDescriptiveName(),
-         // ex);
          logger.log(Level.WARNING, "The attribute " + attributeName + " can't be set on " + getDescriptiveName(), ex);
       }
    }
@@ -1069,14 +1061,10 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
    /**
     * @param relationSide
     * @param artifact
+    * @throws SQLException
     */
-   public void relate(IRelationEnumeration relationSide, Artifact artifact) {
-      try {
-         relate(relationSide, artifact, null, false);
-      } catch (SQLException ex) {
-         // This should never happen
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
+   public void relate(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
+      relate(relationSide, artifact, null, false);
    }
 
    public void relate(IRelationEnumeration relationSide, Artifact artifact, boolean persist) throws SQLException {

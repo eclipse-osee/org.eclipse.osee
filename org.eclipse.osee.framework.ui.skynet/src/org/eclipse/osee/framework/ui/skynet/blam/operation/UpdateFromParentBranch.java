@@ -74,7 +74,8 @@ public class UpdateFromParentBranch implements BlamOperation {
          artIdBlock.add(artifact.getArtId());
       }
 
-      TransactionId parentTransactionId = transactionIdManager.getEditableTransactionId(childBranch.getParentBranch());
+      Branch parentBranch = childBranch.getParentBranch();
+      TransactionId parentTransactionId = transactionIdManager.getEditableTransactionId(parentBranch);
       int parentTransactionNumber = parentTransactionId.getTransactionNumber();
       int parentBranchId = childBranch.getParentBranch().getBranchId();
 
