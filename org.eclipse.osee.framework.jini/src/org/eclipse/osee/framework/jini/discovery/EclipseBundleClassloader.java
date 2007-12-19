@@ -47,7 +47,6 @@ public class EclipseBundleClassloader extends ClassLoader {
             logger.log(Level.WARNING, "The bundle " + name + " does not exist");
          } else {
             bundleLoaded.put(bundle.getSymbolicName(), bundle);
-            logger.log(Level.INFO, "adding bundle " + bundle.getSymbolicName());
          }
       }
    }
