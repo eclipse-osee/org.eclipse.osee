@@ -40,8 +40,6 @@ public class OseeProductActivator extends OseeUiActivator implements IStartup {
    public OseeProductActivator() {
       super();
       pluginInstance = this;
-
-      System.out.println("some startup in the product ");
    }
 
    public String getOseeVersion() {
