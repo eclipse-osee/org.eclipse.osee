@@ -435,16 +435,20 @@
 		<Column id="HIT_COUNT" defaultValue="not null" type="INTEGER" />
 		<Column id="TAG" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="LOWERCASE_TAG" defaultValue="not null" limits="50" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OT__TI_PK" type="PRIMARY KEY" appliesTo="TAG_ID" />
+		<Constraint schema="OSEE" id="OT__TTI_FK" type="FOREIGN KEY" appliesTo="TAG_TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_TAG_TYPE" column="TAG_TYPE_ID" onDelete="CASCADE" />
+		</Constraint>
 		<Index id="OSEE_TAG__T_IDX" type="UNIQUE">
 			<AppliesTo id="TAG"/>
 		</Index>
 		<Index id="OSEE_TAG__LT_IDX">
 			<AppliesTo id="LOWERCASE_TAG"/>
 		</Index>
-		<Constraint schema="OSEE" id="OT__TI_PK" type="PRIMARY KEY" appliesTo="TAG_ID" />
-		<Constraint schema="OSEE" id="OT__TTI_FK" type="FOREIGN KEY" appliesTo="TAG_TYPE_ID" deferrable="true">
-			<References schema="OSEE" table="OSEE_TAG_TYPE" column="TAG_TYPE_ID" onDelete="CASCADE" />
-		</Constraint>
+		<Index id="OSEE_TAG__T_TT_IDX" type="UNIQUE">
+			<AppliesTo id="TAG"/>
+			<AppliesTo id="TAG_TYPE_ID"/>
+		</Index>
    </Table>
    
    <Table name="OSEE_TAG_TYPE" schema="OSEE">
