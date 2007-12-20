@@ -58,8 +58,9 @@ public interface IAtsStateItem {
     * @param toState
     * @param toAssignees
     * @return Result of operation. If Result.isFalse(), transition will not continue and Result.popup will occur.
+    * @throws Exception TODO
     */
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees);
+   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception;
 
    public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees);
 
@@ -68,7 +69,5 @@ public interface IAtsStateItem {
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.
     */
    public Result committing(SMAManager smaMgr);
-
-   public void committed(SMAManager smaMgr);
 
 }

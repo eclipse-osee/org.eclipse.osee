@@ -50,7 +50,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.PostCommitEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
@@ -172,8 +175,10 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       this.toTransactionId = null;
       this.priorInput = null;
 
-      eventManager.register(BranchEvent.class, this);
-      eventManager.register(PostCommitEvent.class, this);
+      eventManager.register(LocalDeletedBranchEvent.class, this);
+      eventManager.register(RemoteDeletedBranchEvent.class, this);
+      eventManager.register(LocalCommitBranchEvent.class, this);
+      eventManager.register(RemoteCommitBranchEvent.class, this);
    }
 
    @Override
@@ -1122,16 +1127,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
    public void onEvent(Event event) {
       int branchId = -1;
 
-      if (event instanceof PostCommitEvent) {
-         branchId = ((PostCommitEvent) event).getBranchId();
-      }
-
       if (event instanceof BranchEvent) {
          BranchEvent branchEvent = (BranchEvent) event;
-
-         if (branchEvent.getModType() == BranchEvent.ModType.Deleted) {
-            branchId = branchEvent.getBranchId();
-         }
+         branchId = branchEvent.getBranchId();
       }
 
       ChangeReportInput changeReportInput = (ChangeReportInput) changeTable.getInput();

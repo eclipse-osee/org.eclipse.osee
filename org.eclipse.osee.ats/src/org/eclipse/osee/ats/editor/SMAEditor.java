@@ -35,9 +35,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.AtsLocalStateTransitionedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
-import org.eclipse.osee.framework.skynet.core.event.AtsBranchCommittedEvent;
-import org.eclipse.osee.framework.skynet.core.event.AtsBranchCreatedEvent;
+import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
@@ -204,8 +207,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
          SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
          SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, this);
-         SkynetEventManager.getInstance().register(AtsBranchCreatedEvent.class, this);
-         SkynetEventManager.getInstance().register(AtsBranchCommittedEvent.class, this);
+         SkynetEventManager.getInstance().register(LocalNewBranchEvent.class, this);
+         SkynetEventManager.getInstance().register(RemoteNewBranchEvent.class, this);
+         SkynetEventManager.getInstance().register(LocalCommitBranchEvent.class, this);
+         SkynetEventManager.getInstance().register(RemoteCommitBranchEvent.class, this);
 
          setPartName(smaMgr.getSma().getEditorTitle());
          setContentDescription(priviledgedEditMode != PriviledgedEditMode.Off ? " PRIVILEGED EDIT MODE ENABLED - " + priviledgedEditMode.name() : "");
@@ -298,35 +303,47 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    public void onEvent(final Event event) {
-      if (smaMgr.isInTransition()) return;
-      if (getContainer() == null || getContainer().isDisposed()) return;
+      try {
+         if (smaMgr.isInTransition()) return;
+         if (getContainer() == null || getContainer().isDisposed()) return;
 
-      // Because ArtifactVersionIncrementedEvent is only remote, need
-      // to handle local state transition events separately
-      if ((event instanceof AtsLocalStateTransitionedEvent) || (event instanceof AtsBranchCreatedEvent) || (event instanceof AtsBranchCommittedEvent)) {
-         redrawPages();
-      } else if (event instanceof TransactionEvent) {
-         EventData ed = ((TransactionEvent) event).getEventData(smaMgr.getSma());
-         if (ed.isRemoved()) {
-            smaMgr.closeEditors(false);
-            return;
-         } else if (ed.getAvie() != null) {
-            System.err.println(String.format("VERSION INC switching %d to %d for artifact %s",
-                  smaMgr.getSma().getArtId(), ed.getAvie().getNewVersion().getArtId(),
-                  smaMgr.getSma().getDescriptiveName()));
-            getEditorInput().setArtifact(ed.getAvie().getNewVersion());
-            redrawPages();
-         } else if (ed.isHasEvent()) {
-            setTitleImage(smaMgr.getSma().getImage());
+         // Because ArtifactVersionIncrementedEvent is only remote, need
+         // to handle local state transition events separately
+         if (event instanceof AtsLocalStateTransitionedEvent) {
             redrawPages();
          }
-      } else if (event instanceof CacheArtifactModifiedEvent) {
-         if (((CacheArtifactModifiedEvent) event).getType() == ModType.Reverted && ((CacheArtifactModifiedEvent) event).getArtifact().equals(
-               smaMgr.getSma())) {
-            redrawPages();
-         }
-      } else
-         logger.log(Level.SEVERE, "Unexpected event => " + event);
+         if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent) ||
+         //
+         (event instanceof LocalNewBranchEvent) || (event instanceof RemoteNewBranchEvent)) {
+            int branchId = ((BranchEvent) event).getBranchId();
+            if (smaMgr.getBranchMgr().getBranchId() == branchId) {
+               redrawPages();
+            }
+         } else if (event instanceof TransactionEvent) {
+            EventData ed = ((TransactionEvent) event).getEventData(smaMgr.getSma());
+            if (ed.isRemoved()) {
+               smaMgr.closeEditors(false);
+               return;
+            } else if (ed.getAvie() != null) {
+               System.err.println(String.format("VERSION INC switching %d to %d for artifact %s",
+                     smaMgr.getSma().getArtId(), ed.getAvie().getNewVersion().getArtId(),
+                     smaMgr.getSma().getDescriptiveName()));
+               getEditorInput().setArtifact(ed.getAvie().getNewVersion());
+               redrawPages();
+            } else if (ed.isHasEvent()) {
+               setTitleImage(smaMgr.getSma().getImage());
+               redrawPages();
+            }
+         } else if (event instanceof CacheArtifactModifiedEvent) {
+            if (((CacheArtifactModifiedEvent) event).getType() == ModType.Reverted && ((CacheArtifactModifiedEvent) event).getArtifact().equals(
+                  smaMgr.getSma())) {
+               redrawPages();
+            }
+         } else
+            logger.log(Level.SEVERE, "Unexpected event => " + event);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
       onDirtied();
    }
 

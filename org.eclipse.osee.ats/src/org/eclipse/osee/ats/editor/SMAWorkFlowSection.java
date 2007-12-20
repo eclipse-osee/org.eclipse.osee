@@ -499,12 +499,16 @@ public class SMAWorkFlowSection extends SectionPart {
                }
             }
 
-            // Check extenstion points for valid transition
+            // Check extension points for valid transition
             for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
-               result = item.transitioning(smaMgr, smaMgr.getCurrentStateName(), toWorkPage.getName(), toAssignees);
-               if (result.isFalse()) {
-                  result.popup();
-                  return;
+               try {
+                  result = item.transitioning(smaMgr, smaMgr.getCurrentStateName(), toWorkPage.getName(), toAssignees);
+                  if (result.isFalse()) {
+                     result.popup();
+                     return;
+                  }
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, false);
                }
             }
 

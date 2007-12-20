@@ -164,7 +164,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Branch childBranch =
                BranchPersistenceManager.getInstance().createWorkingBranch(
                      TransactionIdManager.getInstance().getEditableTransactionId(parentBranch), childBranchName,
-                     childBranchName, null, SkynetAuthentication.getInstance().getUser(UserEnum.NoOne));
+                     childBranchName, SkynetAuthentication.getInstance().getUser(UserEnum.NoOne));
          return childBranch;
       }
 

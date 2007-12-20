@@ -17,17 +17,11 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
  */
 public class BranchEvent extends Event {
 
-   private ModType modType;
    private int branchId;
 
-   public enum ModType {
-      Deleted, New
-   };
-
-   public BranchEvent(Object sender, int branchId, ModType modType) {
+   public BranchEvent(Object sender, int branchId) {
       super(sender);
       this.branchId = branchId;
-      this.modType = modType;
    }
 
    /**
@@ -37,10 +31,4 @@ public class BranchEvent extends Event {
       return branchId;
    }
 
-   /**
-    * @return Returns the modType.
-    */
-   public ModType getModType() {
-      return modType;
-   }
 }

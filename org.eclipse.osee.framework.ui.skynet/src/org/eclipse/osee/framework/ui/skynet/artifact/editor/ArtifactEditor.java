@@ -27,8 +27,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
+import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.PostCommitEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
@@ -183,7 +184,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       eventManager.register(DefaultBranchChangedEvent.class, this);
       eventManager.register(TransactionArtifactModifiedEvent.class, this);
       eventManager.register(VisitorEvent.class, this);
-      eventManager.register(PostCommitEvent.class, this);
+      eventManager.register(LocalCommitBranchEvent.class, this);
+      eventManager.register(RemoteCommitBranchEvent.class, this);
       eventManager.register(ArtifactLockStatusChanged.class, this);
       eventManager.register(LocalTransactionEvent.class, this);
 
@@ -531,7 +533,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          }
       } else if (event instanceof ArtifactLockStatusChanged) {
          setTitleImage(getEditorInput().getArtifact().getImage());
-      } else if (event instanceof PostCommitEvent) {
+      } else if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent)) {
          Artifact artifact = getEditorInput().getArtifact();
          try {
             changeToArtifact(ArtifactPersistenceManager.getInstance().getArtifact(artifact.getGuid(),

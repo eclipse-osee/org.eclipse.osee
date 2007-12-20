@@ -86,8 +86,6 @@ public class ATSAttributes {
    public static final ATSAttributes LEGACY_PCR_ID_ATTRIBUTE =
          new ATSAttributes("Legacy PCR Id",
                "Field to register problem change report id from legacy items imported into ATS.");
-   public static final ATSAttributes BRANCH_ID_ATTRIBUTE =
-         new ATSAttributes("Branch Id", "Working branch associated with ATS object.");
    public static final ATSAttributes PARENT_BRANCH_ID_ATTRIBUTE =
          new ATSAttributes("Parent Branch Id", "Parent branch associated with ATS object.");
    public static final ATSAttributes TRANSACTION_ID_ATTRIBUTE =

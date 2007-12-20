@@ -34,12 +34,6 @@ public abstract class AtsStateItem implements IAtsStateItem {
    public static String ALL_STATE_IDS = "ALL";
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#committed(org.eclipse.osee.ats.editor.SMAManager)
-    */
-   public void committed(SMAManager smaMgr) {
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#committing(org.eclipse.osee.ats.editor.SMAManager)
     */
    public Result committing(SMAManager smaMgr) {
@@ -97,7 +91,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#transitioning(org.eclipse.osee.ats.editor.SMAManager, java.lang.String, java.lang.String, java.util.Collection)
     */
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) {
+   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception {
       return Result.TrueResult;
    }
 

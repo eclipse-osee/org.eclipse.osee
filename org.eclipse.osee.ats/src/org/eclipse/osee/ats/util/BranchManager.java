@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.framework.skynet.core.IActionBranchStateChange;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -34,9 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
-import org.eclipse.osee.framework.skynet.core.event.AtsBranchCommittedEvent;
-import org.eclipse.osee.framework.skynet.core.event.AtsBranchCreatedEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -59,7 +55,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Donald G. Dunne
  */
-public class BranchManager implements IActionBranchStateChange {
+public class BranchManager {
 
    private boolean commitPopup;
    private final SMAManager smaMgr;
@@ -72,11 +68,11 @@ public class BranchManager implements IActionBranchStateChange {
     * Opens the branch currently associated with this state machine artifact.
     */
    public void showWorkingBranch() {
-      if (!isWorkingBranch()) {
-         AWorkbench.popup("ERROR", "No Current Working Branch");
-         return;
-      }
       try {
+         if (!isWorkingBranch()) {
+            AWorkbench.popup("ERROR", "No Current Working Branch");
+            return;
+         }
          BranchView.revealBranch(getBranch());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -96,15 +92,10 @@ public class BranchManager implements IActionBranchStateChange {
          if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                "Delete Branch", "Are you sure you want to delete the branch: " + branch)) {
             BranchPersistenceManager.getInstance().deleteBranch(branch);
-
-            clearBranchId();
-            smaMgr.getSma().saveSMA();
-            AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't delete change report.", ex, true);
       }
-
    }
 
    /**
@@ -139,14 +130,15 @@ public class BranchManager implements IActionBranchStateChange {
    /**
     * @return branch id or null if there is no stored branch id
     */
-   public Integer getBranchId() {
-      return smaMgr.getSma().getSoleIntegerAttributeValue(ATSAttributes.BRANCH_ID_ATTRIBUTE.getStoreName());
+   public Integer getBranchId() throws SQLException {
+      if (getBranch() == null) return null;
+      return getBranch().getBranchId();
    }
 
    /**
     * @return true if there is a current working branch
     */
-   public boolean isWorkingBranch() {
+   public boolean isWorkingBranch() throws SQLException {
       Integer id = smaMgr.getBranchMgr().getBranchId();
       if (id != null && id > 0) return true;
       return false;
@@ -159,17 +151,6 @@ public class BranchManager implements IActionBranchStateChange {
       Integer id = smaMgr.getBranchMgr().getTransactionIdInt();
       if (id != null && id > 0) return true;
       return false;
-   }
-
-   /**
-    * Set the current branch id to be associated with this state machine artifact
-    * 
-    * @param branchId
-    * @throws SQLException
-    * @throws IllegalStateException
-    */
-   public void setBranchId(int branchId) throws IllegalStateException, SQLException {
-      smaMgr.getSma().setSoleAttributeValue(ATSAttributes.BRANCH_ID_ATTRIBUTE.getStoreName(), String.valueOf(branchId));
    }
 
    /**
@@ -279,7 +260,6 @@ public class BranchManager implements IActionBranchStateChange {
     */
    public void createWorkingBranch(String pageId, Branch parentBranch) throws SQLException {
       final Artifact stateMachineArtifact = smaMgr.getSma();
-      final IActionBranchStateChange callback = this;
       String title = stateMachineArtifact.getDescriptiveName();
       if (title.length() > 40) title = title.substring(0, 39) + "...";
       final String branchName =
@@ -299,66 +279,11 @@ public class BranchManager implements IActionBranchStateChange {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
             BranchPersistenceManager.getInstance().createWorkingBranch(parentTransactionId, finalBranchShortName,
-                  branchName, callback, stateMachineArtifact);
+                  branchName, stateMachineArtifact);
          }
       };
 
       Jobs.run("Create Branch", runnable, AtsPlugin.getLogger(), AtsPlugin.PLUGIN_ID);
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.IActionBranchStateChange#branchCommited()
-    */
-   public void branchCommited(int transactionNumber) {
-
-      if (transactionNumber == 0) {
-         OSEELog.logSevere(AtsPlugin.class, "Commit Branch Failed: Commit returned a 0 transId for branchId ",
-               commitPopup);
-         return;
-      }
-
-      try {
-         clearBranchId();
-         setTransactionId(transactionNumber);
-      } catch (IllegalStateException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, commitPopup);
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, commitPopup);
-      }
-      smaMgr.getSma().saveSMA();
-
-      SkynetEventManager.getInstance().kick(new AtsBranchCommittedEvent(this));
-
-      // Notify extenstion points of commit
-      for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(smaMgr.getWorkPage().getId())) {
-         item.committed(smaMgr);
-      }
-      synchronized (smaMgr.getBranchMgr()) {
-         smaMgr.getBranchMgr().notify();
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.IActionBranchStateChange#branchCreated()
-    */
-   public void branchCreated(Branch branch) {
-      try {
-         setBranchId(branch.getBranchId());
-         smaMgr.getSma().persist();
-
-         updateBranchAccessControl();
-         SkynetEventManager.getInstance().kick(new AtsBranchCreatedEvent(this));
-
-         synchronized (smaMgr.getBranchMgr()) {
-            smaMgr.getBranchMgr().notify();
-         }
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, "Can't create branch", ex, true);
-      }
    }
 
    public void updateBranchAccessControl() throws SQLException {
@@ -423,7 +348,7 @@ public class BranchManager implements IActionBranchStateChange {
                }
             }
 
-            BranchPersistenceManager.getInstance().commitBranch(branch, true, this);
+            BranchPersistenceManager.getInstance().commitBranch(branch, true);
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, "Commit Branch Failed", ex, popup);
             return new Result("Commit Branch Failed: " + ex.getLocalizedMessage());
@@ -433,15 +358,6 @@ public class BranchManager implements IActionBranchStateChange {
          return new Result("Commit Branch Failed" + ex.getLocalizedMessage());
       }
       return Result.TrueResult;
-   }
-
-   /**
-    * Clear out branch id attribute DON this needs to delete the attribute, not just set to ""
-    * 
-    * @throws SQLException
-    */
-   public void clearBranchId() throws SQLException {
-      smaMgr.getSma().getAttributeManager(ATSAttributes.BRANCH_ID_ATTRIBUTE.getStoreName()).setSoleAttributeValue("");
    }
 
    /**

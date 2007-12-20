@@ -13,20 +13,20 @@ package org.eclipse.osee.framework.messaging.event.skynet;
 /**
  * Skynet messaging event; Should not be subscribed to by OSEE applications.
  * 
- * @author Jeff C. Phillips
+ * @author Donald G. Dunne
  */
-public class RemoteNewBranchEvent implements ISkynetEvent {
-   private static final long serialVersionUID = 8339596149601337894L;
+public class RemoteCommitBranchEvent implements ISkynetEvent {
+   private static final long serialVersionUID = 8339596149601667894L;
    private int branchId;
    private int author;
 
-   public RemoteNewBranchEvent(int branchId, int author) {
+   /**
+    * @param branchId
+    * @param author
+    */
+   public RemoteCommitBranchEvent(int branchId, int author) {
       this.branchId = branchId;
       this.author = author;
-   }
-
-   public int getTransactionId() {
-      return 0;
    }
 
    public int getBranchId() {
@@ -46,4 +46,12 @@ public class RemoteNewBranchEvent implements ISkynetEvent {
    public int getAuthor() {
       return author;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent#getTransactionId()
+    */
+   public int getTransactionId() {
+      return 0;
+   }
+
 }

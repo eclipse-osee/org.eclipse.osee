@@ -43,15 +43,12 @@ import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.RemoteNewBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.IActionBranchStateChange;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -193,9 +190,9 @@ public class BranchCreator implements PersistenceManager {
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                      * parent
-                                                                                                                      * transactoin_id
-                                                                                                                      */, Integer /* gamma_id */>(
+                                                                                                                                                                  * parent
+                                                                                                                                                                  * transactoin_id
+                                                                                                                                                                  */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -478,11 +475,11 @@ public class BranchCreator implements PersistenceManager {
     * @param childBranchName
     * @throws SQLException
     */
-   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final IActionBranchStateChange actionBranchStateChange, final Artifact associatedArtifact, boolean preserveMetaData, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) throws Exception {
+   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) throws Exception {
 
       CreateChildBranchTx createChildBranchTx =
-            new CreateChildBranchTx(parentTransactionId, childBranchShortName, childBranchName,
-                  actionBranchStateChange, associatedArtifact, compressArtTypes, preserveArtTypes);
+            new CreateChildBranchTx(parentTransactionId, childBranchShortName, childBranchName, associatedArtifact,
+                  compressArtTypes, preserveArtTypes);
       createChildBranchTx.execute();
       return createChildBranchTx.getChildBranch();
    }
@@ -492,17 +489,15 @@ public class BranchCreator implements PersistenceManager {
       private String childBranchShortName;
       private String childBranchName;
       private TransactionId parentTransactionId;
-      private IActionBranchStateChange actionBranchStateChange;
       private Artifact associatedArtifact;
       private Set<ArtifactSubtypeDescriptor> compressArtTypes;
       private Set<ArtifactSubtypeDescriptor> preserveArtTypes;
 
-      public CreateChildBranchTx(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, IActionBranchStateChange actionBranchStateChange, Artifact associatedArtifact, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) {
+      public CreateChildBranchTx(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) {
          this.childBranch = null;
          this.parentTransactionId = parentTransactionId;
          this.childBranchShortName = childBranchShortName;
          this.childBranchName = childBranchName;
-         this.actionBranchStateChange = actionBranchStateChange;
          this.associatedArtifact = associatedArtifact;
          this.compressArtTypes = compressArtTypes;
          this.preserveArtTypes = preserveArtTypes;
@@ -532,13 +527,11 @@ public class BranchCreator implements PersistenceManager {
          copyBranchAddressing(childBranch, newTransactionNumber, parentTransactionId, compressArtTypes,
                preserveArtTypes);
 
-         eventManager.kick(new LocalBranchEvent(this, childBranch.getBranchId(), BranchEvent.ModType.New));
+         eventManager.kick(new org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent(this,
+               childBranch.getBranchId()));
          remoteEventManager.kick(new RemoteNewBranchEvent(childBranch.getBranchId(),
                SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 
-         if (actionBranchStateChange != null) {
-            actionBranchStateChange.branchCreated(childBranch);
-         }
       }
 
       public Branch getChildBranch() {

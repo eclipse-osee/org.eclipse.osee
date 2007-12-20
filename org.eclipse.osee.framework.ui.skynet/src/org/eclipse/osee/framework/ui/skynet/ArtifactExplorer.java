@@ -53,7 +53,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifi
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
-import org.eclipse.osee.framework.skynet.core.event.PostCommitEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
@@ -134,7 +135,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactExplorer.class);
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+   private static final ConfigurationPersistenceManager configurationPersistenceManager =
+         ConfigurationPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final AccessControlManager accessManager = AccessControlManager.getInstance();
@@ -181,8 +183,9 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       IWorkbenchPage page = AWorkbench.getActivePage();
       ArtifactExplorer artifactExplorer;
       try {
-         artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
-               IWorkbenchPage.VIEW_ACTIVATE);
+         artifactExplorer =
+               (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
+                     IWorkbenchPage.VIEW_ACTIVATE);
          artifactExplorer.setPartName("Artifacts");
          artifactExplorer.setContentDescription("These artifact must be edited singly");
          artifactExplorer.treeViewer.setInput(artifacts);
@@ -436,8 +439,9 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             IWorkbenchPage page = AWorkbench.getActivePage();
             ArtifactExplorer artifactExplorer;
             try {
-               artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
-                     IWorkbenchPage.VIEW_ACTIVATE);
+               artifactExplorer =
+                     (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
+                           IWorkbenchPage.VIEW_ACTIVATE);
                artifactExplorer.explore(artifactManager.getDefaultHierarchyRootArtifact(branchManager.getDefaultBranch()));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
@@ -521,7 +525,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       createMenuItem.setEnabled(true);
 
       try {
-         Collection<ArtifactSubtypeDescriptor> descriptors = configurationPersistenceManager.getArtifactSubtypeDescriptors(branchManager.getDefaultBranch());
+         Collection<ArtifactSubtypeDescriptor> descriptors =
+               configurationPersistenceManager.getArtifactSubtypeDescriptors(branchManager.getDefaultBranch());
          for (ArtifactSubtypeDescriptor descriptor : descriptors) {
             if (!descriptor.getName().equals("Root Artifact")) {
                MenuItem item = new MenuItem(subMenu, SWT.PUSH);
@@ -663,8 +668,9 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
-               RevisionHistoryView revisionHistoryView = (RevisionHistoryView) page.showView(
-                     RevisionHistoryView.VIEW_ID, selectedArtifact.getGuid(), IWorkbenchPage.VIEW_ACTIVATE);
+               RevisionHistoryView revisionHistoryView =
+                     (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, selectedArtifact.getGuid(),
+                           IWorkbenchPage.VIEW_ACTIVATE);
                revisionHistoryView.explore(selectedArtifact);
             } catch (Exception ex) {
                logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -872,7 +878,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       eventManager.register(RemoteTransactionEvent.class, this);
       eventManager.register(DefaultBranchChangedEvent.class, this);
       eventManager.register(ArtifactLockStatusChanged.class, this);
-      eventManager.register(PostCommitEvent.class, this);
+      eventManager.register(LocalCommitBranchEvent.class, this);
+      eventManager.register(RemoteCommitBranchEvent.class, this);
 
       if (treeViewer != null) {
          treeViewer.setInput(root);
@@ -1092,7 +1099,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                treeViewer.update(((ArtifactLockStatusChanged) event).getArtifact(), null);
             } else if (event instanceof AuthenticationEvent) {
                treeViewer.refresh();
-            } else if (event instanceof PostCommitEvent) {
+            } else if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent)) {
                Object object = treeViewer.getInput();
 
                if (object instanceof Artifact) {
@@ -1150,8 +1157,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       try {
          if (memento != null) {
 
-            Artifact previousArtifact = artifactManager.getArtifact(memento.getString(ROOT_GUID),
-                  branchManager.getDefaultBranch());
+            Artifact previousArtifact =
+                  artifactManager.getArtifact(memento.getString(ROOT_GUID), branchManager.getDefaultBranch());
             if (previousArtifact != null) {
                explore(previousArtifact);
                return;

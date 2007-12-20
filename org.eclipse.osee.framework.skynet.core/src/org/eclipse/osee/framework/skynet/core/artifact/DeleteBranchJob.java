@@ -32,8 +32,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.messaging.event.skynet.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
@@ -178,7 +177,7 @@ class DeleteBranchJob extends Job {
          DbUtil.close(chStmt);
          monitor.done();
          if (getResult().equals(Status.OK_STATUS)) {
-            eventManager.kick(new LocalBranchEvent(this, branch.getBranchId(), BranchEvent.ModType.Deleted));
+            eventManager.kick(new LocalDeletedBranchEvent(this, branch.getBranchId()));
             remoteEventManager.kick(new RemoteDeletedBranchEvent(branch.getBranchId(),
                   SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
          }

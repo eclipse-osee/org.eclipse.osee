@@ -25,14 +25,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.messaging.event.skynet.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.IActionBranchStateChange;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
-import org.eclipse.osee.framework.skynet.core.event.PostCommitEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
@@ -132,17 +133,17 @@ class CommitJob extends Job {
 
    private CommitDbTx commitDbTx;
 
-   public CommitJob(Branch toBranch, Branch fromBranch, IActionBranchStateChange actionBranchStateChange, boolean archiveBranch) {
-      this(toBranch, fromBranch, null, actionBranchStateChange, archiveBranch);
+   public CommitJob(Branch toBranch, Branch fromBranch, boolean archiveBranch) {
+      this(toBranch, fromBranch, null, archiveBranch);
    }
 
-   public CommitJob(Branch toBranch, TransactionId fromTransactionId, IActionBranchStateChange actionBranchStateChange, boolean archiveBranch) {
-      this(toBranch, null, fromTransactionId, actionBranchStateChange, archiveBranch);
+   public CommitJob(Branch toBranch, TransactionId fromTransactionId, boolean archiveBranch) {
+      this(toBranch, null, fromTransactionId, archiveBranch);
    }
 
-   private CommitJob(Branch toBranch, Branch fromBranch, TransactionId fromTransactionId, IActionBranchStateChange actionBranchStateChange, boolean archiveBranch) {
+   private CommitJob(Branch toBranch, Branch fromBranch, TransactionId fromTransactionId, boolean archiveBranch) {
       super("Committing Branch: " + fromBranch.getBranchName());
-      commitDbTx = new CommitDbTx(fromBranch, toBranch, fromTransactionId, actionBranchStateChange, archiveBranch);
+      commitDbTx = new CommitDbTx(fromBranch, toBranch, fromTransactionId, archiveBranch);
    }
 
    /*
@@ -172,16 +173,14 @@ class CommitJob extends Job {
       private int newTransactionNumber;
       private final Branch toBranch;
       private final Branch fromBranch;
-      private final IActionBranchStateChange actionBranchStateChange;
       private final boolean archiveBranch;
 
-      private CommitDbTx(Branch fromBranch, Branch toBranch, TransactionId fromTransactionId, IActionBranchStateChange actionBranchStateChange, boolean archiveBranch) {
+      private CommitDbTx(Branch fromBranch, Branch toBranch, TransactionId fromTransactionId, boolean archiveBranch) {
          super();
          this.toBranch = toBranch;
          this.fromBranch = fromBranch;
          this.fromTransactionId = fromTransactionId;
          this.newTransactionNumber = -1;
-         this.actionBranchStateChange = actionBranchStateChange;
          this.archiveBranch = archiveBranch;
       }
 
@@ -232,16 +231,17 @@ class CommitJob extends Job {
             TransactionCompressor txCompressor = new TransactionCompressor(false, newTransactionNumber);
             txCompressor.execute();
 
-            if (actionBranchStateChange != null) {
-               actionBranchStateChange.branchCommited(newTransactionNumber);
-            }
             transactionIdManager.resetEditableTransactionId(newTransactionNumber, toBranch);
 
             monitor.worked(15);
             monitor.setTaskName("Tagging artifacts");
 
             tagArtifacts(toBranch, fromBranchId, newTransactionNumber);
-            eventManager.kick(new PostCommitEvent(this, newTransactionNumber, fromBranchId, null, archiveBranch));
+            if (archiveBranch) fromBranch.archive();
+            eventManager.kick(new LocalCommitBranchEvent(this, fromBranchId));
+            RemoteEventManager.getInstance().kick(
+                  new RemoteCommitBranchEvent(fromBranchId,
+                        SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
          } else {
             throw new IllegalStateException(" A branch can not be commited without any changes made.");
          }
@@ -256,7 +256,6 @@ class CommitJob extends Job {
        */
       @Override
       protected void handleTxException(Exception ex) throws Exception {
-         eventManager.kick(new PostCommitEvent(this, newTransactionNumber, fromBranch.getBranchId(), ex, archiveBranch));
          super.handleTxException(ex);
       }
 

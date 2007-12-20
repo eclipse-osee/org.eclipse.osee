@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor.service.branch;
 
 import java.sql.SQLException;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
@@ -79,19 +80,23 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
    @Override
    public void refresh() {
       if (link != null && !link.isDisposed()) {
-         boolean enabled;
-         if (smaMgr.getBranchMgr().isWorkingBranch()) {
-            try {
-               Pair<TransactionId, TransactionId> transactionToFrom =
-                     transactionIdManager.getStartEndPoint(smaMgr.getBranchMgr().getBranch());
-               enabled = !transactionToFrom.getKey().equals(transactionToFrom.getValue());
-            } catch (SQLException ex) {
-               OSEELog.logException(getClass(), ex, false);
-               enabled = false;
+         boolean enabled = false;
+         try {
+            if (smaMgr.getBranchMgr().isWorkingBranch()) {
+               try {
+                  Pair<TransactionId, TransactionId> transactionToFrom =
+                        transactionIdManager.getStartEndPoint(smaMgr.getBranchMgr().getBranch());
+                  enabled = !transactionToFrom.getKey().equals(transactionToFrom.getValue());
+               } catch (SQLException ex) {
+                  OSEELog.logException(getClass(), ex, false);
+                  enabled = false;
+               }
+            } else {
+               enabled =
+                     ((smaMgr.getBranchMgr().getTransactionIdInt() != null) && (smaMgr.getBranchMgr().getTransactionIdInt() > 0));
             }
-         } else {
-            enabled =
-                  ((smaMgr.getBranchMgr().getTransactionIdInt() != null) && (smaMgr.getBranchMgr().getTransactionIdInt() > 0));
+         } catch (Exception ex) {
+            OSEELog.logException(AtsPlugin.class, ex, false);
          }
 
          link.setText(enabled ? "Show Change Report" : "Show Change Report\n(no changes)");

@@ -46,7 +46,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.RemoteArtifactDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.RemoteRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.RemoteRelationLinkModifiedEvent;
@@ -54,7 +53,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetArtifactEve
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetEventBase;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetRelationLinkEventBase;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.IActionBranchStateChange;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -64,9 +62,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCa
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.PostCommitEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -74,8 +70,6 @@ import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.WindowLocal;
@@ -86,7 +80,7 @@ import org.eclipse.osee.framework.ui.plugin.util.db.Query;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 
-public class BranchPersistenceManager implements IEventReceiver, PersistenceManager {
+public class BranchPersistenceManager implements PersistenceManager {
    static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
 
    private static final LocalAliasTable TX_ALIAS_1 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx1");
@@ -159,8 +153,6 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
     */
    public void onManagerWebInit() throws Exception {
-      eventManager.register(PostCommitEvent.class, this);
-
       artifactManager = ArtifactPersistenceManager.getInstance();
       remoteEventManager = RemoteEventManager.getInstance();
       branchCreator = BranchCreator.getInstance();
@@ -417,13 +409,13 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public void commitBranch(final Branch childBranch, final boolean archiveChildBranch, IActionBranchStateChange actionBranchStateChange) throws SQLException, IllegalArgumentException {
+   public void commitBranch(final Branch childBranch, final boolean archiveChildBranch) throws SQLException, IllegalArgumentException {
       Branch parentBranch = childBranch.getParentBranch();
 
       if (parentBranch == null) {
          throw new IllegalArgumentException("This branch does not have a parent branch.");
       }
-      commitBranch(childBranch, parentBranch, archiveChildBranch, actionBranchStateChange);
+      commitBranch(childBranch, parentBranch, archiveChildBranch);
    }
 
    /**
@@ -435,26 +427,16 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
     * @throws CommitConflictException
     * @throws IllegalArgumentException
     */
-   public void commitBranch(final Branch fromBranch, final Branch toBranch, final boolean archiveFromBranch) throws SQLException, CommitConflictException, IllegalArgumentException {
-      commitBranch(fromBranch, toBranch, archiveFromBranch, null);
-   }
-
-   /**
-    * Commit the net changes from the fromBranch into the toBranch.
-    * 
-    * @throws SQLException
-    * @throws IllegalArgumentException
-    */
-   public void commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch, IActionBranchStateChange actionBranchStateChange) {
-      CommitJob commitJob = new CommitJob(toBranch, fromBranch, actionBranchStateChange, archiveFromBranch);
+   public void commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch) {
+      CommitJob commitJob = new CommitJob(toBranch, fromBranch, archiveFromBranch);
       Jobs.startJob(commitJob);
    }
 
    /**
     * Commit the net changes from a transaction into the toBranch.
     */
-   public void commitBranch(final TransactionId fromTransactionId, final Branch toBranch, boolean archiveFromBranch, IActionBranchStateChange actionBranchStateChange) {
-      CommitJob commitJob = new CommitJob(toBranch, fromTransactionId, actionBranchStateChange, archiveFromBranch);
+   public void commitBranch(final TransactionId fromTransactionId, final Branch toBranch, boolean archiveFromBranch) {
+      CommitJob commitJob = new CommitJob(toBranch, fromTransactionId, archiveFromBranch);
       Jobs.startJob(commitJob);
    }
 
@@ -760,9 +742,9 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
 
          branch.setArchived();
          branchCache.remove(branch.getBranchId());
-         eventManager.kick(new LocalBranchEvent(this, branch.getBranchId(), BranchEvent.ModType.Deleted));
-         remoteEventManager.kick(new ISkynetEvent[] {new RemoteDeletedBranchEvent(branch.getBranchId(),
-               SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId())});
+         eventManager.kick(new LocalCommitBranchEvent(this, branch.getBranchId()));
+         remoteEventManager.kick(new ISkynetEvent[] {new org.eclipse.osee.framework.messaging.event.skynet.RemoteCommitBranchEvent(
+               branch.getBranchId(), SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId())});
 
          Branch defaultBranch = branch.getParentBranch();
 
@@ -833,25 +815,6 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
    /*
     * (non-Javadoc)
     * 
-    * @see osee.plugin.core.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
-    */
-   public void onEvent(Event event) {
-      if (event instanceof PostCommitEvent) {
-         PostCommitEvent commitEvent = (PostCommitEvent) event;
-
-         if (commitEvent.getException() == null && commitEvent.archiveBranch()) {
-            try {
-               getBranch(commitEvent.getBranchId()).archive();
-            } catch (SQLException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
-            }
-         }
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
     * @see osee.plugin.core.event.IEventReceiver#runOnEventInDisplayThread()
     */
    public boolean runOnEventInDisplayThread() {
@@ -870,23 +833,12 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
     * @param childBranchName
     * @throws SQLException
     */
-   public Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, Artifact associatedArtifact) throws Exception {
-      return createWorkingBranch(parentTransactionId, childBranchShortName, childBranchName, null, associatedArtifact);
-   }
-
-   /**
-    * Creates a new Branch based on the transaction number selected and the parent branch.
-    * 
-    * @param parentTransactionId
-    * @param childBranchName
-    * @throws SQLException
-    */
-   public Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final IActionBranchStateChange actionBranchStateChange, final Artifact associatedArtifact) throws Exception {
+   public Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws Exception {
       Set<ArtifactSubtypeDescriptor> compressArtTypes =
             configurationManager.getArtifactSubtypeDescriptors(parentTransactionId);
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
-            actionBranchStateChange, associatedArtifact, false, compressArtTypes, null);
+            associatedArtifact, false, compressArtTypes, null);
    }
 
    /**
@@ -896,12 +848,12 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
     * @param childBranchName
     * @throws SQLException
     */
-   public Branch createTestBranch(TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final IActionBranchStateChange actionBranchStateChange, final Artifact associatedArtifact) throws Exception {
+   public Branch createTestBranch(TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws Exception {
       Set<ArtifactSubtypeDescriptor> preserveArtTypes =
             configurationManager.getArtifactSubtypeDescriptors(parentTransactionId);
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
-            actionBranchStateChange, associatedArtifact, false, null, preserveArtTypes);
+            associatedArtifact, false, null, preserveArtTypes);
    }
 
    private Set<ArtifactSubtypeDescriptor> getSubtypeDescriptors(String[] artTypeNames, TransactionId parentTransactionId) throws SQLException {
@@ -929,7 +881,7 @@ public class BranchPersistenceManager implements IEventReceiver, PersistenceMana
       Set<ArtifactSubtypeDescriptor> preserveArtTypes =
             getSubtypeDescriptors(preserveArtTypeNames, parentTransactionId);
 
-      return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName, null,
+      return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, true, compressArtTypes, preserveArtTypes);
    }
 

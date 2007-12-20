@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.skynet.core.event;
  */
 public class LocalBranchEvent extends BranchEvent {
 
-   public LocalBranchEvent(Object sender, int branchId, ModType modType) {
-      super(sender, branchId, modType);
+   public LocalBranchEvent(Object sender, int branchId) {
+      super(sender, branchId);
    }
 }

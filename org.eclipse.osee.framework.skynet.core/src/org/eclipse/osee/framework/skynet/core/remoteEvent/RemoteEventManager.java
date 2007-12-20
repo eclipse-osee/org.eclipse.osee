@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEventService;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.RemoteNewBranchEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.RemoteRenameBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.RemoteBroadcastEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetDisconnectClientsEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -51,8 +52,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetServiceEvent;
@@ -314,15 +314,24 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
 
                for (ISkynetEvent event : events) {
 
-                  if (event instanceof RemoteNewBranchEvent) {
-                     eventManager.kick(new RemoteBranchEvent(this, ((RemoteNewBranchEvent) event).getBranchId(),
-                           BranchEvent.ModType.New));
+                  if (event instanceof RemoteRenameBranchEvent) {
+                     eventManager.kick(new org.eclipse.osee.framework.skynet.core.event.RemoteRenameBranchEvent(this,
+                           ((RemoteRenameBranchEvent) event).getBranchId(),
+                           ((RemoteRenameBranchEvent) event).getBranchName(),
+                           ((RemoteRenameBranchEvent) event).getShortName()));
+                  } else if (event instanceof RemoteNewBranchEvent) {
+                     eventManager.kick(new org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent(this,
+                           ((RemoteNewBranchEvent) event).getBranchId()));
                   } else if (event instanceof RemoteDeletedBranchEvent) {
                      int branchId = ((RemoteDeletedBranchEvent) event).getBranchId();
-
                      branchPersistenceManager.removeBranchFromCache(branchId);
-                     eventManager.kick(new RemoteBranchEvent(this, ((RemoteDeletedBranchEvent) event).getBranchId(),
-                           BranchEvent.ModType.Deleted));
+                     eventManager.kick(new org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent(this,
+                           branchId));
+                  } else if (event instanceof RemoteCommitBranchEvent) {
+                     int branchId = ((RemoteCommitBranchEvent) event).getBranchId();
+                     branchPersistenceManager.removeBranchFromCache(branchId);
+                     eventManager.kick(new org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent(this,
+                           branchId));
                   } else if (event instanceof RemoteBroadcastEvent) {
                      handleBroadcastMessageEvent((RemoteBroadcastEvent) event);
                   } else if (event instanceof ISkynetArtifactEvent) {

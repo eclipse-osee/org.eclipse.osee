@@ -18,10 +18,9 @@ public class RemoteBranchEvent extends BranchEvent {
    /**
     * @param sender
     * @param branchId
-    * @param modType
     */
-   public RemoteBranchEvent(Object sender, int branchId, ModType modType) {
-      super(sender, branchId, modType);
+   public RemoteBranchEvent(Object sender, int branchId) {
+      super(sender, branchId);
    }
 
 }

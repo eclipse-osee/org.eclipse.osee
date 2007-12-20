@@ -24,8 +24,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEven
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.PostCommitEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -72,8 +75,10 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
       super();
 
       eventManager.unRegisterAll(this);
-      eventManager.register(BranchEvent.class, this);
-      eventManager.register(PostCommitEvent.class, this);
+      eventManager.register(LocalCommitBranchEvent.class, this);
+      eventManager.register(RemoteCommitBranchEvent.class, this);
+      eventManager.register(LocalDeletedBranchEvent.class, this);
+      eventManager.register(RemoteDeletedBranchEvent.class, this);
       eventManager.register(CacheArtifactModifiedEvent.class, this);
       eventManager.register(TransactionArtifactModifiedEvent.class, this);
       eventManager.register(LocalTransactionEvent.class, this);
@@ -248,16 +253,8 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
                      artifact.getGuid());
       }
 
-      if (event instanceof PostCommitEvent) {
-         closeView = artifact != null && ((PostCommitEvent) event).getBranchId() == artifact.getBranch().getBranchId();
-      }
-
-      if (event instanceof BranchEvent) {
-         BranchEvent branchEvent = (BranchEvent) event;
-
-         if (branchEvent.getModType() == BranchEvent.ModType.Deleted) {
-            closeView = artifact != null && branchEvent.getBranchId() == artifact.getBranch().getBranchId();
-         }
+      if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent) || (event instanceof LocalDeletedBranchEvent) || (event instanceof RemoteDeletedBranchEvent)) {
+         closeView = artifact != null && ((BranchEvent) event).getBranchId() == artifact.getBranch().getBranchId();
       }
 
       if (closeView) {

@@ -38,7 +38,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#transitioning(java.lang.String, java.lang.String,
     *      java.util.Collection)
     */
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) {
+   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception {
       if (fromState.equals(DecisionReviewArtifact.StateNames.Prepare) && toState.equals(DecisionReviewArtifact.StateNames.Decision)) {
          XDecisionOptions decOptions = new XDecisionOptions(smaMgr.getSma());
          return decOptions.validateDecisionOptions();

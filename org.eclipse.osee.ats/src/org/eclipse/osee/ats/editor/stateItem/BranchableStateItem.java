@@ -70,7 +70,7 @@ public abstract class BranchableStateItem extends AtsStateItem {
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#transitioning(java.lang.String,
     *      java.lang.String, java.util.Collection)
     */
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) {
+   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception {
       if (!allowCommit) return Result.TrueResult;
       if (smaMgr.getBranchMgr().isWorkingBranch()) return new Result(
             "Working Branch exists.  Please commit or delete working branch before transition.");

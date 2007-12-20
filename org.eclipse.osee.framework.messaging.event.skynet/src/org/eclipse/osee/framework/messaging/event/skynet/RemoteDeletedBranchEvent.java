@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.messaging.event.skynet;
 
 /**
+ * Skynet messaging event; Should not be subscribed to by OSEE applications.
+ * 
  * @author Jeff C. Phillips
  */
 public class RemoteDeletedBranchEvent implements ISkynetEvent {

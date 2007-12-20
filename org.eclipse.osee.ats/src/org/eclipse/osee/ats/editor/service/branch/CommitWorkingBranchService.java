@@ -11,18 +11,20 @@
 
 package org.eclipse.osee.ats.editor.service.branch;
 
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -70,8 +72,8 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
                }
             });
       }
-      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
       refresh();
    }
 
@@ -83,14 +85,19 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
    @Override
    public void refresh() {
       if (link != null && !link.isDisposed()) {
-         boolean enabled = smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranch();
+         boolean enabled = false;
+         try {
+            enabled = smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranch();
+         } catch (Exception ex) {
+            OSEELog.logException(AtsPlugin.class, ex, false);
+         }
          link.setEnabled(enabled);
          link.setUnderlined(enabled);
       }
    }
 
    public void onEvent(Event event) {
-      if (event instanceof TransactionEvent) {
+      if (event instanceof BranchEvent) {
          refresh();
       }
    }
