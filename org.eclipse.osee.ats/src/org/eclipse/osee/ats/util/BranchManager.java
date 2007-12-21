@@ -14,9 +14,7 @@ package org.eclipse.osee.ats.util;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -24,7 +22,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
@@ -41,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransact
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -65,8 +61,6 @@ public class BranchManager {
 
    private boolean commitPopup;
    private final SMAManager smaMgr;
-   private static Map<StateMachineArtifact, TransactionId> commitTransactionIdCache =
-         new HashMap<StateMachineArtifact, TransactionId>();
 
    public BranchManager(SMAManager smaMgr) {
       this.smaMgr = smaMgr;
@@ -119,20 +113,15 @@ public class BranchManager {
     * @throws SQLException
     */
    public TransactionId getTransactionId() throws SQLException {
-      if (!commitTransactionIdCache.containsKey(smaMgr.getSma())) {
-         Set<TransactionData> tranSet =
-               RevisionManager.getInstance().getTransactionDataPerCommitArtifact(smaMgr.getSma());
-         // Cache null transactionId so don't re-search for every call
-         if (tranSet.size() == 0) {
-            commitTransactionIdCache.put(smaMgr.getSma(), null);
-         } else if (tranSet.size() > 1) {
-            OSEELog.logWarning(AtsPlugin.class,
-                  "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId(), false);
-         } else {
-            commitTransactionIdCache.put(smaMgr.getSma(), tranSet.iterator().next().getTransactionId());
-         }
+      Set<Integer> tranSet = RevisionManager.getInstance().getTransactionDataPerCommitArtifact(smaMgr.getSma());
+      // Cache null transactionId so don't re-search for every call
+      if (tranSet.size() == 0) {
+         return null;
+      } else if (tranSet.size() > 1) {
+         OSEELog.logWarning(AtsPlugin.class,
+               "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId(), false);
       }
-      return commitTransactionIdCache.get(smaMgr.getSma());
+      return TransactionIdManager.getInstance().getPossiblyEditableTransactionId(tranSet.iterator().next());
    }
 
    /**

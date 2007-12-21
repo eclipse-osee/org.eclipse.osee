@@ -228,7 +228,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       try {
          StringBuffer sb = new StringBuffer();
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (!getWorldViewBranchStatus().equals("")) sb.append(team.getWorldViewBranchStatus() + ", ");
+            if (!team.getWorldViewBranchStatus().equals("")) sb.append(team.getWorldViewBranchStatus() + ", ");
          }
          return sb.toString().replaceFirst(", $", "");
       } catch (SQLException ex) {

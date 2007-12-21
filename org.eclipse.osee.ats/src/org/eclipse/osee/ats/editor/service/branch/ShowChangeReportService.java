@@ -75,7 +75,7 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
          }
 
          public void linkActivated(HyperlinkEvent e) {
-            run();
+            performService();
          }
       });
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
@@ -137,7 +137,7 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
       SkynetEventManager.getInstance().unRegisterAll(this);
    }
 
-   private void run() {
+   private void performService() {
       smaMgr.getBranchMgr().showChangeReport();
    }
 
@@ -147,7 +147,7 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
    public Action getToolbarAction(SMAManager smaMgr) {
       action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {
-            run();
+            performService();
          }
       };
       action.setToolTipText(getName());

@@ -66,7 +66,6 @@ import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
@@ -562,10 +561,8 @@ public class BranchPersistenceManager implements PersistenceManager {
             SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, comment, SQL3DataType.TIMESTAMP,
             timestamp, SQL3DataType.INTEGER, authorId, SQL3DataType.INTEGER, childBranch.getAssociatedArtifactId());
       // Update commit artifact cache with new information
-      RevisionManager.getInstance().cacheTransactionDataPerCommitArtifact(
-            childBranch.getAssociatedArtifactId(),
-            new TransactionData(comment, timestamp, authorId, newTransactionNumber, -1, parentBranch.getBranchId(),
-                  childBranch.getAssociatedArtifactId()));
+      RevisionManager.getInstance().cacheTransactionDataPerCommitArtifact(childBranch.getAssociatedArtifactId(),
+            childBranch.getAssociatedArtifactId());
 
       return newTransactionNumber;
    }
