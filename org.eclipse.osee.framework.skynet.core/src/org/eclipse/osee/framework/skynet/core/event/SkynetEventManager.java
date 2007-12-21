@@ -57,8 +57,7 @@ public class SkynetEventManager extends EventManager {
     * @param event
     */
    public void kick(final Event event) {
-      for (Event thisEvent = event; event.getClass().getSuperclass() != Event.class; thisEvent =
-            event.getClass().getSuperclass()) {
+      for (Class clazz = event.getClass(); !clazz.equals(Event.class); clazz = clazz.getSuperclass()) {
          // wrap in case listeners want to be removed while being in a kick
          for (final IEventReceiver receiver : new ArrayList<IEventReceiver>(getReceivers(event))) {
             if (receiver == null) continue;
