@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView.RevertDbTx;
@@ -34,7 +33,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Paul K. Waldfogel
  */
 public class RevertArtifactHandler extends AbstractSelectionHandler {
-   private static final RevisionManager myRevisionManager = RevisionManager.getInstance();
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
    TransactionId baseTransactionId = null;
    TransactionId toTransactionId = null;
