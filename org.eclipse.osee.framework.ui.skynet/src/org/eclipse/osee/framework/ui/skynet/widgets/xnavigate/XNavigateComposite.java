@@ -118,7 +118,10 @@ public class XNavigateComposite extends Composite {
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
+      } else {
+         filteredTree.getViewer().setExpandedState(item, true);
       }
+
    }
 
    public void refresh() {
