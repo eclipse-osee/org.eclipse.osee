@@ -706,7 +706,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
             if (dialog.open() != Window.CANCEL) {
                try {
-                  selectedBranch.setBranchShortName(dialog.getValue());
+                  selectedBranch.setBranchShortName(dialog.getValue(), true);
                } catch (SQLException ex) {
                   MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error Renaming Branch short name",
                         ex.getMessage());

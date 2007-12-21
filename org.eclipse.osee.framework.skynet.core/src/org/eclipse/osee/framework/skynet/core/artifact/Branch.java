@@ -22,8 +22,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
+import org.eclipse.osee.framework.messaging.event.skynet.RemoteRenameBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.event.LocalRenameBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
@@ -110,19 +114,30 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    /**
-    * Sets the branch short name to the given value and stores this change in the datastore.
+    * Sets the branch short name to the given value
     * 
+    * @param persist if persist, store the change to the data-store
     * @throws SQLException
     */
-   public void setBranchShortName(String branchShortName) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_SHORT_NAME, SQL3DataType.VARCHAR, StringFormat.truncate(
-            branchShortName, 25), SQL3DataType.INTEGER, branchId);
-
+   public void setBranchShortName(String branchShortName, boolean persist) throws SQLException {
+      if (persist) {
+         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_SHORT_NAME, SQL3DataType.VARCHAR, StringFormat.truncate(
+               branchShortName, 25), SQL3DataType.INTEGER, branchId);
+      }
       this.branchShortName = branchShortName;
+      kickRenameEvents();
+   }
+
+   private void kickRenameEvents() {
+      SkynetEventManager.getInstance().kick(
+            new LocalRenameBranchEvent(this, branchId, branchName, getBranchShortName()));
+      RemoteEventManager.getInstance().kick(
+            new RemoteRenameBranchEvent(branchId, SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId(),
+                  branchName, getBranchShortName()));
    }
 
    /**
-    * Sets the branch name to the given value and stores this change in the datastore
+    * Sets the branch name to the given value and stores this change in the data-store
     * 
     * @param branchName The branchName to set.
     */
@@ -130,6 +145,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       setBranchName(branchName);
       ConnectionHandler.runPreparedUpdate("UPDATE " + BRANCH_TABLE + " SET branch_name = ? WHERE branch_id = ?",
             SQL3DataType.VARCHAR, branchName, SQL3DataType.INTEGER, branchId);
+      kickRenameEvents();
    }
 
    public void setAssociatedArtifact(Artifact artifact) throws Exception {

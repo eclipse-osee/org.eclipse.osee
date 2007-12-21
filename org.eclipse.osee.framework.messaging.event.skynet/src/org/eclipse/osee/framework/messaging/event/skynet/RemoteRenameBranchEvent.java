@@ -20,9 +20,11 @@ public class RemoteRenameBranchEvent implements ISkynetEvent {
    private int branchId;
    private String branchName;
    private String shortName;
+   private final int author;
 
-   public RemoteRenameBranchEvent(int branchId, String branchName, String shortName) {
+   public RemoteRenameBranchEvent(int branchId, int author, String branchName, String shortName) {
       this.branchId = branchId;
+      this.author = author;
       this.branchName = branchName;
       this.shortName = shortName;
    }
@@ -46,7 +48,7 @@ public class RemoteRenameBranchEvent implements ISkynetEvent {
     * @see org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent#getAuthor()
     */
    public int getAuthor() {
-      return 0;
+      return author;
    }
 
    /**

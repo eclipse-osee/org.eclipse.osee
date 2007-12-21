@@ -315,10 +315,16 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
                for (ISkynetEvent event : events) {
 
                   if (event instanceof RemoteRenameBranchEvent) {
-                     eventManager.kick(new org.eclipse.osee.framework.skynet.core.event.RemoteRenameBranchEvent(this,
-                           ((RemoteRenameBranchEvent) event).getBranchId(),
-                           ((RemoteRenameBranchEvent) event).getBranchName(),
-                           ((RemoteRenameBranchEvent) event).getShortName()));
+                     int branchId = ((RemoteRenameBranchEvent) event).getBranchId();
+                     try {
+                        Branch branch = branchPersistenceManager.getBranch(branchId);
+                        branch.setBranchName(((RemoteRenameBranchEvent) event).getBranchName());
+                        branch.setBranchShortName(((RemoteRenameBranchEvent) event).getShortName(), false);
+                        eventManager.kick(new org.eclipse.osee.framework.skynet.core.event.RemoteRenameBranchEvent(
+                              this, branchId, branch.getBranchName(), branch.getBranchShortName()));
+                     } catch (Exception ex) {
+                        logger.log(Level.SEVERE, ex.toString(), ex);
+                     }
                   } else if (event instanceof RemoteNewBranchEvent) {
                      eventManager.kick(new org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent(this,
                            ((RemoteNewBranchEvent) event).getBranchId()));
