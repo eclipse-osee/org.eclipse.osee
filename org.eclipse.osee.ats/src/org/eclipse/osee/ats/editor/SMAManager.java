@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
+import org.eclipse.osee.ats.util.AtsEventHandler;
 import org.eclipse.osee.ats.util.BranchManager;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.DefaultTeamState;
@@ -82,6 +83,8 @@ public class SMAManager {
    private SMAEditor editor;
    private AtsStateItems stateItems;
    private boolean inTransition = false;
+   // Event handler that maintains the BranchManagers caches
+   AtsEventHandler atsEventHandler = AtsEventHandler.getInstance();
 
    public SMAManager(StateMachineArtifact sma, SMAEditor editor) {
       super();

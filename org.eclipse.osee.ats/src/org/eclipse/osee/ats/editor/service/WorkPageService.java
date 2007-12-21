@@ -104,4 +104,11 @@ public abstract class WorkPageService {
       public void linkExited(org.eclipse.ui.forms.events.HyperlinkEvent e) {
       };
    };
+
+   /**
+    * @return the name
+    */
+   public String getName() {
+      return name;
+   }
 }

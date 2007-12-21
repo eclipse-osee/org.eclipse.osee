@@ -88,8 +88,6 @@ public class ATSAttributes {
                "Field to register problem change report id from legacy items imported into ATS.");
    public static final ATSAttributes PARENT_BRANCH_ID_ATTRIBUTE =
          new ATSAttributes("Parent Branch Id", "Parent branch associated with ATS object.");
-   public static final ATSAttributes TRANSACTION_ID_ATTRIBUTE =
-         new ATSAttributes("Transaction Id", "Transaction Id from committing working branch.");
    public static final ATSAttributes DECISION_REVIEW_OPTIONS_ATTRIBUTE =
          new ATSAttributes(
                "Decision Review Options",

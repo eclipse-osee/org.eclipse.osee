@@ -66,6 +66,7 @@ public class WorldLabelProvider implements ITableLabelProvider {
       if (aCol == AtsXColumn.Actionable_Items_Col) return wva.getWorldViewActionableItems();
       if (aCol == AtsXColumn.User_Community_Col) return wva.getWorldViewUserCommunity();
       if (aCol == AtsXColumn.Title_Col) return wva.getWorldViewTitle();
+      if (aCol == AtsXColumn.Number_of_Tasks_Col) return wva.getWorldViewNumberOfTasks();
       if (aCol == AtsXColumn.Description_Col) return wva.getWorldViewDescription();
       if (aCol == AtsXColumn.Metrics_from_Tasks_Col) {
          try {
@@ -82,6 +83,7 @@ public class WorldLabelProvider implements ITableLabelProvider {
       if (aCol == AtsXColumn.Team_Col) return wva.getWorldViewTeam();
       if (aCol == AtsXColumn.Related_To_State_Col) return wva.getWorldViewRelatedToState();
       if (aCol == AtsXColumn.Originator_Col) return wva.getWorldViewOriginator();
+      if (aCol == AtsXColumn.Branch_Status_Col) return wva.getWorldViewBranchStatus();
       if (aCol == AtsXColumn.Implementor_Col) return wva.getWorldViewImplementer();
       if (aCol == AtsXColumn.Change_Type_Col) return wva.getWorldViewChangeTypeStr();
       if (aCol == AtsXColumn.State_Col) return wva.getWorldViewState();

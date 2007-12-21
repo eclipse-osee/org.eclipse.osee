@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.ats.editor.service.branch;
 
-import org.eclipse.osee.ats.AtsPlugin;
+import java.sql.SQLException;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -77,8 +76,8 @@ public class DeleteWorkingBranch extends WorkPageService implements IEventReceiv
          boolean enabled = false;
          try {
             enabled = smaMgr.getBranchMgr().isWorkingBranch();
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+         } catch (SQLException ex) {
+            // do nothing
          }
          link.setEnabled(enabled);
          link.setUnderlined(enabled);

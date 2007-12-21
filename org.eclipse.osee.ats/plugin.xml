@@ -7,6 +7,7 @@
    <extension-point id="AtsVueWorkflowDiagram" name="AtsVueWorkflowDiagram" schema="schema/AtsVueWorkflowDiagram.exsd"/>
    <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="schema/AtsWizardItem.exsd"/>
    <extension-point id="AtsTeamWorkflow" name="AtsTeamWorkflow" schema="schema/AtsTeamWorkflow.exsd"/>
+   <extension-point id="AtsEditorToolbarService" name="AtsEditorToolbarService" schema="schema/AtsEditorToolbarService.exsd"/>
          <extension
          point="org.eclipse.ui.editors">
          <editor
@@ -268,6 +269,15 @@
       <XWidgetProvider
             classname="org.eclipse.osee.ats.util.widgets.XWidgetProvider">
       </XWidgetProvider>
+   </extension>
+   <extension
+         point="org.eclipse.osee.ats.AtsEditorToolbarService">
+      <AtsEditorToolbarService
+            classname="org.eclipse.osee.ats.editor.service.OpenInAtsWorldOperation">
+      </AtsEditorToolbarService>
+      <AtsEditorToolbarService
+            classname="org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService">
+      </AtsEditorToolbarService>
    </extension>
 
 

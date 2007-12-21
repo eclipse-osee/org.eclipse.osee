@@ -221,6 +221,33 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return ChangeType.getChangeType(getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
+    */
+   public String getWorldViewBranchStatus() {
+      try {
+         StringBuffer sb = new StringBuffer();
+         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+            if (!getWorldViewBranchStatus().equals("")) sb.append(team.getWorldViewBranchStatus() + ", ");
+         }
+         return sb.toString().replaceFirst(", $", "");
+      } catch (SQLException ex) {
+         return getCellExceptionString(ex);
+      }
+   }
+
+   public String getWorldViewNumberOfTasks() {
+      try {
+         StringBuffer sb = new StringBuffer();
+         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+            if (!team.getWorldViewNumberOfTasks().equals("")) sb.append(team.getWorldViewNumberOfTasks() + ", ");
+         }
+         return sb.toString().replaceFirst(", $", "");
+      } catch (SQLException ex) {
+         return getCellExceptionString(ex);
+      }
+   }
+
    public String getWorldViewState() {
       String str = "";
       try {

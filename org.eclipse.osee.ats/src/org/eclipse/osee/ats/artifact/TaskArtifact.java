@@ -228,6 +228,10 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
    }
 
+   public String getWorldViewNumberOfTasks() {
+      return "";
+   }
+
    /**
     * @return parent SMA's date if it has one. else return task's date if it has one
     */

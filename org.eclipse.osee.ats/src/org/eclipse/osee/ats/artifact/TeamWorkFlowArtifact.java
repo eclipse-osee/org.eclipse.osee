@@ -626,4 +626,18 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
          }
       }
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
+    */
+   public String getWorldViewBranchStatus() {
+      try {
+         if (getSmaMgr().getBranchMgr().isWorkingBranch())
+            return "Working";
+         else if (getSmaMgr().getBranchMgr().isCommittedBranch()) return "Committed";
+         return "";
+      } catch (SQLException ex) {
+         return "Exception: " + ex.getLocalizedMessage();
+      }
+   }
 }

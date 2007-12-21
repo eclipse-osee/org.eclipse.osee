@@ -14,12 +14,18 @@ package org.eclipse.osee.ats.util;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
@@ -36,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransact
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -59,6 +66,9 @@ public class BranchManager {
 
    private boolean commitPopup;
    private final SMAManager smaMgr;
+   private static Map<StateMachineArtifact, Branch> workingBranchCache = new HashMap<StateMachineArtifact, Branch>();
+   private static Map<StateMachineArtifact, TransactionId> commitTransactionIdCache =
+         new HashMap<StateMachineArtifact, TransactionId>();
 
    public BranchManager(SMAManager smaMgr) {
       this.smaMgr = smaMgr;
@@ -73,10 +83,15 @@ public class BranchManager {
             AWorkbench.popup("ERROR", "No Current Working Branch");
             return;
          }
-         BranchView.revealBranch(getBranch());
+         BranchView.revealBranch(getWorkingBranch());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
+   }
+
+   public Integer getBranchId() throws SQLException {
+      if (getWorkingBranch() == null) return null;
+      return getWorkingBranch().getBranchId();
    }
 
    /**
@@ -84,14 +99,17 @@ public class BranchManager {
     */
    public void deleteEmptyWorkingBranch() {
       try {
-         Branch branch = getBranch();
+         Branch branch = getWorkingBranch();
          if (branch.hasChanges()) {
             AWorkbench.popup("ERROR", "Working branch has changes.  Can't delete through Action.");
             return;
          }
          if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                "Delete Branch", "Are you sure you want to delete the branch: " + branch)) {
-            BranchPersistenceManager.getInstance().deleteBranch(branch);
+            Job job = BranchPersistenceManager.getInstance().deleteBranch(branch);
+            job.join();
+
+            AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't delete change report.", ex, true);
@@ -103,10 +121,20 @@ public class BranchManager {
     * @throws SQLException
     */
    public TransactionId getTransactionId() throws SQLException {
-      if ((getTransactionIdInt() != null) && (getTransactionIdInt() != 0)) return TransactionIdManager.getInstance().getPossiblyEditableTransactionId(
-            getTransactionIdInt());
-      return null;
-
+      if (!commitTransactionIdCache.containsKey(smaMgr.getSma())) {
+         Set<TransactionData> tranSet =
+               RevisionManager.getInstance().getTransactionDataPerCommitArtifact(smaMgr.getSma());
+         // Cache null transactionId so don't re-search for every call
+         if (tranSet.size() == 0) {
+            commitTransactionIdCache.put(smaMgr.getSma(), null);
+         } else if (tranSet.size() > 1) {
+            OSEELog.logWarning(AtsPlugin.class,
+                  "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId(), false);
+         } else {
+            commitTransactionIdCache.put(smaMgr.getSma(), tranSet.iterator().next().getTransactionId());
+         }
+      }
+      return commitTransactionIdCache.get(smaMgr.getSma());
    }
 
    /**
@@ -115,7 +143,7 @@ public class BranchManager {
    public void showChangeReport() {
       try {
          if (isWorkingBranch()) {
-            ChangeReportView.openViewUpon(getBranch());
+            ChangeReportView.openViewUpon(getWorkingBranch());
          } else if (isCommittedBranch()) {
             ChangeReportView.openViewUpon(new ChangeReportInput(smaMgr.getSma().getDescriptiveName(),
                   getTransactionId()));
@@ -128,29 +156,40 @@ public class BranchManager {
    }
 
    /**
-    * @return branch id or null if there is no stored branch id
+    * Return working branch associated with SMA; This data is cached across all workflows with the cache being updated
+    * by local and remote events.
+    * 
+    * @return
+    * @throws SQLException
     */
-   public Integer getBranchId() throws SQLException {
-      if (getBranch() == null) return null;
-      return getBranch().getBranchId();
+   public Branch getWorkingBranch() throws SQLException {
+      if (!workingBranchCache.containsKey(smaMgr.getSma())) {
+         Set<Branch> branches = BranchPersistenceManager.getInstance().getAssociatedArtifactBranches(smaMgr.getSma());
+         // Cache null working branch so don't re-search for every call
+         if (branches.size() == 0) {
+            workingBranchCache.put(smaMgr.getSma(), null);
+         } else if (branches.size() > 1) {
+            OSEELog.logWarning(AtsPlugin.class,
+                  "Unexpected multiple working branches per workflow" + smaMgr.getSma().getHumanReadableId(), false);
+         } else {
+            workingBranchCache.put(smaMgr.getSma(), branches.iterator().next());
+         }
+      }
+      return workingBranchCache.get(smaMgr.getSma());
    }
 
    /**
     * @return true if there is a current working branch
     */
    public boolean isWorkingBranch() throws SQLException {
-      Integer id = smaMgr.getBranchMgr().getBranchId();
-      if (id != null && id > 0) return true;
-      return false;
+      return getWorkingBranch() != null;
    }
 
    /**
     * @return true if there are committed changes associated with this state machine artifact
     */
-   public boolean isCommittedBranch() {
-      Integer id = smaMgr.getBranchMgr().getTransactionIdInt();
-      if (id != null && id > 0) return true;
-      return false;
+   public boolean isCommittedBranch() throws SQLException {
+      return (getTransactionId() != null);
    }
 
    /**
@@ -166,24 +205,6 @@ public class BranchManager {
    }
 
    /**
-    * @return integer transaction id associated with this state machine artifact
-    */
-   public Integer getTransactionIdInt() {
-      return smaMgr.getSma().getSoleIntegerAttributeValue(ATSAttributes.TRANSACTION_ID_ATTRIBUTE.getStoreName());
-   }
-
-   /**
-    * Set transaction id associated with this state machine artifact
-    * 
-    * @param id
-    * @throws SQLException
-    * @throws IllegalStateException
-    */
-   public void setTransactionId(int id) throws IllegalStateException, SQLException {
-      smaMgr.getSma().setSoleAttributeValue(ATSAttributes.TRANSACTION_ID_ATTRIBUTE.getStoreName(), String.valueOf(id));
-   }
-
-   /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.
     * 
     * @param pageId if specified, WorkPage gets callback to provide confirmation that branch can be created
@@ -192,7 +213,7 @@ public class BranchManager {
     */
    public Result createWorkingBranch(String pageId, boolean popup) {
       try {
-         if (getTransactionIdInt() != null && getTransactionIdInt() != 0) {
+         if (isCommittedBranch()) {
             if (popup) AWorkbench.popup("ERROR",
                   "Can not create another working branch once changes have been committed.");
             return new Result("Committed branch already exists.");
@@ -290,7 +311,7 @@ public class BranchManager {
       // Only set/update branch access control if state item is configured to accept
       for (IAtsStateItem stateItem : smaMgr.getStateItems().getCurrentPageStateItems(smaMgr)) {
          if (stateItem.isAccessControlViaAssigneesEnabledForBranching()) {
-            Branch branch = getBranch();
+            Branch branch = getWorkingBranch();
             if (branch != null) {
                for (AccessControlData acd : AccessControlManager.getInstance().getAccessControlList(branch)) {
                   // If subject is NOT an assignee, remove access control
@@ -324,9 +345,10 @@ public class BranchManager {
       commitPopup = popup;
 
       try {
-         Branch branch = getBranch();
+         Branch branch = getWorkingBranch();
          if (branch == null) {
-            OSEELog.logSevere(AtsPlugin.class, "Commit Branch Failed: Can not locate branch for id " + getBranchId(),
+            OSEELog.logSevere(AtsPlugin.class,
+                  "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId(),
                   popup);
             return new Result("Commit Branch Failed: Can not locate branch.");
          }
@@ -361,30 +383,20 @@ public class BranchManager {
    }
 
    /**
-    * @return Branch if one exists
-    */
-   public Branch getBranch() throws SQLException {
-      if (getBranchId() != null && getBranchId() > 0) return BranchPersistenceManager.getInstance().getBranch(
-            getBranchId());
-      return null;
-   }
-
-   /**
-    * Return the artifacts modifed via transaction of branch commit during implementation state. This includes artifacts
-    * that only had relation changes. NOTE: The returned artifacts are the old versions at the time of the commit. They
-    * can't be used for editing or relating. NOTE: This is a VERY expensive operation as each artifact must be loaded.
-    * Retrieving data through change report with snapshotting is cheaper.
+    * Return the artifacts modified via transaction of branch commit during implementation state. This includes
+    * artifacts that only had relation changes. NOTE: The returned artifacts are the old versions at the time of the
+    * commit. They can't be used for editing or relating. NOTE: This is a VERY expensive operation as each artifact must
+    * be loaded. Retrieving data through change report snapshot is cheaper.
     * 
-    * @return artifacts modifed
+    * @return artifacts modified
     */
-   public Collection<Artifact> getArtifactsModified(boolean includeRelationOnlyChanges) {
+   public Collection<Artifact> getArtifactsModified(boolean includeRelationOnlyChanges) throws SQLException {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      Integer transId = getTransactionIdInt();
-      if (transId == null || transId == 0) return arts;
-
+      TransactionId transactionId = getTransactionId();
+      if (transactionId == null) return arts;
       try {
-         TransactionId txId = getTransactionId();
-         return RevisionManager.getInstance().getNewAndModifiedArtifacts(txId, txId, includeRelationOnlyChanges);
+         return RevisionManager.getInstance().getNewAndModifiedArtifacts(transactionId, transactionId,
+               includeRelationOnlyChanges);
       } catch (SQLException ex) {
          OSEELog.logSevere(AtsPlugin.class, "Error getting modified artifacts", true);
       }
@@ -397,14 +409,12 @@ public class BranchManager {
     * 
     * @return artifacts
     */
-   public Collection<Artifact> getArtifactsRelChanged() {
+   public Collection<Artifact> getArtifactsRelChanged() throws SQLException {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      Integer transId = getTransactionIdInt();
-      if (transId == null || transId == 0) return arts;
-
+      TransactionId transactionId = getTransactionId();
+      if (transactionId == null) return arts;
       try {
-         TransactionId txId = getTransactionId();
-         return RevisionManager.getInstance().getRelationChangedArtifacts(txId, txId);
+         return RevisionManager.getInstance().getRelationChangedArtifacts(transactionId, transactionId);
       } catch (SQLException ex) {
          OSEELog.logSevere(AtsPlugin.class, "Error getting relation changed artifacts", true);
       }
@@ -414,17 +424,17 @@ public class BranchManager {
    /**
     * Since deleted artifacts don't exist, this method will return the artifact object just prior to it's deletion.
     * NOTE: This is a VERY expensive operation as each artifact must be loaded. Retrieving data through change report
-    * with snapshotting is cheaper.
+    * snapshot is cheaper.
     * 
     * @return artifacts that were deleted
     */
-   public Collection<Artifact> getArtifactsDeleted() {
+   public Collection<Artifact> getArtifactsDeleted() throws SQLException {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      Integer transId = getTransactionIdInt();
-      if ((transId == null) || (transId == 0)) return arts;
+      TransactionId transactionId = getTransactionId();
+      if (transactionId == null) return arts;
 
       try {
-         for (ArtifactChange artChange : RevisionManager.getInstance().getDeletedArtifactChanges(getTransactionId())) {
+         for (ArtifactChange artChange : RevisionManager.getInstance().getDeletedArtifactChanges(transactionId)) {
             if (artChange.getModType() == ModificationType.DELETE) arts.add(artChange.getArtifact());
          }
       } catch (Exception ex) {
@@ -444,12 +454,24 @@ public class BranchManager {
     */
    public Collection<Artifact> getArtifactsModifiedHead() throws SQLException {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      Integer transId = getTransactionIdInt();
-      if ((transId == null) || (transId == 0)) return arts;
-      TransactionId trans = getTransactionId();
+      TransactionId transactionId = getTransactionId();
+      if (transactionId == null) return arts;
       Collection<Artifact> transArts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(new ArtifactInTransactionSearch(trans),
-                  trans.getBranch());
+            ArtifactPersistenceManager.getInstance().getArtifacts(new ArtifactInTransactionSearch(transactionId),
+                  transactionId.getBranch());
       return transArts;
+   }
+
+   public static void clearCachedWorkingBranch(Branch branch) {
+      clearCachedWorkingBranch(branch.getBranchId());
+   }
+
+   public static void clearCachedWorkingBranch(int branchId) {
+      for (Entry<StateMachineArtifact, Branch> entry : workingBranchCache.entrySet()) {
+         if (branchId == entry.getValue().getBranchId()) {
+            workingBranchCache.remove(entry.getKey());
+            return;
+         }
+      }
    }
 }

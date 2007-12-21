@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -70,10 +72,15 @@ public abstract class BranchableStateItem extends AtsStateItem {
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#transitioning(java.lang.String,
     *      java.lang.String, java.util.Collection)
     */
-   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception {
+   public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) {
       if (!allowCommit) return Result.TrueResult;
-      if (smaMgr.getBranchMgr().isWorkingBranch()) return new Result(
-            "Working Branch exists.  Please commit or delete working branch before transition.");
+      try {
+         if (smaMgr.getBranchMgr().isWorkingBranch()) return new Result(
+               "Working Branch exists.  Please commit or delete working branch before transition.");
+      } catch (SQLException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+         return new Result("Problem determining status of working branch.  See error log. " + ex.getLocalizedMessage());
+      }
       return Result.TrueResult;
    }
 

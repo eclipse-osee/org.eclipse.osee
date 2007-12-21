@@ -697,6 +697,16 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
       return getStatePercentComplete(getCurrentStateName());
    }
 
+   public String getWorldViewNumberOfTasks() {
+      try {
+         int num = getSmaMgr().getTaskMgr().getTaskArtifacts().size();
+         if (num == 0) return "";
+         return String.valueOf(num);
+      } catch (SQLException ex) {
+         return "Exception: " + ex.getLocalizedMessage();
+      }
+   }
+
    public abstract int getWorldViewTotalPercentComplete();
 
    public double getWorldViewStateHoursSpent() {
@@ -964,6 +974,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
       return ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
             BranchPersistenceManager.getInstance().getAtsBranch());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
+    */
+   public String getWorldViewBranchStatus() {
+      return "";
    }
 
    /**

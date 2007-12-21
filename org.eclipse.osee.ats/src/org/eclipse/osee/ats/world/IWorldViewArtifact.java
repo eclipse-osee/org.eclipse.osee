@@ -21,11 +21,15 @@ public interface IWorldViewArtifact {
 
    public int getWorldViewPercentRework();
 
+   public String getWorldViewNumberOfTasks();
+
    public String getWorldViewPercentReworkStr();
 
    public Date getWorldViewEstimatedReleaseDate() throws Exception;
 
    public String getWorldViewEstimatedReleaseDateStr();
+
+   public String getWorldViewBranchStatus();
 
    public double getWorldViewRemainHours();
 
