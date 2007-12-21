@@ -140,7 +140,7 @@ public class EncrypterView extends ViewPart implements IActionable {
                cleanUpFiles(decrypt, input);
             }
          }
-      } catch (FileNotFoundException ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
    }
@@ -163,7 +163,7 @@ public class EncrypterView extends ViewPart implements IActionable {
                cleanUpFiles(encrypt, input);
             }
          }
-      } catch (FileNotFoundException ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
    }
