@@ -57,18 +57,21 @@ public class SkynetEventManager extends EventManager {
     * @param event
     */
    public void kick(final Event event) {
-      // wrap in case listeners want to be removed while being in a kick
-      for (final IEventReceiver receiver : new ArrayList<IEventReceiver>(getReceivers(event))) {
-         if (receiver == null) continue;
-         if (receiver.runOnEventInDisplayThread() && !Displays.isDisplayThread()) {
+      for (Event thisEvent = event; event.getClass().getSuperclass() != Event.class; thisEvent =
+            event.getClass().getSuperclass()) {
+         // wrap in case listeners want to be removed while being in a kick
+         for (final IEventReceiver receiver : new ArrayList<IEventReceiver>(getReceivers(event))) {
+            if (receiver == null) continue;
+            if (receiver.runOnEventInDisplayThread() && !Displays.isDisplayThread()) {
 
-            Display.getDefault().asyncExec(new Runnable() {
-               public void run() {
-                  callReceiverOnEvent(receiver, event);
-               }
-            });
-         } else {
-            callReceiverOnEvent(receiver, event);
+               Display.getDefault().asyncExec(new Runnable() {
+                  public void run() {
+                     callReceiverOnEvent(receiver, event);
+                  }
+               });
+            } else {
+               callReceiverOnEvent(receiver, event);
+            }
          }
       }
    }
