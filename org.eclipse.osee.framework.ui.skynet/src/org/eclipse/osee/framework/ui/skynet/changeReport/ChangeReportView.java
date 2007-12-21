@@ -1183,7 +1183,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            new RevertDbTx(getName(), artId, monitor).execute();
+            new RevertDbTx(getName(), artId, monitor, baseTransactionId, toTransactionId).execute();
          } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, false);
          }
@@ -1191,16 +1191,20 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       }
    }
 
-   private final class RevertDbTx extends AbstractDbTxTemplate {
+   public static final class RevertDbTx extends AbstractDbTxTemplate {
 
       private final IProgressMonitor monitor;
       private final int artId;
       private final String txName;
+      private final TransactionId baseTransactionId;
+      private final TransactionId toTransactionId;
 
-      public RevertDbTx(String txName, int artId, IProgressMonitor monitor) {
+      public RevertDbTx(String txName, int artId, IProgressMonitor monitor, TransactionId baseTransactionId, TransactionId toTransactionId) {
          this.monitor = monitor;
          this.txName = txName;
          this.artId = artId;
+         this.baseTransactionId = baseTransactionId;
+         this.toTransactionId = toTransactionId;
       }
 
       /*
