@@ -258,7 +258,7 @@ class DeleteBranchJob extends Job {
 
       private boolean isCanceled() {
          boolean isCanceled = monitor.isCanceled();
-         if (isCanceled) {
+         if (!isCanceled) {
             txResult = Status.OK_STATUS;
          }
          return isCanceled;

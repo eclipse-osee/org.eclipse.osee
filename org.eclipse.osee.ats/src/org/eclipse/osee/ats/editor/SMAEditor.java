@@ -316,7 +316,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          //
          (event instanceof LocalNewBranchEvent) || (event instanceof RemoteNewBranchEvent)) {
             int branchId = ((BranchEvent) event).getBranchId();
-            if (smaMgr.getBranchMgr().getBranchId() == branchId) {
+            if (smaMgr.getBranchMgr().getBranchId() != null && smaMgr.getBranchMgr().getBranchId() == branchId) {
                redrawPages();
             }
          } else if (event instanceof TransactionEvent) {

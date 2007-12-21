@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -66,7 +65,6 @@ public class BranchManager {
 
    private boolean commitPopup;
    private final SMAManager smaMgr;
-   private static Map<StateMachineArtifact, Branch> workingBranchCache = new HashMap<StateMachineArtifact, Branch>();
    private static Map<StateMachineArtifact, TransactionId> commitTransactionIdCache =
          new HashMap<StateMachineArtifact, TransactionId>();
 
@@ -163,19 +161,17 @@ public class BranchManager {
     * @throws SQLException
     */
    public Branch getWorkingBranch() throws SQLException {
-      if (!workingBranchCache.containsKey(smaMgr.getSma())) {
-         Set<Branch> branches = BranchPersistenceManager.getInstance().getAssociatedArtifactBranches(smaMgr.getSma());
-         // Cache null working branch so don't re-search for every call
-         if (branches.size() == 0) {
-            workingBranchCache.put(smaMgr.getSma(), null);
-         } else if (branches.size() > 1) {
-            OSEELog.logWarning(AtsPlugin.class,
-                  "Unexpected multiple working branches per workflow" + smaMgr.getSma().getHumanReadableId(), false);
-         } else {
-            workingBranchCache.put(smaMgr.getSma(), branches.iterator().next());
-         }
+      Set<Branch> branches = BranchPersistenceManager.getInstance().getAssociatedArtifactBranches(smaMgr.getSma());
+      // Cache null working branch so don't re-search for every call
+      if (branches.size() == 0) {
+         return null;
+      } else if (branches.size() > 1) {
+         OSEELog.logWarning(AtsPlugin.class,
+               "Unexpected multiple working branches per workflow" + smaMgr.getSma().getHumanReadableId(), false);
+      } else {
+         return branches.iterator().next();
       }
-      return workingBranchCache.get(smaMgr.getSma());
+      return null;
    }
 
    /**
@@ -445,7 +441,7 @@ public class BranchManager {
    }
 
    /**
-    * Return the head of artifacts modifed via transaction of branch commit during implementation state. NOTE: The
+    * Return the head of artifacts modified via transaction of branch commit during implementation state. NOTE: The
     * returned artifacts are NOT the old versions at the time of the commit. They are the head versions of the artifacts
     * and CAN be used for relating
     * 
@@ -462,16 +458,4 @@ public class BranchManager {
       return transArts;
    }
 
-   public static void clearCachedWorkingBranch(Branch branch) {
-      clearCachedWorkingBranch(branch.getBranchId());
-   }
-
-   public static void clearCachedWorkingBranch(int branchId) {
-      for (Entry<StateMachineArtifact, Branch> entry : workingBranchCache.entrySet()) {
-         if (branchId == entry.getValue().getBranchId()) {
-            workingBranchCache.remove(entry.getKey());
-            return;
-         }
-      }
-   }
 }

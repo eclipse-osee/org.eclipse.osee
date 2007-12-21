@@ -57,20 +57,18 @@ public class SkynetEventManager extends EventManager {
     * @param event
     */
    public void kick(final Event event) {
-      for (Class clazz = event.getClass(); !clazz.equals(Event.class); clazz = clazz.getSuperclass()) {
-         // wrap in case listeners want to be removed while being in a kick
-         for (final IEventReceiver receiver : new ArrayList<IEventReceiver>(getReceivers(event))) {
-            if (receiver == null) continue;
-            if (receiver.runOnEventInDisplayThread() && !Displays.isDisplayThread()) {
+      // wrap in case listeners want to be removed while being in a kick
+      for (final IEventReceiver receiver : new ArrayList<IEventReceiver>(getReceivers(event))) {
+         if (receiver == null) continue;
+         if (receiver.runOnEventInDisplayThread() && !Displays.isDisplayThread()) {
 
-               Display.getDefault().asyncExec(new Runnable() {
-                  public void run() {
-                     callReceiverOnEvent(receiver, event);
-                  }
-               });
-            } else {
-               callReceiverOnEvent(receiver, event);
-            }
+            Display.getDefault().asyncExec(new Runnable() {
+               public void run() {
+                  callReceiverOnEvent(receiver, event);
+               }
+            });
+         } else {
+            callReceiverOnEvent(receiver, event);
          }
       }
    }
@@ -84,16 +82,18 @@ public class SkynetEventManager extends EventManager {
    }
 
    protected Collection<IEventReceiver> getReceivers(Event event) {
-      Class<? extends Event> eventClass = event.getClass();
-      ArrayList<IEventReceiver> receivers = new ArrayList<IEventReceiver>();
-      // Get all receivers subscribed by Event type
-      if (receiverMap.containsKey(eventClass) && receiverMap.get(eventClass) != null) receivers.addAll(receiverMap.get(eventClass));
+      Set<IEventReceiver> receivers = new HashSet<IEventReceiver>();
+      for (Class eventClass = event.getClass(); !eventClass.equals(Event.class); eventClass =
+            eventClass.getSuperclass()) {
+         // Get all receivers subscribed by Event type
+         if (receiverMap.containsKey(eventClass) && receiverMap.get(eventClass) != null) receivers.addAll(receiverMap.get(eventClass));
 
-      // Get all receivers subscribed by Event type and Guid
-      if ((event instanceof GuidEvent) && (guidReceiverMap.containsKey(eventClass, ((GuidEvent) event).getGuid()))) receivers.addAll(guidReceiverMap.get(
-            eventClass, ((GuidEvent) event).getGuid()));
+         // Get all receivers subscribed by Event type and Guid
+         if ((event.equals(GuidEvent.class)) && (guidReceiverMap.containsKey(eventClass, ((GuidEvent) event).getGuid()))) receivers.addAll(guidReceiverMap.get(
+               eventClass, ((GuidEvent) event).getGuid()));
 
-      receivers.addAll(subscribeAll);
+         receivers.addAll(subscribeAll);
+      }
       return receivers;
    }
 
