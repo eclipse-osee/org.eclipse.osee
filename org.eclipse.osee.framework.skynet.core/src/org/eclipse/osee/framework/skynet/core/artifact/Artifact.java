@@ -401,10 +401,12 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
     * creates a new child using descriptor, relates it to its parent, and persists the child
     * 
     * @param descriptor
+    * @param name TODO
     * @throws SQLException
     */
-   public void addNewChild(ArtifactSubtypeDescriptor descriptor) throws SQLException {
+   public void addNewChild(ArtifactSubtypeDescriptor descriptor, String name) throws SQLException {
       Artifact child = descriptor.makeNewArtifact();
+      child.setDescriptiveName(name);
       addChild(child);
       child.persist();
       child.getLinkManager().persistLinks();

@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
+import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -190,9 +191,9 @@ public class BranchCreator implements PersistenceManager {
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                                                                  * parent
-                                                                                                                                                                  * transactoin_id
-                                                                                                                                                                  */, Integer /* gamma_id */>(
+                                                                                                                                                                             * parent
+                                                                                                                                                                             * transactoin_id
+                                                                                                                                                                             */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -527,8 +528,7 @@ public class BranchCreator implements PersistenceManager {
          copyBranchAddressing(childBranch, newTransactionNumber, parentTransactionId, compressArtTypes,
                preserveArtTypes);
 
-         eventManager.kick(new org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent(this,
-               childBranch.getBranchId()));
+         eventManager.kick(new LocalNewBranchEvent(this, childBranch.getBranchId()));
          remoteEventManager.kick(new RemoteNewBranchEvent(childBranch.getBranchId(),
                SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 

@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service.branch;
 
-import java.sql.SQLException;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -80,6 +79,8 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
       });
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
       SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
       refresh();
    }
 
@@ -108,13 +109,14 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
          } else {
             enabled = smaMgr.getBranchMgr().getTransactionId() != null;
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+      } catch (Exception ex) {
+         // do nothing
       }
       return enabled;
    }
 
    public void onEvent(Event event) {
+      refresh();
       refreshToolbarAction();
    }
 

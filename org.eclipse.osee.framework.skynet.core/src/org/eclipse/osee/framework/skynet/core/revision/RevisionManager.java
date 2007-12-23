@@ -113,7 +113,7 @@ public class RevisionManager implements PersistenceManager {
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_2 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "av2");
    private static final LocalAliasTable TRANSACTIONS_ALIAS_1 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx1");
    private static final LocalAliasTable TRANSACTIONS_ALIAS_2 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx2");
-   private static Map<Integer, Set<Integer>> commitArtifactIdToTransactionData;
+   private static Map<Integer, Set<Integer>> commitArtifactIdToTransactionId;
 
    private static final RevisionManager instance = new RevisionManager();
 
@@ -163,8 +163,8 @@ public class RevisionManager implements PersistenceManager {
    }
 
    public Set<Integer> getTransactionDataPerCommitArtifact(Artifact commitArtifact) throws SQLException {
-      if (commitArtifactIdToTransactionData == null) {
-         commitArtifactIdToTransactionData = new HashMap<Integer, Set<Integer>>();
+      if (commitArtifactIdToTransactionId == null) {
+         commitArtifactIdToTransactionId = new HashMap<Integer, Set<Integer>>();
 
          ConnectionHandlerStatement chStmt = null;
          try {
@@ -178,7 +178,7 @@ public class RevisionManager implements PersistenceManager {
             DbUtil.close(chStmt);
          }
       }
-      if (commitArtifactIdToTransactionData.containsKey(commitArtifact.getArtId())) return commitArtifactIdToTransactionData.get(commitArtifact.getArtId());
+      if (commitArtifactIdToTransactionId.containsKey(commitArtifact.getArtId())) return commitArtifactIdToTransactionId.get(commitArtifact.getArtId());
       return new HashSet<Integer>();
    }
 
@@ -188,10 +188,10 @@ public class RevisionManager implements PersistenceManager {
 
    public void cacheTransactionDataPerCommitArtifact(int commitArtifactId, int transactionData) {
       Set<Integer> transactionDatas;
-      transactionDatas = commitArtifactIdToTransactionData.get(commitArtifactId);
+      transactionDatas = commitArtifactIdToTransactionId.get(commitArtifactId);
       if (transactionDatas == null) transactionDatas = new HashSet<Integer>();
       transactionDatas.add(transactionData);
-      commitArtifactIdToTransactionData.put(commitArtifactId, transactionDatas);
+      commitArtifactIdToTransactionId.put(commitArtifactId, transactionDatas);
    }
 
    /**
