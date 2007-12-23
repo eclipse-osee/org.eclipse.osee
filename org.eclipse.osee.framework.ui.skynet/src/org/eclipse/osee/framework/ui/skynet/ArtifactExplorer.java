@@ -91,6 +91,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
 import org.eclipse.swt.SWT;
@@ -548,13 +549,17 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          Iterator<?> itemsIter = selection.iterator();
          ArtifactSubtypeDescriptor descriptor = (ArtifactSubtypeDescriptor) ((MenuItem) ev.getSource()).getData();
 
+         EntryDialog ed =
+               new EntryDialog("New \"" + descriptor.getName() + "\" Artifact",
+                     "Enter name for \"" + descriptor.getName() + "\" Artifact");
+         if (ed.open() != 0) return;
          try {
             // If nothing was selected, then the child belongs at the root
             if (!itemsIter.hasNext()) {
-               root.addNewChild(descriptor);
+               root.addNewChild(descriptor, ed.getEntry());
             } else {
                while (itemsIter.hasNext()) {
-                  ((Artifact) itemsIter.next()).addNewChild(descriptor);
+                  ((Artifact) itemsIter.next()).addNewChild(descriptor, ed.getEntry());
                }
             }
             treeViewer.refresh();
