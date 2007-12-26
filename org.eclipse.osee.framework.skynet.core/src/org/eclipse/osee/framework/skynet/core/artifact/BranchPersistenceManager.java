@@ -45,7 +45,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.RemoteArtifactDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.RemoteRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.RemoteRelationLinkModifiedEvent;
@@ -62,7 +61,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCa
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
-import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -735,26 +733,19 @@ public class BranchPersistenceManager implements PersistenceManager {
    /**
     * Archives a branch in the database by changing its archived value from 0 to 1.
     */
-   public void archive(Branch branch) {
-      try {
-         ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, SQL3DataType.INTEGER, branch.getBranchId());
+   public void archive(Branch branch) throws SQLException {
+      ConnectionHandler.runPreparedUpdate(ARCHIVE_BRANCH, SQL3DataType.INTEGER, branch.getBranchId());
 
-         branch.setArchived();
-         branchCache.remove(branch.getBranchId());
-         eventManager.kick(new LocalCommitBranchEvent(this, branch.getBranchId()));
-         remoteEventManager.kick(new ISkynetEvent[] {new org.eclipse.osee.framework.messaging.event.skynet.RemoteCommitBranchEvent(
-               branch.getBranchId(), SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId())});
+      branch.setArchived();
+      branchCache.remove(branch.getBranchId());
 
-         Branch defaultBranch = branch.getParentBranch();
+      Branch defaultBranch = branch.getParentBranch();
 
-         if (defaultBranch == null) {
-            defaultBranch = getCommonBranch();
-         }
-
-         setDefaultBranch(defaultBranch);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+      if (defaultBranch == null) {
+         defaultBranch = getCommonBranch();
       }
+
+      setDefaultBranch(defaultBranch);
    }
 
    /**

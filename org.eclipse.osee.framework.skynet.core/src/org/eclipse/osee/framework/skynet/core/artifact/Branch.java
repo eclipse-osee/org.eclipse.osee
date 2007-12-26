@@ -199,7 +199,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return parentBranchId;
    }
 
-   public void archive() {
+   public void archive() throws SQLException {
       branchManager.archive(this);
    }
 
