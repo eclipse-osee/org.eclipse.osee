@@ -121,7 +121,12 @@ public class BranchManager {
          OSEELog.logWarning(AtsPlugin.class,
                "Unexpected multiple transactions per committed artifact id " + smaMgr.getSma().getArtId(), false);
       }
-      return TransactionIdManager.getInstance().getPossiblyEditableTransactionId(tranSet.iterator().next());
+      try {
+         return TransactionIdManager.getInstance().getPossiblyEditableTransactionId(tranSet.iterator().next());
+      } catch (Exception ex) {
+         // there may be times where the transaction id cache is not up-to-date yet; don't throw error
+      }
+      return null;
    }
 
    /**

@@ -186,12 +186,12 @@ public class RevisionManager implements PersistenceManager {
       cacheTransactionDataPerCommitArtifact(commitArtifact.getArtId(), transactionData);
    }
 
-   public void cacheTransactionDataPerCommitArtifact(int commitArtifactId, int transactionData) {
-      Set<Integer> transactionDatas;
-      transactionDatas = commitArtifactIdToTransactionId.get(commitArtifactId);
-      if (transactionDatas == null) transactionDatas = new HashSet<Integer>();
-      transactionDatas.add(transactionData);
-      commitArtifactIdToTransactionId.put(commitArtifactId, transactionDatas);
+   public void cacheTransactionDataPerCommitArtifact(int commitArtifactId, int transactionId) {
+      Set<Integer> transactionIds;
+      transactionIds = commitArtifactIdToTransactionId.get(commitArtifactId);
+      if (transactionIds == null) transactionIds = new HashSet<Integer>();
+      transactionIds.add(transactionId);
+      commitArtifactIdToTransactionId.put(commitArtifactId, transactionIds);
    }
 
    /**

@@ -26,7 +26,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -626,7 +625,7 @@ public class WorldXViewer extends XViewer {
                      art.getHumanReadableId(), art.getArtifactTypeName()));
             }
          }
-         if (selectedArts.size() >= 30) {
+         if (selectedArts.size() >= 5) {
             artBuilder.append(" < " + selectedArts.size() + " artifacts>");
          }
          MessageDialogWithToggle md =
@@ -655,7 +654,6 @@ public class WorldXViewer extends XViewer {
             }
             String results = (purge ? "Purge" : "Delete") + " ATS Objects, Are You Sure?\n" + delBuilder.toString();
             results = results.replaceAll("\n", "<br>");
-            if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete/Purge Artifact(s)", results)) return;
             HtmlDialog wd =
                   new HtmlDialog((purge ? "Purge" : "Delete") + " ATS Objects", "", AHTML.simplePage(results));
             wd.open();

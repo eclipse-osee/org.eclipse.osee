@@ -561,8 +561,10 @@ public class BranchPersistenceManager implements PersistenceManager {
             SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, comment, SQL3DataType.TIMESTAMP,
             timestamp, SQL3DataType.INTEGER, authorId, SQL3DataType.INTEGER, childBranch.getAssociatedArtifactId());
       // Update commit artifact cache with new information
-      RevisionManager.getInstance().cacheTransactionDataPerCommitArtifact(childBranch.getAssociatedArtifactId(),
-            childBranch.getAssociatedArtifactId());
+      if (childBranch.getAssociatedArtifactId() > 0) {
+         RevisionManager.getInstance().cacheTransactionDataPerCommitArtifact(childBranch.getAssociatedArtifactId(),
+               newTransactionNumber);
+      }
 
       return newTransactionNumber;
    }
