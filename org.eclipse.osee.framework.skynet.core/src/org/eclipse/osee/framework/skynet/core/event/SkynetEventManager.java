@@ -98,10 +98,9 @@ public class SkynetEventManager extends EventManager {
    }
 
    /**
-    * Register event by event type. NOTE This should not be used. All registrations should be for specific artifact,
-    * guids versus the entire event type group. This will reduce the amount of network traffic that must pass all the
-    * changes between platforms. Use register(event, artifact,eventReceiver or register(event,guid,eventReceiver)
-    * instead
+    * Register event by event type. Kicking of events follows inheritance rules such that registration by a subclass
+    * event like LocalNewBranchEvent will only call onEvent() when that specific event occurs. Registering for a
+    * superclass event like BranchEvent will result in onEvent() being called for any subclass of BranchEvent.
     * 
     * @param event
     * @param eventReceiver
