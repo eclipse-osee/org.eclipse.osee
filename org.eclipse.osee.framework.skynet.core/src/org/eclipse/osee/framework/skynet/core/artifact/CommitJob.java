@@ -260,13 +260,12 @@ class CommitJob extends Job {
       }
 
       private void tagArtifacts(Branch toBranch, int fromBranchId, int commitTransactionId) throws SQLException {
-         System.err.println("CommitJob: Add this back in.");
          //Delete toBranch artifact tags
-         //         ConnectionHandler.runPreparedQuery(DELETE_TO_BRANCH_TAG_DATA, SQL3DataType.INTEGER, toBranch.getBranchId(),
-         //               SQL3DataType.INTEGER, fromBranchId);
-         //         //move artifact tags from fromBranch to toBranch
-         //         ConnectionHandler.runPreparedQuery(MOVE_TAG_DATA, SQL3DataType.INTEGER, toBranch.getBranchId(),
-         //               SQL3DataType.INTEGER, fromBranchId);
+         ConnectionHandler.runPreparedUpdate(DELETE_TO_BRANCH_TAG_DATA, SQL3DataType.INTEGER, toBranch.getBranchId(),
+               SQL3DataType.INTEGER, fromBranchId);
+         //move artifact tags from fromBranch to toBranch
+         ConnectionHandler.runPreparedUpdate(MOVE_TAG_DATA, SQL3DataType.INTEGER, toBranch.getBranchId(),
+               SQL3DataType.INTEGER, fromBranchId);
       }
    }
 }
