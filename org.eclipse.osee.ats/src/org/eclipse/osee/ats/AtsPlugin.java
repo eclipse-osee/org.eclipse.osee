@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats;
 
 import java.util.logging.Logger;
+import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -44,6 +45,7 @@ public class AtsPlugin extends OseeUiActivator {
    public AtsPlugin() {
       super();
       pluginInstance = this;
+      AtsBranchAccessHandler.getInstance();
    }
 
    public static boolean isEmailEnabled() {
