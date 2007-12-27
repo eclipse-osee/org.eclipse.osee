@@ -78,6 +78,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    @Override
    public void run() throws SQLException {
       TeamDefinitionArtifact teamDef = getTeamDefinition();
+      if (teamDef == null) return;
       try {
          if (teamDef.getTeamDefinitionHoldingVersions() == null) {
             AWorkbench.popup("ERROR", "Team is not configured to use versions.");

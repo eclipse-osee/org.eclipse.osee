@@ -229,7 +229,12 @@ public class AtsLib implements IAtsLib {
       ld.setTitle("Select Team Workflow");
       ld.setMessage("Select Team Workflow");
       ld.setInput(actArt.getTeamWorkFlowArtifacts());
-      if (ld.open() == 0) return (TeamWorkFlowArtifact) ld.getResult()[0];
+      if (ld.open() == 0) {
+         if (ld.getResult().length == 0)
+            AWorkbench.popup("Error", "No Workflow Selected");
+         else
+            return (TeamWorkFlowArtifact) ld.getResult()[0];
+      }
       return null;
    }
 
