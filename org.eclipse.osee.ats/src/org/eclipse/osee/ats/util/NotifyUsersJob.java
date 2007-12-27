@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.REUtil;
 
 /**
  * @author Donald G. Dunne
@@ -140,7 +141,9 @@ public class NotifyUsersJob extends Job {
          emailMessage.setRecipients(Message.RecipientType.TO, emails);
          // Remove hyperlinks cause they won't work in email.
 
-         html = html.replaceFirst("<body>", "<body>" + (smaMgr.isCancelled() ? cancelledStr : notifyStr));
+         html =
+               html.replaceFirst("<body>",
+                     REUtil.quoteMeta("<body>" + (smaMgr.isCancelled() ? cancelledStr : notifyStr)));
          emailMessage.addHTMLBody(html);
          if (testing)
             System.out.println("notifyCompletion = sending to " + emails);
@@ -287,8 +290,8 @@ public class NotifyUsersJob extends Job {
 
          emailMessage.setRecipients(Message.RecipientType.TO, emails);
          // Remove hyperlinks cause they won't work in email.
-         html = html.replaceFirst("<body>", "<body>" + notifyStr);
-         html = html.replaceFirst("</html>", unsubscribeStr + "</html>");
+         html = html.replaceFirst("<body>", REUtil.quoteMeta("<body>" + notifyStr));
+         html = html.replaceFirst("</html>", REUtil.quoteMeta(unsubscribeStr + "</html>"));
          emailMessage.addHTMLBody(html);
          if (testing)
             System.out.println("notifySubscribers = sending to " + emails);
