@@ -28,7 +28,7 @@ public class AtsAdminStat extends WorkPageService {
    private Label label;
 
    public AtsAdminStat(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("AtsAdmin", smaMgr, page, toolkit, section, ServicesArea.ADMIN_CATEGORY, Location.Global);
+      super("AtsAdmin", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.CurrentState);
    }
 
    @Override

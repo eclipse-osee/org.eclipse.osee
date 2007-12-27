@@ -69,6 +69,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private Integer HEADER_COMP_COLUMNS = 4;
    private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
    private final TeamWorkFlowArtifact teamWf;
+   private SMARelationsComposite smaRelationsComposite;
 
    public SMAWorkFlowTab(SMAManager smaMgr) {
       super(smaMgr.getEditor(), "overview", "Workflow");
@@ -175,8 +176,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Display relations
       try {
          if (SMARelationsComposite.relationExists(smaMgr.getSma())) {
-            SMARelationsComposite comp = new SMARelationsComposite(body, toolkit, SWT.NONE);
-            comp.create(smaMgr);
+            smaRelationsComposite = new SMARelationsComposite(body, toolkit, SWT.NONE);
+            smaRelationsComposite.create(smaMgr);
          }
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
@@ -458,6 +459,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    public void refresh() {
       for (SMAWorkFlowSection section : sections)
          section.refresh();
+      if (smaRelationsComposite != null) smaRelationsComposite.refresh();
    }
 
 }

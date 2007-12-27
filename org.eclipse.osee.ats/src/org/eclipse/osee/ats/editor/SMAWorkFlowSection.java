@@ -99,7 +99,7 @@ public class SMAWorkFlowSection extends SectionPart {
       Section section = toolkit.createSection(comp, Section.TWISTIE | Section.TITLE_BAR);
       section.setText(getCurrentStateTitle());
       if (smaMgr.isCurrentState(page)) section.setBackground(AtsPlugin.ACTIVE_COLOR);
-      section.setExpanded(smaMgr.isCurrentState(page) || smaMgr.isFirstState(page));
+      section.setExpanded(smaMgr.isCurrentSectionExpanded(page));
       section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       // section.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
 

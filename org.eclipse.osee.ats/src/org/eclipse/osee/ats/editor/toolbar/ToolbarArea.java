@@ -44,7 +44,7 @@ public class ToolbarArea {
    public void create(IToolBarManager toolbarManager) {
       for (final IAtsEditorToolBarService atsEditorToolBarService : services) {
          try {
-            if (atsEditorToolBarService.showInToolbar(null)) {
+            if (atsEditorToolBarService.showInToolbar(smaMgr)) {
                toolbarManager.add(atsEditorToolBarService.getToolbarAction(smaMgr));
             }
          } catch (Exception ex) {

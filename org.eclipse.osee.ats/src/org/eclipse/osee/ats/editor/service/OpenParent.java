@@ -11,56 +11,40 @@
 package org.eclipse.osee.ats.editor.service;
 
 import java.sql.SQLException;
+import org.eclipse.jface.action.Action;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
-import org.eclipse.swt.SWT;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenParent extends WorkPageService {
+public class OpenParent extends WorkPageService implements IAtsEditorToolBarService {
 
    private final SMAManager smaMgr;
-   private Hyperlink link;
 
    public OpenParent(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
       super("Open Parent", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.Global);
       this.smaMgr = smaMgr;
    }
 
+   /*
+    * This constructor is used for the toolbar service extension
+    */
+   public OpenParent(SMAManager smaMgr) {
+      super("Open Parent", smaMgr, null, null, null, null, null);
+      this.smaMgr = smaMgr;
+   }
+
    @Override
    public void create(Group workComp) {
-      try {
-         if (smaMgr.getSma().getParentSMA() == null) return;
-      } catch (SQLException ex) {
-         return;
-      }
-      link = toolkit.createHyperlink(workComp, name, SWT.NONE);
-      link.addHyperlinkListener(new IHyperlinkListener() {
-
-         public void linkEntered(HyperlinkEvent e) {
-         }
-
-         public void linkExited(HyperlinkEvent e) {
-         }
-
-         public void linkActivated(HyperlinkEvent e) {
-            try {
-               AtsLib.openAtsAction(smaMgr.getSma().getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
-            } catch (SQLException ex) {
-               // Do Nothing
-            }
-         }
-      });
-      refresh();
    }
 
    /*
@@ -79,5 +63,45 @@ public class OpenParent extends WorkPageService {
     */
    @Override
    public void dispose() {
+   }
+
+   private void performOpen() {
+      try {
+         AtsLib.openAtsAction(smaMgr.getSma().getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
+      } catch (SQLException ex) {
+         // Do Nothing
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
+    */
+   public Action getToolbarAction(SMAManager smaMgr) {
+      Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         public void run() {
+            performOpen();
+         }
+      };
+      action.setToolTipText(getName());
+      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("openParent.gif"));
+      return action;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#refreshToolbarAction()
+    */
+   public void refreshToolbarAction() {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#showInToolbar(org.eclipse.osee.ats.editor.SMAManager)
+    */
+   public boolean showInToolbar(SMAManager smaMgr) {
+      try {
+         return smaMgr.getSma().getParentSMA() != null;
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+      return false;
    }
 }

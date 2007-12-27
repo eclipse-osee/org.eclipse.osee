@@ -31,7 +31,7 @@ public class FavoriteOperation extends WorkPageService {
    private Hyperlink link;
 
    public FavoriteOperation(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Favorite", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.Global);
+      super("Favorite", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.CurrentState);
       this.smaMgr = smaMgr;
    }
 

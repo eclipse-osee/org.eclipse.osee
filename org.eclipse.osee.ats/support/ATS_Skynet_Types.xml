@@ -1072,7 +1072,7 @@
     <Cell><Data ss:Type="String">Team Workflow</Data></Cell>
     <Cell><Data ss:Type="String">is reviewed by </Data></Cell>
     <Cell><Data ss:Type="String">Artifact</Data></Cell>
-    <Cell><Data ss:Type="String">if review of</Data></Cell>
+    <Cell><Data ss:Type="String">is review of</Data></Cell>
     <Cell><Data ss:Type="String">TWtDR</Data></Cell>
    </Row>
    <Row>
@@ -1429,12 +1429,12 @@
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Selected/>
-   <TopRowVisible>26</TopRowVisible>
+   <TopRowVisible>146</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>37</ActiveRow>
-     <RangeSelection>R38:R39</RangeSelection>
+     <ActiveRow>182</ActiveRow>
+     <ActiveCol>4</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

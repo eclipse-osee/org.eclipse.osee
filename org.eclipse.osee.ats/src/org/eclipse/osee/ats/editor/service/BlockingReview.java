@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.editor.service;
 
 import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
@@ -32,7 +31,8 @@ public class BlockingReview extends WorkPageService {
    private Label label;
 
    public BlockingReview(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Blocking Review", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.Global);
+      super("Blocking Review", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY,
+            Location.AllNonCompleteState);
    }
 
    @Override
@@ -48,17 +48,8 @@ public class BlockingReview extends WorkPageService {
    @Override
    public void create(Group workComp) {
       if (!(smaMgr.getSma() instanceof ReviewSMArtifact)) return;
-      try {
-         if (smaMgr.getSma().getParentSMA() == null) {
-            StringBuffer sb = new StringBuffer("Stand-alone Review");
-            for (ActionableItemArtifact aia : ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItems())
-               sb.append("\n - " + aia.getDescriptiveName());
-            toolkit.createLabel(workComp, name, SWT.None).setText(sb.toString());
-         } else
-            label = toolkit.createLabel(workComp, "");
-      } catch (SQLException ex) {
-         return;
-      }
+      label = toolkit.createLabel(workComp, "");
+      label.setToolTipText("A blocking review requires the review be completed before the parent workflow can continue.");
       refresh();
    }
 

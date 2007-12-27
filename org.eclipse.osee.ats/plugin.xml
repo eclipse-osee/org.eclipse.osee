@@ -273,10 +273,34 @@
    <extension
          point="org.eclipse.osee.ats.AtsEditorToolbarService">
       <AtsEditorToolbarService
+            classname="org.eclipse.osee.ats.editor.service.OpenVersionArtifact">
+      </AtsEditorToolbarService>
+      <AtsEditorToolbarService
             classname="org.eclipse.osee.ats.editor.service.OpenInAtsWorldOperation">
       </AtsEditorToolbarService>
       <AtsEditorToolbarService
             classname="org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService">
+      </AtsEditorToolbarService>
+      <AtsEditorToolbarService
+            classname="org.eclipse.osee.ats.editor.service.OpenInArtifactEditorOperation">
+      </AtsEditorToolbarService>
+      <AtsEditorToolbarService
+            classname="org.eclipse.osee.ats.editor.service.OpenParent">
+      </AtsEditorToolbarService>
+      <AtsEditorToolbarService
+            classname="org.eclipse.osee.ats.editor.service.OpenInSkyWalkerOperation">
+      </AtsEditorToolbarService>
+      <AtsEditorToolbarService
+            classname="org.eclipse.osee.ats.editor.service.OpenTeamDefinition">
+      </AtsEditorToolbarService>
+      <AtsEditorToolbarService
+            classname="org.eclipse.osee.ats.editor.service.EmailActionService">
+      </AtsEditorToolbarService>
+      <AtsEditorToolbarService
+            classname="org.eclipse.osee.ats.editor.service.AddNoteOperation">
+      </AtsEditorToolbarService>
+      <AtsEditorToolbarService
+            classname="org.eclipse.osee.ats.editor.service.ShowNotesOperation">
       </AtsEditorToolbarService>
    </extension>
 

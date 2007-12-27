@@ -40,7 +40,7 @@ public class PrivilegedEditService extends WorkPageService {
 
    public PrivilegedEditService(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
       super("Privileged Edit", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY,
-            smaMgr.isCompleted() || smaMgr.isCancelled() ? Location.Global : Location.NonCompleteCurrentState);
+            smaMgr.isCompleted() || smaMgr.isCancelled() ? Location.Global : Location.CurrentState);
       this.smaMgr = smaMgr;
    }
 

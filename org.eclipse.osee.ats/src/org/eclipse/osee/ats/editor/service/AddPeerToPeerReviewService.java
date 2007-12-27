@@ -34,7 +34,8 @@ public class AddPeerToPeerReviewService extends WorkPageService {
    private Hyperlink link;
 
    public AddPeerToPeerReviewService(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Add PeerToPeer Review", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.Global);
+      super("Add PeerToPeer Review", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY,
+            Location.CurrentState);
    }
 
    @Override

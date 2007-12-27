@@ -37,7 +37,7 @@ public abstract class WorkPageService {
    // Complete)
    // SpecifiedPageId - Created if isSpecifiedPageId() returns true
    public static enum Location {
-      Global, AllState, AllNonCompleteState, CurrentState, NonCompleteCurrentState, SpecifiedPageId
+      None, Global, AllState, AllNonCompleteState, CurrentState, NonCompleteCurrentState, SpecifiedPageId
    };
    protected final String serviceType;
    protected final Location location;

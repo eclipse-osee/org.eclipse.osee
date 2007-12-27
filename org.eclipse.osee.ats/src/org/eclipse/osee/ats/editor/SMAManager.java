@@ -665,6 +665,10 @@ public class SMAManager {
       return (getCurrentStateName().equals(DefaultTeamState.Cancelled.name()));
    }
 
+   public boolean isCurrentSectionExpanded(AtsWorkPage page) {
+      return sma.isCurrentSectionExpanded(page);
+   }
+
    public boolean isCurrentState(WorkPage page) {
       return sma.getCurrentStateDam().getState(page.getName(), false) != null;
    }

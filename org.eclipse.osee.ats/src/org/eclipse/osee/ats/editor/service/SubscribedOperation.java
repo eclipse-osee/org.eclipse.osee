@@ -31,7 +31,7 @@ public class SubscribedOperation extends WorkPageService {
    private Hyperlink link;
 
    public SubscribedOperation(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Subscribed", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.Global);
+      super("Subscribed", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.CurrentState);
       this.smaMgr = smaMgr;
    }
 

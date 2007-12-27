@@ -38,7 +38,7 @@ public class OpenLatestVersion extends WorkPageService {
    private Hyperlink link;
 
    public OpenLatestVersion(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Open Latest", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.Global);
+      super("Open Latest", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.CurrentState);
       this.smaMgr = smaMgr;
    }
 

@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
+import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -64,6 +65,18 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
       } catch (SQLException ex) {
          return null;
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isCurrentSectionExpanded(org.eclipse.osee.ats.workflow.AtsWorkPage)
+    */
+   @Override
+   public boolean isCurrentSectionExpanded(AtsWorkPage page) {
+      // Always expand the decision state
+      if (page.getName().endsWith(StateNames.Decision.name())) return true;
+      // If current state is decision and this is prepare state, don't expand the Prepare state
+      if (getCurrentStateName().equals(StateNames.Decision.name()) && page.getName().contains(StateNames.Prepare.name())) return false;
+      return super.isCurrentSectionExpanded(page);
    }
 
    @Override

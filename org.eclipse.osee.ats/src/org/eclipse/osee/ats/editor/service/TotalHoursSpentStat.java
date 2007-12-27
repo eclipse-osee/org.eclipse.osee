@@ -27,7 +27,7 @@ public class TotalHoursSpentStat extends WorkPageService {
    private Label label;
 
    public TotalHoursSpentStat(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Hours Spent", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.Global);
+      super("Hours Spent", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.CurrentState);
    }
 
    /*

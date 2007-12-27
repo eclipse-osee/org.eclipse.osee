@@ -26,7 +26,7 @@ public class TotalPercentCompleteStat extends WorkPageService {
    private Label label;
 
    public TotalPercentCompleteStat(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Percent Complete", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.Global);
+      super("Percent Complete", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.CurrentState);
    }
 
    /*

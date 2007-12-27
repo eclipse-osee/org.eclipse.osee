@@ -33,7 +33,8 @@ public class AddDecisionReviewService extends WorkPageService {
    private Hyperlink link;
 
    public AddDecisionReviewService(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Add Decision Review", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.Global);
+      super("Add Decision Review", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY,
+            Location.CurrentState);
    }
 
    @Override

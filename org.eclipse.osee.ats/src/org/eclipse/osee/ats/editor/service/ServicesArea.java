@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
@@ -42,7 +41,6 @@ public class ServicesArea {
    private final boolean isCurrentState;
    public static String STATISTIC_CATEGORY = "Statistics";
    public static String OPERATION_CATEGORY = "Operation";
-   public static String ADMIN_CATEGORY = "Admin";
    public static String DEBUG_PAGE_CATEGORY = "Debug";
 
    public ServicesArea(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
@@ -63,28 +61,20 @@ public class ServicesArea {
          // Operations
          services.add(new FavoriteOperation(smaMgr, page, toolkit, section));
          services.add(new SubscribedOperation(smaMgr, page, toolkit, section));
-         services.add(new OpenInAtsWorldOperation(smaMgr, page, toolkit, section));
-         services.add(new OpenInSkyWalkerOperation(smaMgr, page, toolkit, section));
-         services.add(new OpenInArtifactEditorOperation(smaMgr, page, toolkit, section));
-         services.add(new OpenParent(smaMgr, page, toolkit, section));
-         services.add(new OpenTeamDefinition(smaMgr, page, toolkit, section));
          services.add(new OpenLatestVersion(smaMgr, page, toolkit, section));
          services.add(new DebugOperations(smaMgr, page, toolkit, section));
-         services.add(new ShowNotesOperation(smaMgr, page, toolkit, section));
-         services.add(new AddNoteOperation(smaMgr, page, toolkit, section));
          services.add(new PrivilegedEditService(smaMgr, page, toolkit, section));
-         services.add(new EmailActionService(smaMgr, page, toolkit, section));
-         services.add(new AddDecisionReviewService(smaMgr, page, toolkit, section));
-         services.add(new AddPeerToPeerReviewService(smaMgr, page, toolkit, section));
          // Services
          services.add(new AtsAdminStat(smaMgr, page, toolkit, section));
-         services.add(new BlockingReview(smaMgr, page, toolkit, section));
          services.add(new HridStat(smaMgr, page, toolkit, section));
          services.add(new TotalPercentCompleteStat(smaMgr, page, toolkit, section));
          services.add(new TotalHoursSpentStat(smaMgr, page, toolkit, section));
          services.add(new TargetedForVersionState(smaMgr, page, toolkit, section));
          services.add(new StatePercentCompleteStat(smaMgr, page, toolkit, section));
          services.add(new StateHoursSpentStat(smaMgr, page, toolkit, section));
+         services.add(new AddDecisionReviewService(smaMgr, page, toolkit, section));
+         services.add(new AddPeerToPeerReviewService(smaMgr, page, toolkit, section));
+         services.add(new BlockingReview(smaMgr, page, toolkit, section));
          // Add extension services for this state
          for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
             services.addAll(item.getServices(smaMgr, page, toolkit, section));
@@ -98,10 +88,6 @@ public class ServicesArea {
       for (WorkPageService service : services) {
          categories.add(service.getCategory());
       }
-      if (AtsPlugin.isAtsAdmin()) {
-         createServicesArea(comp, ADMIN_CATEGORY);
-      }
-      categories.remove(ADMIN_CATEGORY);
       createServicesArea(comp, STATISTIC_CATEGORY);
       categories.remove(STATISTIC_CATEGORY);
       createServicesArea(comp, OPERATION_CATEGORY);
@@ -121,6 +107,10 @@ public class ServicesArea {
             if (page.isDisplayService(service) && service.getCategory().equals(category) && service.getLocation() == Location.Global) displayServices.add(service);
       }
 
+      // Add all state
+      for (WorkPageService service : services)
+         if (page.isDisplayService(service) && service.getCategory().equals(category) && service.getLocation() == Location.AllState) displayServices.add(service);
+
       // Add all current state
       if (isCurrentState) {
          for (WorkPageService service : services) {
@@ -131,10 +121,6 @@ public class ServicesArea {
             }
          }
       }
-
-      // Add all state
-      for (WorkPageService service : services)
-         if (page.isDisplayService(service) && service.getCategory().equals(category) && service.getLocation() == Location.AllState) displayServices.add(service);
 
       // Add all non-complete state
       for (WorkPageService service : services)

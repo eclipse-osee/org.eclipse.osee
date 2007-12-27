@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Text;
 public class HridStat extends WorkPageService {
 
    public HridStat(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.Global);
+      super("", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.CurrentState);
    }
 
    /*

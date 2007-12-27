@@ -37,7 +37,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class OpenInAtsWorldOperation extends WorkPageService implements IAtsEditorToolBarService {
 
    public OpenInAtsWorldOperation(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Open in ATS World", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.Global);
+      super("Open in ATS World", smaMgr, page, toolkit, section, null, Location.None);
    }
 
    /*

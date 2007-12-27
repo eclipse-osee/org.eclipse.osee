@@ -127,6 +127,16 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
       notifyOriginatorAndReset();
    }
 
+   /**
+    * Override to apply different algorithm to current section expansion.
+    * 
+    * @param page
+    * @return true if section should be expanded
+    */
+   public boolean isCurrentSectionExpanded(AtsWorkPage page) {
+      return smaMgr.isCurrentState(page);
+   }
+
    public void notifyNewAssigneesAndReset() {
       Set<User> newAssignees = new HashSet<User>();
       for (User user : smaMgr.getAssignees()) {
