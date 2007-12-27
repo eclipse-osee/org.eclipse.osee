@@ -19,11 +19,7 @@ import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
@@ -43,25 +39,11 @@ public class OpenInArtifactEditorOperation extends WorkPageService implements IA
 
    @Override
    public boolean displayService() {
-      return AtsPlugin.isAtsAdmin();
+      return false;
    }
 
    @Override
    public void create(Group workComp) {
-      Hyperlink link = toolkit.createHyperlink(workComp, name, SWT.NONE);
-      link.addHyperlinkListener(new IHyperlinkListener() {
-
-         public void linkEntered(HyperlinkEvent e) {
-         }
-
-         public void linkExited(HyperlinkEvent e) {
-         }
-
-         public void linkActivated(HyperlinkEvent e) {
-            performOpen();
-         }
-
-      });
    }
 
    /* (non-Javadoc)

@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSear
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
@@ -157,6 +158,14 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       }
       FromArtifactsSearch allTeamWorkflows = new FromArtifactsSearch(allTeamCriteria, true);
 
+      // Get un-targeted workflows
+      List<ISearchPrimitive> untargetedTeamsCriteria = new LinkedList<ISearchPrimitive>();
+      untargetedTeamsCriteria.add(teamWorkflowSearch);
+      untargetedTeamsCriteria.add(new NotSearch(new InRelationSearch(allTeamWorkflows,
+            RelationSide.TeamWorkflowTargetedForVersion_Workflow)));
+      FromArtifactsSearch untargetedTeamsCriteriaArts = new FromArtifactsSearch(untargetedTeamsCriteria, true);
+
+      // Get un-released version artifacts
       List<ISearchPrimitive> unReleasedVersionCriteria = new LinkedList<ISearchPrimitive>();
       unReleasedVersionCriteria.add(new ArtifactTypeSearch(VersionArtifact.ARTIFACT_NAME, Operator.EQUAL));
       unReleasedVersionCriteria.add(new AttributeValueSearch(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), "no",
@@ -169,10 +178,17 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       unReleasedTeamsCriteria.add(allTeamWorkflows);
       FromArtifactsSearch unReleasedTeamsCriteriaArts = new FromArtifactsSearch(unReleasedTeamsCriteria, true);
 
+      // Get all un-released and un-targeted workflows
+      List<ISearchPrimitive> unReleasedAndUntargetedTeamsCriteria = new LinkedList<ISearchPrimitive>();
+      unReleasedAndUntargetedTeamsCriteria.add(untargetedTeamsCriteriaArts);
+      unReleasedAndUntargetedTeamsCriteria.add(unReleasedTeamsCriteriaArts);
+      FromArtifactsSearch unReleasedAndUntargetedTeamsCriteriaArts =
+            new FromArtifactsSearch(unReleasedAndUntargetedTeamsCriteria, false);
+
       if (!showAction) {
          if (isCancelled()) return;
          Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(unReleasedTeamsCriteria, true,
+               ArtifactPersistenceManager.getInstance().getArtifacts(unReleasedAndUntargetedTeamsCriteria, false,
                      BranchPersistenceManager.getInstance().getAtsBranch());
          debug.report("Processing artifacts", true);
          if (isCancelled()) return;
@@ -182,7 +198,8 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       }
 
       List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
-      actionCriteria.add(new InRelationSearch(unReleasedTeamsCriteriaArts, RelationSide.ActionToWorkflow_Action));
+      actionCriteria.add(new InRelationSearch(unReleasedAndUntargetedTeamsCriteriaArts,
+            RelationSide.ActionToWorkflow_Action));
 
       if (isCancelled()) return;
       debug.report("Perform Search...", true);

@@ -294,8 +294,23 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
 
    public String getWorldViewVersion() {
       try {
-         VersionArtifact verArt = getTargetedForVersion();
-         if (verArt != null) return verArt.getDescriptiveName();
+         Collection<VersionArtifact> verArts =
+               getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+         if (verArts.size() == 0) return "";
+         if (verArts.size() > 1) {
+            String errStr =
+                  "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
+            OSEELog.logException(AtsPlugin.class, errStr, null, false);
+            return getCellExceptionString(errStr);
+         }
+         VersionArtifact verArt = verArts.iterator().next();
+         if (!smaMgr.isCompleted() && verArt.getSoleBooleanAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName())) {
+            String errStr =
+                  "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
+            OSEELog.logException(AtsPlugin.class, errStr, null, false);
+            return getCellExceptionString(errStr);
+         }
+         return verArt.getDescriptiveName();
       } catch (SQLException ex) {
          // Do nothing
       }
