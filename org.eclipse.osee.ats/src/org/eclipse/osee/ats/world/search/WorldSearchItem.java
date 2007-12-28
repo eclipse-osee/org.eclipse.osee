@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 
 /**
@@ -115,7 +116,15 @@ public abstract class WorldSearchItem {
             addedArts.add(artifact);
          }
       }
-      if (loadWorldView && xViewer != null && addedArts.size() > 0) xViewer.add(addedArts);
+      if (loadWorldView && xViewer != null && addedArts.size() > 0) {
+         xViewer.add(addedArts);
+         Displays.ensureInDisplayThread(new Runnable() {
+            public void run() {
+               xViewer.getTree().setFocus();
+            }
+         });
+
+      }
    }
 
    public Set<Artifact> getResultArtifacts() {
