@@ -74,20 +74,20 @@ public class OseeAts {
       toolBar.add(bugAction);
    }
 
-   public static void addButtonToEditorToolBar(final MultiPageEditorPart editorPart, IActionable actionableObject, final OseeUiActivator oseePlugin, ToolBar toolBar, final String editorId, String actionableItem) {
-      addButtonToEditorToolBar(editorPart, actionableObject, oseePlugin, toolBar, null, editorId, actionableItem);
+   public static void addButtonToEditorToolBar(IActionable actionableObject, final OseeUiActivator oseePlugin, ToolBar toolBar, final String editorId, String actionableItem) {
+      addButtonToEditorToolBar(actionableObject, oseePlugin, toolBar, null, editorId, actionableItem);
    }
 
-   public static void addButtonToEditorToolBar(final MultiPageEditorPart editorPart, IActionable actionableObject, final OseeUiActivator oseePlugin, Composite comp, final String editorId, String actionableItem) {
-      addButtonToEditorToolBar(editorPart, actionableObject, oseePlugin, null, comp, editorId, actionableItem);
+   public static void addButtonToEditorToolBar(IActionable actionableObject, final OseeUiActivator oseePlugin, Composite comp, final String editorId, String actionableItem) {
+      addButtonToEditorToolBar(actionableObject, oseePlugin, null, comp, editorId, actionableItem);
    }
 
-   private static void addButtonToEditorToolBar(final MultiPageEditorPart editorPart, IActionable actionableObject, final OseeUiActivator oseePlugin, ToolBar toolBar, Composite comp, final String editorId, final String aspect) {
+   private static void addButtonToEditorToolBar(final IActionable actionableObject, final OseeUiActivator oseePlugin, ToolBar toolBar, Composite comp, final String editorId, final String aspect) {
+      if (actionableObject == null) throw new IllegalArgumentException(
+            String.format("actionableObject can not be null"));
       if (editorId == null || editorId.equals("")) throw new IllegalArgumentException(
             String.format("editorId can not be null or empty"));
       if (aspect == null) throw new IllegalArgumentException(String.format("aspect can not be null"));
-      if (!(editorPart instanceof IActionable)) throw new IllegalArgumentException(String.format(
-            "Editor %s must implement IActionable.", editorId));
 
       if (toolBar != null) {
          ToolItem item = new ToolItem(toolBar, SWT.PUSH);
@@ -97,9 +97,9 @@ public class OseeAts {
             public void widgetSelected(SelectionEvent e) {
                String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
                String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
-               if (editorPart instanceof IActionable) {
-                  String moreDesc = ((IActionable) editorPart).getActionDescription();
-                  if (!moreDesc.equals("")) desc += "\n" + moreDesc;
+               if (actionableObject != null) {
+                  String moreDesc = actionableObject.getActionDescription();
+                  if (moreDesc != null && !moreDesc.equals("")) desc += "\n" + moreDesc;
                }
                createActionViaBug(desc, aspect);
             }
@@ -116,9 +116,9 @@ public class OseeAts {
             public void widgetSelected(SelectionEvent e) {
                String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
                String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
-               if (editorPart instanceof IActionable) {
-                  String moreDesc = ((IActionable) editorPart).getActionDescription();
-                  if (!moreDesc.equals("")) desc += "\n" + moreDesc;
+               if (actionableObject != null) {
+                  String moreDesc = actionableObject.getActionDescription();
+                  if (moreDesc != null && !moreDesc.equals("")) desc += "\n" + moreDesc;
                }
                createActionViaBug(desc, aspect);
             }

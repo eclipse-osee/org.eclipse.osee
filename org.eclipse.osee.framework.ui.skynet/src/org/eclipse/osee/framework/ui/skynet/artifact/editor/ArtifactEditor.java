@@ -290,7 +290,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
       ToolItem item;
 
-      OseeAts.addButtonToEditorToolBar(this, this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "Artifact Editor");
+      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "Artifact Editor");
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(skynetGuiPlugin.getImage("edit.gif"));

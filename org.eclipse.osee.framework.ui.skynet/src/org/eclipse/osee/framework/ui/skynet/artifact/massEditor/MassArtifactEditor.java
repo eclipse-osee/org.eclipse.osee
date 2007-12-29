@@ -137,8 +137,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
          }
       });
 
-      OseeAts.addButtonToEditorToolBar(this, this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID,
-            "Mass Artifact Editor");
+      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "Mass Artifact Editor");
    }
 
    public static void editArtifacts(MassArtifactEditorInput input) {
