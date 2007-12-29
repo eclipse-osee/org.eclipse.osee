@@ -31,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 public class NewAction extends Action {
 
    private final String actionableItem;
+   private String initialDescription;
 
    public NewAction() {
       this(null);
@@ -55,6 +56,9 @@ public class NewAction extends Action {
       try {
          if (actionableItem != null) {
             wizard.setCheckedArtifacts(getTeamActionableItems());
+         }
+         if (initialDescription != null) {
+            wizard.setInitialDescription(initialDescription);
          }
          WizardDialog dialog =
                new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
@@ -86,4 +90,19 @@ public class NewAction extends Action {
       }
       return ais;
    }
+
+   /**
+    * @return the initialDescription
+    */
+   public String getInitialDescription() {
+      return initialDescription;
+   }
+
+   /**
+    * @param initialDescription the initialDescription to set
+    */
+   public void setInitialDescription(String initialDescription) {
+      this.initialDescription = initialDescription;
+   }
+
 }

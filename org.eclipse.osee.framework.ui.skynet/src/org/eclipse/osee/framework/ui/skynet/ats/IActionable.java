@@ -18,7 +18,7 @@ public interface IActionable {
    /**
     * Provide description over and above the viewpart name and version to be used by ATS
     * 
-    * @return TODO
+    * @return description
     */
    public String getActionDescription();
 

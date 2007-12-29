@@ -42,6 +42,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
    private NewActionPage2 page2;
    private NewActionPage3 page3;
    private Collection<ActionableItemArtifact> checkedArtifacts;
+   private String initialDescription;
 
    /**
     * Wizard to create a new action artifact with ONE product
@@ -165,5 +166,19 @@ public class NewActionWizard extends Wizard implements INewWizard {
    public Result isActionValid() throws SQLException {
       if (page3 == null) return Result.TrueResult;
       return page3.isActionValid();
+   }
+
+   /**
+    * @return the initialDescription
+    */
+   public String getInitialDescription() {
+      return initialDescription;
+   }
+
+   /**
+    * @param initialDescription the initialDescription to set
+    */
+   public void setInitialDescription(String initialDescription) {
+      this.initialDescription = initialDescription;
    }
 }

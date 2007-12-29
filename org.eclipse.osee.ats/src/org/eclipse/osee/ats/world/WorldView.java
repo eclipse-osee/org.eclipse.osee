@@ -580,7 +580,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    }
 
    public String getActionDescription() {
-      if (lastSearchItem != null) return String.format("Search Item - %s", lastSearchItem.getSelectedName());
+      if (lastSearchItem != null) return String.format("Search Item: %s", lastSearchItem.getSelectedName());
       return "";
    }
 

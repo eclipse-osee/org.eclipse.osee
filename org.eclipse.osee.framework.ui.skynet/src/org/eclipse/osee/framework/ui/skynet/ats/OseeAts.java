@@ -96,7 +96,7 @@ public class OseeAts {
          item.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
-               String desc = String.format("Found in \"%s\" version %s.", editorId, version);
+               String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
                if (editorPart instanceof IActionable) {
                   String moreDesc = ((IActionable) editorPart).getActionDescription();
                   if (!moreDesc.equals("")) desc += "\n" + moreDesc;
@@ -115,7 +115,7 @@ public class OseeAts {
 
             public void widgetSelected(SelectionEvent e) {
                String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
-               String desc = String.format("Found in \"%s\" version %s.", editorId, version);
+               String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
                if (editorPart instanceof IActionable) {
                   String moreDesc = ((IActionable) editorPart).getActionDescription();
                   if (!moreDesc.equals("")) desc += "\n" + moreDesc;
@@ -137,19 +137,7 @@ public class OseeAts {
    private static void createActionViaBug(String desc, String actionableItem) {
       try {
          getAtsLib().createATSAction(desc, actionableItem);
-      } catch (IllegalArgumentException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (SecurityException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (ClassNotFoundException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (InstantiationException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (IllegalAccessException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (InvocationTargetException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (NoSuchMethodException ex) {
+      } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
    }
@@ -168,7 +156,7 @@ public class OseeAts {
       Action bugAction = new Action("Generate Action Against This View") {
          public void run() {
             String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
-            String desc = String.format("Found in \"%s\" version %s.", viewId, version);
+            String desc = String.format("\n\nItem: %s\nVersion: %s", viewId, version);
             String moreDesc = actionableObject.getActionDescription();
             if (!moreDesc.equals("")) desc += "\n" + moreDesc;
             createActionViaBug(desc, actionableItem);

@@ -174,13 +174,14 @@ public class AtsLib implements IAtsLib {
       }
    }
 
-   public static void createAtsAction(String desc, String actionableItem) {
-      (new AtsLib()).createATSAction(desc, actionableItem);
+   public static void createAtsAction(String initialDescription, String actionableItem) {
+      (new AtsLib()).createATSAction(initialDescription, actionableItem);
    }
 
-   public void createATSAction(String desc, String actionableItem) {
+   public void createATSAction(String initialDescription, String actionableItem) {
 
       NewAction newAction = new NewAction(actionableItem);
+      newAction.setInitialDescription(initialDescription);
       newAction.run();
 
    }

@@ -20,7 +20,7 @@ public interface IAtsLib {
 
    public void openATSAction(final Artifact art, final AtsOpenOption option);
 
-   public void createATSAction(String desc, String actionableItem);
+   public void createATSAction(String initialDescription, String actionableItem);
 
    public void openArtifact(String guid, OseeAts.OpenView view);
 
