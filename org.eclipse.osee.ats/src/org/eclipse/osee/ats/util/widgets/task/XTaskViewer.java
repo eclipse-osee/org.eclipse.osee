@@ -51,6 +51,8 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.ALayout;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -88,7 +90,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class XTaskViewer extends XWidget implements IEventReceiver {
+public class XTaskViewer extends XWidget implements IEventReceiver, IActionable {
 
    private TaskXViewer xViewer;
    private ToolItem upItem, downItem, currentStateFilterItem;
@@ -308,6 +310,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver {
          }
       });
 
+      OseeAts.addButtonToEditorToolBar(this, AtsPlugin.getInstance(), toolBar, SMAEditor.EDITOR_ID, "ATS Task Tab");
       createTaskActionBarPulldown(toolBar, rightComp);
 
    }
@@ -714,5 +717,12 @@ public class XTaskViewer extends XWidget implements IEventReceiver {
          }
       }
       refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.ats.IActionable#getActionDescription()
+    */
+   public String getActionDescription() {
+      return null;
    }
 }
