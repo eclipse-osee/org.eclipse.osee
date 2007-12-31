@@ -17,17 +17,14 @@ import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.editor.service.branch.CommitWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranch;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
 import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -44,25 +41,14 @@ public abstract class BranchableStateItem extends AtsStateItem {
     */
    public abstract String getId();
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getServices()
-    */
-   public List<WorkPageService> getServices(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      return getServices(smaMgr, page, toolkit, section, true, allowCommit);
-   }
-
-   public static List<WorkPageService> getServices(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section, boolean allowCreate, boolean allowCommit) {
+   public List<WorkPageService> getServices(SMAManager smaMgr) {
       List<WorkPageService> services = new ArrayList<WorkPageService>();
-      if (allowCreate) services.add(new CreateWorkingBranchService(smaMgr, page, toolkit, section));
-      services.add(new ShowWorkingBranchService(smaMgr, page, toolkit, section));
-      services.add(new ShowChangeReportService(smaMgr, page, toolkit, section));
-      if (allowCommit) {
-         services.add(new CommitWorkingBranchService(smaMgr, page, toolkit, section, false));
-         if (AtsPlugin.isAtsAdmin()) services.add(new CommitWorkingBranchService(smaMgr, page, toolkit, section, true));
-      }
-      if (allowCreate || allowCommit) services.add(new DeleteWorkingBranch(smaMgr, page, toolkit, section));
+      services.add(new CreateWorkingBranchService(smaMgr));
+      services.add(new ShowWorkingBranchService(smaMgr));
+      services.add(new ShowChangeReportService(smaMgr));
+      services.add(new CommitWorkingBranchService(smaMgr, false));
+      if (AtsPlugin.isAtsAdmin()) services.add(new CommitWorkingBranchService(smaMgr, true));
+      services.add(new DeleteWorkingBranch(smaMgr));
       return services;
    }
 

@@ -120,8 +120,8 @@ public class SMAWorkFlowSection extends SectionPart {
       gridData.widthHint = 400;
       workComp.setLayoutData(gridData);
 
-      servicesArea = new ServicesArea(smaMgr, page, toolkit, this);
-      servicesArea.create(rightComp);
+      servicesArea = new ServicesArea(smaMgr);
+      servicesArea.createSidebarServices(rightComp, page, toolkit, this);
 
       section.layout();
       return section;

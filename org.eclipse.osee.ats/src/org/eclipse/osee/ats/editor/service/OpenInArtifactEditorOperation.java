@@ -13,53 +13,16 @@ package org.eclipse.osee.ats.editor.service;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.swt.widgets.Group;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenInArtifactEditorOperation extends WorkPageService implements IAtsEditorToolBarService {
+public class OpenInArtifactEditorOperation extends WorkPageService {
 
-   public OpenInArtifactEditorOperation(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Open Artifact Editor", smaMgr, page, toolkit, section, null, Location.None);
-   }
-
-   /*
-    * This constructor is used for the toolbar service extension
-    */
    public OpenInArtifactEditorOperation(SMAManager smaMgr) {
-      super("Open Artifact Editor", smaMgr, null, null, null, null, null);
-   }
-
-   @Override
-   public boolean displayService() {
-      return false;
-   }
-
-   @Override
-   public void create(Group workComp) {
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
-    */
-   @Override
-   public void refresh() {
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
+      super(smaMgr);
    }
 
    private void performOpen() {
@@ -67,9 +30,11 @@ public class OpenInArtifactEditorOperation extends WorkPageService implements IA
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
     */
-   public Action getToolbarAction(SMAManager smaMgr) {
+   @Override
+   public Action createToolbarService() {
+      if (!AtsPlugin.isAtsAdmin()) return null;
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {
             performOpen();
@@ -81,16 +46,11 @@ public class OpenInArtifactEditorOperation extends WorkPageService implements IA
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#refreshToolbarAction()
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
-   public void refreshToolbarAction() {
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#showInToolbar(org.eclipse.osee.ats.editor.SMAManager)
-    */
-   public boolean showInToolbar(SMAManager smaMgr) {
-      return AtsPlugin.isAtsAdmin();
+   @Override
+   public String getName() {
+      return "Open Artifact Editor";
    }
 
 }

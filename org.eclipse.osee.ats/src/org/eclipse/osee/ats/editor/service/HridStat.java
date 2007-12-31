@@ -27,19 +27,24 @@ import org.eclipse.swt.widgets.Text;
  */
 public class HridStat extends WorkPageService {
 
-   public HridStat(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.CurrentState);
+   public HridStat(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#create()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public void create(Group workComp) {
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return isCurrentState(page);
+   }
 
-      Composite comp = new Composite(workComp, SWT.NONE);
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+      Composite comp = new Composite(workGroup, SWT.NONE);
       comp.setLayout(ALayout.getZeroMarginLayout(2, false));
       comp.setLayoutData(new GridData());
       toolkit.adapt(comp);
@@ -59,24 +64,22 @@ public class HridStat extends WorkPageService {
       } catch (SQLException ex) {
          // Do nothing
       }
-
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#refresh()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
    @Override
-   public void refresh() {
+   public String getName() {
+      return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
     */
    @Override
-   public void dispose() {
+   public String getSidebarCategory() {
+      return ServicesArea.STATISTIC_CATEGORY;
    }
+
 }

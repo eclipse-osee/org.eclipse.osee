@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.toolbar.ToolbarArea;
+import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -104,8 +104,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          fillBody(managedForm);
          managedForm.refresh();
 
-         ToolbarArea toolbarArea = new ToolbarArea(smaMgr);
-         toolbarArea.create(scrolledForm.getToolBarManager());
+         ServicesArea toolbarArea = new ServicesArea(smaMgr);
+         toolbarArea.createToolbarServices(scrolledForm.getToolBarManager());
 
          OseeAts.addButtonToEditorToolBar(smaMgr.getEditor(), this, AtsPlugin.getInstance(),
                scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");

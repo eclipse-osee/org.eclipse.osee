@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor.service;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -24,65 +25,41 @@ import org.eclipse.ui.forms.events.IHyperlinkListener;
  */
 public abstract class WorkPageService {
 
-   protected final AtsWorkPage page;
-   protected final XFormToolkit toolkit;
-   protected final String name;
    protected final SMAManager smaMgr;
-   protected final SMAWorkFlowSection section;
-   // Global - Shows at the first state of the workflow. Used for "global" services (eg: HRID)
-   // AllState - Show for each state (eg: Admin flag)
-   // AllNonCompleteState - Shown for each state exception Completed/Cancelled (eg: Hours Spent)
-   // CurrentState - Shown only on current state
-   // NonCurrentState - Shown only on current state except Completed/Cancelled (eg: State Percent
-   // Complete)
-   // SpecifiedPageId - Created if isSpecifiedPageId() returns true
-   public static enum Location {
-      None, Global, AllState, AllNonCompleteState, CurrentState, NonCompleteCurrentState, SpecifiedPageId
-   };
-   protected final String serviceType;
-   protected final Location location;
+   protected final boolean showSidebarService = true;
 
-   /**
-    * @param category TODO
-    * @param location TODO
-    */
-   public WorkPageService(String name, SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section, String category, Location location) {
+   public WorkPageService(SMAManager smaMgr) {
       super();
-      this.name = name;
       this.smaMgr = smaMgr;
-      this.page = page;
-      this.toolkit = toolkit;
-      this.section = section;
-      this.serviceType = category;
-      this.location = location;
    }
 
-   public boolean isSpecifiedPageId(String pageId) {
-      return false;
+   public boolean isCurrentState(AtsWorkPage page) {
+      return smaMgr.isCurrentState(page);
    }
 
-   public abstract void create(Group workGroup);
-
-   public boolean displayService() {
-      return true;
+   public boolean isCurrentNonCompleteCancelledState(AtsWorkPage page) {
+      return smaMgr.isCurrentState(page) && !isCompleteCancelledState(page);
    }
 
-   public abstract void dispose();
-
-   public abstract void refresh();
-
-   /**
-    * @return Returns the location.
-    */
-   public Location getLocation() {
-      return location;
+   public boolean isCompleteCancelledState(AtsWorkPage page) {
+      return page.isCancelledPage() || page.isCompletePage();
    }
 
-   /**
-    * @return Returns the serviceType.
-    */
-   public String getCategory() {
-      return serviceType;
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+   }
+
+   public Action createToolbarService() {
+      return null;
+   }
+
+   public void dispose() {
+   }
+
+   public void refresh() {
+   }
+
+   public String getSidebarCategory() {
+      return null;
    }
 
    protected IHyperlinkListener readOnlyHyperlinkListener = new IHyperlinkListener() {
@@ -105,10 +82,16 @@ public abstract class WorkPageService {
       };
    };
 
+   public abstract String getName();
+
    /**
-    * @return the name
+    * By default, all sidebar services will be have their createSidebarService method called. This method can be
+    * overridden to determine if it should be called.
+    * 
+    * @return the showSidebarService
     */
-   public String getName() {
-      return name;
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return showSidebarService;
    }
+
 }

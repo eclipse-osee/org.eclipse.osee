@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -27,63 +28,63 @@ public class AtsAdminStat extends WorkPageService {
 
    private Label label;
 
-   public AtsAdminStat(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("AtsAdmin", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.CurrentState);
+   public AtsAdminStat(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
-   @Override
-   public boolean displayService() {
-      return AtsPlugin.isAtsAdmin();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#create()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public void create(Group workComp) {
-      label = toolkit.createLabel(workComp, "AtsAdmin");
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && isCurrentState(page));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+      label = toolkit.createLabel(workGroup, "AtsAdmin");
       label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
       if (AtsPlugin.isAtsUseWorkflowFiles()) {
-         label = toolkit.createLabel(workComp, "AtsUseWorkflowFiles");
+         label = toolkit.createLabel(workGroup, "AtsUseWorkflowFiles");
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
 
       if (AtsPlugin.isAtsIgnoreConfigUpgrades()) {
-         label = toolkit.createLabel(workComp, "AtsIgnoreConfigUpgrades");
+         label = toolkit.createLabel(workGroup, "AtsIgnoreConfigUpgrades");
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
 
       if (AtsPlugin.isAtsDisableEmail()) {
-         label = toolkit.createLabel(workComp, "AtsDisableEmail");
+         label = toolkit.createLabel(workGroup, "AtsDisableEmail");
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
 
       if (AtsPlugin.isAtsAlwaysEmailMe()) {
-         label = toolkit.createLabel(workComp, "AtsAlwaysEmailMe");
+         label = toolkit.createLabel(workGroup, "AtsAlwaysEmailMe");
          label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
 
       refresh();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#refresh()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
    @Override
-   public void refresh() {
+   public String getName() {
+      return "AtsAdmin";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
     */
    @Override
-   public void dispose() {
+   public String getSidebarCategory() {
+      return ServicesArea.STATISTIC_CATEGORY;
    }
+
 }

@@ -26,19 +26,41 @@ public class TotalHoursSpentStat extends WorkPageService {
 
    private Label label;
 
-   public TotalHoursSpentStat(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Hours Spent", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.CurrentState);
+   public TotalHoursSpentStat(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#create()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public void create(Group workComp) {
-      label = toolkit.createLabel(workComp, "", SWT.NONE);
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return smaMgr.isCurrentState(page);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+      label = toolkit.createLabel(workGroup, "", SWT.NONE);
       refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
+    */
+   @Override
+   public String getName() {
+      return "Hours Spent";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
+    */
+   @Override
+   public String getSidebarCategory() {
+      return ServicesArea.STATISTIC_CATEGORY;
    }
 
    /*
@@ -51,12 +73,4 @@ public class TotalHoursSpentStat extends WorkPageService {
       if (label != null && !label.isDisposed()) label.setText("Total Hours Spent: " + AtsLib.doubleToStrString(smaMgr.getSma().getTotalHoursSpent()));
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
-   }
 }

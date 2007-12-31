@@ -32,15 +32,24 @@ public class AddDecisionReviewService extends WorkPageService {
 
    private Hyperlink link;
 
-   public AddDecisionReviewService(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Add Decision Review", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY,
-            Location.CurrentState);
+   public AddDecisionReviewService(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
+    */
    @Override
-   public void create(Group workComp) {
-      if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return;
-      link = toolkit.createHyperlink(workComp, name, SWT.NONE);
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && isCurrentState(page));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+      link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
@@ -61,21 +70,20 @@ public class AddDecisionReviewService extends WorkPageService {
       refresh();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
    @Override
-   public void refresh() {
+   public String getName() {
+      return "Add Decision Review";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
     */
    @Override
-   public void dispose() {
+   public String getSidebarCategory() {
+      return ServicesArea.OPERATION_CATEGORY;
    }
+
 }

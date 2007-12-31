@@ -17,56 +17,45 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService;
 import org.eclipse.osee.ats.util.DefaultTeamState;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
  */
-public class AddNoteOperation extends WorkPageService implements IAtsEditorToolBarService {
+public class AddNoteOperation extends WorkPageService {
 
    Action action;
 
-   public AddNoteOperation(final SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Add Note", smaMgr, page, toolkit, section, null, Location.None);
+   public AddNoteOperation(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
-   /*
-    * This constructor is used for the toolbar service extension
-    */
-   public AddNoteOperation(final SMAManager smaMgr) {
-      super("Add Note", smaMgr, null, null, null, null, null);
-   }
-
-   @Override
-   public void create(Group workComp) {
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
     */
    @Override
-   public void refresh() {
+   public Action createToolbarService() {
+      action = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         public void run() {
+            performAddNote();
+         }
+      };
+      action.setToolTipText(getName());
+      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("note.gif"));
+      return action;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
    @Override
-   public void dispose() {
+   public String getName() {
+      return "Add Note";
    }
 
    private void performAddNote() {
@@ -94,30 +83,10 @@ public class AddNoteOperation extends WorkPageService implements IAtsEditorToolB
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#refresh()
     */
-   public Action getToolbarAction(SMAManager smaMgr) {
-      action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         public void run() {
-            performAddNote();
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("note.gif"));
-      return action;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#refreshToolbarAction()
-    */
-   public void refreshToolbarAction() {
-      action.setEnabled(smaMgr.getSma().isReadOnly());
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#showInToolbar(org.eclipse.osee.ats.editor.SMAManager)
-    */
-   public boolean showInToolbar(SMAManager smaMgr) {
-      return true;
+   @Override
+   public void refresh() {
+      if (action != null) action.setEnabled(smaMgr.getSma().isReadOnly());
    }
 }

@@ -37,29 +37,24 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class DebugOperations extends WorkPageService {
 
-   public DebugOperations(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Debug Operations", smaMgr, page, toolkit, section, ServicesArea.DEBUG_PAGE_CATEGORY,
-            Location.SpecifiedPageId);
+   public DebugOperations(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
-   @Override
-   public boolean displayService() {
-      return AtsPlugin.isAtsAdmin();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isSpecifiedPageId(java.lang.String)
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public boolean isSpecifiedPageId(String pageId) {
-      return pageId.equals(AtsDebugWorkPage.PAGE_ID);
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return page.getId().equals(AtsDebugWorkPage.PAGE_ID);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
    @Override
-   public void create(Group workComp) {
-      Hyperlink link = toolkit.createHyperlink(workComp, "Dirty Report", SWT.NONE);
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+      Hyperlink link = toolkit.createHyperlink(workGroup, "Dirty Report", SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
@@ -79,7 +74,7 @@ public class DebugOperations extends WorkPageService {
          }
 
       });
-      link = toolkit.createHyperlink(workComp, "Refresh Dirty", SWT.NONE);
+      link = toolkit.createHyperlink(workGroup, "Refresh Dirty", SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
@@ -93,7 +88,7 @@ public class DebugOperations extends WorkPageService {
          }
 
       });
-      link = toolkit.createHyperlink(workComp, "Open VUE Workflow", SWT.NONE);
+      link = toolkit.createHyperlink(workGroup, "Open VUE Workflow", SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
@@ -110,7 +105,7 @@ public class DebugOperations extends WorkPageService {
                AtsLib.open(hrid, OpenView.ArtifactEditor);
          }
       });
-      link = toolkit.createHyperlink(workComp, "Open Team Definition", SWT.NONE);
+      link = toolkit.createHyperlink(workGroup, "Open Team Definition", SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
@@ -134,22 +129,20 @@ public class DebugOperations extends WorkPageService {
       });
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
    @Override
-   public void refresh() {
+   public String getName() {
+      return "Debug Operations";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
     */
    @Override
-   public void dispose() {
+   public String getSidebarCategory() {
+      return ServicesArea.DEBUG_PAGE_CATEGORY;
    }
 
 }

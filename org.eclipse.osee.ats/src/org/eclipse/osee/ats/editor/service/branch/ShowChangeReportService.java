@@ -14,7 +14,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
-import org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
@@ -37,7 +36,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class ShowChangeReportService extends WorkPageService implements IEventReceiver, IAtsEditorToolBarService {
+public class ShowChangeReportService extends WorkPageService implements IEventReceiver {
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
    private Hyperlink link;
@@ -45,26 +44,24 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
 
    // Since this service is only going to be added for the Implement state, Location.AllState will
    // work
-   public ShowChangeReportService(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Show Change Report", smaMgr, page, toolkit, section, CreateWorkingBranchService.BRANCH_CATEGORY,
-            Location.AllState);
-   }
-
-   /*
-    * This constructor is used for the toolbar service extension
-    */
    public ShowChangeReportService(SMAManager smaMgr) {
-      super("Show Change Report", smaMgr, null, null, null, null, null);
+      super(smaMgr);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#create()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public void create(Group workComp) {
-      link = toolkit.createHyperlink(workComp, getName(), SWT.NONE);
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return isCurrentState(page) && (page.isAllowCommitBranch() || page.isAllowCreateBranch());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+      link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
@@ -84,6 +81,38 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
       refresh();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
+    */
+   @Override
+   public Action createToolbarService() {
+      if (!isEnabled()) return null;
+      action = new Action(getName(), Action.AS_PUSH_BUTTON) {
+         public void run() {
+            performService();
+         }
+      };
+      action.setToolTipText(getName());
+      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
+      return action;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
+    */
+   @Override
+   public String getName() {
+      return "Show Change Report";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
+    */
+   @Override
+   public String getSidebarCategory() {
+      return CreateWorkingBranchService.BRANCH_CATEGORY;
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -99,7 +128,7 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
       }
    }
 
-   public boolean isEnabled() {
+   private boolean isEnabled() {
       boolean enabled = false;
       try {
          if (smaMgr.getBranchMgr().isWorkingBranch()) {
@@ -117,7 +146,7 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
 
    public void onEvent(Event event) {
       refresh();
-      refreshToolbarAction();
+      if (action != null) action.setEnabled(isEnabled());
    }
 
    /*
@@ -129,46 +158,8 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
       return true;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
-      SkynetEventManager.getInstance().unRegisterAll(this);
-   }
-
    private void performService() {
       smaMgr.getBranchMgr().showChangeReport();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
-    */
-   public Action getToolbarAction(SMAManager smaMgr) {
-      action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         public void run() {
-            performService();
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("branch_change.gif"));
-      return action;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#refreshToolbarAction()
-    */
-   public void refreshToolbarAction() {
-      if (action != null) action.setEnabled(isEnabled());
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#showInToolbar(org.eclipse.osee.ats.editor.SMAManager)
-    */
-   public boolean showInToolbar(SMAManager smaMgr) {
-      return isEnabled();
    }
 
 }

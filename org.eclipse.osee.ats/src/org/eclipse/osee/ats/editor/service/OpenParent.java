@@ -14,55 +14,17 @@ import java.sql.SQLException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService;
 import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.swt.widgets.Group;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenParent extends WorkPageService implements IAtsEditorToolBarService {
+public class OpenParent extends WorkPageService {
 
-   private final SMAManager smaMgr;
-
-   public OpenParent(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Open Parent", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.Global);
-      this.smaMgr = smaMgr;
-   }
-
-   /*
-    * This constructor is used for the toolbar service extension
-    */
    public OpenParent(SMAManager smaMgr) {
-      super("Open Parent", smaMgr, null, null, null, null, null);
-      this.smaMgr = smaMgr;
-   }
-
-   @Override
-   public void create(Group workComp) {
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
-    */
-   @Override
-   public void refresh() {
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
+      super(smaMgr);
    }
 
    private void performOpen() {
@@ -77,6 +39,7 @@ public class OpenParent extends WorkPageService implements IAtsEditorToolBarServ
     * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
     */
    public Action getToolbarAction(SMAManager smaMgr) {
+      if (!isParent()) return null;
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {
             performOpen();
@@ -87,16 +50,7 @@ public class OpenParent extends WorkPageService implements IAtsEditorToolBarServ
       return action;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#refreshToolbarAction()
-    */
-   public void refreshToolbarAction() {
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#showInToolbar(org.eclipse.osee.ats.editor.SMAManager)
-    */
-   public boolean showInToolbar(SMAManager smaMgr) {
+   private boolean isParent() {
       try {
          return smaMgr.getSma().getParentSMA() != null;
       } catch (Exception ex) {
@@ -104,4 +58,13 @@ public class OpenParent extends WorkPageService implements IAtsEditorToolBarServ
       }
       return false;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
+    */
+   @Override
+   public String getName() {
+      return "Open Parent";
+   }
+
 }

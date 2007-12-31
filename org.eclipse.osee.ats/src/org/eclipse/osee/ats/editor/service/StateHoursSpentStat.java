@@ -15,6 +15,8 @@ import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.editor.stateItem.AtsDebugWorkPage;
+import org.eclipse.osee.ats.editor.stateItem.AtsLogWorkPage;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -35,21 +37,28 @@ public class StateHoursSpentStat extends WorkPageService {
 
    private Hyperlink link;
    private Label label;
+   private AtsWorkPage page;
 
-   public StateHoursSpentStat(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Hours Spent", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY,
-            Location.AllNonCompleteState);
+   public StateHoursSpentStat(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#create()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public void create(Group workComp) {
-      if (smaMgr.getCurrentStateName().equals(page.getName())) {
-         link = toolkit.createHyperlink(workComp, "", SWT.NONE);
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return !page.getId().equals(AtsLogWorkPage.PAGE_ID) && !page.getId().equals(AtsDebugWorkPage.PAGE_ID) && !isCompleteCancelledState(page);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, final SMAWorkFlowSection section) {
+      this.page = page;
+      if (!isCompleteCancelledState(page)) {
+         link = toolkit.createHyperlink(workGroup, "", SWT.NONE);
          if (smaMgr.getSma().isReadOnly())
             link.addHyperlinkListener(readOnlyHyperlinkListener);
          else
@@ -74,8 +83,24 @@ public class StateHoursSpentStat extends WorkPageService {
                }
             });
       } else
-         label = toolkit.createLabel(workComp, "", SWT.NONE);
+         label = toolkit.createLabel(workGroup, "", SWT.NONE);
       refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
+    */
+   @Override
+   public String getName() {
+      return "Hours Spent";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
+    */
+   @Override
+   public String getSidebarCategory() {
+      return ServicesArea.STATISTIC_CATEGORY;
    }
 
    /*
@@ -85,19 +110,13 @@ public class StateHoursSpentStat extends WorkPageService {
     */
    @Override
    public void refresh() {
-      if (link != null && !link.isDisposed())
+      if (page != null && link != null && !link.isDisposed())
          link.setText("State Hours Spent: " + AtsLib.doubleToStrString(smaMgr.getSma().getStateHoursSpent(
                page.getName())));
-      else if (label != null && !label.isDisposed()) label.setText("State Hours Spent: " + AtsLib.doubleToStrString(smaMgr.getSma().getStateHoursSpent(
-            page.getName())));
+      else if (page != null && label != null && !label.isDisposed())
+         label.setText("State Hours Spent: " + AtsLib.doubleToStrString(smaMgr.getSma().getStateHoursSpent(
+               page.getName())));
+      else if (label != null && !label.isDisposed()) label.setText("State Hours Spent Error: page == null");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
-   }
 }

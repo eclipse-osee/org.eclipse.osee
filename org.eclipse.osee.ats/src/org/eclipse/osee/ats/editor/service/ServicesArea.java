@@ -15,12 +15,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.editor.AtsStateItems;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.service.WorkPageService.Location;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -33,22 +37,14 @@ import org.eclipse.swt.widgets.Group;
 public class ServicesArea {
 
    private final SMAManager smaMgr;
-   private final AtsWorkPage page;
-   private final XFormToolkit toolkit;
-   private final SMAWorkFlowSection section;
    private List<WorkPageService> services = new ArrayList<WorkPageService>();
    private ArrayList<Group> groups = new ArrayList<Group>();
-   private final boolean isCurrentState;
    public static String STATISTIC_CATEGORY = "Statistics";
    public static String OPERATION_CATEGORY = "Operation";
    public static String DEBUG_PAGE_CATEGORY = "Debug";
 
-   public ServicesArea(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+   public ServicesArea(SMAManager smaMgr) {
       this.smaMgr = smaMgr;
-      this.page = page;
-      this.toolkit = toolkit;
-      this.section = section;
-      isCurrentState = smaMgr.isCurrentState(page);
    }
 
    public void dispose() {
@@ -59,77 +55,71 @@ public class ServicesArea {
    public void loadServices() {
       if (services.size() == 0) {
          // Operations
-         services.add(new FavoriteOperation(smaMgr, page, toolkit, section));
-         services.add(new SubscribedOperation(smaMgr, page, toolkit, section));
-         services.add(new OpenLatestVersion(smaMgr, page, toolkit, section));
-         services.add(new DebugOperations(smaMgr, page, toolkit, section));
-         services.add(new PrivilegedEditService(smaMgr, page, toolkit, section));
+         services.add(new FavoriteOperation(smaMgr));
+         services.add(new SubscribedOperation(smaMgr));
+         services.add(new OpenLatestVersion(smaMgr));
+         services.add(new DebugOperations(smaMgr));
+         services.add(new PrivilegedEditService(smaMgr));
          // Services
-         services.add(new AtsAdminStat(smaMgr, page, toolkit, section));
-         services.add(new HridStat(smaMgr, page, toolkit, section));
-         services.add(new TotalPercentCompleteStat(smaMgr, page, toolkit, section));
-         services.add(new TotalHoursSpentStat(smaMgr, page, toolkit, section));
-         services.add(new TargetedForVersionState(smaMgr, page, toolkit, section));
-         services.add(new StatePercentCompleteStat(smaMgr, page, toolkit, section));
-         services.add(new StateHoursSpentStat(smaMgr, page, toolkit, section));
-         services.add(new AddDecisionReviewService(smaMgr, page, toolkit, section));
-         services.add(new AddPeerToPeerReviewService(smaMgr, page, toolkit, section));
-         services.add(new BlockingReview(smaMgr, page, toolkit, section));
-         // Add extension services for this state
-         for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
-            services.addAll(item.getServices(smaMgr, page, toolkit, section));
+         services.add(new AtsAdminStat(smaMgr));
+         services.add(new HridStat(smaMgr));
+         services.add(new TotalPercentCompleteStat(smaMgr));
+         services.add(new TotalHoursSpentStat(smaMgr));
+         services.add(new TargetedForVersionState(smaMgr));
+         services.add(new StatePercentCompleteStat(smaMgr));
+         services.add(new StateHoursSpentStat(smaMgr));
+         services.add(new AddDecisionReviewService(smaMgr));
+         services.add(new AddPeerToPeerReviewService(smaMgr));
+         services.add(new BlockingReview(smaMgr));
+         // Toolbar Services
+         services.add(new OpenInAtsWorldOperation(smaMgr));
+         services.add(new OpenInArtifactEditorOperation(smaMgr));
+         services.add(new OpenInSkyWalkerOperation(smaMgr));
+         services.add(new OpenVersionArtifact(smaMgr));
+         services.add(new OpenTeamDefinition(smaMgr));
+         services.add(new OpenParent(smaMgr));
+         services.add(new AddNoteOperation(smaMgr));
+         services.add(new ShowNotesOperation(smaMgr));
+         services.add(new EmailActionService(smaMgr));
+         for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
+            services.addAll(item.getServices(smaMgr));
          }
       }
    }
 
-   public void create(Composite comp) {
+   public void createSidebarServices(Composite comp, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
       loadServices();
       Set<String> categories = new HashSet<String>();
       for (WorkPageService service : services) {
-         categories.add(service.getCategory());
+         categories.add(service.getSidebarCategory());
       }
-      createServicesArea(comp, STATISTIC_CATEGORY);
+      createServicesArea(comp, STATISTIC_CATEGORY, page, toolkit, section);
       categories.remove(STATISTIC_CATEGORY);
-      createServicesArea(comp, OPERATION_CATEGORY);
+      createServicesArea(comp, OPERATION_CATEGORY, page, toolkit, section);
       categories.remove(OPERATION_CATEGORY);
       for (String category : categories) {
-         createServicesArea(comp, category);
+         createServicesArea(comp, category, page, toolkit, section);
       }
    }
 
-   private void createServicesArea(Composite comp, String category) {
-
-      List<WorkPageService> displayServices = new ArrayList<WorkPageService>();
-
-      // Add all global
-      if (smaMgr.isFirstState(page)) {
-         for (WorkPageService service : services)
-            if (page.isDisplayService(service) && service.getCategory().equals(category) && service.getLocation() == Location.Global) displayServices.add(service);
-      }
-
-      // Add all state
-      for (WorkPageService service : services)
-         if (page.isDisplayService(service) && service.getCategory().equals(category) && service.getLocation() == Location.AllState) displayServices.add(service);
-
-      // Add all current state
-      if (isCurrentState) {
-         for (WorkPageService service : services) {
-            if (page.isDisplayService(service) && service.getCategory().equals(category) && service.getLocation() == Location.CurrentState)
-               displayServices.add(service);
-            else if (page.isDisplayService(service) && service.getCategory().equals(category) && service.getLocation() == Location.NonCompleteCurrentState) {
-               if (!page.isCancelledPage() && !page.isCompletePage()) displayServices.add(service);
-            }
+   public void createToolbarServices(IToolBarManager toolbarManager) {
+      loadServices();
+      for (final WorkPageService service : services) {
+         try {
+            Action action = service.createToolbarService();
+            if (action != null) toolbarManager.add(action);
+         } catch (Exception ex) {
+            OSEELog.logException(AtsPlugin.class, ex, false);
          }
       }
+   }
 
-      // Add all non-complete state
+   private void createServicesArea(Composite comp, String category, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+
+      // Determine services that are in this category and confirm that they should be displayed
+      List<WorkPageService> displayServices = new ArrayList<WorkPageService>();
       for (WorkPageService service : services)
-         if (page.isDisplayService(service) && service.getCategory().equals(category) && service.getLocation() == Location.AllNonCompleteState) if (!page.isCancelledPage() && !page.isCompletePage()) displayServices.add(service);
-
-      // Add specified page ids
-      for (WorkPageService service : services)
-         if (page.isDisplayService(service) && service.getCategory().equals(category) && service.getLocation() == Location.SpecifiedPageId) if (service.isSpecifiedPageId(page.getId())) displayServices.add(service);
-
+         if (service.getSidebarCategory() != null && service.getSidebarCategory().equals(category) && service.isShowSidebarService(page)) displayServices.add(service);
       if (displayServices.size() == 0) return;
 
       Group workComp = new Group(comp, SWT.NONE);
@@ -143,8 +133,8 @@ public class ServicesArea {
       workComp.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL));
       toolkit.paintBordersFor(workComp);
 
-      for (WorkPageService op : displayServices)
-         if (op.displayService()) op.create(workComp);
+      for (WorkPageService service : displayServices)
+         service.createSidebarService(workComp, page, toolkit, section);
 
    }
 

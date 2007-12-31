@@ -25,19 +25,41 @@ public class TotalPercentCompleteStat extends WorkPageService {
 
    private Label label;
 
-   public TotalPercentCompleteStat(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Percent Complete", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.CurrentState);
+   public TotalPercentCompleteStat(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#create()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public void create(Group workComp) {
-      label = toolkit.createLabel(workComp, "", SWT.NONE);
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return smaMgr.isCurrentState(page);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+      label = toolkit.createLabel(workGroup, "", SWT.NONE);
       refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
+    */
+   @Override
+   public String getName() {
+      return "Percent Complete";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
+    */
+   @Override
+   public String getSidebarCategory() {
+      return ServicesArea.STATISTIC_CATEGORY;
    }
 
    /*
@@ -48,15 +70,6 @@ public class TotalPercentCompleteStat extends WorkPageService {
    @Override
    public void refresh() {
       if (label != null && !label.isDisposed()) label.setText("Total Percent: " + smaMgr.getSma().getWorldViewTotalPercentComplete());
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
    }
 
 }

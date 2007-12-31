@@ -71,4 +71,11 @@ public class AtsStateItems {
          }
       }
    }
+
+   /**
+    * @return the stateItems
+    */
+   public static List<IAtsStateItem> getAllStateItems() {
+      return stateItems;
+   }
 }

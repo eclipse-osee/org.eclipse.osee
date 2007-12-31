@@ -36,38 +36,58 @@ public class DeleteWorkingBranch extends WorkPageService implements IEventReceiv
 
    private Hyperlink link;
 
-   public DeleteWorkingBranch(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("", smaMgr, page, toolkit, section, CreateWorkingBranchService.BRANCH_CATEGORY, Location.CurrentState);
+   public DeleteWorkingBranch(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#create()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public void create(Group workComp) {
-      if (smaMgr.getCurrentStateName().equals(page.getName())) {
-         link = toolkit.createHyperlink(workComp, "Delete Working Branch", SWT.NONE);
-         if (smaMgr.getSma().isReadOnly())
-            link.addHyperlinkListener(readOnlyHyperlinkListener);
-         else
-            link.addHyperlinkListener(new IHyperlinkListener() {
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return isCurrentState(page) && (page.isAllowCommitBranch() || page.isAllowCreateBranch());
+   }
 
-               public void linkEntered(HyperlinkEvent e) {
-               }
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+      link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
+      if (smaMgr.getSma().isReadOnly())
+         link.addHyperlinkListener(readOnlyHyperlinkListener);
+      else
+         link.addHyperlinkListener(new IHyperlinkListener() {
 
-               public void linkExited(HyperlinkEvent e) {
-               }
+            public void linkEntered(HyperlinkEvent e) {
+            }
 
-               public void linkActivated(HyperlinkEvent e) {
-                  smaMgr.getBranchMgr().deleteEmptyWorkingBranch();
-               }
-            });
-      }
+            public void linkExited(HyperlinkEvent e) {
+            }
+
+            public void linkActivated(HyperlinkEvent e) {
+               smaMgr.getBranchMgr().deleteEmptyWorkingBranch();
+            }
+         });
       SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
       SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
       refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
+    */
+   @Override
+   public String getName() {
+      return "Delete Working Branch";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
+    */
+   @Override
+   public String getSidebarCategory() {
+      return CreateWorkingBranchService.BRANCH_CATEGORY;
    }
 
    @Override

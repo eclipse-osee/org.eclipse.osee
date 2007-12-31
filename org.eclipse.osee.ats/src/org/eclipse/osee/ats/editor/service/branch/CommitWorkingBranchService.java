@@ -38,22 +38,28 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
    private Hyperlink link;
    private final boolean overrideStateValidation;
 
-   public CommitWorkingBranchService(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section, boolean overrideStateValidation) {
-      super("", smaMgr, page, toolkit, section, CreateWorkingBranchService.BRANCH_CATEGORY, Location.CurrentState);
+   public CommitWorkingBranchService(SMAManager smaMgr, boolean overrideStateValidation) {
+      super(smaMgr);
       this.overrideStateValidation = overrideStateValidation;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#create()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public void create(Group workComp) {
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return isCurrentState(page) && page.isAllowCommitBranch();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
       if (smaMgr.getCurrentStateName().equals(page.getName())) {
          link =
-               toolkit.createHyperlink(workComp,
-                     "Commit Working Branch" + (overrideStateValidation ? "\nOverride State Validation" : ""), SWT.NONE);
+               toolkit.createHyperlink(workGroup,
+                     getName() + (overrideStateValidation ? "\nOverride State Validation" : ""), SWT.NONE);
          if (smaMgr.getSma().isReadOnly())
             link.addHyperlinkListener(readOnlyHyperlinkListener);
          else
@@ -74,6 +80,22 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
       SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
       SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
       refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
+    */
+   @Override
+   public String getName() {
+      return "Commit Working Branch";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
+    */
+   @Override
+   public String getSidebarCategory() {
+      return CreateWorkingBranchService.BRANCH_CATEGORY;
    }
 
    /*

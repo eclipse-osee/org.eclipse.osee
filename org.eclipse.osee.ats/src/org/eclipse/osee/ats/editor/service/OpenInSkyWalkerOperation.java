@@ -12,48 +12,16 @@ package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
-import org.eclipse.swt.widgets.Group;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenInSkyWalkerOperation extends WorkPageService implements IAtsEditorToolBarService {
+public class OpenInSkyWalkerOperation extends WorkPageService {
 
-   public OpenInSkyWalkerOperation(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Open Sky Walker", smaMgr, page, toolkit, section, null, Location.None);
-   }
-
-   /*
-    * This constructor is used for the toolbar service extension
-    */
    public OpenInSkyWalkerOperation(SMAManager smaMgr) {
-      super("Open Sky Walker", smaMgr, null, null, null, null, null);
-   }
-
-   @Override
-   public void create(Group workComp) {
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
-    */
-   @Override
-   public void refresh() {
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
+      super(smaMgr);
    }
 
    private void performOpen() {
@@ -61,9 +29,10 @@ public class OpenInSkyWalkerOperation extends WorkPageService implements IAtsEdi
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
     */
-   public Action getToolbarAction(SMAManager smaMgr) {
+   @Override
+   public Action createToolbarService() {
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {
             performOpen();
@@ -75,15 +44,11 @@ public class OpenInSkyWalkerOperation extends WorkPageService implements IAtsEdi
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#refreshToolbarAction()
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
-   public void refreshToolbarAction() {
+   @Override
+   public String getName() {
+      return "Open Sky Walker";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#showInToolbar(org.eclipse.osee.ats.editor.SMAManager)
-    */
-   public boolean showInToolbar(SMAManager smaMgr) {
-      return true;
-   }
 }

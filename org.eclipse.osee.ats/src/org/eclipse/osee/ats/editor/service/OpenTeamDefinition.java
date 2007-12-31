@@ -16,54 +16,17 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService;
 import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
-import org.eclipse.swt.widgets.Group;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenTeamDefinition extends WorkPageService implements IAtsEditorToolBarService {
+public class OpenTeamDefinition extends WorkPageService {
 
-   private final SMAManager smaMgr;
-
-   public OpenTeamDefinition(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Open Team Definition", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.Global);
-      this.smaMgr = smaMgr;
-   }
-
-   /*
-    * This constructor is used for the toolbar service extension
-    */
    public OpenTeamDefinition(SMAManager smaMgr) {
-      super("Open Team Definition", smaMgr, null, null, null, null, null);
-      this.smaMgr = smaMgr;
-   }
-
-   @Override
-   public void create(Group workComp) {
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
-    */
-   @Override
-   public void refresh() {
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
+      super(smaMgr);
    }
 
    private void performOpen() {
@@ -71,14 +34,15 @@ public class OpenTeamDefinition extends WorkPageService implements IAtsEditorToo
          AtsLib.openAtsAction(((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition(),
                AtsOpenOption.OpenOneOrPopupSelect);
       } catch (SQLException ex) {
-         // Do Nothing
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
     */
-   public Action getToolbarAction(SMAManager smaMgr) {
+   @Override
+   public Action createToolbarService() {
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {
             performOpen();
@@ -90,15 +54,11 @@ public class OpenTeamDefinition extends WorkPageService implements IAtsEditorToo
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#refreshToolbarAction()
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
-   public void refreshToolbarAction() {
+   @Override
+   public String getName() {
+      return "Open Team Definition";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#showInToolbar(org.eclipse.osee.ats.editor.SMAManager)
-    */
-   public boolean showInToolbar(SMAManager smaMgr) {
-      return AtsPlugin.isAtsAdmin();
-   }
 }

@@ -7,7 +7,6 @@
    <extension-point id="AtsVueWorkflowDiagram" name="AtsVueWorkflowDiagram" schema="schema/AtsVueWorkflowDiagram.exsd"/>
    <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="schema/AtsWizardItem.exsd"/>
    <extension-point id="AtsTeamWorkflow" name="AtsTeamWorkflow" schema="schema/AtsTeamWorkflow.exsd"/>
-   <extension-point id="AtsEditorToolbarService" name="AtsEditorToolbarService" schema="schema/AtsEditorToolbarService.exsd"/>
          <extension
          point="org.eclipse.ui.editors">
          <editor
@@ -142,9 +141,6 @@
       <AtsStateItem
             classname="org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem">
       </AtsStateItem>
-      <AtsStateItem
-            classname="org.eclipse.osee.ats.editor.stateItem.AtsBranchCreateCommitStateItem">
-      </AtsStateItem>
    </extension>
    <extension
          id="ATS_Skynet_Types"
@@ -270,39 +266,4 @@
             classname="org.eclipse.osee.ats.util.widgets.XWidgetProvider">
       </XWidgetProvider>
    </extension>
-   <extension
-         point="org.eclipse.osee.ats.AtsEditorToolbarService">
-      <AtsEditorToolbarService
-            classname="org.eclipse.osee.ats.editor.service.OpenVersionArtifact">
-      </AtsEditorToolbarService>
-      <AtsEditorToolbarService
-            classname="org.eclipse.osee.ats.editor.service.OpenInAtsWorldOperation">
-      </AtsEditorToolbarService>
-      <AtsEditorToolbarService
-            classname="org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService">
-      </AtsEditorToolbarService>
-      <AtsEditorToolbarService
-            classname="org.eclipse.osee.ats.editor.service.OpenInArtifactEditorOperation">
-      </AtsEditorToolbarService>
-      <AtsEditorToolbarService
-            classname="org.eclipse.osee.ats.editor.service.OpenParent">
-      </AtsEditorToolbarService>
-      <AtsEditorToolbarService
-            classname="org.eclipse.osee.ats.editor.service.OpenInSkyWalkerOperation">
-      </AtsEditorToolbarService>
-      <AtsEditorToolbarService
-            classname="org.eclipse.osee.ats.editor.service.OpenTeamDefinition">
-      </AtsEditorToolbarService>
-      <AtsEditorToolbarService
-            classname="org.eclipse.osee.ats.editor.service.EmailActionService">
-      </AtsEditorToolbarService>
-      <AtsEditorToolbarService
-            classname="org.eclipse.osee.ats.editor.service.AddNoteOperation">
-      </AtsEditorToolbarService>
-      <AtsEditorToolbarService
-            classname="org.eclipse.osee.ats.editor.service.ShowNotesOperation">
-      </AtsEditorToolbarService>
-   </extension>
-
-
 </plugin>

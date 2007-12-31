@@ -15,53 +15,26 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.swt.widgets.Group;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenVersionArtifact extends WorkPageService implements IAtsEditorToolBarService {
+public class OpenVersionArtifact extends WorkPageService {
 
    Action action;
 
-   public OpenVersionArtifact(final SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Open Targeted for Version", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY,
-            Location.CurrentState);
+   public OpenVersionArtifact(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
-   /*
-    * This constructor is used for the toolbar service extension
-    */
-   public OpenVersionArtifact(final SMAManager smaMgr) {
-      super("Open Targeted for Version", smaMgr, null, null, null, null, null);
-   }
-
-   @Override
-   public void create(Group workComp) {
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.operation.WorkPageService#refresh()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
    @Override
-   public void refresh() {
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
+   public String getName() {
+      return "Open Targeted for Version";
    }
 
    private void performOpen() {
@@ -73,9 +46,11 @@ public class OpenVersionArtifact extends WorkPageService implements IAtsEditorTo
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createToolbarService()
     */
-   public Action getToolbarAction(SMAManager smaMgr) {
+   @Override
+   public Action createToolbarService() {
+      if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return null;
       action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {
             performOpen();
@@ -87,9 +62,11 @@ public class OpenVersionArtifact extends WorkPageService implements IAtsEditorTo
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#refreshToolbarAction()
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#refresh()
     */
-   public void refreshToolbarAction() {
+   @Override
+   public void refresh() {
+      if (action == null) return;
       boolean enabled = false;
       try {
          enabled = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTargetedForVersion() != null;
@@ -99,10 +76,4 @@ public class OpenVersionArtifact extends WorkPageService implements IAtsEditorTo
       action.setEnabled(enabled);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#showInToolbar(org.eclipse.osee.ats.editor.SMAManager)
-    */
-   public boolean showInToolbar(SMAManager smaMgr) {
-      return (smaMgr.getSma() instanceof TeamWorkFlowArtifact);
-   }
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor.service;
 
 import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -33,19 +34,38 @@ public class TargetedForVersionState extends WorkPageService {
    private Hyperlink link;
    private Label label;
 
-   public TargetedForVersionState(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Target Version", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY, Location.CurrentState);
+   public TargetedForVersionState(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
    @Override
-   public boolean displayService() {
-      return (smaMgr.isTeamUsesVersions());
+   public void refresh() {
+      try {
+         String str = "Target Version: ";
+         if (smaMgr.getTargetedForVersion() != null) str += smaMgr.getTargetedForVersion().getDescriptiveName();
+         if (link != null && !link.isDisposed())
+            link.setText(str);
+         else if (label != null && !label.isDisposed()) label.setText(str);
+      } catch (SQLException ex) {
+         // Do Nothing
+      }
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
+    */
    @Override
-   public void create(Group workComp) {
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return smaMgr.isCurrentState(page) && (smaMgr.getSma() instanceof TeamWorkFlowArtifact);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, final SMAWorkFlowSection section) {
       if (!smaMgr.isReleased()) {
-         link = toolkit.createHyperlink(workComp, "", SWT.NONE);
+         link = toolkit.createHyperlink(workGroup, "", SWT.NONE);
          if (smaMgr.getSma().isReadOnly())
             link.addHyperlinkListener(readOnlyHyperlinkListener);
          else
@@ -69,29 +89,23 @@ public class TargetedForVersionState extends WorkPageService {
                }
             });
       } else
-         label = toolkit.createLabel(workComp, "", SWT.NONE);
+         label = toolkit.createLabel(workGroup, "", SWT.NONE);
       refresh();
    }
 
-   @Override
-   public void refresh() {
-      try {
-         String str = "Target Version: ";
-         if (smaMgr.getTargetedForVersion() != null) str += smaMgr.getTargetedForVersion().getDescriptiveName();
-         if (link != null && !link.isDisposed())
-            link.setText(str);
-         else if (label != null && !label.isDisposed()) label.setText(str);
-      } catch (SQLException ex) {
-         // Do Nothing
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
     */
    @Override
-   public void dispose() {
+   public String getSidebarCategory() {
+      return ServicesArea.STATISTIC_CATEGORY;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
+    */
+   @Override
+   public String getName() {
+      return "Target Version";
    }
 }

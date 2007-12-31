@@ -30,27 +30,42 @@ public class BlockingReview extends WorkPageService {
 
    private Label label;
 
-   public BlockingReview(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Blocking Review", smaMgr, page, toolkit, section, ServicesArea.STATISTIC_CATEGORY,
-            Location.AllNonCompleteState);
+   public BlockingReview(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
-   @Override
-   public boolean displayService() {
-      return AtsPlugin.isAtsAdmin();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#create()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
     */
    @Override
-   public void create(Group workComp) {
-      if (!(smaMgr.getSma() instanceof ReviewSMArtifact)) return;
-      label = toolkit.createLabel(workComp, "");
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return AtsPlugin.isAtsAdmin() && (smaMgr.getSma() instanceof ReviewSMArtifact);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
+      label = toolkit.createLabel(workGroup, "");
       label.setToolTipText("A blocking review requires the review be completed before the parent workflow can continue.");
       refresh();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
+    */
+   @Override
+   public String getName() {
+      return "Blocking Review";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
+    */
+   @Override
+   public String getSidebarCategory() {
+      return ServicesArea.STATISTIC_CATEGORY;
    }
 
    /*
@@ -71,12 +86,4 @@ public class BlockingReview extends WorkPageService {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
-   }
 }

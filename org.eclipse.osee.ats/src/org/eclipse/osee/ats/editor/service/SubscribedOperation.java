@@ -27,17 +27,26 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SubscribedOperation extends WorkPageService {
 
-   private final SMAManager smaMgr;
    private Hyperlink link;
 
-   public SubscribedOperation(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Subscribed", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.CurrentState);
-      this.smaMgr = smaMgr;
+   public SubscribedOperation(SMAManager smaMgr) {
+      super(smaMgr);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
+    */
    @Override
-   public void create(Group workComp) {
-      link = toolkit.createHyperlink(workComp, name, SWT.NONE);
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return smaMgr.isCurrentState(page);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+    */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, final SMAWorkFlowSection section) {
+      link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
@@ -54,6 +63,14 @@ public class SubscribedOperation extends WorkPageService {
       refresh();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
+    */
+   @Override
+   public String getSidebarCategory() {
+      return ServicesArea.OPERATION_CATEGORY;
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -64,12 +81,11 @@ public class SubscribedOperation extends WorkPageService {
       if (link != null && !link.isDisposed()) link.setText(((ISubscribableArtifact) smaMgr.getSma()).amISubscribed() ? "Un-Subscribe" : "Subscribe");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
    @Override
-   public void dispose() {
+   public String getName() {
+      return "Subscribe";
    }
 }

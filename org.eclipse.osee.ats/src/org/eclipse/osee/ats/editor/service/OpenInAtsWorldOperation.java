@@ -18,67 +18,17 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenInAtsWorldOperation extends WorkPageService implements IAtsEditorToolBarService {
+public class OpenInAtsWorldOperation extends WorkPageService {
 
-   public OpenInAtsWorldOperation(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Open in ATS World", smaMgr, page, toolkit, section, null, Location.None);
-   }
-
-   /*
-    * This constructor is used for the toolbar service extension
-    */
    public OpenInAtsWorldOperation(SMAManager smaMgr) {
-      super("Open in ATS World", smaMgr, null, null, null, null, null);
-   }
-
-   @Override
-   public void create(Group workComp) {
-      Hyperlink link = toolkit.createHyperlink(workComp, name, SWT.NONE);
-      link.addHyperlinkListener(new IHyperlinkListener() {
-
-         public void linkEntered(HyperlinkEvent e) {
-         }
-
-         public void linkExited(HyperlinkEvent e) {
-         }
-
-         public void linkActivated(HyperlinkEvent e) {
-            performOpen();
-         }
-
-      });
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.IAtsEditorToolBarService#showInToolbar()
-    */
-   public boolean showInToolbar(SMAManager smaMgr) {
-      return true;
+      super(smaMgr);
    }
 
    /* (non-Javadoc)
@@ -104,7 +54,8 @@ public class OpenInAtsWorldOperation extends WorkPageService implements IAtsEdit
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
     */
-   public Action getToolbarAction(SMAManager smaMgr) {
+   @Override
+   public Action createToolbarService() {
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {
             performOpen();
@@ -116,15 +67,11 @@ public class OpenInAtsWorldOperation extends WorkPageService implements IAtsEdit
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#refresh()
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
     */
    @Override
-   public void refresh() {
+   public String getName() {
+      return "Open in ATS World";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#refreshToolbarAction()
-    */
-   public void refreshToolbarAction() {
-   }
 }

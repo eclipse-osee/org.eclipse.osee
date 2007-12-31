@@ -30,14 +30,25 @@ public class FavoriteOperation extends WorkPageService {
    private final SMAManager smaMgr;
    private Hyperlink link;
 
-   public FavoriteOperation(SMAManager smaMgr, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      super("Favorite", smaMgr, page, toolkit, section, ServicesArea.OPERATION_CATEGORY, Location.CurrentState);
+   public FavoriteOperation(SMAManager smaMgr) {
+      super(smaMgr);
       this.smaMgr = smaMgr;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#isShowSidebarService(org.eclipse.osee.ats.workflow.AtsWorkPage)
+    */
    @Override
-   public void create(Group workComp) {
-      link = toolkit.createHyperlink(workComp, name, SWT.NONE);
+   public boolean isShowSidebarService(AtsWorkPage page) {
+      return isCurrentState(page);
+   }
+
+   /* (non-Javadoc)
+     * @see org.eclipse.osee.ats.editor.service.WorkPageService#createSidebarService(org.eclipse.swt.widgets.Group, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.ui.skynet.XFormToolkit, org.eclipse.osee.ats.editor.SMAWorkFlowSection)
+     */
+   @Override
+   public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, final SMAWorkFlowSection section) {
+      link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 
          public void linkEntered(HyperlinkEvent e) {
@@ -54,6 +65,22 @@ public class FavoriteOperation extends WorkPageService {
       refresh();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getName()
+    */
+   @Override
+   public String getName() {
+      return "Favorite";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.service.WorkPageService#getSidebarCategory()
+    */
+   @Override
+   public String getSidebarCategory() {
+      return ServicesArea.OPERATION_CATEGORY;
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -64,12 +91,4 @@ public class FavoriteOperation extends WorkPageService {
       if (link != null && !link.isDisposed()) link.setText(((IFavoriteableArtifact) smaMgr.getSma()).amIFavorite() ? "Remove Favorite" : "Add Favorite");
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.editor.service.WorkPageService#dispose()
-    */
-   @Override
-   public void dispose() {
-   }
 }
