@@ -48,7 +48,7 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) {
-      return isCurrentState(page) && page.isAllowCommitBranch();
+      return isCurrentState(page);
    }
 
    /* (non-Javadoc)

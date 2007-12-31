@@ -47,7 +47,7 @@ public class CreateWorkingBranchService extends WorkPageService implements IEven
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) {
-      return isCurrentState(page) && page.isAllowCreateBranch();
+      return isCurrentState(page);
    }
 
    /* (non-Javadoc)

@@ -18,10 +18,14 @@ import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.AtsStateItems;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.editor.service.branch.CommitWorkingBranchService;
+import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
+import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranch;
+import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
+import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -52,7 +56,7 @@ public class ServicesArea {
          service.dispose();
    }
 
-   public void loadServices() {
+   public void loadServices(AtsWorkPage page) {
       if (services.size() == 0) {
          // Operations
          services.add(new FavoriteOperation(smaMgr));
@@ -81,14 +85,24 @@ public class ServicesArea {
          services.add(new AddNoteOperation(smaMgr));
          services.add(new ShowNotesOperation(smaMgr));
          services.add(new EmailActionService(smaMgr));
-         for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
+         // Add page configured branchable state items
+         if (page != null && (page.isAllowCommitBranch() || page.isAllowCreateBranch())) {
+            if (page.isAllowCreateBranch()) services.add(new CreateWorkingBranchService(smaMgr));
+            services.add(new ShowWorkingBranchService(smaMgr));
+            services.add(new ShowChangeReportService(smaMgr));
+            if (page.isAllowCommitBranch()) services.add(new CommitWorkingBranchService(smaMgr, false));
+            if (AtsPlugin.isAtsAdmin()) services.add(new CommitWorkingBranchService(smaMgr, true));
+            services.add(new DeleteWorkingBranch(smaMgr));
+         }
+         // Add state specific items (these can also contain branch items through extending BranchableStateItem class
+         if (page != null) for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
             services.addAll(item.getServices(smaMgr));
          }
       }
    }
 
    public void createSidebarServices(Composite comp, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      loadServices();
+      loadServices(page);
       Set<String> categories = new HashSet<String>();
       for (WorkPageService service : services) {
          categories.add(service.getSidebarCategory());
@@ -103,7 +117,7 @@ public class ServicesArea {
    }
 
    public void createToolbarServices(IToolBarManager toolbarManager) {
-      loadServices();
+      loadServices(null);
       for (final WorkPageService service : services) {
          try {
             Action action = service.createToolbarService();

@@ -45,7 +45,7 @@ public class DeleteWorkingBranch extends WorkPageService implements IEventReceiv
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) {
-      return isCurrentState(page) && (page.isAllowCommitBranch() || page.isAllowCreateBranch());
+      return isCurrentState(page);
    }
 
    /* (non-Javadoc)
