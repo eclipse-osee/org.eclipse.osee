@@ -514,6 +514,13 @@ public class RevisionManager implements PersistenceManager {
       return deletedArtifacts;
    }
 
+   public Collection<Artifact> getNewAndModifiedArtifacts(Branch branch, boolean includeRelationOnlyChanges) throws SQLException {
+      List<TransactionData> transactionDataSet = getTransactionsPerBranch(branch);
+      if (transactionDataSet.size() == 0) return new ArrayList<Artifact>();
+      return getNewAndModifiedArtifacts(transactionDataSet.get(transactionDataSet.size() - 1).getTransactionId(),
+            transactionDataSet.get(0).getTransactionId(), includeRelationOnlyChanges);
+   }
+
    public Collection<Artifact> getNewAndModifiedArtifacts(TransactionId baseTransaction, TransactionId toTransaction, boolean includeRelationOnlyChanges) throws SQLException {
       List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
       criteria.add(new ArtifactInTransactionSearch(baseTransaction, toTransaction));

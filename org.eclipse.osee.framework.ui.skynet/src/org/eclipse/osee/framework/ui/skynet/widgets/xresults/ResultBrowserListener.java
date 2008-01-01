@@ -54,7 +54,7 @@ public class ResultBrowserListener implements LocationListener {
          if (resultBrowserHyperCmd == ResultBrowserHyperCmd.openArtifctBranch) {
             event.doit = false;
             try {
-               java.util.regex.Matcher m = Pattern.compile("^(.*?),(.*?)$").matcher(value);
+               java.util.regex.Matcher m = Pattern.compile("^(.*?)\\((.*?)\\)$").matcher(value);
                if (m.find()) {
                   String hrid = m.group(1);
                   Integer branchId = Integer.parseInt(m.group(2));

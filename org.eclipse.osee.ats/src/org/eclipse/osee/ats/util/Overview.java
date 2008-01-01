@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.ResultBrowserHyperCmd;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultHtml;
 
 public class Overview {
 
@@ -279,10 +280,7 @@ public class Overview {
    }
 
    public static String getOpenHyperlinkHtml(String name, String guidOrHrid, int branchId) {
-      String str =
-            AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openArtifctBranch,
-                  String.format("%s,%s", guidOrHrid, branchId + "")), name);
-      return str;
+      return XResultHtml.getOpenHyperlinkHtml(name, guidOrHrid, branchId);
    }
 
    public static String getOpenHyperlinkHtml(String name, Artifact art) {

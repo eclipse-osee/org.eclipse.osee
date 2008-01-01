@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 public abstract class BranchableStateItem extends AtsStateItem {
 
    private boolean allowCommit = true;
+   public static String BRANCH_CATEGORY = "Branch Changes";
 
    /*
     * (non-Javadoc)

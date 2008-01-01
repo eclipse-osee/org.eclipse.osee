@@ -120,7 +120,7 @@ public class XResultPage {
    }
 
    public String getErrorWarningHtml() {
-      return String.format("<b>Errors</b>: %d  <b>Warnings</b>: %d", getNumErrors(), getNumWarnings());
+      return String.format("<b>Errors</b>: %d  <b>Warnings</b>: %d<br><br>", getNumErrors(), getNumWarnings());
    }
 
    public String getManipulatedHtml() {

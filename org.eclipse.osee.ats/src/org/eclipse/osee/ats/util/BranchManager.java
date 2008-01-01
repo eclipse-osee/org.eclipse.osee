@@ -382,13 +382,26 @@ public class BranchManager {
     */
    public Collection<Artifact> getArtifactsModified(boolean includeRelationOnlyChanges) throws SQLException {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      TransactionId transactionId = getTransactionId();
-      if (transactionId == null) return arts;
-      try {
-         return RevisionManager.getInstance().getNewAndModifiedArtifacts(transactionId, transactionId,
-               includeRelationOnlyChanges);
-      } catch (SQLException ex) {
-         OSEELog.logSevere(AtsPlugin.class, "Error getting modified artifacts", true);
+      if (smaMgr.getBranchMgr().isWorkingBranch()) {
+         Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
+         if (workingBranch != null) {
+            try {
+               return RevisionManager.getInstance().getNewAndModifiedArtifacts(workingBranch,
+                     includeRelationOnlyChanges);
+            } catch (SQLException ex) {
+               OSEELog.logSevere(AtsPlugin.class, "Error getting modified artifacts", true);
+            }
+         }
+      } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
+         TransactionId transactionId = getTransactionId();
+         if (transactionId != null) {
+            try {
+               return RevisionManager.getInstance().getNewAndModifiedArtifacts(transactionId, transactionId,
+                     includeRelationOnlyChanges);
+            } catch (SQLException ex) {
+               OSEELog.logSevere(AtsPlugin.class, "Error getting modified artifacts", true);
+            }
+         }
       }
       return arts;
    }

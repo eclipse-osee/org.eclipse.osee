@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
+import org.eclipse.osee.ats.editor.stateItem.BranchableStateItem;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
@@ -36,7 +37,6 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class CreateWorkingBranchService extends WorkPageService implements IEventReceiver {
 
    private Hyperlink link;
-   public static String BRANCH_CATEGORY = "Branch Changes";
 
    public CreateWorkingBranchService(SMAManager smaMgr) {
       super(smaMgr);
@@ -90,7 +90,7 @@ public class CreateWorkingBranchService extends WorkPageService implements IEven
     */
    @Override
    public String getSidebarCategory() {
-      return CreateWorkingBranchService.BRANCH_CATEGORY;
+      return BranchableStateItem.BRANCH_CATEGORY;
    }
 
    /*

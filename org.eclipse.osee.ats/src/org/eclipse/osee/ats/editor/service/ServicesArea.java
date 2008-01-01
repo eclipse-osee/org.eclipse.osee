@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.editor.AtsStateItems;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.editor.service.branch.CommitWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranch;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
+import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportToolbarService;
 import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -76,15 +78,16 @@ public class ServicesArea {
          services.add(new AddPeerToPeerReviewService(smaMgr));
          services.add(new BlockingReview(smaMgr));
          // Toolbar Services
+         services.add(new OpenParent(smaMgr));
+         services.add(new ShowChangeReportToolbarService(smaMgr));
+         services.add(new EmailActionService(smaMgr));
+         services.add(new AddNoteOperation(smaMgr));
+         services.add(new ShowNotesOperation(smaMgr));
          services.add(new OpenInAtsWorldOperation(smaMgr));
          services.add(new OpenInArtifactEditorOperation(smaMgr));
          services.add(new OpenInSkyWalkerOperation(smaMgr));
          services.add(new OpenVersionArtifact(smaMgr));
          services.add(new OpenTeamDefinition(smaMgr));
-         services.add(new OpenParent(smaMgr));
-         services.add(new AddNoteOperation(smaMgr));
-         services.add(new ShowNotesOperation(smaMgr));
-         services.add(new EmailActionService(smaMgr));
          // Add page configured branchable state items
          if (page != null && (page.isAllowCommitBranch() || page.isAllowCreateBranch())) {
             if (page.isAllowCreateBranch()) services.add(new CreateWorkingBranchService(smaMgr));
@@ -95,7 +98,12 @@ public class ServicesArea {
             services.add(new DeleteWorkingBranch(smaMgr));
          }
          // Add state specific items (these can also contain branch items through extending BranchableStateItem class
-         if (page != null) for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
+         if (page != null)
+            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
+               services.addAll(item.getServices(smaMgr));
+            }
+         // If page is null, this is a toolbar request for services, load all state items
+         else if (page == null) for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
             services.addAll(item.getServices(smaMgr));
          }
       }
