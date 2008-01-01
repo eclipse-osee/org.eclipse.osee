@@ -88,6 +88,7 @@ public class ServicesArea {
          services.add(new OpenInSkyWalkerOperation(smaMgr));
          services.add(new OpenVersionArtifact(smaMgr));
          services.add(new OpenTeamDefinition(smaMgr));
+         services.add(new CopyActionDetailsService(smaMgr));
          // Add page configured branchable state items
          if (page != null && (page.isAllowCommitBranch() || page.isAllowCreateBranch())) {
             if (page.isAllowCreateBranch()) services.add(new CreateWorkingBranchService(smaMgr));
