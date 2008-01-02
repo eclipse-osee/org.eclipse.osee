@@ -46,7 +46,7 @@ public class AddNoteOperation extends WorkPageService {
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("note.gif"));
+      action.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("newNote.gif"));
       return action;
    }
 
