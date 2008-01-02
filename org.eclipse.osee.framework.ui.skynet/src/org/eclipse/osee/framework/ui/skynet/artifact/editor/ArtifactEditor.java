@@ -527,7 +527,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       } else if (event instanceof VisitorEvent) {
          VisitorEvent visitorevent = (VisitorEvent) event;
 
-         if (visitorevent.getArtifact() == getEditorInput().getArtifact()) {
+         if (visitorevent.getArtifact().equals(getEditorInput().getArtifact())) {
             firePropertyChange(PROP_DIRTY);
             renderPreviewPage();
          }
