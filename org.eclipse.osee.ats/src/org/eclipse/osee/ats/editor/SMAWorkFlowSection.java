@@ -76,7 +76,6 @@ public class SMAWorkFlowSection extends SectionPart {
    private ServicesArea servicesArea;
    private final XFormToolkit toolkit;
    private XTaskViewer xTask;
-   // private DebugArea debugArea;
    public static String TRANSITION_TO_STATE_COMBO = "Transition To State Combo";
    private Composite mainComp;
 

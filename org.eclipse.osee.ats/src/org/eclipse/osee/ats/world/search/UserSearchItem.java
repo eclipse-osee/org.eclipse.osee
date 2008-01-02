@@ -44,6 +44,13 @@ public abstract class UserSearchItem extends WorldSearchItem {
       return "";
    }
 
+   public User getSearchUser() {
+      if (user != null)
+         return user;
+      else if (selectedUser != null) return selectedUser;
+      return null;
+   }
+
    @Override
    public void performSearch() throws SQLException, IllegalArgumentException {
       if (isCancelled()) return;

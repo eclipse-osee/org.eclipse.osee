@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.world.search.AtsAttributeSearchItem;
 import org.eclipse.osee.ats.world.search.CriteriaSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
+import org.eclipse.osee.ats.world.search.MyCompletedSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.world.search.MyOrigSearchItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
@@ -114,6 +115,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             skynetAuth.getAuthenticatedUser(), true));
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - All", skynetAuth.getAuthenticatedUser(),
             false));
+      new SearchNavigateItem(otherItems, new MyCompletedSearchItem("My Completed", skynetAuth.getAuthenticatedUser()));
       items.add(otherItems);
 
       otherItems = new XNavigateItem(null, "Other User Searches");
@@ -122,6 +124,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("User's Team Workflows"));
       new SearchNavigateItem(otherItems, new MyTaskSearchItem("User's Tasks"));
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator"));
+      new SearchNavigateItem(otherItems, new MyCompletedSearchItem("User's Completed"));
       new SearchNavigateItem(otherItems, new MyFavoritesSearchItem("User's Favorites"));
       new SearchNavigateItem(otherItems, new MySubscribedSearchItem("User's Subscribed"));
       items.add(otherItems);
