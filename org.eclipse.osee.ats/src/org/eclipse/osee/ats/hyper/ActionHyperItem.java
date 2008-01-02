@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 
 public class ActionHyperItem extends HyperViewItem {
@@ -44,12 +43,6 @@ public class ActionHyperItem extends HyperViewItem {
       if (artifact instanceof IHyperArtifact) {
          builder.append("\nState: " + ((IHyperArtifact) artifact).getHyperState());
          builder.append("\nAssignee: " + ((IHyperArtifact) artifact).getHyperAssignee());
-         builder.append("\nAction Needed: ");
-         Result actionNeeded = ((IHyperArtifact) artifact).getHyperUserInputNeeded();
-         if (actionNeeded.isTrue())
-            builder.append(actionNeeded.getText());
-         else
-            builder.append("NONE");
       }
       return builder.toString();
    }

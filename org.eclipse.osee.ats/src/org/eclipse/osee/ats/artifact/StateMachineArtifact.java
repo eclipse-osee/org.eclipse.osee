@@ -847,15 +847,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperUserInputNeeded()
-    */
-   public Result getHyperUserInputNeeded() {
-      return smaMgr.getUserInputNeeded();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperImage()
     */
    public Image getHyperImage() {

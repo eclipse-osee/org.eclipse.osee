@@ -730,20 +730,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperUserInputNeeded()
-    */
-   public Result getHyperUserInputNeeded() {
-      try {
-         if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts().iterator().next().getHyperUserInputNeeded();
-      } catch (SQLException ex) {
-         // Do nothing
-      }
-      return Result.FalseResult;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperImage()
     */
    public Image getHyperImage() {

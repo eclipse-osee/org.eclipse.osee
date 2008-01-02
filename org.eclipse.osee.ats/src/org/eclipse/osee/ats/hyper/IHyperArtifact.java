@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.hyper;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -30,8 +29,6 @@ public interface IHyperArtifact {
    public String getGuid();
 
    public String getHyperAssignee();
-
-   public Result getHyperUserInputNeeded();
 
    public Image getHyperImage();
 
