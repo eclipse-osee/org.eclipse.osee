@@ -150,7 +150,7 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
       formText.setWhitespaceNormalized(true);
       formText.setFont("header", JFaceResources.getHeaderFont());
       formText.setFont("code", JFaceResources.getTextFont());
-      formText.setText("<form><a href=\"action.synchronize\">and now</a></form>", false, false);
+      formText.setText("Select parameters below and click the play button at the top right.", false, false);
       section.setClient(formText);
    }
 

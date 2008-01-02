@@ -519,7 +519,7 @@ public class RelationPersistenceManager implements PersistenceManager {
             try {
                artA = artifactManager.getArtifactFromId(aArtId, transactionId);
                artB = artifactManager.getArtifactFromId(bArtId, transactionId);
-            } catch (IllegalArgumentException ex) {
+            } catch (RuntimeException ex) {
                logger.log(
                      Level.WARNING,
                      "Loading link failed:  " + ex.toString() + ": rel_id = " + relId + " art_id = " + (artA == null ? aArtId : bArtId),

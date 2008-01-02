@@ -109,7 +109,7 @@ public final class Artifacts {
                   parentCursor = candidates.iterator().next();
                   if (!visitedIds.contains(parentCursor.aaaSerialId)) {
                      if (artifactSerialIds.contains(parentCursor.aaaSerialId)) {
-                        // This is someones child, so ignore it
+                        // This is someone's child, so ignore it
                         break;
                      }
                      visitedIds.add(parentCursor.aaaSerialId);

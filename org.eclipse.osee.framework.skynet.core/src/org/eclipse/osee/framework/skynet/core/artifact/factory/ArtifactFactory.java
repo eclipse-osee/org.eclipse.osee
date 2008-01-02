@@ -132,7 +132,7 @@ public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFa
       if (artifact == null) {
          artifact = getNewArtifact(guid, humandReadableId, factoryKey, branch);
 
-         artifactManager.initializeArtifact(artifact, transactionId);
+         artifactManager.initializeArtifact(artId, artifact, transactionId);
          cache(artifact);
          artifact.onInitializationComplete();
       }
