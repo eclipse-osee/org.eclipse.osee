@@ -522,7 +522,7 @@ public class RelationPersistenceManager implements PersistenceManager {
             } catch (RuntimeException ex) {
                logger.log(
                      Level.WARNING,
-                     "Loading link failed:  " + ex.toString() + ": rel_id = " + relId + " art_id = " + (artA == null ? aArtId : bArtId),
+                     "Loading link failed:  " + ex.getLocalizedMessage() + ": rel_id = " + relId + " art_id = " + (artA == null ? aArtId : bArtId),
                      ex);
                return null;
             }
