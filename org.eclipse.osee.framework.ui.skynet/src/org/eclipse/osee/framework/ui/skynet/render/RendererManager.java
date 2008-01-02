@@ -266,19 +266,18 @@ public class RendererManager {
    public void previewInComposite(final BrowserComposite previewComposite, final Artifact artifact) {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
          public void run(IProgressMonitor monitor) throws Exception {
-            updateURL(previewComposite, artifact);
+
+            IRenderer renderer = getBestRenderer(PresentationType.PREVIEW_IN_COMPOSITE, artifact);
+            final String url = renderer.getArtifactUrl(artifact);
+            Displays.ensureInDisplayThread(new Runnable() {
+               public void run() {
+                  previewComposite.setUrl(url);
+               }
+            });
+
          }
       };
 
       Jobs.run("Preview " + artifact.getDescriptiveName(), runnable, logger, SkynetGuiPlugin.PLUGIN_ID, false);
-   }
-
-   private void updateURL(final BrowserComposite previewComposite, final Artifact artifact) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            String url = getBestRenderer(PresentationType.PREVIEW_IN_COMPOSITE, artifact).getArtifactUrl(artifact);
-            previewComposite.setUrl(url);
-         }
-      });
    }
 }
