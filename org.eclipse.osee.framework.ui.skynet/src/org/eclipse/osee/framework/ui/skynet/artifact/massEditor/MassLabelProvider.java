@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassXViewer.Extra_Columns;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -44,9 +45,11 @@ public class MassLabelProvider implements ITableLabelProvider {
       }
       TreeColumn treeCol = getTreeViewer().getTree().getColumns()[columnIndex];
       String colName = treeCol.getText();
-      if (colName.equals("HRID"))
+      if (colName.equals(Extra_Columns.HRID.name()))
          return artifact.getHumanReadableId();
-      else if (colName.equals("GUID")) return artifact.getGuid();
+      else if (colName.equals(Extra_Columns.GUID.name()))
+         return artifact.getGuid();
+      else if (colName.equals(Extra_Columns.Artifact_Type.name())) return artifact.getArtifactTypeName();
       if (!artifact.isAttributeTypeValid(colName)) return "";
       try {
          if (artifact.getAttributeManager(colName).getDescriptor().getBaseAttributeClass().equals(DateAttribute.class)) {

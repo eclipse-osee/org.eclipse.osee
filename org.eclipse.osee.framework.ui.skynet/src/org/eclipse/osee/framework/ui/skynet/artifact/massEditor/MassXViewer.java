@@ -61,6 +61,9 @@ public class MassXViewer extends XViewer {
    private String title;
    private Collection<? extends Artifact> artifacts;
    private final IDirtiableEditor editor;
+   public static enum Extra_Columns {
+      HRID, GUID, Artifact_Type
+   };
 
    /**
     * @param parent
@@ -99,7 +102,8 @@ public class MassXViewer extends XViewer {
 
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      if (treeColumn.getText().equals("HRID") || treeColumn.getText().equals("GUID")) return false;
+      if (treeColumn.getText().equals(Extra_Columns.Artifact_Type.name()) || treeColumn.getText().equals(
+            Extra_Columns.HRID.name()) || treeColumn.getText().equals(Extra_Columns.GUID.name())) return false;
       return true;
    }
 
@@ -119,7 +123,7 @@ public class MassXViewer extends XViewer {
          // System.out.println("Column " + treeColumn.getText() + " item " +
          // treeItem);
          String colName = treeColumn.getText();
-         if (colName.equals("HRID") || colName.equals("GUID")) {
+         if (colName.equals(Extra_Columns.Artifact_Type.name()) || colName.equals(Extra_Columns.HRID.name()) || colName.equals(Extra_Columns.GUID.name())) {
             AWorkbench.popup("ERROR", "Can't change the field " + colName);
          }
          Artifact useArt = ((MassArtifactItem) treeItem.getData()).getArtifact();
@@ -310,15 +314,12 @@ public class MassXViewer extends XViewer {
       }
 
       // Add HRID and GUID
-      newCol = new XViewerColumn(this, "HRID", 75, 75, SWT.LEFT);
-      newCol.setOrderNum(x++);
-      newCol.setTreeViewer(this);
-      cols.add(newCol);
-
-      newCol = new XViewerColumn(this, "GUID", 75, 75, SWT.LEFT);
-      newCol.setOrderNum(x++);
-      newCol.setTreeViewer(this);
-      cols.add(newCol);
+      for (Extra_Columns col : Extra_Columns.values()) {
+         newCol = new XViewerColumn(this, col.name(), 75, 75, SWT.LEFT);
+         newCol.setOrderNum(x++);
+         newCol.setTreeViewer(this);
+         cols.add(newCol);
+      }
 
       custData.getColumnData().setColumns(cols);
       custData.getSortingData().setSortingNames(Arrays.asList(new String[] {"Name"}));
