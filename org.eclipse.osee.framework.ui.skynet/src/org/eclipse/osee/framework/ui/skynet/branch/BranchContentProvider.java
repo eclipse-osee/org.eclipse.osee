@@ -80,9 +80,11 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    private static ArtifactNameDescriptorCache artifactNameDescriptorCache = new ArtifactNameDescriptorCache();
    private JobbedNode root;
    private IContentProviderRunnable providerRunnable;
-
    private boolean showChildBranchesAtMainLevel;
    private boolean showChildBranchesUnderParents;
+   private boolean showTransactions;
+
+   //   private boolean myHideTransactions = false;
 
    public BranchContentProvider() {
       this.providerRunnable = new ChildrenRunnable();
@@ -106,6 +108,10 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
     */
    public Object[] getElements(Object inputElement) {
       return root.getChildren();
+   }
+
+   public void setShowTransactions(boolean showTransactions) {
+      this.showTransactions = showTransactions;
    }
 
    private final class ChildrenRunnable implements IContentProviderRunnable {
@@ -134,7 +140,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
                List<Object> items = new LinkedList<Object>();
                items.addAll(branch.getChildBranches());
                items.addAll(getTransactions(branch));
-
                return items.toArray();
             } else {
                return getTransactions(branch).toArray();
@@ -166,13 +171,13 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       }
 
       private Collection<Object> getTransactions(Branch branch) {
+         if (!showTransactions) return Collections.emptyList();
          List<TransactionData> transactions = revisionManager.getTransactionsPerBranch(branch);
          Collections.sort(transactions, new Comparator<TransactionData>() {
             public int compare(TransactionData o1, TransactionData o2) {
                return o1.getTransactionNumber() - o2.getTransactionNumber();
             }
          });
-
          if (transactions != null) {
             return org.eclipse.osee.framework.jdk.core.util.Collections.getAggregateTree(new ArrayList<Object>(
                   transactions), 100);
