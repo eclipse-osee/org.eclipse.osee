@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
@@ -51,7 +50,6 @@ public class TeamWorldSearchItem extends WorldSearchItem {
    private boolean showFinished;
    private boolean showAction;
    private final String[] teamDefNames;
-   private ActionDebug debug = new ActionDebug(false, "TeamWorldSearchItem");
    private final ChangeType changeType;
 
    public TeamWorldSearchItem(String displayName, String[] teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType) {
@@ -130,12 +128,8 @@ public class TeamWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
       getTeamDefs();
-      searchIt();
-   }
-
-   private void searchIt() throws SQLException, IllegalArgumentException {
       List<ISearchPrimitive> teamDefWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       for (TeamDefinitionArtifact tda : getSearchTeamDefs())
          teamDefWorkflowCriteria.add(new AttributeValueSearch(
@@ -164,38 +158,31 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       FromArtifactsSearch allTeamWorkflows = new FromArtifactsSearch(allProductCriteria, true);
 
       if (!showAction) {
-         if (isCancelled()) return;
+         if (isCancelled()) return EMPTY_SET;
          Collection<Artifact> arts =
                ArtifactPersistenceManager.getInstance().getArtifacts(allProductCriteria, true,
                      BranchPersistenceManager.getInstance().getAtsBranch());
-         debug.report("Processing artifacts", true);
-         if (isCancelled()) return;
-         addResultArtifacts(arts);
-         debug.report("Done", true);
-         return;
+         if (isCancelled()) return EMPTY_SET;
+         return arts;
       }
 
       List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
       actionCriteria.add(new InRelationSearch(allTeamWorkflows, RelationSide.ActionToWorkflow_Action));
 
-      if (isCancelled()) return;
-      debug.report("Perform Search...", true);
+      if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
                   BranchPersistenceManager.getInstance().getAtsBranch());
 
-      if (isCancelled()) return;
-      debug.report("Processing artifacts", true);
-      addResultArtifacts(arts);
-
-      debug.report("Done", true);
+      if (isCancelled()) return EMPTY_SET;
+      return arts;
 
    }
 
    @Override
-   public boolean performUI() {
-      if (teamDefNames != null) return true;
-      if (teamDefs != null) return true;
+   public void performUI() {
+      if (teamDefNames != null) return;
+      if (teamDefs != null) return;
       TeamDefinitionTreeDialog diag = new TeamDefinitionTreeDialog(Active.Both);
       diag.setShowFinished(showFinished);
       diag.setShowAction(showAction);
@@ -211,9 +198,9 @@ public class TeamWorldSearchItem extends WorldSearchItem {
             selectedTeamDefs.clear();
          for (Object obj : diag.getResult())
             selectedTeamDefs.add((TeamDefinitionArtifact) obj);
-         return true;
+         return;
       }
-      return false;
+      cancelled = true;
    }
 
    /**

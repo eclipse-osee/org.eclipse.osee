@@ -56,9 +56,8 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
-      if (searchStr == null) return;
-      // System.out.println("string *" + string + "*");
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+      if (searchStr == null) return EMPTY_SET;
       LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
       criteria.add(new AttributeValueSearch(attributeName, searchStr, Operator.CONTAINS));
       FromArtifactsSearch stringCriteria = new FromArtifactsSearch(criteria, true);
@@ -74,22 +73,24 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
       bothCriteria.add(stringCriteria);
       bothCriteria.add(atsObjectSearch);
 
+      if (cancelled) return EMPTY_SET;
       Collection<Artifact> artifacts =
             ArtifactPersistenceManager.getInstance().getArtifacts(bothCriteria, true,
                   BranchPersistenceManager.getInstance().getAtsBranch());
-      addResultArtifacts(artifacts);
+      if (cancelled) return EMPTY_SET;
+      return artifacts;
    }
 
    @Override
-   public boolean performUI() {
+   public void performUI() {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Search by Ats Attribute", null,
                   "Enter string to search for.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          searchStr = ed.getEntry();
-         return true;
+         return;
       } else
-         return false;
+         cancelled = true;
    }
 
 }

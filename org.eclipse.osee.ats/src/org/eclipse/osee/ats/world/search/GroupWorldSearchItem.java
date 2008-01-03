@@ -11,11 +11,10 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.sql.SQLException;
-import org.eclipse.osee.ats.AtsPlugin;
+import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -58,39 +57,32 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
       getProduct();
-      if (group != null)
-         searchIt(group);
-      else
-         searchIt();
+      if (getSearchGroup() == null) return EMPTY_SET;
+      Collection<Artifact> arts = getSearchGroup().getArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS);
+      if (cancelled) return EMPTY_SET;
+      return arts;
    }
 
-   private void searchIt(Artifact group) {
-      try {
-         if (isCancelled()) return;
-         addResultArtifacts(group.getArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS));
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
-   }
-
-   private void searchIt() {
-      if (selectedGroup != null) searchIt(selectedGroup);
+   private Artifact getSearchGroup() {
+      if (group != null) return group;
+      if (selectedGroup != null) return selectedGroup;
+      return null;
    }
 
    @Override
-   public boolean performUI() {
-      if (groupName != null) return true;
-      if (group != null) return true;
+   public void performUI() {
+      if (groupName != null) return;
+      if (group != null) return;
       GroupListDialog gld = new GroupListDialog(Display.getCurrent().getActiveShell());
       int result = gld.open();
       if (result == 0) {
          selectedGroup = (Artifact) gld.getSelection();
-         return true;
+         return;
       } else {
          selectedGroup = null;
-         return false;
+         cancelled = true;
       }
    }
 

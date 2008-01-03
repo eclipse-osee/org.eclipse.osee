@@ -57,41 +57,35 @@ public class StateWorldSearchItem extends WorldSearchItem {
       this.stateClass = stateClass;
    }
 
-   @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
-      if (stateClass != null)
-         searchIt(stateClass);
-      else
-         searchIt();
+   private String getSearchStateClass() {
+      if (stateClass != null) return stateClass;
+      return selectedStateClass;
    }
 
-   private void searchIt(String stateClass) throws SQLException {
+   @Override
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
       List<ISearchPrimitive> baseCriteria;
       baseCriteria = new LinkedList<ISearchPrimitive>();
-      baseCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), stateClass,
-            Operator.CONTAINS));
+      baseCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
+            getSearchStateClass(), Operator.CONTAINS));
 
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(baseCriteria, true,
                   BranchPersistenceManager.getInstance().getAtsBranch());
-      if (isCancelled()) return;
-      addResultArtifacts(arts);
+      if (isCancelled()) return EMPTY_SET;
+      return arts;
 
-   }
-
-   private void searchIt() throws SQLException, IllegalArgumentException {
-      if (selectedStateClass != null) searchIt(selectedStateClass);
    }
 
    @Override
-   public boolean performUI() {
-      if (stateClass != null) return true;
+   public void performUI() {
+      if (stateClass != null) return;
       EntryDialog ed = new EntryDialog("Enter State", "Enter state name.");
       if (ed.open() == 0) {
          selectedStateClass = ed.getEntry();
-         return true;
+         return;
       }
-      return false;
+      cancelled = true;
    }
 
 }

@@ -125,26 +125,37 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       if (artifact instanceof IWorldViewArtifact) xViewer.refresh(artifact);
    }
 
-   public static void loadIt(String name, Collection<? extends Artifact> arts) {
-      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-      try {
-         WorldView worldView = (WorldView) page.showView(WorldView.VIEW_ID);
-         worldView.load(name, arts);
-      } catch (PartInitException e1) {
-         OSEELog.logSevere(AtsPlugin.class, "Couldn't Launch XViewer Dev View ", true);
-      }
+   public static void loadIt(final String name, final Collection<? extends Artifact> arts) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         public void run() {
+            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            try {
+               WorldView worldView = (WorldView) page.showView(WorldView.VIEW_ID);
+               worldView.load(name, arts);
+            } catch (PartInitException e1) {
+               OSEELog.logSevere(AtsPlugin.class, "Couldn't Launch XViewer Dev View ", true);
+            }
+         }
+      });
    }
 
-   public void load(String name, Collection<? extends Artifact> arts) {
+   public void load(final String name, final Collection<? extends Artifact> arts) {
       lastSearchItem = null;
-      if (arts.size() == 0)
-         setTableTitle("No Results Found - " + name, true);
-      else
-         setTableTitle(name, false);
-      Set<Artifact> loadArts = new HashSet<Artifact>();
-      for (Artifact art : arts)
-         loadArts.add(art);
-      xViewer.set(loadArts);
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         public void run() {
+            if (arts.size() == 0)
+               setTableTitle("No Results Found - " + name, true);
+            else
+               setTableTitle(name, false);
+            xViewer.set(arts);
+         }
+      });
    }
 
    public void setFocus() {
@@ -354,7 +365,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
          final Collection<Artifact> artifacts;
          xViewer.clear();
          try {
-            artifacts = searchItem.performSearch(xViewer);
+            artifacts = searchItem.performSearchGetResults(true, true);
             if (artifacts.size() == 0) {
                if (searchItem.isCancelled()) {
                   monitor.done();
@@ -419,10 +430,6 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       }
 
       if (searchItem == null) return;
-      if (!searchItem.performUI()) {
-         setTableTitle("Cancelled - " + searchItem.getSelectedName(), false);
-         return;
-      }
       LoadTableJob job = null;
       try {
          job = new LoadTableJob(searchItem, this, sort);

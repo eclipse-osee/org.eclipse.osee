@@ -11,13 +11,12 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.world.WorldXViewer;
+import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -29,8 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 public abstract class WorldSearchItem {
 
    private final String name;
-   private Set<Artifact> results = new HashSet<Artifact>();
-   private WorldXViewer xViewer;
+   protected static Set<Artifact> EMPTY_SET = new HashSet<Artifact>();
    protected boolean cancelled = false;
    protected boolean loadWorldView = true;
    protected ArtifactPersistenceManager apm = ArtifactPersistenceManager.getInstance();
@@ -55,7 +53,7 @@ public abstract class WorldSearchItem {
       return getName();
    }
 
-   public abstract void performSearch() throws SQLException, IllegalArgumentException;
+   public abstract Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException;
 
    /**
     * Perform search and return result set without loading in WorldView. This method can be used repeatedly.
@@ -64,71 +62,47 @@ public abstract class WorldSearchItem {
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public Set<Artifact> performSearchGetResults() throws SQLException, IllegalArgumentException {
-      return performSearchGetResults(false);
+   public Collection<Artifact> performSearchGetResults() throws SQLException, IllegalArgumentException {
+      return performSearchGetResults(false, false);
    }
 
-   public Set<Artifact> performSearchGetResults(boolean loadWorldView) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearchGetResults(boolean performUi, boolean loadWorldView) throws SQLException, IllegalArgumentException {
       this.loadWorldView = loadWorldView;
-      results.clear();
-      performSearch();
-      return results;
-   }
+      if (performUi) {
+         Displays.ensureInDisplayThread(new Runnable() {
+            /* (non-Javadoc)
+             * @see java.lang.Runnable#run()
+             */
+            public void run() {
+               performUI();
+            }
+         }, true);
 
-   public Set<Artifact> performUiSearchGetResults() throws SQLException, IllegalArgumentException {
-      loadWorldView = false;
-      results.clear();
-      if (!performUI()) return new HashSet<Artifact>();
-      performSearch();
-      return results;
-   }
-
-   public Collection<Artifact> performSearch(WorldXViewer xViewer) throws SQLException, IllegalArgumentException {
-      this.xViewer = xViewer;
-      return performSearchGetResults(xViewer != null);
-   }
-
-   public boolean performUI() {
-      return true;
-   }
-
-   public void addResultArtifact(Artifact artifact) {
-      if ((!(artifact instanceof ActionArtifact)) && (!(artifact instanceof StateMachineArtifact))) {
-         ArtifactEditor.editArtifact(artifact);
-         return;
       }
-      if (!results.contains(artifact)) {
-         results.add(artifact);
-         if (loadWorldView && xViewer != null) xViewer.add(artifact);
-      }
+      if (cancelled) return EMPTY_SET;
+      Collection<Artifact> arts = performSearch();
+      if (loadWorldView) loadResultArtifacts(arts);
+      return arts;
    }
 
-   public void addResultArtifacts(Collection<Artifact> artifacts) {
-      ArrayList<Artifact> addedArts = new ArrayList<Artifact>();
+   public void performUI() {
+      cancelled = false;
+   }
+
+   private void loadResultArtifacts(Collection<Artifact> artifacts) {
+      final Set<Artifact> addedArts = new HashSet<Artifact>();
       for (Artifact artifact : artifacts) {
-         if ((!(artifact instanceof ActionArtifact)) && (!(artifact instanceof StateMachineArtifact))) {
+         if (isCancelled())
+            return;
+         else if ((!(artifact instanceof ActionArtifact)) && (!(artifact instanceof StateMachineArtifact))) {
             ArtifactEditor.editArtifact(artifact);
             continue;
-         }
-         if (!results.contains(artifact)) {
-            if (isCancelled()) return;
-            results.add(artifact);
+         } else
             addedArts.add(artifact);
-         }
       }
-      if (loadWorldView && xViewer != null && addedArts.size() > 0) {
-         xViewer.add(addedArts);
-         Displays.ensureInDisplayThread(new Runnable() {
-            public void run() {
-               xViewer.getTree().setFocus();
-            }
-         });
-
+      if (loadWorldView && addedArts.size() > 0) {
+         WorldView.loadIt(getSelectedName(), addedArts);
       }
-   }
-
-   public Set<Artifact> getResultArtifacts() {
-      return results;
    }
 
    public boolean isCancelled() {

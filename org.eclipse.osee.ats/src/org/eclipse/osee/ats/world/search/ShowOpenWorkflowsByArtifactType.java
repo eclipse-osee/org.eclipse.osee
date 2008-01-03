@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,7 +35,6 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
    private final Collection<String> artifactTypes;
    private final boolean showFinished;
    private final boolean showWorkflow;
-   private ActionDebug debug = new ActionDebug(false, "TeamWorldSearchItem");
 
    public ShowOpenWorkflowsByArtifactType(String displayName, Collection<String> artifactTypes, boolean showFinished, boolean showWorkflow) {
       super(displayName);
@@ -46,7 +44,7 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
    }
 
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
 
       List<ISearchPrimitive> artTypeNameCriteria = new LinkedList<ISearchPrimitive>();
       for (String artType : artifactTypes)
@@ -64,37 +62,29 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
       FromArtifactsSearch allReviews = new FromArtifactsSearch(allReviewCriteria, true);
 
       if (!showWorkflow) {
-         if (isCancelled()) return;
+         if (isCancelled()) return EMPTY_SET;
          Collection<Artifact> arts =
                ArtifactPersistenceManager.getInstance().getArtifacts(allReviewCriteria, true,
                      BranchPersistenceManager.getInstance().getAtsBranch());
-         debug.report("Processing artifacts", true);
-         if (isCancelled()) return;
-         addResultArtifacts(arts);
-         debug.report("Done", true);
-         return;
+         if (isCancelled()) return EMPTY_SET;
+         return arts;
       }
 
       List<ISearchPrimitive> teamCriteria = new LinkedList<ISearchPrimitive>();
       teamCriteria.add(new InRelationSearch(allReviews, RelationSide.TeamWorkflowToReview_Team));
 
-      if (isCancelled()) return;
-      debug.report("Perform Search...", true);
+      if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(teamCriteria, true,
                   BranchPersistenceManager.getInstance().getAtsBranch());
 
-      if (isCancelled()) return;
-      debug.report("Processing artifacts", true);
-      addResultArtifacts(arts);
-
-      debug.report("Done", true);
-
+      if (isCancelled()) return EMPTY_SET;
+      return arts;
    }
 
    @Override
-   public boolean performUI() {
-      return true;
+   public void performUI() {
+      return;
    }
 
 }

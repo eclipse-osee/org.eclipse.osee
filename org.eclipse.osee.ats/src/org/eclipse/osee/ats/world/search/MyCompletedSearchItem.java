@@ -41,7 +41,7 @@ public class MyCompletedSearchItem extends UserSearchItem {
    }
 
    @Override
-   protected void searchIt(User user) throws SQLException, IllegalArgumentException {
+   protected Collection<Artifact> searchIt(User user) throws SQLException, IllegalArgumentException {
 
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       List<ISearchPrimitive> smaOrigCriteria = new LinkedList<ISearchPrimitive>();
@@ -49,12 +49,12 @@ public class MyCompletedSearchItem extends UserSearchItem {
             "state=\"Completed\" type=\"StateEntered\" userId=\"" + getSearchUser().getUserId() + "\"",
             Operator.CONTAINS));
 
-      if (isCancelled()) return;
+      if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(smaOrigCriteria, true, AtsPlugin.getAtsBranch());
 
-      if (isCancelled()) return;
-      addResultArtifacts(arts);
+      if (isCancelled()) return EMPTY_SET;
+      return arts;
    }
 
 }

@@ -33,12 +33,13 @@ public class CriteriaSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
       if (criteria == null) throw new IllegalArgumentException("Inavlid search \"" + getName() + "\"");
       Collection<Artifact> artifacts =
             ArtifactPersistenceManager.getInstance().getArtifacts(criteria, all,
                   BranchPersistenceManager.getInstance().getAtsBranch());
-      addResultArtifacts(artifacts);
+      if (cancelled) return EMPTY_SET;
+      return artifacts;
    }
 
 }

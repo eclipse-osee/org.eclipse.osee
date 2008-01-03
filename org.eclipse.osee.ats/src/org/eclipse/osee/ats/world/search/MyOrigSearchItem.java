@@ -50,7 +50,7 @@ public class MyOrigSearchItem extends UserSearchItem {
    }
 
    @Override
-   protected void searchIt(User user) throws SQLException, IllegalArgumentException {
+   protected Collection<Artifact> searchIt(User user) throws SQLException, IllegalArgumentException {
 
       // Find all Team Workflows artifact types
       List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
@@ -71,14 +71,14 @@ public class MyOrigSearchItem extends UserSearchItem {
       smaOrigCriteria.add(teamWorkflowSearch);
       FromArtifactsSearch smaOrigSearch = new FromArtifactsSearch(smaOrigCriteria, true);
 
-      if (isCancelled()) return;
+      if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(
                   new InRelationSearch(smaOrigSearch, RelationSide.ActionToWorkflow_Action),
                   BranchPersistenceManager.getInstance().getAtsBranch());
 
-      if (isCancelled()) return;
-      addResultArtifacts(arts);
+      if (isCancelled()) return EMPTY_SET;
+      return arts;
    }
 
 }

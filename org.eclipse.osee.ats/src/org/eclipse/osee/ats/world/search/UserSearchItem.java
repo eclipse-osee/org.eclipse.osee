@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -52,33 +54,34 @@ public abstract class UserSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
-      if (isCancelled()) return;
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+      if (isCancelled()) return EMPTY_SET;
       if (user != null)
-         searchIt(user);
+         return searchIt(user);
       else
-         searchIt();
+         return searchIt();
    }
 
-   protected void searchIt(User user) throws SQLException, IllegalArgumentException {
-      if (isCancelled()) return;
+   protected Collection<Artifact> searchIt(User user) throws SQLException, IllegalArgumentException {
+      return EMPTY_SET;
    }
 
-   private void searchIt() throws SQLException, IllegalArgumentException {
-      if (isCancelled()) return;
-      if (selectedUser != null) searchIt(selectedUser);
+   private Collection<Artifact> searchIt() throws SQLException, IllegalArgumentException {
+      if (isCancelled()) return EMPTY_SET;
+      if (selectedUser != null) return searchIt(selectedUser);
+      return EMPTY_SET;
    }
 
    @Override
-   public boolean performUI() {
-      if (user != null) return true;
+   public void performUI() {
+      if (user != null) return;
       UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell());
       int result = ld.open();
       if (result == 0) {
          selectedUser = (User) ld.getSelection();
-         return true;
+         return;
       } else
          selectedUser = null;
-      return false;
+      cancelled = true;
    }
 }

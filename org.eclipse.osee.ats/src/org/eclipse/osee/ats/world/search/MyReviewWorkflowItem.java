@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
  * @author Donald G. Dunne
  */
 public class MyReviewWorkflowItem extends UserSearchItem {
-   private ActionDebug debug = new ActionDebug(false, "MyReviewWorkflowItem");
 
    public MyReviewWorkflowItem(String name) {
       this(name, null);
@@ -46,7 +44,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
    }
 
    @Override
-   protected void searchIt(User user) throws SQLException, IllegalArgumentException {
+   protected Collection<Artifact> searchIt(User user) throws SQLException, IllegalArgumentException {
 
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
@@ -64,17 +62,11 @@ public class MyReviewWorkflowItem extends UserSearchItem {
       allCriteria.add(currentStateSearch);
       allCriteria.add(reviewArtSearch);
 
-      debug.report("Querying DB", true);
-      // debug.report(ArtifactPersistenceManager.getSql(inActionSearch, true));
-
-      if (isCancelled()) return;
+      if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(allCriteria, true,
                   BranchPersistenceManager.getInstance().getAtsBranch());
-      debug.report("Processing artifacts", true);
-      if (isCancelled()) return;
-      addResultArtifacts(arts);
-
-      debug.report("Done", true);
+      if (isCancelled()) return EMPTY_SET;
+      return arts;
    }
 }

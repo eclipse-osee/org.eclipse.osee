@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -33,12 +32,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
  */
 public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
 
-   private ActionDebug debug = new ActionDebug(false, "LegacyPCRActionsWorldSearchItem");
-
    private boolean returnTeams = false;
-
    private final Collection<String> pcrIds;
-
    private final Collection<TeamDefinitionArtifact> teamDefs;
 
    public LegacyPCRActionsWorldSearchItem(String name, String pcrId, Collection<TeamDefinitionArtifact> teamDefs) {
@@ -56,7 +51,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
       List<ISearchPrimitive> prodCriteria = new LinkedList<ISearchPrimitive>();
       if (pcrIds != null && pcrIds.size() > 0) {
          for (String pcrId : pcrIds) {
@@ -85,27 +80,25 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
       FromArtifactsSearch bothSearch = new FromArtifactsSearch(bothCriteria, true);
 
       if (isReturnTeams()) {
-         debug.report("Perform Search...", true);
+         if (cancelled) return EMPTY_SET;
          Collection<Artifact> arts =
                ArtifactPersistenceManager.getInstance().getArtifacts(bothCriteria, true,
                      BranchPersistenceManager.getInstance().getAtsBranch());
 
-         debug.report("Processing artifacts", true);
-         addResultArtifacts(arts);
+         if (cancelled) return EMPTY_SET;
+         return arts;
       } else {
          List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
          actionCriteria.add(new InRelationSearch(bothSearch, RelationSide.ActionToWorkflow_Action));
 
-         debug.report("Perform Search...", true);
          Collection<Artifact> arts =
                ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
                      BranchPersistenceManager.getInstance().getAtsBranch());
 
-         debug.report("Processing artifacts", true);
-         addResultArtifacts(arts);
-      }
+         if (cancelled) return EMPTY_SET;
 
-      debug.report("Done", true);
+         return arts;
+      }
    }
 
    public boolean isReturnTeams() {

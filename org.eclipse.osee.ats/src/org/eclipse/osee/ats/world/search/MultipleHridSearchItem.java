@@ -18,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -39,7 +38,6 @@ import org.eclipse.swt.widgets.Display;
  * @author Donald G. Dunne
  */
 public class MultipleHridSearchItem extends WorldSearchItem {
-   private ActionDebug debug = new ActionDebug(false, "MultipleGuidSearchItem");
    private String id = "";
 
    public MultipleHridSearchItem() {
@@ -47,7 +45,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
 
       List<ISearchPrimitive> idCriteria = new LinkedList<ISearchPrimitive>();
       Set<String> nonHridGuids = new HashSet<String>();
@@ -62,7 +60,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
          }
       }
 
-      if (isCancelled()) return;
+      if (isCancelled()) return EMPTY_SET;
 
       Collection<Artifact> resultArts = new HashSet<Artifact>();
 
@@ -78,7 +76,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
             for (ActionArtifact teamWf : actionArts) {
                resultArts.add(teamWf);
             }
-            addResultArtifacts(resultArts);
+            return resultArts;
          }
       }
 
@@ -86,16 +84,15 @@ public class MultipleHridSearchItem extends WorldSearchItem {
          Collection<Artifact> arts =
                ArtifactPersistenceManager.getInstance().getArtifacts(idCriteria, false,
                      BranchPersistenceManager.getInstance().getAtsBranch());
-         debug.report("Processing artifacts", true);
-         if (isCancelled()) return;
-         addResultArtifacts(arts);
+         if (isCancelled()) return EMPTY_SET;
+         return arts;
       }
 
-      debug.report("Done", true);
+      return EMPTY_SET;
    }
 
    @Override
-   public boolean performUI() {
+   public void performUI() {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), getName(), null,
                   "Enter GUID(s) or 5 Character ID(s) (comma separated)", MessageDialog.QUESTION, new String[] {"OK",
@@ -104,10 +101,10 @@ public class MultipleHridSearchItem extends WorldSearchItem {
       if (response == 0) {
          id = ed.getEntry();
          id = id.replaceAll(" ", "");
-         return true;
+         return;
       } else
          id = null;
-      return false;
+      cancelled = true;
    }
 
 }

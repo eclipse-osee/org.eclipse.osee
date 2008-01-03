@@ -16,10 +16,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
+import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -92,12 +94,28 @@ public class NavigateView extends ViewPart implements IActionable {
       refreshAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("refresh.gif"));
       refreshAction.setToolTipText("Refresh");
 
-      OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");
+      Action openByIdAction = new Action("Open by Id") {
+
+         public void run() {
+            MultipleHridSearchItem srch = new MultipleHridSearchItem();
+            try {
+               srch.performSearchGetResults(true, true);
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      };
+      openByIdAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("openId.gif"));
+      openByIdAction.setToolTipText("Open by Id");
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(collapseAction);
       toolbarManager.add(refreshAction);
+      toolbarManager.add(openByIdAction);
       toolbarManager.add(new NewAction());
+
+      OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");
+
    }
 
    public String getActionDescription() {

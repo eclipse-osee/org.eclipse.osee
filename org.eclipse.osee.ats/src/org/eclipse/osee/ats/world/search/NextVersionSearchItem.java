@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -65,35 +66,35 @@ public class NextVersionSearchItem extends WorldSearchItem {
     * @see org.eclipse.osee.ats.world.search.WorldSearchItem#performSearch()
     */
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
-      if (isCancelled()) return;
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+      if (isCancelled()) return EMPTY_SET;
       if (getTeamDefinition().getNextReleaseVersion() == null) {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition() + "\"");
-         return;
+         return EMPTY_SET;
       }
       Set<Artifact> arts =
             getTeamDefinition().getNextReleaseVersion().getArtifacts(
                   RelationSide.TeamWorkflowTargetedForVersion_Workflow);
-      if (isCancelled()) return;
-      addResultArtifacts(arts);
+      if (isCancelled()) return EMPTY_SET;
+      return arts;
    }
 
    @Override
-   public boolean performUI() {
-      if (teamDefHoldingVersions != null) return true;
+   public void performUI() {
+      if (teamDefHoldingVersions != null) return;
       try {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
          ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));
          int result = ld.open();
          if (result == 0) {
             selectedTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
-            return true;
+            return;
          } else
-            return false;
+            cancelled = true;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
-      return false;
+      cancelled = true;
    }
 
 }

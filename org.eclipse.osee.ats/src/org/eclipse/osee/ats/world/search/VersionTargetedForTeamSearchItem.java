@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.world.search;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import org.eclipse.osee.ats.ActionDebug;
+import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Donald G. Dunne
  */
 public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
-   private ActionDebug debug = new ActionDebug(false, "VersionTargetedForProductSearchItem");
    private final VersionArtifact versionArt;
    private VersionArtifact selectedVersionArt;
    private final boolean returnAction;
@@ -52,27 +51,24 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
 
       if (versionArt == null && selectedVersionArt == null) throw new IllegalArgumentException(
             "Invalid release version");
 
-      debug.report("Processing", true);
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       for (Artifact art : (selectedVersionArt != null ? selectedVersionArt : versionArt).getTargetedForTeamArtifacts())
          if (returnAction)
             arts.add(((TeamWorkFlowArtifact) art).getParentActionArtifact());
          else
             arts.add(art);
-      if (isCancelled()) return;
-      addResultArtifacts(arts);
-
-      debug.report("Done", true);
+      if (isCancelled()) return EMPTY_SET;
+      return arts;
    }
 
    @Override
-   public boolean performUI() {
-      if (versionArt != null) return true;
+   public void performUI() {
+      if (versionArt != null) return;
       try {
          TeamDefinitionArtifact selectedTeamDef = teamDef;
          if (versionArt == null && selectedTeamDef == null) {
@@ -82,7 +78,7 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
             if (result == 0) {
                selectedTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
             } else
-               return false;
+               cancelled = true;
          }
          if (versionArt == null && selectedTeamDef != null) {
             final VersionListDialog vld =
@@ -92,13 +88,13 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
                         selectedTeamDef.getVersionsArtifacts(AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased));
             if (vld.open() == 0) {
                selectedVersionArt = (VersionArtifact) vld.getResult()[0];
-               return true;
+               return;
             }
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
-      return false;
+      cancelled = true;
    }
 
 }

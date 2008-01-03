@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.sql.SQLException;
-import java.util.Set;
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -246,9 +246,9 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
          public void run() {
             MultipleHridSearchItem gsi = new MultipleHridSearchItem();
             try {
-               Set<Artifact> arts = gsi.performUiSearchGetResults();
+               Collection<Artifact> arts = gsi.performSearchGetResults(true, false);
                if (arts.size() == 0) {
-                  AWorkbench.popup("ERROR", "No Actions Found");
+                  AWorkbench.popup("ERROR", "No Artifacts Found");
                   return;
                }
                load(arts.iterator().next());

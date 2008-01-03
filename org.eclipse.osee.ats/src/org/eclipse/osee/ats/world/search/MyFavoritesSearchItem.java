@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -31,8 +30,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
  */
 public class MyFavoritesSearchItem extends UserSearchItem {
 
-   private ActionDebug debug = new ActionDebug(false, "MyFavoritesSearchItem");
-
    public MyFavoritesSearchItem(String name) {
       this(name, null);
    }
@@ -47,16 +44,7 @@ public class MyFavoritesSearchItem extends UserSearchItem {
    }
 
    @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
-      if (user != null)
-         searchIt(user);
-      else if (selectedUser != null) searchIt(selectedUser);
-   }
-
-   @Override
-   protected void searchIt(User user) throws SQLException, IllegalArgumentException {
-      debug.report("Querying DB", true);
-
+   protected Collection<Artifact> searchIt(User user) throws SQLException, IllegalArgumentException {
       FromArtifactsSearch userSearch = new FromArtifactsSearch(new UserIdSearch(user.getUserId(), Operator.EQUAL));
 
       List<ISearchPrimitive> subscribedCriteria = new LinkedList<ISearchPrimitive>();
@@ -66,17 +54,14 @@ public class MyFavoritesSearchItem extends UserSearchItem {
             ArtifactPersistenceManager.getInstance().getArtifacts(subscribedCriteria, true,
                   BranchPersistenceManager.getInstance().getAtsBranch());
 
-      if (isCancelled()) return;
-      debug.report("Processing artifacts", true);
-      addResultArtifacts(arts);
-
-      debug.report("Done", true);
+      if (isCancelled()) return EMPTY_SET;
+      return arts;
    }
 
    @Override
-   public boolean performUI() {
-      if (user != null) return true;
-      return super.performUI();
+   public void performUI() {
+      if (user != null) return;
+      super.performUI();
    }
 
 }

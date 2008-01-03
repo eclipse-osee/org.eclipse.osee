@@ -58,16 +58,14 @@ public class UserCommunitySearchItem extends WorldSearchItem {
       return String.format("%s - %s", super.getSelectedName(), getGroupSearchName());
    }
 
-   @Override
-   public void performSearch() throws SQLException, IllegalArgumentException {
-      if (userComm != null)
-         searchIt(userComm);
-      else
-         searchIt();
+   private String getSearchUserComm() {
+      if (userComm != null) return userComm;
+      return selectedUserComm;
    }
 
-   private void searchIt(String userComm) throws SQLException, IllegalArgumentException {
-      if (isCancelled()) return;
+   @Override
+   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+      if (isCancelled()) return EMPTY_SET;
 
       // Find all Team Workflows artifact types
       List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
@@ -76,7 +74,7 @@ public class UserCommunitySearchItem extends WorldSearchItem {
       FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
 
       List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new AttributeValueSearch(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComm,
+      criteria.add(new AttributeValueSearch(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), getSearchUserComm(),
             Operator.EQUAL));
       criteria.add(teamWorkflowSearch);
       FromArtifactsSearch criteriaSearch = new FromArtifactsSearch(criteria, true);
@@ -88,26 +86,22 @@ public class UserCommunitySearchItem extends WorldSearchItem {
             ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
                   BranchPersistenceManager.getInstance().getAtsBranch());
 
-      if (isCancelled()) return;
-      addResultArtifacts(arts);
-   }
-
-   private void searchIt() throws SQLException, IllegalArgumentException {
-      if (selectedUserComm != null) searchIt(selectedUserComm);
+      if (isCancelled()) return EMPTY_SET;
+      return arts;
    }
 
    @Override
-   public boolean performUI() {
-      if (userCommName != null) return true;
-      if (userComm != null) return true;
+   public void performUI() {
+      if (userCommName != null) return;
+      if (userComm != null) return;
       UserCommunityListDialog gld = new UserCommunityListDialog();
       int result = gld.open();
       if (result == 0) {
          selectedUserComm = (String) gld.getResult()[0];
-         return true;
+         return;
       } else {
          selectedUserComm = null;
-         return false;
+         cancelled = true;
       }
    }
 
