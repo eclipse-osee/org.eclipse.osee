@@ -10,32 +10,38 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 
 /**
  * @author Jeff C. Phillips
  */
-public class OpenSkywalkerEditorHandler extends AbstractArtifactSelectionHandler {
+public class OpenSkywalkerEditorHandler extends AbstractSelectionChangedHandler {
+   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
+   private List<Artifact> artifacts;
 
    /* (non-Javadoc)
     * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
     */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
-      if (!getArtifacts().isEmpty()) {
-         SkyWalkerView.exploreArtifact(getArtifacts().iterator().next());
-      }
+      SkyWalkerView.exploreArtifact(artifacts.iterator().next());
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
    @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.READ;
+   public boolean isEnabled() {
+      IStructuredSelection structuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+
+      return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
    }
 }

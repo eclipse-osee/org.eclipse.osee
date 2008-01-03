@@ -10,30 +10,44 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
  */
-public class OpenMassArtifactEditorHandler extends AbstractArtifactSelectionHandler {
+public class OpenMassArtifactEditorHandler extends AbstractSelectionChangedHandler {
+   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
+   private List<Artifact> artifacts;
 
    /* (non-Javadoc)
     * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
     */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
-      MassArtifactEditor.editArtifacts("", getArtifacts());
+      MassArtifactEditor.editArtifacts("", artifacts);
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
    @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.WRITE;
+   public boolean isEnabled() {
+      try {
+         IStructuredSelection structuredSelection =
+               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+
+         return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
+      } catch (Exception ex) {
+         OSEELog.logException(getClass(), ex, true);
+         return false;
+      }
    }
 }
