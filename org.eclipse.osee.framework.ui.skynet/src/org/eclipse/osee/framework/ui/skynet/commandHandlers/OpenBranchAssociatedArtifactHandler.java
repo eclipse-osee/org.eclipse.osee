@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.util.SkynetSelections;
  * @author Robert A. Fisher
  * @author Paul K. Waldfogel
  */
-public class OpenBranchAssociatedArtifactHandler extends AbstractSelectionHandler {
+public class OpenBranchAssociatedArtifactHandler extends AbstractSelectionChangedHandler {
    // private static final Logger logger =
    // ConfigUtil.getConfigFactory().getLogger(CreateSelectiveBranchHandler.class);
    // private static final AccessControlManager accessManager = AccessControlManager.getInstance();
@@ -49,15 +49,13 @@ public class OpenBranchAssociatedArtifactHandler extends AbstractSelectionHandle
     * @param branchTable
     */
    public OpenBranchAssociatedArtifactHandler() {
-      super(new String[] {"Branch", "TransactionData"});
-      // this.branchTable = branchTable;
-      // this.selective = selective;
    }
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      List<Branch> mySelectedBranchList = super.getBranchList();
-      IStructuredSelection myIStructuredSelection = super.getIStructuredSelection();
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      List<Branch> mySelectedBranchList = Handlers.getBranchListFromStructuredSelection(myIStructuredSelection);
       Branch selectedBranch = (Branch) ((JobbedNode) myIStructuredSelection.getFirstElement()).getBackingData();
       if (selectedBranch != mySelectedBranchList.get(0)) {
          System.out.println("selectedBranch != mySelectedBranchList.get(0)");
@@ -87,9 +85,8 @@ public class OpenBranchAssociatedArtifactHandler extends AbstractSelectionHandle
 
    @Override
    public boolean isEnabled() {
-      // IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-      IStructuredSelection myIStructuredSelection = super.getIStructuredSelection();
-
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       return SkynetSelections.oneBranchSelected(myIStructuredSelection);
    }
 

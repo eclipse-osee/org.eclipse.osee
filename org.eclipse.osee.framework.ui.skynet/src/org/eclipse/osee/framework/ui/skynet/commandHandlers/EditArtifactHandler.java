@@ -10,23 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Jeff C. Phillips
  */
-public class EditArtifactHandler extends AbstractArtifactSelectionHandler {
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
-   @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.WRITE;
-   }
+public class EditArtifactHandler extends AbstractSelectionChangedHandler {
+   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
+   private static final RendererManager rendererManager = RendererManager.getInstance();
+   private List<Artifact> artifacts;
 
    /*
     * (non-Javadoc)
@@ -35,11 +35,20 @@ public class EditArtifactHandler extends AbstractArtifactSelectionHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      if (!getArtifacts().isEmpty()) {
-         RendererManager.getInstance().editInJob(getArtifacts());
+      if (!artifacts.isEmpty()) {
+         rendererManager.editInJob(artifacts);
 
          dispose();
       }
       return null;
+   }
+
+   @Override
+   public boolean isEnabled() {
+      IStructuredSelection structuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+
+      return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
    }
 }

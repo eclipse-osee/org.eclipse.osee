@@ -17,12 +17,12 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Files;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.export.ImportBranchJob;
@@ -35,32 +35,22 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * @author Robert A. Fisher
  * @author Paul K. Waldfogel
  */
-public class ImportDescendantsOntoBranchHandler extends AbstractSelectionHandler {
-   // private static final Logger logger =
-   // ConfigUtil.getConfigFactory().getLogger(ImportOntoBranchHandler.class);
+public class ImportDescendantsOntoBranchHandler extends AbstractSelectionChangedHandler {
    private static final AccessControlManager accessManager = AccessControlManager.getInstance();
-   // private static final BranchPersistenceManager branchManager =
-   // BranchPersistenceManager.getInstance();
-   // private static final TransactionIdManager transactionIdManager =
-   // TransactionIdManager.getInstance();
-   private TreeViewer branchTable;
    private boolean selective;
 
    /**
     * @param branchTable
     */
    public ImportDescendantsOntoBranchHandler() {
-      super(new String[] {"Branch"});
-      // this.branchTable = branchTable;
-      // this.selective = selective;
    }
 
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
-      // IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-      // Object backingData = ((JobbedNode) selection.getFirstElement()).getBackingData();
-      List<Branch> mySelectedBranchList = super.getBranchList();
-      IWorkbenchPartSite myIWorkbenchPartSite = super.getIWorkbenchPartSite();
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      List<Branch> mySelectedBranchList = Handlers.getBranchListFromStructuredSelection(myIStructuredSelection);
+      IWorkbenchPartSite myIWorkbenchPartSite = Handlers.getIWorkbenchPartSite();
       File file = Files.selectFile(myIWorkbenchPartSite.getShell(), SWT.OPEN, "*.xml");
       if (file != null && mySelectedBranchList.size() == 1) {
          Jobs.startJob(new ImportBranchJob(file, mySelectedBranchList.get(0), true, true));
@@ -70,12 +60,12 @@ public class ImportDescendantsOntoBranchHandler extends AbstractSelectionHandler
 
    @Override
    public boolean isEnabled() {
-      IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       try {
-         return (!selective || OseeProperties.getInstance().isDeveloper()) && ((SkynetSelections.oneBranchSelected(selection) && accessManager.checkObjectPermission(
-               SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(selection) && accessManager.checkObjectPermission(
-               ((TransactionData) SkynetSelections.boilDownObject(selection.getFirstElement())).getTransactionId().getBranch(),
+         return (!selective || OseeProperties.getInstance().isDeveloper()) && ((SkynetSelections.oneBranchSelected(myIStructuredSelection) && accessManager.checkObjectPermission(
+               SkynetSelections.boilDownObject(myIStructuredSelection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(myIStructuredSelection) && accessManager.checkObjectPermission(
+               ((TransactionData) SkynetSelections.boilDownObject(myIStructuredSelection.getFirstElement())).getTransactionId().getBranch(),
                PermissionEnum.READ)));
       } catch (SQLException ex) {
          return false;

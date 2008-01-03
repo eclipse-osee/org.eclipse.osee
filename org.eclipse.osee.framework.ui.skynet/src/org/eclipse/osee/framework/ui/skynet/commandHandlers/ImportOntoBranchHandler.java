@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Files;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.export.ImportBranchJob;
@@ -32,32 +33,21 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * @author Robert A. Fisher
  * @author Paul K. Waldfogel
  */
-public class ImportOntoBranchHandler extends AbstractSelectionHandler {
-   // private static final Logger logger =
-   // ConfigUtil.getConfigFactory().getLogger(ImportOntoBranchHandler.class);
+public class ImportOntoBranchHandler extends AbstractSelectionChangedHandler {
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
-
-   // BranchPersistenceManager.getInstance();
-   // private static final TransactionIdManager transactionIdManager =
-   // TransactionIdManager.getInstance();
-   // private TreeViewer branchTable;
-   // private boolean selective;
 
    /**
     * @param branchTable
     */
    public ImportOntoBranchHandler() {
-      super(new String[] {"Branch", "TransactionData"});
-      // this.branchTable = branchTable;
-      // this.selective = selective;
    }
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      // IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-      // Object backingData = ((JobbedNode) selection.getFirstElement()).getBackingData();
-      List<Branch> mySelectedBranchList = super.getBranchList();
-      IWorkbenchPartSite myIWorkbenchPartSite = super.getIWorkbenchPartSite();
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      List<Branch> mySelectedBranchList = Handlers.getBranchListFromStructuredSelection(myIStructuredSelection);
+      IWorkbenchPartSite myIWorkbenchPartSite = Handlers.getIWorkbenchPartSite();
       Shell myShell = myIWorkbenchPartSite.getShell();// This hangs.
       File file = Files.selectFile(myShell, SWT.OPEN, "*.xml");
       if (file != null && mySelectedBranchList.size() == 1) {
@@ -68,8 +58,8 @@ public class ImportOntoBranchHandler extends AbstractSelectionHandler {
 
    @Override
    public boolean isEnabled() {
-      // IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-      IStructuredSelection myIStructuredSelection = super.getIStructuredSelection();
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       return SkynetSelections.oneBranchSelected(myIStructuredSelection) && myAccessControlManager.checkObjectPermission(
             SkynetSelections.boilDownObject(myIStructuredSelection.getFirstElement()), PermissionEnum.WRITE);
    }

@@ -10,8 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import java.util.List;
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -19,22 +24,33 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 /**
  * @author Jeff C. Phillips
  */
-public class OpenArtifactsInAtsWorldHandler extends AbstractArtifactSelectionHandler {
+public class OpenArtifactsInAtsWorldHandler extends AbstractHandler {
+   private List<Artifact> artifacts;
 
    /* (non-Javadoc)
     * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
     */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
-      if (!getArtifacts().isEmpty()) {
-
-         try {
-            if (OseeAts.getAtsLib() != null) OseeAts.getAtsLib().openInAtsWorld("", getArtifacts());
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
+      try {
+         if (OseeAts.getAtsLib() != null) OseeAts.getAtsLib().openInAtsWorld("", artifacts);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       return null;
    }
 
+   @Override
+   public boolean isEnabled() {
+      try {
+         IStructuredSelection structuredSelection =
+               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+
+         return artifacts.size() > 0;
+      } catch (Exception ex) {
+         OSEELog.logException(getClass(), ex, true);
+         return false;
+      }
+   }
 }
