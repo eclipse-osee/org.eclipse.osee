@@ -282,6 +282,19 @@ public class AccessControlManager implements PersistenceManager {
       return isValid;
    }
 
+   public boolean checkObjectListPermission(List<?> objectList, PermissionEnum permission) {
+      boolean isValid = true;
+
+      if (objectList.isEmpty()) {
+         isValid = false;
+      }
+
+      for (Object object : objectList) {
+         isValid &= checkObjectPermission(object, permission);
+      }
+      return isValid;
+   }
+
    /**
     * Check permissions for the currently authenticated user.
     * 
@@ -529,7 +542,7 @@ public class AccessControlManager implements PersistenceManager {
                   (ArtifactAccessObject) accessObjectCache.get(artifact.getArtId(), artifact.getBranch().getBranchId());
          } else if (object instanceof Branch) {
             Branch branch = (Branch) object;
-            accessObject = (BranchAccessObject) branchAccessObjectCache.get(branch.getBranchId());
+            accessObject = branchAccessObjectCache.get(branch.getBranchId());
          }
 
          if (accessObject == null) return datas;
