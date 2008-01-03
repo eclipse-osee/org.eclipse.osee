@@ -171,4 +171,14 @@ public class RelationLinkChange extends RevisionChange implements IRelationLinkC
    public int getRelLinkId() {
       return relLinkId;
    }
+
+   @SuppressWarnings("unchecked")
+   public Object getAdapter(Class adapter) {
+      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+
+      if (adapter.isInstance(this)) {
+         return this;
+      }
+      return null;
+   }
 }

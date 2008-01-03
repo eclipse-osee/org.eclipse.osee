@@ -249,4 +249,14 @@ public class ArtifactChange extends RevisionChange {
       return fromTransactionId;
    }
 
+   public Object getAdapter(Class adapter) {
+      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+
+      if (adapter.isInstance(artifact)) {
+         return artifact;
+      } else if (adapter.isInstance(this)) {
+         return this;
+      }
+      return null;
+   }
 }
