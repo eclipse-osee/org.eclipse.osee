@@ -19,30 +19,25 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.util.WordUtil;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Paul K. Waldfogel
  */
-public class CompressWordAttributesHandler extends AbstractSelectionHandler {
-   List<Integer> mySelectedArtifactIDList;
-   List<Branch> mySelectedBranchList;
-   TreeViewer myChangeTableTreeViewer;
+public class CompressWordAttributesHandler extends AbstractSelectionChangedHandler {
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
-
-   public CompressWordAttributesHandler() {
-      super(new String[] {"ChangeTableTreeViewer"});
-   }
+   private List<Artifact> artifacts;
 
    /*
     * (non-Javadoc)
@@ -51,21 +46,18 @@ public class CompressWordAttributesHandler extends AbstractSelectionHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      mySelectedArtifactIDList = super.getArtifactIDList();
-      mySelectedBranchList = super.getBranchList();
-      myChangeTableTreeViewer = super.getChangeTableTreeViewer();
       Jobs.startJob(new Job("Compress Word Attributes") {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               final int total = mySelectedArtifactIDList.size();
                int count = 0;
+               final int total = artifacts.size();
 
                monitor.beginTask("Analyzing attributes", total);
 
-               for (Integer mySelectedArtifactID : mySelectedArtifactIDList) {
-                  if (WordUtil.revertNonusefulWordChanges(mySelectedArtifactID, mySelectedBranchList.get(0),
+               for (Artifact artifact : artifacts) {
+                  if (WordUtil.revertNonusefulWordChanges(artifact.getArtId(), artifact.getBranch(),
                         "osee_compression_gammas")) count++;
                   monitor.worked(1);
                   if (monitor.isCanceled()) {
@@ -77,8 +69,8 @@ public class CompressWordAttributesHandler extends AbstractSelectionHandler {
                final int finalCount = count;
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
-                     MessageDialog.openInformation(myChangeTableTreeViewer.getControl().getShell(), "Compression Data",
-                           finalCount + " of the " + total + " artifacts need compression");
+                     MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                           "Compression Data", finalCount + " of the " + total + " artifacts need compression");
                   }
                });
 
@@ -93,28 +85,21 @@ public class CompressWordAttributesHandler extends AbstractSelectionHandler {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
-   @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.READ;
-   }
-
    @Override
    public boolean isEnabled() {
       try {
-         List<Artifact> mySelectedArtifactList = super.getArtifactList();
-         Artifact mySelectedArtifact = mySelectedArtifactList.get(0);
-         boolean writePermission =
-               myAccessControlManager.checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
+         IStructuredSelection myIStructuredSelection =
+               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         artifacts = Handlers.getArtifactsFromStructuredSelection(myIStructuredSelection);
+         if (artifacts.isEmpty()) {
+            return false;
+         }
+
+         boolean writePermission = myAccessControlManager.checkObjectPermission(artifacts.get(0), PermissionEnum.WRITE);
          return writePermission && OseeProperties.getInstance().isDeveloper();
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, true);
          return false;
       }
    }
-
 }

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -19,6 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetSelections;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -28,36 +28,19 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author Robert A. Fisher
  * @author Paul K. Waldfogel
  */
-public class DeleteTransactionHandler extends AbstractSelectionHandler {
-   // private static final Logger logger =
-   // ConfigUtil.getConfigFactory().getLogger(ImportOntoBranchHandler.class);
-   // private static final AccessControlManager accessManager = AccessControlManager.getInstance();
+public class DeleteTransactionHandler extends AbstractSelectionChangedHandler {
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-
-   // BranchPersistenceManager.getInstance();
-   // private static final TransactionIdManager transactionIdManager =
-   // TransactionIdManager.getInstance();
-   // private TreeViewer branchTable;
-   // private boolean selective;
 
    /**
     * @param branchTable
     */
-   public DeleteTransactionHandler() {
-      super(new String[] {"TransactionData"});
-      // this.branchTable = branchTable;
-      // this.selective = selective;
-   }
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      IStructuredSelection myIStructuredSelection = super.getIStructuredSelection();
-      List<TransactionData> myTransactionDataList = super.getTransactionDataList();
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       TransactionData selectedTransaction =
             (TransactionData) ((JobbedNode) myIStructuredSelection.getFirstElement()).getBackingData();
-      if (selectedTransaction == myTransactionDataList.get(0)) {
-         System.out.println("selectedTransaction == myTransactionDataList.get(0)");
-      }
       if (MessageDialog.openConfirm(HandlerUtil.getActiveShell(event), "Delete Transaction",
             "Are you sure you want to delete the transaction: " + selectedTransaction.getTransactionNumber())) {
          branchManager.deleteTransaction(selectedTransaction.getTransactionNumber());
@@ -69,9 +52,8 @@ public class DeleteTransactionHandler extends AbstractSelectionHandler {
 
    @Override
    public boolean isEnabled() {
-      // IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-      IStructuredSelection myIStructuredSelection = super.getIStructuredSelection();
-
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       return SkynetSelections.oneTransactionSelected(myIStructuredSelection) && OseeProperties.getInstance().isDeveloper();
    }
 
