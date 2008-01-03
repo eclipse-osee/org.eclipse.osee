@@ -315,7 +315,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
       });
-      item.setEnabled(getEditorInput().getArtifact().getBranch() == branchManager.getDefaultBranch());
+      item.setEnabled(getEditorInput().getArtifact().getBranch().equals(branchManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
 
@@ -327,7 +327,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             RendererManager.getInstance().editInJob(getEditorInput().getArtifact());
          }
       });
-      item.setEnabled(!getEditorInput().getArtifact().isReadOnly() && getEditorInput().getArtifact().getBranch() == branchManager.getDefaultBranch());
+      item.setEnabled(!getEditorInput().getArtifact().isReadOnly() && getEditorInput().getArtifact().getBranch().equals(
+            branchManager.getDefaultBranch()));
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(skynetGuiPlugin.getImage("preview_artifact.gif"));
@@ -424,22 +425,19 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    private void checkEnabledTooltems() {
       if (!attributeComposite.isDisposed()) {
-         previewComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(
-               getEditorInput().getArtifact().getBranch() == branchManager.getDefaultBranch());
-         previewComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(
-               !getEditorInput().getArtifact().isReadOnly() && getEditorInput().getArtifact().getBranch() == branchManager.getDefaultBranch());
+         boolean areBranchesEqual = getEditorInput().getArtifact().getBranch().equals(branchManager.getDefaultBranch());
+         boolean isEditAllowed = getEditorInput().getArtifact().isReadOnly() != true;
+
+         previewComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
+         previewComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed && areBranchesEqual);
          previewComposite.getToolBar().update();
 
-         attributeComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(
-               getEditorInput().getArtifact().getBranch() == branchManager.getDefaultBranch());
-         attributeComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(
-               !getEditorInput().getArtifact().isReadOnly() && getEditorInput().getArtifact().getBranch() == branchManager.getDefaultBranch());
+         attributeComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
+         attributeComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed && areBranchesEqual);
          attributeComposite.getToolBar().update();
 
-         relationsComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(
-               getEditorInput().getArtifact().getBranch() == branchManager.getDefaultBranch());
-         relationsComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(
-               !getEditorInput().getArtifact().isReadOnly() && getEditorInput().getArtifact().getBranch() == branchManager.getDefaultBranch());
+         relationsComposite.getToolBar().getItem(REVEAL_ARTIFACT_INDEX).setEnabled(areBranchesEqual);
+         relationsComposite.getToolBar().getItem(EDIT_ARTIFACT_INDEX).setEnabled(isEditAllowed && areBranchesEqual);
          relationsComposite.getToolBar().update();
       }
    }
@@ -507,7 +505,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       } else if (event instanceof ArtifactVersionIncrementedEvent) {
          ArtifactVersionIncrementedEvent verEvent = (ArtifactVersionIncrementedEvent) event;
 
-         if (getEditorInput().getArtifact() == verEvent.getOldVersion()) {
+         if (getEditorInput().getArtifact().equals(verEvent.getOldVersion())) {
             changeToArtifact(verEvent.getNewVersion());
          }
       } else if (event instanceof RemoteTransactionEvent) {
@@ -516,7 +514,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       } else if (event instanceof DefaultBranchChangedEvent) {
          try {
             Artifact artifact = getEditorInput().getArtifact();
-            if (artifact.getBranch() != branchManager.getDefaultBranch() && !artifact.isReadOnly()) {
+            if (artifact.getBranch().equals(branchManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
                changeToArtifact(ArtifactPersistenceManager.getInstance().getArtifact(artifact.getGuid(),
                      branchManager.getDefaultBranch()));
             }
