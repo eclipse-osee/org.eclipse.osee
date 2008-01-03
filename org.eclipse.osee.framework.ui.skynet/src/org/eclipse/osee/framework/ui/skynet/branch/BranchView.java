@@ -132,6 +132,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    private static final String BRANCH_ID = "branchId";
    private static final IParameter[] BRANCH_PARAMETER_DEF = new IParameter[] {new BranchIdParameter()};
    private static final String FAVORITE_KEY = "favorites_first";
+   private static final String SHOW_TRANSACTIONS = "show_transactions";
    private static final String FLAT_KEY = "flat";
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final String[] columnNames = {"", "Short Name", "Time Stamp", "Author", "Comment"};
@@ -148,8 +149,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    private Text filterText;
    private BranchNameFilter nameFilter;
    private FavoritesSorter sorter;
-
    private boolean disposed;
+   private Action hideTransactions;
 
    private synchronized IPreferenceChangeListener getSingleton() {
       if (preferenceChangeListener == null) {
@@ -164,6 +165,10 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                   if (propertyName.equals(FLAT_KEY)) {
                      setPresentation(getViewPreference().getBoolean(FLAT_KEY, true));
                      refresh();
+                  }
+                  if (propertyName.equals(SHOW_TRANSACTIONS)) {
+                     setShowTransactions(getViewPreference().getBoolean(SHOW_TRANSACTIONS, true));
+                     branchTable.refresh();
                   }
                   if (propertyName.equals(FAVORITE_KEY)) {
                      if (sorter != null) {
@@ -334,6 +339,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
       IMenuManager toolbarManager = getViewSite().getActionBars().getMenuManager();
       toolbarManager.add(createFavoritesFirstAction());
+      toolbarManager.add(createShowTransactionsAction());
       toolbarManager.add(new ParentBranchAction(this));
 
       loadPreferences();
@@ -345,6 +351,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
    private void loadPreferences() {
       setPresentation(getViewPreference().getBoolean(FLAT_KEY, true));
+      setShowTransactions(getViewPreference().getBoolean(SHOW_TRANSACTIONS, true));
    }
 
    private void createFilter(Composite parent) {
@@ -1276,6 +1283,16 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       return favoritesFirst;
    }
 
+   private Action createShowTransactionsAction() {
+      hideTransactions = new Action("Show Transactions", Action.AS_CHECK_BOX) {
+         @Override
+         public void run() {
+            getViewPreference().putBoolean(SHOW_TRANSACTIONS, isChecked());
+         }
+      };
+      return hideTransactions;
+   }
+
    public String getActionDescription() {
       return "";
    }
@@ -1477,6 +1494,16 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
    public void presentAsFlat() {
       getViewPreference().putBoolean(FLAT_KEY, true);
+   }
+
+   private void setShowTransactions(boolean showTransactions) {
+      if (branchTable != null && branchTable.getContentProvider() != null) {
+         hideTransactions.setChecked(showTransactions);
+
+         BranchContentProvider myBranchContentProvider = (BranchContentProvider) branchTable.getContentProvider();
+         myBranchContentProvider.setShowTransactions(showTransactions);
+         myBranchContentProvider.refresh();
+      }
    }
 
    private void setPresentation(boolean flat) {
