@@ -11,10 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -39,8 +35,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -59,46 +56,26 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
-import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTableViewerGlobalMenuHelper;
-import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuListener;
-import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
-import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
-import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu.GlobalMenuItem;
-import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
-import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchResult;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.search.ArtifactExportJob;
 import org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchResult;
 import org.eclipse.osee.framework.ui.skynet.search.report.RelationMatrixExportJob;
 import org.eclipse.osee.framework.ui.skynet.search.report.ReportJob;
-import org.eclipse.osee.framework.ui.skynet.search.report.ReportSelectionListener;
-import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
@@ -112,23 +89,12 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSearchViewPage.class);
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
+   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynetd.ArtifactSearchView";
    private IHandlerService handlerService;
    private StatusLineContributionItem branchStatusItem;
-   //   private MenuItem viewRelationTreeItem;
    private TableViewer viewer;
-   private MenuItem openMenuItem;
-   private MenuItem skywalkerEditorMenuItem;
-   private MenuItem openInMassEditorMenuItem;
-   private MenuItem openInAtsWorldMenuItem;
-   private MenuItem editItem;
-   private MenuItem addTemplateItem;
-   private MenuItem revisionMenuItem;
-   private MenuItem showInExplorerMenuItem;
-   private MenuItem exportMenuItem;
-   private MenuItem setAllPartitionsMenuItem;
    private ArtifactLabelProvider artifactLabelProvider;
-   private IGlobalMenuHelper globalMenuHelper;
 
    private static String[] partitions =
          new String[] {"ACS", "ARC201", "ARC231", "ASE", "CND", "COMM", "HM", "IOP", "MPEGP", "MPEGR", "MSM", "NAV",
@@ -173,7 +139,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       aContentProvider = new ArtifactListContentProvider(this);
       viewer.setContentProvider(aContentProvider);
       viewer.setSorter(new DecoratorIgnoringViewerSorter(artifactLabelProvider));
-      globalMenuHelper = new ArtifactTableViewerGlobalMenuHelper(viewer);
+      //      globalMenuHelper = new ArtifactTableViewerGlobalMenuHelper(viewer);
 
       viewer.addDoubleClickListener(new ArtifactDoubleClick());
 
@@ -186,40 +152,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       getSite().getActionBars().updateActionBars();
    }
 
-   private GlobalMenuListener globalMenuListener = new GlobalMenuListener() {
-
-      public void actioned(GlobalMenuItem item, Collection<Artifact> artifacts) {
-         if (item == GlobalMenuItem.DeleteArtifacts || item == GlobalMenuItem.PurgeArtifacts) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               public void run() {
-                  viewer.refresh();
-               };
-            });
-         }
-      }
-
-      // Must remove items from search result prior to delete
-      public Result actioning(GlobalMenuItem item, Collection<Artifact> artifacts) {
-         if (item == GlobalMenuItem.DeleteArtifacts || item == GlobalMenuItem.PurgeArtifacts) {
-            AbstractArtifactSearchResult search = (AbstractArtifactSearchResult) viewer.getInput();
-            for (Object object : search.getElements()) {
-
-               Artifact searchArtifact = ((Artifact) ((Match) object).getElement());
-               if (artifacts.contains(searchArtifact)) {
-                  search.removeMatch((Match) object);
-                  try {
-                     search.removeArtifacts(searchArtifact.getChildren());
-                  } catch (SQLException ex) {
-                     OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-                  }
-               }
-            }
-         }
-         return Result.TrueResult;
-      }
-
-   };
-
    @Override
    public void setInput(ISearchResult search, Object viewState) {
       if (search != null) {
@@ -231,51 +163,144 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    private void createContextMenu(Control menuOnwer) {
       PlatformUI.getWorkbench().getService(IHandlerService.class);
       handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
-      //      Menu popupMenu = new Menu(menuOnwer.getParent());
-      //      ArtifactMenuListener listener = new ArtifactMenuListener();
-      //      popupMenu.addMenuListener(listener);
-      //
-      //      createReportMenuItem(popupMenu, viewer);
-      //      * createViewTableMenuItem(popupMenu, viewer);
-      //      * new MenuItem(popupMenu, SWT.SEPARATOR);
-      //      * createShowInExplorerMenuItem(popupMenu, viewer);
-      //      * createHistoryMenuItem(popupMenu, viewer);
-      //      * new MenuItem(popupMenu, SWT.SEPARATOR);
-      //      *createExportMenuItem(popupMenu, viewer);
-      //      *new MenuItem(popupMenu, SWT.SEPARATOR);
-      //      * ArtifactPreviewMenu.createPreviewMenuItem(popupMenu, viewer);
-      //
-      //      // previewMenuItem = MenuItems.createMenuItem(popupMenu, SWT.PUSH, new
-      //      // PreviewArtifactsAction(viewer));
-      //      *createEditMenuItem(popupMenu, viewer);
-      //      *createOpenInArtifactEditor(popupMenu, viewer);
-      //      *createOpenInMassArtifactEditor(popupMenu, viewer);
-      //      *createOpenInSkywalkerArtifactEditor(popupMenu, viewer);
-      //      *createPopulateAtsWorld(popupMenu, viewer);
-      //      createSetAllPartitions(popupMenu, viewer);
-      //      new MenuItem(popupMenu, SWT.SEPARATOR);
-      //      GlobalMenu menu = new GlobalMenu(popupMenu, globalMenuHelper);
-      //      menu.addGlobalMenuListener(globalMenuListener);
-      //      new MenuItem(popupMenu, SWT.SEPARATOR);
-      //      createAddTemplateMenuItem(popupMenu, viewer);
-      //
-      //      menuOnwer.setMenu(popupMenu);
 
       MenuManager menuManager = new MenuManager();
       menuManager.add(new Separator());
       viewer.getTable().setMenu(menuManager.createContextMenu(viewer.getTable()));
-      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.branch.ArtifactSearchViewPage.main",
-            menuManager, viewer);
+      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.ArtifactSearchView", menuManager, viewer);
 
-      createViewTableMenuItem(menuManager, viewer);
+      createReportHandler(menuManager, viewer);
+      createViewTableHandler(menuManager, viewer);
       menuManager.add(new Separator());
-      createShowInExplorerMenuItem(menuManager, viewer);
+      createShowInExplorerHandler(menuManager, viewer);
+      createResourceHistoryHandler(menuManager, viewer);
       menuManager.add(new Separator());
-      createExportMenuItem(menuManager, viewer);
+      createExportHandler(menuManager, viewer);
       menuManager.add(new Separator());
+      createOpenArtifactHandler(menuManager, viewer);
+      createOpenInAtsWorldHandler(menuManager, viewer);
+      createEditArtifactHandler(menuManager, viewer);
+      createPreviewArtifactHandler(menuManager, viewer);
+      createOpenInMassArtifactEditorHandler(menuManager, viewer);
+      menuManager.add(new Separator());
+      createSetAllPartitions(menuManager, viewer);
 
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+   }
+
+   /**
+    * @param menuManager
+    * @param viewer
+    */
+   private void createReportHandler(MenuManager menuManager, TableViewer viewer) {
+      MenuManager reportManager = new MenuManager("Run Reports");
+
+      createRelationMatrixReportMenuItem(menuManager, reportManager);
+      createDynamicReportCommands(menuManager, reportManager);
+      menuManager.add(reportManager);
+   }
+
+   /**
+    * @param menuManager
+    * @param viewer
+    */
+   private void createOpenArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem openArtifactCommand =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.openInEdit.command", getSite(),
+                  null, null, null, null, null, null, null, null);
+      menuManager.add(openArtifactCommand);
+
+      handlerService.activateHandler(openArtifactCommand.getId(),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            ArtifactEditor.editArtifacts(getSelectedArtifacts(viewer));
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return true;
+         }
+      });
+   }
+
+   /**
+    * @param menuManager
+    * @param viewer
+    */
+   private void createEditArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem editArtifactCommand =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.edit.command", getSite(), null,
+                  null, null, null, null, null, null, null);
+      menuManager.add(editArtifactCommand);
+
+      handlerService.activateHandler(editArtifactCommand.getId(),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            RendererManager.getInstance().editInJob(getSelectedArtifact(viewer));
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return accessControlManager.checkObjectListPermission(getSelectedArtifacts(viewer), PermissionEnum.WRITE);
+         }
+      });
+   }
+
+   /**
+    * @param menuManager
+    * @param viewer
+    */
+   private void createPreviewArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
+      MenuManager previewMenu = new MenuManager("Preview");
+
+      CommandContributionItem previewArtifactCommand =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.previewArtifact.command",
+                  getSite(), null, null, null, null, null, null, null, null);
+      previewMenu.add(previewArtifactCommand);
+
+      handlerService.activateHandler(previewArtifactCommand.getId(),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            RendererManager.getInstance().previewInJob(getSelectedArtifact(viewer), "PREVIEW_ARTIFACT");
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return accessControlManager.checkObjectListPermission(getSelectedArtifacts(viewer), PermissionEnum.READ);
+         }
+      });
+
+      CommandContributionItem previewArtifactRecurseCommand =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command",
+                  getSite(), null, null, null, null, null, null, null, null);
+      previewMenu.add(previewArtifactRecurseCommand);
+
+      handlerService.activateHandler(previewArtifactRecurseCommand.getId(),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            ArtifactExplorer.revealArtifact(getSelectedArtifact(viewer));
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return accessControlManager.checkObjectListPermission(getSelectedArtifacts(viewer), PermissionEnum.READ);
+         }
+      });
+
+      menuManager.add(previewMenu);
    }
 
    /**
@@ -286,19 +311,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       branchStatusItem.setImage(BranchLabelProvider.getBranchImage(branch));
    }
 
-   private void createReportMenuItem(Menu parentMenu, final TableViewer viewer) {
-      MenuItem runReportsItem = new MenuItem(parentMenu, SWT.CASCADE);
-      runReportsItem.setText("Run Reports");
-
-      Menu reportsMenu = new Menu(parentMenu);
-      runReportsItem.setMenu(reportsMenu);
-      SelectionListener listener = new ReportSelectionListener(viewer);
-
-      createRelationMatrixReportMenuItem(reportsMenu, listener);
-      createDynamicReportMenuItems(reportsMenu, listener);
-   }
-
-   private void createViewTableMenuItem(MenuManager menuManager, final TableViewer viewer) {
+   private void createViewTableHandler(MenuManager menuManager, final TableViewer viewer) {
       CommandContributionItem openArtifactsCommand =
             Commands.getLocalCommandContribution(ArtifactSearchViewPage.VIEW_ID, getSite(), "viewTableCommand",
                   "View Table Report", null, null, null, "V", null, null);
@@ -321,7 +334,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       });
    }
 
-   private void createDynamicReportMenuItems(Menu parentMenu, SelectionListener listener) {
+   private void createDynamicReportCommands(MenuManager parentMenuManager, MenuManager childMenuManager) {
       IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.skynet.ArtifactReport");
       for (IExtension extension : point.getExtensions()) {
@@ -339,7 +352,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                      Class<?> reportClass = bundle.loadClass(classname);
                      Object obj = reportClass.newInstance();
                      ReportJob reportJob = (ReportJob) obj;
-                     createReportJobMenuItem(parentMenu, reportJob, listener);
+                     createReportJobCommand(parentMenuManager, childMenuManager, reportJob);
                   } catch (Exception ex) {
                      logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                   } catch (NoClassDefFoundError er) {
@@ -354,43 +367,40 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       }
    }
 
-   private void createReportJobMenuItem(Menu parentMenu, ReportJob reportJob, SelectionListener listener) {
-      MenuItem item = new MenuItem(parentMenu, SWT.PUSH);
-      item.setText(reportJob.getName());
-      item.setData(reportJob);
-      item.addSelectionListener(listener);
+   private void createReportJobCommand(MenuManager parentMenuManager, MenuManager childMenuManager, final ReportJob reportJob) {
+      CommandContributionItem reportCommand =
+            Commands.getLocalCommandContribution(
+                  "org.eclipse.osee.framework.ui.skynet." + reportJob.getName() + ".command", getSite(), null,
+                  reportJob.getName(), null, null, null, null, null, null);
+      childMenuManager.add(reportCommand);
+
+      handlerService.activateHandler(reportCommand.getId(),
+
+      new AbstractSelectionEnabledHandler(parentMenuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            Jobs.startJob(reportJob);
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return true;
+         }
+      });
    }
 
-   private void createRelationMatrixReportMenuItem(Menu parentMenu, SelectionListener listener) {
-      MenuItem matrixItem = new MenuItem(parentMenu, SWT.CASCADE);
-      matrixItem.setText("Relation Matrix Reports");
-
-      Menu matrixMenu = new Menu(parentMenu);
-
+   private void createRelationMatrixReportMenuItem(MenuManager menuManager, MenuManager reportManager) {
+      MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
       RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
       for (IRelationLinkDescriptor descriptor : relationManager.getIRelationLinkDescriptors(branchManager.getDefaultBranch())) {
-         ReportJob reportJob = new RelationMatrixExportJob(descriptor);
-         createReportJobMenuItem(matrixMenu, reportJob, listener);
+         final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
+         createReportJobCommand(menuManager, matrixManager, reportJob);
       }
-      matrixItem.setMenu(matrixMenu);
+      reportManager.add(matrixManager);
    }
 
-   //   private void createExportMenuItem(Menu parentMenu, final TableViewer viewer) {
-   //      exportMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-   //      exportMenuItem.setText("Export Artifact(s)");
-   //      exportMenuItem.addSelectionListener(new SelectionAdapter() {
-   //         public void widgetSelected(SelectionEvent ev) {
-   //            try {
-   //               Jobs.startJob(new ArtifactExportJob(viewer));
-   //            }
-   //            catch (Exception ex) {
-   //               logger.log(Level.SEVERE, ex.getMessage(), ex);
-   //            }
-   //         }
-   //      });
-   //   }
-
-   private void createExportMenuItem(MenuManager menuManager, final TableViewer viewer) {
+   private void createExportHandler(MenuManager menuManager, final TableViewer viewer) {
       CommandContributionItem openArtifactsCommand =
             Commands.getLocalCommandContribution(ArtifactSearchViewPage.VIEW_ID, getSite(), "createExportCommand",
                   "Export Artifact(s)", null, null, null, "V", null, null);
@@ -416,53 +426,17 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       });
    }
 
-   //   private void createPreviewMenuItem(MenuManager menuManager, final TableViewer viewer) {
-   //      MenuManager previewSubMenu = new MenuManager("Preview");
-   //
-   //      CommandContributionItem previewArtifactCommand = Commands.getLocalCommandContribution(ArtifactSearchViewPage.VIEW_ID, getSite(), "org.eclipse.osee.framework.ui.skynet.previewArtifact.command",
-   //            "Preview Artifact", null, null, null, null, null, null);
-   //      CommandContributionItem previewArtifactRecurseCommand = Commands.getLocalCommandContribution(ArtifactSearchViewPage.VIEW_ID, getSite(), "org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command",
-   //            "Preview with child recursion", null, null,null, null, null, null);
-   //      previewSubMenu.add(previewArtifactCommand);
-   //      previewSubMenu.add(previewArtifactRecurseCommand);
-   //
-   //      menuManager.add(previewSubMenu);
-   //
-   //      handlerService.activateHandler(previewArtifactCommand.getId(),
-   //
-   //      new AbstractSelectionEnabledHandler(menuManager) {
-   //         @Override
-   //         public Object execute(ExecutionEvent event) throws ExecutionException {
-   //            return null;
-   //         }
-   //
-   //         @Override
-   //         public boolean isEnabled() {
-   //            return true;
-   //         }
-   //      });
-   //
-   //      handlerService.activateHandler(previewArtifactRecurseCommand.getId(),
-   //
-   //      new AbstractSelectionEnabledHandler(menuManager) {
-   //         @Override
-   //         public Object execute(ExecutionEvent event) throws ExecutionException {
-   //            return null;
-   //         }
-   //
-   //         @Override
-   //         public boolean isEnabled() {
-   //            return true;
-   //         }
-   //      });
-   //   }
+   private void createResourceHistoryHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem resourceHistoryCommand =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.resource.command", getSite(),
+                  null, null, null, null, null, null, null, null);
+      menuManager.add(resourceHistoryCommand);
 
-   private void createHistoryMenuItem(Menu parentMenu, final TableViewer viewer) {
-      revisionMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      revisionMenuItem.setText("&Show Resource History ");
-      revisionMenuItem.addSelectionListener(new SelectionAdapter() {
+      handlerService.activateHandler(resourceHistoryCommand.getId(),
 
-         public void widgetSelected(SelectionEvent e) {
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
             Artifact selectedArtifact = getSelectedArtifact(viewer);
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
@@ -473,17 +447,44 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
             } catch (Exception ex) {
                logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return true;
          }
       });
    }
 
-   private void createShowInExplorerMenuItem(MenuManager menuManager, final TableViewer viewer) {
-      CommandContributionItem openArtifactsCommand =
-            Commands.getLocalCommandContribution(ArtifactSearchViewPage.VIEW_ID, getSite(),
-                  "showInArtifactExplorerCommand", "Show in Artifact Explorer", null, null, null, "V", null, null);
-      menuManager.add(openArtifactsCommand);
+   //   private void createHistoryMenuItem(Menu parentMenu, final TableViewer viewer) {
+   //      revisionMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+   //      revisionMenuItem.setText("&Show Resource History ");
+   //      revisionMenuItem.addSelectionListener(new SelectionAdapter() {
+   //
+   //         public void widgetSelected(SelectionEvent e) {
+   //            Artifact selectedArtifact = getSelectedArtifact(viewer);
+   //            IWorkbenchPage page = AWorkbench.getActivePage();
+   //            try {
+   //               RevisionHistoryView revisionHistoryView =
+   //                     (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, selectedArtifact.getGuid(),
+   //                           IWorkbenchPage.VIEW_ACTIVATE);
+   //               revisionHistoryView.explore(selectedArtifact);
+   //            } catch (Exception ex) {
+   //               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+   //            }
+   //         }
+   //      });
+   //   }
 
-      handlerService.activateHandler(openArtifactsCommand.getId(),
+   private void createShowInExplorerHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem showInArtifactExplorerCommand =
+            Commands.getLocalCommandContribution(
+                  "org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command", getSite(), null, null, null,
+                  null, null, null, null, null);
+      menuManager.add(showInArtifactExplorerCommand);
+
+      handlerService.activateHandler(showInArtifactExplorerCommand.getId(),
 
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
@@ -499,62 +500,66 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       });
    }
 
-   private void createOpenInArtifactEditor(Menu parentMenu, final TableViewer viewer) {
-      openMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      openMenuItem.setText("Open in Artifact Editor");
-      openMenuItem.addSelectionListener(new SelectionAdapter() {
+   private void createOpenInMassArtifactEditorHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem editArtifactCommand =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand", getSite(),
+                  null, null, null, null, null, null, null, null);
+      menuManager.add(editArtifactCommand);
 
-         public void widgetSelected(SelectionEvent e) {
+      handlerService.activateHandler(editArtifactCommand.getId(),
 
-            ArtifactEditor.editArtifacts(getSelectedArtifacts(viewer));
-         }
-      });
-   }
-
-   private void createOpenInMassArtifactEditor(Menu parentMenu, final TableViewer viewer) {
-      openInMassEditorMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      openInMassEditorMenuItem.setText("Open in Mass Artifact Editor");
-      openInMassEditorMenuItem.addSelectionListener(new SelectionAdapter() {
-
-         public void widgetSelected(SelectionEvent e) {
-
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
             MassArtifactEditor.editArtifacts("", getSelectedArtifacts(viewer));
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return true;
          }
       });
    }
 
-   private void createOpenInSkywalkerArtifactEditor(Menu parentMenu, final TableViewer viewer) {
-      skywalkerEditorMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      skywalkerEditorMenuItem.setText("Sky Walker");
-      skywalkerEditorMenuItem.addSelectionListener(new SelectionAdapter() {
+   private void createOpenInAtsWorldHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem openInAtsWorldCommand =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.openInAtsWorld", getSite(),
+                  null, null, null, null, null, null, null, null);
+      menuManager.add(openInAtsWorldCommand);
 
-         public void widgetSelected(SelectionEvent e) {
-            SkyWalkerView.exploreArtifact(getSelectedArtifacts(viewer).iterator().next());
-         }
-      });
-   }
+      handlerService.activateHandler(openInAtsWorldCommand.getId(),
 
-   private void createPopulateAtsWorld(Menu parentMenu, final TableViewer viewer) {
-      openInAtsWorldMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      openInAtsWorldMenuItem.setText("Open in ATS World");
-      openInAtsWorldMenuItem.addSelectionListener(new SelectionAdapter() {
-
-         public void widgetSelected(SelectionEvent e) {
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            MassArtifactEditor.editArtifacts("", getSelectedArtifacts(viewer));
             try {
                if (OseeAts.getAtsLib() != null) OseeAts.getAtsLib().openInAtsWorld("", getSelectedArtifacts(viewer));
             } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return true;
          }
       });
    }
 
-   private void createSetAllPartitions(Menu parentMenu, final TableViewer viewer) {
-      setAllPartitionsMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      setAllPartitionsMenuItem.setText("Set All Partitions");
-      setAllPartitionsMenuItem.addSelectionListener(new SelectionAdapter() {
+   private void createSetAllPartitions(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem setAllPartitionsCommand =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.SetAllPartitions", getSite(),
+                  null, "Set all Partitions", null, null, null, null, null, null);
+      menuManager.add(setAllPartitionsCommand);
 
-         public void widgetSelected(SelectionEvent e) {
+      handlerService.activateHandler(setAllPartitionsCommand.getId(),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
             StringBuffer sb = new StringBuffer();
             final Set<Artifact> arts = new HashSet<Artifact>();
             IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
@@ -597,23 +602,15 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                   OSEELog.logException(getClass(), ex, false);
                }
             }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return true;
          }
       });
    }
-
-   //   private void createEditMenuItem(Menu parentMenu, final TableViewer viewer) {
-   //      editItem = new MenuItem(parentMenu, SWT.CASCADE);
-   //      // All items should be on same branch, so take branch of first item.
-   //      Artifact artifact = getSelectedArtifact(viewer);
-   //      String branchString = artifact == null ? "" : " (" + artifact.getBranch() + ")";
-   //      editItem.setText("&Edit" + branchString);
-   //
-   //      editItem.addSelectionListener(new SelectionAdapter() {
-   //         public void widgetSelected(SelectionEvent e) {
-   //            RendererManager.getInstance().editInJob(getSelectedArtifacts(viewer));
-   //         }
-   //      });
-   //   }
 
    private void registerForEvents() {
       eventManager.unRegisterAll(this);
@@ -622,40 +619,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       eventManager.register(CacheRelationModifiedEvent.class, this);
       eventManager.register(TransactionRelationModifiedEvent.class, this);
       eventManager.register(TransactionArtifactModifiedEvent.class, this);
-   }
-
-   private void createAddTemplateMenuItem(Menu parentMenu, final TableViewer viewer) {
-      final Shell shell = parentMenu.getShell();
-      addTemplateItem = new MenuItem(parentMenu, SWT.CASCADE);
-      addTemplateItem.setText("Add Template Attribute");
-
-      addTemplateItem.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            Artifact template = getSelectedArtifact(viewer);
-
-            FileDialog dialog = new FileDialog(shell);
-            String path = dialog.open();
-
-            if (path != null && !path.equals("")) {
-               try {
-                  template.setSoleAttributeValue(WordRenderer.TEMPLATE_ATTRIBUTE, new String(
-                        Streams.getByteArray(new FileInputStream(path)), "UTF-8"));
-                  template.persist();
-               } catch (IllegalStateException ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
-               } catch (FileNotFoundException ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
-               } catch (UnsupportedEncodingException ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
-               } catch (SQLException ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
-               }
-            }
-         }
-
-      });
    }
 
    @Override
@@ -704,30 +667,30 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       return true;
    }
 
-   public class ArtifactMenuListener implements MenuListener {
-
-      public void menuHidden(MenuEvent e) {
-      }
-
-      public void menuShown(MenuEvent e) {
-         // Use this menu listener until all menu items can be moved to GlobaMenu
-         GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
-
-         IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-         addTemplateItem.setEnabled(selection.size() == 1 && ((Match) selection.getFirstElement()).getElement() instanceof WordRenderer);
-
-         openMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isWritePermission());
-         openInAtsWorldMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isWritePermission());
-         openInMassEditorMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isWritePermission());
-         skywalkerEditorMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isReadPermission());
-         // previewMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isReadPermission());
-         editItem.setEnabled(permiss.isHasArtifacts() && permiss.isWritePermission());
-         revisionMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isReadPermission());
-         showInExplorerMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isReadPermission());
-         exportMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isReadPermission());
-         setAllPartitionsMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isWritePermission());
-      }
-   }
+   //   public class ArtifactMenuListener implements MenuListener {
+   //
+   //      public void menuHidden(MenuEvent e) {
+   //      }
+   //
+   //      public void menuShown(MenuEvent e) {
+   //         // Use this menu listener until all menu items can be moved to GlobaMenu
+   //         GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
+   //
+   //         IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+   //         addTemplateItem.setEnabled(selection.size() == 1 && ((Match) selection.getFirstElement()).getElement() instanceof WordRenderer);
+   //
+   //         openMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isWritePermission());
+   //         openInAtsWorldMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isWritePermission());
+   //         openInMassEditorMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isWritePermission());
+   //         skywalkerEditorMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isReadPermission());
+   //         // previewMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isReadPermission());
+   //         editItem.setEnabled(permiss.isHasArtifacts() && permiss.isWritePermission());
+   //         revisionMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isReadPermission());
+   //         showInExplorerMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isReadPermission());
+   //         exportMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isReadPermission());
+   //         setAllPartitionsMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isWritePermission());
+   //      }
+   //   }
 
    private class SearchDragAndDrop extends SkynetDragAndDrop {
 
