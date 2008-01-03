@@ -35,10 +35,8 @@ public class OpenParent extends WorkPageService {
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
-    */
-   public Action getToolbarAction(SMAManager smaMgr) {
+   @Override
+   public Action createToolbarService() {
       if (!isParent()) return null;
       Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
          public void run() {

@@ -52,7 +52,7 @@ public class OpenInAtsWorldOperation extends WorkPageService {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#getToolbarAction(org.eclipse.osee.ats.editor.SMAManager)
+    * @see org.eclipse.osee.ats.editor.toolbar.IAtsEditorToolBarService#createToolbarService(org.eclipse.osee.ats.editor.SMAManager)
     */
    @Override
    public Action createToolbarService() {

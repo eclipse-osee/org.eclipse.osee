@@ -68,7 +68,6 @@ public class ServicesArea {
          services.add(new PrivilegedEditService(smaMgr));
          // Services
          services.add(new AtsAdminStat(smaMgr));
-         services.add(new HridStat(smaMgr));
          services.add(new TotalPercentCompleteStat(smaMgr));
          services.add(new TotalHoursSpentStat(smaMgr));
          services.add(new TargetedForVersionState(smaMgr));
@@ -78,8 +77,8 @@ public class ServicesArea {
          services.add(new AddPeerToPeerReviewService(smaMgr));
          services.add(new BlockingReview(smaMgr));
          // Toolbar Services
-         services.add(new OpenParent(smaMgr));
          services.add(new ShowChangeReportToolbarService(smaMgr));
+         services.add(new OpenParent(smaMgr));
          services.add(new EmailActionService(smaMgr));
          services.add(new AddNoteOperation(smaMgr));
          services.add(new ShowNotesOperation(smaMgr));
