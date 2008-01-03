@@ -13,23 +13,19 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
  */
-public class ShowChangeReportHandler extends AbstractSelectionHandler {
-   // private static final RendererManager rendererManager = RendererManager.getInstance();
-   public ShowChangeReportHandler() {
-      super(new String[] {"Branch", "TransactionData"});
-   }
-
+public class ShowChangeReportHandler extends AbstractSelectionChangedHandler {
    /*
     * (non-Javadoc)
     * 
@@ -38,20 +34,27 @@ public class ShowChangeReportHandler extends AbstractSelectionHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {
-         List<Branch> mySelectedBranchList = super.getBranchList();
-         List<TransactionData> myTransactionDataList = super.getTransactionDataList();
-         if (mySelectedBranchList != null && mySelectedBranchList.size() == 1) {
-            ChangeReportView.openViewUpon(mySelectedBranchList.get(0));
-         } else if (myTransactionDataList != null && myTransactionDataList.size() == 2) {
-            TransactionId transaction1 = myTransactionDataList.get(0).getTransactionId();
-            TransactionId transaction2 = myTransactionDataList.get(1).getTransactionId();
+         IStructuredSelection structuredSelection =
+               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+
+         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+
+         if (branches != null && !branches.isEmpty()) {
+            ChangeReportView.openViewUpon(branches.get(0));
+            return null;
+         }
+
+         List<TransactionData> transactionDatas =
+               Handlers.getTransactionDataNeededFromStructuredSelection(structuredSelection);
+
+         if (transactionDatas != null && transactionDatas.size() == 2) {
+            TransactionId transaction1 = transactionDatas.get(0).getTransactionId();
+            TransactionId transaction2 = transactionDatas.get(1).getTransactionId();
             TransactionId base =
                   transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction1 : transaction2;
             TransactionId to =
                   transaction1.getTransactionNumber() < transaction2.getTransactionNumber() ? transaction2 : transaction1;
-
             ChangeReportView.openViewUpon(new ChangeReportInput(base.getBranch().getDisplayName(), base, to));
-
          }
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, true);
@@ -59,15 +62,4 @@ public class ShowChangeReportHandler extends AbstractSelectionHandler {
 
       return null;
    }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
-   @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.READ;
-   }
-
 }

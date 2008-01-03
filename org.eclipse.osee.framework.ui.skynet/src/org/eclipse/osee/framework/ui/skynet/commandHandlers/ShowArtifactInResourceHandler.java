@@ -32,13 +32,12 @@ import org.eclipse.ui.IWorkbenchPage;
 /**
  * @author Jeff C. Phillips
  */
-public class ShowArtifactInResourceHandler extends AbstractSelectionHandler {
+public class ShowArtifactInResourceHandler extends AbstractSelectionChangedHandler {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ShowArtifactInResourceHandler.class);
    private static final BranchPersistenceManager myBranchPersistenceManager = BranchPersistenceManager.getInstance();
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
 
    public ShowArtifactInResourceHandler() {
-      super(new String[] {});
    }
 
    /* (non-Javadoc)
@@ -49,7 +48,6 @@ public class ShowArtifactInResourceHandler extends AbstractSelectionHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       List<Artifact> artifacts =
             Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection());
-
       for (Artifact artifact : artifacts) {
          IWorkbenchPage page = AWorkbench.getActivePage();
          try {
@@ -67,11 +65,12 @@ public class ShowArtifactInResourceHandler extends AbstractSelectionHandler {
    @Override
    public boolean isEnabled() {
       try {
-         List<ArtifactChange> mySelectedArtifactChangeList = super.getArtifactChangeList();
+         IStructuredSelection myIStructuredSelection =
+               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         List<ArtifactChange> mySelectedArtifactChangeList =
+               Handlers.getArtifactChangeListFromStructuredSelection(myIStructuredSelection);
          ArtifactChange mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
-         Artifact changedArtifact = null;
-
-         changedArtifact = mySelectedArtifactChange.getArtifact();
+         Artifact changedArtifact = mySelectedArtifactChange.getArtifact();
          Branch reportBranch = changedArtifact.getBranch();
          boolean readPermission = myAccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
          return readPermission && reportBranch == myBranchPersistenceManager.getDefaultBranch();

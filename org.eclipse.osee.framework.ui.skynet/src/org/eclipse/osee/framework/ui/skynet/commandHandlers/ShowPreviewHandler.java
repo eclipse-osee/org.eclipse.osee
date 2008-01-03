@@ -14,19 +14,19 @@ import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Paul K. Waldfogel
  */
-public class ShowPreviewHandler extends AbstractSelectionHandler {
+public class ShowPreviewHandler extends AbstractSelectionChangedHandler {
    // private static final RendererManager rendererManager = RendererManager.getInstance();
    public ShowPreviewHandler() {
-      super(new String[] {"ArtifactChange"});
    }
 
    /*
@@ -36,7 +36,10 @@ public class ShowPreviewHandler extends AbstractSelectionHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      List<ArtifactChange> mySelectedArtifactChangeList = super.getArtifactChangeList();
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      List<ArtifactChange> mySelectedArtifactChangeList =
+            Handlers.getArtifactChangeFromStructuredSelection(myIStructuredSelection);
       for (ArtifactChange mySelectedArtifactChange : mySelectedArtifactChangeList) {
          Artifact selectedArtifact;
          try {
@@ -48,15 +51,4 @@ public class ShowPreviewHandler extends AbstractSelectionHandler {
       }
       return null;
    }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
-   @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.READ;
-   }
-
 }

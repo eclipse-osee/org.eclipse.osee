@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -24,11 +23,7 @@ import org.eclipse.ui.IWorkbenchPage;
 /**
  * @author Paul K. Waldfogel
  */
-public class ShowResourceHistoryHandler extends AbstractSelectionHandler {
-
-   public ShowResourceHistoryHandler() {
-      super(new String[] {});
-   }
+public class ShowResourceHistoryHandler extends AbstractSelectionChangedHandler {
 
    /*
     * (non-Javadoc)
@@ -37,9 +32,10 @@ public class ShowResourceHistoryHandler extends AbstractSelectionHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      List<ArtifactChange> mySelectedArtifactChangeList = super.getArtifactChangeList();
-      for (ArtifactChange mySelectedArtifactChange : mySelectedArtifactChangeList) {
+      IStructuredSelection structuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
+      for (ArtifactChange mySelectedArtifactChange : Handlers.getArtifactChangesFromStructuredSelection(structuredSelection)) {
          IWorkbenchPage page = AWorkbench.getActivePage();
          try {
             Artifact selectedArtifact = mySelectedArtifactChange.getArtifact();
@@ -56,15 +52,4 @@ public class ShowResourceHistoryHandler extends AbstractSelectionHandler {
       }
       return null;
    }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
-   @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.READ;
-   }
-
 }

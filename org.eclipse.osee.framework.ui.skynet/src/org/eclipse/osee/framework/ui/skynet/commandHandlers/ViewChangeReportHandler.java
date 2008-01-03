@@ -10,20 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
-import org.eclipse.osee.framework.ui.skynet.TreeViewerReport;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 
 /**
  * @author Paul K. Waldfogel
  */
-public class ViewChangeReportHandler extends AbstractSelectionHandler {
-   TreeViewer myChangeTableTreeViewer = null;
+public class ViewChangeReportHandler extends AbstractSelectionChangedHandler {
 
    public ViewChangeReportHandler() {
-      super(new String[] {"ChangeTableTreeViewer"});
    }
 
    /*
@@ -33,19 +34,21 @@ public class ViewChangeReportHandler extends AbstractSelectionHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      myChangeTableTreeViewer = super.getChangeTableTreeViewer();
-      (new TreeViewerReport(myChangeTableTreeViewer)).open();
-      return null;
-   }
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      List<Branch> mySelectedBranchList = Handlers.getBranchListFromStructuredSelection(myIStructuredSelection);
+      List<ChangeReportInput> myChangeReportNewInputList =
+            Handlers.getChangeReportInputNewListFromStructuredSelection(myIStructuredSelection);
+      if (!mySelectedBranchList.isEmpty()) {
+         ChangeReportView.openViewUpon(mySelectedBranchList.get(0));
+      } else if (!myChangeReportNewInputList.isEmpty()) {
+         try {
+            ChangeReportView.openViewUpon(myChangeReportNewInputList.get(0));
+         } catch (Exception myException) {
+         }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
-   @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.READ;
+      }
+      return null;
    }
 
    @Override

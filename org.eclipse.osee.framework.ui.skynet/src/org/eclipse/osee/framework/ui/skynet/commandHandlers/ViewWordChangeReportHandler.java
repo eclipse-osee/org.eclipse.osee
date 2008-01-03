@@ -12,15 +12,20 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -28,14 +33,13 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 /**
  * @author Paul K. Waldfogel
  */
-public class ViewWordChangeReportHandler extends AbstractSelectionHandler {
+public class ViewWordChangeReportHandler extends AbstractSelectionChangedHandler {
+   private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
-   // TreeViewer myChangeTableTreeViewer;
-   List<ArtifactChange> mySelectedArtifactChangeList = null;
+   private List<ArtifactChange> mySelectedArtifactChangeList;
 
    public ViewWordChangeReportHandler() {
-      super(new String[] {"Branch", "ChangeTableTreeViewer", "ArtifactID"});
    }
 
    /*
@@ -45,21 +49,12 @@ public class ViewWordChangeReportHandler extends AbstractSelectionHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      mySelectedArtifactChangeList = super.getArtifactChangeList();
-      // mySelectedBranchList = super.getBranchList();
-      // IStructuredSelection selection = (IStructuredSelection) changeTable.getSelection();
-      // Iterator<?> iterator = selection.iterator();
-      // int listSize = selection.size();
-      ArtifactChange selectedItem = null;
-
       ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(mySelectedArtifactChangeList.size());
       ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(mySelectedArtifactChangeList.size());
-      // while (iterator.hasNext()) {
+      ArtifactChange selectedItem = null;
+
       for (int i = 0; i < mySelectedArtifactChangeList.size(); i++) {
          selectedItem = mySelectedArtifactChangeList.get(i);
-         // }
-         // for (ArtifactChange selectedItem:mySelectedArtifactChangeList) {
-         // selectedItem = (ArtifactChange) ((ITreeNode) iterator.next()).getBackingData();
 
          try {
             Artifact baseArtifact =
@@ -92,14 +87,21 @@ public class ViewWordChangeReportHandler extends AbstractSelectionHandler {
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
    @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.READ;
-   }
+   public boolean isEnabled() {
+      List<Artifact> artifacts = new LinkedList<Artifact>();
+      try {
+         IStructuredSelection structuredSelection =
+               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         mySelectedArtifactChangeList = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
 
+         for (ArtifactChange artifactChange : mySelectedArtifactChangeList) {
+            artifacts.add(artifactChange.getArtifact());
+         }
+      } catch (SQLException ex) {
+         OSEELog.logException(getClass(), ex, true);
+      }
+
+      return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+   }
 }

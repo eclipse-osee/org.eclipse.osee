@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -30,14 +32,14 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 /**
  * @author Paul K. Waldfogel
  */
-public class WordChangesBetweenCurrentAndParentHandler extends AbstractSelectionHandler {
+public class WordChangesBetweenCurrentAndParentHandler extends AbstractSelectionChangedHandler {
    private static final ArtifactPersistenceManager myArtifactPersistenceManager =
          ArtifactPersistenceManager.getInstance();
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
+   private List<ArtifactChange> mySelectedArtifactChangeList;
 
    public WordChangesBetweenCurrentAndParentHandler() {
-      super(new String[] {});
    }
 
    /*
@@ -47,8 +49,11 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractSelection
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      List<ArtifactChange> mySelectedArtifactChangeList = super.getArtifactChangeList();
-      List<ChangeReportInput> getChangeReportInputNewList = super.getChangeReportInputNewList();
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+
+      List<ChangeReportInput> getChangeReportInputNewList =
+            Handlers.getChangeReportInputNewListFromStructuredSelection(myIStructuredSelection);
       if (mySelectedArtifactChangeList.size() > 0) {
          ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
          TransactionId toTransactionId = getChangeReportInputNewList.get(0).getToTransaction();
@@ -66,19 +71,14 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractSelection
       return null;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
-   @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.READ;
-   }
-
    @Override
    public boolean isEnabled() {
-      List<ArtifactChange> mySelectedArtifactChangeList = super.getArtifactChangeList();
+      IStructuredSelection myIStructuredSelection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      mySelectedArtifactChangeList = Handlers.getArtifactChangeListFromStructuredSelection(myIStructuredSelection);
+      if (mySelectedArtifactChangeList.size() == 0) {
+         return false;
+      }
       ArtifactChange mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
       Artifact changedArtifact = null;
       try {

@@ -13,21 +13,21 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
  */
-public class ShowFinalVersionHandler extends AbstractSelectionHandler {
+public class ShowFinalVersionHandler extends AbstractSelectionChangedHandler {
    // private static final RendererManager rendererManager = RendererManager.getInstance();
    public ShowFinalVersionHandler() {
-      super(new String[] {"Branch", "TransactionData"});
    }
 
    /*
@@ -38,8 +38,11 @@ public class ShowFinalVersionHandler extends AbstractSelectionHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {
-         List<Branch> mySelectedBranchList = super.getBranchList();
-         List<TransactionData> myTransactionDataList = super.getTransactionDataList();
+         IStructuredSelection myIStructuredSelection =
+               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         List<Branch> mySelectedBranchList = Handlers.getBranchListFromStructuredSelection(myIStructuredSelection);
+         List<TransactionData> myTransactionDataList =
+               Handlers.getTransactionDataNeededFromStructuredSelection(myIStructuredSelection);
          if (mySelectedBranchList != null && mySelectedBranchList.size() == 1) {
             ChangeReportView.openViewUpon(mySelectedBranchList.get(0));
          } else if (myTransactionDataList != null && myTransactionDataList.size() == 2) {
@@ -59,15 +62,4 @@ public class ShowFinalVersionHandler extends AbstractSelectionHandler {
 
       return null;
    }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractArtifactSelectionHandler#permissionLevel()
-    */
-   @Override
-   protected PermissionEnum permissionLevel() {
-      return PermissionEnum.READ;
-   }
-
 }
