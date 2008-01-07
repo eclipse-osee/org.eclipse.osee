@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Files;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.export.ImportBranchJob;
@@ -47,8 +46,7 @@ public class ImportDescendantsOntoBranchHandler extends AbstractSelectionChanged
 
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
-      IStructuredSelection myIStructuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
       List<Branch> mySelectedBranchList = Handlers.getBranchListFromStructuredSelection(myIStructuredSelection);
       IWorkbenchPartSite myIWorkbenchPartSite = Handlers.getIWorkbenchPartSite();
       File file = Files.selectFile(myIWorkbenchPartSite.getShell(), SWT.OPEN, "*.xml");
@@ -60,8 +58,7 @@ public class ImportDescendantsOntoBranchHandler extends AbstractSelectionChanged
 
    @Override
    public boolean isEnabled() {
-      IStructuredSelection myIStructuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
       try {
          return (!selective || OseeProperties.getInstance().isDeveloper()) && ((SkynetSelections.oneBranchSelected(myIStructuredSelection) && accessManager.checkObjectPermission(
                SkynetSelections.boilDownObject(myIStructuredSelection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(myIStructuredSelection) && accessManager.checkObjectPermission(

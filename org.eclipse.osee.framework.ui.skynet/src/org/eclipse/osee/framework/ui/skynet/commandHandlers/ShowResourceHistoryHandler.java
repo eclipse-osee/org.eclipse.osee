@@ -32,8 +32,7 @@ public class ShowResourceHistoryHandler extends AbstractSelectionChangedHandler 
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      IStructuredSelection structuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection structuredSelection = getActiveSiteSelection();
 
       for (ArtifactChange mySelectedArtifactChange : Handlers.getArtifactChangesFromStructuredSelection(structuredSelection)) {
          IWorkbenchPage page = AWorkbench.getActivePage();

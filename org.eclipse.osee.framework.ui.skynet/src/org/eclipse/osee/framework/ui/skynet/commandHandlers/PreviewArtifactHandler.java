@@ -13,11 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
@@ -45,10 +43,7 @@ public abstract class PreviewArtifactHandler extends AbstractSelectionChangedHan
 
    @Override
    public boolean isEnabled() {
-      IStructuredSelection structuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-      artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-
+      artifacts = Handlers.getArtifactsFromStructuredSelection(getActiveSiteSelection());
       return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
    }
 }

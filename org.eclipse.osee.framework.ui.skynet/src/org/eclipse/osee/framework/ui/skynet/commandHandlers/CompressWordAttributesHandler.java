@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.util.WordUtil;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -88,8 +87,7 @@ public class CompressWordAttributesHandler extends AbstractSelectionChangedHandl
    @Override
    public boolean isEnabled() {
       try {
-         IStructuredSelection myIStructuredSelection =
-               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(myIStructuredSelection);
          if (artifacts.isEmpty()) {
             return false;

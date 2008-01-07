@@ -53,8 +53,7 @@ public class OpenBranchAssociatedArtifactHandler extends AbstractSelectionChange
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      IStructuredSelection myIStructuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
       List<Branch> mySelectedBranchList = Handlers.getBranchListFromStructuredSelection(myIStructuredSelection);
       Branch selectedBranch = (Branch) ((JobbedNode) myIStructuredSelection.getFirstElement()).getBackingData();
       if (selectedBranch != mySelectedBranchList.get(0)) {
@@ -85,8 +84,7 @@ public class OpenBranchAssociatedArtifactHandler extends AbstractSelectionChange
 
    @Override
    public boolean isEnabled() {
-      IStructuredSelection myIStructuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
       return SkynetSelections.oneBranchSelected(myIStructuredSelection);
    }
 

@@ -46,8 +46,7 @@ public class ShowArtifactInResourceHandler extends AbstractSelectionChangedHandl
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      List<Artifact> artifacts =
-            Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection());
+      List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(getActiveSiteSelection());
       for (Artifact artifact : artifacts) {
          IWorkbenchPage page = AWorkbench.getActivePage();
          try {
@@ -65,8 +64,7 @@ public class ShowArtifactInResourceHandler extends AbstractSelectionChangedHandl
    @Override
    public boolean isEnabled() {
       try {
-         IStructuredSelection myIStructuredSelection =
-               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
          List<ArtifactChange> mySelectedArtifactChangeList =
                Handlers.getArtifactChangeListFromStructuredSelection(myIStructuredSelection);
          ArtifactChange mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);

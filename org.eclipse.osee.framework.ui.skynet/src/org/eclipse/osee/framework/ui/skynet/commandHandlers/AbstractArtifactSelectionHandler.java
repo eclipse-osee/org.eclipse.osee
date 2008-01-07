@@ -47,14 +47,19 @@ public abstract class AbstractArtifactSelectionHandler extends AbstractHandler {
           * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
           */
          public void selectionChanged(SelectionChangedEvent event) {
-            mySelectedArtifactList =
-                  Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection());
-            fireHandlerChanged(enabledChangedEvent);
-
+            ISelectionProvider provider = AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+            if (provider != null) {
+               mySelectedArtifactList =
+                     Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) provider.getSelection());
+               fireHandlerChanged(enabledChangedEvent);
+            }
          }
       });
-      artifacts =
-            Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection());
+
+      ISelectionProvider provider = AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+      if (provider != null) {
+         artifacts = Handlers.getArtifactsFromStructuredSelection((IStructuredSelection) provider.getSelection());
+      }
    }
 
    /**

@@ -19,7 +19,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Files;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.export.ImportBranchJob;
@@ -44,8 +43,7 @@ public class ImportOntoBranchHandler extends AbstractSelectionChangedHandler {
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      IStructuredSelection myIStructuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
       List<Branch> mySelectedBranchList = Handlers.getBranchListFromStructuredSelection(myIStructuredSelection);
       IWorkbenchPartSite myIWorkbenchPartSite = Handlers.getIWorkbenchPartSite();
       Shell myShell = myIWorkbenchPartSite.getShell();// This hangs.
@@ -58,8 +56,7 @@ public class ImportOntoBranchHandler extends AbstractSelectionChangedHandler {
 
    @Override
    public boolean isEnabled() {
-      IStructuredSelection myIStructuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
       return SkynetSelections.oneBranchSelected(myIStructuredSelection) && myAccessControlManager.checkObjectPermission(
             SkynetSelections.boilDownObject(myIStructuredSelection.getFirstElement()), PermissionEnum.WRITE);
    }

@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -66,9 +65,7 @@ public class WordChangesMadeToHandler extends AbstractSelectionChangedHandler {
 
    @Override
    public boolean isEnabled() {
-      IStructuredSelection myIStructuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-
+      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
       mySelectedArtifactChangeList = Handlers.getArtifactChangesFromStructuredSelection(myIStructuredSelection);
 
       if (mySelectedArtifactChangeList.size() == 0) {

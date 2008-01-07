@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetSelections;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -37,23 +36,22 @@ public class DeleteTransactionHandler extends AbstractSelectionChangedHandler {
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      IStructuredSelection myIStructuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
-      TransactionData selectedTransaction =
-            (TransactionData) ((JobbedNode) myIStructuredSelection.getFirstElement()).getBackingData();
-      if (MessageDialog.openConfirm(HandlerUtil.getActiveShell(event), "Delete Transaction",
-            "Are you sure you want to delete the transaction: " + selectedTransaction.getTransactionNumber())) {
-         branchManager.deleteTransaction(selectedTransaction.getTransactionNumber());
+      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
+      if (myIStructuredSelection.isEmpty() != true) {
+         TransactionData selectedTransaction =
+               (TransactionData) ((JobbedNode) myIStructuredSelection.getFirstElement()).getBackingData();
+         if (MessageDialog.openConfirm(HandlerUtil.getActiveShell(event), "Delete Transaction",
+               "Are you sure you want to delete the transaction: " + selectedTransaction.getTransactionNumber())) {
+            branchManager.deleteTransaction(selectedTransaction.getTransactionNumber());
+         }
       }
-
       return null;
 
    }
 
    @Override
    public boolean isEnabled() {
-      IStructuredSelection myIStructuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
       return SkynetSelections.oneTransactionSelected(myIStructuredSelection) && OseeProperties.getInstance().isDeveloper();
    }
 

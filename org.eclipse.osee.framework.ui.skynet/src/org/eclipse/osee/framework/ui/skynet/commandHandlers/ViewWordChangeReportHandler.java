@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -91,8 +90,7 @@ public class ViewWordChangeReportHandler extends AbstractSelectionChangedHandler
    public boolean isEnabled() {
       List<Artifact> artifacts = new LinkedList<Artifact>();
       try {
-         IStructuredSelection structuredSelection =
-               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         IStructuredSelection structuredSelection = getActiveSiteSelection();
          mySelectedArtifactChangeList = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
 
          for (ArtifactChange artifactChange : mySelectedArtifactChangeList) {

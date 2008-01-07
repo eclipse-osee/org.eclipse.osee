@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -34,8 +33,7 @@ public class ShowChangeReportHandler extends AbstractSelectionChangedHandler {
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
       try {
-         IStructuredSelection structuredSelection =
-               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         IStructuredSelection structuredSelection = getActiveSiteSelection();
 
          List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 

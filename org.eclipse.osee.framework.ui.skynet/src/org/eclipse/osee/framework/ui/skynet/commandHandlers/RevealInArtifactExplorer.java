@@ -10,7 +10,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 
 /**
@@ -23,8 +22,7 @@ public class RevealInArtifactExplorer extends AbstractSelectionChangedHandler {
     */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
-      IStructuredSelection structuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection structuredSelection = getActiveSiteSelection();
       List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
       if (!artifacts.isEmpty()) {

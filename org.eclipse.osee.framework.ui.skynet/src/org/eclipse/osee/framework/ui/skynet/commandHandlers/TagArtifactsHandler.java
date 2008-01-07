@@ -15,7 +15,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.TagArtifactsJob;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -36,8 +35,7 @@ public class TagArtifactsHandler extends AbstractSelectionChangedHandler {
    @Override
    public boolean isEnabled() {
       try {
-         IStructuredSelection structuredSelection =
-               (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+         IStructuredSelection structuredSelection = getActiveSiteSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 
          return artifacts.size() > 0;

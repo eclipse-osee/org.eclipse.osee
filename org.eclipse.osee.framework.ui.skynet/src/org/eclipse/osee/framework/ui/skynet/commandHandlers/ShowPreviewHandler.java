@@ -17,7 +17,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -36,8 +35,8 @@ public class ShowPreviewHandler extends AbstractSelectionChangedHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      IStructuredSelection myIStructuredSelection =
-            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
+
       List<ArtifactChange> mySelectedArtifactChangeList =
             Handlers.getArtifactChangeFromStructuredSelection(myIStructuredSelection);
       for (ArtifactChange mySelectedArtifactChange : mySelectedArtifactChangeList) {

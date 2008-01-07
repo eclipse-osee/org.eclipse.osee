@@ -36,42 +36,43 @@ public class CopyHandler extends AbstractHandler {
       if (HandlerUtil.getActivePartChecked(event) instanceof ViewPart) {
          ViewPart view = (ViewPart) HandlerUtil.getActivePartChecked(event);
          IWorkbenchPartSite myIWorkbenchPartSite = view.getSite();
-         Object selectionProvider = myIWorkbenchPartSite.getSelectionProvider();
+         ISelectionProvider selectionProvider = (ISelectionProvider) myIWorkbenchPartSite.getSelectionProvider();
 
-         IStructuredSelection selection =
-               (IStructuredSelection) ((ISelectionProvider) selectionProvider).getSelection();
-         List<String> names = new LinkedList<String>();
-         List<Artifact> artifacts = new LinkedList<Artifact>();
-         ArtifactClipboard clipboard = new ArtifactClipboard(view.getSite().getId());
-         Iterator<?> iterator = selection.iterator();
-         Object selectionObject = null;
+         if (selectionProvider != null) {
+            IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
+            List<String> names = new LinkedList<String>();
+            List<Artifact> artifacts = new LinkedList<Artifact>();
+            ArtifactClipboard clipboard = new ArtifactClipboard(view.getSite().getId());
+            Iterator<?> iterator = selection.iterator();
+            Object selectionObject = null;
 
-         while (iterator.hasNext()) {
-            Object object = iterator.next();
+            while (iterator.hasNext()) {
+               Object object = iterator.next();
 
-            if (object instanceof IAdaptable) {
-               selectionObject = ((IAdaptable) object).getAdapter(Branch.class);
+               if (object instanceof IAdaptable) {
+                  selectionObject = ((IAdaptable) object).getAdapter(Branch.class);
 
-               if (selectionObject == null) {
-                  selectionObject = ((IAdaptable) object).getAdapter(Artifact.class);
+                  if (selectionObject == null) {
+                     selectionObject = ((IAdaptable) object).getAdapter(Artifact.class);
+                  }
+               } else if (object instanceof Match) {
+                  selectionObject = ((Match) object).getElement();
                }
-            } else if (object instanceof Match) {
-               selectionObject = ((Match) object).getElement();
+
+               if (selectionObject instanceof Branch) {
+                  names.add(((Branch) selectionObject).getBranchName());
+               } else if (selectionObject instanceof Artifact) {
+                  Artifact artifact = (Artifact) selectionObject;
+                  names.add(artifact.getDescriptiveName());
+                  artifacts.add(artifact);
+               }
             }
 
-            if (selectionObject instanceof Branch) {
-               names.add(((Branch) selectionObject).getBranchName());
-            } else if (selectionObject instanceof Artifact) {
-               Artifact artifact = (Artifact) selectionObject;
-               names.add(artifact.getDescriptiveName());
-               artifacts.add(artifact);
+            if (!names.isEmpty() && artifacts.isEmpty()) {
+               clipboard.setTextToClipboard(names);
+            } else if (!names.isEmpty() && !artifacts.isEmpty()) {
+               clipboard.setArtifactsToClipboard(artifacts, names);
             }
-         }
-
-         if (!names.isEmpty() && artifacts.isEmpty()) {
-            clipboard.setTextToClipboard(names);
-         } else if (!names.isEmpty() && !artifacts.isEmpty()) {
-            clipboard.setArtifactsToClipboard(artifacts, names);
          }
       }
       return null;
