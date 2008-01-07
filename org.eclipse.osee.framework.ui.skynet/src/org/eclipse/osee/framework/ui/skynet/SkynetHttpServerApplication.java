@@ -19,6 +19,12 @@ import org.eclipse.osee.framework.skynet.core.linking.HttpServer;
  */
 public class SkynetHttpServerApplication implements IApplication {
 
+   private Object object;
+
+   public SkynetHttpServerApplication() {
+      object = new Object();
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -26,8 +32,12 @@ public class SkynetHttpServerApplication implements IApplication {
     */
    public Object start(IApplicationContext context) throws Exception {
       HttpServer.remoteServerStartup();
-      while (true)
-         ;
+
+      synchronized (object) {
+         this.object.wait();
+      }
+      HttpServer.stopServers();
+      return null;
    }
 
    /*
@@ -36,6 +46,8 @@ public class SkynetHttpServerApplication implements IApplication {
     * @see org.eclipse.equinox.app.IApplication#stop()
     */
    public void stop() {
+      synchronized (object) {
+         this.object.notify();
+      }
    }
-
 }

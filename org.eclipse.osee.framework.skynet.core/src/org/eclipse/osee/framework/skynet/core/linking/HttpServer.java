@@ -164,6 +164,12 @@ public class HttpServer implements Runnable {
       listenFlag = false;
    }
 
+   public static void stopServers() {
+      for (HttpServer server : HttpServer.availableServers.values()) {
+         server.haltServer();
+      }
+   }
+
    private String getServiceName() {
       return serviceName;
    }
