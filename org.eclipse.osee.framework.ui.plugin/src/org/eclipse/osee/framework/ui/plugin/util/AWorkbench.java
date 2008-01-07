@@ -14,6 +14,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -54,6 +55,7 @@ public class AWorkbench {
    }
 
    public static IWorkbenchPage getActivePage() {
-      return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+      return workbenchWindow != null ? workbenchWindow.getActivePage() : null;
    }
 }
