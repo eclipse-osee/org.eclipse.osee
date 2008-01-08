@@ -74,16 +74,7 @@ public class XViewer extends TreeViewer {
     * @param style
     */
    public XViewer(Composite parent, int style, String namespace, IXViewerFactory xViewerFactory) {
-      super(parent, style);
-      this.namespace = namespace;
-      this.xViewerFactory = xViewerFactory;
-      this.menuManager = new MenuManager();
-      this.menuManager.setRemoveAllWhenShown(true);
-      this.menuManager.createContextMenu(parent);
-      this.customize = new XViewerCustomize();
-      this.customize.init(this);
-      this.filterDataUI = new FilterDataUI(this);
-      createSupportWidgets(parent);
+      this(parent, style, namespace, xViewerFactory, new XViewerCustomize());
    }
 
    public void dispose() {
