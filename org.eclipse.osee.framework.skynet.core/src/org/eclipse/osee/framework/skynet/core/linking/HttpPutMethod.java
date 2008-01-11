@@ -10,38 +10,68 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.linking;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+
 /**
  * @author Roberto E. Escobar
  */
 final class HttpPutMethod implements IHttpMethod {
+   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HttpPutMethod.class);
+   private static final DateFormat dateFormat = new SimpleDateFormat("EEE',' dd MMM yyyy HH:mm:ss z");
+   private static final String FILENAME_KEY = "filename";
+   private static final String ROOT_PATH = "C:\\UserData\\test";
 
-   // private static ExtensionDefinedObjects<IHttpServerRequest> extensionObjects = null;
+   private HttpFileHandler fileHandler;
 
    protected HttpPutMethod() {
+      fileHandler = new HttpFileHandler(ROOT_PATH);
    }
 
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
-      //      String requestType = httpRequest.getUrlRequest();
-      boolean handled = false;
+      int result = HttpURLConnection.HTTP_BAD_REQUEST;
+      File fileReceived = null;
+      try {
+         String fileName = httpRequest.getParameter(FILENAME_KEY);
+         Pair<File, Integer> resultPair = fileHandler.getStorageLocation(fileName);
+         result = resultPair.getValue();
+         if (result == HttpURLConnection.HTTP_CREATED) {
+            fileReceived = resultPair.getKey();
+            result = receiveData(httpRequest, fileReceived);
+            Date lastModified = new Date(fileReceived.lastModified());
+            httpResponse.setReponseHeader("Content-Location", fileHandler.getLocation(fileReceived));
+            httpResponse.setReponseHeader("Last-Modified", dateFormat.format(lastModified));
+         }
+      } catch (Exception ex) {
+         result = HttpURLConnection.HTTP_INTERNAL_ERROR;
+         String fileName = fileReceived != null ? fileReceived.getAbsolutePath() : "";
+         logger.log(Level.SEVERE, String.format("[%s]: File - [%s]", HttpResponse.getStatus(result), fileName), ex);
+      } finally {
+         try {
+            httpResponse.sendResponseHeaders(result, 0);
+            httpResponse.getOutputStream().flush();
+         } catch (IOException ex1) {
+            logger.log(Level.SEVERE, "Error sending response", ex1);
+         }
+      }
+   }
 
-      System.out.println("Put request: " + httpRequest.getRawRequest());
-
-      //      if (!httpRequest.getMethod().equals(HttpMethod.RESOURCE_GET)) {
-      //         if (extensionObjects == null) {
-      //            extensionObjects = new ExtensionDefinedObjects<IHttpServerRequest>(
-      //                  "org.eclipse.osee.framework.skynet.core.HttpServerRequest", "IHttpServerRequest", "classname");
-      //         }
-      //         List<IHttpServerRequest> httpServerRequests = extensionObjects.getObjects();
-      //         for (IHttpServerRequest request : httpServerRequests) {
-      //            if (request.getRequestType().equals(requestType)) {
-      //               request.processRequest(httpRequest, httpResponse);
-      //               handled = true;
-      //            }
-      //         }
-      //      }
-      //      if (handled == false) {
-      //         // If none of the other requests work then we have a resource request
-      //         HttpResourceRequest.getInstance().processRequest(httpRequest, httpResponse);
-      //      }
+   private int receiveData(HttpRequest httpRequest, File destination) throws Exception {
+      int result = HttpURLConnection.HTTP_LENGTH_REQUIRED;
+      String headerEntry = httpRequest.getHttpHeaderEntry("Content-Length");
+      if (Strings.isValid(headerEntry)) {
+         int totalBytes = Integer.parseInt(headerEntry);
+         result = fileHandler.receivedUpload(destination, totalBytes, httpRequest.getInputStream());
+      }
+      return result;
    }
 }

@@ -400,8 +400,25 @@ public final class Lib {
       return new String(chars);
    }
 
-   public static String getExtension(String str) {
-      return str.substring(str.lastIndexOf('.') + 1);
+   public static String getExtension(String filepath) {
+      filepath = filepath.trim();
+      String separatorRegEx = File.separator;
+      if (Lib.isWindows()) {
+         separatorRegEx = "\\\\";
+      }
+      String[] pathsArray = filepath.split(separatorRegEx);
+
+      String fileName = pathsArray[0];
+      if (pathsArray.length > 0) {
+         fileName = pathsArray[pathsArray.length - 1];
+      }
+
+      int index = fileName.lastIndexOf('.');
+      if (index >= 0 && index + 1 < fileName.length()) {
+         return fileName.substring(index + 1);
+      } else {
+         return "";
+      }
    }
 
    public static int handleProcess(Process proc) {
@@ -1232,13 +1249,17 @@ public final class Lib {
    }
 
    public static byte[] compressFile(InputStream in) throws IOException {
+      return compressFile(in, in.toString());
+   }
+
+   public static byte[] compressFile(InputStream in, String name) throws IOException {
       // Create a buffer for reading the files
       byte[] buf = new byte[1024];
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       ZipOutputStream out = new ZipOutputStream(bos);
 
       // Add ZIP entry to output stream.
-      out.putNextEntry(new ZipEntry(in.toString()));
+      out.putNextEntry(new ZipEntry(name));
 
       // Transfer bytes from the file to the ZIP file
       int len;

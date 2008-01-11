@@ -11,9 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.linking;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URLDecoder;
@@ -32,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 public class HttpRequest {
 
    public enum HttpMethod {
-      GET, POST, PUT, RESOURCE_GET, INVALID;
+      GET, POST, PUT, DELETE, RESOURCE_GET, INVALID;
    }
    private Map<String, String> parameterMap;
    private String rawRequest;
@@ -50,6 +49,7 @@ public class HttpRequest {
       this.urlRequest = "";
       this.httpHeader = new HashMap<String, String>();
       this.httpMethod = HttpMethod.INVALID;
+
       this.inputStream = new BufferedInputStream(socket.getInputStream());
       this.remoteAddress = socket.getInetAddress();
       this.remotePort = socket.getPort();
@@ -57,19 +57,32 @@ public class HttpRequest {
    }
 
    private void initialize() throws Exception {
-      BufferedReader br = new BufferedReader(new InputStreamReader(getInputStream(), "ISO-8859-1"));
-      String line = "";
-      while ((line = br.readLine()) != null) {
-         if (Strings.isValid(line) //&& line != "\r\n"
-               ) {
-            if (line.contains("HTTP")) {
-               parseRequest(line);
-            }else {
-               parseHeader(line);
-            }
-         } else {
-            break;
+      InputStream inputStream = getInputStream();
+      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+      int value = -1;
+      char lastChar = 0;
+      char currChar = 0;
+      while ((value = inputStream.read()) != -1) {
+         currChar = (char) value;
+         if (currChar != '\n' && currChar != '\r') {
+            buffer.write((byte) value);
          }
+
+         if (lastChar == '\r' && currChar == '\n') {
+            String toProcess = buffer.toString("ISO-8859-1");
+            buffer.reset();
+            if (Strings.isValid(toProcess)) {
+               if (toProcess.contains("HTTP")) {
+                  parseRequest(toProcess);
+               } else {
+                  parseHeader(toProcess);
+               }
+
+            } else {
+               break;
+            }
+         }
+         lastChar = currChar;
       }
    }
 
@@ -166,7 +179,7 @@ public class HttpRequest {
          while (dataMatcher.find()) {
             parameterMap.put(dataMatcher.group(1), URLDecoder.decode(dataMatcher.group(2), "UTF-8"));
          }
-      }else {
+      } else {
          if (httpMethod.equals(HttpMethod.GET)) {
             httpMethod = HttpMethod.RESOURCE_GET;
          }
@@ -193,10 +206,10 @@ public class HttpRequest {
             if (processType.equals("ats")) {
                parameterMap.put("guid", guid);
                urlRequest = processType.toUpperCase();
-            }else if (processType.equals("Define") || processType.equals("")) {
+            } else if (processType.equals("Define") || processType.equals("")) {
                parameterMap.put("guid", guid);
                urlRequest = "Define";
-            }else {
+            } else {
                throw new IllegalArgumentException("Unnable to parse old style link: \"" + rawRequest + "\"");
             }
          }

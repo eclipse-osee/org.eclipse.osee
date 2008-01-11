@@ -128,7 +128,7 @@ public class HttpResponse {
       return responseHeaderMap.keySet();
    }
 
-   public String getStatus(int value) {
+   public static String getStatus(int value) {
       return codes.get(value);
    }
 
@@ -144,6 +144,7 @@ public class HttpResponse {
       buffer.append(DATE_ENTRY);
       buffer.append(FIELD_VALUE_SEPARATOR);
       buffer.append(new Date().toString());
+      buffer.append(ENTRY_SEPARATOR);
 
       Set<String> fields = responseHeaderMap.keySet();
       for (String field : fields) {
