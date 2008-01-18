@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.preferences;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 import org.eclipse.swt.widgets.Composite;
@@ -34,7 +35,8 @@ public class HttpServerPreferences extends FieldEditorPreferencePage implements 
    @Override
    protected void createFieldEditors() {
       Composite parent = getFieldEditorParent();
-      String defaultRemoteAddress = getPreferenceStore().getString(PreferenceConstants.OSEE_REMOTE_HTTP_SERVER);
+      IPreferenceStore preference = getPreferenceStore();
+      String defaultRemoteAddress = preference.getDefaultString(PreferenceConstants.OSEE_REMOTE_HTTP_SERVER);
       addField(new DefaultWithStringAndIntegerFields(PreferenceConstants.OSEE_REMOTE_HTTP_SERVER, defaultRemoteAddress,
             "Enter Address:", "Enter Port:", parent));
 
