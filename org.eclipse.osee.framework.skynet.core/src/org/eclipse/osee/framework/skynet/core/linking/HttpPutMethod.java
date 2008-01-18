@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
@@ -29,12 +30,12 @@ final class HttpPutMethod implements IHttpMethod {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HttpPutMethod.class);
    private static final DateFormat dateFormat = new SimpleDateFormat("EEE',' dd MMM yyyy HH:mm:ss z");
    private static final String FILENAME_KEY = "filename";
-   private static final String ROOT_PATH = "C:\\UserData\\test";
 
    private HttpFileHandler fileHandler;
 
    protected HttpPutMethod() {
-      fileHandler = new HttpFileHandler(ROOT_PATH);
+      String rootPath = OseeProperties.getInstance().getRemoteHttpServerUploadPath();
+      fileHandler = new HttpFileHandler(rootPath);
    }
 
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {

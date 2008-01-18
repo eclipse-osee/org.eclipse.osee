@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.linking;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -73,22 +75,38 @@ public class HttpResourceRequest implements IHttpMethod {
    private URL findResource(String urlRequested) {
       URL resource = null;
       if (Strings.isValid(urlRequested)) {
-         List<IConfigurationElement> elements =
-               ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.WebPage", "WebPageFolder");
-         for (IConfigurationElement element : elements) {
-            String resourceName = element.getAttribute("Path");
-            String bundleName = element.getContributor().getName();
+         String uploadPath = OseeProperties.getInstance().getRemoteHttpServerUploadPath();
+         if (Strings.isValid(uploadPath)) {
+            try {
+               File file = new File(uploadPath + File.separator + urlRequested);
+               if (file != null && file.exists() && file.canRead()) {
+                  resource = file.toURL();
+               }
+            } catch (Exception ex) {
+               // Don't do anything since we will continue to look in other places
+            }
+         }
 
-            if (Strings.isValid(bundleName) && Strings.isValid(resourceName)) {
-               try {
-                  Bundle bundle = Platform.getBundle(bundleName);
-                  URL url = bundle.getEntry(resourceName + urlRequested);
-                  if (url != null) {
-                     resource = url;
-                     break;
+         if (resource == null) {
+            List<IConfigurationElement> elements =
+                  ExtensionPoints.getExtensionElements("org.eclipse.osee.framework.skynet.core.WebPage",
+                        "WebPageFolder");
+            for (IConfigurationElement element : elements) {
+               String resourceName = element.getAttribute("Path");
+               String bundleName = element.getContributor().getName();
+
+               if (Strings.isValid(bundleName) && Strings.isValid(resourceName)) {
+                  try {
+                     Bundle bundle = Platform.getBundle(bundleName);
+                     URL url = bundle.getEntry(resourceName + urlRequested);
+                     if (url != null) {
+                        resource = url;
+                        break;
+                     }
+                  } catch (Exception ex) {
+                     throw new IllegalArgumentException(String.format("Unable to Load: [%s.%s]", bundleName,
+                           resourceName));
                   }
-               } catch (Exception ex) {
-                  throw new IllegalArgumentException(String.format("Unable to Load: [%s.%s]", bundleName, resourceName));
                }
             }
          }

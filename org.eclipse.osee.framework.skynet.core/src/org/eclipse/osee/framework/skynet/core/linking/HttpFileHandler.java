@@ -62,7 +62,7 @@ public class HttpFileHandler {
 
    public String getLocation(File file) {
       String path = file.getAbsolutePath();
-      path = path.replace(rootPath, "");
+      path = path.replace(new File(rootPath).getAbsolutePath(), "");
       if (path.startsWith(File.separator)) {
          path = path.substring(1, path.length());
       }

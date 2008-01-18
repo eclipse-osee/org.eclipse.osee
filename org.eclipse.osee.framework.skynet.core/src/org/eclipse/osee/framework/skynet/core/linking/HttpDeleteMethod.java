@@ -11,17 +11,19 @@
 
 package org.eclipse.osee.framework.skynet.core.linking;
 
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+
 /**
  * @author Roberto E. Escobar
  */
 public class HttpDeleteMethod implements IHttpMethod {
 
-   private static final String ROOT_PATH = "C:\\UserData\\test";
    private static final String FILENAME_KEY = "filename";
    private HttpFileHandler fileHandler;
 
    protected HttpDeleteMethod() {
-      fileHandler = new HttpFileHandler(ROOT_PATH);
+      String rootPath = OseeProperties.getInstance().getRemoteHttpServerUploadPath();
+      fileHandler = new HttpFileHandler(rootPath);
    }
 
    /* (non-Javadoc)
