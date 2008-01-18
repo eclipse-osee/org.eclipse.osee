@@ -31,6 +31,7 @@ public class OseeProperties {
    private static final String PRINT_SQL = "PrintSql";
    private static final String DONT_LOG_USAGE = "DontLogUsage";
    private static final String OSEE_DB_CONFIG_INIT_CHOICE = "osee.db.config.init.choice";
+   private static final String OSEE_REMOTE_HTTP_SERVER = "osee.remote.http.server";
 
    private static OseeProperties instance = null;
    private static Logger logger = null;
@@ -137,5 +138,9 @@ public class OseeProperties {
 
    public void setDBConfigInitChoice(String value) {
       System.setProperty(OSEE_DB_CONFIG_INIT_CHOICE, value);
+   }
+
+   public String getRemoteHttpServer() {
+      return System.getProperty(OSEE_REMOTE_HTTP_SERVER, "");
    }
 }

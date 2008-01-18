@@ -36,7 +36,7 @@ public class HttpServer implements Runnable {
    private static final String DEFAULT_SERVER_ADDRESS = "127.0.0.1";
    private static final int DEFAULT_HTTP_PRODUCTION_PORT = 8010;
    private static final int DEFAULT_HTTP_DEVELOPMENT_PORT = 8011;
-   private static final String DEFAULT_SERVICE_NAME = "osee.http.server";
+   protected static final String DEFAULT_SERVICE_NAME = "osee.http.server";
 
    private static String serverAddress;
    private static boolean isRemoteServer = false;
@@ -54,7 +54,7 @@ public class HttpServer implements Runnable {
       isRemoteServer = true;
    }
 
-   private static String getServerAddress() {
+   protected static String getLocalServerAddress() {
       if (serverAddress == null) {
          if (isRemoteServer) {
             try {
@@ -68,6 +68,15 @@ public class HttpServer implements Runnable {
          }
       }
       return serverAddress;
+   }
+
+   protected static int getPortByServiceName(String serviceName) {
+      int toReturn = -1;
+      HttpServer server = availableServers.get(serviceName);
+      if (server != null) {
+         toReturn = server.getPort();
+      }
+      return toReturn;
    }
 
    /**
@@ -97,64 +106,6 @@ public class HttpServer implements Runnable {
       this.port = port;
       this.executorService = Executors.newFixedThreadPool(poolSize);
       // new ServerKiller(this);
-   }
-
-   /**
-    * Return the string necessary to communicate with OSEE applications through SkyNet's HttpServer example:
-    * http://127.0.0.1:<port>/<requestType>?key1=value1&key2=value2...&key3=value3
-    * 
-    * @param serverRequest that will be processing request
-    * @param keyValues eg. guid,ASDFASDF_zxdsa_QWer5
-    * @return string to use in html call or post to HttpServer
-    */
-   public static String getUrl(IHttpServerRequest serverRequest, Map<String, String> keyValues) {
-      return getUrlForService(DEFAULT_SERVICE_NAME, serverRequest, keyValues);
-   }
-
-   public static String getDefaultServiceUrlPrefix() {
-      return getUrlPrefixForService(DEFAULT_SERVICE_NAME);
-   }
-
-   public static String getUrlPrefixForService(String serviceName) {
-      StringBuffer sb = new StringBuffer();
-      sb.append("http://");
-      sb.append(getServerAddress());
-      sb.append(":");
-
-      HttpServer server = availableServers.get(serviceName);
-      if (server != null) {
-         sb.append(server.getPort());
-      } else {
-         throw new IllegalStateException(
-               "Http Server was not launched by this workbench - Ensure port was set correctly");
-      }
-      return sb.toString();
-   }
-
-   /**
-    * Return the string necessary to communicate with services related to a specific HttpServer example:
-    * http://127.0.0.1:<port>/<requestType>?key1=value1&key2=value2...&key3=value3
-    * 
-    * @param serviceName is specified through the HttpServerPort Extension Point
-    * @param serverRequest that will be processing request
-    * @param keyValues eg. guid,ASDFASDF_zxdsa_QWer5
-    * @return string to use in html call or post to HttpServer
-    */
-   public static String getUrlForService(String serviceName, IHttpServerRequest serverRequest, Map<String, String> keyValues) {
-      StringBuffer sb = new StringBuffer();
-      sb.append(getUrlPrefixForService(serviceName));
-      sb.append("/");
-      sb.append(serverRequest.getRequestType());
-      sb.append("?");
-      for (String key : keyValues.keySet()) {
-         sb.append(key);
-         sb.append("=");
-         sb.append(keyValues.get(key));
-         sb.append("&");
-      }
-      // Delete the last unnecessary '&'
-      sb.deleteCharAt(sb.length() - 1);
-      return sb.toString();
    }
 
    /**
@@ -274,29 +225,3 @@ public class HttpServer implements Runnable {
       return ports;
    }
 }
-
-// final class ServerKiller implements Runnable {
-//
-// HttpServer server;
-// Thread thread;
-//
-// public ServerKiller(HttpServer server) {
-// this.server = server;
-// thread = new Thread(this);
-// thread.start();
-// }
-//
-// public void run() {
-// try {
-// synchronized (this) {
-// wait(10000);
-// }
-// System.out.println("Halting Server");
-// // server.haltServer();
-// } catch (InterruptedException ex) {
-// 
-// ex.printStackTrace();
-// }
-//
-// }
-// }

@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -24,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
-import org.eclipse.osee.framework.skynet.core.linking.HttpServer;
+import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -51,13 +49,9 @@ public class DefineHttpServerRequest implements IHttpServerRequest {
       Map<String, String> keyValues = new HashMap<String, String>();
       String guid = artifact.getGuid();
       if (Strings.isValid(guid)) {
-         try {
-            keyValues.put("guid", URLEncoder.encode(guid, "UTF-8"));
-         } catch (UnsupportedEncodingException ex) {
-            SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.toString(), ex);
-         }
+         keyValues.put("guid", guid);
       }
-      return HttpServer.getUrl(this, keyValues);
+      return HttpUrlBuilder.getInstance().getUrlForLocalSkynetHttpServer(getRequestType(), keyValues);
    }
 
    /*

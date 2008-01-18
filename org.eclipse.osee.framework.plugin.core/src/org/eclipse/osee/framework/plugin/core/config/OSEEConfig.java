@@ -12,15 +12,12 @@
 package org.eclipse.osee.framework.plugin.core.config;
 
 import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_CONFIG_FILE;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import net.jini.JiniPlugin;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -28,6 +25,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.plugin.core.config.data.DbInformation;
 import org.eclipse.osee.framework.plugin.core.config.data.ServerConfigUtil;
@@ -46,15 +44,16 @@ public class OSEEConfig {
 
    private String[] serviceLookups = null;
    private String[] serviceGroups = null;
-//   private boolean bypassSecurity = false;
+   //   private boolean bypassSecurity = false;
    private boolean disableRemoteEvents = false;
 
-//   private String defaultWorkspace;
+   //   private String defaultWorkspace;
    private OseeRunMode runMode;
    private DbInformation databaseService;
    private String[][] bookmarks;
-//   private String mySqlInstallLocation;
+   //   private String mySqlInstallLocation;
    private String authenticationProvider;
+   private String remoteHttpServer;
 
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OSEEConfig.class);
 
@@ -63,14 +62,14 @@ public class OSEEConfig {
    private OSEEConfig() {
       super();
       try {
-    	 File file = getConfigFileFromProperty();
-    	 if(file == null){
-    		 file = getFileFromExtensionPoint();
-    	 }
-    	 if(file == null){
-    		 throw new NullPointerException("Unable to find a valid config file.");
-    	 }
-    	  
+         File file = getConfigFileFromProperty();
+         if (file == null) {
+            file = getFileFromExtensionPoint();
+         }
+         if (file == null) {
+            throw new NullPointerException("Unable to find a valid config file.");
+         }
+
          logger.log(Level.INFO, "Using config file: " + file.getAbsolutePath());
          Document document = null;
 
@@ -85,6 +84,7 @@ public class OSEEConfig {
          getDefaultClientData();
          parseWebServers(rootElement);
          parseAuthenticationScheme(rootElement);
+         parseHttpServer(rootElement);
 
          serviceGroups = JiniPlugin.getInstance().getJiniVersion();
          String[] filterGroups = OseeProperties.getInstance().getOseeJiniServiceGroups();
@@ -114,67 +114,68 @@ public class OSEEConfig {
       }
    }
 
-/**
- * @return
- * @throws IOException 
- */
-private File getFileFromExtensionPoint() throws IOException {
-	IExtensionPoint expt = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.plugin.core.OseeConfigFile");
-	if(expt != null){
-		IExtension exs[] = expt.getExtensions();
-		for(IExtension ex:exs){
-			IConfigurationElement[] els = ex.getConfigurationElements();
-			for(IConfigurationElement el:els){
-				if(el.getName().equals("OseeConfig")){
-					String file = el.getAttribute("file");
-					Bundle bundle = Platform.getBundle(ex.getContributor().getName());
-					
-					URL url = FileLocator.find(bundle, new Path(file), null);
-					url = FileLocator.toFileURL(url);
-					String path = url.getFile();
-					return new File(path);
-				}
-			}
-		}
-	}
-	return null;
-}
+   /**
+    * @return
+    * @throws IOException
+    */
+   private File getFileFromExtensionPoint() throws IOException {
+      IExtensionPoint expt =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.plugin.core.OseeConfigFile");
+      if (expt != null) {
+         IExtension exs[] = expt.getExtensions();
+         for (IExtension ex : exs) {
+            IConfigurationElement[] els = ex.getConfigurationElements();
+            for (IConfigurationElement el : els) {
+               if (el.getName().equals("OseeConfig")) {
+                  String file = el.getAttribute("file");
+                  Bundle bundle = Platform.getBundle(ex.getContributor().getName());
 
-/**
- * @return
- */
-private File getConfigFileFromProperty() {
-	String configPath = System.getProperty(OSEE_CONFIG_FILE);
-	 if(configPath != null){
-		 File fromProp = new File(configPath);
-		 if(fromProp.exists() && fromProp.isFile()){
-			 return fromProp;
-		 }
-	 } 
-	 return null;
-}
-
-//   private void parseMySqlInstall(Element rootElement) {
-//      NodeList list = rootElement.getElementsByTagName("MySqlInfo");
-//      if (list.getLength() > 0) {
-//         Element el = (Element) list.item(0);
-//         this.mySqlInstallLocation = el.getAttribute("InstallLocation");
-//      } else {
-//         this.mySqlInstallLocation = null;
-//      }
-//   }
-
-//   private void parseDefaultWorkspace(Element rootElement) {
-//      defaultWorkspace = Jaxp.getChildTextTrim(rootElement, "DefaultWorkspace");
-//   }
+                  URL url = FileLocator.find(bundle, new Path(file), null);
+                  url = FileLocator.toFileURL(url);
+                  String path = url.getFile();
+                  return new File(path);
+               }
+            }
+         }
+      }
+      return null;
+   }
 
    /**
- * 
- */
-private void getExtensionPointConfig() {
-}
+    * @return
+    */
+   private File getConfigFileFromProperty() {
+      String configPath = System.getProperty(OSEE_CONFIG_FILE);
+      if (configPath != null) {
+         File fromProp = new File(configPath);
+         if (fromProp.exists() && fromProp.isFile()) {
+            return fromProp;
+         }
+      }
+      return null;
+   }
 
-private void parseServiceLookup(Element rootElement) {
+   //   private void parseMySqlInstall(Element rootElement) {
+   //      NodeList list = rootElement.getElementsByTagName("MySqlInfo");
+   //      if (list.getLength() > 0) {
+   //         Element el = (Element) list.item(0);
+   //         this.mySqlInstallLocation = el.getAttribute("InstallLocation");
+   //      } else {
+   //         this.mySqlInstallLocation = null;
+   //      }
+   //   }
+
+   //   private void parseDefaultWorkspace(Element rootElement) {
+   //      defaultWorkspace = Jaxp.getChildTextTrim(rootElement, "DefaultWorkspace");
+   //   }
+
+   /**
+    * 
+    */
+   private void getExtensionPointConfig() {
+   }
+
+   private void parseServiceLookup(Element rootElement) {
 
       Element serviceLookup = Jaxp.getChild(rootElement, "ServiceLookup");
       if (serviceLookup != null) {
@@ -186,12 +187,12 @@ private void parseServiceLookup(Element rootElement) {
       }
    }
 
-//   private void parseBypassSecurity(Element rootElement) {
-//      Element bypassSecurityElement = Jaxp.getChild(rootElement, "BypassSecurity");
-//      if (bypassSecurityElement != null) {
-//         bypassSecurity = true;
-//      }
-//   }
+   //   private void parseBypassSecurity(Element rootElement) {
+   //      Element bypassSecurityElement = Jaxp.getChild(rootElement, "BypassSecurity");
+   //      if (bypassSecurityElement != null) {
+   //         bypassSecurity = true;
+   //      }
+   //   }
 
    private void parseDisableRemoteEvents(Element rootElement) {
       Element disableRemoteEventsElement = Jaxp.getChild(rootElement, "DisableRemoteEvents");
@@ -247,6 +248,26 @@ private void parseServiceLookup(Element rootElement) {
       }
    }
 
+   private void parseHttpServer(Element rootElement) {
+      String addressToUse = OseeProperties.getInstance().getRemoteHttpServer();
+      if (Strings.isValid(addressToUse) != true) {
+         NodeList list = rootElement.getElementsByTagName("HttpServer");
+         for (int i = 0; i < list.getLength(); i++) {
+            Element element = (Element) list.item(i);
+            if (element != null) {
+               String value = element.getAttribute("address");
+               String port = element.getAttribute("port");
+               if (Strings.isValid(value) && Strings.isValid(port)) {
+                  addressToUse = value + ":" + port;
+               }
+            }
+         }
+      }
+      if (Strings.isValid(addressToUse)) {
+         remoteHttpServer = addressToUse;
+      }
+   }
+
    private void parseAuthenticationScheme(Element rootElement) {
       if (OseeProperties.getInstance().getAuthenticationProviderId() != null) {
          authenticationProvider = OseeProperties.getInstance().getAuthenticationProviderId();
@@ -286,43 +307,44 @@ private void parseServiceLookup(Element rootElement) {
       return runMode;
    }
 
-//   /**
-//    * @return Returns the defaultWorkspace.
-//    */
-//   public String getDefaultWorkspace() {
-//      return defaultWorkspace;
-//   }
+   //   /**
+   //    * @return Returns the defaultWorkspace.
+   //    */
+   //   public String getDefaultWorkspace() {
+   //      return defaultWorkspace;
+   //   }
 
-//   /**
-//    * @return Returns the bypassSecurity.
-//    */
-//   public boolean isBypassSecurity() {
-//      return bypassSecurity;
-//   }
+   //   /**
+   //    * @return Returns the bypassSecurity.
+   //    */
+   //   public boolean isBypassSecurity() {
+   //      return bypassSecurity;
+   //   }
 
    /**
-    *  Get the configured database type.  If we don't have a database configured the default value returned is SupportedDatabase.oracle.
+    * Get the configured database type. If we don't have a database configured the default value returned is
+    * SupportedDatabase.oracle.
     */
    public SupportedDatabase getDBType() {
-	  if(databaseService != null && databaseService.getDatabaseDetails() != null){
-		  return databaseService.getDatabaseDetails().getDbType();
-	  } else {
-		  return SupportedDatabase.oracle;
-	  }
+      if (databaseService != null && databaseService.getDatabaseDetails() != null) {
+         return databaseService.getDatabaseDetails().getDbType();
+      } else {
+         return SupportedDatabase.oracle;
+      }
 
    }
 
-//   public String getPassword() {
-//      return databaseService.getDatabaseDetails().getFieldValue(ConfigField.Password);
-//   }
+   //   public String getPassword() {
+   //      return databaseService.getDatabaseDetails().getFieldValue(ConfigField.Password);
+   //   }
 
-//   public String getPort() {
-//      return databaseService.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.port);
-//   }
+   //   public String getPort() {
+   //      return databaseService.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.port);
+   //   }
 
-//   public String getServer() {
-//      return databaseService.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.hostAddress);
-//   }
+   //   public String getServer() {
+   //      return databaseService.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.hostAddress);
+   //   }
 
    public String getServiceID() {
       return databaseService.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
@@ -343,49 +365,51 @@ private void parseServiceLookup(Element rootElement) {
       return databaseService;
    }
 
-//   public DbInformation[] getAllDbInformation() {
-//      return ServerConfigUtil.getInstance().getAllDbServices();
-//   }
+   //   public DbInformation[] getAllDbInformation() {
+   //      return ServerConfigUtil.getInstance().getAllDbServices();
+   //   }
 
-//   public void setDefaultClientData(String id) {
-//      System.setProperty(DEFAULT_DB_CONNECTION, id);
-//      databaseService = ServerConfigUtil.getInstance().getDefaultService();
-//   }
+   //   public void setDefaultClientData(String id) {
+   //      System.setProperty(DEFAULT_DB_CONNECTION, id);
+   //      databaseService = ServerConfigUtil.getInstance().getDefaultService();
+   //   }
 
    public boolean isDisableRemoteEvents() {
       return disableRemoteEvents;
    }
 
-//   public void setDisableRemoteEvents(boolean disableRemoteEvents) {
-//      this.disableRemoteEvents = disableRemoteEvents;
-//   }
+   //   public void setDisableRemoteEvents(boolean disableRemoteEvents) {
+   //      this.disableRemoteEvents = disableRemoteEvents;
+   //   }
 
    public String[][] getBookmarks() {
       return bookmarks;
    }
 
-//   public URL getBookmark(String name) throws MalformedURLException {
-//      URL toReturn = null;
-//      String[][] bookmarks = getBookmarks();
-//      if (bookmarks != null) {
-//         for (int i = 0; i < bookmarks.length; i++) {
-//            String id = bookmarks[i][0];
-//            if (id.equals(name)) {
-//               return new URL(bookmarks[i][1]);
-//            }
-//         }
-//      }
-//      return toReturn;
-//   }
+   public String getRemoteHttpServer() {
+      return remoteHttpServer;
+   }
 
-//   public String getMySqlInstallLocation() {
-//      return mySqlInstallLocation;
-//   }
+   //   public URL getBookmark(String name) throws MalformedURLException {
+   //      URL toReturn = null;
+   //      String[][] bookmarks = getBookmarks();
+   //      if (bookmarks != null) {
+   //         for (int i = 0; i < bookmarks.length; i++) {
+   //            String id = bookmarks[i][0];
+   //            if (id.equals(name)) {
+   //               return new URL(bookmarks[i][1]);
+   //            }
+   //         }
+   //      }
+   //      return toReturn;
+   //   }
+
+   //   public String getMySqlInstallLocation() {
+   //      return mySqlInstallLocation;
+   //   }
 
    public String getAuthenticationProviderId() {
       return authenticationProvider;
    }
-   
 
-   
 }

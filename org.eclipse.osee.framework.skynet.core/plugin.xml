@@ -210,5 +210,11 @@
                classname="org.eclipse.osee.framework.skynet.core.tagging.TagManager">
          </AttributeSaveListener>
       </extension>
+      <extension
+            point="org.eclipse.core.runtime.preferences">
+         <initializer
+               class="org.eclipse.osee.framework.skynet.core.preferences.PreferenceInitializer">
+         </initializer>
+      </extension>
    
 </plugin>

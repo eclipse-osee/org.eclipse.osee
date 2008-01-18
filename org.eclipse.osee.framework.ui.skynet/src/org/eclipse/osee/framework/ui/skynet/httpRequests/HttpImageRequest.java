@@ -11,9 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.httpRequests;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
+import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotManager;
 
@@ -48,19 +50,12 @@ public class HttpImageRequest implements IHttpServerRequest {
    }
 
    public String getRequestUrl(String namespace, String key, String imageKey) throws UnsupportedEncodingException {
-      StringBuffer toReturn = new StringBuffer(REQUEST_TYPE + "?");
-      toReturn.append(NAMESPACE_KEY);
-      toReturn.append("=");
-      toReturn.append(URLEncoder.encode(namespace, "UTF-8"));
-      toReturn.append("&");
-      toReturn.append(KEY_KEY);
-      toReturn.append("=");
-      toReturn.append(URLEncoder.encode(key, "UTF-8"));
-      toReturn.append("&");
-      toReturn.append(IMAGE_KEY);
-      toReturn.append("=");
-      toReturn.append(URLEncoder.encode(imageKey, "UTF-8"));
-      return toReturn.toString();
+      HttpUrlBuilder builder = HttpUrlBuilder.getInstance();
+      Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put(NAMESPACE_KEY, namespace);
+      parameters.put(KEY_KEY, key);
+      parameters.put(IMAGE_KEY, imageKey);
+      return String.format("%s?%s", getRequestType(), builder.getParametersAsEncodedUrl(parameters));
    }
 
    /*

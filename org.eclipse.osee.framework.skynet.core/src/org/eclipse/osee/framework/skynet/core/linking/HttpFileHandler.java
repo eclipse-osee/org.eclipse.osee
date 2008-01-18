@@ -105,7 +105,7 @@ public class HttpFileHandler {
    private File getFile(String fileName) {
       String extension = Lib.getExtension(fileName);
       String name = fileName.substring(0, (fileName.length() - 1 - extension.length()));
-      StringBuffer buffer = new StringBuffer(rootPath);
+      StringBuilder buffer = new StringBuilder(rootPath);
       buffer.append(File.separator);
       buffer.append(name);
       buffer.append("_");

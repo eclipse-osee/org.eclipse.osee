@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpImageProcessor;
-import org.eclipse.osee.framework.skynet.core.linking.HttpServer;
+import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.HttpImageRequest;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -94,7 +94,8 @@ public class ArtifactSnapshotFactory {
             String entry = matcher.group(1);
             if (Strings.isValid(entry)) {
                try {
-                  String result = "src=\"" + HttpServer.getDefaultServiceUrlPrefix() + "/" + tag;
+                  String prefix = HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
+                  String result = String.format("src=\"%s%s", prefix, tag);
                   changeSet.replace(matcher.start(), matcher.end(), result);
                } catch (Exception ex) {
                   logger.log(Level.SEVERE, String.format("Error adding http server address."), ex);

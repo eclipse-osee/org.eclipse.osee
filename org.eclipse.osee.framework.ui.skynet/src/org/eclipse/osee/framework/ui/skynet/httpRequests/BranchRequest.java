@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
-import org.eclipse.osee.framework.skynet.core.linking.HttpServer;
+import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -47,7 +47,7 @@ public class BranchRequest implements IHttpServerRequest {
 
    public String getUrl(Artifact artifact) {
       Map<String, String> keyValues = new HashMap<String, String>();
-      return HttpServer.getUrl(this, keyValues);
+      return HttpUrlBuilder.getInstance().getUrlForLocalSkynetHttpServer(getRequestType(), keyValues);
    }
 
    /*
