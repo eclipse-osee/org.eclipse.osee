@@ -58,8 +58,10 @@ public class HttpUrlBuilder {
          sb.append(encode(keyValues.get(key)));
          sb.append("&");
       }
-      // Delete the last unnecessary '&'
-      sb.deleteCharAt(sb.length() - 1);
+      if (sb.length() - 1 >= 0) {
+         // Delete the last unnecessary '&'
+         sb.deleteCharAt(sb.length() - 1);
+      }
       return sb.toString();
    }
 
