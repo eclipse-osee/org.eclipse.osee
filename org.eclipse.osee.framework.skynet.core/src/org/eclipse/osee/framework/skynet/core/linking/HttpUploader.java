@@ -67,7 +67,7 @@ public class HttpUploader {
       return connection;
    }
 
-   public IStatus execute(IProgressMonitor monitor) {
+   public IStatus execute(IProgressMonitor monitor) throws Exception {
       IStatus toReturn = Status.CANCEL_STATUS;
       if (monitor == null) {
          monitor = new NullProgressMonitor();
@@ -77,6 +77,7 @@ public class HttpUploader {
          monitor.subTask(String.format("Uploading to server: [%s] bytes", inputStream.available()));
          connection = setupConnection();
          connection.connect();
+
          if (monitor.isCanceled() != true) {
             sendInputStream(monitor, inputStream, connection.getOutputStream());
             if (monitor.isCanceled() != true) {
@@ -84,7 +85,7 @@ public class HttpUploader {
             }
          }
       } catch (Exception ex) {
-
+         throw new Exception(String.format("Error uploading to server: [%s]", urlRequest), ex);
       } finally {
          if (connection != null) {
             connection.disconnect();
@@ -101,18 +102,14 @@ public class HttpUploader {
       return remoteLocation;
    }
 
-   private IStatus handleResponse(HttpURLConnection connection) {
+   private IStatus handleResponse(HttpURLConnection connection) throws Exception {
       IStatus toReturn = Status.CANCEL_STATUS;
       int response = HttpURLConnection.HTTP_CLIENT_TIMEOUT;
-      try {
-         response = connection.getResponseCode();
-         if (response == HttpURLConnection.HTTP_CREATED) {
-            lastUploaded = connection.getHeaderField("Last-Modified");
-            remoteLocation = connection.getHeaderField("Content-Location");
-            toReturn = new Status(Status.OK, SkynetActivator.PLUGIN_ID, HttpResponse.getStatus(response));
-         }
-      } catch (Exception ex) {
-         logger.log(Level.SEVERE, "Timeout waiting for response.", ex);
+      response = connection.getResponseCode();
+      if (response == HttpURLConnection.HTTP_CREATED) {
+         lastUploaded = connection.getHeaderField("Last-Modified");
+         remoteLocation = connection.getHeaderField("Content-Location");
+         toReturn = new Status(Status.OK, SkynetActivator.PLUGIN_ID, HttpResponse.getStatus(response));
       }
       if (response != HttpURLConnection.HTTP_CREATED) {
          toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, HttpResponse.getStatus(response));
