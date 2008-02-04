@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.WholeDocumentArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 
 /**
@@ -35,8 +36,14 @@ public class WordArtifactFactory extends ArtifactFactory<WordArtifact> {
       return factory;
    }
 
-   public @Override
-   WordArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
-      return new WordArtifact(this, guid, humandReadableId, branch);
+   @Override
+   public WordArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
+      WordArtifact artifact = null;
+      if (factoryKey.matches("Checklist [(]WordML[)]|Template [(]WordML[)]|Work Sheet [(]WordML[)]")) {
+         artifact = new WholeDocumentArtifact(this, guid, humandReadableId, branch);
+      } else {
+         artifact = new WordArtifact(this, guid, humandReadableId, branch);
+      }
+      return artifact;
    }
 }

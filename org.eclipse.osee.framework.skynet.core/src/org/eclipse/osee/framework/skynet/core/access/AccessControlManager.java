@@ -311,6 +311,15 @@ public class AccessControlManager implements PersistenceManager {
       return checkObjectPermission(SkynetAuthentication.getInstance().getAuthenticatedUser(), object, permission);
    }
 
+   public PermissionEnum getObjectPermission(Artifact subject, Object object) {
+      for (PermissionEnum permissionEnum : PermissionEnum.values()) {
+         boolean result = checkObjectPermission(subject, object, permissionEnum);
+         System.out.println("subject " + subject + " object " + object + " permission " + permissionEnum.name() + " -> " + result);
+         if (result) return permissionEnum;
+      }
+      return PermissionEnum.FULLACCESS;
+   }
+
    /**
     * @param subject
     * @param object
@@ -347,7 +356,7 @@ public class AccessControlManager implements PersistenceManager {
       return userPermission.getRank() >= permission.getRank() && !userPermission.equals(PermissionEnum.DENY);
    }
 
-   private PermissionEnum getBranchPermission(Artifact subject, Branch branch, PermissionEnum permission) {
+   public PermissionEnum getBranchPermission(Artifact subject, Branch branch, PermissionEnum permission) {
       PermissionEnum userPermission = null;
       AccessObject accessObject = null;
       accessObject = branchAccessObjectCache.get(branch.getBranchId());
@@ -360,7 +369,7 @@ public class AccessControlManager implements PersistenceManager {
       return userPermission;
    }
 
-   private PermissionEnum getArtifactPermission(Artifact subject, Artifact artifact, PermissionEnum permission) {
+   public PermissionEnum getArtifactPermission(Artifact subject, Artifact artifact, PermissionEnum permission) {
       PermissionEnum userPermission = null;
       AccessObject accessObject = null;
 
@@ -554,13 +563,32 @@ public class AccessControlManager implements PersistenceManager {
 
          for (int subjectId : subjects) {
             Artifact subject = artifactManager.getArtifactFromId(subjectId, branchManager.getCommonBranch());
-            PermissionEnum permission = accessControlListCache.get(subjectId, accessObject);
-            datas.add(new AccessControlData(subject, accessObject, permission, false, false));
+            PermissionEnum permissionEnum = accessControlListCache.get(subjectId, accessObject);
+            AccessControlData accessControlData =
+                  new AccessControlData(subject, accessObject, permissionEnum, false, false);
+            if (accessObject instanceof ArtifactAccessObject) {
+               accessControlData.setArtifactPermission(permissionEnum);
+               accessControlData.setBranchPermission(getBranchPermission(subject, accessObject));
+            } else if (accessObject instanceof BranchAccessObject) {
+               accessControlData.setBranchPermission(getBranchPermission(subject, accessObject));
+            }
+            datas.add(accessControlData);
          }
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
       return datas;
+   }
+
+   private PermissionEnum getBranchPermission(Artifact subject, Object object) throws SQLException {
+      Branch branch = null;
+      if (object instanceof BranchAccessObject) {
+         branch = BranchPersistenceManager.getInstance().getBranch(((BranchAccessObject) object).getBranchId());
+      } else if (object instanceof ArtifactAccessObject) {
+         branch = BranchPersistenceManager.getInstance().getBranch(((ArtifactAccessObject) object).getBranchId());
+      }
+      if (branch == null) return null;
+      return AccessControlManager.getInstance().getBranchPermission(subject, branch, PermissionEnum.FULLACCESS);
    }
 
    /**

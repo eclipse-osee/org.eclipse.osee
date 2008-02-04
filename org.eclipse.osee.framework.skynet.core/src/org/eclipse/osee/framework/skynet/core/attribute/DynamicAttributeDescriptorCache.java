@@ -121,7 +121,7 @@ public class DynamicAttributeDescriptorCache {
 
       if (descriptor == null) {
          throw new IllegalArgumentException(
-               "Attribute Descriptor does not exist for attribute type name: " + name + " and transaction id: " + transactionId);
+               "Attribute Descriptor does not exist for attribute type name: \"" + name + "\" for transaction id: " + transactionId);
       }
       return descriptor;
    }

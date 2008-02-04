@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.usage.UsageLog;
  */
 public final class PersistenceManagerInit {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(PersistenceManagerInit.class);
-   private static boolean neverRun = true;
+   private static boolean isFirstRun = true;
    private static boolean inInit = false;
    private static Set<PersistenceManager> initializedManagers = new HashSet<PersistenceManager>();
 
@@ -51,10 +51,10 @@ public final class PersistenceManagerInit {
          return;
       }
 
-      if (neverRun) {
+      if (isFirstRun) {
          LoginEntry logEntry = new LoginEntry(); // do very early to get a time closer to the actual login time
          inInit = true;
-         neverRun = false;
+         isFirstRun = false;
          for (PersistenceManager manager : new PersistenceManager[] {ArtifactFactoryCache.getInstance(),
                SkynetAuthentication.getInstance(), AccessControlManager.getInstance(),
                ConfigurationPersistenceManager.getInstance(), RelationPersistenceManager.getInstance(),

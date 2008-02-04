@@ -106,7 +106,7 @@ public class NativeArtifact extends Artifact {
                artifact.setNativeContent(contentAttribute.getUncompressedStream());
 
             } else {
-               artifact.setAttribute(attribute.getName(), attribute.getStringData());
+               artifact.setSoleAttributeValue(attribute.getName(), attribute.getStringData());
             }
          }
       }

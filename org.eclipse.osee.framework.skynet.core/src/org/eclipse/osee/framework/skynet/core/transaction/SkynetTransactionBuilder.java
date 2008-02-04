@@ -98,7 +98,7 @@ public class SkynetTransactionBuilder {
    protected void execute() throws SQLException {
       checkFinished();
 
-      // Start at a non-zero value to accomodate work contributed at this level
+      // Start at a non-zero value to accommodate work contributed at this level
       int totalWork = 1;
       for (SkynetTransaction transaction : transactions) {
          totalWork += transaction.getWork();

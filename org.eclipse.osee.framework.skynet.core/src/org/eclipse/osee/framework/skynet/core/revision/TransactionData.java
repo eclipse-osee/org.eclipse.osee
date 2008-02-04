@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -40,8 +42,13 @@ public class TransactionData {
       this.commitArtId = commitArtId;
       this.branchId = branchId;
 
-      User user = SkynetAuthentication.getInstance().getUserByArtId(authorId);
-      name = user == null ? "" : user.getDescriptiveName();
+      try {
+         User user = SkynetAuthentication.getInstance().getUserByArtId(authorId);
+         name = user == null ? "" : user.getDescriptiveName();
+      } catch (IllegalStateException ex) {
+         name = "Could not resolve artId: " + (authorId);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
    }
 
    public String getComment() {

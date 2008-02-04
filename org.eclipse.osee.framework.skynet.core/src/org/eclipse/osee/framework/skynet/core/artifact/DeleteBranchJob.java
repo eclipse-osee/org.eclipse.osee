@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.messaging.event.skynet.RemoteDeletedBranchEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.NetworkDeletedBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
@@ -178,7 +178,7 @@ class DeleteBranchJob extends Job {
          monitor.done();
          if (getResult().equals(Status.OK_STATUS)) {
             eventManager.kick(new LocalDeletedBranchEvent(this, branch.getBranchId()));
-            remoteEventManager.kick(new RemoteDeletedBranchEvent(branch.getBranchId(),
+            remoteEventManager.kick(new NetworkDeletedBranchEvent(branch.getBranchId(),
                   SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
          }
       }

@@ -42,8 +42,10 @@ public class HttpRequest {
    private HttpMethod httpMethod;
    private InetAddress remoteAddress;
    private int remotePort;
+   private Socket socket;
 
    protected HttpRequest(Socket socket) throws Exception {
+      this.socket = socket;
       this.parameterMap = new HashMap<String, String>();
       this.rawRequest = "";
       this.urlRequest = "";
@@ -141,6 +143,10 @@ public class HttpRequest {
 
    public String getRawRequest() {
       return rawRequest;
+   }
+
+   public Socket getSocket() {
+      return socket;
    }
 
    private void parseRequest(String entry) throws Exception {

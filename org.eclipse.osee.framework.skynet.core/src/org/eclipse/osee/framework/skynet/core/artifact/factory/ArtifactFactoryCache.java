@@ -83,7 +83,7 @@ public class ArtifactFactoryCache implements PersistenceManager {
       registerNewFactories();
    }
 
-   public IArtifactFactory getFactoryFromName(String factoryName) {
+   public IArtifactFactory getFactoryFromName(String factoryName) throws IllegalStateException {
       IArtifactFactory factory = factoryNameMap.get(factoryName);
       if (factory == null) {
          throw new IllegalStateException("Failed to retrieve factory: " + factoryName + " from artifact factory cache");

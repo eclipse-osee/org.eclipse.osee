@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.OUTGOING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_TYPE_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
@@ -52,8 +50,20 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalBranchToArtifactCacheUpdateEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.ui.plugin.event.Event;
+import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
@@ -61,7 +71,6 @@ import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.util.db.Query;
 import org.eclipse.osee.framework.ui.plugin.util.db.RsetProcessor;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.Table;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
@@ -71,7 +80,7 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
  * 
  * @author Jeff C. Phillips
  */
-public class RevisionManager implements PersistenceManager {
+public class RevisionManager implements PersistenceManager, IEventReceiver {
    private static final String SELECT_TRANSACTIONS =
          "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
 
@@ -80,6 +89,9 @@ public class RevisionManager implements PersistenceManager {
 
    private static final String GET_CHANGED_ARTIFACTS =
          " SELECT arv2.modification_id, arv2.gamma_id, ar1.art_type_id FROM osee_define_artifact ar1, osee_define_artifact_version arv2, osee_define_txs txs3, osee_define_tx_details txd4 WHERE ar1.art_id = ? AND ar1.art_id = arv2.art_id AND arv2.gamma_id = txs3.gamma_id AND txs3.transaction_id = txd4.transaction_id AND txd4.transaction_id > ? AND txd4.transaction_id <= ? AND txd4.branch_id = ?";
+
+   private static final String GET_DELETED_ARTIFACTS =
+         "SELECT txd10.branch_id, att8.value AS name, art5.art_id, ary6.name AS type_name, arv7.modification_id, arv7.gamma_id, (SELECT MAX(txd3.transaction_id) FROM OSEE_DEFINE_ARTIFACT_VERSION arv1,OSEE_DEFINE_TXS txs2,OSEE_DEFINE_TX_DETAILS txd3 WHERE arv1.art_id=arv7.art_id AND arv1.modification_id<> 3 AND arv1.gamma_id=txs2.gamma_id AND txs2.transaction_id=txd3.transaction_id AND txd3.branch_id=txd10.branch_id AND txd3.transaction_id< txd10.transaction_id) last_good_transaction, txs4.transaction_id as deleted_transaction FROM osee_define_txs txs4,OSEE_DEFINE_ARTIFACT art5, OSEE_DEFINE_ARTIFACT_TYPE ary6, OSEE_DEFINE_ARTIFACT_VERSION arv7, OSEE_DEFINE_ATTRIBUTE att8,OSEE_DEFINE_TXS txs9,OSEE_DEFINE_TX_DETAILS txd10, (SELECT MAX(att11.gamma_id) gamma_id FROM OSEE_DEFINE_ATTRIBUTE att11, OSEE_DEFINE_ATTRIBUTE_TYPE aty12 WHERE att11.attr_type_id=aty12.attr_type_id AND aty12.name=? GROUP BY att11.art_id) ATTR_GAMMA WHERE txs4.gamma_id = arv7.gamma_id AND txd10.branch_id=? AND txd10.transaction_id=txs9.transaction_id AND txs9.transaction_id > ?  AND txs9.transaction_id <= ? AND txs9.gamma_id=arv7.gamma_id AND arv7.art_id=art5.art_id AND arv7.modification_id=? AND art5.art_type_id=ary6.art_type_id AND art5.art_id=att8.art_id AND att8.gamma_id= ATTR_GAMMA.gamma_id";
 
    private static final Table TX_DATA = new Table("tx_data");
    private static final String SELECT_TRANSACTIONS_FOR_ARTIFACT =
@@ -105,15 +117,7 @@ public class RevisionManager implements PersistenceManager {
    private static final Pair<String, ArtifactSubtypeDescriptor> UNKNOWN_DATA =
          new Pair<String, ArtifactSubtypeDescriptor>(null, null);
 
-   private static final LocalAliasTable TRANSACTION_DETAIL_ALIAS_1 =
-         new LocalAliasTable(TRANSACTION_DETAIL_TABLE, "td1");
-   private static final LocalAliasTable TRANSACTION_DETAIL_ALIAS_2 =
-         new LocalAliasTable(TRANSACTION_DETAIL_TABLE, "td2");
-   private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_1 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "av1");
-   private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_2 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "av2");
-   private static final LocalAliasTable TRANSACTIONS_ALIAS_1 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx1");
-   private static final LocalAliasTable TRANSACTIONS_ALIAS_2 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx2");
-   private static Map<Integer, Set<Integer>> commitArtifactIdToTransactionId;
+   private Map<Integer, Set<Integer>> commitArtifactIdToTransactionId;
 
    private static final RevisionManager instance = new RevisionManager();
 
@@ -163,6 +167,20 @@ public class RevisionManager implements PersistenceManager {
    }
 
    public Set<Integer> getTransactionDataPerCommitArtifact(Artifact commitArtifact) throws SQLException {
+      checkCommitArtifactToTransactionCache();
+
+      if (commitArtifact != null && commitArtifactIdToTransactionId.containsKey(commitArtifact.getArtId())) {
+         return commitArtifactIdToTransactionId.get(commitArtifact.getArtId());
+      }
+
+      return new HashSet<Integer>();
+   }
+
+   public void cacheTransactionDataPerCommitArtifact(Artifact commitArtifact, int transactionData) throws SQLException {
+      cacheTransactionDataPerCommitArtifact(commitArtifact.getArtId(), transactionData);
+   }
+
+   private void checkCommitArtifactToTransactionCache() throws SQLException {
       if (commitArtifactIdToTransactionId == null) {
          commitArtifactIdToTransactionId = new HashMap<Integer, Set<Integer>>();
 
@@ -177,19 +195,20 @@ public class RevisionManager implements PersistenceManager {
          } finally {
             DbUtil.close(chStmt);
          }
+         SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
+         SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
       }
-      if (commitArtifactIdToTransactionId.containsKey(commitArtifact.getArtId())) return commitArtifactIdToTransactionId.get(commitArtifact.getArtId());
-      return new HashSet<Integer>();
    }
 
-   public void cacheTransactionDataPerCommitArtifact(Artifact commitArtifact, int transactionData) {
-      cacheTransactionDataPerCommitArtifact(commitArtifact.getArtId(), transactionData);
-   }
+   public void cacheTransactionDataPerCommitArtifact(int commitArtifactId, int transactionId) throws SQLException {
+      checkCommitArtifactToTransactionCache();
 
-   public void cacheTransactionDataPerCommitArtifact(int commitArtifactId, int transactionId) {
-      Set<Integer> transactionIds;
-      transactionIds = commitArtifactIdToTransactionId.get(commitArtifactId);
-      if (transactionIds == null) transactionIds = new HashSet<Integer>();
+      Set<Integer> transactionIds = commitArtifactIdToTransactionId.get(commitArtifactId);
+
+      if (transactionIds == null) {
+         transactionIds = new HashSet<Integer>();
+      }
+
       transactionIds.add(transactionId);
       commitArtifactIdToTransactionId.put(commitArtifactId, transactionIds);
    }
@@ -336,6 +355,22 @@ public class RevisionManager implements PersistenceManager {
       return changes;
    }
 
+   public void getConflictsPerBranch(Branch source, Branch destination, TransactionId baselineTRansaction) {
+      String ATTRIBUTE_CONFLICTS =
+      //45sec
+            "SELECT t3.art_id, t3.value, t1.gamma_id as source_gamma, t1.tx_type as source_change t9.value, t9.gamma_id as dest_gamma FROM osee_define_txs t1, osee_define_attribute t9, osee_define_tx_details t2, osee_define_attribute t3, (SELECT MAX(t4.transaction_id) AS transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = 2 GROUP BY t6.attr_id ORDER BY transaction_id) t44 WHERE t1.transaction_id = t2.transaction_id AND t2.transaction_id > 343 AND t2.branch_id = 9 AND t1.gamma_id = t3.gamma_id AND t3.attr_id = t44.attr_id AND EXISTS (SELECT txs.gamma_id FROM osee_define_txs txs, osee_define_attribute attr WHERE attr.attr_id = t44.attr_id AND attr.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id and t9.gamma_id = txs.gamma_id AND t3.gamma_id <> txs.gamma_id AND txs.gamma_id NOT IN (SELECT gamma_id FROM osee_define_txs WHERE transaction_id = 343))";
+      String ARTIFACT_CONFLICTS =
+      //12sec   
+            "SELECT t3.art_id, t1.gamma_id AS source_gamma, t1.tx_type AS source_change, t9.gamma_id AS dest_gamma FROM osee_define_txs t1, osee_define_attribute t9, osee_define_tx_details t2, osee_define_artifact_version t3, (SELECT MAX(t4.transaction_id) AS transaction_id, t6.art_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_artifact_version t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = 2 GROUP BY t6.art_id ORDER BY transaction_id) t44 WHERE t1.transaction_id = t2.transaction_id AND t2.transaction_id > 343 AND t2.branch_id = 9 AND t1.gamma_id = t3.gamma_id AND t3.art_id = t44.art_id AND EXISTS (SELECT txs.gamma_id FROM osee_define_txs txs, osee_define_artifact_version artver WHERE artver.art_id = t44.art_id AND artver.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id AND t9.gamma_id = txs.gamma_id AND t3.gamma_id <> txs.gamma_id AND txs.gamma_id NOT IN (SELECT gamma_id FROM osee_define_txs WHERE transaction_id = 343))";
+      String A_RELATION_CONFLICTS = "";
+      String B_RELATION_CONFLICTS = "";
+
+      //get artifact
+      //add artifact to temp cache as artifact change
+      //add attr changes to art change
+      //add rel changes to art change
+   }
+
    private Collection<AttributeChange> getAttributeChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId) {
 
       Collection<AttributeChange> revisions = new LinkedList<AttributeChange>();
@@ -471,12 +506,12 @@ public class RevisionManager implements PersistenceManager {
       return changes;
    }
 
-   public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId transactionId) {
+   public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId transactionId) throws SQLException {
       return getDeletedArtifactChanges(null, null, transactionIdManager.getPriorTransaction(transactionId),
             transactionId, null);
    }
 
-   public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) {
+   public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws SQLException {
       if (!fromTransactionId.getBranch().equals(toTransactionId.getBranch())) throw new IllegalArgumentException(
             "The fromTransactionId and toTransactionId must be on the same branch");
       if (fromTransactionId.getTransactionNumber() > toTransactionId.getTransactionNumber()) throw new IllegalArgumentException(
@@ -484,32 +519,11 @@ public class RevisionManager implements PersistenceManager {
 
       Collection<ArtifactChange> deletedArtifacts = new LinkedList<ArtifactChange>();
 
-      try {
-         String sql =
-               "SELECT " + TRANSACTION_DETAIL_ALIAS_1.columns("branch_id") + "," + ATTRIBUTE_VERSION_TABLE.column("value") + " AS name," + ARTIFACT_TABLE.column("art_id") + "," + ARTIFACT_TYPE_TABLE.column("name") + " AS type_name," + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + ", " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + "," + Table.alias(
-                     "(SELECT MAX(" + TRANSACTION_DETAIL_ALIAS_2.column("transaction_id") + ")" + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_ALIAS_2 + "," + TRANSACTION_DETAIL_ALIAS_2 + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("modification_id") + "<> " + ModificationType.DELETE.getValue() + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + "=" + TRANSACTION_DETAIL_ALIAS_2.column("transaction_id") + " AND " + TRANSACTION_DETAIL_ALIAS_2.column("branch_id") + "=" + TRANSACTION_DETAIL_ALIAS_1.column("branch_id") + " AND " + TRANSACTION_DETAIL_ALIAS_2.column("transaction_id") + "<" + TRANSACTION_DETAIL_ALIAS_1.column("transaction_id") + ")",
-                     "last_good_transaction") + " FROM " + ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + "," + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_ALIAS_1 + "," + TRANSACTION_DETAIL_ALIAS_1 + "," + Table.alias(
-                     "(SELECT MAX(" + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + ")", "gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + ATTRIBUTE_TYPE_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("attr_type_id") + "=" + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + " AND " + ATTRIBUTE_TYPE_TABLE.column("name") + "=?" + " GROUP BY " + ATTRIBUTE_VERSION_TABLE.column("art_id") + ") ATTR_GAMMA" + " WHERE " + TRANSACTION_DETAIL_ALIAS_1.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_ALIAS_1.column("transaction_id") + "=" + TRANSACTIONS_ALIAS_1.column("transaction_id") + " AND " + (fromTransactionId == toTransactionId ? TRANSACTIONS_ALIAS_1.column("transaction_id") + " = ?" : TRANSACTIONS_ALIAS_1.column("transaction_id") + " > ? " + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + " <= ?") + " AND " + TRANSACTIONS_ALIAS_1.column("gamma_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + "=" + ARTIFACT_TABLE.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "=?" + " AND " + ARTIFACT_TABLE.column("art_type_id") + "=" + ARTIFACT_TYPE_TABLE.column("art_type_id") + " AND " + ARTIFACT_TABLE.column("art_id") + "=" + ATTRIBUTE_VERSION_TABLE.column("art_id") + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + "= ATTR_GAMMA.gamma_id";
-
-         Collection<Object> dataList = new LinkedList<Object>();
-         dataList.add(SQL3DataType.VARCHAR);
-         dataList.add("Name");
-         if (toTransactionId != fromTransactionId) {
-            dataList.add(SQL3DataType.INTEGER);
-            dataList.add(fromTransactionId.getBranch().getBranchId());
-         }
-         dataList.add(SQL3DataType.INTEGER);
-         dataList.add(fromTransactionId.getTransactionNumber());
-         dataList.add(SQL3DataType.INTEGER);
-         dataList.add(toTransactionId.getTransactionNumber());
-         dataList.add(SQL3DataType.INTEGER);
-         dataList.add(DELETE.getValue());
-
-         Query.acquireCollection(deletedArtifacts, new ArtifactChangeProcessor(baseParentTransactionId,
-               headParentTransactionId, artifactNameDescriptorCache), sql, dataList.toArray());
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      }
+      Query.acquireCollection(deletedArtifacts, new ArtifactChangeProcessor(baseParentTransactionId,
+            headParentTransactionId, artifactNameDescriptorCache), GET_DELETED_ARTIFACTS, SQL3DataType.VARCHAR, "Name",
+            SQL3DataType.INTEGER, fromTransactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
+            fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER, toTransactionId.getTransactionNumber(),
+            SQL3DataType.INTEGER, DELETE.getValue());
 
       return deletedArtifacts;
    }
@@ -694,8 +708,16 @@ public class RevisionManager implements PersistenceManager {
             if (artifactNameDescriptorCache != null) artifactNameDescriptorCache.cache(set.getInt("art_id"), name,
                   descriptor);
 
-            return new ArtifactChange(OUTGOING, name, descriptor, set.getInt("art_id"), set.getInt("gamma_id"),
-                  baseParentTransactionId, headParentTransactionId, lastGoodTransactionId);
+            return new ArtifactChange(
+                  OUTGOING,
+                  name,
+                  descriptor,
+                  set.getInt("art_id"),
+                  set.getInt("gamma_id"),
+                  baseParentTransactionId,
+                  headParentTransactionId,
+                  lastGoodTransactionId,
+                  TransactionIdManager.getInstance().getPossiblyEditableTransactionId(set.getInt("deleted_transaction")));
          } else {
             TransactionId transactionId =
                   TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
@@ -885,5 +907,27 @@ public class RevisionManager implements PersistenceManager {
       }
 
       return hasConflicts;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
+    */
+   public void onEvent(Event event) {
+      if ((event instanceof LocalDeletedBranchEvent) || (event instanceof RemoteDeletedBranchEvent) || (event instanceof LocalNewBranchEvent) || (event instanceof RemoteNewBranchEvent) || (event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent)) {
+         // Clear the cache so it gets reloaded
+         commitArtifactIdToTransactionId = null;
+         /**
+          * Need to kick event for classes that need to be notified only after the cache has been updated; Even though
+          * cache has bee set to null, it will be re-created upon next call to get cached information
+          */
+         SkynetEventManager.getInstance().kick(new LocalBranchToArtifactCacheUpdateEvent(this));
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
+    */
+   public boolean runOnEventInDisplayThread() {
+      return false;
    }
 }

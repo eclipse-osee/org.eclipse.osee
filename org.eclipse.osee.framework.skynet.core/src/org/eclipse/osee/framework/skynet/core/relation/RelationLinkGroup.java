@@ -19,7 +19,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -88,15 +87,10 @@ public class RelationLinkGroup {
     * 
     * @param artifact
     * @return <b>true</b> if a new link was created, <b>false</b> otherwise.
+    * @throws SQLException
     */
-   public boolean addArtifact(Artifact artifact) {
-      try {
-         return addArtifact(artifact, null, false);
-      } catch (SQLException ex) {
-         // This shouldn't happen
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-         return false;
-      }
+   public boolean addArtifact(Artifact artifact) throws SQLException {
+      return addArtifact(artifact, null, false);
    }
 
    /**

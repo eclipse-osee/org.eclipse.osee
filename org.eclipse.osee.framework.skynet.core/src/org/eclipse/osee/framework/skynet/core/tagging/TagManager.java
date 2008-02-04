@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.tagging;
 
 import static org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor.AUTO_INDEXED;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TAG_ART_MAP_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TAG_STALE_ARTIFACT_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TAG_TABLE;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -45,12 +44,10 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
 
    private static final LocalAliasTable TAG_MAP_ALIAS_1 = TAG_ART_MAP_TABLE.aliasAs("map1");
    private static final LocalAliasTable TAG_ALIAS_1 = TAG_TABLE.aliasAs("tag1");
-   private static final String ADD_ART_TO_STALE =
-         "INSERT INTO " + TAG_STALE_ARTIFACT_TABLE + " (art_id, branch_id) VALUES (?,?)";
+
    private static final String ADD_TAG_TO_ARTIFACT =
          "INSERT INTO " + TAG_ART_MAP_TABLE + " (ART_ID, RELEVANCE, N, BRANCH_ID, TAG_ID) VALUES (?,?,?,?,?)";
-   private static final String DROP_ART_FROM_STALE =
-         "DELETE FROM " + TAG_STALE_ARTIFACT_TABLE + " WHERE art_id=? AND branch_id=?";
+
    private static final String DROP_TAGS_FROM_ARTIFACT =
          "DELETE FROM " + TAG_ART_MAP_TABLE + " WHERE EXISTS(SELECT 'x' FROM " + Collections.toString(",",
                TAG_MAP_ALIAS_1, TAG_ALIAS_1) + " WHERE " + TAG_ART_MAP_TABLE.join(TAG_MAP_ALIAS_1, "art_id") + " AND " + TAG_ART_MAP_TABLE.join(
@@ -118,8 +115,9 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
     * artifact will just be marked as having stale tag data.
     * 
     * @param artifacts The artifacts to tag.
+    * @throws SQLException
     */
-   public void autoTag(Artifact... artifacts) {
+   public void autoTag(Artifact... artifacts) throws SQLException {
       autoTag(false, artifacts);
    }
 
@@ -130,40 +128,28 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
     * 
     * @param forceTagging
     * @param artifacts
+    * @throws SQLException
     */
-   public synchronized void autoTag(boolean forceTagging, Artifact... artifacts) {
-      try {
-         List<Object[]> artData = new LinkedList<Object[]>();
-         if (forceTagging || plugin.isAutoTaggingEnabled()) {
-            List<Object[]> tagData = new LinkedList<Object[]>();
-            for (Artifact artifact : artifacts) {
-               Tagger tagger = taggerManager.getBestTagger(artifact);
-               if (tagger != null) {
-                  clearTags(artifact, AUTO_INDEXED.getDescriptor());
+   public synchronized void autoTag(boolean forceTagging, Artifact... artifacts) throws SQLException {
+      List<Object[]> artData = new LinkedList<Object[]>();
+      if (forceTagging || plugin.isAutoTaggingEnabled()) {
+         List<Object[]> tagData = new LinkedList<Object[]>();
+         for (Artifact artifact : artifacts) {
+            Tagger tagger = taggerManager.getBestTagger(artifact);
+            if (tagger != null) {
+               clearTags(artifact, AUTO_INDEXED.getDescriptor());
 
-                  for (String tag : tagger.getTags(artifact)) {
-                     tagData.add(getTagData(artifact, tag, AUTO_INDEXED.getDescriptor()));
-                  }
-                  artData.add(new Object[] {SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-                        artifact.getBranch().getBranchId()});
-               } else {
-                  logger.log(Level.WARNING,
-                        "Could not auto-tag " + artifact.getDescriptiveName() + ", no tagger was found for it.");
+               for (String tag : tagger.getTags(artifact)) {
+                  tagData.add(getTagData(artifact, tag, AUTO_INDEXED.getDescriptor()));
                }
-            }
-            ConnectionHandler.runBatchablePreparedUpdate(DROP_ART_FROM_STALE, true, artData);
-            ConnectionHandler.runBatchablePreparedUpdate(ADD_TAG_TO_ARTIFACT, true, tagData);
-
-         } else {
-            for (Artifact artifact : artifacts) {
                artData.add(new Object[] {SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
                      artifact.getBranch().getBranchId()});
+            } else {
+               logger.log(Level.WARNING,
+                     "Could not auto-tag " + artifact.getDescriptiveName() + ", no tagger was found for it.");
             }
-            ConnectionHandler.runBatchablePreparedUpdate(DROP_ART_FROM_STALE, true, artData);
-            ConnectionHandler.runBatchablePreparedUpdate(ADD_ART_TO_STALE, true, artData);
          }
-      } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         ConnectionHandler.runBatchablePreparedUpdate(ADD_TAG_TO_ARTIFACT, true, tagData);
       }
    }
 
@@ -202,7 +188,7 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener#notifyOnAttributeSave(org.eclipse.osee.framework.skynet.core.artifact.Artifact[])
     */
-   public void notifyOnAttributeSave(Artifact... artifacts) {
+   public void notifyOnAttributeSave(Artifact... artifacts) throws SQLException {
       autoTag(artifacts);
    }
 }

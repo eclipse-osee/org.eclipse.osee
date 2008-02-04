@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.messaging.event.skynet.RemoteCommitBranchEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.NetworkCommitBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -174,6 +174,8 @@ class CommitJob extends Job {
       private final Branch toBranch;
       private final Branch fromBranch;
       private final boolean archiveBranch;
+      private boolean success = true;
+      private int fromBranchId = -1;
 
       private CommitDbTx(Branch fromBranch, Branch toBranch, TransactionId fromTransactionId, boolean archiveBranch) {
          super();
@@ -195,7 +197,6 @@ class CommitJob extends Job {
 
          TransactionId baseTransactionId = fromTransactionId;
          User userToBlame = SkynetAuthentication.getInstance().getAuthenticatedUser();
-         int fromBranchId = -1;
          String sql = null;
 
          if (fromBranch != null) {
@@ -232,21 +233,31 @@ class CommitJob extends Job {
             txCompressor.execute();
 
             transactionIdManager.resetEditableTransactionId(newTransactionNumber, toBranch);
+            tagArtifacts(toBranch, fromBranchId, monitor);
 
-            monitor.worked(15);
-            monitor.setTaskName("Tagging artifacts");
+            if (archiveBranch) {
+               fromBranch.archive();
+            }
 
-            tagArtifacts(toBranch, fromBranchId, newTransactionNumber);
-            if (archiveBranch) fromBranch.archive();
-            eventManager.kick(new LocalCommitBranchEvent(this, fromBranchId));
-            RemoteEventManager.getInstance().kick(
-                  new RemoteCommitBranchEvent(fromBranchId,
-                        SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
          } else {
             throw new IllegalStateException(" A branch can not be commited without any changes made.");
          }
-
+         success = true;
          monitor.done();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxFinally()
+       */
+      @Override
+      protected void handleTxFinally() throws Exception {
+         super.handleTxFinally();
+         if (success) {
+            eventManager.kick(new LocalCommitBranchEvent(this, fromBranchId));
+            RemoteEventManager.getInstance().kick(
+                  new NetworkCommitBranchEvent(fromBranchId,
+                        SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
+         }
       }
 
       /*
@@ -257,9 +268,13 @@ class CommitJob extends Job {
       @Override
       protected void handleTxException(Exception ex) throws Exception {
          super.handleTxException(ex);
+         success = false;
       }
 
-      private void tagArtifacts(Branch toBranch, int fromBranchId, int commitTransactionId) throws SQLException {
+      private void tagArtifacts(Branch toBranch, int fromBranchId, IProgressMonitor progressMonitor) throws SQLException {
+         progressMonitor.worked(15);
+         progressMonitor.setTaskName("Tagging artifacts");
+
          //Delete toBranch artifact tags
          ConnectionHandler.runPreparedUpdate(DELETE_TO_BRANCH_TAG_DATA, SQL3DataType.INTEGER, toBranch.getBranchId(),
                SQL3DataType.INTEGER, fromBranchId);

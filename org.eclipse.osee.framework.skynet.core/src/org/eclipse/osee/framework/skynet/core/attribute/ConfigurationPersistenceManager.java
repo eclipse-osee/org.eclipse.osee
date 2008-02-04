@@ -526,7 +526,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return artifactFactoryCache.getFactoryFromId(factoryId);
    }
 
-   public IArtifactFactory getFactoryFromName(String factoryName) {
+   public IArtifactFactory getFactoryFromName(String factoryName) throws IllegalStateException {
       return artifactFactoryCache.getFactoryFromName(factoryName);
    }
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_TABLE;
+import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -32,7 +33,7 @@ public class NotSearch implements ISearchPrimitive {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getCriteriaSql(java.util.List, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws SQLException {
       return "NOT EXISTS(SELECT 'x' FROM (" + ArtifactPersistenceManager.getSelectArtIdSql(search, dataList, branch) + ") arts" + " WHERE " + ARTIFACT_TABLE.column("art_id") + "= arts." + search.getArtIdColName() + ")";
    }
 

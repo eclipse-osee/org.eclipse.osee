@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -38,14 +40,17 @@ public class ArtifactSubtypeProcessor implements RsetProcessor<ArtifactSubtypeDe
    }
 
    public ArtifactSubtypeDescriptor process(ResultSet set) throws SQLException {
-      IArtifactFactory factory = null;
       ArtifactSubtypeDescriptor artifactDescriptor = null;
 
-      factory = configManager.getFactoryFromName(set.getString("factory_class"));
+      try {
+         IArtifactFactory factory = configManager.getFactoryFromName(set.getString("factory_class"));
+         artifactDescriptor =
+               new ArtifactSubtypeDescriptor(set.getInt("art_type_id"), set.getString("factory_key"), factory,
+                     set.getString("name"), transactionId, new InputStreamImageDescriptor(set.getBinaryStream("image")));
 
-      artifactDescriptor =
-            new ArtifactSubtypeDescriptor(set.getInt("art_type_id"), set.getString("factory_key"), factory,
-                  set.getString("name"), transactionId, new InputStreamImageDescriptor(set.getBinaryStream("image")));
+      } catch (IllegalStateException ex) {
+         SkynetActivator.getLogger().log(Level.WARNING, ex.getLocalizedMessage(), ex);
+      }
 
       return artifactDescriptor;
    }

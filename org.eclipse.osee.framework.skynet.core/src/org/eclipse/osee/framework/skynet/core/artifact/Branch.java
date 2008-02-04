@@ -14,16 +14,14 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.BRANCH_TABLE;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
-import org.eclipse.osee.framework.messaging.event.skynet.RemoteRenameBranchEvent;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.messaging.event.skynet.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.event.LocalRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -36,7 +34,6 @@ import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
  * @author Robert A. Fisher
  */
 public class Branch implements Comparable<Branch>, IAdaptable {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(Branch.class);
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final String UPDATE_BRANCH_SHORT_NAME =
@@ -113,6 +110,13 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return branchShortName;
    }
 
+   public String getBranchShortestName() {
+      if (branchShortName != null)
+         return branchShortName;
+      else
+         return branchName;
+   }
+
    /**
     * Sets the branch short name to the given value
     * 
@@ -132,8 +136,9 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       SkynetEventManager.getInstance().kick(
             new LocalRenameBranchEvent(this, branchId, branchName, getBranchShortName()));
       RemoteEventManager.getInstance().kick(
-            new RemoteRenameBranchEvent(branchId, SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId(),
-                  branchName, getBranchShortName()));
+            new NetworkRenameBranchEvent(branchId,
+                  SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId(), branchName,
+                  getBranchShortName()));
    }
 
    /**
@@ -170,26 +175,34 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return branchName;
    }
 
-   public Branch getParentBranch() {
+   public Branch getParentBranch() throws SQLException {
       if (parentBranch == null && parentBranchId != NULL_PARENT_BRANCH_ID) {
-         try {
-            parentBranch = branchManager.getBranch(parentBranchId);
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
-         }
+         parentBranch = branchManager.getBranch(parentBranchId);
       }
       return parentBranch;
    }
 
-   public boolean hasParentBranch() {
-      return (getParentBranch() != null);
+   public boolean hasParentBranch() throws SQLException {
+      return getParentBranch() != null;
    }
 
    public Collection<Branch> getChildBranches() throws SQLException {
-      List<Branch> children = new ArrayList<Branch>();
-      for (Branch branch : BranchPersistenceManager.getInstance().getBranches())
-         if (branch.getParentBranchId() == getBranchId()) children.add(branch);
+      return getChildBranches(false);
+   }
+
+   public Collection<Branch> getChildBranches(boolean recurse) throws SQLException {
+      Set<Branch> children = new HashSet<Branch>();
+      getChildBranches(this, children);
       return children;
+   }
+
+   private void getChildBranches(Branch parentBranch, Collection<Branch> children) throws SQLException {
+      for (Branch branch : BranchPersistenceManager.getInstance().getBranches()) {
+         if (branch.getParentBranchId() == parentBranch.getBranchId()) {
+            children.add(branch);
+            getChildBranches(branch, children);
+         }
+      }
    }
 
    /**
@@ -269,6 +282,11 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return associatedArtifactId != skynetAuth.getNoOneArtifactId();
    }
 
+   public boolean isBaselineBranch() {
+      System.out.println("Branch.isBaselineBranch...fix this");
+      return !getBranchName().contains("RPCR");
+   }
+
    /**
     * @return the associatedArtifactId
     */
@@ -284,6 +302,21 @@ public class Branch implements Comparable<Branch>, IAdaptable {
             getBranchName(), 22);
    }
 
+   public String asFolderName() {
+      String branchName = this.getBranchShortestName();
+
+      // Remove illegal filename characters
+      // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive spaces are in the name
+      branchName = branchName.replaceAll("[^A-Za-z0-9]", "_");
+      branchName = StringFormat.truncate(branchName, 20).trim();
+
+      return String.format("%s.%s", branchName.toLowerCase(), this.getBranchId());
+   }
+
+   public static int getBranchIdFromBranchFolderName(String folderName) throws Exception {
+      return Integer.parseInt(Lib.getExtension(folderName));
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -297,5 +330,4 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       }
       return null;
    }
-
 }

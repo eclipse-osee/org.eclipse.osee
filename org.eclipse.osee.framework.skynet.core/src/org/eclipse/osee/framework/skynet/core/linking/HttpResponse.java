@@ -88,8 +88,10 @@ public class HttpResponse {
    private Map<String, String> responseHeaderMap;
    private PrintStream printStream;
    private OutputStream outputStream;
+   private Socket socket;
 
    protected HttpResponse(Socket socket) throws Exception {
+      this.socket = socket;
       this.outputStream = socket.getOutputStream();
       this.responseHeaderMap = new LinkedHashMap<String, String>();
       this.printStream = new PrintStream(outputStream, true, "UTF-8");
@@ -188,6 +190,10 @@ public class HttpResponse {
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, "Error sending error string", ex);
       }
+   }
+
+   public Socket getSocket() {
+      return socket;
    }
 
    private final class StatusCodes {

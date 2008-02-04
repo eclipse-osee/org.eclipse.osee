@@ -72,7 +72,7 @@ public class EveryoneGroup extends Group {
                if (wasNotInDbInit) { // EveryoneGroup needs to be created under the special condition of the init
                   SkynetDbInit.setIsInDbInit(true);
                }
-               everyoneGroup.persist();
+               everyoneGroup.persistAttributes();
                if (wasNotInDbInit) { // if we were not in an init before this method then go back to that state
                   SkynetDbInit.setIsInDbInit(false);
                }

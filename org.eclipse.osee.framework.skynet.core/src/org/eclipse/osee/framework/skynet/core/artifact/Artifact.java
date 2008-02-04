@@ -69,6 +69,8 @@ import org.osgi.framework.Bundle;
 
 public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparable<Artifact> {
    public static final String UNNAMED = "Unnamed";
+   public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
+   public static final String AFTER_GUID_STRING = "/AfterGUID";
    public static final Artifact[] EMPTY_ARRAY = new Artifact[0];
    protected static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    protected static final ConfigurationPersistenceManager configurationPersistenceManager =
@@ -408,7 +410,7 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
       Artifact child = descriptor.makeNewArtifact();
       child.setDescriptiveName(name);
       addChild(child);
-      child.persist();
+      child.persistAttributes();
       child.getLinkManager().persistLinks();
    }
 
@@ -446,6 +448,8 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
     *            <li>The max occurrences for the named attribute is not equal to 1.</li>
     *            </ul>
     */
+   @Deprecated
+   // use setSoleAttributeValue instead
    public void setAttribute(String attributeName, String value) throws IllegalStateException {
       checkDeleted();
       try {
@@ -576,7 +580,7 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
             }
          }
       } catch (SQLException ex) {
-
+         logger.log(Level.SEVERE, ex.toString(), ex);
       }
       return "";
    }
@@ -794,7 +798,7 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
 
    private void acquireAttributes(boolean force) throws SQLException {
       if (force || attributes == null) {
-         artifactManager.setAttributesOnArtifact(this, branch);
+         artifactManager.setAttributesOnArtifact(this);
       }
    }
 
@@ -902,14 +906,31 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
       SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ModType.Reverted, this));
    }
 
-   public void persist() throws SQLException {
+   public void persistAttributes() throws SQLException {
       persist(false, true);
+   }
+
+   public void persistAttributesAndLinks() throws SQLException {
+      persistAttributes();
+      getLinkManager().persistLinks();
+   }
+
+   public void persistAttributesAndLinks(Set<IRelationEnumeration> linkTypes) throws SQLException {
+      persistAttributes();
+      getLinkManager().persistLinks();
    }
 
    public void persist(boolean recurse) throws SQLException {
       persist(recurse, true);
    }
 
+   /**
+    * make this method private
+    * 
+    * @param recurse
+    * @param persistAttributes
+    * @throws SQLException
+    */
    public void persist(boolean recurse, boolean persistAttributes) throws SQLException {
       checkDeleted();
       if (artifactManager == null) {
@@ -1015,8 +1036,10 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
 
    /**
     * Remove artifact from the database
+    * 
+    * @throws SQLException
     */
-   public void purge() {
+   public void purge() throws SQLException {
       checkDeleted();
 
       artifactManager.purgeArtifact(this);
@@ -1271,30 +1294,58 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
    }
 
    /**
-    * Save artifact, any of it's links specified, and any of the artifacts on the other side of the links are dirty
-    * 
-    * @param links
-    * @param revert TODO
-    * @throws SQLException
+    * Save artifact, any of it's links specified, and any of the artifacts on the other side of the links that are dirty
     */
-   public void saveRelationsAndArtifacts(Set<IRelationEnumeration> links, boolean revert) throws SQLException {
-      if (isDirty()) if (revert)
-         revert();
-      else
-         persist();
-      // Loop through all relations
+   public void saveArtifactsFromRelations(Set<IRelationEnumeration> links) throws SQLException {
+      saveRevertArtifactsFromRelations(links, false);
+   }
+
+   /**
+    * Revert artifact, any of it's links specified, and any of the artifacts on the other side of the links that are
+    * dirty
+    */
+   public void revertArtifactsFromRelations(Set<IRelationEnumeration> links) throws SQLException {
+      saveRevertArtifactsFromRelations(links, true);
+   }
+
+   @Deprecated
+   //  use persistAttributesAndLinks() instead
+   private void saveRevertArtifactsFromRelations(Set<IRelationEnumeration> links, boolean revert) throws SQLException {
+      Set<Artifact> artifactToManipulate = new HashSet<Artifact>();
+      artifactToManipulate.add(this);
+      Set<IRelationLink> linksToManipulate = new HashSet<IRelationLink>();
+
+      // Loop through all relations and collect all artifact to operate on
       for (IRelationEnumeration side : links) {
-         for (Artifact art : getArtifacts(side)) {
-            // Check artifact dirty
-            if (art.isDirty()) if (revert)
-               art.revert();
-            else
-               art.persist();
+         for (Artifact artifact : getArtifacts(side)) {
+            artifactToManipulate.add(artifact);
             // Check the links to this artifact
-            for (IRelationLink link : getRelations(side, art))
-               if (link.isDirty() && !revert) link.persist();
+            for (IRelationLink link : getRelations(artifact)) {
+               linksToManipulate.add(link);
+            }
          }
       }
+      // Loop through all relations and persist/revert as necessary
+      for (IRelationLink link : linksToManipulate) {
+         if (link.isDirty()) {
+            if (revert) {
+               link.delete();
+            } else {
+               link.persist();
+            }
+         }
+      }
+      // Loop through all artifacts and persist/revert as necessary
+      for (Artifact artifact : artifactToManipulate) {
+         if (revert) {
+            artifact.revert();
+         } else {
+            artifact.persistAttributes();
+         }
+      }
+      // Persist link manager to ensure deleted links get persisted
+      //TODO: this defeats the whole purpose of a selective persist based on link type
+      getLinkManager().persistLinks();
    }
 
    /**
@@ -1463,12 +1514,13 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
    private static final String[] NUMBER =
          new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
 
+   /**
+    * Since artifact names are free text it is important to reformat the name to ensure it is suitable as an element
+    * name
+    * 
+    * @return artifact name in a form that is valid as an XML element
+    */
    public String getSafeName() {
-      // Since artifact names are free text it is important to reformat the name
-      // to ensure it is suitable as an element name
-      // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive
-      // spaces are in the name
-
       String elementName = safeNamePattern.matcher(getDescriptiveName()).replaceAll("_");
 
       // Ensure the name did not end up empty

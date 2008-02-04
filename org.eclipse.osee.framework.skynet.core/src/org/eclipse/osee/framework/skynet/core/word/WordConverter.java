@@ -8,25 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.util;
+package org.eclipse.osee.framework.skynet.core.word;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.stream.StreamSource;
-import org.eclipse.osee.framework.jdk.core.util.xml.XmlOutputTransform;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpImageProcessor;
 
 /**
@@ -49,7 +40,7 @@ public class WordConverter {
       return instance;
    }
 
-   private IWordMLConversionHandler getWordMLConversionHandler() throws FileNotFoundException, TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
+   private IWordMLConversionHandler getWordMLConversionHandler() throws Throwable {
       if (wordMLConversionHandler == null) {
          IWordMLConversionHandler toReturn = null;
          ExtensionDefinedObjects<IWordMLConversionHandler> extensionDefinedObjects =
@@ -78,7 +69,7 @@ public class WordConverter {
       IWordMLConversionHandler currentConverter = null;
       try {
          currentConverter = getWordMLConversionHandler();
-      } catch (Exception ex) {
+      } catch (Throwable ex) {
          // Do Nothing
       }
       return currentConverter != null && currentConverter instanceof DefaultWordMLConversionHandler;
@@ -95,7 +86,7 @@ public class WordConverter {
       } catch (java.lang.StackOverflowError error) {
          logger.log(Level.SEVERE, error.getLocalizedMessage(), error);
          html = "Stack overflow error caused by recursion in the xslt transform";
-      } catch (Exception ex) {
+      } catch (Throwable ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          html = ex.getLocalizedMessage();
       }
@@ -103,17 +94,6 @@ public class WordConverter {
    }
 
    private class DefaultWordMLConversionHandler implements IWordMLConversionHandler {
-
-      private final Transformer transformer;
-
-      private DefaultWordMLConversionHandler() throws FileNotFoundException, IOException, TransformerConfigurationException, TransformerFactoryConfigurationError {
-         FileInputStream xsl =
-               new FileInputStream(SkynetActivator.getInstance().getPluginFile("support/xslt/word2html.xsl"));
-         transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xsl));
-         if (xsl != null) {
-            xsl.close();
-         }
-      }
 
       /*
        * (non-Javadoc)
@@ -137,7 +117,19 @@ public class WordConverter {
        * @see org.eclipse.osee.framework.skynet.core.util.IWordMLConversionHandler#wordMLToHtml(java.io.InputStream)
        */
       public String wordMLToHtml(InputStream inputStream) throws Exception {
-         return XmlOutputTransform.xmlToHtmlString(inputStream, transformer);
+         StringBuilder builder = new StringBuilder();
+         builder.append("<HTML></BODY>");
+         builder.append("<span style=\"color:#FF0000;font-size:medium;font-style:bold;\">");
+         builder.append("Warning: ");
+         builder.append("</span>");
+         builder.append("<span style=\"font-color:#000000;font-size:medium;font-style:bold;\">");
+         builder.append("Word content preview generation is not supported on this platform.");
+         builder.append("</span>");
+         builder.append("<div style=\"align:left; padding:8px; border-width:1px; border-top-style: solid;\">");
+         String rawData = Lib.inputStreamToString(inputStream);
+         builder.append(WordUtil.textOnly(rawData));
+         builder.append("</BODY></HTML>");
+         return builder.toString();
       }
 
       /*

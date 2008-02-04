@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.sql.SqlFactory;
+import org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.plugin.util.db.DBConnection;
 import org.eclipse.osee.framework.ui.plugin.util.db.OseeSequenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.db.data.SchemaData;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
@@ -66,7 +66,7 @@ public class SkynetDbInit extends DbInitializationTask {
       DbInit.addTables(schemas, userSpecifiedConfig, connection, databaseType);
       DbInit.addIndeces(schemas, userSpecifiedConfig, connection, databaseType);
       DbInit.addViews(connection, databaseType);
-      insertDbVersion();
+      OseeDbVersion.initializeDbVersion(connection);
       populateSequenceTable();
       addDefaultPermissions();
    }
@@ -109,13 +109,6 @@ public class SkynetDbInit extends DbInitializationTask {
          ConnectionHandler.runPreparedUpdate(ADD_PERMISSION, SQL3DataType.INTEGER, permission.getPermId(),
                SQL3DataType.VARCHAR, permission.getName());
       }
-   }
-
-   /**
-    * @throws SQLException
-    */
-   private void insertDbVersion() throws SQLException {
-      DBConnection.insertDbVersion();
    }
 
    /**

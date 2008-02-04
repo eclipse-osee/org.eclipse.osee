@@ -18,6 +18,7 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -74,7 +75,7 @@ public class HttpResourceRequest implements IHttpMethod {
 
    private URL findResource(String urlRequested) {
       URL resource = null;
-      if (Strings.isValid(urlRequested)) {
+      if (Strings.isValid(urlRequested) && urlRequested.endsWith("/") != true) {
          String uploadPath = OseeProperties.getInstance().getRemoteHttpServerUploadPath();
          if (Strings.isValid(uploadPath)) {
             try {
@@ -100,7 +101,7 @@ public class HttpResourceRequest implements IHttpMethod {
                      Bundle bundle = Platform.getBundle(bundleName);
                      URL url = bundle.getEntry(resourceName + urlRequested);
                      if (url != null) {
-                        resource = url;
+                        resource = FileLocator.resolve(url);
                         break;
                      }
                   } catch (Exception ex) {

@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.linking.HttpRequest.HttpMethod;
 public class HttpUploader {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HttpUploader.class);
    private static final int CONNECTION_TIMEOUT = 120000;
-   private static final int CONNECTION_READ_TIMEOUT = 5000;
+   private static final int CONNECTION_READ_TIMEOUT = 1000 * 60 * 10;
    private static final String CONTENT_LENGTH = "Content-Length";
    private static final String CONTENT_TYPE = "Content-Type";
    private static final String CONTENT_ENCODING = "Content-Encoding";

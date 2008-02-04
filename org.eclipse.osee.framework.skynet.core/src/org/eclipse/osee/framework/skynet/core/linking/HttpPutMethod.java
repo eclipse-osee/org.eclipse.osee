@@ -57,6 +57,9 @@ final class HttpPutMethod implements IHttpMethod {
          String fileName = fileReceived != null ? fileReceived.getAbsolutePath() : "";
          logger.log(Level.SEVERE, String.format("[%s]: File - [%s]", HttpResponse.getStatus(result), fileName), ex);
       } finally {
+         if (result != HttpURLConnection.HTTP_CREATED && fileReceived != null) {
+            fileReceived.delete();
+         }
          try {
             httpResponse.sendResponseHeaders(result, 0);
             httpResponse.getOutputStream().flush();
@@ -71,7 +74,7 @@ final class HttpPutMethod implements IHttpMethod {
       String headerEntry = httpRequest.getHttpHeaderEntry("Content-Length");
       if (Strings.isValid(headerEntry)) {
          int totalBytes = Integer.parseInt(headerEntry);
-         result = fileHandler.receivedUpload(destination, totalBytes, httpRequest.getInputStream());
+         result = fileHandler.receivedUpload(destination, totalBytes, httpRequest);
       }
       return result;
    }

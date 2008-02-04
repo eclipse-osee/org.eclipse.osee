@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.access;
 
+import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -26,6 +27,9 @@ public class AccessControlData implements Comparable<AccessControlData> {
    private Artifact subject;
    private AccessObject object;
    private PermissionEnum permission;
+   private PermissionEnum branchPermission = null;
+   private PermissionEnum artifactTypePermission = null;
+   private PermissionEnum artifactPermission = null;
 
    public AccessControlData(Artifact subject, AccessObject object, PermissionEnum permission, boolean birth) {
       this(subject, object, permission, birth, true);
@@ -56,6 +60,18 @@ public class AccessControlData implements Comparable<AccessControlData> {
 
       this.permission = permission;
       dirty = true;
+   }
+
+   public PermissionEnum getBranchPermission() throws SQLException {
+      return branchPermission;
+   }
+
+   public PermissionEnum getArtifactPermission() throws SQLException {
+      return artifactPermission;
+   }
+
+   public PermissionEnum getArtifactTypePermission() throws SQLException {
+      return artifactTypePermission;
    }
 
    /**
@@ -100,5 +116,26 @@ public class AccessControlData implements Comparable<AccessControlData> {
 
    public int compareTo(AccessControlData data) {
       return subject.getDescriptiveName().compareTo(data.subject.getDescriptiveName());
+   }
+
+   /**
+    * @param branchPermission the branchPermission to set
+    */
+   public void setBranchPermission(PermissionEnum branchPermission) {
+      this.branchPermission = branchPermission;
+   }
+
+   /**
+    * @param artifactTypePermission the artifactTypePermission to set
+    */
+   public void setArtifactTypePermission(PermissionEnum artifactTypePermission) {
+      this.artifactTypePermission = artifactTypePermission;
+   }
+
+   /**
+    * @param artifactPermission the artifactPermission to set
+    */
+   public void setArtifactPermission(PermissionEnum artifactPermission) {
+      this.artifactPermission = artifactPermission;
    }
 }

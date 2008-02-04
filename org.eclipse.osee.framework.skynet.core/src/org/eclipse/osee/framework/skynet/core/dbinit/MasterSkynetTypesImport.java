@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.importing.SkynetTypesImporter;
@@ -77,13 +78,14 @@ public class MasterSkynetTypesImport {
     * handled through BranchPersistenceManager.createRootBranch
     * 
     * @param connection
-    * @param skynetTypesImportExtensionsIds
+    * @param skynetTypesImportExtensionsUniqueIds
     * @param branch
     * @throws Exception
     * @see BranchPersistenceManager#createRootBranch(String, String, String, Collection, boolean)
     */
-   public void importSkynetDbTypes(Connection connection, Collection<String> skynetTypesImportExtensionsIds, Branch branch) throws Exception {
-      runSkynetDbTypesImport(connection, getExtensionsById(skynetTypesImportExtensionsIds), branch);
+   public void importSkynetDbTypes(Connection connection, Collection<String> skynetTypesImportExtensionsUniqueIds, Branch branch) throws Exception {
+      runSkynetDbTypesImport(connection, ExtensionPoints.getExtensionsByUniqueId(skynetDbTypesExtensionPointId,
+            skynetTypesImportExtensionsUniqueIds), branch);
    }
 
    /**

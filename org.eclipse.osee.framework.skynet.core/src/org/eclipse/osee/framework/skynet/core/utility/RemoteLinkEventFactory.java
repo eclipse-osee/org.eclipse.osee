@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import org.eclipse.osee.framework.messaging.event.skynet.event.RemoteNewRelationLinkEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
  */
 public class RemoteLinkEventFactory {
 
-   public static RemoteNewRelationLinkEvent makeEvent(IRelationLink link, int transactionNumber) {
+   public static NetworkNewRelationLinkEvent makeEvent(IRelationLink link, int transactionNumber) {
 
       if (link == null || transactionNumber < 0) {
          throw new IllegalStateException("Link or transactionNumber can not be null.");
@@ -30,7 +30,7 @@ public class RemoteLinkEventFactory {
       Artifact aArtifact = link.getArtifactA();
       Artifact bArtifact = link.getArtifactB();
 
-      return new RemoteNewRelationLinkEvent(
+      return new NetworkNewRelationLinkEvent(
             link.getPersistenceMemo().getGammaId(),
             link.getBranch().getBranchId(),
             transactionNumber,

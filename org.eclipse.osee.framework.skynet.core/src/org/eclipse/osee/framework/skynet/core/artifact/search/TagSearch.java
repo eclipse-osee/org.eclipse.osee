@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TAG_ART_MAP_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TAG_TABLE;
+import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
@@ -40,7 +41,7 @@ public class TagSearch implements ISearchPrimitive {
       this.partialMatch = partialMatch;
    }
 
-   public String getCriteriaSql(List<Object> dataList, Branch branch) {
+   public String getCriteriaSql(List<Object> dataList, Branch branch) throws SQLException {
       StringBuffer sql = new StringBuffer(SQL);
 
       sql.append(TAG_ALIAS.column(getTagColumn()) + getTagOperator() + "?");

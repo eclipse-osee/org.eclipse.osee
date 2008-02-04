@@ -19,9 +19,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
@@ -31,11 +28,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionBuild
  * @author Jeff C. Phillips
  */
 public class LinkManager {
-
    private static int count = 0;
-
    public final int aaaSerialId = count++;
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(LinkManager.class);
    private Artifact artifact;
    private final Set<IRelationLink> links;
    public final Set<IRelationLink> deletedLinks;
@@ -210,13 +204,9 @@ public class LinkManager {
    }
 
    public void persistLinks() throws SQLException {
-      persistLinks(false);
-   }
-
-   public void persistLinks(boolean recurse) throws SQLException {
       checkReleased();
       for (IRelationLink link : links) {
-         link.persist(recurse);
+         link.persist(false);
       }
       relationManager.deleteRelationLinks(deletedLinks, artifact.getBranch());
 
@@ -398,13 +388,13 @@ public class LinkManager {
    /**
     * Populates the linkManager with all of an artifacts links. It will first check with the relationManager to see if
     * they are cached before creating them from the database.
+    * 
+    * @throws SQLException
     */
-   public synchronized void populateLinks() {
+   public synchronized void populateLinks() throws SQLException {
       checkReleased();
-      try {
-         if (artifact.getPersistenceMemo() != null) relationManager.populateArtifactRelations(artifact);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      if (artifact.getPersistenceMemo() != null) {
+         relationManager.populateArtifactRelations(artifact);
       }
    }
 
@@ -430,7 +420,7 @@ public class LinkManager {
    }
 
    /**
-    * Sets release to true. Therefore, this linkmanager is no longer being supported.
+    * Sets release to true. Therefore, this link manager is no longer being supported.
     */
    public void setReleased() {
       released = true;

@@ -366,8 +366,9 @@ public class TransactionIdManager {
    /**
     * @param transactionId
     * @return The prior transactionId, or null if there is no prior.
+    * @throws SQLException
     */
-   public TransactionId getPriorTransaction(TransactionId transactionId) {
+   public TransactionId getPriorTransaction(TransactionId transactionId) throws SQLException {
       TransactionId priorTransactionId = null;
       ConnectionHandlerStatement chStmt = null;
 
@@ -383,8 +384,6 @@ public class TransactionIdManager {
             int priorId = rset.getInt("prior_id");
             if (!rset.wasNull()) priorTransactionId = getPossiblyEditableTransactionIfFromCache(priorId);
          }
-      } catch (SQLException e) {
-         logger.log(Level.SEVERE, e.getLocalizedMessage(), e);
       } finally {
          DbUtil.close(chStmt);
       }

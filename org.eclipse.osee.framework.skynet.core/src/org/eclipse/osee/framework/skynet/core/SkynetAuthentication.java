@@ -147,8 +147,7 @@ public class SkynetAuthentication implements PersistenceManager {
                            currentUser =
                                  createUser(oseeAuthentication.getCredentials().getField(UserCredentialEnum.Name),
                                        "spawnedBySkynet", userId, true);
-                           persistUser(currentUser); // this is done outside of the crateUser call
-                           // to avoid recursion
+                           persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
                         }
                      }
                   }
@@ -157,8 +156,7 @@ public class SkynetAuthentication implements PersistenceManager {
                }
             }
          }
-         firstTimeThrough = false; // firstTimeThrough must be set false after last use of its
-         // value
+         firstTimeThrough = false; // firstTimeThrough must be set false after last use of its value
       }
 
       return currentUser;
@@ -167,7 +165,7 @@ public class SkynetAuthentication implements PersistenceManager {
    private void persistUser(User user) {
       duringUserCreation = true;
       try {
-         user.persist();
+         user.persistAttributes();
          user.getLinkManager().persistLinks();
       } catch (SQLException ex) {
          duringUserCreation = false;
@@ -296,7 +294,7 @@ public class SkynetAuthentication implements PersistenceManager {
             if (create && ex.getLocalizedMessage().contains("There must be exactly one")) {
                user = createUser(name, "", name, true);
                try {
-                  user.persist();
+                  user.persistAttributes();
                } catch (SQLException ex2) {
                   logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex2);
                }

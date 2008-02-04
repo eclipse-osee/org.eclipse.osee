@@ -33,13 +33,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 public class UniversalGroup {
    public static final String ARTIFACT_TYPE_NAME = "Universal Group";
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UniversalGroup.class);
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
-   public static Collection<Artifact> getGroups() {
+   public static Collection<Artifact> getGroups(Branch branch) {
       Collection<Artifact> artifacts = null;
       try {
-         artifacts = artifactManager.getArtifactsFromSubtypeName(ARTIFACT_TYPE_NAME, branchManager.getCommonBranch());
+         artifacts = ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(ARTIFACT_TYPE_NAME, branch);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.getMessage(), ex);
          artifacts = new LinkedList<Artifact>();
@@ -47,38 +45,34 @@ public class UniversalGroup {
       return artifacts;
    }
 
-   public static Collection<Artifact> getGroups(String groupName) {
+   public static Collection<Artifact> getGroups(String groupName, Branch branch) {
       try {
          List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
          criteria.add(new ArtifactTypeSearch(ARTIFACT_TYPE_NAME, EQUAL));
          criteria.add(new AttributeValueSearch("Name", groupName, EQUAL));
 
-         return artifactManager.getArtifacts(criteria, true, branchManager.getCommonBranch());
+         return ArtifactPersistenceManager.getInstance().getArtifacts(criteria, true, branch);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.getMessage(), ex);
       }
       return new ArrayList<Artifact>();
    }
 
-   public static Artifact addGroup(String name) throws IllegalArgumentException {
-      if (getGroups(name).size() > 0) throw new IllegalArgumentException("Group Already Exists");
+   public static Artifact addGroup(String name, Branch branch) throws Exception {
+      if (getGroups(name, branch).size() > 0) throw new IllegalArgumentException("Group Already Exists");
 
       AddGroupTx addGroupTx = null;
-      try {
-         addGroupTx = new AddGroupTx(branchManager.getCommonBranch(), name);
-         addGroupTx.execute();
-      } catch (Exception ex) {
-         logger.log(Level.SEVERE, "Transaction Failed", ex);
-      }
+      addGroupTx = new AddGroupTx(branch, name);
+      addGroupTx.execute();
       return addGroupTx.getGroupArtifact();
    }
 
    public static Artifact getTopUniversalGroupArtifact(Branch branch) throws SQLException {
       return ArtifactPersistenceManager.getInstance().getArtifactFromTypeName(UniversalGroup.ARTIFACT_TYPE_NAME,
-            ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
+            ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch, false);
    }
 
-   public static void createTopUniversalGroupArtifact(Branch branch) throws SQLException {
+   public static Artifact createTopUniversalGroupArtifact(Branch branch) throws SQLException {
       ArtifactTypeNameSearch srch =
             new ArtifactTypeNameSearch(UniversalGroup.ARTIFACT_TYPE_NAME,
                   ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
@@ -86,8 +80,10 @@ public class UniversalGroup {
          Artifact art =
                ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(ARTIFACT_TYPE_NAME, branch).makeNewArtifact();
          art.setDescriptiveName(ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME);
-         art.persist();
+         art.persistAttributes();
+         return art;
       }
+      return srch.getArtifacts(Artifact.class).iterator().next();
    }
 
    static private final class AddGroupTx extends AbstractSkynetTxTemplate {
@@ -109,8 +105,14 @@ public class UniversalGroup {
                ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
                      UniversalGroup.ARTIFACT_TYPE_NAME, getTxBranch()).makeNewArtifact();
          groupArt.setDescriptiveName(name);
-         groupArt.persist();
+         groupArt.persistAttributes();
          Artifact groupRoot = getTopUniversalGroupArtifact(getTxBranch());
+         if (groupRoot == null) {
+            groupRoot = createTopUniversalGroupArtifact(getTxBranch());
+            if (groupRoot == null) {
+               throw new IllegalStateException("Could not create top universal group artifact.");
+            }
+         }
          groupRoot.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, groupArt, true);
       }
 

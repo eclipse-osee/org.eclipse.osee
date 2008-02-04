@@ -485,10 +485,6 @@
 		<Constraint schema="OSEE" id="OTCT__CTI_PK" type="PRIMARY KEY" appliesTo="CLOUD_TYPE_ID" />
    </Table>
    
-   <Table name="OSEE_TAG_STALE_ARTS" schema="OSEE">
-		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
-   </Table>
 	<!-- __________________________________________________________ -->
 	<!--                                                            -->
 	<!--                                  OSEE Usage                -->
@@ -537,8 +533,8 @@
 	</Table>
 
   <Table name="OSEE_INFO" schema="OSEE">
-    <Column defaultValue="not null" id="OSEE_VALUE" type="VARCHAR" limits="28" />
-    <Column defaultValue="not null" id="OSEE_KEY" type="VARCHAR" limits="28" />
+    <Column defaultValue="not null" id="OSEE_VALUE" type="VARCHAR" limits="50" />
+    <Column defaultValue="not null" id="OSEE_KEY" type="VARCHAR" limits="50" />
     <Constraint schema="OSEE" id="KEY_UN" type="UNIQUE" appliesTo="OSEE_KEY" />
   </Table>
 

@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.util.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.plugin.util.OseeInfo;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -54,9 +54,12 @@ public class SkynetActivator extends OseeUiActivator {
    public boolean isAutoTaggingEnabled() {
       String propertyValue = System.getProperty(AUTO_TAG_KEY, null);
       if (propertyValue != null) {
-         return propertyValue.equalsIgnoreCase("true");
-      } else {
-         return OseeInfo.isAutoTagOn();
+         return Boolean.parseBoolean(propertyValue);
       }
+      return Boolean.parseBoolean(OseeInfo.getValue(SkynetActivator.AUTO_TAG_KEY));
+   }
+
+   public static void setAutoTaggingEnabled(boolean enabled) {
+      OseeInfo.putValue(SkynetActivator.AUTO_TAG_KEY, String.valueOf(enabled));
    }
 }

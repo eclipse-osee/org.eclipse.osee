@@ -83,7 +83,7 @@ public class SkynetEventManager extends EventManager {
 
    protected Collection<IEventReceiver> getReceivers(Event event) {
       Set<IEventReceiver> receivers = new HashSet<IEventReceiver>();
-      for (Class eventClass = event.getClass(); !eventClass.equals(Object.class); eventClass =
+      for (Class<?> eventClass = event.getClass(); !eventClass.equals(Object.class); eventClass =
             eventClass.getSuperclass()) {
          // Get all receivers subscribed by Event type
          if (receiverMap.containsKey(eventClass) && receiverMap.get(eventClass) != null) receivers.addAll(receiverMap.get(eventClass));

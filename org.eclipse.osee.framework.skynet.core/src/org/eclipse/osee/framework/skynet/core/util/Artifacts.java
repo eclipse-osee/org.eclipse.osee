@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 
 /**
  * Utility methods for common tasks performed on Artifact's.
@@ -47,6 +48,19 @@ public final class Artifacts {
       for (Artifact art : arts)
          names.add(art.getDescriptiveName());
       return names;
+   }
+
+   public static void persist(final Collection<? extends Artifact> artifacts, final boolean recurse) throws Exception {
+      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
+
+         @Override
+         protected void handleTxWork() throws Exception {
+            for (Artifact art : artifacts)
+               art.persist(recurse);
+         }
+
+      };
+      newActionTx.execute();
    }
 
    /**

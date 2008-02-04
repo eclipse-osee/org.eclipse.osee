@@ -4,8 +4,7 @@ Bundle-Name: Skynet Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.skynet.core;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.skynet.core.SkynetActivator
-Require-Bundle: org.apache.xerces,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core,
  org.eclipse.ui,
  org.eclipse.core.resources,
@@ -15,8 +14,7 @@ Require-Bundle: org.apache.xerces,
  org.eclipse.osee.framework.database,
  org.junit,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.plugin,
- org.eclipse.osee.framework.svn
+ org.eclipse.osee.framework.ui.plugin
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.access,
@@ -39,12 +37,14 @@ Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.revision,
  org.eclipse.osee.framework.skynet.core.sql,
  org.eclipse.osee.framework.skynet.core.tagging,
+ org.eclipse.osee.framework.skynet.core.template,
  org.eclipse.osee.framework.skynet.core.transaction,
  org.eclipse.osee.framework.skynet.core.transaction.data,
  org.eclipse.osee.framework.skynet.core.usage,
  org.eclipse.osee.framework.skynet.core.user,
  org.eclipse.osee.framework.skynet.core.util,
- org.eclipse.osee.framework.skynet.core.utility
+ org.eclipse.osee.framework.skynet.core.utility,
+ org.eclipse.osee.framework.skynet.core.word
 Bundle-Vendor: Eclipse.org
 Bundle-ClassPath: library.jar
 DynamicImport-Package: *

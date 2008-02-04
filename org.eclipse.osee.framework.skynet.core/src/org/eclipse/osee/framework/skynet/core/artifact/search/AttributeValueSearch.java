@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.IS;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.NOT_EQUAL;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
@@ -99,12 +98,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
       dataList.add(branch.getBranchId());
 
       if (attributeValue != null) {
-         if (operator == NOT_EQUAL) {
-            sql +=
-                  " AND NOT EXISTS " + "(SELECT 'x' FROM " + ATTRIBUTE_ALIAS_3 + " WHERE " + ATTRIBUTE_ALIAS_3.column("art_id") + "=" + ATTRIBUTE_ALIAS_1.column("art_id") + " AND " + ATTRIBUTE_ALIAS_3.column("value") + "=?)";
-         } else {
-            sql += " AND " + ATTRIBUTE_ALIAS_1.column("value") + operator + " ?";
-         }
+         sql += " AND " + ATTRIBUTE_ALIAS_1.column("value") + operator + " ?";
          dataList.add(SQL3DataType.VARCHAR);
          if (operator == Operator.CONTAINS)
             dataList.add("%" + attributeValue + "%");
