@@ -96,7 +96,7 @@ public class ExtensionDefinedObjects<T> {
                   objectsByID.put(identifier, object);
                }
             } catch (Exception ex) {
-               throw new IllegalArgumentException(String.format("Unable to Load: [%s.%s]", bundleName, className));
+               throw new IllegalArgumentException(String.format("Unable to Load: [%s - %s]", bundleName, className), ex);
             }
          }
       }

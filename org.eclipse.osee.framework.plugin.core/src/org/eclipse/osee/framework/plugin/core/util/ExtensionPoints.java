@@ -12,19 +12,26 @@
 package org.eclipse.osee.framework.plugin.core.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.osgi.framework.Bundle;
 
 /**
  * @author Ryan D. Brooks
  */
 public class ExtensionPoints {
+
+   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(PluginCoreActivator.class);
 
    public static List<IConfigurationElement> getExtensionElements(Plugin plugin, String extensionPointName, String elementName) {
       Bundle bundle = plugin.getBundle();
@@ -54,6 +61,46 @@ public class ExtensionPoints {
          }
       }
       return elementsList;
+   }
+
+   /**
+    * Return extension point unique ids if type extensionPointId
+    * 
+    * @param extensionPointId <plugin>.Point Id
+    * @param extensionPointUniqueIds array of unique ids
+    * @return
+    */
+   public static List<IExtension> getExtensionsByUniqueId(String extensionPointId, Collection<String> extensionPointUniqueIds) {
+      List<IExtension> extensions = new ArrayList<IExtension>();
+      for (String entensionPointUniqueId : extensionPointUniqueIds) {
+         IExtension extension = Platform.getExtensionRegistry().getExtension(entensionPointUniqueId);
+         if (extension == null) {
+            logger.log(Level.SEVERE, "Unable to locate extension [" + entensionPointUniqueId + "]");
+         } else {
+            String thisPointId = extension.getExtensionPointUniqueIdentifier();
+            if (extensionPointId.equals(thisPointId)) {
+               extensions.add(extension);
+            } else {
+               logger.log(Level.SEVERE,
+                     "Unknown extension id [" + thisPointId + "] from extension [" + entensionPointUniqueId + "]");
+            }
+         }
+      }
+      return extensions;
+   }
+
+   public static List<String> getExtensionsPointUniqueIds(String extensionPointId) {
+      List<String> extensionPointIds = new ArrayList<String>();
+      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(extensionPointId);
+      if (point == null) {
+         throw new IllegalArgumentException("The extension point " + extensionPointId + " does not exist");
+      }
+
+      IExtension[] extensions = point.getExtensions();
+      for (IExtension extension : extensions) {
+         extensionPointIds.add(extension.getUniqueIdentifier());
+      }
+      return extensionPointIds;
    }
 
    public static IConfigurationElement getExtensionElement(String extensionPointId, String elementName) {

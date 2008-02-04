@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.plugin.core.config;
 
-import java.util.logging.Logger;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class OSEEConfigGUI {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(OSEEConfigGUI.class);
 
    protected static OSEEConfig getInstance() {
-     return OSEEConfig.getInstance();
+      return OSEEConfig.getInstance();
    }
 }

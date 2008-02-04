@@ -105,6 +105,7 @@ public class OSEEConfig {
                   toStore += ",";
                }
             }
+            logger.log(Level.INFO, "osee.jini.lookup.groups: " + toStore);
             System.setProperty(OseeProperties.OSEE_JINI_SERVICE_GROUPS, toStore);
          }
       } catch (IOException ex) {
@@ -168,12 +169,6 @@ public class OSEEConfig {
    //   private void parseDefaultWorkspace(Element rootElement) {
    //      defaultWorkspace = Jaxp.getChildTextTrim(rootElement, "DefaultWorkspace");
    //   }
-
-   /**
-    * 
-    */
-   private void getExtensionPointConfig() {
-   }
 
    private void parseServiceLookup(Element rootElement) {
 
@@ -387,7 +382,7 @@ public class OSEEConfig {
    }
 
    public String getRemoteHttpServer() {
-      return remoteHttpServer;
+      return remoteHttpServer != null ? remoteHttpServer : "";
    }
 
    //   public URL getBookmark(String name) throws MalformedURLException {
