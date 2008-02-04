@@ -22,25 +22,6 @@
       <update url="http://lba-cte.msc.az.boeing.com:31110/osee/lba_updatesite/"/>
    </url>
 
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.apache.xerces"/>
-      <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.update.core"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.ant.core"/>
-      <import plugin="org.eclipse.gef"/>
-      <import plugin="com.ibm.icu"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.pde.core"/>
-   </requires>
-
    <plugin
          id="org.eclipse.osee.framework.database"
          download-size="0"
@@ -94,8 +75,7 @@
          id="org.eclipse.osee.framework.updater"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="ganymed.ssh"
@@ -165,5 +145,11 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="com.extjs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
