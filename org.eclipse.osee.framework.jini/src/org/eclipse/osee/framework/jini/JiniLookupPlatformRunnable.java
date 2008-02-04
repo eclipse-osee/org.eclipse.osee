@@ -62,13 +62,11 @@ public class JiniLookupPlatformRunnable implements IApplication {
       CmdLineArgs args = new CmdLineArgs(inputArgs);
 
       String port = args.get("-port");
-      boolean nohup = args.getArgs().containsKey("-nohup");
-      jiniService = null;
-      if (port != null) {
-         jiniService = new StartJini(port, nohup, false, getJiniHome(), getJiniManifest());
-      } else {
-         logger.log(Level.SEVERE, "USAGE: -Dosee.jini.lookup.groups=<groups> StartJini <port> ?<-nohup> ?<-browser>");
+      if(port == null){
+    	  port = "8081";
       }
+      jiniService = null;
+      jiniService = new StartJini(port, true, false, getJiniHome(), getJiniManifest());
       return IApplication.EXIT_OK;
    }
 

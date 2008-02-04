@@ -11,16 +11,16 @@
 
 package org.eclipse.osee.framework.jini;
 
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plug-in class to be used in the desktop.
  */
-public class JiniPlugin extends OseeUiActivator {
+public class JiniPlugin extends Plugin {
 
    private static JiniPlugin plugin;
 
