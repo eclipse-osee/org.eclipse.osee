@@ -62,7 +62,7 @@ public class CheckoutProjectSetJob extends Job {
 
    private String getProjectSetPath() throws Exception {
       URL url = FileLocator.resolve(projectSetFile);
-      File file = new File(url.toURI());
+      File file = new File(url.getFile());
       return file.getAbsolutePath();
    }
 

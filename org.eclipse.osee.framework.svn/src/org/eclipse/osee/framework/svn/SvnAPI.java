@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
@@ -25,21 +26,22 @@ import org.eclipse.osee.framework.svn.entry.NullRepositoryEntry;
 import org.eclipse.osee.framework.svn.entry.RepositoryEntry;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.ControlledType;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.EntryFields;
+import org.eclipse.team.svn.core.connector.ISVNConnector;
+import org.eclipse.team.svn.core.connector.ISVNEntryStatusCallback;
+import org.eclipse.team.svn.core.connector.SVNChangeStatus;
+import org.eclipse.team.svn.core.connector.SVNConnectorException;
+import org.eclipse.team.svn.core.connector.SVNEntryInfo;
+import org.eclipse.team.svn.core.extension.CoreExtensionsManager;
+import org.eclipse.team.svn.core.operation.SVNNullProgressMonitor;
+import org.eclipse.team.svn.core.operation.remote.CheckoutOperation;
+import org.eclipse.team.svn.core.resource.IRepositoryLocation;
+import org.eclipse.team.svn.core.resource.IRepositoryResource;
+import org.eclipse.team.svn.core.resource.IRepositoryRoot;
+import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
+import org.eclipse.team.svn.core.utility.SVNUtility;
+import org.eclipse.team.svn.ui.action.remote.CheckoutAction;
 import org.eclipse.ui.PlatformUI;
-import org.polarion.team.svn.core.client.ClientWrapperException;
-import org.polarion.team.svn.core.client.ISVNClientWrapper;
-import org.polarion.team.svn.core.client.Info2;
-import org.polarion.team.svn.core.client.NodeKind;
-import org.polarion.team.svn.core.client.Status;
-import org.polarion.team.svn.core.extension.CoreExtensionsManager;
-import org.polarion.team.svn.core.operation.SVNNullProgressMonitor;
-import org.polarion.team.svn.core.operation.remote.CheckoutOperation;
-import org.polarion.team.svn.core.resource.IRepositoryLocation;
-import org.polarion.team.svn.core.resource.IRepositoryResource;
-import org.polarion.team.svn.core.resource.IRepositoryRoot;
-import org.polarion.team.svn.core.svnstorage.SVNRemoteStorage;
-import org.polarion.team.svn.core.utility.SVNUtility;
-import org.polarion.team.svn.ui.action.remote.CheckoutAction;
+
 
 /**
  * @author Roberto E. Escobar
@@ -65,21 +67,23 @@ public class SvnAPI {
 
    protected IRepositoryEntry getSVNInfo(File file) {
       IRepositoryEntry toReturn = new NullRepositoryEntry();
-      Info2 info = SVNUtility.getSVNInfo(file);
+      SVNEntryInfo info = SVNUtility.getSVNInfo(file);
       if (info != null) {
          toReturn = toRepositoryEntry(file, info);
       }
       return toReturn;
    }
 
-   private RepositoryEntry toRepositoryEntry(File file, Info2 info) {
+
+   
+   private RepositoryEntry toRepositoryEntry(File file, SVNEntryInfo info) {
       String entryType = "undefined";
       if (info.kind >= 0 && info.kind < NodeKind.NAMES.length) {
-         entryType = NodeKind.NAMES[info.kind];
-      }
+          entryType = NodeKind.NAMES[info.kind];
+       }
       DateFormat dateFormat =
             DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
-      RepositoryEntry entry = new RepositoryEntry(entryType, getVersionControlSystem());
+      final RepositoryEntry entry = new RepositoryEntry(entryType, getVersionControlSystem());
       entry.addField(EntryFields.checksum, info.checksum);
       entry.addField(EntryFields.committedRev, Long.toString(info.lastChangedRevision));
       entry.addField(EntryFields.fileName, info.path);
@@ -95,18 +99,50 @@ public class SvnAPI {
       entry.addField(EntryFields.dateCommitted, dateFormat.format(new Date(info.lastChangedDate)));
       entry.addField(EntryFields.properTime, dateFormat.format(new Date(info.propTime)));
 
-      try {
-         ISVNClientWrapper proxy = CoreExtensionsManager.instance().getSVNClientWrapperFactory().newInstance();
-         Status[] stats = proxy.status(file.getAbsolutePath(), false, true, false, false, new SVNNullProgressMonitor());
-         if (stats != null && stats.length > 0) {
-            Status status = stats[0];
-            entry.setModifiedFlag(Status.Kind.getDescription(status.textStatus));
-         }
-      } catch (ClientWrapperException ex) {
-      }
+         ISVNConnector proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
+         try {
+			proxy.status(file.getAbsolutePath(), 1, 0, new ISVNEntryStatusCallback(){
+				public void next(SVNChangeStatus status) {
+					entry.setModifiedFlag(getDescription(status.textStatus));
+				}}, new SVNNullProgressMonitor());
+		} catch (SVNConnectorException e) {
+			e.printStackTrace();
+		}
       return entry;
    }
 
+   public static final String getDescription(int kind) {
+       switch (kind) {
+       case SVNChangeStatus.Kind.NONE:
+           return "non-svn";
+       case SVNChangeStatus.Kind.NORMAL:
+           return "normal";
+       case SVNChangeStatus.Kind.ADDED:
+           return "added";
+       case SVNChangeStatus.Kind.MISSING:
+           return "missing";
+       case SVNChangeStatus.Kind.DELETED:
+           return "deleted";
+       case SVNChangeStatus.Kind.REPLACED:
+           return "replaced";
+       case SVNChangeStatus.Kind.MODIFIED:
+           return "modified";
+       case SVNChangeStatus.Kind.MERGED:
+           return "merged";
+       case SVNChangeStatus.Kind.CONFLICTED:
+           return "conflicted";
+       case SVNChangeStatus.Kind.IGNORED:
+           return "ignored";
+       case SVNChangeStatus.Kind.INCOMPLETE:
+           return "incomplete";
+       case SVNChangeStatus.Kind.EXTERNAL:
+           return "external";
+       case SVNChangeStatus.Kind.UNVERSIONED:
+       default:
+           return "unversioned";
+       }
+   }
+   
    protected String getVersionControlSystem() {
       return "svn";
    }
