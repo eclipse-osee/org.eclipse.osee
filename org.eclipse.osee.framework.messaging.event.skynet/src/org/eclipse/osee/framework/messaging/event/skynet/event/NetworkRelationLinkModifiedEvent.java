@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
 /**
  * @author Robert A. Fisher
  */
-public class RemoteRelationLinkModifiedEvent extends SkynetRelationLinkEventBase {
+public class NetworkRelationLinkModifiedEvent extends SkynetRelationLinkEventBase {
    private static final long serialVersionUID = 548299278567054333L;
 
    private String rationale;
@@ -30,7 +30,7 @@ public class RemoteRelationLinkModifiedEvent extends SkynetRelationLinkEventBase
     * @param artBTypeId
     * @param author TODO
     */
-   public RemoteRelationLinkModifiedEvent(int gammaId, int branchId, int transactionId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, String aFactoryName, String bFactoryName, int author) {
+   public NetworkRelationLinkModifiedEvent(int gammaId, int branchId, int transactionId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, String aFactoryName, String bFactoryName, int author) {
       super(gammaId, branchId, transactionId, relId, artAId, artATypeId, artBId, artBTypeId, aFactoryName,
             bFactoryName, author);
 
@@ -62,8 +62,8 @@ public class RemoteRelationLinkModifiedEvent extends SkynetRelationLinkEventBase
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof RemoteRelationLinkModifiedEvent) {
-         return (getRelId() == (((RemoteRelationLinkModifiedEvent) obj).getRelId()));
+      if (obj instanceof NetworkRelationLinkModifiedEvent) {
+         return (getRelId() == (((NetworkRelationLinkModifiedEvent) obj).getRelId()));
       }
       return super.equals(obj);
    }

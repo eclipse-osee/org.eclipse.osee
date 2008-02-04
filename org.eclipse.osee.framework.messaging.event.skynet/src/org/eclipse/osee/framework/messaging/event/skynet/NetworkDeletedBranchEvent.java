@@ -13,20 +13,16 @@ package org.eclipse.osee.framework.messaging.event.skynet;
 /**
  * Skynet messaging event; Should not be subscribed to by OSEE applications.
  * 
- * @author Donald G. Dunne
+ * @author Jeff C. Phillips
  */
-public class RemoteRenameBranchEvent implements ISkynetEvent {
-   private static final long serialVersionUID = 8339596149601997894L;
+public class NetworkDeletedBranchEvent implements ISkynetEvent {
+   private static final long serialVersionUID = 4651718722048388742L;
    private int branchId;
-   private String branchName;
-   private String shortName;
-   private final int author;
+   private int author;
 
-   public RemoteRenameBranchEvent(int branchId, int author, String branchName, String shortName) {
+   public NetworkDeletedBranchEvent(int branchId, int author) {
       this.branchId = branchId;
       this.author = author;
-      this.branchName = branchName;
-      this.shortName = shortName;
    }
 
    public int getTransactionId() {
@@ -50,40 +46,4 @@ public class RemoteRenameBranchEvent implements ISkynetEvent {
    public int getAuthor() {
       return author;
    }
-
-   /**
-    * @return the branchName
-    */
-   public String getBranchName() {
-      return branchName;
-   }
-
-   /**
-    * @param branchName the branchName to set
-    */
-   public void setBranchName(String branchName) {
-      this.branchName = branchName;
-   }
-
-   /**
-    * @return the shortName
-    */
-   public String getShortName() {
-      return shortName;
-   }
-
-   /**
-    * @param shortName the shortName to set
-    */
-   public void setShortName(String shortName) {
-      this.shortName = shortName;
-   }
-
-   /**
-    * @param branchId the branchId to set
-    */
-   public void setBranchId(int branchId) {
-      this.branchId = branchId;
-   }
-
 }

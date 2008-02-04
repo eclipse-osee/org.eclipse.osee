@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.messaging.event.skynet;
  * 
  * @author Donald G. Dunne
  */
-public class RemoteCommitBranchEvent implements ISkynetEvent {
+public class NetworkCommitBranchEvent implements ISkynetEvent {
    private static final long serialVersionUID = 8339596149601667894L;
    private int branchId;
    private int author;
@@ -24,7 +24,7 @@ public class RemoteCommitBranchEvent implements ISkynetEvent {
     * @param branchId
     * @param author
     */
-   public RemoteCommitBranchEvent(int branchId, int author) {
+   public NetworkCommitBranchEvent(int branchId, int author) {
       this.branchId = branchId;
       this.author = author;
    }

@@ -13,26 +13,21 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
 /**
  * @author Robert A. Fisher
  */
-public class RemoteBroadcastEvent extends SkynetEventBase {
-
-   private static final long serialVersionUID = 4199206432501390599L;
-   private String message;
+public class NetworkRelationLinkDeletedEvent extends SkynetRelationLinkEventBase {
+   private static final long serialVersionUID = -1451567913757261791L;
 
    /**
     * @param branchId
     * @param transactionId
+    * @param relId
+    * @param artAId
+    * @param artATypeId
+    * @param artBId
+    * @param artBTypeId
     * @param author TODO
     */
-   public RemoteBroadcastEvent(int branchId, int transactionId, String message, int author) {
-      super(branchId, transactionId, author);
-      this.message = message;
-   }
-
-   public String getMessage() {
-      return message;
-   }
-
-   public void setMessage(String message) {
-      this.message = message;
+   public NetworkRelationLinkDeletedEvent(int gammaId, int branchId, int transactionId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, String aFactoryName, String bFactoryName, int author) {
+      super(gammaId, branchId, transactionId, relId, artAId, artATypeId, artBId, artBTypeId, aFactoryName,
+            bFactoryName, author);
    }
 }

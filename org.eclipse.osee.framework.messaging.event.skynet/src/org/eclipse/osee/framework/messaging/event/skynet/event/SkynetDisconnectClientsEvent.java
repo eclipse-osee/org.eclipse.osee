@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
  * 
  * @author Roberto E. Escobar
  */
-public class SkynetDisconnectClientsEvent extends RemoteBroadcastEvent {
+public class SkynetDisconnectClientsEvent extends NetworkBroadcastEvent {
 
    private static final long serialVersionUID = -3159755675253937318L;
    private String[] userIds;

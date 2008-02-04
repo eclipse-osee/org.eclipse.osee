@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
 /**
  * @author Robert A. Fisher
  */
-public class RemoteArtifactDeletedEvent extends SkynetArtifactEventBase {
+public class NetworkArtifactDeletedEvent extends SkynetArtifactEventBase {
    private static final long serialVersionUID = 568951803773151575L;
 
    /**
@@ -23,7 +23,7 @@ public class RemoteArtifactDeletedEvent extends SkynetArtifactEventBase {
     * @param artTypeId
     * @param author TODO
     */
-   public RemoteArtifactDeletedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, int author) {
+   public NetworkArtifactDeletedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, int author) {
       super(branchId, transactionId, artId, artTypeId, factoryName, author);
    }
 

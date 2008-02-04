@@ -15,7 +15,7 @@ import java.util.Collection;
 /**
  * @author Robert A. Fisher
  */
-public class RemoteArtifactModifiedEvent extends SkynetArtifactEventBase {
+public class NetworkArtifactModifiedEvent extends SkynetArtifactEventBase {
    private static final long serialVersionUID = -4325821466558180270L;
    private Collection<SkynetAttributeChange> attributeValues;
 
@@ -26,7 +26,7 @@ public class RemoteArtifactModifiedEvent extends SkynetArtifactEventBase {
     * @param artTypeId
     * @param author TODO
     */
-   public RemoteArtifactModifiedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, Collection<SkynetAttributeChange> attributeValues, int author) {
+   public NetworkArtifactModifiedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, Collection<SkynetAttributeChange> attributeValues, int author) {
       super(branchId, transactionId, artId, artTypeId, factoryName, author);
 
       this.attributeValues = attributeValues;
@@ -34,8 +34,8 @@ public class RemoteArtifactModifiedEvent extends SkynetArtifactEventBase {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof RemoteArtifactModifiedEvent) {
-         return (getArtId() == (((RemoteArtifactModifiedEvent) obj).getArtId()));
+      if (obj instanceof NetworkArtifactModifiedEvent) {
+         return (getArtId() == (((NetworkArtifactModifiedEvent) obj).getArtId()));
       }
       return super.equals(obj);
    }

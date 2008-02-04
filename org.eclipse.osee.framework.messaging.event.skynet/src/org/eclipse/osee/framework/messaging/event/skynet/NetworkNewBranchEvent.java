@@ -15,12 +15,12 @@ package org.eclipse.osee.framework.messaging.event.skynet;
  * 
  * @author Jeff C. Phillips
  */
-public class RemoteDeletedBranchEvent implements ISkynetEvent {
-   private static final long serialVersionUID = 4651718722048388742L;
+public class NetworkNewBranchEvent implements ISkynetEvent {
+   private static final long serialVersionUID = 8339596149601337894L;
    private int branchId;
    private int author;
 
-   public RemoteDeletedBranchEvent(int branchId, int author) {
+   public NetworkNewBranchEvent(int branchId, int author) {
       this.branchId = branchId;
       this.author = author;
    }

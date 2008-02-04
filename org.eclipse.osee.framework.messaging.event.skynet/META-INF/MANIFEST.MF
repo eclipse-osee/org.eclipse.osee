@@ -7,11 +7,10 @@ Bundle-Activator: org.eclipse.osee.framework.messaging.event.skynet.SkynetEventP
 Require-Bundle: org.eclipse.core.runtime,
  net.jini,
  org.eclipse.osee.framework.jdk.core,
- org.eclipse.ui,
- org.eclipse.ui.ide,
  org.eclipse.osee.framework.jini,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.plugin
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.ui
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.framework.messaging.event.skynet,
  org.eclipse.osee.framework.messaging.event.skynet.event,

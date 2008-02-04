@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
 /**
  * @author Jeff C. Phillips
  */
-public class RemoteNewRelationLinkEvent extends SkynetRelationLinkEventBase {
+public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
 
    /**
     * 
@@ -40,7 +40,7 @@ public class RemoteNewRelationLinkEvent extends SkynetRelationLinkEventBase {
     * @param artBTypeId
     * @param author TODO
     */
-   public RemoteNewRelationLinkEvent(int gammaId, int branchId, int transactionId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, int relTypeId, String aFactoryName, String bFactoryName, String aGuid, String bGuid, String aHuamnId, String bHuamnId, String descriptorName, int author) {
+   public NetworkNewRelationLinkEvent(int gammaId, int branchId, int transactionId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, int relTypeId, String aFactoryName, String bFactoryName, String aGuid, String bGuid, String aHuamnId, String bHuamnId, String descriptorName, int author) {
       super(gammaId, branchId, transactionId, relId, artAId, artATypeId, artBId, artBTypeId, aFactoryName,
             bFactoryName, author);
 

@@ -49,7 +49,7 @@ public class SkynetEventBase implements ISkynetEvent {
 
    public int compareTo(Object o) {
 
-      if (o instanceof RemoteArtifactDeletedEvent) {
+      if (o instanceof NetworkArtifactDeletedEvent) {
          return 1;
       } else if (o instanceof SkynetArtifactEventBase) {
          return 1;
