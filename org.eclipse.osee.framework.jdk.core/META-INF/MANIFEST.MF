@@ -30,7 +30,6 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
  org.eclipse.osee.framework.jdk.core.util.xml.excel,
  org.eclipse.osee.framework.jdk.core.util.xml.parser,
  org.eclipse.osee.framework.jdk.core.validate
-Require-Bundle: org.junit,
- javax.mail,
+Require-Bundle: javax.mail,
  org.eclipse.core.runtime
 Eclipse-LazyStart: true

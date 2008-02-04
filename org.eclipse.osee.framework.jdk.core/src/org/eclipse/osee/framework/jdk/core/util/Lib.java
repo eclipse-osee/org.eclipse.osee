@@ -38,8 +38,10 @@ import java.net.URLConnection;
 import java.nio.CharBuffer;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.Attributes;
@@ -488,8 +490,7 @@ public final class Lib {
       IOOutputThread errThread =
             new IOOutputThread(output, new BufferedReader(new InputStreamReader(proc.getErrorStream())));
 
-      InputBufferThread outThread =
-            new InputBufferThread(new BufferedReader(new InputStreamReader(proc.getInputStream())));
+      InputBufferThread outThread = new InputBufferThread(proc.getInputStream());
 
       errThread.setName("err");
       outThread.setName("out");
@@ -676,13 +677,13 @@ public final class Lib {
       }
    }
 
-   public static List<File> recursivelyListFilesAndDirectories(ArrayList<File> fileList, File rootPath, Pattern fileNameP, boolean includeDirectories) {
+   public static List<File> recursivelyListFilesAndDirectories(ArrayList<File> fileList, File rootPath, Pattern filePathP, boolean includeDirectories) {
       LinkedList<File> dirList = new LinkedList<File>();
       dirList.add(rootPath);
 
       Matcher fileNameM = null;
-      if (fileNameP != null) {
-         fileNameM = fileNameP.matcher("");
+      if (filePathP != null) {
+         fileNameM = filePathP.matcher("");
       }
 
       while (!dirList.isEmpty()) {
@@ -731,8 +732,8 @@ public final class Lib {
     * @param fileNameP
     * @return List
     */
-   public static List<File> recursivelyListFiles(ArrayList<File> fileList, File rootPath, Pattern fileNameP) {
-      return recursivelyListFilesAndDirectories(fileList, rootPath, fileNameP, false);
+   public static List<File> recursivelyListFiles(ArrayList<File> fileList, File rootPath, Pattern filePathP) {
+      return recursivelyListFilesAndDirectories(fileList, rootPath, filePathP, false);
    }
 
    public static List<File> recursivelyListFiles(File rootPath, Pattern fileNameP) {
@@ -826,42 +827,12 @@ public final class Lib {
       out.close();
    }
 
-   /**
-    * test the underlying system's timing precision
-    * 
-    * @param args
-    */
-   public static void main(String[] args) {
-      // long[] times = new long[1000];
-      //
-      // times[0] = System.nanoTime();
-      // for (int i = 1; i < times.length; i++) {
-      // times[i] = times[i - 1];
-      // // Busy wait until system time changes:
-      // while (times[i] == times[i - 1]) {
-      // times[i] = System.nanoTime();
-      // }
-      // }
-      //
-      // for (int i = 1; i < times.length; i++) {
-      // System.out.println(times[i] - times[i - 1]);
-      // }
-
-      try {
-         String toCompress = ";laksdjf;aljkd;lfajds;ljfa;jdsf;lajdsfja;dsjfa;";
-         System.out.println(toCompress.length());
-         byte[] compressed = Lib.compressFile(new ByteArrayInputStream(toCompress.getBytes()));
-         byte[] decompressed = Lib.decompressBytes(compressed);
-         System.out.println(compressed.length);
-         System.out.println(decompressed.length);
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
-
-   }
-
    public static String getBasePath() {
       return Lib.getBasePath(Lib.class);
+   }
+
+   public static String getDateTimeString() {
+      return new SimpleDateFormat("yyyy-MM-dd_hh-mm").format(new Date());
    }
 
    public static String getJarPath(Class<Lib> base) {

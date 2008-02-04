@@ -36,6 +36,12 @@ public class PortUtil {
    int nextPort = 18000;
 
    private PortUtil() {
+	   String startPort = System.getProperty("osee.startport", "18000");
+	   try{
+		   basePort = nextPort = Integer.parseInt(startPort);
+	   } catch (Exception ex){
+		   
+	   }
       for (int j = nextPort; j < 64000; j += 250) {
          if (checkIfPortIsTaken(j)) {
             basePort = nextPort = j;
@@ -47,6 +53,21 @@ public class PortUtil {
             break;
          }
       }
+   }
+   
+   public void computeNewBasePort(){
+	   basePort = nextPort = basePort + 1000;
+	   for (int j = nextPort; j < 64000; j += 250) {
+	         if (checkIfPortIsTaken(j)) {
+	            basePort = nextPort = j;
+	            try {
+	               ss = new ServerSocket(basePort);
+	            } catch (IOException e) {
+	               e.printStackTrace();
+	            }
+	            break;
+	         }
+	      }
    }
 
    public int getValidPort() throws IOException {

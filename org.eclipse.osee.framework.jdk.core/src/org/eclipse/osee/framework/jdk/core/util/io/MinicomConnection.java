@@ -113,7 +113,7 @@ public class MinicomConnection {
       try {
          int elapsedTime = 0;
          while (elapsedTime <= MAX_RESPONSE_TIME) {
-            if (inputBuffer.contains(matcher)) break;
+            if (inputBuffer.contains(matcher) >= 0) break;
 
             System.out.println("Input buffer did not contain " + matcher + " after " + elapsedTime + " milisecs");
             this.wait(ITERATION_TIME);

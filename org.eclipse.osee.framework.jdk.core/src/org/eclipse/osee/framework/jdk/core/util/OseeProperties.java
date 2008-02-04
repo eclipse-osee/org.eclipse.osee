@@ -25,14 +25,18 @@ public class OseeProperties {
    public static final String OSEE_CMD_CONSOLE = "osee.cmd.console";
    public static final String OSEE_HTTP_PORT = "osee.http.port";
    public static final String OSEE_DEVELOPER = "Developer";
+   public static final String OSEE_OVERRIDE_VERSION_CHECK = "OseeOverrideVersionCheck";
 
    public static final String OSEE_NO_PROMPT = "OseeNoPrompt";
    private static final String OSEE_USE_FILE_SPECIFIED_SCHEMAS = "OseeUseFileSpecifiedSchemas";
    private static final String PRINT_SQL = "PrintSql";
    private static final String DONT_LOG_USAGE = "DontLogUsage";
+   public static final String OSEE_AUTORUN = "osee.autoRun";
    private static final String OSEE_DB_CONFIG_INIT_CHOICE = "osee.db.config.init.choice";
    private static final String OSEE_REMOTE_HTTP_SERVER = "osee.remote.http.server";
    private static final String OSEE_REMOTE_HTTP_UPLOAD_PATH = "osee.remote.http.upload.path";
+
+   private static boolean developer = false;
 
    private static OseeProperties instance = null;
    private static Logger logger = null;
@@ -60,49 +64,27 @@ public class OseeProperties {
          }
          return values;
       }
-
-      // if (filterGroups == null) {
-      // filterGroups = ConfigUtil.getConfigFactory().getOseeConfig().getJiniServiceGroups();
-      // }
-      // if (filterGroups == null || filterGroups.length > 0) {
-      // logger.log(Level.SEVERE, "[-D" + OseeProperties.OSEE_JINI_SERVICE_GROUPS + "] was not
-      // set.\n"
-      // + "Please enter the Jini Group this service register with.");
-      // System.exit(1);
-      // }
       return null;
    }
 
-   public boolean isAtsUseWorkflowFiles() {
-      return System.getProperty("AtsUseWorkflowFiles") != null;
-   }
-
-   public boolean isAtsAdmin() {
-      return System.getProperty("AtsAdmin") != null;
+   public void setDeveloper(boolean developer) {
+      OseeProperties.developer = developer;
    }
 
    public boolean isDeveloper() {
-      return System.getProperty(OSEE_DEVELOPER) != null || isAtsAdmin();
+      return System.getProperty(OSEE_DEVELOPER) != null || developer;
+   }
+
+   public String getAutoRun() {
+      return System.getProperty(OSEE_AUTORUN);
+   }
+
+   public boolean isOverrideVersionCheck() {
+      return System.getProperty(OSEE_OVERRIDE_VERSION_CHECK) != null;
    }
 
    public String getAuthenticationProviderId() {
       return System.getProperty(OSEE_AUTHENTICATION_PROVIDER_ID);
-   }
-
-   public boolean isAtsShowUser() {
-      return System.getProperty("AtsShowUser") != null;
-   }
-
-   public boolean isAtsIgnoreConfigUpgrades() {
-      return System.getProperty("AtsIgnoreConfigUpgrades") != null;
-   }
-
-   public boolean isAtsDisableEmail() {
-      return System.getProperty("AtsDisableEmail") != null;
-   }
-
-   public boolean isAtsAlwaysEmailMe() {
-      return System.getProperty("AtsAlwaysEmailMe") != null;
    }
 
    public boolean isEmailMe() {

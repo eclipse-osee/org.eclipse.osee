@@ -35,6 +35,14 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
 
    }
 
+   public Collection<Value> get(KeyOne k1) {
+      HashMap<KeyTwo, Value> o = k1ToHashMap.get(k1);
+      if (o == null) {
+         return null;
+      }
+      return o.values();
+   }
+
    public Value get(KeyOne k1, KeyTwo k2) {
       HashMap<KeyTwo, Value> o = k1ToHashMap.get(k1);
       if (o != null) {
@@ -49,7 +57,7 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
       if (o != null) {
          returnV = o.put(k2, v);
       } else {
-         o = new HashMap<KeyTwo, Value>();
+         o = new HashMap<KeyTwo, Value>(20);
          returnV = o.put(k2, v);
          k1ToHashMap.put(k1, o);
       }
@@ -104,5 +112,9 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
 
    public Set<KeyOne> getKeySetOne() {
       return k1ToHashMap.keySet();
+   }
+
+   public Collection<? extends Map<KeyTwo, Value>> getInnerMaps() {
+      return k1ToHashMap.values();
    }
 }
