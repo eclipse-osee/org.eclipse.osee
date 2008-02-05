@@ -60,7 +60,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       super();
    }
 
-   public List<XNavigateItem> getSearchNavigateItems() {
+   public List<XNavigateItem> getNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
       if (!ConnectionHandler.isConnected()) return items;

@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateManager;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
@@ -71,7 +70,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
       verArt.setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
             String.valueOf(branch.getBranchId()));
-      verArt.persist();
+      verArt.persistAttributes();
    }
 
    public static enum SawBuilds {
@@ -138,12 +137,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramBranch");
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.Demo_Program_Skynet_Types");
 
-      Branch branch =
-            BranchPersistenceManager.getInstance().createRootBranch(null, branchName, branchName, skynetTypeImport,
-                  true);
-
-      WordTemplateManager.addWordTemplates(branch);
-
+      BranchPersistenceManager.getInstance().createRootBranch(null, branchName, branchName, skynetTypeImport, true);
    }
 
    private void createVersionArtifacts() throws Exception {
@@ -156,7 +150,8 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                      VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
          ver.setDescriptiveName(verName);
          if (verName.contains("1")) ver.setReleased(true);
-         if (verName.contains("2")) ver.setAttribute(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), "yes");
+         if (verName.contains("2")) ver.setSoleBooleanAttributeValue(
+               ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          DemoTeams.getInstance().getTeamDef(Team.SAW_SW).relate(RelationSide.TeamDefinitionToVersion_Version, ver);
          ver.persist(true);
       }
@@ -169,7 +164,8 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                      VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
          ver.setDescriptiveName(verName);
          if (verName.contains("1")) ver.setReleased(true);
-         if (verName.contains("2")) ver.setAttribute(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), "yes");
+         if (verName.contains("2")) ver.setSoleBooleanAttributeValue(
+               ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          DemoTeams.getInstance().getTeamDef(Team.CIS_SW).relate(RelationSide.TeamDefinitionToVersion_Version, ver);
          ver.persist(true);
       }
