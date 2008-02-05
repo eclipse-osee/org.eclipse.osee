@@ -99,7 +99,7 @@ public final class ConnectionHandler {
       try {
          return (getConnection() != null);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, "Unable to get a DB connection: " + ex.getLocalizedMessage(), ex);
+         logger.log(Level.SEVERE, "Unable to get a database connection: " + ex.getLocalizedMessage(), ex);
       }
       return false;
    }
@@ -124,7 +124,7 @@ public final class ConnectionHandler {
          try {
             connection.close();
          } catch (SQLException ex) {
-            logger.log(Level.WARNING, "Unable to close DB connection: " + ex.getLocalizedMessage(), ex);
+            logger.log(Level.WARNING, "Unable to close database connection: " + ex.getLocalizedMessage(), ex);
          } finally {
             connection = null;
          }
@@ -156,7 +156,7 @@ public final class ConnectionHandler {
          try {
             connection.close();
          } catch (Exception ex) {
-            logger.log(Level.WARNING, "Unable to close DB connection: " + ex.getLocalizedMessage(), ex);
+            logger.log(Level.WARNING, "Unable to close database connection: " + ex.getLocalizedMessage(), ex);
          }
          connection = null;
       }
