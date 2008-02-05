@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 
 /**
- * @author b1122182
+ * @author Roberto E. Escobar
  */
 public class EclipseApplicationFormatter extends ExecutionCommandFormatter {
    // private final String baseExecString = StringFormat.separateWith(new String[] {"#JAVA#",
