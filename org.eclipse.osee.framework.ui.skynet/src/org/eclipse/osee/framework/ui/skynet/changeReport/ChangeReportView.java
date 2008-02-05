@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -44,6 +46,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -65,7 +68,7 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.util.WordUtil;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
@@ -96,6 +99,7 @@ import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu.GlobalMenuItem;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
@@ -135,20 +139,15 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ChangeReportView extends ViewPart implements IActionable, IEventReceiver {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView";
+   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ChangeReportView.class);
    private static final String INPUT = "input";
 
-   private IHandlerService handlerService;
    private static final ArtifactClipboard artifactClipboard = new ArtifactClipboard(VIEW_ID);
-   private static final AccessControlManager accessManager = AccessControlManager.getInstance();
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final String[] columnNames = {"", "Name", "", ""};
-   private static final RevisionManager revisionManager = RevisionManager.getInstance();
    private static final String SHOW_FINAL_VERSION_TXT = "Show Final &Version";
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
    private Action sortAction = null;
-   private Collection<Artifact> attributeModifiedArtifacts = null;
+   private Collection<Integer> attributeModifiedArtifactIds = null;
 
    private TreeViewer changeTable;
    private MenuItem diffMenuItem;
@@ -181,10 +180,10 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       this.toTransactionId = null;
       this.priorInput = null;
 
-      eventManager.register(LocalDeletedBranchEvent.class, this);
-      eventManager.register(RemoteDeletedBranchEvent.class, this);
-      eventManager.register(LocalCommitBranchEvent.class, this);
-      eventManager.register(RemoteCommitBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalDeletedBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteDeletedBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalCommitBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteCommitBranchEvent.class, this);
    }
 
    public TreeViewer getChangeTableTreeViewer() {
@@ -193,8 +192,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
    @Override
    public void createPartControl(Composite parent) {
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+
       PlatformUI.getWorkbench().getService(IHandlerService.class);
-      handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
       GridData gridData = new GridData();
       gridData.verticalAlignment = GridData.FILL;
       gridData.horizontalAlignment = GridData.FILL;
@@ -429,24 +429,24 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          @Override
          public void run() {
             if (sortAction.isChecked()) {
-               if (attributeModifiedArtifacts == null) {
+               if (attributeModifiedArtifactIds == null) {
+                  attributeModifiedArtifactIds = new ArrayList<Integer>();
                   try {
                      TransactionId baseTransId = ((ChangeReportInput) changeTable.getInput()).getBaseTransaction();
                      TransactionId toTransId = ((ChangeReportInput) changeTable.getInput()).getToTransaction();
-                     attributeModifiedArtifacts =
-                           RevisionManager.getInstance().getNewAndModifiedArtifacts(baseTransId, toTransId, false);
+                     for (Artifact artifact : RevisionManager.getInstance().getNewAndModifiedArtifacts(baseTransId,
+                           toTransId, false)) {
+                        attributeModifiedArtifactIds.add(artifact.getArtId());
+                     }
                   } catch (SQLException ex) {
-                     // Don't want to repeat the errored search
-                     attributeModifiedArtifacts = new ArrayList<Artifact>();
                      OSEELog.logSevere(SkynetGuiPlugin.class, "Error getting modified artifacts", true);
                   }
                }
                ((BranchLabelProvider) changeTable.getLabelProvider()).setShowChangeType(true,
-                     attributeModifiedArtifacts);
+                     attributeModifiedArtifactIds);
                changeTable.setSorter(viewerSorter);
             } else {
-               ((BranchLabelProvider) changeTable.getLabelProvider()).setShowChangeType(false,
-                     new ArrayList<Artifact>());
+               ((BranchLabelProvider) changeTable.getLabelProvider()).setShowChangeType(false, new ArrayList<Integer>());
                changeTable.setSorter(new LabelSorter());
             }
          }
@@ -478,7 +478,6 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       toolbarManager.add(sortAction);
       OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Change Report");
    }
-
    ViewerSorter viewerSorter = new ViewerSorter() {
 
       @SuppressWarnings("unchecked")
@@ -491,8 +490,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                   boolean art1RelChgOnly = false;
                   boolean art2RelChgOnly = false;
                   try {
-                     art1RelChgOnly = !attributeModifiedArtifacts.contains(artChg1.getArtifact());
-                     art2RelChgOnly = !attributeModifiedArtifacts.contains(artChg2.getArtifact());
+                     art1RelChgOnly = !attributeModifiedArtifactIds.contains(artChg1.getArtifact());
+                     art2RelChgOnly = !attributeModifiedArtifactIds.contains(artChg2.getArtifact());
                      // sort relation change only artifacts last
                      if ((art1RelChgOnly && art2RelChgOnly) || (!art1RelChgOnly && !art2RelChgOnly))
                         getComparator().compare(artChg1.getName(), artChg2.getName());
@@ -556,14 +555,17 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       diffMenuItem.addSelectionListener(new SelectionListener() {
 
          public void widgetSelected(SelectionEvent event) {
-            ArtifactChange selectedItem = (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
+            ArtifactChange selectedItem =
+                  (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
 
             try {
                if (selectedItem.getArtifact() != null) {
-                  Artifact firstArtifact = selectedItem.getModType() == NEW ? null : artifactManager.getArtifactFromId(
-                        selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
-                  Artifact secondArtifact = selectedItem.getModType() == DELETE ? null : artifactManager.getArtifactFromId(
-                        selectedItem.getArtifact().getArtId(), selectedItem.getToTransactionId());
+                  Artifact firstArtifact =
+                        selectedItem.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                              selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
+                  Artifact secondArtifact =
+                        selectedItem.getModType() == DELETE ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                              selectedItem.getArtifact().getArtId(), selectedItem.getToTransactionId());
 
                   RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
                }
@@ -596,10 +598,12 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                selectedItem = (ArtifactChange) ((ITreeNode) iterator.next()).getBackingData();
 
                try {
-                  Artifact baseArtifact = selectedItem.getModType() == NEW ? null : artifactManager.getArtifactFromId(
-                        selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
-                  Artifact newerArtifact = selectedItem.getModType() == DELETE ? null : artifactManager.getArtifactFromId(
-                        selectedItem.getArtifact().getArtId(), selectedItem.getToTransactionId());
+                  Artifact baseArtifact =
+                        selectedItem.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                              selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
+                  Artifact newerArtifact =
+                        selectedItem.getModType() == DELETE ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                              selectedItem.getArtifact().getArtId(), selectedItem.getToTransactionId());
 
                   baseArtifacts.add(baseArtifact);
                   newerArtifacts.add(newerArtifact);
@@ -610,8 +614,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
             // This is a HACK ... I needed a way to ask the renderManager
             // for the wordRender. There
             // should exist such a method on the manager
-            WordRenderer renderer = (WordRenderer) RendererManager.getInstance().getRendererById(
-                  "org.eclipse.osee.framework.ui.skynet.word");
+            WordRenderer renderer =
+                  (WordRenderer) RendererManager.getInstance().getRendererById(
+                        "org.eclipse.osee.framework.ui.skynet.word");
 
             try {
                renderer.compareArtifacts(baseArtifacts, newerArtifacts, DIFF_ARTIFACT, null,
@@ -635,18 +640,21 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
          @Override
          public void widgetSelected(SelectionEvent event) {
-            ArtifactChange selectedItem = (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
+            ArtifactChange selectedItem =
+                  (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
 
             try {
-               Artifact firstArtifact = selectedItem.getModType() == NEW ? null : artifactManager.getArtifactFromId(
-                     selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
+               Artifact firstArtifact =
+                     selectedItem.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                           selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
 
                Artifact secondArtifact = null;
                Branch parentBranch = firstArtifact.getBranch().getParentBranch();
 
                TransactionId transactionId = TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
-               secondArtifact = selectedItem.getModType() == DELETE ? null : artifactManager.getArtifactFromId(
-                     selectedItem.getArtifact().getArtId(), transactionId);
+               secondArtifact =
+                     selectedItem.getModType() == DELETE ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                           selectedItem.getArtifact().getArtId(), transactionId);
 
                RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
 
@@ -668,11 +676,13 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       diffConflictsMenuItem.addSelectionListener(new SelectionListener() {
 
          public void widgetSelected(SelectionEvent event) {
-            ArtifactChange selectedItem = (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
+            ArtifactChange selectedItem =
+                  (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
 
             try {
-               Artifact secondArtifact = artifactManager.getArtifactFromId(selectedItem.getArtifact().getArtId(),
-                     toTransactionId);
+               Artifact secondArtifact =
+                     ArtifactPersistenceManager.getInstance().getArtifactFromId(selectedItem.getArtifact().getArtId(),
+                           toTransactionId);
                RendererManager.getInstance().compareInJob(selectedItem.getConflictingModArtifact(), secondArtifact,
                      DIFF_ARTIFACT);
             } catch (Exception ex) {
@@ -692,16 +702,18 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            ArtifactChange selectedItem = (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
+            ArtifactChange selectedItem =
+                  (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
 
             IWorkbenchPage page = AWorkbench.getActivePage();
             try {
                Artifact selectedArtifact = selectedItem.getArtifact();
 
-               RevisionHistoryView revisionHistoryView = (RevisionHistoryView) page.showView(
-                     RevisionHistoryView.VIEW_ID,
-                     selectedArtifact != null ? selectedArtifact.getGuid() : Integer.toString(selectedItem.getArtId()),
-                     IWorkbenchPage.VIEW_ACTIVATE);
+               RevisionHistoryView revisionHistoryView =
+                     (RevisionHistoryView) page.showView(
+                           RevisionHistoryView.VIEW_ID,
+                           selectedArtifact != null ? selectedArtifact.getGuid() : Integer.toString(selectedItem.getArtId()),
+                           IWorkbenchPage.VIEW_ACTIVATE);
                revisionHistoryView.explore(selectedArtifact);
             } catch (Exception ex) {
                OSEELog.logException(getClass(), ex, true);
@@ -716,7 +728,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            ArtifactChange selectedItem = (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
+            ArtifactChange selectedItem =
+                  (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
             Artifact selectedArtifact;
             try {
                selectedArtifact = selectedItem.getArtifact();
@@ -735,7 +748,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            ArtifactChange selectedItem = (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
+            ArtifactChange selectedItem =
+                  (ArtifactChange) ((ITreeNode) ((IStructuredSelection) changeTable.getSelection()).getFirstElement()).getBackingData();
 
             // This is serious stuff, make sure the user understands the
             // impact.
@@ -786,7 +800,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
             if (object instanceof ITreeNode && ((ITreeNode) object).getBackingData() instanceof ArtifactChange) {
                try {
                   artifact = ((ArtifactChange) ((ITreeNode) object).getBackingData()).getArtifact();
-                  if (accessManager.checkObjectPermission(artifact, PermissionEnum.READ)) {
+                  if (AccessControlManager.getInstance().checkObjectPermission(artifact, PermissionEnum.READ)) {
                      artifactTransferData.add(artifact);
                      textTransferData.add(artifact.getDescriptiveName());
                   }
@@ -827,7 +841,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
             if (object instanceof ITreeNode && ((ITreeNode) object).getBackingData() instanceof ArtifactChange) {
                try {
                   Artifact artifact = ((ArtifactChange) ((ITreeNode) object).getBackingData()).getArtifact();
-                  Artifact headArtifact = artifactManager.getArtifact(artifact.getGuid(), artifact.getBranch());
+                  Artifact headArtifact =
+                        ArtifactPersistenceManager.getInstance().getArtifact(artifact.getGuid(), artifact.getBranch());
                   if (headArtifact != null) {
                      artifacts.add(headArtifact);
                   }
@@ -851,7 +866,13 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          @Override
          public void widgetSelected(SelectionEvent e) {
             for (Artifact artifact : getHeadArtifactsForSelection()) {
-               ArtifactExplorer.revealArtifact(artifact);
+               try {
+                  ArtifactExplorer.revealArtifact(artifact.getGuid(), artifact.getBranch());
+               } catch (PartInitException ex) {
+                  logger.log(Level.SEVERE, ex.toString(), ex);
+               } catch (SQLException ex) {
+                  logger.log(Level.SEVERE, ex.toString(), ex);
+               }
             }
          }
       });
@@ -915,7 +936,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
    @Override
    public void setFocus() {
-      changeTable.getControl().setFocus();
+      if (changeTable != null) changeTable.getControl().setFocus();
    }
 
    public static void openViewUpon(final Branch branch) {
@@ -924,8 +945,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               Pair<TransactionId, TransactionId> transactionToFrom = TransactionIdManager.getInstance().getStartEndPoint(
-                     branch);
+               Pair<TransactionId, TransactionId> transactionToFrom =
+                     TransactionIdManager.getInstance().getStartEndPoint(branch);
                if (transactionToFrom.getKey().equals(transactionToFrom.getValue())) {
                   AWorkbench.popup("Information", "There are no changes on this branch.");
                   monitor.done();
@@ -936,8 +957,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                   public void run() {
                      try {
                         IWorkbenchPage page = AWorkbench.getActivePage();
-                        ChangeReportView changeReportView = (ChangeReportView) page.showView(VIEW_ID,
-                              String.valueOf(branch.getBranchId()), IWorkbenchPage.VIEW_ACTIVATE);
+                        ChangeReportView changeReportView =
+                              (ChangeReportView) page.showView(VIEW_ID, String.valueOf(branch.getBranchId()),
+                                    IWorkbenchPage.VIEW_ACTIVATE);
 
                         changeReportView.explore(branch);
                      } catch (PartInitException ex) {
@@ -959,8 +981,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
    public static void openViewUpon(ChangeReportInput input) throws PartInitException {
       IWorkbenchPage page = AWorkbench.getActivePage();
-      ChangeReportView changeReportView = (ChangeReportView) page.showView(VIEW_ID,
-            String.valueOf(input.getToTransaction().getTransactionNumber()), IWorkbenchPage.VIEW_ACTIVATE);
+      ChangeReportView changeReportView =
+            (ChangeReportView) page.showView(VIEW_ID, String.valueOf(input.getToTransaction().getTransactionNumber()),
+                  IWorkbenchPage.VIEW_ACTIVATE);
       changeReportView.explore(input);
    }
 
@@ -1057,8 +1080,10 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                   Artifact artifact = ((ArtifactChange) object).getArtifact();
 
                   if (artifact != null) {
-                     readPermission &= accessManager.checkObjectPermission(artifact, PermissionEnum.READ);
-                     writePermission &= accessManager.checkObjectPermission(artifact, PermissionEnum.WRITE);
+                     readPermission &=
+                           AccessControlManager.getInstance().checkObjectPermission(artifact, PermissionEnum.READ);
+                     writePermission &=
+                           AccessControlManager.getInstance().checkObjectPermission(artifact, PermissionEnum.WRITE);
                   }
                } catch (SQLException ex) {
                   readPermission = false;
@@ -1070,7 +1095,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
          boolean artifactSelected = false;
          try {
-            artifactSelected = obj1 instanceof ArtifactChange && obj2 == null && ((ArtifactChange) obj1).getArtifact() != null;
+            artifactSelected =
+                  obj1 instanceof ArtifactChange && obj2 == null && ((ArtifactChange) obj1).getArtifact() != null;
          } catch (SQLException ex) {
             OSEELog.logException(getClass(), ex, false);
          }
@@ -1084,10 +1110,11 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
                boolean wordArtifactSelected = artifactSelected && changedArtifact instanceof WordArtifact;
                boolean modifiedWordArtifactSelected = wordArtifactSelected && change.getModType() == CHANGE;
-               boolean conflictedWordArtifactSelected = modifiedWordArtifactSelected && change.getChangeType() == ChangeType.CONFLICTING;
+               boolean conflictedWordArtifactSelected =
+                     modifiedWordArtifactSelected && change.getChangeType() == ChangeType.CONFLICTING;
                boolean validDiffParent = wordArtifactSelected && parentBranch != null;
 
-               showInExplorer.setEnabled(artifactSelected && reportBranch == branchPersistenceManager.getDefaultBranch());
+               showInExplorer.setEnabled(artifactSelected && reportBranch == BranchPersistenceManager.getInstance().getDefaultBranch());
 
                copyMenuItem.setEnabled(readPermission);
                // showFinalWordVersionMenuItem.setEnabled(wordArtifactSelected
@@ -1243,8 +1270,8 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
       if (event instanceof BranchEvent) {
          BranchEvent branchEvent = (BranchEvent) event;
-            branchId = branchEvent.getBranchId();
-         }
+         branchId = branchEvent.getBranchId();
+      }
 
       ChangeReportInput changeReportInput = (ChangeReportInput) changeTable.getInput();
 
@@ -1269,7 +1296,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
     */
    @Override
    public void dispose() {
-      eventManager.unRegisterAll(this);
+      SkynetEventManager.getInstance().unRegisterAll(this);
 
       super.dispose();
    }
@@ -1332,8 +1359,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
          monitor.subTask("Calculating change set");
 
-         Collection<RevisionChange> revisionChanges = revisionManager.getAllTransactionChanges(OUTGOING,
-               baseTransactionId.getTransactionNumber(), toTransactionId.getTransactionNumber(), artId, null);
+         Collection<RevisionChange> revisionChanges =
+               RevisionManager.getInstance().getAllTransactionChanges(OUTGOING,
+                     baseTransactionId.getTransactionNumber(), toTransactionId.getTransactionNumber(), artId, null);
          int worstSize = revisionChanges.size();
          Collection<Long> attributeGammas = new ArrayList<Long>(worstSize);
          Collection<Long> linkGammas = new ArrayList<Long>(worstSize);

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class EmailableJob extends Job {
 
    private Collection<User> notifyUsers = new HashSet<User>();
+   private Collection<String> emailAddresses = new ArrayList<String>();
 
    /**
     * @param name
@@ -45,6 +47,7 @@ public class EmailableJob extends Job {
          Set<String> emails = new HashSet<String>();
          for (User user : notifyUsers)
             emails.add(user.getEmail());
+         emails.addAll(emailAddresses);
          AEmail emailMessage =
                new AEmail(emails.toArray(new String[emails.size()]),
                      SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(),
@@ -75,6 +78,10 @@ public class EmailableJob extends Job {
 
    public void setNotifyUsers(Collection<User> notifyUsers) {
       this.notifyUsers = notifyUsers;
+   }
+
+   public void setNotifyEmail(Collection<String> emailAddresses) {
+      this.emailAddresses = emailAddresses;
    }
 
 }

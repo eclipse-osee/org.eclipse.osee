@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.ArrayList;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.swt.widgets.Shell;
 
@@ -25,9 +27,8 @@ public class GroupListDialog extends ArtifactListDialog {
       setTitle("Select group");
       setMessage("Select group");
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Artifact art : UniversalGroup.getGroups())
-         arts.add(art);
+      for (Artifact art : UniversalGroup.getGroups(BranchPersistenceManager.getInstance().getDefaultBranch()))
+         if (!art.getDescriptiveName().equals(ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME)) arts.add(art);
       setArtifacts(arts);
    }
-
 }

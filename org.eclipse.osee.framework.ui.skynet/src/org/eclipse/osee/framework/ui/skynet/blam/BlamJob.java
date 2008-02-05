@@ -106,7 +106,7 @@ public class BlamJob extends Job {
          }
 
          for (BlamOperation operation : operations) {
-            operation.runOperation(variableMap, branch, monitor);
+            operation.runOperation(variableMap, monitor);
          }
       }
    }

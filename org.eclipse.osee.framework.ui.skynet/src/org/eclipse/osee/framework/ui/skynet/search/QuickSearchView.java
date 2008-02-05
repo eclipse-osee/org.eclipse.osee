@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -52,14 +53,11 @@ import org.eclipse.ui.part.ViewPart;
  * @author Ryan D. Brooks
  */
 public class QuickSearchView extends ViewPart implements IActionable, Listener, IEventReceiver {
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.QuickSearchView";
    private static final String PRIOR_SEARCH_TEXT = "searchText";
    private static final String PRIOR_CASE_SENSITIVE = "caseSensitive";
    private static final String PRIOR_PARTIAL_MATCH = "partialMatch";
    private static final String PRIOR_SEARCH_TYPE = "searchType";
-
-   private BranchPersistenceManager branchManager;
 
    private Button btnSearch;
    private Button chkCaseSensitive;
@@ -103,7 +101,6 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
          initialSearchText = "";
       }
 
-      this.branchManager = BranchPersistenceManager.getInstance();
    }
 
    @Override
@@ -125,6 +122,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
    @Override
    public void createPartControl(Composite parent) {
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+
       parent.setLayout(new GridLayout());
       parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -156,7 +155,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       createActions();
       setHelpContexts();
 
-      eventManager.register(DefaultBranchChangedEvent.class, this);
+      SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
 
       updateWidgetEnablements();
    }
@@ -238,7 +237,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
    @Override
    public void setFocus() {
-      txtSearch.setFocus();
+      if (txtSearch != null) txtSearch.setFocus();
    }
 
    public String getActionDescription() {
@@ -256,7 +255,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       } else if (radNameSearch.getSelection()) {
          filterList.addFilter(new FilterModel(new AttributeValueSearch("Name", txtSearch.getText().replace('*', '%'),
                Operator.LIKE), "", "", ""), false);
-         searchQuery = new FilterArtifactSearchQuery(filterList, branchManager.getDefaultBranch());
+         searchQuery =
+               new FilterArtifactSearchQuery(filterList, BranchPersistenceManager.getInstance().getDefaultBranch());
       } else if (radIndexSearch.getSelection()) {
          for (String tag : Tagger.tokenizeAndSplit(txtSearch.getText())) {
             ISearchPrimitive primitive =
@@ -264,7 +264,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
             filterList.addFilter(new FilterModel(primitive, "", "", ""), false);
          }
-         searchQuery = new FilterArtifactSearchQuery(filterList, branchManager.getDefaultBranch());
+         searchQuery =
+               new FilterArtifactSearchQuery(filterList, BranchPersistenceManager.getInstance().getDefaultBranch());
       } else {
          throw new IllegalStateException("unexpected search type radio button state");
       }
@@ -280,7 +281,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       if (historicalSearch.getSelection()) {
          branchLabel.setText("Searching on all branches");
       } else {
-         branchLabel.setText("Searching on current default branch \"" + branchManager.getDefaultBranch() + "\"");
+         branchLabel.setText("Searching on current default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch() + "\"");
       }
    }
 

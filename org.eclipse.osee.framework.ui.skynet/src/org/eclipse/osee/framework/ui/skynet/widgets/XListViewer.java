@@ -125,6 +125,10 @@ public class XListViewer extends XWidget {
       return listViewer.getInput();
    }
 
+   public Collection<Object> getCollectionInput() {
+      return input;
+   }
+
    public void setInputArtifacts(Collection<? extends Artifact> arts) {
       ArrayList<Object> objs = new ArrayList<Object>();
       for (Artifact art : arts)
@@ -259,6 +263,10 @@ public class XListViewer extends XWidget {
       return listViewer.getTable();
    }
 
+   public TableViewer getTableViewer() {
+      return listViewer;
+   }
+
    protected void updateListWidget() {
       listViewer.refresh();
       setLabelError();
@@ -362,5 +370,4 @@ public class XListViewer extends XWidget {
    public Object getData() {
       return getSelected();
    }
-
 }

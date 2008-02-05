@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -37,6 +38,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
@@ -51,7 +53,7 @@ public class PolicyDialog extends Dialog {
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final SkynetAuthentication skynetAuthentication = SkynetAuthentication.getInstance();
-   private PolicyTableViewer tableViewer;
+   private PolicyTableViewer policyTableViewer;
    private Button radEnabled;
    private Button radDisabled;
    private Button btnAdd;
@@ -59,6 +61,7 @@ public class PolicyDialog extends Dialog {
    private Combo cmbUsers;
    private Combo cmbPermissionLevel;
    private Object object;
+   private Label accessLabel;
 
    public PolicyDialog(Shell parentShell, Object object) {
       super(parentShell);
@@ -119,7 +122,7 @@ public class PolicyDialog extends Dialog {
 
       for (PermissionEnum permission : permissions) {
          if (!permission.equals(PermissionEnum.LOCK)) {
-            cmbPermissionLevel.add(permission.getName());
+            cmbPermissionLevel.add(permission.getName() + " - Rank = " + permission.getRank() + "");
             cmbPermissionLevel.setData(permission.getName(), permission);
          }
       }
@@ -140,17 +143,21 @@ public class PolicyDialog extends Dialog {
 
       btnAdd.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            Artifact subject = (Artifact) cmbUsers.getData(cmbUsers.getText());
-            PermissionEnum permission = (PermissionEnum) cmbPermissionLevel.getData(cmbPermissionLevel.getText());
+            Artifact subject = (Artifact) cmbUsers.getData(cmbUsers.getText().replaceAll(" - Rank.*", ""));
+            PermissionEnum permission =
+                  (PermissionEnum) cmbPermissionLevel.getData(cmbPermissionLevel.getText().replaceAll(" - Rank.*", ""));
 
             if (subject != null && permission != null) {
-               tableViewer.addItem(subject, object, permission);
+               policyTableViewer.addItem(subject, object, permission);
             }
          }
       });
    }
 
    private void addDialogContols(Composite mainComposite) {
+
+      accessLabel = new Label(mainComposite, SWT.NONE);
+
       radDisabled = new Button(mainComposite, SWT.RADIO);
       radDisabled.setText("Disabled");
       radDisabled.setEnabled(false);
@@ -163,7 +170,7 @@ public class PolicyDialog extends Dialog {
       group.setLayout(new GridLayout(1, false));
 
       Table table = new Table(group, SWT.BORDER | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
-      tableViewer = new PolicyTableViewer(table, object);
+      policyTableViewer = new PolicyTableViewer(table, object);
       GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
       gridData.heightHint = 100;
       gridData.widthHint = 500;
@@ -178,28 +185,33 @@ public class PolicyDialog extends Dialog {
       btnAdd = new Button(composite, SWT.PUSH);
       btnAdd.setText("Add");
 
+      (new Label(group, SWT.NONE)).setText("  NOTE: Higher permission rank overrides lower rank.");
+
       chkChildrenPermission = new Button(mainComposite, SWT.CHECK);
       chkChildrenPermission.setText("Set permission for artifact's default hierarchy descendents.");
    }
 
    private void checkEnabled() {
       // get information from db
+      boolean accessEnabled = AccessControlManager.getInstance().checkObjectPermission(object, PermissionEnum.WRITE);
+
+      accessLabel.setText(accessEnabled ? "" : "You do not have permissions to modify access.");
       radEnabled.setSelection(true);
 
-      boolean enable = radEnabled.getSelection();
+      boolean enable = radEnabled.getSelection() && accessEnabled;
       boolean isArtifact = object instanceof Artifact;
 
       cmbUsers.setEnabled(enable);
       cmbPermissionLevel.setEnabled(enable);
       btnAdd.setEnabled(enable);
-      tableViewer.getTable().setEnabled(enable);
+      policyTableViewer.setEnabled(enable);
 
       chkChildrenPermission.setEnabled(isArtifact);
    }
 
    @Override
    protected void okPressed() {
-      for (AccessControlData data : tableViewer.getAccessControlList().values()) {
+      for (AccessControlData data : policyTableViewer.getAccessControlList().values()) {
          if (data.isDirty()) data.persist(chkChildrenPermission.getSelection());
       }
       super.okPressed();

@@ -12,15 +12,11 @@
 package org.eclipse.osee.framework.ui.skynet.dbinit;
 
 import java.sql.Connection;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
-import org.eclipse.osee.framework.skynet.core.user.UserEnum;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustomizationArtifact;
 
 /**
  * This class creates the common branch and imports the appropriate skynet types. Class should be extended for plugins
@@ -40,25 +36,16 @@ public class AddCommonBranch implements IDbInitializationTask {
       // Create branch, import skynet types and initialize
       BranchPersistenceManager.getInstance().createRootBranch(null, Branch.COMMON_BRANCH_CONFIG_ID,
             Branch.COMMON_BRANCH_CONFIG_ID, getSkynetDbTypeExtensionIds(), true);
-
-      // Create Default Users
-      for (UserEnum userEnum : UserEnum.values()) {
-         SkynetAuthentication.getInstance().createUser(userEnum);
-      }
-
-      // Create Global Preferences artifact that lives on common branch
-      GlobalPreferences.createGlobalPreferencesArtifact();
-
-      // Create XViewer Customization artifact that lives on common branch
-      XViewerCustomizationArtifact.getAtsCustArtifactOrCreate(true);
-
    }
 
    public List<String> getSkynetDbTypeExtensionIds() {
-      List<String> skynetTypeImport = new ArrayList<String>();
-      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.CommonBranch");
-      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.ProgramAndCommon");
-      return skynetTypeImport;
+      return Arrays.asList("org.eclipse.osee.framework.skynet.core.CommonBranch",
+            "org.eclipse.osee.framework.skynet.core.ProgramAndCommon", "lba.ats.config.tools.SkyNet_LbaAts",
+            "org.eclipse.osee.ats.ATS_Skynet_Types", "lba.ats.config.blk3.mp.SkyNet_LBA_BLK3_MP",
+            "lba.ats.config.v11reu.processor.SkyNet_LBA_V11Reu_Processor",
+            "lba.ats.config.v13.processor.SkyNet_LBA_V13_Processor",
+            "lba.ats.config.v11reu.processor.SkyNet_LBA_V11Reu_Processor",
+            "lba.ats.config.deliverable.SkyNet_LbaAtsDeliverable");
    }
 
    /*

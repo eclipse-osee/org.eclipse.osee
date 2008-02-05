@@ -14,9 +14,11 @@ import java.io.File;
 import java.io.FileFilter;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.xml.XmlUtility;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 public class WholeWordDocumentExtractor extends WordExtractor {
    private static final String description = "Extract all the content of each Word XML document as one artifact";
@@ -36,22 +38,14 @@ public class WholeWordDocumentExtractor extends WordExtractor {
     */
    public void discoverArtifactAndRelationData(File importFile) throws Exception {
       if (importFile == null) throw new IllegalArgumentException("importFile can not be null");
-
       RoughArtifact roughArtifact = new RoughArtifact(Lib.stripExtension(importFile.getName()));
       roughArtifact.setPrimaryDescriptor(primaryDescriptor);
       addRoughArtifact(roughArtifact);
-
+      String myGuid = roughArtifact.getGuid();
       String contents = Lib.fileToString(importFile);
-      int beginIndex = contents.indexOf(BODY_START);
-      int endIndex = contents.indexOf(BODY_END);
-
-      if (beginIndex == -1 || endIndex == -1 || endIndex < beginIndex) {
-         throw new IllegalArgumentException("The file " + importFile.getName() + " is not the right format");
-      }
-      beginIndex += BODY_START.length();
-      contents = contents.substring(beginIndex, endIndex);
-
-      roughArtifact.addAttribute(WordAttribute.CONTENT_NAME, contents);
+      String contentsInUTF8 = XmlUtility.removeNotUTF8Characters(contents);
+      String contentsInUTF8WithWholeDocumentGuid = WordUtil.addGUIDToDocument(myGuid, contentsInUTF8);
+      roughArtifact.addAttribute(WordAttribute.CONTENT_NAME, contentsInUTF8WithWholeDocumentGuid);
    }
 
    /* (non-Javadoc)

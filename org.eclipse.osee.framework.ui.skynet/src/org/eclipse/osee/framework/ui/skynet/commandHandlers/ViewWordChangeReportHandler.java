@@ -19,15 +19,18 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Paul K. Waldfogel
@@ -88,18 +91,30 @@ public class ViewWordChangeReportHandler extends AbstractSelectionChangedHandler
 
    @Override
    public boolean isEnabled() {
-      List<Artifact> artifacts = new LinkedList<Artifact>();
-      try {
-         IStructuredSelection structuredSelection = getActiveSiteSelection();
-         mySelectedArtifactChangeList = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+      if (PlatformUI.getWorkbench().isClosing()) {
+         return false;
+      }
 
-         for (ArtifactChange artifactChange : mySelectedArtifactChangeList) {
-            artifacts.add(artifactChange.getArtifact());
+      List<Artifact> artifacts = new LinkedList<Artifact>();
+      boolean isEnabled = false;
+
+      try {
+         ISelectionProvider selectionProvider =
+               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+
+         if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+            mySelectedArtifactChangeList = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+
+            for (ArtifactChange artifactChange : mySelectedArtifactChangeList) {
+               artifacts.add(artifactChange.getArtifact());
+            }
+            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
          }
       } catch (SQLException ex) {
          OSEELog.logException(getClass(), ex, true);
       }
 
-      return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+      return isEnabled;
    }
 }

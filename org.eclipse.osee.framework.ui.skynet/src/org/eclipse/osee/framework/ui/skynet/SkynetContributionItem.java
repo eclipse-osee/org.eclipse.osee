@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.ui.plugin.event.EventManager;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -66,7 +66,7 @@ public abstract class SkynetContributionItem extends StatusLineContributionItem 
    }
 
    public static void addTo(IStatusLineManager manager) {
-      if (OseeProperties.getInstance().isAtsAdmin()) AdminContributionItem.addTo(manager);
+      if (OseeAts.isAtsAdmin()) AdminContributionItem.addTo(manager);
       SkynetServiceContributionItem.addTo(manager);
       SkynetConnectionContributionItem.addTo(manager);
       SkynetAuthenticationContributionItem.addTo(manager);

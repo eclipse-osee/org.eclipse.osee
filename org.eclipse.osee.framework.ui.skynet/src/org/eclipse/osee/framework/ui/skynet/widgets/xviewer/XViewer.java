@@ -21,10 +21,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.ui.plugin.util.ALayout;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.FilterDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.XViewerCustomize;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -124,6 +124,20 @@ public class XViewer extends TreeViewer {
             updateStatusLabel();
          }
       });
+      getTree().addListener(SWT.MouseUp, new Listener() {
+         public void handleEvent(Event event) {
+            Point pt = new Point(event.x, event.y);
+            TreeItem item = getTree().getItem(pt);
+            if (item == null) return;
+            for (int colNum = 0; colNum < getTree().getColumnCount(); colNum++) {
+               Rectangle rect = item.getBounds(colNum);
+               if (rect.contains(pt)) {
+                  // System.out.println("Column " + colNum);
+                  handleLeftClick(getTree().getColumns()[colNum], item);
+               }
+            }
+         }
+      });
       getTree().addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -158,6 +172,10 @@ public class XViewer extends TreeViewer {
       return false;
    }
 
+   public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+      return false;
+   }
+
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
    }
 
@@ -171,6 +189,17 @@ public class XViewer extends TreeViewer {
       if (customize.getCurrentCustData() != null) {
          for (XViewerColumn xCol : customize.getCurrentCustData().getColumnData().getColumns()) {
             if (xCol.getColumnNum() == columnIndex) return xCol;
+         }
+      }
+      return null;
+   }
+
+   public XViewerColumn getXTreeColumn(String columnName) {
+      // Setting current customize data happens in a job, the currentCustData could be null
+      // depending on order of threads
+      if (customize.getCurrentCustData() != null) {
+         for (XViewerColumn xCol : customize.getCurrentCustData().getColumnData().getColumns()) {
+            if (xCol.getDisplayName() == columnName) return xCol;
          }
       }
       return null;

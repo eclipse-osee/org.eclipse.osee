@@ -28,4 +28,5 @@ public interface IAtsLib {
 
    public void openInAtsWorld(String name, Collection<Artifact> artifacts);
 
+   public boolean isAtsAdmin();
 }

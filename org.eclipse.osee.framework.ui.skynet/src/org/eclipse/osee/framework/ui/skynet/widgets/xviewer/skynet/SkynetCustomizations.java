@@ -75,7 +75,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
          }
       }
       if (!found) dam.getNewAttribute().setStringData(custData.getXml());
-      saveArt.persist();
+      saveArt.persistAttributes();
    }
 
    public void saveCustomization(CustomizeData custData) throws SQLException {
@@ -134,7 +134,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
          Matcher m = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"").matcher(str);
          if (m.find() && m.group(1).equals(custData.getName())) {
             attr.delete();
-            deleteArt.persist();
+            deleteArt.persistAttributes();
             break;
          }
       }

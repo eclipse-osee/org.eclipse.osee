@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
@@ -48,6 +49,10 @@ public final class ArtifactSnapshot implements Serializable {
 
    protected void setRenderedData(String data) {
       this.renderedData = data;
+   }
+
+   public boolean isDataValid() {
+      return Strings.isValid(this.renderedData);
    }
 
    protected void addBinaryData(String key, byte[] data) {

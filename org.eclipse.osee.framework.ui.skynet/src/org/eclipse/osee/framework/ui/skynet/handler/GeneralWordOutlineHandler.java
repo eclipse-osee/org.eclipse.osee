@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.util.WordUtil;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact;
 import org.eclipse.osee.framework.ui.skynet.Import.WordOutlineContentHandler;
 import org.eclipse.osee.framework.ui.skynet.Import.WordOutlineExtractor;

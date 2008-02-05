@@ -13,10 +13,14 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
@@ -43,7 +47,20 @@ public abstract class PreviewArtifactHandler extends AbstractSelectionChangedHan
 
    @Override
    public boolean isEnabled() {
-      artifacts = Handlers.getArtifactsFromStructuredSelection(getActiveSiteSelection());
-      return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+      if (PlatformUI.getWorkbench().isClosing()) {
+         return false;
+      }
+      boolean isEnabled = false;
+
+      ISelectionProvider selectionProvider =
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+
+      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
+         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+         artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+
+         isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+      }
+      return isEnabled;
    }
 }

@@ -42,7 +42,6 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Ryan D. Brooks
  */
 public class OverviewPage extends FormPage implements IActionable, XModifiedListener {
-   private static final SkynetGuiPlugin plugin = SkynetGuiPlugin.getInstance();
    private final BlamWorkflow workflow;
    private final DynamicXWidgetLayout dynamicXWidgetLayout;
    private final XFormToolkit toolkit;
@@ -56,7 +55,7 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
 
       this.editor = editor;
       this.toolkit = editor.getToolkit();
-      this.workflow = (BlamWorkflow) editor.getEditorInput().getArtifact();
+      this.workflow = editor.getWorkflow();
       this.dynamicXWidgetLayout = new DynamicXWidgetLayout();
    }
 
@@ -115,7 +114,7 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
          }
       };
       runAction.setToolTipText("Starts the workflow in a platform job");
-      runAction.setImageDescriptor(plugin.getImageDescriptor("run_exc.gif"));
+      runAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("run_exc.gif"));
       form.getToolBarManager().add(runAction);
 
       OseeAts.addButtonToEditorToolBar(editor, this, SkynetGuiPlugin.getInstance(), form.getToolBarManager(),
@@ -150,7 +149,7 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
       formText.setWhitespaceNormalized(true);
       formText.setFont("header", JFaceResources.getHeaderFont());
       formText.setFont("code", JFaceResources.getTextFont());
-      formText.setText("Select parameters below and click the play button at the top right.", false, false);
+      formText.setText(workflow.getDescriptionUsage(), false, false);
       section.setClient(formText);
    }
 

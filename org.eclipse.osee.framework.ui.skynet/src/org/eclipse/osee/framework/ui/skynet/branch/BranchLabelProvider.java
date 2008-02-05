@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -68,7 +67,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
    private boolean showChangeType = false;
 
    private final ShowAttributeAction attributeAction;
-   private Collection<Artifact> attributeModifiedArtifacts;
+   private Collection<Integer> attributeModifiedArtifactIds;
 
    public BranchLabelProvider() {
       this(null);
@@ -229,15 +228,15 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             try {
                String txt =
                      artifactChange.getName() + (showChangeType ? " (" + getChangeType(artifactChange) + ")" : "");
-               if (artifactChange.getModType() != ModificationType.DELETE) {
+               if (artifactChange.getModType() == ModificationType.DELETE && artifactChange.getChangeType() == ChangeType.INCOMING) {
+                  txt = "Artifact Deleted";
+               } else {
                   if (attributeAction != null && !attributeAction.noneSelected()) {
                      String attributeText = attributeAction.getSelectedAttributeData(artifactChange.getArtifact());
                      if (attributeText != null) {
                         return txt + attributeText;
                      }
                   }
-               } else if (artifactChange.getChangeType() == ChangeType.INCOMING) {
-                  txt = "Artifact Deleted";
                }
                return txt;
             } catch (SQLException ex) {
@@ -275,7 +274,8 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
    }
 
    private String getChangeType(ArtifactChange artifactChange) throws SQLException {
-      if ((artifactChange.getModType() == SkynetDatabase.ModificationType.CHANGE) && attributeModifiedArtifacts != null && !attributeModifiedArtifacts.contains(artifactChange.getArtifact())) return artifactChange.getModType().getDisplayName() + " Relation Only";
+      // Compare using artids cause a historical artifact is NOT equal to a current artifact
+      if ((artifactChange.getModType() == SkynetDatabase.ModificationType.CHANGE) && attributeModifiedArtifactIds != null && !attributeModifiedArtifactIds.contains(artifactChange.getArtifact().getArtId())) return artifactChange.getModType().getDisplayName() + " Relation Only";
       return artifactChange.getModType().getDisplayName();
    }
 
@@ -340,8 +340,8 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
    /**
     * @param showChangeType the showChangeType to set
     */
-   public void setShowChangeType(boolean showChangeType, Collection<Artifact> attributeModifiedArtifacts) {
+   public void setShowChangeType(boolean showChangeType, Collection<Integer> attributeModifiedArtifactIds) {
       this.showChangeType = showChangeType;
-      this.attributeModifiedArtifacts = attributeModifiedArtifacts;
+      this.attributeModifiedArtifactIds = attributeModifiedArtifactIds;
    }
 }

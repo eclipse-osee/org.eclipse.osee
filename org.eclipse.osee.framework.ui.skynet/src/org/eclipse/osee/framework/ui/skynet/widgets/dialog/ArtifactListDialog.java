@@ -31,7 +31,7 @@ public class ArtifactListDialog extends ListDialog {
       this(parent, null);
    }
 
-   public ArtifactListDialog(Shell parent, Collection<Artifact> artifacts) {
+   public ArtifactListDialog(Shell parent, Collection<? extends Artifact> artifacts) {
       super(parent);
       setContentProvider(new ArrayContentProvider());
       setLabelProvider(new ArtifactDescriptiveLabelProvider());

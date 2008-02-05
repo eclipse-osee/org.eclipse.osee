@@ -17,12 +17,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.QueryLog;
 import org.eclipse.osee.framework.ui.plugin.util.db.QueryRecord;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
@@ -33,7 +33,6 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ViewPart;
 
@@ -52,12 +51,7 @@ public class QueryLogView extends ViewPart implements IActionable {
    @Override
    public void createPartControl(Composite parent) {
 
-      try {
-         ConnectionHandler.getConnection();
-      } catch (Exception ex) {
-         (new Label(parent, SWT.NONE)).setText("  DB Connection Unavailable");
-         return;
-      }
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
       clipboard = new Clipboard(null);
 
@@ -117,7 +111,7 @@ public class QueryLogView extends ViewPart implements IActionable {
 
    @Override
    public void setFocus() {
-      viewer.getControl().setFocus();
+      if (viewer != null) viewer.getControl().setFocus();
    }
 
    public String getActionDescription() {

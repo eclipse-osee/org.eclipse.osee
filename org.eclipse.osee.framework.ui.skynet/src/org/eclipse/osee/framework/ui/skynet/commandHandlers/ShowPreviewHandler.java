@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Paul K. Waldfogel
  */
 public class ShowPreviewHandler extends AbstractSelectionChangedHandler {
-   // private static final RendererManager rendererManager = RendererManager.getInstance();
    public ShowPreviewHandler() {
    }
 
@@ -38,7 +37,7 @@ public class ShowPreviewHandler extends AbstractSelectionChangedHandler {
       IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
 
       List<ArtifactChange> mySelectedArtifactChangeList =
-            Handlers.getArtifactChangeFromStructuredSelection(myIStructuredSelection);
+            Handlers.getArtifactChangesFromStructuredSelection(myIStructuredSelection);
       for (ArtifactChange mySelectedArtifactChange : mySelectedArtifactChangeList) {
          Artifact selectedArtifact;
          try {

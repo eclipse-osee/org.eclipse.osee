@@ -98,7 +98,7 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
       @Override
       public void run() {
          try {
-            ArtifactExplorer.revealArtifact(artifact);
+            ArtifactExplorer.revealArtifact(artifact.getGuid(), artifact.getBranch());
          } catch (Exception ex) {
             throw new RuntimeException(ex);
          }

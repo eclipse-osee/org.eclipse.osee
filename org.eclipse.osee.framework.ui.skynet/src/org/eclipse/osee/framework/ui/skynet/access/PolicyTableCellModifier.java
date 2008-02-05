@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.access;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
+import org.eclipse.osee.framework.ui.skynet.access.PolicyTableViewer.Columns;
 import org.eclipse.swt.widgets.TableItem;
 
 /**
@@ -21,6 +22,7 @@ import org.eclipse.swt.widgets.TableItem;
 public class PolicyTableCellModifier implements ICellModifier {
 
    private PolicyTableViewer policyTableViewer;
+   private boolean enabled = true;
 
    public PolicyTableCellModifier(PolicyTableViewer policyTableViewer) {
       super();
@@ -32,13 +34,9 @@ public class PolicyTableCellModifier implements ICellModifier {
     */
    public boolean canModify(Object element, String property) {
       // Find the index of the column
-      int columnIndex = policyTableViewer.getColumnNames().indexOf(property);
-
-      switch (columnIndex) {
-         case PolicyTableViewer.DELETE_NUM:
-            return true;
-      }
-      return true;
+      int columnIndex = Columns.valueOf(property).ordinal();
+      if (columnIndex == Columns.Delete.ordinal() && isEnabled()) return true;
+      return false;
    }
 
    /**
@@ -46,13 +44,11 @@ public class PolicyTableCellModifier implements ICellModifier {
     */
    public Object getValue(Object element, String property) {
       // Find the index of the column
-      int columnIndex = policyTableViewer.getColumnNames().indexOf(property);
-
-      switch (columnIndex) {
-         case PolicyTableViewer.DELETE_NUM:
-            return new Boolean(false);
-         case PolicyTableViewer.ARTIFACT_POLICY_LEVEL_NUM:
-            return ((AccessControlData) element).getPermission().ordinal();
+      int columnIndex = Columns.valueOf(property).ordinal();
+      if (columnIndex == Columns.Delete.ordinal()) {
+         return new Boolean(false);
+      } else if (columnIndex == Columns.Artifact.ordinal()) {
+         return ((AccessControlData) element).getPermission().ordinal();
       }
       return "";
    }
@@ -63,23 +59,33 @@ public class PolicyTableCellModifier implements ICellModifier {
    public void modify(Object element, String property, Object value) {
 
       // Find the index of the column
-      int columnIndex = policyTableViewer.getColumnNames().indexOf(property);
+      int columnIndex = Columns.valueOf(property).ordinal();
 
       TableItem item = (TableItem) element;
       AccessControlData data = (AccessControlData) item.getData();
 
-      switch (columnIndex) {
-         case PolicyTableViewer.DELETE_NUM:
-            policyTableViewer.removeData(data);
-            break;
-         case PolicyTableViewer.ARTIFACT_POLICY_LEVEL_NUM:
-            int index = (Integer) value;
-
-            if (index != -1) policyTableViewer.modifyPermissionLevel(data, PermissionEnum.values()[index]);
-            break;
-
-         default:
+      if (columnIndex == Columns.Delete.ordinal()) {
+         policyTableViewer.removeData(data);
+      } else if (columnIndex == Columns.Delete.ordinal()) {
+         int index = (Integer) value;
+         if (index != -1) policyTableViewer.modifyPermissionLevel(data, PermissionEnum.values()[index]);
       }
       policyTableViewer.refresh();
+   }
+
+   /**
+    * @return the enabled
+    */
+   public boolean isEnabled() {
+      return enabled;
+   }
+
+   /**
+    * Don't disable entire viewer, just delete button
+    * 
+    * @param enabled the enabled to set
+    */
+   public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
    }
 }

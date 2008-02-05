@@ -19,11 +19,8 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -33,15 +30,14 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Ryan D. Brooks
  */
 public class UpdateFromParentBranch implements BlamOperation {
-   //   private static final String SELECT_USER_COUNT = "select count(*) from v$session t1 where t1.username='OSEE_CLIENT' and not exists (select null from v$session t2 where t1.machine=t2.machine and t2.sid < t1.sid)";
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UpdateFromParentBranch.class);
-
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_1 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t1");
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_2 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t2");
 
@@ -56,10 +52,7 @@ public class UpdateFromParentBranch implements BlamOperation {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(BlamVariableMap variableMap, Branch branch, IProgressMonitor monitor) throws Exception {
-      //    <XWidget xwidgetType="XListDropViewer" displayName="artifacts" />
-      //    <XWidget xwidgetType="XText" displayName="childBranchName" />      
-
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Update From Parent Branch", IProgressMonitor.UNKNOWN);
 
       List<Artifact> artifacts = variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch");
@@ -102,26 +95,40 @@ public class UpdateFromParentBranch implements BlamOperation {
       int count =
             ConnectionHandler.runPreparedUpdateReturnCount(DELETE_GAMMAS_FOR_UPDATES, SQL3DataType.INTEGER,
                   baselineTransactionNumber);
-      logger.log(Level.INFO, "deleted " + count + " gammas");
+      OSEELog.logInfo(SkynetGuiPlugin.class, "deleted " + count + " gammas", false);
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ARTIFACTS, SQL3DataType.INTEGER,
                   baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
                   SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
-      logger.log(Level.INFO, "inserted " + count + " artifacts");
+      OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " artifacts", false);
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
                   baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
                   SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
-      logger.log(Level.INFO, "inserted " + count + " attributes");
+      OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " attributes", false);
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_LINKS_GAMMAS, SQL3DataType.INTEGER,
                   baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
                   SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
-      logger.log(Level.INFO, "inserted " + count + " relations");
+      OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " relations", false);
 
       monitor.done();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+    */
+   public String getXWidgetsXml() {
+      return "<xWidgets><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Child Branch Name\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Parent Branch Artifacts to update to Child Branch\" /></xWidgets>";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
+    */
+   public String getDescriptionUsage() {
+      return "Select parameters below and click the play button at the top right.";
    }
 }

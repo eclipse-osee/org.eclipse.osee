@@ -13,26 +13,19 @@ package org.eclipse.osee.framework.ui.skynet.group;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.eclipse.core.runtime.CoreException;
+import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
@@ -47,30 +40,24 @@ import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
+import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.InsertLocation;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.skynet.DefineHttpServerRequest;
+import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.SkynetDefaultBranchContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
-import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.FileTransfer;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -79,38 +66,25 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IMemento;
-import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.texteditor.StatusLineContributionItem;
 
 /**
  * @author Donald G. Dunne
  */
 public class GroupExplorer extends ViewPart implements IEventReceiver, IActionable {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(GroupExplorer.class);
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
-   private static final String ROOT_GUID = "group.explorer.last.root_guid";
    private TreeViewer treeViewer;
    private Artifact rootArt;
-   private UniversalGroupItem rootItem;
-   private SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
-   private static UniversalGroupItem selected;
-   private StatusLineContributionItem branchStatusItem;
-
-   private Branch branch;
+   private GroupExplorerItem rootItem;
+   private static GroupExplorerItem selected;
+   private boolean isCtrlPressed = false;
 
    public GroupExplorer() {
-      branchStatusItem = new StatusLineContributionItem("skynet.branch", true, 30);
-      branchStatusItem.setImage(SkynetGuiPlugin.getInstance().getImage("branch.gif"));
-      branchStatusItem.setToolTipText("The branch that the artifacts in the explorer are from.");
    }
 
    /*
@@ -120,12 +94,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
     */
    public void createPartControl(Composite parent) {
 
-      try {
-         ConnectionHandler.getConnection();
-      } catch (Exception ex) {
-         (new Label(parent, SWT.NONE)).setText("  DB Connection Unavailable");
-         return;
-      }
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
       GridData gridData = new GridData();
       gridData.verticalAlignment = GridData.FILL;
@@ -139,13 +108,6 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
 
       parent.setLayout(gridLayout);
       parent.setLayoutData(gridData);
-
-      if (!ConnectionHandler.isConnected()) {
-         (new Label(parent, SWT.NONE)).setText("DB Connection Unavailable");
-         return;
-      }
-
-      getViewSite().getActionBars().getStatusLineManager().add(branchStatusItem);
 
       treeViewer = new TreeViewer(parent);
       treeViewer.setContentProvider(new GroupContentProvider(this));
@@ -163,40 +125,32 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
             if (event.button == 3) getPopupMenu().setVisible(true);
          }
       });
-      treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
-         public void selectionChanged(SelectionChangedEvent event) {
-            updateStatusLabel();
-         }
-      });
 
-      eventManager.register(LocalTransactionEvent.class, this);
-      eventManager.register(RemoteTransactionEvent.class, this);
-      eventManager.register(LocalBranchEvent.class, this);
-      eventManager.register(RemoteBranchEvent.class, this);
-      eventManager.register(DefaultBranchChangedEvent.class, this);
+      SkynetDefaultBranchContributionItem.addTo(this, false);
+      SkynetContributionItem.addTo(this, true);
+
+      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(DefaultBranchChangedEvent.class, this);
+
+      new GroupExplorerDragAndDrop(treeViewer.getTree(), VIEW_ID);
 
       getSite().setSelectionProvider(treeViewer);
-      addExploreSelection();
-      setupDragAndDropSupport();
       parent.layout();
-
       createActions();
+      refresh();
    }
 
    private void handleDoubleClick() {
-      UniversalGroupItem item = getSelectedItem();
+      GroupExplorerItem item = getSelectedItem();
       if (item != null) {
          RendererManager.getInstance().editInJob(item.getArtifact());
       }
    }
 
    protected void createActions() {
-
       Action refreshAction = new Action("Refresh", Action.AS_PUSH_BUTTON) {
 
          public void run() {
@@ -291,71 +245,71 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                   MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            UniversalGroup.addGroup(ed.getEntry());
-         } catch (IllegalArgumentException ex) {
-            AWorkbench.popup("ERROR", "Error creating group\n\n" + ex.getLocalizedMessage());
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            return;
+            UniversalGroup.addGroup(ed.getEntry(), BranchPersistenceManager.getInstance().getDefaultBranch());
+            treeViewer.refresh();
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
-         treeViewer.refresh();
       }
    }
 
    private void handleRemoveFromGroup() {
-      final List<UniversalGroupItem> items = getSelectedUniversalGroupItems();
+      final List<GroupExplorerItem> items = getSelectedUniversalGroupItems();
       if (items.size() == 0) {
          AWorkbench.popup("ERROR", "No Items Selected");
          return;
       }
       String names = "";
-      for (UniversalGroupItem item : items)
+      for (GroupExplorerItem item : items)
          if (item.isUniversalGroup()) names += String.format("%s\n", item.getArtifact().getDescriptiveName());
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove From Group",
             "Remove From Group - (Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
-         AbstractSkynetTxTemplate unrelateTx = new AbstractSkynetTxTemplate(branch) {
-            @Override
-            protected void handleTxWork() throws Exception {
-               for (UniversalGroupItem item : items) {
-                  item.getArtifact().unrelate(RelationSide.UNIVERSAL_GROUPING__GROUP,
-                        item.getParentItem().getArtifact(), true);
-               }
-            }
-         };
+         AbstractSkynetTxTemplate unrelateTx =
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
+                  @Override
+                  protected void handleTxWork() throws Exception {
+                     for (GroupExplorerItem item : items) {
+                        item.getArtifact().unrelate(RelationSide.UNIVERSAL_GROUPING__GROUP,
+                              item.getParentItem().getArtifact(), true);
+                     }
+                  }
+               };
 
          try {
             unrelateTx.execute();
          } catch (Exception ex) {
-            OSEELog.logException(getClass(), ex, true);
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
    }
 
    private void handleDeleteGroup() {
-      final ArrayList<UniversalGroupItem> items = getSelectedUniversalGroupItems();
+      final ArrayList<GroupExplorerItem> items = getSelectedUniversalGroupItems();
       if (items.size() == 0) {
          AWorkbench.popup("ERROR", "No Groups Selected");
          return;
       }
       String names = "";
-      for (UniversalGroupItem item : items)
+      for (GroupExplorerItem item : items)
          if (item.isUniversalGroup()) names += String.format("%s\n", item.getArtifact().getDescriptiveName());
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Groups",
             "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
 
-         AbstractSkynetTxTemplate deleteUniversalGroupTx = new AbstractSkynetTxTemplate(branch) {
-            @Override
-            protected void handleTxWork() throws Exception {
-               for (UniversalGroupItem item : items) {
-                  item.getArtifact().delete();
-               }
-            }
-         };
+         AbstractSkynetTxTemplate deleteUniversalGroupTx =
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
+                  @Override
+                  protected void handleTxWork() throws Exception {
+                     for (GroupExplorerItem item : items) {
+                        item.getArtifact().delete();
+                     }
+                  }
+               };
 
          try {
             deleteUniversalGroupTx.execute();
             refresh();
          } catch (Exception ex) {
-            OSEELog.logException(getClass(), ex, true);
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
    }
@@ -366,9 +320,9 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
    }
 
    public void restoreSelection() {
-      if (selected != null) {
-         UniversalGroupItem selItem = rootItem.getItem(selected.getArtifact());
-         ArrayList<UniversalGroupItem> selected = new ArrayList<UniversalGroupItem>();
+      if (selected != null && rootItem != null) {
+         GroupExplorerItem selItem = rootItem.getItem(selected.getArtifact());
+         ArrayList<GroupExplorerItem> selected = new ArrayList<GroupExplorerItem>();
          selected.add(selItem);
          treeViewer.setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
       }
@@ -376,120 +330,31 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
 
    public void handleMoveSelection(Direction dir) {
       storeSelection();
-      UniversalGroupItem selItem = getSelectedItem();
+      GroupExplorerItem selItem = getSelectedItem();
       if (selItem != null) {
          try {
             RelationPersistenceManager.getInstance().moveObjectB(selItem.getParentItem().getArtifact(),
                   selItem.getArtifact(), RelationSide.UNIVERSAL_GROUPING__MEMBERS, dir);
          } catch (SQLException ex) {
-            OSEELog.logException(SkynetActivator.class, ex, true);
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
    }
 
-   public UniversalGroupItem getSelectedItem() {
+   public GroupExplorerItem getSelectedItem() {
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
       Iterator<?> itemsIter = selection.iterator();
-      if (itemsIter.hasNext()) return (UniversalGroupItem) itemsIter.next();
+      if (itemsIter.hasNext()) return (GroupExplorerItem) itemsIter.next();
       return null;
    }
 
-   private void setupDragAndDropSupport() {
-      DragSource source = new DragSource(treeViewer.getTree(), DND.DROP_COPY);
-      source.setTransfer(new Transfer[] {ArtifactTransfer.getInstance()});
-      source.addDragListener(new DragSourceListener() {
-
-         public void dragFinished(DragSourceEvent event) {
-         }
-
-         public void dragSetData(DragSourceEvent event) {
-            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-            Iterator<?> i = selection.iterator();
-
-            String item = "work";
-
-            if (i.hasNext()) {
-               Artifact artifact = (Artifact) i.next();
-               item = DefineHttpServerRequest.getInstance().getUrl(artifact);
-            }
-            Object[] objects = selection.toArray();
-            Artifact[] artifacts = new Artifact[objects.length];
-
-            for (int index = 0; index < objects.length; index++)
-               artifacts[index] = (Artifact) objects[index];
-
-            event.data = new ArtifactData(artifacts, item, VIEW_ID);
-         }
-
-         public void dragStart(DragSourceEvent event) {
-         }
-      });
-
-      DropTarget target = new DropTarget(treeViewer.getTree(), DND.DROP_COPY);
-      target.setTransfer(new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(),
-            ArtifactTransfer.getInstance()});
-      target.addDropListener(new DropTargetAdapter() {
-
-         public void drop(DropTargetEvent event) {
-            performDrop(event);
-         }
-
-         public void dragOver(DropTargetEvent event) {
-            TreeItem selected = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
-
-            if (selected != null && selected.getData() instanceof UniversalGroupItem) {
-               if (((UniversalGroupItem) selected.getData()).isUniversalGroup()) event.detail = DND.DROP_COPY;
-            } else
-               event.detail = DND.DROP_NONE;
-         }
-
-         public void dropAccept(DropTargetEvent event) {
-         }
-      });
-   }
-
-   private void performDrop(DropTargetEvent e) {
-      TreeItem selected = treeViewer.getTree().getItem(treeViewer.getTree().toControl(e.x, e.y));
-
-      if (selected.getData() instanceof UniversalGroupItem) {
-         final UniversalGroupItem item = (UniversalGroupItem) selected.getData();
-         if (!item.isUniversalGroup()) return;
-
-         if (e.data instanceof ArtifactData) {
-            final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
-            if (artsToRelate.length == 1 && item.contains(artsToRelate[0])) {
-               AWorkbench.popup("ERROR", "Artifact already related.");
-               return;
-            }
-            AbstractSkynetTxTemplate relateArtifactTx = new AbstractSkynetTxTemplate(branch) {
-
-               @Override
-               protected void handleTxWork() throws Exception {
-                  for (Artifact art : artsToRelate) {
-                     if (!item.contains(art)) {
-                        item.getArtifact().relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, art, true);
-                     }
-                  }
-               }
-            };
-
-            try {
-               relateArtifactTx.execute();
-            } catch (Exception ex) {
-               OSEELog.logException(SkynetActivator.class, ex, true);
-            }
-         }
-         treeViewer.refresh(item);
-      }
-   }
-
-   private ArrayList<UniversalGroupItem> getSelectedUniversalGroupItems() {
-      ArrayList<UniversalGroupItem> arts = new ArrayList<UniversalGroupItem>();
+   private ArrayList<GroupExplorerItem> getSelectedUniversalGroupItems() {
+      ArrayList<GroupExplorerItem> arts = new ArrayList<GroupExplorerItem>();
       Iterator<?> i = ((IStructuredSelection) treeViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof UniversalGroupItem) {
-            arts.add((UniversalGroupItem) obj);
+         if (obj instanceof GroupExplorerItem) {
+            arts.add((GroupExplorerItem) obj);
          }
       }
       return arts;
@@ -497,7 +362,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
 
    private boolean isOnlyGroupsSelected() {
       if (getSelectedUniversalGroupItems().size() == 0) return false;
-      for (UniversalGroupItem item : getSelectedUniversalGroupItems()) {
+      for (GroupExplorerItem item : getSelectedUniversalGroupItems()) {
          if (!item.isUniversalGroup()) return false;
       }
       return true;
@@ -505,7 +370,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
 
    private boolean isOnlyArtifactsSelected() {
       if (getSelectedUniversalGroupItems().size() == 0) return false;
-      for (UniversalGroupItem item : getSelectedUniversalGroupItems()) {
+      for (GroupExplorerItem item : getSelectedUniversalGroupItems()) {
          if (item.isUniversalGroup()) return false;
       }
       return true;
@@ -526,41 +391,17 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
    public void setFocus() {
    }
 
-   public void explore(Artifact artifact) throws CoreException, IllegalArgumentException, SQLException {
-      if (rootItem != null) {
-         rootItem.dispose();
-      }
-      branch = artifact.getBranch();
-      rootArt = artifact;
-      rootItem = new UniversalGroupItem(treeViewer, rootArt, null, this);
-      rootItem.getGroupItems();
-
-      setPartName("Group Explorer");
-
-      if (treeViewer != null) treeViewer.setInput(rootItem);
-
-      restoreSelection();
-   }
-
-   /**
-    * Add the selection from the define explorer
-    */
-   private void addExploreSelection() {
-      if (rootArt != null) {
-         try {
-            refresh();
-         } catch (IllegalArgumentException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-         }
-      }
-   }
-
    public void onEvent(final Event event) {
       try {
          if (event instanceof TransactionEvent) {
-            EventData ed =
-                  ((TransactionEvent) event).getEventData(UniversalGroup.getTopUniversalGroupArtifact(branchPersistenceManager.getDefaultBranch()));
-            if (ed.isRelChange()) {
+            Artifact topArt =
+                  UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getInstance().getDefaultBranch());
+            if (topArt == null) {
+               refresh();
+               return;
+            }
+            EventData ed = ((TransactionEvent) event).getEventData(topArt);
+            if (ed.isHasEvent()) {
                refresh();
             }
          } else if (event instanceof DefaultBranchChangedEvent) {
@@ -568,9 +409,9 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
          } else if (event instanceof BranchEvent) {
             refresh();
          } else
-            SkynetGuiPlugin.getLogger().log(Level.SEVERE, "Unexpected event => " + event);
-      } catch (SQLException ex) {
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, "Can't get group root artifact", ex);
+            OSEELog.logInfo(SkynetGuiPlugin.class, "Unexpected event => " + event, true);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
    }
 
@@ -586,60 +427,38 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
          if (e.keyCode == 'x' && e.stateMask == SWT.CONTROL) {
             expandAll((IStructuredSelection) treeViewer.getSelection());
          }
+         isCtrlPressed = (e.keyCode == SWT.CONTROL);
       }
 
       public void keyReleased(KeyEvent e) {
+         isCtrlPressed = !(e.keyCode == SWT.CONTROL);
       }
    }
 
    public void refresh() {
+      if (rootItem != null) {
+         rootItem.dispose();
+      }
+
+      Artifact topArt = null;
       try {
-         explore(UniversalGroup.getTopUniversalGroupArtifact(branchPersistenceManager.getDefaultBranch()));
+         topArt =
+               UniversalGroup.getTopUniversalGroupArtifact(BranchPersistenceManager.getInstance().getDefaultBranch());
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
-      updateStatusLabel();
-   }
+      if (topArt == null) {
+         rootArt = null;
+         rootItem = null;
+      } else {
+         rootArt = topArt;
+         rootItem = new GroupExplorerItem(treeViewer, rootArt, null, this);
+         rootItem.getGroupItems();
+      }
 
-   private void updateStatusLabel() {
-      if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
-         Artifact root = ((UniversalGroupItem) treeViewer.getInput()).getArtifact();
-         if (root != null && root.getPersistenceMemo() != null) {
-            Branch branch = root.getPersistenceMemo().getTransactionId().getBranch();
-            branchStatusItem.setText(branch.getDisplayName());
-            branchStatusItem.setImage(BranchLabelProvider.getBranchImage(branch));
-         } else {
-            branchStatusItem.setText("");
-            branchStatusItem.setImage(SkynetGuiPlugin.getInstance().getImage("branch.gif"));
-         }
-      }
-   }
+      if (treeViewer != null) treeViewer.setInput(rootItem);
 
-   @Override
-   public void init(IViewSite site, IMemento memento) throws PartInitException {
-      super.init(site, memento);
-      if (memento != null) {
-         try {
-            Artifact previousArtifact =
-                  ArtifactPersistenceManager.getInstance().getArtifact(memento.getString(ROOT_GUID),
-                        BranchPersistenceManager.getInstance().getCommonBranch());
-            if (previousArtifact != null) {
-               explore(previousArtifact);
-               return;
-            }
-         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Falling back to the root artifact: " + ex.getLocalizedMessage(), ex);
-         }
-      }
-      refresh();
-   }
-
-   @Override
-   public void saveState(IMemento memento) {
-      super.saveState(memento);
-      if (rootArt != null) {
-         memento.putString(ROOT_GUID, rootArt.getGuid());
-      }
+      restoreSelection();
    }
 
    /*
@@ -655,6 +474,228 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
 
    public String getActionDescription() {
       return "";
+   }
+
+   private class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
+      boolean isFeedbackAfter = false;
+
+      public GroupExplorerDragAndDrop(Tree tree, String viewId) {
+         super(tree, viewId);
+      }
+
+      @Override
+      public Artifact[] getArtifacts() {
+         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+         Iterator<?> i = selection.iterator();
+         List<Artifact> artifacts = new ArrayList<Artifact>();
+         while (i.hasNext()) {
+            Object object = i.next();
+            if ((object instanceof GroupExplorerItem) && !((GroupExplorerItem) object).isUniversalGroup()) artifacts.add(((GroupExplorerItem) object).getArtifact());
+         }
+         return artifacts.toArray(new Artifact[artifacts.size()]);
+      }
+
+      @Override
+      public void performDragOver(DropTargetEvent event) {
+         Tree tree = treeViewer.getTree();
+         TreeItem dragOverTreeItem = tree.getItem(treeViewer.getTree().toControl(event.x, event.y));
+
+         event.feedback = DND.FEEDBACK_EXPAND;
+         event.detail = DND.DROP_NONE;
+
+         // Set as COPY if drag item over group (copy versus move will be determined on drop
+         if (dragOverTreeItem != null && ((GroupExplorerItem) dragOverTreeItem.getData()).isUniversalGroup()) {
+            event.detail = DND.DROP_COPY;
+            tree.setInsertMark(null, false);
+         }
+         // Handle re-ordering within same group
+         else if (dragOverTreeItem != null && !((GroupExplorerItem) dragOverTreeItem.getData()).isUniversalGroup()) {
+            GroupExplorerItem dragOverGroupItem = (GroupExplorerItem) dragOverTreeItem.getData();
+            IStructuredSelection selectedItem = (IStructuredSelection) treeViewer.getSelection();
+            Object obj = selectedItem.getFirstElement();
+            if (obj instanceof GroupExplorerItem) {
+               GroupExplorerItem droppingGroupItem = (GroupExplorerItem) obj;
+
+               // the group to move must belong to the same group as the member to insert before/after
+               if ((dragOverGroupItem.getParentItem()).equals(droppingGroupItem.getParentItem())) {
+                  if (isFeedbackAfter) {
+                     event.feedback = DND.FEEDBACK_INSERT_AFTER;
+                  } else {
+                     event.feedback = DND.FEEDBACK_INSERT_BEFORE;
+                  }
+                  event.detail = DND.DROP_MOVE;
+               }
+            } else {
+               if (isFeedbackAfter) {
+                  event.feedback = DND.FEEDBACK_INSERT_AFTER;
+               } else {
+                  event.feedback = DND.FEEDBACK_INSERT_BEFORE;
+               }
+               event.detail = DND.DROP_COPY;
+            }
+         } else {
+            tree.setInsertMark(null, false);
+         }
+      }
+
+      @Override
+      public void operationChanged(DropTargetEvent event) {
+         if (!isCtrlPressed(event)) {
+            isFeedbackAfter = false;
+         }
+      }
+
+      private boolean isCtrlPressed(DropTargetEvent event) {
+         boolean ctrPressed = (event.detail == 1);
+
+         if (ctrPressed) {
+            isFeedbackAfter = true;
+         }
+         return ctrPressed;
+      }
+
+      @Override
+      public void performDrop(DropTargetEvent event) {
+         try {
+            TreeItem dragOverTreeITem = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
+
+            // This should always be true as all items are Group Explorer Items
+            if (dragOverTreeITem.getData() instanceof GroupExplorerItem) {
+               final GroupExplorerItem dragOverExplorerItem = (GroupExplorerItem) dragOverTreeITem.getData();
+
+               // Drag item dropped ON universal group item 
+               if (dragOverExplorerItem.isUniversalGroup()) {
+
+                  // Drag item came from inside Group Explorer
+                  if (event.data instanceof ArtifactData) {
+                     // If event originated outside, it's a copy event;
+                     // OR if event is inside and ctrl is down, this is a copy; add items to group
+                     if (!((ArtifactData) event.data).getSource().equals(VIEW_ID) || (((ArtifactData) event.data).getSource().equals(
+                           VIEW_ID) && isCtrlPressed)) {
+                        copyArtifactsToGroup(event, dragOverExplorerItem);
+                     }
+                     // Else this is a move
+                     else {
+                        IStructuredSelection selectedItem = (IStructuredSelection) treeViewer.getSelection();
+                        Iterator<?> iterator = selectedItem.iterator();
+                        final Set<Artifact> insertArts = new HashSet<Artifact>();
+                        while (iterator.hasNext()) {
+                           Object obj = iterator.next();
+                           if (obj instanceof GroupExplorerItem) {
+                              insertArts.add(((GroupExplorerItem) obj).getArtifact());
+                           }
+                        }
+                        GroupExplorerItem parentUnivGroupItem =
+                              ((GroupExplorerItem) selectedItem.getFirstElement()).getParentItem();
+                        final Artifact parentArtifact = parentUnivGroupItem.getArtifact();
+                        final Artifact targetArtifact = dragOverExplorerItem.getArtifact();
+
+                        AbstractSkynetTxTemplate relateArtifactTx =
+                              new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
+
+                                 @Override
+                                 protected void handleTxWork() throws Exception {
+                                    for (Artifact artifact : insertArts) {
+                                       // Remove item from old group
+                                       parentArtifact.unrelate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, artifact, true);
+                                       // Add items to new group
+                                       targetArtifact.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, artifact, true);
+                                    }
+                                    parentArtifact.persist(true);
+                                    targetArtifact.persist(true);
+                                 }
+                              };
+
+                        try {
+                           relateArtifactTx.execute();
+                        } catch (Exception ex) {
+                           OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+                        }
+                     }
+                  }
+               }
+               // Drag item dropped before or after group member
+               else if (!dragOverExplorerItem.isUniversalGroup()) {
+
+                  if (event.data instanceof ArtifactData) {
+
+                     // Drag item came from inside Group Explorer
+                     if (((ArtifactData) event.data).getSource().equals(VIEW_ID)) {
+                        IStructuredSelection selectedItem = (IStructuredSelection) treeViewer.getSelection();
+                        Iterator<?> iterator = selectedItem.iterator();
+                        Set<Artifact> insertArts = new HashSet<Artifact>();
+                        while (iterator.hasNext()) {
+                           Object obj = iterator.next();
+                           if (obj instanceof GroupExplorerItem) {
+                              insertArts.add(((GroupExplorerItem) obj).getArtifact());
+                           }
+                        }
+                        GroupExplorerItem parentUnivGroupItem =
+                              ((GroupExplorerItem) selectedItem.getFirstElement()).getParentItem();
+                        Artifact parentArtifact = parentUnivGroupItem.getArtifact();
+                        Artifact targetArtifact = dragOverExplorerItem.getArtifact();
+
+                        RelationPersistenceManager.getInstance().insertObjectsOnSideB(parentArtifact, targetArtifact,
+                              insertArts, RelationSide.UNIVERSAL_GROUPING__MEMBERS,
+                              isFeedbackAfter ? InsertLocation.AfterTarget : InsertLocation.BeforeTarget);
+                     }
+                     // Drag item came from outside Group Explorer
+                     else {
+                        List<Artifact> insertArts = Arrays.asList(((ArtifactData) event.data).getArtifacts());
+                        GroupExplorerItem parentUnivGroupItem = dragOverExplorerItem.getParentItem();
+                        Artifact parentArtifact = parentUnivGroupItem.getArtifact();
+                        Artifact targetArtifact = dragOverExplorerItem.getArtifact();
+
+                        RelationPersistenceManager.getInstance().insertObjectsOnSideB(parentArtifact, targetArtifact,
+                              insertArts, RelationSide.UNIVERSAL_GROUPING__MEMBERS,
+                              isFeedbackAfter ? InsertLocation.AfterTarget : InsertLocation.BeforeTarget);
+                     }
+                  }
+               }
+               treeViewer.refresh(dragOverExplorerItem);
+            }
+
+            isFeedbackAfter = false;
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
+      }
+
+      public void copyArtifactsToGroup(DropTargetEvent event, final GroupExplorerItem dragOverExplorerItem) {
+         // Items dropped on Group; simply add items to group
+         final Artifact[] artsToRelate = ((ArtifactData) event.data).getArtifacts();
+         boolean alreadyRelated = true;
+         for (Artifact artifact : artsToRelate) {
+            if (!dragOverExplorerItem.contains(artifact)) {
+               alreadyRelated = false;
+               break;
+            }
+         }
+         if (alreadyRelated) {
+            AWorkbench.popup("ERROR", "Artifact(s) already related.");
+            return;
+         }
+         AbstractSkynetTxTemplate relateArtifactTx =
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getDefaultBranch()) {
+
+                  @Override
+                  protected void handleTxWork() throws Exception {
+                     for (Artifact art : artsToRelate) {
+                        if (!dragOverExplorerItem.contains(art)) {
+                           dragOverExplorerItem.getArtifact().relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, art,
+                                 true);
+                        }
+                     }
+                  }
+               };
+
+         try {
+            relateArtifactTx.execute();
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
+
+      }
    }
 
 }

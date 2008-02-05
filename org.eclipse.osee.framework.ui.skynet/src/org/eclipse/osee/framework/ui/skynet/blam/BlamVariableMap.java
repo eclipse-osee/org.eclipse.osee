@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 
@@ -22,10 +23,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescript
  * @author Ryan D. Brooks
  */
 public class BlamVariableMap {
-   public static enum BlamVariableType {
-      STRING, INTEGER, REAL, ARTIFACT
-   };
-
    private final HashMap<String, BlamVariable> variableMap;
 
    public BlamVariableMap() {
@@ -57,15 +54,12 @@ public class BlamVariableMap {
       variableMap.put(alias, variable);
    }
 
-   public Object getValue(String variableName) {
-      return getBlamVariable(variableName).getValue();
-   }
-
    public void setValue(String variableName, Object value) {
-      try {
-         getBlamVariable(variableName).setValue(value);
-      } catch (Exception e) {
+      BlamVariable variable = variableMap.get(variableName);
+      if (variable == null) {
          addBlamVariable(variableName, value);
+      } else {
+         variable.setValue(value);
       }
    }
 
@@ -86,67 +80,49 @@ public class BlamVariableMap {
    }
 
    public List<Artifact> getArtifacts(String parameterName) {
-      Collection<Object> objects = getCollection(parameterName);
-
-      List<Artifact> artifacts = new ArrayList<Artifact>(objects.size());
-      for (Object object : objects) {
-         artifacts.add((Artifact) object);
-      }
-      return artifacts;
+      return new ArrayList<Artifact>(getCollection(Artifact.class, parameterName));
    }
 
    public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(String parameterName) {
-      Object object = getSingleCollectionValue(parameterName);
-
-      if (!(object instanceof ArtifactSubtypeDescriptor)) {
-         throw new IllegalArgumentException(
-               "Expecting object of type ArtifactSubtypeDescriptor not " + object.getClass().getName());
-      }
-
-      return (ArtifactSubtypeDescriptor) object;
+      return getSingleCollectionValue(ArtifactSubtypeDescriptor.class, parameterName);
    }
 
    public DynamicAttributeDescriptor getAttributeDescriptor(String parameterName) {
-      Object object = getSingleCollectionValue(parameterName);
-
-      if (!(object instanceof DynamicAttributeDescriptor)) {
-         throw new IllegalArgumentException(
-               "Expecting object of type DynamicAttributeDescriptor not " + object.getClass().getName());
-      }
-
-      return (DynamicAttributeDescriptor) object;
+      return getSingleCollectionValue(DynamicAttributeDescriptor.class, parameterName);
    }
 
    public String getString(String parameterName) {
-      Object object = getValue(parameterName);
+      return getValue(String.class, parameterName);
+   }
 
-      if (object == null) {
-         throw new IllegalArgumentException("Parameter can not be null");
-      }
-      if (!(object instanceof String)) {
-         throw new IllegalArgumentException("Expecting object of type String not " + object.getClass().getName());
-      }
-      return (String) object;
+   public Branch getBranch(String parameterName) {
+      return getValue(Branch.class, parameterName);
+   }
+
+   public boolean getBoolean(String parameterName) {
+      return getValue(Boolean.class, parameterName);
    }
 
    @SuppressWarnings("unchecked")
-   private Collection<Object> getCollection(String parameterName) {
-      Object object = getValue(parameterName);
-
-      if (object == null) {
-         throw new IllegalArgumentException("Parameter can not be null");
-      }
-      if (!(object instanceof Collection)) {
-         throw new IllegalArgumentException("Expecting object of type Collection not " + object.getClass().getName());
-      }
-      return (Collection<Object>) object;
+   private <T> Collection<T> getCollection(Class<T> clazz, String parameterName) {
+      return getValue(Collection.class, parameterName);
    }
 
-   private Object getSingleCollectionValue(String parameterName) {
-      Collection<Object> objects = getCollection(parameterName);
+   private <T> T getSingleCollectionValue(Class<T> clazz, String parameterName) {
+      Collection<T> objects = getCollection(clazz, parameterName);
       if (objects.size() != 1) {
          throw new IllegalArgumentException("Require a collection of size 1 not " + objects.size());
       }
       return objects.iterator().next();
+   }
+
+   public <T> T getValue(Class<T> clazz, String variableName) {
+      Object object = getBlamVariable(variableName).getValue();
+
+      if (object != null && !clazz.isInstance(object)) {
+         throw new IllegalArgumentException(
+               "Expecting object of type " + clazz.getName() + " not " + object.getClass().getName());
+      }
+      return clazz.cast(object);
    }
 }

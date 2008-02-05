@@ -16,13 +16,22 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class ArtifactViewerSorter extends ViewerSorter {
 
+   private final boolean reverse;
+
    public ArtifactViewerSorter() {
+      this(false);
+   }
+
+   public ArtifactViewerSorter(boolean reverse) {
       super();
+      this.reverse = reverse;
    }
 
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
-      return getComparator().compare(((Artifact) o1).getDescriptiveName(), ((Artifact) o2).getDescriptiveName());
+      if (reverse)
+         return getComparator().compare(((Artifact) o2).getDescriptiveName(), ((Artifact) o1).getDescriptiveName());
+      else
+         return getComparator().compare(((Artifact) o1).getDescriptiveName(), ((Artifact) o2).getDescriptiveName());
    }
-
 }

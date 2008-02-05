@@ -35,11 +35,13 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.SkynetDefaultBranchContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactPreviewMenu;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -61,7 +63,6 @@ import org.eclipse.ui.part.ViewPart;
 public class RevisionHistoryView extends ViewPart implements IActionable, IEventReceiver {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView";
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(RevisionHistoryView.class);
    private static final String[] columnNames = {"Revision", "Time Stamp", "Author", "Comment"};
    private static final String ARTIFACT_GUID = "GUID";
@@ -74,14 +75,14 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
    public RevisionHistoryView() {
       super();
 
-      eventManager.unRegisterAll(this);
-      eventManager.register(LocalCommitBranchEvent.class, this);
-      eventManager.register(RemoteCommitBranchEvent.class, this);
-      eventManager.register(LocalDeletedBranchEvent.class, this);
-      eventManager.register(RemoteDeletedBranchEvent.class, this);
-      eventManager.register(CacheArtifactModifiedEvent.class, this);
-      eventManager.register(TransactionArtifactModifiedEvent.class, this);
-      eventManager.register(LocalTransactionEvent.class, this);
+      SkynetEventManager.getInstance().unRegisterAll(this);
+      SkynetEventManager.getInstance().register(LocalCommitBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteCommitBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalDeletedBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(RemoteDeletedBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, this);
+      SkynetEventManager.getInstance().register(TransactionArtifactModifiedEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
 
    }
 
@@ -99,6 +100,8 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
 
    @Override
    public void createPartControl(Composite parent) {
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+
       GridData gridData = new GridData();
       gridData.verticalAlignment = GridData.FILL;
       gridData.horizontalAlignment = GridData.FILL;
@@ -121,6 +124,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
       treeViewer.getTree().setMenu(popupMenu);
 
       OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Revision History");
+      SkynetDefaultBranchContributionItem.addTo(this, false);
       SkynetContributionItem.addTo(this, true);
 
       explore(artifact);
@@ -274,7 +278,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
     */
    @Override
    public void dispose() {
-      eventManager.unRegisterAll(this);
+      SkynetEventManager.getInstance().unRegisterAll(this);
 
       super.dispose();
    }

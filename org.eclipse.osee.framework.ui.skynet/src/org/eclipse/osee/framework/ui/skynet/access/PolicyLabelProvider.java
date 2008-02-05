@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.access;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
+import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.skynet.access.PolicyTableViewer.Columns;
 import org.eclipse.swt.graphics.Image;
 
 public class PolicyLabelProvider implements ITableLabelProvider {
@@ -26,39 +28,37 @@ public class PolicyLabelProvider implements ITableLabelProvider {
     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
     */
    public String getColumnText(Object element, int columnIndex) {
-      String result = "";
-
-      if (element instanceof AccessControlData) {
-         AccessControlData data = (AccessControlData) element;
-
-         switch (columnIndex) {
-            case PolicyTableViewer.DELETE_NUM:
-               // This only has an image
-               break;
-            case PolicyTableViewer.PERSON_NUM:
-               result = data.getSubject().getDescriptiveName();
-               break;
-            case PolicyTableViewer.ARTIFACT_POLICY_LEVEL_NUM:
-               result = String.valueOf(data.getPermission().getName());
-               break;
-            default:
-               break;
+      try {
+         if (element instanceof AccessControlData) {
+            AccessControlData data = (AccessControlData) element;
+            if (columnIndex == Columns.Person.ordinal()) {
+               return data.getSubject().getDescriptiveName();
+            } else if (columnIndex == Columns.Branch.ordinal()) {
+               PermissionEnum permissionEnum = data.getBranchPermission();
+               if (permissionEnum != null) return permissionEnum.getName();
+            } else if (columnIndex == Columns.Artifact.ordinal()) {
+               PermissionEnum permissionEnum = data.getArtifactPermission();
+               if (permissionEnum != null) return permissionEnum.getName();
+            } else if (columnIndex == Columns.Artifact_Type.ordinal()) {
+               PermissionEnum permissionEnum = data.getArtifactTypePermission();
+               if (permissionEnum != null) return permissionEnum.getName();
+            } else if (columnIndex == Columns.Total.ordinal()) {
+               PermissionEnum permissionEnum = data.getPermission();
+               if (permissionEnum != null) return permissionEnum.getName();
+            }
          }
+      } catch (Exception ex) {
+         return "Error: " + ex.getLocalizedMessage();
       }
-      return result;
+      return "";
    }
 
    /**
     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
     */
    public Image getColumnImage(Object element, int columnIndex) {
-      Image result = null;
-
-      switch (columnIndex) {
-         case PolicyTableViewer.DELETE_NUM:
-            result = OseePluginUiActivator.getInstance().getImage("remove.gif");
-      }
-      return result;
+      if (columnIndex == Columns.Delete.ordinal()) return OseePluginUiActivator.getInstance().getImage("remove.gif");
+      return null;
    }
 
    /*

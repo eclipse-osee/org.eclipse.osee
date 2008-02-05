@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -56,7 +55,7 @@ public abstract class FileSystemRenderer extends Renderer {
 
    public IFolder getRenderFolder(Branch branch, PresentationType presentationType) throws CoreException {
       IFolder baseFolder = ensureRenderFolderExists(presentationType);
-      IFolder renderFolder = baseFolder.getFolder(getBranchFolderName(branch));
+      IFolder renderFolder = baseFolder.getFolder(branch.asFolderName());
       if (!renderFolder.exists()) {
          renderFolder.create(true, true, null);
       }
@@ -104,16 +103,6 @@ public abstract class FileSystemRenderer extends Renderer {
       return true;
    }
 
-   private static String getBranchFolderName(Branch branch) {
-      String branchName = branch.getBranchName();
-
-      // Remove illegal filename characters
-      // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive spaces are in the name
-      branchName = branchName.replaceAll("[^A-Za-z0-9]", "_");
-
-      return branch.getBranchId() + " - " + StringFormat.truncate(branchName, 20).trim();
-   }
-
    public static IFolder ensureRenderFolderExists(PresentationType presentationType) throws CoreException {
       switch (presentationType) {
          case DIFF:
@@ -124,8 +113,8 @@ public abstract class FileSystemRenderer extends Renderer {
 
          case EDIT:
             if (workingFolder == null || !workingFolder.exists()) {
-               workingFolder = OseeData.getFolder(".working/");
-               // Set the vistor to this directory
+               workingFolder = OseeData.getFolder(".working");
+               // Set the visitor to this directory
                IResourceChangeListener listener = new EditChangeListener(workingFolder);
                ResourcesPlugin.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
             }

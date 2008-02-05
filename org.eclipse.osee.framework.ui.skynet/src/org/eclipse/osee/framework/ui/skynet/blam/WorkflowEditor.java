@@ -11,9 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -30,7 +27,6 @@ import org.eclipse.ui.PartInitException;
  */
 public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEventListener {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor";
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WorkflowEditor.class);
    private OverviewPage overviewPage;
    private List<XWidget> widgets;
    private BlamVariableMap blamVariableMap;
@@ -42,7 +38,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
          addPage(overviewPage);
          addPage(new WorkflowDataPage(this, overviewPage));
       } catch (PartInitException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 
@@ -69,7 +65,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
     * as the corresponding method in ArtifactExloper in the hope on day this will use a common interface
     * 
     * @param artifact
-    * @throws PartInitException
     */
    public static void editArtifact(final Artifact artifact) {
       Displays.ensureInDisplayThread(new Runnable() {

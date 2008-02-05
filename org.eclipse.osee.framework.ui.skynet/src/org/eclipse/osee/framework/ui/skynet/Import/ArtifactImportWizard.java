@@ -73,10 +73,12 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       IArtifactImportResolver artifactResolver = null;
 
       Artifact reuseArtifactRoot = mainPage.getReuseArtifactRoot();
-      if (reuseArtifactRoot != null) { // only non-null when reuse artifacts is checked
+      if (reuseArtifactRoot == null) {
+         artifactResolver = new NewArtifactImportResolver();
+      } else { // only non-null when reuse artifacts is checked
          Collection<DynamicAttributeDescriptor> identifyingAttributes =
                attributeTypePage.getSelectedAttributeDescriptors();
-         artifactResolver = new RootAndAttributeBasedArtifactResolver(identifyingAttributes);
+         artifactResolver = new RootAndAttributeBasedArtifactResolver(identifyingAttributes, true);
       }
 
       ArtifactSubtypeDescriptor mainDescriptor = null;

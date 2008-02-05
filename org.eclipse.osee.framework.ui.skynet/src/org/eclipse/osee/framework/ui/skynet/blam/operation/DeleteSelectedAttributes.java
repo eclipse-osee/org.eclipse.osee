@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -23,16 +22,12 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  * @author Ryan D. Brooks
  */
 public class DeleteSelectedAttributes implements BlamOperation {
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(BlamVariableMap variableMap, Branch branch, IProgressMonitor monitor) throws Exception {
-      //    <XWidget xwidgetType="XListDropViewer" displayName="artifacts" />
-      //    <XWidget xwidgetType="XAttributeTypeListViewer" displayName="AttributeTypeDescriptor" />
-
-      List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
-      DynamicAttributeDescriptor attributeDescriptor = variableMap.getAttributeDescriptor("AttributeTypeDescriptor");
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      List<Artifact> artifacts = variableMap.getArtifacts("Artifacts");
+      DynamicAttributeDescriptor attributeDescriptor = variableMap.getAttributeDescriptor("Attribute Type");
 
       monitor.beginTask("Delete Unspecified Partitions", IProgressMonitor.UNKNOWN);
 
@@ -49,5 +44,20 @@ public class DeleteSelectedAttributes implements BlamOperation {
          }
       }
       monitor.done();
+   }
+
+   /*
+    * (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+    */
+   public String getXWidgetsXml() {
+      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts\" /><XWidget xwidgetType=\"XAttributeTypeListViewer\" displayName=\"Attribute Type\" /></xWidgets>";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
+    */
+   public String getDescriptionUsage() {
+      return "Select parameters below and click the play button at the top right.";
    }
 }

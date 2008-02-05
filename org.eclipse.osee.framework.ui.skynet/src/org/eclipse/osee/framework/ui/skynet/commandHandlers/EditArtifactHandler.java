@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
@@ -43,7 +44,19 @@ public class EditArtifactHandler extends AbstractSelectionChangedHandler {
 
    @Override
    public boolean isEnabled() {
-      artifacts = Handlers.getArtifactsFromStructuredSelection(getActiveSiteSelection());
-      return accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
+      if (PlatformUI.getWorkbench().isClosing()) {
+         return false;
+      }
+      boolean isEnabled = false;
+
+      ISelectionProvider selectionProvider =
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+
+      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
+         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+         artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+         isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
+      }
+      return isEnabled;
    }
 }

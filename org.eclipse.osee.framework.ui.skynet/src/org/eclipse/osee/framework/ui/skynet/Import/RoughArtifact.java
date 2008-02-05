@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.PolymorphicArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
@@ -35,10 +34,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.FullPortableExport;
  * @author Robert A. Fisher
  */
 public class RoughArtifact {
-   private static PolymorphicArtifactFactory factory = PolymorphicArtifactFactory.getInstance();
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RoughArtifact.class);
-   private static boolean usePolymorphicArtifactFactory = false;
-
    private Artifact realArtifact;
    private RoughArtifact roughParent;
    private ReqNumbering number;
@@ -114,7 +110,7 @@ public class RoughArtifact {
       return number.isChild(otherArtifact.number);
    }
 
-   private void conferAttributesUpon(Artifact artifact) throws FileNotFoundException, SQLException {
+   public void conferAttributesUpon(Artifact artifact) throws FileNotFoundException, SQLException {
       for (NameAndVal attr : attributes) {
          String attributeName = attr.getName();
          String fullValue = attr.getValue();
@@ -208,45 +204,22 @@ public class RoughArtifact {
          return realArtifact;
       }
 
-      ArtifactSubtypeDescriptor descriptor = getDescriptorForGetReal();
-
       realArtifact = artifactResolver.resolve(this);
 
-      if (realArtifact != null) {
-         logger.log(Level.INFO, "found artifact already : " + realArtifact.toString());
-         updateValues(realArtifact);
-      } else {
-
-         if (usePolymorphicArtifactFactory) {
-            realArtifact = factory.makeNewArtifact(descriptor, guid, humandReadableId);
-         } else {
-            realArtifact = descriptor.makeNewArtifact(guid, humandReadableId);
-         }
-
-         // Try to confer attributes in 'initialization mode' to avoid default attributes
-         // on optional attributes. The attributes would be loaded at this point from
-         // onBirth() code in the artifact.
-         if (realArtifact.attributesNotLoaded()) {
-            realArtifact.startAttributeInitialization();
-            conferAttributesUpon(realArtifact);
-            realArtifact.finalizeAttributeInitialization();
-         } else {
-            conferAttributesUpon(realArtifact);
-         }
-
-      }
-
       if (monitor != null) {
-         monitor.subTask(realArtifact.getDescriptiveName());
+         monitor.subTask(getName());
          monitor.worked(1);
       }
 
       for (RoughArtifact roughArtifact : children) {
          Artifact tempArtifact = roughArtifact.getReal(branch, monitor, artifactResolver);
-         if (tempArtifact.getParent() == null) {
-            realArtifact.addChild(tempArtifact);
-         } else if (tempArtifact.getParent() != realArtifact) {
-            throw new IllegalStateException("Artifact already has a parent that is not inline with the import parent");
+         if (realArtifact != null) {
+            if (tempArtifact.getParent() == null) {
+               realArtifact.addChild(tempArtifact);
+            } else if (tempArtifact.getParent() != realArtifact) {
+               throw new IllegalStateException(
+                     "Artifact already has a parent that is not inline with the import parent");
+            }
          }
       }
 
@@ -254,13 +227,13 @@ public class RoughArtifact {
       return realArtifact;
    }
 
-   private ArtifactSubtypeDescriptor getDescriptorForGetReal() {
+   public ArtifactSubtypeDescriptor getDescriptorForGetReal() {
       return children.isEmpty() || forcePrimaryType ? primaryDescriptor : headingDescriptor;
    }
 
-   private void updateValues(Artifact artifact) throws SQLException, FileNotFoundException {
+   public void updateValues(Artifact artifact) throws SQLException, FileNotFoundException {
       for (NameAndVal value : attributes) {
-         artifact.setAttribute(value.getName(), value.getValue());
+         artifact.setSoleAttributeValue(value.getName(), value.getValue());
       }
 
       setFileAttributes(artifact);
@@ -285,6 +258,10 @@ public class RoughArtifact {
     */
    public void setHumandReadableId(String humandReadableId) {
       this.humandReadableId = humandReadableId;
+   }
+
+   public String getHumandReadableId() {
+      return humandReadableId;
    }
 
    /**
@@ -318,19 +295,5 @@ public class RoughArtifact {
          }
       }
       return "";
-   }
-
-   /**
-    * @return the usePolymorphicArtifactFactory
-    */
-   public static boolean isUsePolymorphicArtifactFactory() {
-      return usePolymorphicArtifactFactory;
-   }
-
-   /**
-    * @param usePolymorphicArtifactFactory the usePolymorphicArtifactFactory to set
-    */
-   public static void setUsePolymorphicArtifactFactory(boolean usePolymorphicArtifactFactory) {
-      RoughArtifact.usePolymorphicArtifactFactory = usePolymorphicArtifactFactory;
    }
 }

@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
-import org.eclipse.osee.framework.ui.plugin.util.ALayout;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.browser.Browser;

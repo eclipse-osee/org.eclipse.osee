@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
-import org.eclipse.osee.framework.ui.plugin.util.ALayout;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;

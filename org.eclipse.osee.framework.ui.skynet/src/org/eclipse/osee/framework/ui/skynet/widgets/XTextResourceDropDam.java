@@ -94,7 +94,6 @@ public class XTextResourceDropDam extends XTextDam {
                      if (javaPkg != null && !javaPkg.equals("")) sb.append(javaPkg + " - ");
                   } catch (Exception ex) {
                      // do nothing
-                     System.out.println("here");
                   }
                   sb.append(iFile.getName());
                   String ver = VersionControl.getInstance().getRepositoryEntry(file).getVersion();

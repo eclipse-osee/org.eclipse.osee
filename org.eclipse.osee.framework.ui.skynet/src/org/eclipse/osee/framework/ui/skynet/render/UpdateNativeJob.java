@@ -56,7 +56,7 @@ public class UpdateNativeJob extends UpdateJob {
                   "Can't retrieve native content for " + fileName + " for " + branch.getBranchName() + " branch.", null);
          } else {
             artifact.setAttribute(NativeArtifact.CONTENT_NAME, new FileInputStream(workingFile));
-            artifact.persist();
+            artifact.persistAttributes();
             eventManager.kick(new VisitorEvent(artifact, this));
          }
          return Status.OK_STATUS;

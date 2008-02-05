@@ -18,15 +18,19 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
@@ -34,19 +38,23 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
+import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Paul K. Waldfogel
+ * @author Jeff C. Phillips
  */
 public class RevertArtifactHandler extends AbstractSelectionChangedHandler {
    private static final RevisionManager myRevisionManager = RevisionManager.getInstance();
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
-   private Artifact mySelectedArtifact;
-   private TransactionId baseTransactionId = null;
-   private TransactionId toTransactionId = null;
+   private ArtifactChange artifactChange;
 
    public RevertArtifactHandler() {
    }
@@ -58,40 +66,40 @@ public class RevertArtifactHandler extends AbstractSelectionChangedHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      //            List<ArtifactChange> mySelectedArtifactChangeList = super.getArtifactChangeList();
-      //            TreeViewer myTreeViewer = super.getChangeTableTreeViewer();
-      //            List<ChangeReportInput> myChangeReportNewInputList = super.getChangeReportInputNewList();
-      //            baseTransactionId = myChangeReportNewInputList.get(0).getBaseTransaction();
-      //            toTransactionId = myChangeReportNewInputList.get(0).getToTransaction();
-      //            System.out.println("baseTransactionId/toTransactionId " + baseTransactionId + "/" + toTransactionId);
-      //            ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
-      //            // This is serious stuff, make sure the user understands the impact.
-      //            if (MessageDialog.openConfirm(
-      //                  myTreeViewer.getTree().getShell(),
-      //                  "Confirm Revert of " + selectedArtifactChange.getName(),
-      //                  "All attribute changes for the artifact and all link changes that involve the artifact on this branch will be reverted." + "\n\nTHIS IS IRREVERSIBLE" + "\n\nOSEE must be restarted after all reverting is finished to see the results")) {
-      //      
-      //               Jobs.startJob(new RevertJob(selectedArtifactChange.getName(), selectedArtifactChange.getArtId()));
-      //            }
+      // This is serious stuff, make sure the user understands the impact.
+      if (MessageDialog.openConfirm(
+            Display.getCurrent().getActiveShell(),
+            "Confirm Revert of " + artifactChange.getName(),
+            "All attribute changes for the artifact and all link changes that involve the artifact on this branch will be reverted." + "\n\nTHIS IS IRREVERSIBLE" + "\n\nOSEE must be restarted after all reverting is finished to see the results")) {
+
+         TransactionId toTransactionId =
+               artifactChange.getModType() == ModificationType.DELETE ? artifactChange.getDeletedTransactionId() : artifactChange.getToTransactionId();
+         Jobs.startJob(new RevertJob(artifactChange.getName(), artifactChange.getArtId(),
+               artifactChange.getFromTransactionId(), toTransactionId));
+      }
       return null;
    }
    private class RevertJob extends Job {
 
       private final int artId;
+      private final TransactionId baseTransactionId;
+      private final TransactionId toTransactionId;
 
       /**
        * @param name
        * @param artId
        */
-      public RevertJob(String name, int artId) {
+      public RevertJob(String name, int artId, TransactionId baseTransactionId, TransactionId toTransactionId) {
          super("Reverting Artifact " + name);
          this.artId = artId;
+         this.baseTransactionId = baseTransactionId;
+         this.toTransactionId = toTransactionId;
       }
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            new RevertDbTx(getName(), artId, monitor).execute();
+            new RevertDbTx(getName(), artId, baseTransactionId, toTransactionId, monitor).execute();
          } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, false);
          }
@@ -104,11 +112,15 @@ public class RevertArtifactHandler extends AbstractSelectionChangedHandler {
       private final IProgressMonitor monitor;
       private final int artId;
       private final String txName;
+      private final TransactionId baseTransactionId;
+      private final TransactionId toTransactionId;
 
-      public RevertDbTx(String txName, int artId, IProgressMonitor monitor) {
+      public RevertDbTx(String txName, int artId, TransactionId baseTransactionId, TransactionId toTransactionId, IProgressMonitor monitor) {
          this.monitor = monitor;
          this.txName = txName;
          this.artId = artId;
+         this.baseTransactionId = baseTransactionId;
+         this.toTransactionId = toTransactionId;
       }
 
       /*
@@ -209,16 +221,33 @@ public class RevertArtifactHandler extends AbstractSelectionChangedHandler {
 
    @Override
    public boolean isEnabled() {
-      return true;
-      //      try {
-      //         //         List<Artifact> mySelectedArtifactList = super.getArtifactList();
-      //         Artifact mySelectedArtifact = mySelectedArtifactList.get(0);
-      //         boolean writePermission =
-      //               myAccessControlManager.checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
-      //         return mySelectedArtifactList.size() > 0 && writePermission;
-      //      } catch (Exception ex) {
-      //         OSEELog.logException(getClass(), ex, true);
-      //         return false;
-      //      }
+      if (PlatformUI.getWorkbench().isClosing()) {
+         return false;
+      }
+
+      boolean isEnabled = false;
+      try {
+         ISelectionProvider selectionProvider =
+               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+
+         if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+            List<ArtifactChange> artifactChanges =
+                  Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+
+            if (artifactChanges.isEmpty()) {
+               return false;
+            }
+
+            artifactChange = artifactChanges.get(0);
+
+            isEnabled =
+                  myAccessControlManager.checkObjectPermission(artifactChange.getArtifact(), PermissionEnum.WRITE);
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(getClass(), ex, true);
+         return false;
+      }
+      return isEnabled;
    }
 }

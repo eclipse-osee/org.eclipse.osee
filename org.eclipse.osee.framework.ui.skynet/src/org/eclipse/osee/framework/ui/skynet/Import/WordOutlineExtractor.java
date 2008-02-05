@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.util.WordUtil;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @author Andrew M. Finkbeiner

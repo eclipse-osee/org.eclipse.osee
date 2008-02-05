@@ -25,7 +25,8 @@ public class UpdateTemplates implements BlamOperation {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
-   public void runOperation(BlamVariableMap variableMap, Branch branch, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      Branch branch = variableMap.getBranch("Branch");
       WordRenderer wordRenderer =
             (WordRenderer) RendererManager.getInstance().getRendererById("org.eclipse.osee.framework.ui.skynet.word");
 
@@ -34,5 +35,20 @@ public class UpdateTemplates implements BlamOperation {
          wordRenderer.setDefaultTemplates(null, presentationType, branch);
          monitor.worked(1);
       }
+   }
+
+   /*
+    * (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+    */
+   public String getXWidgetsXml() {
+      return branchXWidgetXml;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
+    */
+   public String getDescriptionUsage() {
+      return "Select parameters below and click the play button at the top right.";
    }
 }

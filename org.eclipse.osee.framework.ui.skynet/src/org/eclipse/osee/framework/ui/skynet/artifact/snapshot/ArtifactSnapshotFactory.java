@@ -85,25 +85,31 @@ public class ArtifactSnapshotFactory {
     * @return modified pre-rendered artifact data
     */
    protected String toAbsoluteUrls(String original) {
-      ChangeSet changeSet = new ChangeSet(original);
-      String tag = httpImageRequest.getRequestType();
-      Pattern pattern = Pattern.compile("src=\"(" + tag.replace(".", "\\.") + ")");
-      Matcher matcher = pattern.matcher(original);
-      while (matcher.find()) {
-         if (matcher.groupCount() > 0) {
-            String entry = matcher.group(1);
-            if (Strings.isValid(entry)) {
-               try {
-                  String prefix = HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
-                  String result = String.format("src=\"%s%s", prefix, tag);
-                  changeSet.replace(matcher.start(), matcher.end(), result);
-               } catch (Exception ex) {
-                  logger.log(Level.SEVERE, String.format("Error adding http server address."), ex);
+      String toReturn = "";
+      if (Strings.isValid(original) != true) {
+         toReturn = "<HTML><BODY><H3>Empty Contents</H3></BODY></HTML>";
+      } else {
+         ChangeSet changeSet = new ChangeSet(original);
+         String tag = httpImageRequest.getRequestType();
+         Pattern pattern = Pattern.compile("src=\"(" + tag.replace(".", "\\.") + ")");
+         Matcher matcher = pattern.matcher(original);
+         while (matcher.find()) {
+            if (matcher.groupCount() > 0) {
+               String entry = matcher.group(1);
+               if (Strings.isValid(entry)) {
+                  try {
+                     String prefix = HttpUrlBuilder.getInstance().getSkynetHttpLocalServerPrefix();
+                     String result = String.format("src=\"%s%s", prefix, tag);
+                     changeSet.replace(matcher.start(), matcher.end(), result);
+                  } catch (Exception ex) {
+                     logger.log(Level.SEVERE, String.format("Error adding http server address."), ex);
+                  }
                }
             }
          }
+         toReturn = changeSet.applyChangesToSelf().toString();
       }
-      return changeSet.applyChangesToSelf().toString();
+      return toReturn;
    }
 
    /**
@@ -135,31 +141,33 @@ public class ArtifactSnapshotFactory {
     * @param snapshotData snapshot containing image links
     */
    private void processImageLinks(ArtifactSnapshot snapshotData) {
-      String original = snapshotData.getRenderedData();
-      String tag = httpImageProcessor.getImageProcessingMarker();
-      Pattern pattern = Pattern.compile("(" + tag + ".*?)\"");
-      Matcher matcher = pattern.matcher(original);
-      ChangeSet changeSet = new ChangeSet(original);
-      while (matcher.find()) {
-         if (matcher.groupCount() > 0) {
-            String url = matcher.group(1);
-            String imageKey = url.replace(tag, "");
-            if (Strings.isValid(imageKey)) {
-               try {
-                  ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                  httpImageProcessor.processRequest(imageKey, outputStream);
-                  snapshotData.addBinaryData(imageKey, outputStream.toByteArray());
-                  String result =
-                        httpImageRequest.getRequestUrl(snapshotData.getNamespace(), snapshotData.getKey(), imageKey);
-                  changeSet.replace(matcher.start(), matcher.end(), result + "\"");
-               } catch (Exception ex) {
-                  logger.log(Level.SEVERE, String.format("Image processing error. Unable to take a snapshot of: [%s]",
-                        imageKey), ex);
+      if (snapshotData.isDataValid() != false) {
+         String original = snapshotData.getRenderedData();
+         String tag = httpImageProcessor.getImageProcessingMarker();
+         Pattern pattern = Pattern.compile("(" + tag + ".*?)\"");
+         Matcher matcher = pattern.matcher(original);
+         ChangeSet changeSet = new ChangeSet(original);
+         while (matcher.find()) {
+            if (matcher.groupCount() > 0) {
+               String url = matcher.group(1);
+               String imageKey = url.replace(tag, "");
+               if (Strings.isValid(imageKey)) {
+                  try {
+                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                     httpImageProcessor.processRequest(imageKey, outputStream);
+                     snapshotData.addBinaryData(imageKey, outputStream.toByteArray());
+                     String result =
+                           httpImageRequest.getRequestUrl(snapshotData.getNamespace(), snapshotData.getKey(), imageKey);
+                     changeSet.replace(matcher.start(), matcher.end(), result + "\"");
+                  } catch (Exception ex) {
+                     logger.log(Level.SEVERE, String.format(
+                           "Image processing error. Unable to take a snapshot of: [%s]", imageKey), ex);
+                  }
                }
             }
          }
+         snapshotData.setRenderedData(changeSet.applyChangesToSelf().toString());
       }
-      snapshotData.setRenderedData(changeSet.applyChangesToSelf().toString());
    }
 
    protected final class KeyGenerator {

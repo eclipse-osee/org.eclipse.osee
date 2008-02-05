@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
-import static org.eclipse.osee.framework.skynet.core.util.WordUtil.textOnly;
+import static org.eclipse.osee.framework.skynet.core.word.WordUtil.textOnly;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
@@ -144,7 +144,7 @@ public class WordTemplateProcessor {
     * @throws IOException
     */
    public void applyTemplate(IFolder folder, BlamVariableMap variableMap) throws Exception {
-      String fileName = (String) variableMap.getValue("MasterFileName");
+      String fileName = variableMap.getString("MasterFileName");
       if (fileName == null) {
          fileName = "new file " + (new Date().toString().replaceAll(":", ";"));
       }
@@ -159,6 +159,7 @@ public class WordTemplateProcessor {
     * @throws IOException
     */
    private InputStream applyTemplate(BlamVariableMap variableMap, String template, IFolder folder, String nextParagraphNumber, String outlineType) throws Exception {
+      variableMap.setValue("useTree", Boolean.FALSE);
       CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
       Matcher matcher = headElementsPattern.matcher(template);
@@ -199,6 +200,7 @@ public class WordTemplateProcessor {
       WordMLProducer wordMl = new WordMLProducer(charBak);
       int lastEndIndex = 0;
 
+      variableMap.setValue("useTree", Boolean.FALSE);
       outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, variableMap);
       //modifications to the template must be done before the matcher
       template = wordMl.setHeadingNumbers(outlineNumber, template);
@@ -257,19 +259,14 @@ public class WordTemplateProcessor {
             setNameMatcher.find();
             final String artifactSetName = textOnly(setNameMatcher.group(2));
 
-            Object object = variableMap.getValue(artifactSetName);
+            Collection<Artifact> artifacts = variableMap.getArtifacts(artifactSetName);
 
-            if (object instanceof Collection) {
-               Collection<Artifact> artifacts = (Collection<Artifact>) object;
+            if (!artifacts.isEmpty()) {
+               Artifact artifact = artifacts.iterator().next();
 
-               if (!artifacts.isEmpty()) {
-                  Artifact artifact = artifacts.iterator().next();
-
-                  if (!artifact.getSoleAttributeValue("Imported Paragraph Number").equals("")) {
-                     startParagraphNumber = artifact.getSoleAttributeValue("Imported Paragraph Number");
-                  }
+               if (!artifact.getSoleAttributeValue("Imported Paragraph Number").equals("")) {
+                  startParagraphNumber = artifact.getSoleAttributeValue("Imported Paragraph Number");
                }
-
             }
          }
       }
@@ -348,19 +345,17 @@ public class WordTemplateProcessor {
 
    @SuppressWarnings("unchecked")
    private void processArtifactSetHelper(String artifactSetName, BlamVariableMap variableMap, WordMLProducer wordMl, String outlineType) throws IOException, SQLException {
-      Object object = variableMap.getValue(artifactSetName);
+      Boolean useTree = variableMap.getBoolean("useTree");
 
-      if (object instanceof Tree) {
-         Tree<Object> tree = (Tree<Object>) object;
+      if (useTree.booleanValue()) {
+         Tree<Object> tree = (Tree<Object>) variableMap.getValue(Tree.class, artifactSetName);
 
          for (TreeNode<Object> node : tree.getRoot().getChildren()) {
 
             processObject(node, wordMl, false, outlineType);
          }
-      } else if (object instanceof Collection) {
-         Collection<Artifact> artifacts = (Collection<Artifact>) object;
-
-         for (Artifact artifact : artifacts) {
+      } else {
+         for (Artifact artifact : variableMap.getArtifacts(artifactSetName)) {
             if (artifact != null) {
                processObject(artifact, wordMl, true, outlineType);
             } else {
@@ -438,7 +433,7 @@ public class WordTemplateProcessor {
             }
 
             if (doSubDocuments) {
-               newVariableMap.setValue("Branch", variableMap.getValue("Branch"));
+               newVariableMap.setValue("Branch", variableMap.getBranch("Branch"));
                String subDocFileName = subdocumentName + ".xml";
                producer.process(newVariableMap);
                AIFile.writeToFile(folder.getFile(subDocFileName), applyTemplate(newVariableMap, slaveTemplate, folder,
@@ -542,10 +537,10 @@ public class WordTemplateProcessor {
 
             if (paragraphNumber != null && saveParagraphNumOnArtifact && !artifact.getSoleAttributeValue(
                   "Imported Paragraph Number").equals("")) {
-               artifact.setAttribute("Imported Paragraph Number", paragraphNumber.toString());
+               artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
 
                try {
-                  artifact.persist();
+                  artifact.persistAttributes();
                } catch (SQLException ex) {
                   logger.log(Level.SEVERE, ex.toString(), ex);
                }
@@ -608,7 +603,7 @@ public class WordTemplateProcessor {
          return;
       }
 
-      // This is for SRS Publishing
+      // This is for SRS Publishing. Do not publish unspecified attributes
       if (!allAttrs && (attributeName.equals("Partition") || attributeName.equals("Safety Criticality"))) {
          for (Attribute partition : artifact.getAttributeManager("Partition").getAttributes()) {
             if (partition.getStringData().equals("Unspecified")) {
@@ -617,10 +612,15 @@ public class WordTemplateProcessor {
          }
       }
 
-      for (Attribute attribute : artifact.getAttributeManager(attributeName).getAttributes()) {
+      DynamicAttributeManager dynamicAttributeManager = artifact.getAttributeManager(attributeName);
+      Collection<Attribute> attributes = dynamicAttributeManager.getAttributes();
+
+      if (!attributes.isEmpty()) {
+         Attribute attribute = attributes.iterator().next();
+
          // check if the attribute descriptor name is in the ignore list.
          if (ignoreAttributeExtensions.contains(attribute.getManager().getDescriptor().getName())) {
-            continue;
+            return;
          }
 
          if (attributeName.equals(WordAttribute.CONTENT_NAME)) {
@@ -647,9 +647,9 @@ public class WordTemplateProcessor {
             }
 
             if (attributeElement.format.contains(">x<")) {
-               wordMl.addWordMl(format.replace(">x<", ">" + attribute.getStringData() + "<"));
+               wordMl.addWordMl(format.replace(">x<", ">" + dynamicAttributeManager.getAttributesStr() + "<"));
             } else {
-               wordMl.addTextInsideParagraph(attribute.getStringData());
+               wordMl.addTextInsideParagraph(dynamicAttributeManager.getAttributesStr());
             }
             wordMl.endParagraph();
          }

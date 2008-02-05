@@ -72,7 +72,7 @@ public class SkynetCustomizeDefaults implements IXViewerCustomizeDefaults {
 
       try {
          user.setSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, sb.toString());
-         user.persist();
+         user.persistAttributes();
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

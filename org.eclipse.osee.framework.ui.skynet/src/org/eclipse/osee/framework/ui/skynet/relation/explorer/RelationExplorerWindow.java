@@ -299,9 +299,9 @@ public class RelationExplorerWindow {
                if (descriptor != null) {
                   try {
                      artifact = descriptor.makeNewArtifact();
-                     artifact.setAttribute("Name", model.getName());
-                     artifact.setAttribute("Content URL", urls.get(names.indexOf(model.getName())));
-                     artifact.persist();
+                     artifact.setSoleAttributeValue("Name", model.getName());
+                     artifact.setSoleAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
+                     artifact.persistAttributes();
                   } catch (SQLException ex) {
                      AWorkbench.popup("ERROR", ex.getLocalizedMessage());
                      SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -311,16 +311,14 @@ public class RelationExplorerWindow {
                artifact = model.getArtifact();
 
             if (artifact != null) {
-               relationGroup.addArtifact(artifact);
-
-               if (persistOnOk) {
-                  try {
+               try {
+                  relationGroup.addArtifact(artifact);
+                  if (persistOnOk) {
                      relationGroup.getLinkManager().persistLinks();
-                  } catch (SQLException ex) {
-                     AWorkbench.popup("ERROR", ex.getLocalizedMessage());
-                     SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                   }
-
+               } catch (SQLException ex) {
+                  AWorkbench.popup("ERROR", ex.getLocalizedMessage());
+                  SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                }
             }
          }

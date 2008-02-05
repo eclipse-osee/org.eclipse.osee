@@ -29,8 +29,8 @@ public class GroupLabelProvider extends LabelProvider {
     * @see ILabelProvider#getImage(Object)
     */
    public Image getImage(Object element) {
-      if (element instanceof UniversalGroupItem) {
-         UniversalGroupItem item = (UniversalGroupItem) element;
+      if (element instanceof GroupExplorerItem) {
+         GroupExplorerItem item = (GroupExplorerItem) element;
          String typename = item.getArtifact().getArtifactTypeName();
          if (typename.equals("Heading"))
             return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
@@ -54,8 +54,8 @@ public class GroupLabelProvider extends LabelProvider {
     * @see ILabelProvider#getText(Object)
     */
    public String getText(Object element) {
-      if (element instanceof UniversalGroupItem) {
-         UniversalGroupItem item = (UniversalGroupItem) element;
+      if (element instanceof GroupExplorerItem) {
+         GroupExplorerItem item = (GroupExplorerItem) element;
          Artifact artifact = item.getArtifact();
          if (artifact.isDeleted()) throw new IllegalArgumentException("Can not display a deleted artifact");
 

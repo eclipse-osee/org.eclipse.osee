@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -23,8 +24,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Paul K. Waldfogel
@@ -65,22 +68,32 @@ public class WordChangesMadeToHandler extends AbstractSelectionChangedHandler {
 
    @Override
    public boolean isEnabled() {
-      IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
-      mySelectedArtifactChangeList = Handlers.getArtifactChangesFromStructuredSelection(myIStructuredSelection);
-
-      if (mySelectedArtifactChangeList.size() == 0) {
+      if (PlatformUI.getWorkbench().isClosing()) {
          return false;
       }
-      ArtifactChange mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
 
-      try {
-         Artifact changedArtifact = mySelectedArtifactChange.getArtifact();
-         boolean readPermission = myAccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
-         boolean wordArtifactSelected = changedArtifact instanceof WordArtifact;
-         return readPermission && wordArtifactSelected;
-      } catch (SQLException ex) {
-         OSEELog.logException(getClass(), ex, true);
-         return (false);
+      boolean isEnabled = false;
+      ISelectionProvider selectionProvider =
+            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+
+      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
+         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+         mySelectedArtifactChangeList = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+
+         if (mySelectedArtifactChangeList.size() == 0) {
+            return false;
+         }
+         ArtifactChange mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
+
+         try {
+            Artifact changedArtifact = mySelectedArtifactChange.getArtifact();
+            boolean readPermission = myAccessControlManager.checkObjectPermission(changedArtifact, PermissionEnum.READ);
+            boolean wordArtifactSelected = changedArtifact instanceof WordArtifact;
+            isEnabled = readPermission && wordArtifactSelected;
+         } catch (SQLException ex) {
+            OSEELog.logException(getClass(), ex, true);
+         }
       }
+      return isEnabled;
    }
 }

@@ -21,26 +21,35 @@ import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
  * @author Ryan D. Brooks
  */
 public class AddTemplate implements BlamOperation {
-
    /**
-    * <XWidget xwidgetType="XText" displayName="presentationType" /> PREVIEW <XWidget xwidgetType="XText"
-    * displayName="bundleName" /> org.eclipse.osee.framework.ui.skynet <XWidget xwidgetType="XText"
-    * displayName="templateName" /> My Template <XWidget xwidgetType="XText" displayName="templatePath" />
-    * support/templates/My_Template.xml
-    * 
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap,
-    *      org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
+    *      org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(BlamVariableMap variableMap, Branch branch, IProgressMonitor monitor) throws Exception {
-
-      String presentationType = variableMap.getString("presentationType");
-      String bundleName = variableMap.getString("bundleName");
-      String templateName = variableMap.getString("templateName");
-      String templatePath = variableMap.getString("templatePath");
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      String presentationType = variableMap.getString("Presentation Type"); // PREVIEW
+      String bundleName = variableMap.getString("Bundle Name"); // org.eclipse.osee.framework.ui.skynet
+      String templateName = variableMap.getString("Template Name"); // Default
+      String templatePath = variableMap.getString("Template Path"); // support\templates\PREVIEW_ALL.xml
+      Branch branch = variableMap.getBranch("Branch");
 
       WordRenderer wordRenderer =
             (WordRenderer) RendererManager.getInstance().getRendererById("org.eclipse.osee.framework.ui.skynet.word");
       wordRenderer.addTemplate(PresentationType.valueOf(presentationType), bundleName, templateName, templatePath,
             branch);
+   }
+
+   /*
+    * (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+    */
+   public String getXWidgetsXml() {
+      return "<xWidgets><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /><XWidget xwidgetType=\"XText\" displayName=\"Presentation Type\" /><XWidget xwidgetType=\"XText\" displayName=\"Bundle Name\" /><XWidget xwidgetType=\"XText\" displayName=\"Template Name\" /><XWidget xwidgetType=\"XText\" displayName=\"Template Path\" /></xWidgets>";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
+    */
+   public String getDescriptionUsage() {
+      return "Select parameters below and click the play button at the top right.";
    }
 }

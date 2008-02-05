@@ -13,11 +13,14 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.TagArtifactsJob;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Paul K. Waldfogel
@@ -34,14 +37,25 @@ public class TagArtifactsHandler extends AbstractSelectionChangedHandler {
 
    @Override
    public boolean isEnabled() {
-      try {
-         IStructuredSelection structuredSelection = getActiveSiteSelection();
-         artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+      if (PlatformUI.getWorkbench().isClosing()) {
+         return false;
+      }
 
-         return artifacts.size() > 0;
+      boolean isEnabled = false;
+      try {
+         ISelectionProvider selectionProvider =
+               AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+
+         if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+            artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+
+            isEnabled = artifacts.size() > 0;
+         }
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, true);
          return false;
       }
+      return isEnabled;
    }
 }

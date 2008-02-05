@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.access;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -31,7 +30,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- * Displays an <Code>Artifact</Code> access contol list, used by the <Code>PolicyDialog</Code>.
+ * Displays an <Code>Artifact</Code> access control list, used by the <Code>PolicyDialog</Code>.
  * 
  * @author Jeff C. Phillips
  */
@@ -42,18 +41,11 @@ public class PolicyTableViewer {
    private TableViewer tableViewer;
    private Map<String, AccessControlData> accessControlList;
    private Object object;
-
-   public static final int DELETE_NUM = 0;
-   public static final int PERSON_NUM = 1;
-   public static final int ARTIFACT_POLICY_LEVEL_NUM = 2;
-   public static final int BRANCH_POLICY_LEVEL_NUM = 3;
-   public static final int ARTIFACT_TYPE_POLICY_LEVEL_NUM = 4;
-   public static final int TOTAL_POLICY_LEVEL_NUM = 5;
-
-   private final static int[] columnWidths = new int[] {75, 300, 100, 100, 100, 100};
-   private static final String[] columnNames =
-         new String[] {"Remove", "Person", "Branch Permission", "Artifact Type Permission", "Artifact Permission",
-               "Total Permission"};
+   public static enum Columns {
+      Delete, Person, Total, Branch, Artifact_Type, Artifact
+   };
+   private final static int[] columnWidths = new int[] {25, 125, 75, 75, 75, 75};
+   private String[] columnNames;
 
    /**
     * @param table -
@@ -67,6 +59,15 @@ public class PolicyTableViewer {
       tableViewer.setContentProvider(new PolicyContentProvider());
       tableViewer.setLabelProvider(new PolicyLabelProvider());
       tableViewer.setInput(accessControlList.values());
+   }
+
+   /**
+    * Disables the cell modifiers, not the entire table so user can still scroll
+    * 
+    * @param enabled
+    */
+   public void setEnabled(boolean enabled) {
+      ((PolicyTableCellModifier) tableViewer.getCellModifier()).setEnabled(enabled);
    }
 
    public void addItem(Artifact subject, Object object, PermissionEnum permission) {
@@ -88,11 +89,14 @@ public class PolicyTableViewer {
 
       tableViewer = new TableViewer(table);
       tableViewer.setUseHashlookup(true);
+      columnNames = new String[Columns.values().length];
+      for (Columns col : Columns.values())
+         columnNames[col.ordinal()] = col.name();
       tableViewer.setColumnProperties(columnNames);
 
-      CellEditor[] validEditors = new CellEditor[columnNames.length];
-      validEditors[DELETE_NUM] = new CheckboxCellEditor(table, SWT.NONE);
-      validEditors[ARTIFACT_POLICY_LEVEL_NUM] =
+      CellEditor[] validEditors = new CellEditor[Columns.values().length];
+      validEditors[Columns.Delete.ordinal()] = new CheckboxCellEditor(table, SWT.NONE);
+      validEditors[Columns.Artifact.ordinal()] =
             new ComboBoxCellEditor(table, PermissionEnum.getPermissionNames(), SWT.READ_ONLY);
 
       // Assign the cell editors to the viewer
@@ -108,33 +112,12 @@ public class PolicyTableViewer {
       table.setLinesVisible(true);
       table.setHeaderVisible(true);
 
-      TableColumn column = new TableColumn(table, SWT.LEFT, DELETE_NUM);
-      column.setText(columnNames[DELETE_NUM]);
-      column.setWidth(columnWidths[DELETE_NUM]);
+      for (Columns col : Columns.values()) {
+         TableColumn column = new TableColumn(table, SWT.LEFT, col.ordinal());
+         column.setText(col.name());
+         column.setWidth(columnWidths[col.ordinal()]);
+      }
 
-      column = new TableColumn(table, SWT.LEFT, PERSON_NUM);
-      column.setText(columnNames[PERSON_NUM]);
-      column.setWidth(columnWidths[PERSON_NUM]);
-
-      column = new TableColumn(table, SWT.LEFT, ARTIFACT_POLICY_LEVEL_NUM);
-      column.setText(columnNames[ARTIFACT_POLICY_LEVEL_NUM]);
-      column.setWidth(columnWidths[ARTIFACT_POLICY_LEVEL_NUM]);
-
-      column = new TableColumn(table, SWT.LEFT, BRANCH_POLICY_LEVEL_NUM);
-      column.setText(columnNames[BRANCH_POLICY_LEVEL_NUM]);
-      column.setWidth(columnWidths[BRANCH_POLICY_LEVEL_NUM]);
-
-      column = new TableColumn(table, SWT.LEFT, ARTIFACT_TYPE_POLICY_LEVEL_NUM);
-      column.setText(columnNames[ARTIFACT_TYPE_POLICY_LEVEL_NUM]);
-      column.setWidth(columnWidths[ARTIFACT_TYPE_POLICY_LEVEL_NUM]);
-
-      column = new TableColumn(table, SWT.LEFT, TOTAL_POLICY_LEVEL_NUM);
-      column.setText(columnNames[TOTAL_POLICY_LEVEL_NUM]);
-      column.setWidth(columnWidths[TOTAL_POLICY_LEVEL_NUM]);
-   }
-
-   public List<String> getColumnNames() {
-      return Arrays.asList(columnNames);
    }
 
    public Map<String, AccessControlData> getAccessControlList() {
@@ -209,5 +192,12 @@ public class PolicyTableViewer {
       public void removeFilter(AccessControlData data) {
          tableViewer.remove(data);
       }
+   }
+
+   /**
+    * @return the columnNames
+    */
+   public String[] getColumnNames() {
+      return columnNames;
    }
 }

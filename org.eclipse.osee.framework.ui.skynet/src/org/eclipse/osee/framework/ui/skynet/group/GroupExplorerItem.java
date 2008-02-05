@@ -29,16 +29,16 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 /**
  * @author Donald G. Dunne
  */
-public class UniversalGroupItem implements IEventReceiver {
+public class GroupExplorerItem implements IEventReceiver {
 
    private Artifact artifact;
    private final TreeViewer treeViewer;
    private SkynetEventManager eventManager;
-   private UniversalGroupItem parentItem;
-   private List<UniversalGroupItem> groupItems;
+   private GroupExplorerItem parentItem;
+   private List<GroupExplorerItem> groupItems;
    private final GroupExplorer groupExplorer;
 
-   public UniversalGroupItem(TreeViewer treeViewer, Artifact artifact, UniversalGroupItem parentItem, GroupExplorer groupExplorer) {
+   public GroupExplorerItem(TreeViewer treeViewer, Artifact artifact, GroupExplorerItem parentItem, GroupExplorer groupExplorer) {
       this.treeViewer = treeViewer;
       this.artifact = artifact;
       this.parentItem = parentItem;
@@ -49,7 +49,7 @@ public class UniversalGroupItem implements IEventReceiver {
    }
 
    public boolean contains(Artifact artifact) {
-      for (UniversalGroupItem item : getGroupItems()) {
+      for (GroupExplorerItem item : getGroupItems()) {
          if (item.getArtifact() != null && item.getArtifact().equals(artifact)) return true;
       }
       return false;
@@ -59,10 +59,10 @@ public class UniversalGroupItem implements IEventReceiver {
     * @param artifact to match with
     * @return UGI that contains artifact
     */
-   public UniversalGroupItem getItem(Artifact artifact) {
+   public GroupExplorerItem getItem(Artifact artifact) {
       if (this.artifact != null && this.artifact.equals(artifact)) return this;
-      for (UniversalGroupItem item : getGroupItems()) {
-         UniversalGroupItem ugi = item.getItem(artifact);
+      for (GroupExplorerItem item : getGroupItems()) {
+         GroupExplorerItem ugi = item.getItem(artifact);
          if (ugi != null) return ugi;
       }
       return null;
@@ -70,7 +70,7 @@ public class UniversalGroupItem implements IEventReceiver {
 
    public void dispose() {
       eventManager.unRegisterAll(this);
-      if (groupItems != null) for (UniversalGroupItem item : groupItems)
+      if (groupItems != null) for (GroupExplorerItem item : groupItems)
          item.dispose();
    }
 
@@ -95,13 +95,13 @@ public class UniversalGroupItem implements IEventReceiver {
       return artifact;
    }
 
-   public List<UniversalGroupItem> getGroupItems() {
+   public List<GroupExplorerItem> getGroupItems() {
       // Light loading; load the first time getChildren is called
       if (groupItems == null) {
-         groupItems = new ArrayList<UniversalGroupItem>();
+         groupItems = new ArrayList<GroupExplorerItem>();
          populateUpdateCategory();
       }
-      List<UniversalGroupItem> items = new ArrayList<UniversalGroupItem>();
+      List<GroupExplorerItem> items = new ArrayList<GroupExplorerItem>();
       if (groupItems != null) items.addAll(groupItems);
       return items;
    }
@@ -111,22 +111,22 @@ public class UniversalGroupItem implements IEventReceiver {
     */
    public void populateUpdateCategory() {
       try {
-         for (UniversalGroupItem item : getGroupItems()) {
+         for (GroupExplorerItem item : getGroupItems()) {
             removeGroupItem(item);
          }
          for (Artifact art : artifact.getArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS)) {
-            addGroupItem(new UniversalGroupItem(treeViewer, art, this, groupExplorer));
+            addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
          }
       } catch (SQLException ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 
-   public void addGroupItem(UniversalGroupItem item) {
+   public void addGroupItem(GroupExplorerItem item) {
       groupItems.add(item);
    }
 
-   public void removeGroupItem(UniversalGroupItem item) {
+   public void removeGroupItem(GroupExplorerItem item) {
       item.dispose();
       groupItems.remove(item);
    }
@@ -136,7 +136,7 @@ public class UniversalGroupItem implements IEventReceiver {
          dispose();
          return;
       }
-      final UniversalGroupItem tai = this;
+      final GroupExplorerItem tai = this;
 
       if (event instanceof TransactionEvent) {
          EventData ed = ((TransactionEvent) event).getEventData(artifact);
@@ -164,7 +164,7 @@ public class UniversalGroupItem implements IEventReceiver {
       return true;
    }
 
-   public UniversalGroupItem getParentItem() {
+   public GroupExplorerItem getParentItem() {
       return parentItem;
    }
 

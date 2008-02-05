@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.sql.ResultSet;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
@@ -40,9 +39,7 @@ public class PurgeArtifactType implements BlamOperation {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
-   public void runOperation(BlamVariableMap variableMap, Branch branchIgnoreMe, IProgressMonitor monitor) throws Exception {
-      //    <XWidget xwidgetType="XArtifactTypeListViewer" displayName="Artifact Type" />
-
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       ArtifactSubtypeDescriptor artType = variableMap.getArtifactSubtypeDescriptor("Artifact Type");
       int artTypeId = artType.getArtTypeId();
 
@@ -65,5 +62,19 @@ public class PurgeArtifactType implements BlamOperation {
       ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, SQL3DataType.INTEGER, artTypeId);
       ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE_GAMMAS, SQL3DataType.INTEGER, artTypeId);
       ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE, SQL3DataType.INTEGER, artTypeId);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
+    */
+   public String getDescriptionUsage() {
+      return "Select parameters below and click the play button at the top right.";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+    */
+   public String getXWidgetsXml() {
+      return "<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" />";
    }
 }

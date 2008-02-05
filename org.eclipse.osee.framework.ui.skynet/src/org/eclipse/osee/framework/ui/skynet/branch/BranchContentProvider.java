@@ -146,7 +146,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             }
          } else if (parentElement instanceof TransactionData) {
             TransactionId tranId = ((TransactionData) parentElement).getTransactionId();
-            return getArtifactChanges(null, tranId, tranId);
+            return getArtifactChanges(tranId);
          } else if (parentElement instanceof Pair) {
             Pair pair = (Pair) parentElement;
             if (pair.getKey() instanceof TransactionId && pair.getValue() instanceof TransactionId) {
@@ -277,6 +277,10 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    public static Object[] getArtifactChanges(ChangeReportInput input) throws SQLException {
       return getArtifactChanges(input.getBaseParentTransactionId(), input.getBaseTransaction(),
             input.getToTransaction());
+   }
+
+   private static Object[] getArtifactChanges(TransactionId toTransaction) throws SQLException {
+      return getArtifactChanges(null, transactionIdManager.getPriorTransaction(toTransaction), toTransaction);
    }
 
    private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws SQLException {

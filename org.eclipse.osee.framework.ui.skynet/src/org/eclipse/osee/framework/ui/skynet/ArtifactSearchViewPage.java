@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,9 +26,14 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -35,10 +41,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
@@ -79,6 +88,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
@@ -184,9 +194,123 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       createOpenInMassArtifactEditorHandler(menuManager, viewer);
       menuManager.add(new Separator());
       createSetAllPartitions(menuManager, viewer);
+      menuManager.add(new Separator());
+      createDeleteArtifactHandler(menuManager, viewer);
+      createPurgeArtifactHandler(menuManager, viewer);
 
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+   }
+
+   /**
+    * @param menuManager
+    * @param viewer
+    */
+   private void createPurgeArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
+
+      CommandContributionItem purgeArtifactCommand =
+            Commands.getLocalCommandContribution("org.eclipse.osee.framework.ui.skynet.purge.command", getSite(), null,
+                  null, null, null, null, null, null, null);
+      menuManager.add(purgeArtifactCommand);
+
+      handlerService.activateHandler(purgeArtifactCommand.getId(), new AbstractSelectionEnabledHandler(menuManager) {
+
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            final List<Artifact> artifacts = getSelectedArtifacts(viewer);
+
+            if (MessageDialog.openConfirm(
+                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  "Confirm Artifact Purge ",
+                  " Are you sure you want to purge this artifact, all of " + "its children and all history associated with these artifacts from the database ?")) {
+               Job job = new Job("Purge artifact") {
+
+                  @Override
+                  protected IStatus run(IProgressMonitor monitor) {
+                     IStatus toReturn = Status.CANCEL_STATUS;
+                     monitor.beginTask("Purge artifact", artifacts.size());
+                     final IProgressMonitor fMonitor = monitor;
+
+                     AbstractSkynetTxTemplate purgeTx =
+                           new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
+                              @Override
+                              protected void handleTxWork() throws Exception {
+                                 for (Artifact artifactToPurge : artifacts) {
+                                    if (!artifactToPurge.isDeleted()) {
+                                       fMonitor.setTaskName("Purge: " + artifactToPurge.getDescriptiveName());
+                                       artifactToPurge.purge();
+                                    }
+                                    fMonitor.worked(1);
+                                 }
+                                 fMonitor.done();
+                              }
+                           };
+
+                     // Perform the purge transaction
+                     try {
+                        purgeTx.execute();
+                        toReturn = Status.OK_STATUS;
+                     } catch (Exception ex) {
+                        OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                        toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
+                     } finally {
+                        monitor.done();
+                     }
+                     return toReturn;
+                  }
+               };
+               Jobs.startJob(job);
+            }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            if (PlatformUI.getWorkbench().isClosing()) {
+               return false;
+            }
+            boolean isEnabled =
+                  OseeProperties.getInstance().isDeveloper() && accessControlManager.checkObjectListPermission(
+                        getSelectedArtifacts(viewer), PermissionEnum.WRITE);
+            return isEnabled;
+         }
+      });
+   }
+
+   /**
+    * @param menuManager
+    * @param viewer
+    */
+   private void createDeleteArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
+      CommandContributionItem deleteArtifactCommand =
+            Commands.getLocalCommandContribution("org.eclipse.ui.edit.delete", getSite(), null, null, null, null, null,
+                  null, null, null);
+      menuManager.add(deleteArtifactCommand);
+
+      handlerService.activateHandler(deleteArtifactCommand.getId(), new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            try {
+               MessageDialog dialog =
+                     new MessageDialog(Display.getCurrent().getActiveShell(), "Confirm Artifact Deletion", null,
+                           " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+                           MessageDialog.QUESTION,
+                           new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+               if (dialog.open() == 0) {
+                  ArtifactPersistenceManager.getInstance().deleteArtifact(
+                        getSelectedArtifacts(viewer).toArray(Artifact.EMPTY_ARRAY));
+               }
+            } catch (SQLException ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            }
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return accessControlManager.checkObjectListPermission(getSelectedArtifacts(viewer), PermissionEnum.WRITE);
+         }
+      });
    }
 
    /**
@@ -242,7 +366,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            RendererManager.getInstance().editInJob(getSelectedArtifact(viewer));
+            RendererManager.getInstance().editInJob(getSelectedArtifacts(viewer));
             return null;
          }
 
@@ -270,7 +394,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            RendererManager.getInstance().previewInJob(getSelectedArtifact(viewer), "PREVIEW_ARTIFACT");
+            RendererManager.getInstance().previewInJob(getSelectedArtifacts(viewer), "PREVIEW_ARTIFACT");
             return null;
          }
 
@@ -290,7 +414,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            ArtifactExplorer.revealArtifact(getSelectedArtifact(viewer));
+            RendererManager.getInstance().previewInJob(getSelectedArtifacts(viewer), "PREVIEW_WITH_RECURSE");
             return null;
          }
 
@@ -489,7 +613,14 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            ArtifactExplorer.revealArtifact(getSelectedArtifact(viewer));
+            Artifact artifact = getSelectedArtifact(viewer);
+            try {
+               ArtifactExplorer.revealArtifact(artifact.getGuid(), artifact.getBranch());
+            } catch (PartInitException ex) {
+               throw new ExecutionException(ex.getLocalizedMessage());
+            } catch (SQLException ex) {
+               throw new ExecutionException(ex.getLocalizedMessage());
+            }
             return null;
          }
 
@@ -517,7 +648,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
          @Override
          public boolean isEnabled() {
-            return true;
+            return accessControlManager.checkObjectListPermission(getSelectedArtifacts(viewer), PermissionEnum.WRITE);
          }
       });
    }
@@ -533,7 +664,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       new AbstractSelectionEnabledHandler(menuManager) {
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
-            MassArtifactEditor.editArtifacts("", getSelectedArtifacts(viewer));
             try {
                if (OseeAts.getAtsLib() != null) OseeAts.getAtsLib().openInAtsWorld("", getSelectedArtifacts(viewer));
             } catch (Exception ex) {
@@ -592,7 +722,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                            if (attr.getStringData().equals("Unspecified")) attr.delete();
                         }
 
-                        art.persist();
+                        art.persistAttributes();
                      }
                   }
                };
@@ -607,7 +737,8 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
          @Override
          public boolean isEnabled() {
-            return true;
+            return OseeProperties.getInstance().isDeveloper() && accessControlManager.checkObjectListPermission(
+                  getSelectedArtifacts(viewer), PermissionEnum.WRITE);
          }
       });
    }

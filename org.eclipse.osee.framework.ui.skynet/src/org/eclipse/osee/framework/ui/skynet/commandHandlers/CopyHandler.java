@@ -36,10 +36,11 @@ public class CopyHandler extends AbstractHandler {
       if (HandlerUtil.getActivePartChecked(event) instanceof ViewPart) {
          ViewPart view = (ViewPart) HandlerUtil.getActivePartChecked(event);
          IWorkbenchPartSite myIWorkbenchPartSite = view.getSite();
-         ISelectionProvider selectionProvider = (ISelectionProvider) myIWorkbenchPartSite.getSelectionProvider();
+         ISelectionProvider selectionProvider = myIWorkbenchPartSite.getSelectionProvider();
 
-         if (selectionProvider != null) {
+         if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
+
             List<String> names = new LinkedList<String>();
             List<Artifact> artifacts = new LinkedList<Artifact>();
             ArtifactClipboard clipboard = new ArtifactClipboard(view.getSite().getId());

@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.util.BranchSelectionDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.part.ViewPart;
 
@@ -33,8 +36,23 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
    public SkynetDefaultBranchContributionItem() {
-      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP, eventManager, 60);
+      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP, eventManager, 30);
       init();
+      setActionHandler(new Action() {
+         /*
+          * (non-Javadoc)
+          * 
+          * @see org.eclipse.jface.action.Action#run()
+          */
+         @Override
+         public void run() {
+            BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch");
+            int result = branchSelection.open();
+            if (result == Window.OK) {
+               BranchPersistenceManager.getInstance().setDefaultBranch(branchSelection.getSelection());
+            }
+         }
+      });
    }
 
    private void init() {
@@ -45,6 +63,7 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
 
    private void updateInfo() {
       setText(branchPersistenceManager.getDefaultBranch().getDisplayName());
+      setToolTipText(ENABLED_TOOLTIP + "\nDouble-click to change.");
       setImage(BranchLabelProvider.getBranchImage(branchPersistenceManager.getDefaultBranch()));
    }
 

@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SnapshotPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.util.WordConverter;
+import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotFactory.KeyGenerator;
 import org.osgi.framework.Bundle;
 
@@ -144,17 +144,22 @@ public class ArtifactSnapshotManager {
     */
    private void doSave(Artifact artifact) throws Exception {
       checkArtifact(artifact);
+      if (isSavingAllowed() != false) {
+         ArtifactSnapshot snapshot = snapshotFactory.createSnapshot(artifact);
+         if (snapshot.isDataValid() != false) {
+            if (true == isDeleteRequired(snapshot)) {
+               snapshotRemoteRepository.deleteAll(snapshot.getNamespace());
+            }
+            snapshotRemoteRepository.persistSnapshot(snapshot.getNamespace(), PREVIEW_DATA, snapshot);
+         }
+      }
+   }
+
+   private boolean isSavingAllowed() {
       // TODO Windows dependency needs to be removed once wordML transforms are independent of
       // windows and native transform.
       Bundle bundle = Platform.getBundle("external.osee.xslt.transform.engine");
-
-      if (Lib.isWindows() && bundle != null && bundle.getState() == Bundle.ACTIVE && WordConverter.getInstance().isDefaultConverter() == false) {
-         ArtifactSnapshot snapshot = snapshotFactory.createSnapshot(artifact);
-         if (true == isDeleteRequired(snapshot)) {
-            snapshotRemoteRepository.deleteAll(snapshot.getNamespace());
-         }
-         snapshotRemoteRepository.persistSnapshot(snapshot.getNamespace(), PREVIEW_DATA, snapshot);
-      }
+      return Lib.isWindows() != false && bundle != null && WordConverter.getInstance().isDefaultConverter() == false;
    }
 
    /**
@@ -216,7 +221,9 @@ public class ArtifactSnapshotManager {
          if (snapshotLocalCache.size() > 10) {
             snapshotLocalCache.clear();
          }
-         snapshotLocalCache.put(localCacheKey, toReturn);
+         if (toReturn.isDataValid() != false) {
+            snapshotLocalCache.put(localCacheKey, toReturn);
+         }
       }
       return toReturn;
    }

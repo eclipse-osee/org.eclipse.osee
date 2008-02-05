@@ -119,7 +119,7 @@ public class ArtifactPromptChange {
                artifact.clearSoleAttributeValue(attributeName);
             else
                artifact.setSoleAttributeValue(attributeName, diag.getSelectedDate().getTime() + "");
-            if (persist) artifact.persist();
+            if (persist) artifact.persistAttributes();
          }
       }
       return true;
@@ -157,7 +157,7 @@ public class ArtifactPromptChange {
                AWorkbench.popup("ERROR", "Unhandled selection type => " + diag.getSelected().name());
                return false;
             }
-            if (persist) artifact.persist();
+            if (persist) artifact.persistAttributes();
          }
       }
       return true;
@@ -176,7 +176,7 @@ public class ArtifactPromptChange {
                sma.setSoleAttributeValue(attributeName, ed.getEntry());
             else
                sma.setSoleAttributeValue(attributeName, "");
-            if (persist) sma.persist();
+            if (persist) sma.persistAttributes();
          }
          return true;
       }
@@ -200,7 +200,7 @@ public class ArtifactPromptChange {
       if (result == 256) {
          for (Artifact sma : smas) {
             sma.setSoleBooleanAttributeValue(attributeName, md.getToggleState());
-            if (persist) sma.persist();
+            if (persist) sma.persistAttributes();
          }
          return true;
       }

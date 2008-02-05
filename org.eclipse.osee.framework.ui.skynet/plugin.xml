@@ -15,10 +15,6 @@
  <extension
        point="org.eclipse.ui.commands">
     <command
-          id="org.eclipse.osee.framework.ui.skynet.copy.command"
-          name="Copy">
-    </command>
-    <command
           id="org.eclipse.osee.framework.ui.skynet.openInEdit.command"
           name="Open">
     </command>
@@ -62,6 +58,10 @@
           id="org.eclipse.osee.framework.ui.skynet.viewerReport"
           name="View Viewer Report">
     </command>
+    <command
+          id="org.eclipse.osee.framework.ui.skynet.purge.command"
+          name="Purge">
+    </command>
  </extension>
 	<extension name="Put commands of BranchView here (for now)" point="org.eclipse.ui.commands">
 		<command description="Show the branches in a flat listing" id="org.eclipse.osee.framework.ui.skynet.branch.branchView.flatPresentation.command" name="Flat">
@@ -70,7 +70,7 @@
          </command>
 	</extension>
 	<extension name="Put commands of ChangeReportView here (for now)" point="org.eclipse.ui.commands">
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command" name="Word changes made to...">
+		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command" name="Word changes on this working branch">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesBetweenCurrentAndParent.command" name="Word differences between current/parent branches">
          </command>
@@ -79,8 +79,6 @@
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command" name="Revert Artifact...">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report">
-         </command>
-		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewChangeReport.command" name="View Change Report">
          </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command" name="Compress Word Attributes">
          </command>
@@ -122,7 +120,29 @@
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.branch.HierarchicalPresentationHandler" commandId="org.eclipse.osee.framework.ui.skynet.branch.branchView.hierarchicalPresentation.command">
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.CopyHandler" commandId="org.eclipse.osee.framework.ui.skynet.copy.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.CopyHandler" commandId="org.eclipse.ui.edit.copy">
+     <activeWhen>
+        <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.branch.BranchView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.search.ui.views.SearchView">
+              </equals>
+           </with>
+        </or>
+     </activeWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewerReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.viewerReport.command">
       </handler>
@@ -140,19 +160,11 @@
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactsInAtsWorldHandler" commandId="org.eclipse.osee.framework.ui.skynet.openArtifactsInAtsWorld.command">
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ShowChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.showChangeReport.command">
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.DeleteTransactionHandler" commandId="org.eclipse.osee.framework.ui.skynet.deleteTransaction.command">
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenBranchAssociatedArtifactHandler" commandId="org.eclipse.osee.framework.ui.skynet.openAssociatedArtifact.command">
-      </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewWordChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewChangeReport.command">
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.CompressWordAttributesHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command">
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ShowResourceHistoryHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.showResourceHistory.command">
+		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ShowArtifactInResourceHandler" commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.WordChangesToParentHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesToParent.command">
       </handler>
@@ -172,6 +184,30 @@
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewerReportHandler"
         commandId="org.eclipse.osee.framework.ui.skynet.viewerReport">
   </handler>
+  <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.DeleteArtifactHandler"
+        commandId="org.eclipse.ui.edit.delete">
+     <activeWhen>
+        <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.search.ui.views.SearchView">
+              </equals>
+           </with>
+        </or>
+     </activeWhen>
+  </handler>
+  <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PurgeArtifactHandler"
+        commandId="org.eclipse.osee.framework.ui.skynet.purge.command">
+  </handler>
 	</extension>
 	<extension name="The menus for the Branch View." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.osee.framework.ui.skynet.branch.BranchView">
@@ -185,7 +221,7 @@
   <menuContribution
         locationURI="popup:org.eclipse.osee.framework.ui.skynet.branch.BranchView">
      <command
-           commandId="org.eclipse.osee.framework.ui.skynet.copy.command">
+           commandId="org.eclipse.ui.edit.copy">
      </command>
   </menuContribution>
 	</extension>
@@ -201,7 +237,7 @@
          </separator>
 			<command
          commandId="org.eclipse.osee.framework.ui.skynet.openInEdit.command"
-         label="Show Final Version">
+         label="Open Final Version">
          </command>
 			<menu label="Preview">
 				<command commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
@@ -213,6 +249,9 @@
          </separator>
 			<command commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
          </command>
+   <command
+         commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
+   </command>
 			<separator name="org.eclipse.osee.framework.ui.skynet.changeReportView.revealArtifactInExplorer.separator" visible="true">
          </separator>
 			<command commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
@@ -225,25 +264,23 @@
          </command>
 			<separator name="org.eclipse.osee.framework.ui.skynet.viewerReport.separator" visible="true">
          </separator>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.copy.command">
+			<command commandId="org.eclipse.ui.edit.copy">
          </command>
-			<separator name="org.eclipse.osee.framework.ui.skynet.changeReportView.copy.separator" visible="true">
+			<separator name="org.eclipse.ui.edit.copy.seperator" visible="true">
          </separator>
 			<command commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command">
          </command>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.tagArtifacts.command">
-         </command>
+   <separator
+         name="org.eclipse.ui.edit.delete.seperator"
+         visible="true">
+   </separator>
+   <command
+         commandId="org.eclipse.ui.edit.delete">
+   </command>
+   <command
+         commandId="org.eclipse.osee.framework.ui.skynet.purge.command">
+   </command>
 		</menuContribution>
-		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView?after=BeyondParentDiff">
-      </menuContribution>
-		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView?after=BeyondRevertArtifact">
-      </menuContribution>
-		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView?after=BeyondPreview">
-      </menuContribution>
-		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView?after=BeyondChangeReport">
-      </menuContribution>
-		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView?after=BeyondCopy">
-      </menuContribution>
 	</extension>
 	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.ArtifactSearchView">
@@ -251,15 +288,14 @@
          </command>
 			<separator name="artifactSearchViewCopySeparator" visible="true">
          </separator>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.copy.command">
+   <command
+         commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.tagArtifacts.command">
+   </command>
+			<command commandId="org.eclipse.ui.edit.copy">
          </command>
 		</menuContribution>
 	</extension>
-	<extension point="org.eclipse.ui.commandImages">
-		<image commandId="org.eclipse.osee.framework.ui.skynet.copy.command" icon="images/email.gif">
-         </image>
-		<image commandId="org.eclipse.osee.framework.ui.skynet.resource.command" icon="images/edit.gif">
-         </image>
+	<extension point="org.eclipse.ui.commandImages">ge>
 		<image commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command" icon="images/preview_artifact.gif">
          </image>
 		<image commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command" icon="images/preview_artifact.gif">
@@ -269,6 +305,10 @@
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
         icon="images/magnify.gif">
+  </image>
+  <image
+        commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
+        icon="images/edit.gif">
   </image>
 	</extension>
 	<extension point="org.eclipse.ui.importWizards">
@@ -300,6 +340,9 @@
 	</extension>
 	<extension point="org.eclipse.ui.startup">
 		<startup class="org.eclipse.osee.framework.skynet.core.linking.HttpServerStartup"/>
+  <startup
+        class="org.eclipse.osee.framework.ui.skynet.autoRun.AutoRunStartup">
+  </startup>
 	</extension>
 	<extension point="org.eclipse.help.contexts">
 		<contexts file="contexts/artifactExplorerContexts.xml"/>
@@ -329,6 +372,7 @@
 		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.queryLog.QueryLogView" icon="images/query_log.gif" id="org.eclipse.osee.framework.ui.skynet.QueryLogView" name="Query Log"/>
 		<view allowMultiple="false" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.search.QuickSearchView" icon="images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.QuickSearchView" name="Quick Search"/>
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" icon="images/skywalker.gif" id="org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView" name="Sky Walker"/>
+		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView" icon="images/branch.gif" id="org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView" name="Commit Manager"/>
 	</extension>
 	<extension point="org.eclipse.search.searchPages">
 		<page canSearchEnclosingProjects="true" class="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" enabled="true" extensions="&quot;*:1&quot;" icon="images/artifact_search.gif" id="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchPage" label="Artifact Search" showScopeSection="false" sizeHint="&quot;250,250&quot;" tabPosition="1"/>
@@ -353,11 +397,11 @@
 	<extension id="SrsProducer" name="SrsProducer" point="org.eclipse.osee.framework.ui.skynet.WordMlProducer">
 		<producer class="org.eclipse.osee.framework.ui.skynet.render.word.SrsProducer"/>
 	</extension>
-	<extension id="RecursiveSaveOp" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.RecursiveSaveOp"/>
-	</extension>
 	<extension id="TagAllItems" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.TagAllItems"/>
+	</extension>
+	<extension id="PruneWorkspace" name="PruneWorkspace" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PruneWorkspace"/>
 	</extension>
 	<extension id="UniqueNumberOfCurrentOseeUsers" name="Unique Number Of Current Osee Users" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.UniqueNumberOfCurrentOseeUsers"/>
@@ -377,6 +421,9 @@
 	<extension id="AddTemplate" name="Add Word Template" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.AddTemplate"/>
 	</extension>
+	<extension id="InPlaceSmartTagRemover" name="In-Place Smart Tag Remover" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.InPlaceSmartTagRemover"/>
+	</extension>
 	<extension id="UpdateAttributeValues" name="Update Attribute Values" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateAttributeValues"/>
 	</extension>
@@ -389,6 +436,22 @@
             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
          <Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteErroneousTagsFromWorkingBranches"/>
       </extension>
+       <extension
+             id="CopyTransactionDataToBaseline"
+             name="Copy Transaction Data To Baseline"
+             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+          <Operation
+                className="org.eclipse.osee.framework.ui.skynet.blam.operation.CopyTransactionDataToBaseline">
+          </Operation>
+       </extension>
+       <extension
+             id="ArtifactSnapshotAllItems"
+             name="Regenerate Artifact Preview Snapshots For All Items"
+             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+          <Operation
+                className="org.eclipse.osee.framework.ui.skynet.blam.operation.ArtifactSnapshotAllItems">
+          </Operation>
+       </extension>
 	<extension id="native" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.NativeRenderer"/>
 	</extension>
@@ -401,6 +464,13 @@
 	<extension id="default" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer"/>
 	</extension>
+ <extension
+       id="Whole document"
+       point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+    <Renderer
+          classname="org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer">
+    </Renderer>
+ </extension>
 	<extension id="blam" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.BlamRenderer"/>
 	</extension>
@@ -454,14 +524,35 @@
 		<DatabaseTask classname="org.eclipse.osee.framework.ui.skynet.dbinit.AddCommonBranch">
          </DatabaseTask>
 	</extension>
-	<extension id="AddCommonBranch" name="AddCommonBranch" point="org.eclipse.osee.framework.database.IDbInitializationTask">
-		<DatabaseTask classname="org.eclipse.osee.framework.ui.skynet.dbinit.AddCommonBranch">
-         </DatabaseTask>
-	</extension>
-	<extension point="org.eclipse.ui.bindings">
-		<key commandId="org.eclipse.osee.framework.ui.skynet.copy.command" schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" sequence="M1+C">
-         </key>
-	</extension>
+	<extension
+       point="org.eclipse.ui.preferencePages">
+    <page
+          category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
+          class="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
+          id="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
+          name="Http Server">
+    </page>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.skynet.core.TemplateProvider">
+    <TemplateProvider
+          classname="org.eclipse.osee.framework.ui.skynet.render.WordTemplateProvider">
+    </TemplateProvider>
+ </extension>
+ <extension
+       id="DeleteArchivedBranches"
+       name="Delete Archived Branches"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteArchivedBranches">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateArtifactTypeImage">
+    </Operation>
+ </extension>
  <extension
        point="org.eclipse.ui.preferencePages">
     <page

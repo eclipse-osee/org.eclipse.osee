@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XFileSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
@@ -79,6 +80,8 @@ public class XWidgetFactory {
          xWidget = new XLabelDam(name);
       else if (xWidgetName.equals("XDate"))
          xWidget = new XDate(name);
+      else if (xWidgetName.equals("XFileSelectionDialog"))
+         xWidget = new XFileSelectionDialog(name);
       else if (xWidgetName.equals("XDateDam"))
          xWidget = new XDateDam(name);
       else if (xWidgetName.equals("XTextResourceDropDam"))

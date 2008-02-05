@@ -13,21 +13,19 @@ package org.eclipse.osee.framework.ui.skynet.render.word;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.collection.tree.Tree;
 import org.eclipse.osee.framework.jdk.core.collection.tree.TreeNode;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
  */
 public class SrsProducer implements IWordMlProducer {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SrsProducer.class);
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
 
    // Some filtering for testing
@@ -39,10 +37,9 @@ public class SrsProducer implements IWordMlProducer {
 
    public BlamVariableMap process(BlamVariableMap variableMap) throws SQLException {
       if (variableMap == null) throw new IllegalArgumentException("variableMap must not be null");
-      if (variableMap.getValue("Name") == null) throw new IllegalArgumentException(
-            "Argument list does not contain a Name.");
 
-      Branch branch = (Branch) variableMap.getValue("Branch");
+      String name = variableMap.getString("Name");
+      Branch branch = variableMap.getBranch("Branch");
       Artifact root = artifactManager.getDefaultHierarchyRootArtifact(branch);
       Artifact softwareRequirement = root.getChild("Software Requirements");
       Artifact crewInterface = softwareRequirement.getChild("Crew Interface");
@@ -50,20 +47,16 @@ public class SrsProducer implements IWordMlProducer {
       Artifact appendices = softwareRequirement.getChild("SRS Appendices");
 
       Tree<Object> objects = new Tree<Object>();
-      String name = (String) variableMap.getValue("Name");
 
-      // for (String subsystem : SUBSYSTEMS) {
       try {
          process(crewInterface, objects, name);
          process(subsystemManagement, objects, name);
          process(appendices, objects, name);
-      } catch (IllegalStateException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
-      // }
 
+      variableMap.setValue("useTree", Boolean.TRUE);
       variableMap.setValue("srsProducer.objects", objects);
       return variableMap;
    }

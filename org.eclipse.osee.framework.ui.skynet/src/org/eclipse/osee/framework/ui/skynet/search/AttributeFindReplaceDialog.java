@@ -182,7 +182,7 @@ public class AttributeFindReplaceDialog extends Dialog {
                         for (Attribute attribute : artifact.getAttributeManager(attributeName).getAttributes()) {
                            attribute.replaceAll(pattern, replaceText);
                         }
-                        artifact.persist();
+                        artifact.persistAttributes();
                         monitor.worked(1);
                         if (monitor.isCanceled()) {
                            throw new IllegalStateException("USER CANCELLED");
