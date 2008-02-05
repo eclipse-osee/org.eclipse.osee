@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.util.WordUtil;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -68,6 +69,7 @@ public class ImportTraceabilityJob extends Job {
    private final HashMap<String, Artifact> indirectReqs;
    private final CountingMap<Artifact> reqsTraceCounts;
    private final HashCollection<Artifact, String> requirementToCodeUnitsMap;
+   private final HashSet<String> codeUnits;
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
    private int pathPrefixLength;
@@ -80,6 +82,7 @@ public class ImportTraceabilityJob extends Job {
       softwareReqs = new HashMap<String, Artifact>(3500);
       indirectReqs = new HashMap<String, Artifact>(700);
       reqsTraceCounts = new CountingMap<Artifact>();
+      codeUnits = new HashSet<String>();
       requirementToCodeUnitsMap = new HashCollection<Artifact, String>(false, LinkedList.class);
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
@@ -175,6 +178,7 @@ public class ImportTraceabilityJob extends Job {
 
          int matchCount = 0;
          String relativePath = sourceFile.getPath().substring(pathPrefixLength);
+         codeUnits.add(relativePath);
          while (reqTraceMatcher.find()) {
             handelReqTrace(relativePath, reqTraceMatcher.group(1));
             matchCount++;
@@ -280,5 +284,12 @@ public class ImportTraceabilityJob extends Job {
 
    public HashCollection<Artifact, String> getRequirementToCodeUnitsMap() {
       return requirementToCodeUnitsMap;
+   }
+
+   /**
+    * @return the codeUnits
+    */
+   public HashSet<String> getCodeUnits() {
+      return codeUnits;
    }
 }

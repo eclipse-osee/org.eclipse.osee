@@ -16,6 +16,7 @@ import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.swt.SWT;
@@ -46,6 +47,7 @@ public class DefineNavigateView extends ViewPart implements IActionable {
     * @see IWorkbenchPart#createPartControl(Composite)
     */
    public void createPartControl(Composite parent) {
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
       xNavComp = new XNavigateComposite(new DefineNavigateViewItems(), parent, SWT.NONE);
       xNavComp.getFilteredTree().getViewer().setSorter(new DefineNavigateViewerSorter());

@@ -17,9 +17,11 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
 import org.osgi.framework.Bundle;
 
@@ -40,26 +42,11 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
    public List<XNavigateItem> getSearchNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      XNavigateItem blamItems = new XNavigateItem(null, "Blam Operations");
-      items.add(blamItems);
-
-      if (OseeProperties.getInstance().isDeveloper()) {
-         XNavigateItem adminItems = new XNavigateItem(null, "Admin");
-
-         new XNavigateItem(adminItems, "Health");
-
-         items.add(adminItems);
+      XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations");
+      for (BlamOperation blamOperation : BlamOperations.getBlamOperations()) {
+         new XNavigateItemBlam(blamOperationItems, blamOperation);
       }
-
-      XNavigateItem otherReportItems = new XNavigateItem(null, "Skynet");
-      if (OseeProperties.getInstance().isDeveloper()) {
-         XNavigateItem adminItems = new XNavigateItem(null, "Admin");
-
-         XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
-         adminItems.addChild(healthItems);
-
-      }
-      items.add(otherReportItems);
+      items.add(blamOperationItems);
 
       addExtensionPointItems(items);
 
@@ -88,13 +75,11 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
                Class<?> taskClass = bundle.loadClass(classname);
                Object obj = taskClass.newInstance();
                IDefineNavigateItem task = (IDefineNavigateItem) obj;
-               items.addAll(task.getSearchNavigateItems());
+               items.addAll(task.getNavigateItems());
             } catch (Exception ex) {
                OSEELog.logException(DefinePlugin.class, "Error loading DefineNavigateItem extension", ex, true);
             }
          }
       }
-
    }
-
 }

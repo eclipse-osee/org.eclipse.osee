@@ -21,12 +21,14 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkBase;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
@@ -51,7 +53,7 @@ public class ChangeArtifactType implements BlamOperation {
    private List<RelationLinkBase> linksToPurge;
 
    @SuppressWarnings("unchecked")
-   public void runOperation(BlamVariableMap variableMap, Branch branch, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       processChange(variableMap.getArtifacts("artifact"), variableMap.getArtifactSubtypeDescriptor("descriptor"));
    }
 
@@ -63,12 +65,18 @@ public class ChangeArtifactType implements BlamOperation {
     * @throws SQLException
     */
    private void processChange(List<Artifact> artifacts, ArtifactSubtypeDescriptor descriptor) throws SQLException {
+      if (artifacts.isEmpty()) {
+         throw new IllegalArgumentException("The artifact list can not be empty");
+      }
+
       for (Artifact artifact : artifacts) {
          processAttributes(artifact, descriptor);
          processRelations(artifact, descriptor);
 
          if (doesUserAcceptArtifactChange(artifact, descriptor)) {
             changeArtifactType(artifact, descriptor);
+
+            SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ModType.Changed, this));
          }
       }
    }
@@ -185,6 +193,22 @@ public class ChangeArtifactType implements BlamOperation {
       }
 
       artifact.changeArtifactType(descriptor);
-      artifact.persist();
+      artifact.persistAttributes();
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+    */
+   public String getXWidgetsXml() {
+      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"descriptor\" /></xWidgets>";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
+    */
+   public String getDescriptionUsage() {
+      return "Select parameters below and click the play button at the top right.";
    }
 }

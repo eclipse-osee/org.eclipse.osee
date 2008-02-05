@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
  */
 public interface IDefineNavigateItem {
 
-   public List<XNavigateItem> getSearchNavigateItems();
+   public List<XNavigateItem> getNavigateItems();
 
 }
