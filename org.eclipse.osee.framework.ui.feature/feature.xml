@@ -25,22 +25,36 @@
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.apache.xerces"/>
-      <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.update.core"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.ant.core"/>
-      <import plugin="org.eclipse.gef"/>
-      <import plugin="com.ibm.icu"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.osee.framework.jdk.core"/>
+      <import plugin="org.eclipse.osee.framework.skynet.core"/>
+      <import plugin="org.eclipse.osee.framework.messaging.event.skynet"/>
+      <import plugin="org.eclipse.osee.framework.plugin.core"/>
       <import plugin="org.eclipse.pde.core"/>
-      <import plugin="org.eclipse.mylyn.zest.core"/>
-      <import plugin="org.eclipse.mylyn.zest.layouts"/>
+      <import plugin="org.apache.commons.lang"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.update.core"/>
+      <import plugin="org.eclipse.update.ui"/>
+      <import plugin="net.jini"/>
+      <import plugin="ganymed.ssh"/>
+      <import plugin="org.eclipse.osee.framework.jini"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="javax.mail"/>
+      <import plugin="org.eclipse.osee.framework.database"/>
+      <import plugin="org.eclipse.osee.framework.svn"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="quartz.timer"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.draw2d"/>
    </requires>
 
    <plugin
@@ -130,5 +144,18 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-         
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.skynet.zest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.ui.web"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
 </feature>
