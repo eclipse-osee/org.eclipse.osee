@@ -22,25 +22,6 @@
       <update url="http://lba-cte.msc.az.boeing.com:31110/osee/lba_updatesite/"/>
    </url>
 
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.osee.framework.jdk.core"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.osee.framework.jini"/>
-      <import plugin="org.eclipse.osee.framework.skynet.core"/>
-      <import plugin="org.eclipse.osee.framework.ui.security"/>
-      <import plugin="org.eclipse.osee.framework.ui.skynet"/>
-      <import plugin="org.eclipse.osee.framework.ui.jdk"/>
-      <import plugin="org.eclipse.osee.framework.database"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.osee.framework.plugin.core"/>
-      <import plugin="org.eclipse.osee.framework.ui.plugin"/>
-   </requires>
-
    <plugin
          id="org.eclipse.osee.define"
          download-size="0"
