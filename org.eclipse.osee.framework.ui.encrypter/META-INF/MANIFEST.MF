@@ -8,10 +8,8 @@ Bundle-Activator: org.eclipse.osee.framework.ui.encrypter.EncrypterPlugin
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.osee.framework.ui.encrypter
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.framework.ui.security,
- org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.skynet,
- org.eclipse.osee.framework.ui.plugin
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.core.runtime
 Eclipse-LazyStart: true
