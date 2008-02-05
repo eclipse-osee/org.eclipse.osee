@@ -17,8 +17,5 @@ Export-Package: org.apache.commons.net,
  org.apache.commons.net.telnet,
  org.apache.commons.net.tftp,
  org.apache.commons.net.util
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.platform
 Eclipse-LazyStart: true
 Bundle-Vendor: Apache Foundation
