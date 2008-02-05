@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
 
-public class DbVersion extends DbItem {
+public class OseeInfoDbItem extends DbItem {
 
-   public DbVersion() {
+   public OseeInfoDbItem() {
       super("OSEE_INFO");
    }
 

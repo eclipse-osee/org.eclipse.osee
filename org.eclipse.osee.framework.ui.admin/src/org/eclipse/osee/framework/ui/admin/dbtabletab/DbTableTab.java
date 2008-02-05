@@ -49,7 +49,7 @@ public class DbTableTab {
 
       dbItems = new ArrayList<DbItem>();
       dbItems.add(new SiteGssflRpcr());
-      dbItems.add(new DbVersion());
+      dbItems.add(new OseeInfoDbItem());
       handCursor = new Cursor(null, SWT.CURSOR_HAND);
 
       TabItem dbTab = new TabItem(tabFolder, SWT.NULL);

@@ -120,7 +120,7 @@ public class OseeClientsTab {
       blankComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
    }
 
-   private Control createDefaultWarning(Composite parent) {
+   public static Control createDefaultWarning(Composite parent) {
       Composite composite = new Composite(parent, SWT.BORDER);
       composite.setLayout(new GridLayout(2, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

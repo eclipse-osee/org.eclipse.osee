@@ -11,11 +11,11 @@ Export-Package: org.eclipse.osee.framework.ui.admin,
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core,
- org.eclipse.osee.framework.jini,
- org.eclipse.osee.framework.ui.security,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.messaging.event.skynet,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.plugin
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.osee.framework.ui.swt,
+ org.eclipse.ui.forms
 Eclipse-LazyStart: true
