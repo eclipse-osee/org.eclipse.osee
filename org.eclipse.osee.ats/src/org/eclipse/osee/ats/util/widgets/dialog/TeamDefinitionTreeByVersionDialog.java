@@ -15,9 +15,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -60,19 +59,18 @@ public class TeamDefinitionTreeByVersionDialog extends TeamDefinitionTreeDialog 
    protected Control createDialogArea(Composite container) {
 
       super.createDialogArea(container);
-      getTreeViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+      getTreeViewer().addCheckStateListener(new ICheckStateListener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.jface.viewers.ICheckStateListener#checkStateChanged(org.eclipse.jface.viewers.CheckStateChangedEvent)
           */
-         public void selectionChanged(SelectionChangedEvent event) {
+         public void checkStateChanged(CheckStateChangedEvent event) {
             try {
                Collection<Object> objs = new HashSet<Object>();
-               if (getTreeViewer().getSelection().isEmpty()) return;
-               IStructuredSelection sel = (IStructuredSelection) getTreeViewer().getSelection();
-               for (Artifact art : ((TeamDefinitionArtifact) sel.iterator().next()).getVersionsFromTeamDefHoldingVersions(VersionReleaseType.Both))
-                  objs.add(art);
+               Object objects[] = getTreeViewer().getCheckedElements();
+               for (Object object : objects) {
+                  for (Artifact art : ((TeamDefinitionArtifact) object).getVersionsFromTeamDefHoldingVersions(VersionReleaseType.Both))
+                     objs.add(art);
+               }
                versionList.setInput(objs);
             } catch (SQLException ex) {
                OSEELog.logException(AtsPlugin.class, ex, false);
@@ -86,7 +84,7 @@ public class TeamDefinitionTreeByVersionDialog extends TeamDefinitionTreeDialog 
 
       versionList.setLabelProvider(new VersionArtifactLabelProvider());
       versionList.setContentProvider(new ArrayContentProvider());
-      versionList.setSorter(new ArtifactViewerSorter());
+      versionList.setSorter(new ArtifactViewerSorter(true));
       versionList.setGrabHorizontal(true);
       versionList.setMultiSelect(false);
       versionList.createWidgets(comp, 2);

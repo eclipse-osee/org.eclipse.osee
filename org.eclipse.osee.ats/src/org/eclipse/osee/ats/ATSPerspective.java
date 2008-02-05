@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats;
 
 import org.eclipse.osee.ats.hyper.ActionHyperView;
-import org.eclipse.osee.ats.hyper.ActionSkyWalker;
 import org.eclipse.osee.ats.hyper.ArtifactHyperView;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.world.WorldView;
@@ -41,7 +40,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       layout.addShowViewShortcut(WorldView.VIEW_ID);
       layout.addShowViewShortcut(NavigateView.VIEW_ID);
       layout.addShowViewShortcut(ActionHyperView.VIEW_ID);
-      layout.addShowViewShortcut(ActionSkyWalker.VIEW_ID);
+      //      layout.addShowViewShortcut(ActionSkyWalker.VIEW_ID);
 
       layout.addShowViewShortcut(ArtifactHyperView.VIEW_ID);
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
@@ -49,6 +48,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       layout.addShowViewShortcut(BranchView.VIEW_ID);
       layout.addShowViewShortcut(GroupExplorer.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
+      layout.addShowViewShortcut("org.eclipse.osee.framework.ui.admin.AdminView");
       layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
 
    }
@@ -66,7 +66,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       left.addView(BranchView.VIEW_ID);
 
       IFolderLayout botLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, (float) 0.60, NavigateView.VIEW_ID);
-      botLeft.addView(ActionSkyWalker.VIEW_ID);
+      //      botLeft.addView(ActionSkyWalker.VIEW_ID);
       botLeft.addView(ActionHyperView.VIEW_ID);
 
       IFolderLayout lower = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.65, editorArea);

@@ -82,6 +82,10 @@ public class AtsLib implements IAtsLib {
       return results;
    }
 
+   public boolean isAtsAdmin() {
+      return AtsAdmin.isAtsAdmin();
+   }
+
    public static String doubleToStrString(double d) {
       return doubleToStrString(d, false);
    }

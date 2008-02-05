@@ -29,9 +29,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 
 /**
  * @author Donald G. Dunne
@@ -170,6 +172,15 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    public void transitionToCompleted(boolean persist) {
       if (getCurrentState().equals(DefaultTeamState.Completed.name())) return;
+      // Assign current user if unassigned
+      try {
+         if (smaMgr.getAssignees().size() == 1 && smaMgr.getAssignees().contains(
+               SkynetAuthentication.getInstance().getUser(UserEnum.UnAssigned))) {
+            smaMgr.setAssignee(SkynetAuthentication.getInstance().getAuthenticatedUser());
+         }
+      } catch (SQLException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
       Result result = smaMgr.transition(DefaultTeamState.Completed.name(), (User) null, persist);
       if (result.isFalse()) result.popup();
    }
@@ -306,7 +317,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
          }
          return "";
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 

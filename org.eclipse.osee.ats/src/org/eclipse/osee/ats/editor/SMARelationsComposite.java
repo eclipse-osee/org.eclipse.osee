@@ -22,10 +22,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
-import org.eclipse.osee.framework.ui.plugin.util.ALayout;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -60,7 +60,7 @@ public class SMARelationsComposite extends Composite {
       this.smaMgr = smaMgr;
       try {
          setLayout(ALayout.getZeroMarginLayout(2, false));
-         GridData gd = new GridData(GridData.FILL_BOTH);
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
          gd.widthHint = 500;
          setLayoutData(gd);
          toolkit.adapt(this);
@@ -135,7 +135,7 @@ public class SMARelationsComposite extends Composite {
    }
 
    private void refreshActionableItemsLabel() {
-      if (smaMgr.getSma() instanceof ReviewSMArtifact) actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeName() + "\" is review of Actionable Items  \"" + ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
+      if ((actionableItemsLabel != null) && smaMgr.getSma() instanceof ReviewSMArtifact) actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeName() + "\" is review of Actionable Items  \"" + ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
    }
 
    public void refresh() {

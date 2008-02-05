@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
@@ -72,6 +73,11 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
    @Override
    public void createPartControl(Composite top) {
       debug.report("createPartControl");
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(top)) {
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().removePartListener(this);
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow().removePerspectiveListener(this);
+         return;
+      }
       super.createPartControl(top);
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "SkyWalker");
       AtsPlugin.getInstance().setHelp(top, HELP_CONTEXT_ID);

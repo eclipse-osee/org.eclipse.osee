@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
@@ -90,6 +91,11 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
 
    @Override
    public void createPartControl(Composite top) {
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(top)) {
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().removePartListener(this);
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow().removePerspectiveListener(this);
+         return;
+      }
       super.createPartControl(top);
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Action View");
    }
@@ -246,7 +252,7 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
          public void run() {
             MultipleHridSearchItem gsi = new MultipleHridSearchItem();
             try {
-               Collection<Artifact> arts = gsi.performSearchGetResults(true, false);
+               Collection<Artifact> arts = gsi.performSearchGetResults(true);
                if (arts.size() == 0) {
                   AWorkbench.popup("ERROR", "No Artifacts Found");
                   return;

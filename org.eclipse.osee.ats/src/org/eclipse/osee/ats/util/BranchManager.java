@@ -48,7 +48,9 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
@@ -148,6 +150,22 @@ public class BranchManager {
    }
 
    /**
+    * Display change report associated with the branch, if exists, or transaction, if branch has been committed.
+    */
+   public void showCommitManager() {
+      try {
+         if (smaMgr.getBranchMgr().getWorkingBranch() == null) {
+            AWorkbench.popup("ERROR", "No working branch");
+         } else if (!(smaMgr.getSma() instanceof IBranchArtifact)) {
+            AWorkbench.popup("ERROR", "Not IBranchArtifact");
+         } else
+            CommitManagerView.openViewUpon((IBranchArtifact) smaMgr.getSma());
+      } catch (SQLException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+   }
+
+   /**
     * Return working branch associated with SMA; This data is cached across all workflows with the cache being updated
     * by local and remote events.
     * 
@@ -156,7 +174,6 @@ public class BranchManager {
     */
    public Branch getWorkingBranch() throws SQLException {
       Set<Branch> branches = BranchPersistenceManager.getInstance().getAssociatedArtifactBranches(smaMgr.getSma());
-      // Cache null working branch so don't re-search for every call
       if (branches.size() == 0) {
          return null;
       } else if (branches.size() > 1) {

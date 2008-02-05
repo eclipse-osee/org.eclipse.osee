@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.editor.service;
 import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -79,7 +80,8 @@ public class TargetedForVersionState extends WorkPageService {
 
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     if (smaMgr.promptChangeVersion(false)) {
+                     if (smaMgr.promptChangeVersion(
+                           AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, false)) {
                         refresh();
                         section.refreshStateServices();
                      }

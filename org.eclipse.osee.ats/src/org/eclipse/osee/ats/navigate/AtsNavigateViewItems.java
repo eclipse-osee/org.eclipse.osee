@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.report.ExtendedStatusReportItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.AtsAttributeSearchItem;
 import org.eclipse.osee.ats.world.search.CriteriaSearchItem;
+import org.eclipse.osee.ats.world.search.EditTasksByTeamVersionSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.ats.world.search.MyCompletedSearchItem;
@@ -61,14 +62,18 @@ import org.eclipse.osee.ats.world.search.UnReleasedTeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
+import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
 import org.osgi.framework.Bundle;
 
@@ -109,7 +114,10 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
       XNavigateItem otherItems = new XNavigateItem(null, "Other My Searches");
       new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("My Team Workflows", skynetAuth.getAuthenticatedUser()));
-      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Task", skynetAuth.getAuthenticatedUser()));
+      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Task (WorldView)", skynetAuth.getAuthenticatedUser(),
+            LoadView.WorldView));
+      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Task (Editor)", skynetAuth.getAuthenticatedUser(),
+            LoadView.TaskEditor));
       new SearchNavigateItem(otherItems, new MySubscribedSearchItem("My Subscribed", skynetAuth.getAuthenticatedUser()));
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - InWork",
             skynetAuth.getAuthenticatedUser(), true));
@@ -120,13 +128,15 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
       otherItems = new XNavigateItem(null, "Other User Searches");
       new SearchNavigateItem(otherItems, new MyWorldSearchItem("User's World"));
-      new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews"));
+      new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - InWork", null, true));
+      new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator - All", null, false));
       new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("User's Team Workflows"));
-      new SearchNavigateItem(otherItems, new MyTaskSearchItem("User's Tasks"));
-      new SearchNavigateItem(otherItems, new MyOrigSearchItem("User's Originator"));
+      new SearchNavigateItem(otherItems, new MyTaskSearchItem("User's Tasks (WorldView)", LoadView.WorldView));
+      new SearchNavigateItem(otherItems, new MyTaskSearchItem("User's Tasks (Editor)", LoadView.TaskEditor));
       new SearchNavigateItem(otherItems, new MyCompletedSearchItem("User's Completed"));
       new SearchNavigateItem(otherItems, new MyFavoritesSearchItem("User's Favorites"));
       new SearchNavigateItem(otherItems, new MySubscribedSearchItem("User's Subscribed"));
+      new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews"));
       items.add(otherItems);
 
       items.add(new SearchNavigateItem(null, new GroupWorldSearchItem()));
@@ -146,6 +156,13 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             true, true, false));
       new MassEditTeamVersionItem("Show Team Versions", teamItem, "");
       items.add(teamItem);
+
+      XNavigateItem taskItem = new XNavigateItem(null, "Tasks");
+      new SearchNavigateItem(taskItem, new EditTasksByTeamVersionSearchItem(null, true));
+      new EditTasksBySelectedWorkflows(taskItem);
+      new EditTasksByGroup(taskItem);
+      new SearchNavigateItem(taskItem, new MyTaskSearchItem("Edit Tasks by User", LoadView.TaskEditor));
+      items.add(taskItem);
 
       XNavigateItem releaseItems = new XNavigateItem(null, "Versions");
       new MassEditTeamVersionItem("Edit Versions", releaseItems, (TeamDefinitionArtifact) null);
@@ -203,10 +220,14 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new ImportActionsViaSpreadsheet(importItems);
       items.add(importItems);
 
+      XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations");
+      for (BlamOperation blamOperation : BlamOperations.getBlamOperations()) {
+         new XNavigateItemBlam(blamOperationItems, blamOperation);
+      }
+      items.add(blamOperationItems);
+
       if (AtsPlugin.isAtsAdmin()) {
          XNavigateItem adminItems = new XNavigateItem(null, "Admin");
-
-         new KickoffOSEEItem(adminItems);
 
          criteria = new LinkedList<ISearchPrimitive>();
          criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, Operator.EQUAL));
@@ -270,11 +291,11 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             try {
                Object obj = bundle.loadClass(classname).newInstance();
                IAtsNavigateItem task = (IAtsNavigateItem) obj;
-               for (XNavigateItem navItem : task.getSearchNavigateItems()) {
+               for (XNavigateItem navItem : task.getNavigateItems()) {
                   nameToNavItem.put(navItem.getName(), navItem);
                }
             } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, "Error loading AtsNavigateItem extension", ex, true);
+               OSEELog.logException(AtsPlugin.class, "Error loading AtsNavigateItem extension", ex, false);
             }
          }
       }

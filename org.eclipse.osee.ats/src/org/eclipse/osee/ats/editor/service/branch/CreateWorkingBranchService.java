@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.editor.stateItem.BranchableStateItem;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalBranchToArtifactCacheUpdateEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -74,6 +74,7 @@ public class CreateWorkingBranchService extends WorkPageService implements IEven
          });
       SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
       SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalBranchToArtifactCacheUpdateEvent.class, this);
       refresh();
    }
 
@@ -113,9 +114,7 @@ public class CreateWorkingBranchService extends WorkPageService implements IEven
    }
 
    public void onEvent(Event event) {
-      if (event instanceof BranchEvent) {
-         refresh();
-      }
+      refresh();
    }
 
    /*

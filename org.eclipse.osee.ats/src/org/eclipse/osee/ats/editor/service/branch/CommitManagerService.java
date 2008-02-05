@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -34,14 +34,12 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public class CommitWorkingBranchService extends WorkPageService implements IEventReceiver {
+public class CommitManagerService extends WorkPageService implements IEventReceiver {
 
    private Hyperlink link;
-   private final boolean overrideStateValidation;
 
-   public CommitWorkingBranchService(SMAManager smaMgr, boolean overrideStateValidation) {
+   public CommitManagerService(SMAManager smaMgr) {
       super(smaMgr);
-      this.overrideStateValidation = overrideStateValidation;
    }
 
    /* (non-Javadoc)
@@ -57,10 +55,8 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
     */
    @Override
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      if (smaMgr.getCurrentStateName().equals(page.getName())) {
-         link =
-               toolkit.createHyperlink(workGroup,
-                     getName() + (overrideStateValidation ? "\nOverride State Validation" : ""), SWT.NONE);
+      if (smaMgr.getCurrentStateName().equals(page.getName()) && isEnabled()) {
+         link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
          if (smaMgr.getSma().isReadOnly())
             link.addHyperlinkListener(readOnlyHyperlinkListener);
          else
@@ -73,14 +69,13 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
                }
 
                public void linkActivated(HyperlinkEvent e) {
-                  Result result = smaMgr.getBranchMgr().commitWorkingBranch(true, overrideStateValidation);
-                  if (result.isFalse()) result.popup();
+                  smaMgr.getBranchMgr().showCommitManager();
                }
             });
+         SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
+         SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
+         SkynetEventManager.getInstance().register(LocalBranchToArtifactCacheUpdateEvent.class, this);
       }
-      SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
-      SkynetEventManager.getInstance().register(LocalBranchToArtifactCacheUpdateEvent.class, this);
       refresh();
    }
 
@@ -89,7 +84,7 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
     */
    @Override
    public String getName() {
-      return "Commit Working Branch";
+      return "Commit Manager";
    }
 
    /* (non-Javadoc)
@@ -108,19 +103,24 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
    @Override
    public void refresh() {
       if (link != null && !link.isDisposed()) {
-         boolean enabled = false;
-         try {
-            enabled = smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranch();
-         } catch (SQLException ex) {
-            // do nothing
-         }
-         link.setEnabled(enabled);
-         link.setUnderlined(enabled);
+         link.setEnabled(isEnabled());
+         link.setUnderlined(isEnabled());
       }
    }
 
    public void onEvent(Event event) {
       refresh();
+   }
+
+   private boolean isEnabled() {
+      boolean enabled = false;
+      try {
+         enabled =
+               ((smaMgr.getSma() instanceof IBranchArtifact) && ((IBranchArtifact) smaMgr.getSma()).getWorkingBranch() != null);
+      } catch (SQLException ex) {
+         // do nothing
+      }
+      return enabled;
    }
 
    /*

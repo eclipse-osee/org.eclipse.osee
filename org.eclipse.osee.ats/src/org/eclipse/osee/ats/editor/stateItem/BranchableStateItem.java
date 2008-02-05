@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
+import org.eclipse.osee.ats.editor.service.branch.CommitManagerService;
 import org.eclipse.osee.ats.editor.service.branch.CommitWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranch;
@@ -42,9 +43,11 @@ public abstract class BranchableStateItem extends AtsStateItem {
     */
    public abstract String getId();
 
+   @Override
    public List<WorkPageService> getServices(SMAManager smaMgr) {
       List<WorkPageService> services = new ArrayList<WorkPageService>();
       services.add(new CreateWorkingBranchService(smaMgr));
+      services.add(new CommitManagerService(smaMgr));
       services.add(new ShowWorkingBranchService(smaMgr));
       services.add(new ShowChangeReportService(smaMgr));
       services.add(new CommitWorkingBranchService(smaMgr, false));

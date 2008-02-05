@@ -5,26 +5,22 @@ Bundle-SymbolicName: org.eclipse.osee.ats;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: org.eclipse.osee.ats.AtsPlugin
 Bundle-Vendor: Eclipse.org
-Require-Bundle: org.eclipse.osee.framework.ui.jdk,
- org.eclipse.gef,
+Require-Bundle: org.eclipse.gef,
  org.eclipse.osee.framework.jdk.core,
  javax.mail,
- org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.forms,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.core.resources,
  org.eclipse.ui.ide,
- org.eclipse.jface,
  org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.help,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.ui.views,
- org.eclipse.mylyn.zest.core,
+ org.eclipse.ui.editors,
  org.eclipse.mylyn.zest.layouts
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.ats,

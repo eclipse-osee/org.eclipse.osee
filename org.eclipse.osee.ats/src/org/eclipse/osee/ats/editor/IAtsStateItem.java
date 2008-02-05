@@ -44,10 +44,7 @@ public interface IAtsStateItem {
 
    public boolean isAccessControlViaAssigneesEnabledForBranching();
 
-   /**
-    * @return Id that matches PageId:<id> in creation of WorkPage or in state notes of VUE diagram.
-    */
-   public String getId();
+   public Collection<String> getIds();
 
    public List<WorkPageService> getServices(SMAManager smaMgr);
 

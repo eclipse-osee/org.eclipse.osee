@@ -51,7 +51,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
       List<ISearchPrimitive> prodCriteria = new LinkedList<ISearchPrimitive>();
       if (pcrIds != null && pcrIds.size() > 0) {
          for (String pcrId : pcrIds) {

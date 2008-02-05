@@ -31,16 +31,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
  */
 public class MyTaskSearchItem extends UserSearchItem {
 
-   public MyTaskSearchItem(String name) {
-      this(name, null);
+   public MyTaskSearchItem(String name, LoadView loadView) {
+      this(name, null, loadView);
    }
 
-   public MyTaskSearchItem() {
-      super("My World", null);
-   }
-
-   public MyTaskSearchItem(String name, User user) {
+   public MyTaskSearchItem(String name, User user, LoadView loadView) {
       super(name, user);
+      setLoadView(loadView);
    }
 
    @Override

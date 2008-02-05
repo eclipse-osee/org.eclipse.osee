@@ -45,17 +45,23 @@ public class NextVersionSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName() {
+   public String getSelectedName(SearchType searchType) {
+      String name = super.getName();
+      TeamDefinitionArtifact teamDef = getTeamDefinition(searchType);
       try {
-         VersionArtifact verArt = getTeamDefinition().getNextReleaseVersion();
-         return super.getName() + (verArt != null ? " - " + verArt.getDescriptiveName() : "");
+         if (teamDef != null) {
+            name += (teamDef != null ? " - " + teamDef.getDescriptiveName() : "");
+            VersionArtifact verArt = teamDef.getNextReleaseVersion();
+            name += (verArt != null ? " - " + verArt.getDescriptiveName() : "");
+         }
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
-         return "Exception Occurred - See Log";
+         return "Exception Occurred - See Log - " + ex.getLocalizedMessage();
       }
+      return name;
    }
 
-   private TeamDefinitionArtifact getTeamDefinition() {
+   private TeamDefinitionArtifact getTeamDefinition(SearchType searchType) {
       if (teamDefHoldingVersions != null) return teamDefHoldingVersions;
       return selectedTeamDef;
    }
@@ -66,22 +72,24 @@ public class NextVersionSearchItem extends WorldSearchItem {
     * @see org.eclipse.osee.ats.world.search.WorldSearchItem#performSearch()
     */
    @Override
-   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
       if (isCancelled()) return EMPTY_SET;
-      if (getTeamDefinition().getNextReleaseVersion() == null) {
-         AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition() + "\"");
+      if (getTeamDefinition(searchType).getNextReleaseVersion() == null) {
+         AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition(searchType) + "\"");
          return EMPTY_SET;
       }
       Set<Artifact> arts =
-            getTeamDefinition().getNextReleaseVersion().getArtifacts(
+            getTeamDefinition(searchType).getNextReleaseVersion().getArtifacts(
                   RelationSide.TeamWorkflowTargetedForVersion_Workflow);
       if (isCancelled()) return EMPTY_SET;
       return arts;
    }
 
    @Override
-   public void performUI() {
+   public void performUI(SearchType searchType) {
+      super.performUI(searchType);
       if (teamDefHoldingVersions != null) return;
+      if (searchType == SearchType.ReSearch && selectedTeamDef != null) return;
       try {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
          ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));

@@ -51,12 +51,12 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName() {
-      return String.format("%s - %s", super.getSelectedName(), searchStr);
+   public String getSelectedName(SearchType searchType) {
+      return String.format("%s - %s", super.getSelectedName(searchType), searchStr);
    }
 
    @Override
-   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
       if (searchStr == null) return EMPTY_SET;
       LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
       criteria.add(new AttributeValueSearch(attributeName, searchStr, Operator.CONTAINS));
@@ -82,7 +82,8 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI() {
+   public void performUI(SearchType searchType) {
+      super.performUI(searchType);
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Search by Ats Attribute", null,
                   "Enter string to search for.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);

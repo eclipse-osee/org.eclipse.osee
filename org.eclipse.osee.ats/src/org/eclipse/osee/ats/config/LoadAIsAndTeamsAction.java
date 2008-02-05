@@ -296,16 +296,16 @@ public class LoadAIsAndTeamsAction extends Action {
                aia.relate(RelationSide.TeamLead_Lead, user);
             }
 
-            aia.persist();
+            aia.persistAttributes();
             idToActionItem.put(page.getId(), aia);
             parent.addChild(aia);
-            parent.persist();
+            parent.persistAttributes();
          }
       }
       for (WorkPage childPage : page.getToPages()) {
          addActionableItem(aia, (AtsWorkPage) childPage);
       }
-      aia.persist();
+      aia.persistAttributes();
       return aia;
    }
 

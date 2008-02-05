@@ -45,8 +45,10 @@ public class AtsAdminStat extends WorkPageService {
     */
    @Override
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      label = toolkit.createLabel(workGroup, "AtsAdmin");
-      label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      if (AtsPlugin.isAtsAdmin()) {
+         label = toolkit.createLabel(workGroup, "AtsAdmin");
+         label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+      }
 
       if (AtsPlugin.isAtsUseWorkflowFiles()) {
          label = toolkit.createLabel(workGroup, "AtsUseWorkflowFiles");

@@ -61,14 +61,13 @@ public class TaskMetrics implements BlamOperation {
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
-    * 
-    * <XWidget xwidgetType="XArtifactTypeListViewer" displayName="descriptor" />
     */
-   public void runOperation(BlamVariableMap variableMap, Branch branch, IProgressMonitor monitor) throws Exception {
+   public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("TaskMetrics", 5);
       metrics.clear();
 
-      ArtifactSubtypeDescriptor descriptor = variableMap.getArtifactSubtypeDescriptor("descriptor");
+      Branch branch = variableMap.getBranch("Branch");
+      ArtifactSubtypeDescriptor descriptor = variableMap.getArtifactSubtypeDescriptor("Descriptor");
 
       FromArtifactsSearch teamWorkflowSearch =
             new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(), Operator.EQUAL));
@@ -123,5 +122,20 @@ public class TaskMetrics implements BlamOperation {
          MutableInteger metric = entry.getValue();
          excelWriter.writeRow(user.getName(), metric.toString());
       }
+   }
+
+   /*
+    * (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
+    */
+   public String getXWidgetsXml() {
+      return "<xWidgets><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Descriptor\" /></xWidgets>";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
+    */
+   public String getDescriptionUsage() {
+      return "Select parameters below and click the play button at the top right.";
    }
 }

@@ -35,8 +35,8 @@ public abstract class UserSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName() {
-      return String.format("%s - %s", super.getSelectedName(), getUserSearchName());
+   public String getSelectedName(SearchType searchType) {
+      return String.format("%s - %s", super.getSelectedName(searchType), getUserSearchName());
    }
 
    public String getUserSearchName() {
@@ -47,14 +47,12 @@ public abstract class UserSearchItem extends WorldSearchItem {
    }
 
    public User getSearchUser() {
-      if (user != null)
-         return user;
-      else if (selectedUser != null) return selectedUser;
-      return null;
+      if (user != null) return user;
+      return selectedUser;
    }
 
    @Override
-   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
       if (isCancelled()) return EMPTY_SET;
       if (user != null)
          return searchIt(user);
@@ -73,15 +71,16 @@ public abstract class UserSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI() {
+   public void performUI(SearchType searchType) {
+      super.performUI(searchType);
       if (user != null) return;
+      if (searchType == SearchType.ReSearch && selectedUser != null) return;
       UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell());
       int result = ld.open();
       if (result == 0) {
          selectedUser = (User) ld.getSelection();
          return;
-      } else
-         selectedUser = null;
+      }
       cancelled = true;
    }
 }

@@ -42,13 +42,15 @@ import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
  */
-public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorldViewArtifact, IATSStateMachineArtifact {
+public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorldViewArtifact, IBranchArtifact, IATSStateMachineArtifact {
 
    public static String ARTIFACT_NAME = "Team Workflow";
    private XActionableItemsDam actionableItemsDam;
@@ -245,7 +247,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       try {
          return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -301,14 +303,14 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             String errStr =
                   "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
             OSEELog.logException(AtsPlugin.class, errStr, null, false);
-            return getCellExceptionString(errStr);
+            return XViewerCells.getCellExceptionString(errStr);
          }
          VersionArtifact verArt = verArts.iterator().next();
          if (!smaMgr.isCompleted() && verArt.getSoleBooleanAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName())) {
             String errStr =
                   "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
             OSEELog.logException(AtsPlugin.class, errStr, null, false);
-            return getCellExceptionString(errStr);
+            return XViewerCells.getCellExceptionString(errStr);
          }
          return verArt.getDescriptiveName();
       } catch (SQLException ex) {
@@ -549,7 +551,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
          Date date = getWorldViewDeadlineDate();
          if (date != null) return new XDate(date).getMMDDYY();
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return "";
    }
@@ -637,7 +639,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
          if (workResult.isTrue()) {
             if (teamDefinition != null) setTeamDefinition(teamDefinition);
             getParentActionArtifact().resetAttributesOffChildren();
-            persist();
+            persistAttributes();
          }
       }
    }
@@ -654,5 +656,20 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       } catch (SQLException ex) {
          return "Exception: " + ex.getLocalizedMessage();
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getArtifact()
+    */
+   public Artifact getArtifact() {
+      return this;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getCommitManagerBranch()
+    */
+   public Branch getWorkingBranch() throws IllegalStateException, SQLException {
+      if (getSmaMgr().getBranchMgr().getWorkingBranch() != null) return getSmaMgr().getBranchMgr().getWorkingBranch();
+      return null;
    }
 }

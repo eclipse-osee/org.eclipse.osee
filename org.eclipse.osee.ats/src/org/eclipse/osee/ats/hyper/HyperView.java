@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.SkynetDefaultBranchContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -226,7 +227,10 @@ public class HyperView extends ViewPart implements IPartListener {
    public void createPartControl(Composite parent) {
       debug.report("createPartControl");
 
-      if (ConnectionHandler.isOpen()) SkynetContributionItem.addTo(this, true);
+      if (ConnectionHandler.isOpen()) {
+         SkynetDefaultBranchContributionItem.addTo(this, false);
+         SkynetContributionItem.addTo(this, true);
+      }
 
       canvas = new FigureCanvas(parent);
       canvas.setScrollBarVisibility(FigureCanvas.ALWAYS);

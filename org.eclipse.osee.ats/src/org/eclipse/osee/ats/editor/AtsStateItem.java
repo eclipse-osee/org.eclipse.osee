@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
@@ -29,6 +30,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
 
    public static String ALL_STATE_IDS = "ALL";
    private static ArrayList<WorkPageService> EMPTY_SERVICES = new ArrayList<WorkPageService>();
+   private static Collection<String> EMPTY_STRING = new ArrayList<String>();
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#committing(org.eclipse.osee.ats.editor.SMAManager)
@@ -47,8 +49,16 @@ public abstract class AtsStateItem implements IAtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getId()
     */
-   public String getId() {
+   protected String getId() {
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.editor.IAtsStateItem#getIds()
+    */
+   public Collection<String> getIds() {
+      if (getId() == null) return EMPTY_STRING;
+      return Arrays.asList(new String[] {getId()});
    }
 
    /* (non-Javadoc)

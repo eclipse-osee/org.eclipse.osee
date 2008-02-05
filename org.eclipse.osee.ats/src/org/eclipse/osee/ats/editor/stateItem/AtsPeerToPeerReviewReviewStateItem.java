@@ -55,7 +55,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
 
       try {
          smaMgr.setAssignees(assignees);
-         if (smaMgr.getSma().isDirty()) smaMgr.getSma().persist();
+         if (smaMgr.getSma().isDirty()) smaMgr.getSma().persistAttributes();
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

@@ -75,7 +75,7 @@ public class AtsDatabaseConfig extends DbInitializationTask {
                (XViewerCustomizationArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
                      XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME,
                      BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
-         art.persist();
+         art.persistAttributes();
       }
    }
 

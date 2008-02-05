@@ -98,7 +98,6 @@ public class SMAWorkFlowSection extends SectionPart {
       Section section = toolkit.createSection(comp, Section.TWISTIE | Section.TITLE_BAR);
       section.setText(getCurrentStateTitle());
       if (smaMgr.isCurrentState(page)) section.setBackground(AtsPlugin.ACTIVE_COLOR);
-      section.setExpanded(smaMgr.isCurrentSectionExpanded(page));
       section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       // section.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
 
@@ -123,6 +122,7 @@ public class SMAWorkFlowSection extends SectionPart {
       servicesArea.createSidebarServices(rightComp, page, toolkit, this);
 
       section.layout();
+      section.setExpanded(smaMgr.isCurrentSectionExpanded(page));
       return section;
    }
 
@@ -516,7 +516,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
          try {
-            smaMgr.getSma().persist();
+            smaMgr.getSma().persistAttributes();
          } catch (SQLException ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }

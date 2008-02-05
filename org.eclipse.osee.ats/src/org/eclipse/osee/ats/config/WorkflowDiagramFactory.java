@@ -58,7 +58,7 @@ public class WorkflowDiagramFactory {
       art.setDescriptiveName(name);
       art.setSoleAttributeValue("Extension", "vue");
       art.setNativeContent(inputStream);
-      art.persist();
+      art.persistAttributes();
 
       Artifact diagHeadArt = AtsConfig.getInstance().getOrCreateWorkflowDiagramsArtifact();
       diagHeadArt.addChild(art);

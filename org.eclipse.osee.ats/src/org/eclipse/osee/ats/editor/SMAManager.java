@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.LogItem;
@@ -278,11 +279,12 @@ public class SMAManager {
       return false;
    }
 
-   public boolean promptChangeVersion(boolean persist) throws SQLException {
-      return promptChangeVersion(Arrays.asList(new TeamWorkFlowArtifact[] {(TeamWorkFlowArtifact) sma}), persist);
+   public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws SQLException {
+      return promptChangeVersion(Arrays.asList(new TeamWorkFlowArtifact[] {(TeamWorkFlowArtifact) sma}),
+            versionReleaseType, persist);
    }
 
-   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, final boolean persist) throws SQLException {
+   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws SQLException {
       TeamDefinitionArtifact teamDefHoldingVersions = null;
       for (TeamWorkFlowArtifact teamArt : smas) {
          SMAManager smaMgr = new SMAManager(teamArt);
@@ -292,8 +294,11 @@ public class SMAManager {
             return false;
          }
          if (smaMgr.isReleased()) {
-            AWorkbench.popup("ERROR", "Team Workflow\n \"" + teamArt.getDescriptiveName() + "\"\n is already released.");
-            return false;
+            String error = "Team Workflow\n \"" + teamArt.getDescriptiveName() + "\"\n is already released.";
+            if (AtsPlugin.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+                  "Change Version", error + "\n\nOverride?")) {
+               return false;
+            } else if (!AtsPlugin.isAtsAdmin()) AWorkbench.popup("ERROR", error);
          }
          if (teamDefHoldingVersions != null) {
             if (teamDefHoldingVersions != teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()) {
@@ -309,10 +314,8 @@ public class SMAManager {
          return false;
       }
       final VersionListDialog vld =
-            new VersionListDialog(
-                  "Select Version",
-                  "Select Version",
-                  teamDefHoldingVersions.getVersionsArtifacts(AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased));
+            new VersionListDialog("Select Version", "Select Version",
+                  teamDefHoldingVersions.getVersionsArtifacts(versionReleaseType));
       if (smas.size() == 1 && smas.iterator().next().getTargetedForVersion() != null) {
          Object[] objs = new Object[1];
          objs[0] = smas.iterator().next().getTargetedForVersion();
@@ -469,7 +472,7 @@ public class SMAManager {
                for (StateMachineArtifact sma : smas) {
                   sma.getCurrentStateDam().setHoursSpent(hours + sma.getCurrentStateDam().getState().getHoursSpent());
                   sma.getCurrentStateDam().setPercentComplete(tsd.getPercent().getInt());
-                  sma.setAttribute(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
+                  sma.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
                         tsd.getSelectedOptionDef().getName());
                   sma.statusChanged();
                }
@@ -580,9 +583,9 @@ public class SMAManager {
                         verArt.getReleaseDate());
             if (verArt.getReleaseDate() != null) diag.setSelectedDate(verArt.getReleaseDate());
             if (diag.open() == 0) {
-               verArt.setAttribute(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
-                     diag.getSelectedDate().getTime() + "");
-               verArt.persist();
+               verArt.setSoleDateAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
+                     diag.getSelectedDate());
+               verArt.persistAttributes();
                return true;
             }
          } else {
@@ -593,7 +596,7 @@ public class SMAManager {
             if (diag.open() == 0) {
                sma.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
                      diag.getSelectedDate().getTime() + "");
-               sma.persist();
+               sma.persistAttributes();
                return true;
             }
          }
@@ -616,9 +619,9 @@ public class SMAManager {
                         verArt.getEstimatedReleaseDate());
             if (verArt.getEstimatedReleaseDate() != null) diag.setSelectedDate(verArt.getEstimatedReleaseDate());
             if (diag.open() == 0) {
-               verArt.setAttribute(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
-                     diag.getSelectedDate().getTime() + "");
-               verArt.persist();
+               verArt.setSoleDateAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
+                     diag.getSelectedDate());
+               verArt.persistAttributes();
                return true;
             }
          } else {
@@ -629,9 +632,9 @@ public class SMAManager {
                         sma.getWorldViewEstimatedReleaseDate());
             if (getSma().getWorldViewEstimatedReleaseDate() != null) diag.setSelectedDate(sma.getWorldViewEstimatedReleaseDate());
             if (diag.open() == 0) {
-               sma.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
-                     diag.getSelectedDate().getTime() + "");
-               sma.persist();
+               sma.setSoleDateAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
+                     diag.getSelectedDate());
+               sma.persistAttributes();
                return true;
             }
          }
@@ -895,7 +898,7 @@ public class SMAManager {
 
       // Persist
       if (persist) {
-         getSma().persist();
+         getSma().persistAttributes();
       }
 
       getSma().transitioned(fromPage, toPage, toAssignees, true);

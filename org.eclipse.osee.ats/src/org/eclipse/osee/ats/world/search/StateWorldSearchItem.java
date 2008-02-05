@@ -48,8 +48,8 @@ public class StateWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName() {
-      return String.format("%s - %s", super.getSelectedName(), getStateSearchName());
+   public String getSelectedName(SearchType searchType) {
+      return String.format("%s - %s", super.getSelectedName(searchType), getStateSearchName());
    }
 
    public StateWorldSearchItem(String name, String stateClass) {
@@ -63,7 +63,7 @@ public class StateWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
       List<ISearchPrimitive> baseCriteria;
       baseCriteria = new LinkedList<ISearchPrimitive>();
       baseCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
@@ -78,8 +78,9 @@ public class StateWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI() {
+   public void performUI(SearchType searchType) {
       if (stateClass != null) return;
+      if (searchType == SearchType.ReSearch && selectedStateClass != null) return;
       EntryDialog ed = new EntryDialog("Enter State", "Enter state name.");
       if (ed.open() == 0) {
          selectedStateClass = ed.getEntry();

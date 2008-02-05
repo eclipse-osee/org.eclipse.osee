@@ -12,12 +12,13 @@
 package org.eclipse.osee.ats;
 
 import java.util.logging.Logger;
+import org.eclipse.osee.ats.util.AtsAdmin;
 import org.eclipse.osee.ats.util.AtsBranchAccessHandler;
 import org.eclipse.osee.framework.database.DatabaseActivator;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -53,10 +54,8 @@ public class AtsPlugin extends OseeUiActivator {
    }
 
    public static void setEmailEnabled(boolean enabled) {
-      System.out.println("AtsPlugin: remove this");
-      // if (!SkynetDbInit.isDbInit())
-      // System.out.println("Email " + (enabled ? "Enabled" : "Disabled"));
-      // emailEnabled = enabled;
+      if (!SkynetDbInit.isDbInit()) System.out.println("Email " + (enabled ? "Enabled" : "Disabled"));
+      emailEnabled = enabled;
    }
 
    public static boolean isProductionDb() {
@@ -90,28 +89,28 @@ public class AtsPlugin extends OseeUiActivator {
       return waitCursor;
    }
 
-   public static boolean isAtsIgnoreConfigUpgrades() {
-      return OseeProperties.getInstance().isAtsIgnoreConfigUpgrades();
-   }
-
    public static boolean isAtsAdmin() {
-      return OseeProperties.getInstance().isAtsAdmin();
+      return AtsAdmin.isAtsAdmin();
    }
 
    public static boolean isAtsUseWorkflowFiles() {
-      return OseeProperties.getInstance().isAtsUseWorkflowFiles();
-   }
-
-   public static boolean isAtsDisableEmail() {
-      return OseeProperties.getInstance().isAtsDisableEmail();
-   }
-
-   public static boolean isAtsAlwaysEmailMe() {
-      return OseeProperties.getInstance().isAtsAlwaysEmailMe();
+      return System.getProperty("AtsUseWorkflowFiles") != null;
    }
 
    public static boolean isAtsShowUser() {
-      return OseeProperties.getInstance().isAtsShowUser();
+      return System.getProperty("AtsShowUser") != null;
+   }
+
+   public static boolean isAtsIgnoreConfigUpgrades() {
+      return System.getProperty("AtsIgnoreConfigUpgrades") != null;
+   }
+
+   public static boolean isAtsDisableEmail() {
+      return System.getProperty("AtsDisableEmail") != null;
+   }
+
+   public static boolean isAtsAlwaysEmailMe() {
+      return System.getProperty("AtsAlwaysEmailMe") != null;
    }
 
    public static Logger getLogger() {

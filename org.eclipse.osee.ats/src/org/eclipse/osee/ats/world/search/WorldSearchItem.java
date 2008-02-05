@@ -14,13 +14,9 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 
 /**
  * @author Donald G. Dunne
@@ -30,12 +26,23 @@ public abstract class WorldSearchItem {
    private final String name;
    protected static Set<Artifact> EMPTY_SET = new HashSet<Artifact>();
    protected boolean cancelled = false;
-   protected boolean loadWorldView = true;
    protected ArtifactPersistenceManager apm = ArtifactPersistenceManager.getInstance();
+   private LoadView loadView;
+   public static enum LoadView {
+      WorldView, TaskEditor
+   }
+   public static enum SearchType {
+      Search, ReSearch
+   };
 
    public WorldSearchItem(String name) {
+      this(name, LoadView.WorldView);
+   }
+
+   public WorldSearchItem(String name, LoadView loadView) {
       super();
       this.name = name;
+      this.loadView = loadView;
       this.cancelled = false;
    }
 
@@ -47,62 +54,50 @@ public abstract class WorldSearchItem {
     * Method called to display the current search in the view. Override to provide more information about selected
     * values (eg MyWorld)
     * 
+    * @param searchType TODO
     * @return selected name
     */
-   public String getSelectedName() {
+   public String getSelectedName(SearchType searchType) {
       return getName();
    }
 
-   public abstract Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException;
+   public abstract Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException;
 
-   /**
-    * Perform search and return result set without loading in WorldView. This method can be used repeatedly.
-    * 
-    * @return artifacts resulting from search
-    * @throws SQLException
-    * @throws IllegalArgumentException
-    */
-   public Collection<Artifact> performSearchGetResults() throws SQLException, IllegalArgumentException {
-      return performSearchGetResults(false, false);
+   public Collection<Artifact> performReSearch() throws SQLException, IllegalArgumentException {
+      return EMPTY_SET;
    }
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi, boolean loadWorldView) throws SQLException, IllegalArgumentException {
-      this.loadWorldView = loadWorldView;
+   public Collection<Artifact> performSearchGetResults() throws SQLException, IllegalArgumentException {
+      return performSearchGetResults(false, SearchType.Search);
+   }
+
+   public Collection<Artifact> performSearchGetResults(SearchType searchType) throws SQLException, IllegalArgumentException {
+      return performSearchGetResults(false, searchType);
+   }
+
+   public Collection<Artifact> performSearchGetResults(boolean performUi) throws SQLException, IllegalArgumentException {
+      return performSearchGetResults(performUi, SearchType.Search);
+   }
+
+   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) throws SQLException, IllegalArgumentException {
+      cancelled = false;
       if (performUi) {
          Displays.ensureInDisplayThread(new Runnable() {
             /* (non-Javadoc)
              * @see java.lang.Runnable#run()
              */
             public void run() {
-               performUI();
+               performUI(searchType);
             }
          }, true);
 
       }
       if (cancelled) return EMPTY_SET;
-      Collection<Artifact> arts = performSearch();
-      if (loadWorldView) loadResultArtifacts(arts);
-      return arts;
+      return performSearch(searchType);
    }
 
-   public void performUI() {
+   public void performUI(SearchType searchType) {
       cancelled = false;
-   }
-
-   private void loadResultArtifacts(Collection<Artifact> artifacts) {
-      final Set<Artifact> addedArts = new HashSet<Artifact>();
-      for (Artifact artifact : artifacts) {
-         if (isCancelled())
-            return;
-         else if ((!(artifact instanceof ActionArtifact)) && (!(artifact instanceof StateMachineArtifact))) {
-            ArtifactEditor.editArtifact(artifact);
-            continue;
-         } else
-            addedArts.add(artifact);
-      }
-      if (loadWorldView && addedArts.size() > 0) {
-         WorldView.loadIt(getSelectedName(), addedArts);
-      }
    }
 
    public boolean isCancelled() {
@@ -113,18 +108,18 @@ public abstract class WorldSearchItem {
       this.cancelled = cancelled;
    }
 
-   public boolean isLoadWorldView() {
-      return loadWorldView;
+   /**
+    * @return the loadView
+    */
+   public LoadView getLoadView() {
+      return loadView;
    }
 
    /**
-    * By default, performSearch loads worldview with results. Set to false to perform search and use getResultArtifacts
-    * to get result set.
-    * 
-    * @param loadWorldView
+    * @param loadView the loadView to set
     */
-   public void setLoadWorldView(boolean loadWorldView) {
-      this.loadWorldView = loadWorldView;
+   public void setLoadView(LoadView loadView) {
+      this.loadView = loadView;
    }
 
 }

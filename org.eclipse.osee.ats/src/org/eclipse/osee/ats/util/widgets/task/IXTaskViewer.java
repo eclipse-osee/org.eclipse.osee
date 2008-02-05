@@ -31,7 +31,7 @@ public interface IXTaskViewer {
 
    public boolean isUsingTaskResolutionOptions();
 
-   public List<TaskResOptionDefinition> getResOptions();
+   public List<TaskResOptionDefinition> getResOptions() throws SQLException;
 
    public boolean isTaskable();
 

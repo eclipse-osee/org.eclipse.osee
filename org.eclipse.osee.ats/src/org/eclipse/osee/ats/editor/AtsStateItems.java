@@ -31,7 +31,7 @@ public class AtsStateItems {
       loadAllStateItems();
       List<IAtsStateItem> items = new ArrayList<IAtsStateItem>();
       for (IAtsStateItem item : stateItems)
-         if (item.getId().equals(AtsStateItem.ALL_STATE_IDS) || item.getId().equals(stateId)) items.add(item);
+         if (item.getIds().contains(AtsStateItem.ALL_STATE_IDS) || item.getIds().contains(stateId)) items.add(item);
       return items;
    }
 

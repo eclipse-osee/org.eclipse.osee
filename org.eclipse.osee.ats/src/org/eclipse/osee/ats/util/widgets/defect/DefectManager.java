@@ -87,7 +87,7 @@ public class DefectManager {
             sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
          sb.append("</" + ATS_DEFECT_TAG + ">");
          artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
-         if (persist) artifact.persist();
+         if (persist) artifact.persistAttributes();
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, "Can't create ats review defect document", ex, true);
       }

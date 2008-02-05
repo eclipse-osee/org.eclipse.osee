@@ -54,8 +54,8 @@ public class UserCommunitySearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName() {
-      return String.format("%s - %s", super.getSelectedName(), getGroupSearchName());
+   public String getSelectedName(SearchType searchType) {
+      return String.format("%s - %s", super.getSelectedName(searchType), getGroupSearchName());
    }
 
    private String getSearchUserComm() {
@@ -64,7 +64,7 @@ public class UserCommunitySearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
       if (isCancelled()) return EMPTY_SET;
 
       // Find all Team Workflows artifact types
@@ -91,9 +91,11 @@ public class UserCommunitySearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI() {
+   public void performUI(SearchType searchType) {
+      super.performUI(searchType);
       if (userCommName != null) return;
       if (userComm != null) return;
+      if (searchType == SearchType.ReSearch && selectedUserComm != null) return;
       UserCommunityListDialog gld = new UserCommunityListDialog();
       int result = gld.open();
       if (result == 0) {

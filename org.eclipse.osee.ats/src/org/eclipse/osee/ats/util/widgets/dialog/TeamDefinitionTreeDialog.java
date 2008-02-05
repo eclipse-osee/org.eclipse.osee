@@ -24,9 +24,9 @@ import org.eclipse.swt.widgets.Control;
 public class TeamDefinitionTreeDialog extends TeamDefinitionTreeWithChildrenDialog {
 
    XCheckBox showFinishedCheck = new XCheckBox("Show Completed and Cancelled Workflows");
-   boolean showFinished = false;
+   Boolean showFinished = false;
    XCheckBox showActionCheck = new XCheckBox("Show Action instead of Workflows");
-   boolean showAction = false;
+   Boolean showAction = false;
 
    public TeamDefinitionTreeDialog(Active active) {
       super(active);
@@ -37,49 +37,54 @@ public class TeamDefinitionTreeDialog extends TeamDefinitionTreeWithChildrenDial
 
       Control control = super.createDialogArea(container);
 
-      showFinishedCheck.createWidgets(dialogComp, 2);
-      showFinishedCheck.addSelectionListener(new SelectionListener() {
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+      if (showFinished != null) {
+         showFinishedCheck.createWidgets(dialogComp, 2);
+         showFinishedCheck.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
 
-         public void widgetSelected(SelectionEvent e) {
-            showFinished = showFinishedCheck.isSelected();
-         };
-      });
-      showActionCheck.createWidgets(dialogComp, 2);
-      showAction = true;
-      showActionCheck.set(true);
-      showActionCheck.addSelectionListener(new SelectionListener() {
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
+            public void widgetSelected(SelectionEvent e) {
+               showFinished = showFinishedCheck.isSelected();
+            };
+         });
+      }
 
-         public void widgetSelected(SelectionEvent e) {
-            showAction = showActionCheck.isSelected();
-         };
-      });
+      if (showAction != null) {
+         showActionCheck.createWidgets(dialogComp, 2);
+         showAction = true;
+         showActionCheck.set(true);
+         showActionCheck.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+               showAction = showActionCheck.isSelected();
+            };
+         });
+      }
 
       return control;
    }
 
-   public boolean isShowFinished() {
+   public Boolean isShowFinished() {
       return showFinished;
    }
 
-   public boolean isShowAction() {
+   public Boolean isShowAction() {
       return showAction;
    }
 
    /**
-    * @param showFinished the showFinished to set
+    * @param showFinished true/false default for showAction checkbox; null to not display showAction checkbox
     */
-   public void setShowFinished(boolean showFinished) {
+   public void setShowFinished(Boolean showFinished) {
       this.showFinished = showFinished;
    }
 
    /**
-    * @param showAction the showAction to set
+    * @param showAction true/false default for showAction checkbox; null to not display showAction checkbox
     */
-   public void setShowAction(boolean showAction) {
+   public void setShowAction(Boolean showAction) {
       this.showAction = showAction;
    }
 

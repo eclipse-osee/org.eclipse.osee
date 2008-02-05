@@ -33,7 +33,7 @@ public class CriteriaSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
       if (criteria == null) throw new IllegalArgumentException("Inavlid search \"" + getName() + "\"");
       Collection<Artifact> artifacts =
             ArtifactPersistenceManager.getInstance().getArtifacts(criteria, all,

@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -383,7 +384,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
       try {
          return currentStateDam.getState().getName();
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -491,10 +492,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public String getWorldViewCreatedDateStr() {
       try {
-         if (getWorldViewCreatedDate() == null) return getCellExceptionString("No creation date");
+         if (getWorldViewCreatedDate() == null) return XViewerCells.getCellExceptionString("No creation date");
          return new XDate(getWorldViewCreatedDate()).getMMDDYYHHMM();
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -504,13 +505,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
             if (getWorldViewCompletedDate() == null) {
                OSEELog.logSevere(AtsPlugin.class, "Completed with no date => " + smaMgr.getSma().getHumanReadableId(),
                      true);
-               return getCellExceptionString("Completed with no date.");
+               return XViewerCells.getCellExceptionString("Completed with no date.");
             }
             return new XDate(getWorldViewCompletedDate()).getMMDDYYHHMM();
          }
          return "";
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -520,13 +521,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
             if (getWorldViewCancelledDate() == null) {
                OSEELog.logSevere(AtsPlugin.class, "Cancelled with no date => " + smaMgr.getSma().getHumanReadableId(),
                      false);
-               return getCellExceptionString("Cancelled with no date.");
+               return XViewerCells.getCellExceptionString("Cancelled with no date.");
             }
             return new XDate(getWorldViewCancelledDate()).getMMDDYYHHMM();
          }
          return "";
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -603,7 +604,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
       try {
          return getAttributesToString(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -749,7 +750,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public void saveSMA() {
       try {
-         saveRelationsAndArtifacts(smaRelations, false);
+         saveArtifactsFromRelations(smaRelations);
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, "Can't save artifact " + getHumanReadableId(), ex, true);
       }
@@ -757,7 +758,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public void revertSMA() {
       try {
-         saveRelationsAndArtifacts(smaRelations, true);
+         revertArtifactsFromRelations(smaRelations);
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, "Can't revert artifact " + getHumanReadableId(), ex, true);
       }
@@ -770,7 +771,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
          if (getWorldViewEstimatedReleaseDate() == null) return "";
          return new XDate(getWorldViewEstimatedReleaseDate()).getMMDDYYHHMM();
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -781,7 +782,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
          if (getWorldViewReleaseDate() == null) return "";
          return new XDate(getWorldViewReleaseDate()).getMMDDYYHHMM();
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -896,11 +897,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
     */
    public String getWorldViewValidationRequiredStr() {
       try {
-         return String.valueOf(getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName()));
+         if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) return String.valueOf(getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName()));
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return ex.getLocalizedMessage();
       }
+      return "";
    }
 
    /*

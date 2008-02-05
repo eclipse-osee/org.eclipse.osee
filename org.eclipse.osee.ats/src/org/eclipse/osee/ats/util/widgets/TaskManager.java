@@ -82,10 +82,10 @@ public class TaskManager {
       taskArt.getLog().addLog(LogType.StateEntered, "InWork", "");
 
       // Set parent state task is related to
-      taskArt.setAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
+      taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
             smaMgr.getSma().getCurrentStateName());
 
-      if (persist) taskArt.persist();
+      if (persist) taskArt.persistAttributes();
       smaMgr.getSma().relate(RelationSide.SmaToTask_Task, taskArt, persist);
 
       return taskArt;

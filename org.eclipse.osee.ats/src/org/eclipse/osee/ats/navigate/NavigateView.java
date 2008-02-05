@@ -10,22 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
+import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.SkynetDefaultBranchContributionItem;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -56,14 +64,10 @@ public class NavigateView extends ViewPart implements IActionable {
    public void createPartControl(Composite parent) {
       debug.report("createPartControl");
 
-      try {
-         ConnectionHandler.getConnection();
-      } catch (Exception ex) {
-         (new Label(parent, SWT.NONE)).setText("  DB Connection Unavailable");
-         return;
-      }
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
-      SkynetContributionItem.addTo(this, true);
+      SkynetDefaultBranchContributionItem.addTo(this, false);
+      SkynetContributionItem.addTo(this, false);
 
       xNavComp = new AtsNavigateComposite(new AtsNavigateViewItems(), parent, SWT.NONE);
 
@@ -99,7 +103,16 @@ public class NavigateView extends ViewPart implements IActionable {
          public void run() {
             MultipleHridSearchItem srch = new MultipleHridSearchItem();
             try {
-               srch.performSearchGetResults(true, true);
+               Collection<Artifact> artifacts = srch.performSearchGetResults(true);
+               final Set<Artifact> addedArts = new HashSet<Artifact>();
+               for (Artifact artifact : artifacts) {
+                  if ((!(artifact instanceof ActionArtifact)) && (!(artifact instanceof StateMachineArtifact))) {
+                     ArtifactEditor.editArtifact(artifact);
+                     continue;
+                  } else
+                     addedArts.add(artifact);
+               }
+               WorldView.getWorldView().load("Open by Id: \"" + srch.getEnteredIds() + "\"", addedArts);
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }

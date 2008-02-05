@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.editor.stateItem.BranchableStateItem;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.LocalBranchToArtifactCacheUpdateEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
@@ -76,6 +77,7 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
       SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
       SkynetEventManager.getInstance().register(LocalBranchEvent.class, this);
       SkynetEventManager.getInstance().register(RemoteBranchEvent.class, this);
+      SkynetEventManager.getInstance().register(LocalBranchToArtifactCacheUpdateEvent.class, this);
       refresh();
    }
 

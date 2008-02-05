@@ -59,9 +59,9 @@ public class MyFavoritesSearchItem extends UserSearchItem {
    }
 
    @Override
-   public void performUI() {
+   public void performUI(SearchType searchType) {
       if (user != null) return;
-      super.performUI();
+      super.performUI(searchType);
    }
 
 }

@@ -122,7 +122,7 @@ public class AssignedActiveActions extends XNavigateItemAction {
             rd.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " cancel/complete with assignees");
             if (fixIt) {
                smaMgr.clearAssignees();
-               smaMgr.getSma().persist();
+               smaMgr.getSma().persistAttributes();
                rd.log("Fixed");
             }
          } else if ((!smaMgr.isCompleted() && !smaMgr.isCancelled()) && smaMgr.getAssignees().size() == 0) {

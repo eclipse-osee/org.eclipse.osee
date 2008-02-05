@@ -14,9 +14,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -49,18 +51,19 @@ public class TaskXViewer extends WorldXViewer {
    private final XTaskViewer xTaskViewer;
    private final IDirtiableEditor editor;
    private final boolean isUsingTaskResolutionOptions;
-   private final List<TaskResOptionDefinition> resOptions;
+   private final List<TaskResOptionDefinition> taskResOptionDefinitions;
+   private Map<String, TaskResOptionDefinition> nameToResOptionDef = null;
    private boolean tasksEditable = true;
 
    /**
     * @param parent
     * @param style
     */
-   public TaskXViewer(Composite parent, int style, IDirtiableEditor editor, boolean isUsingTaskResolutionOptions, List<TaskResOptionDefinition> resOptions, XTaskViewer xTaskViewer) {
+   public TaskXViewer(Composite parent, int style, IDirtiableEditor editor, boolean isUsingTaskResolutionOptions, List<TaskResOptionDefinition> taskResOptionDefinition, XTaskViewer xTaskViewer) {
       super(parent, style, NAMESPACE, new TaskXViewerFactory());
       this.editor = editor;
       this.isUsingTaskResolutionOptions = isUsingTaskResolutionOptions;
-      this.resOptions = resOptions;
+      this.taskResOptionDefinitions = taskResOptionDefinition;
       this.xTaskViewer = xTaskViewer;
    }
 
@@ -181,7 +184,7 @@ public class TaskXViewer extends WorldXViewer {
       editTaskStatusAction = new Action("Edit Task Status", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (SMAManager.promptChangeStatus((isUsingTaskResolutionOptions ? resOptions : null),
+            if (SMAManager.promptChangeStatus((isUsingTaskResolutionOptions ? taskResOptionDefinitions : null),
                   getSelectedTaskArtifacts(), false)) {
                editor.onDirtied();
                update(getSelectedTaskArtifactItemsArray(), null);
@@ -295,7 +298,7 @@ public class TaskXViewer extends WorldXViewer {
 
    public boolean handleChangeResolution() {
       if (isUsingTaskResolutionOptions) {
-         if (SMAManager.promptChangeStatus(resOptions, getSelectedTaskArtifacts(), false)) {
+         if (SMAManager.promptChangeStatus(taskResOptionDefinitions, getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();
             update(getSelectedTaskArtifactItemsArray(), null);
             return true;
@@ -369,6 +372,26 @@ public class TaskXViewer extends WorldXViewer {
 
    public Collection<WorldArtifactItem> getRootSet() {
       return xTaskViewer.getXViewer().getRootSet();
+   }
+
+   /**
+    * @return the isUsingTaskResolutionOptions
+    */
+   public boolean isUsingTaskResolutionOptions() {
+      return isUsingTaskResolutionOptions;
+   }
+
+   /**
+    * @return the TaskResOptionDefinition
+    */
+   public TaskResOptionDefinition getTaskResOptionDefinition(String optionName) {
+      if (nameToResOptionDef == null) {
+         nameToResOptionDef = new HashMap<String, TaskResOptionDefinition>();
+         for (TaskResOptionDefinition def : taskResOptionDefinitions) {
+            nameToResOptionDef.put(def.getName(), def);
+         }
+      }
+      return nameToResOptionDef.get(optionName);
    }
 
 }

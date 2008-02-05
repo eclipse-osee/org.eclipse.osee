@@ -13,9 +13,12 @@ package org.eclipse.osee.ats.navigate;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
+import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
@@ -48,9 +51,13 @@ public class AtsNavigateComposite extends XNavigateComposite {
       IStructuredSelection sel = (IStructuredSelection) filteredTree.getViewer().getSelection();
       if (!sel.iterator().hasNext()) return;
       XNavigateItem item = (XNavigateItem) sel.iterator().next();
-      if (item instanceof SearchNavigateItem)
-         openWorld(((SearchNavigateItem) item).getWsi());
-      else
+      if (item instanceof SearchNavigateItem) {
+         WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWsi();
+         if (worldSearchItem.getLoadView() == LoadView.WorldView)
+            openWorld(worldSearchItem);
+         else
+            openTaskEditor(worldSearchItem);
+      } else
          super.handleDoubleClick();
    }
 
@@ -62,6 +69,14 @@ public class AtsNavigateComposite extends XNavigateComposite {
       } catch (PartInitException e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
                "Couldn't Launch Search View " + e1.getMessage());
+      }
+   }
+
+   public static void openTaskEditor(WorldSearchItem searchItem) {
+      try {
+         TaskEditor.loadTable(searchItem, false);
+      } catch (Exception e1) {
+         OSEELog.logException(AtsPlugin.class, null, true);
       }
    }
 

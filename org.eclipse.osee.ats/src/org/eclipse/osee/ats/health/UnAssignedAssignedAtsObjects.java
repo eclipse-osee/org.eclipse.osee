@@ -131,7 +131,7 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAction {
             rd.logError(art.getHumanReadableId() + " is assigned to NoOne; invalid assignment - MANUAL FIX REQUIRED");
          }
          if (sma.isDirty()) {
-            sma.persist();
+            sma.persistAttributes();
          }
          rd.report(getName());
       }

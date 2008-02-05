@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -25,7 +27,7 @@ public class TaskEditorInput extends ArtifactEditorInput {
 
    private final Collection<TaskArtifact> taskArts;
    private final String name;
-   private final List<TaskResOptionDefinition> resOptions;
+   private List<TaskResOptionDefinition> resOptions;
 
    /**
     * @param artifact
@@ -35,6 +37,13 @@ public class TaskEditorInput extends ArtifactEditorInput {
       this.name = name;
       this.taskArts = taskArts;
       this.resOptions = resOptions;
+   }
+
+   public TaskEditorInput(String name, Collection<TaskArtifact> taskArts) {
+      super(null);
+      this.name = name;
+      this.taskArts = taskArts;
+      this.resOptions = null;
    }
 
    /* (non-Javadoc)
@@ -62,7 +71,13 @@ public class TaskEditorInput extends ArtifactEditorInput {
    /**
     * @return the resOptions
     */
-   public List<TaskResOptionDefinition> getResOptions() {
+   public List<TaskResOptionDefinition> getResOptions() throws SQLException {
+      if (resOptions == null) {
+         resOptions =
+               taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPage(
+                     DefaultTeamState.Implement.name()).getTaskResDef() != null ? taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPage(
+                     DefaultTeamState.Implement.name()).getTaskResDef().getOptions() : null;
+      }
       return resOptions;
    }
 

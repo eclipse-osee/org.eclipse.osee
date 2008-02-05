@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
 import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsLib;
@@ -49,11 +50,13 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
@@ -115,9 +118,10 @@ public class WorldXViewer extends XViewer {
    Action editChangeTypeAction;
    Action editPriorityAction;
    Action editTargetVersionAction;
+   Action editAssigneeAction;
    Action editActionableItemsAction;
    Action convertActionableItemsAction;
-   Action openInAtsEditorAction;
+   Action openInAtsEditorAction, openInMassEditorAction;
    Action favoritesAction;
    Action subscribedAction;
    Action openInArtifactEditorAction;
@@ -156,11 +160,28 @@ public class WorldXViewer extends XViewer {
          @Override
          public void run() {
             try {
-               if (SMAManager.promptChangeVersion(getSelectedTeamWorkflowArtifacts(), true)) {
+               if (SMAManager.promptChangeVersion(getSelectedTeamWorkflowArtifacts(),
+                     (AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased), true)) {
                   update(getSelectedArtifactItemsArray(), null);
                }
             } catch (SQLException ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
+            }
+         }
+      };
+
+      editAssigneeAction = new Action("Edit Assignee", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            Set<StateMachineArtifact> artifacts = getSelectedSMAArtifacts();
+            if (SMAManager.promptChangeAssignees(artifacts)) {
+               try {
+                  Artifacts.persist(artifacts, false);
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+                  return;
+               }
+               update(getSelectedArtifactItemsArray(), null);
             }
          }
       };
@@ -203,6 +224,17 @@ public class WorldXViewer extends XViewer {
          public void run() {
             AtsLib.openAtsAction(getSelectedArtifactItems().iterator().next().getArtifact(),
                   AtsOpenOption.OpenOneOrPopupSelect);
+         }
+      };
+
+      openInMassEditorAction = new Action("Mass Edit", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            if (getSelectedArtifacts().size() == 0) {
+               AWorkbench.popup("Error", "No items selected");
+               return;
+            }
+            MassArtifactEditor.editArtifacts("", getSelectedArtifacts());
          }
       };
 
@@ -387,6 +419,9 @@ public class WorldXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, editTargetVersionAction);
       editTargetVersionAction.setEnabled(getSelectedTeamWorkflowArtifacts().size() > 0);
 
+      mm.insertBefore(MENU_GROUP_PRE, editAssigneeAction);
+      editAssigneeAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
+
       mm.insertBefore(MENU_GROUP_PRE, editActionableItemsAction);
       editActionableItemsAction.setEnabled(getSelectedActionArtifacts().size() == 1 || getSelectedTeamWorkflowArtifacts().size() == 1);
 
@@ -407,6 +442,8 @@ public class WorldXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
       mm.insertBefore(MENU_GROUP_PRE, openInAtsEditorAction);
       openInAtsEditorAction.setEnabled(getSelectedArtifacts() != null);
+      mm.insertBefore(MENU_GROUP_PRE, openInMassEditorAction);
+      openInMassEditorAction.setEnabled(getSelectedArtifacts() != null);
       if (AtsPlugin.isAtsAdmin()) {
          mm.insertBefore(MENU_GROUP_PRE, openInArtifactEditorAction);
          openInArtifactEditorAction.setEnabled(getSelectedArtifacts() != null);
@@ -720,7 +757,9 @@ public class WorldXViewer extends XViewer {
          SMAManager smaMgr = new SMAManager((StateMachineArtifact) useArt);
          boolean modified = false;
          if (aCol == AtsXColumn.Version_Target_Col)
-            modified = smaMgr.promptChangeVersion(true);
+            modified =
+                  smaMgr.promptChangeVersion(
+                        AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, true);
          else if (aCol == AtsXColumn.Notes_Col)
             modified = smaMgr.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, persist);
          else if (aCol == AtsXColumn.Percent_Rework_Col)
@@ -801,7 +840,7 @@ public class WorldXViewer extends XViewer {
                AWorkbench.popup("INFO", sb.toString());
 
                smaMgr.setState(implementState);
-               smaMgr.getSma().persist();
+               smaMgr.getSma().persistAttributes();
             }
          }
       } catch (SQLException ex) {

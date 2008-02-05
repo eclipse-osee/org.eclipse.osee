@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.framework.ui.plugin.util.ALayout;
 import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionListener;

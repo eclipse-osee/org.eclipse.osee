@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
+import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -52,15 +53,17 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
-import org.eclipse.osee.framework.ui.plugin.util.ALayout;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.SkynetDefaultBranchContributionItem;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.dnd.DND;
@@ -86,7 +89,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Insert the type's description here.
+ * ATS World View provides a tree-table view of the ATS object results loaded from searches
  * 
  * @see ViewPart
  * @author Donald G. Dunne
@@ -143,19 +146,23 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    }
 
    public void load(final String name, final Collection<? extends Artifact> arts) {
-      lastSearchItem = null;
+      load(name, arts, true);
+   }
+
+   public void load(final String name, final Collection<? extends Artifact> arts, boolean clearLastSearchItem) {
+      if (clearLastSearchItem) lastSearchItem = null;
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
           */
          public void run() {
+            xViewer.set(arts);
             if (arts.size() == 0)
                setTableTitle("No Results Found - " + name, true);
             else
                setTableTitle(name, false);
-            xViewer.set(arts);
          }
-      });
+      }, true);
    }
 
    public void setFocus() {
@@ -164,12 +171,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    public void createPartControl(Composite parent) {
       debug.report("createPartControl");
 
-      try {
-         ConnectionHandler.getConnection();
-      } catch (Exception ex) {
-         (new Label(parent, SWT.NONE)).setText("  DB Connection Unavailable");
-         return;
-      }
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
 
       GridLayout layout = new GridLayout();
       layout.numColumns = 1;
@@ -269,7 +271,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
 
       parent.layout();
       createActions();
-      SkynetContributionItem.addTo(this, true);
+      SkynetDefaultBranchContributionItem.addTo(this, false);
+      SkynetContributionItem.addTo(this, false);
       setupDragAndDropSupport();
 
       eventManager.register(LocalTransactionEvent.class, this);
@@ -308,7 +311,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       }
 
       public String getText(Object arg0) {
-         return ((WorldSearchItem) arg0).getSelectedName();
+         return ((WorldSearchItem) arg0).getSelectedName(SearchType.Search);
       }
 
       public void addListener(ILabelProviderListener arg0) {
@@ -337,16 +340,48 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       }
    }
 
+   public void loadTable(WorldSearchItem searchItem, boolean sort) {
+      searchItem.setCancelled(false);
+      loadTable(searchItem, SearchType.Search, sort);
+   }
+
+   public void loadTable(WorldSearchItem searchItem, SearchType searchType, boolean sort) {
+      searchItem.setCancelled(false);
+      this.lastSearchItem = searchItem;
+      debug.report("loadTable", true);
+      if (!ConnectionHandler.isConnected()) {
+         AWorkbench.popup("ERROR", "DB Connection Unavailable");
+         return;
+      }
+
+      if (searchItem == null) return;
+
+      searchItem.performUI(searchType);
+      if (searchItem.isCancelled()) return;
+
+      LoadTableJob job = null;
+      try {
+         job = new LoadTableJob(searchItem, SearchType.Search, this, sort);
+         job.setUser(false);
+         job.setPriority(Job.LONG);
+         job.schedule();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, "Load Table Failed", ex, true);
+      }
+   }
+
    private class LoadTableJob extends Job {
 
       @SuppressWarnings("unused")
       private final boolean sort;
       private final WorldSearchItem searchItem;
       private boolean cancel = false;
+      private final SearchType searchType;
 
-      public LoadTableJob(WorldSearchItem searchItem, WorldView worldView, boolean sort) {
-         super("Loading \"" + searchItem.getSelectedName() + "\"...");
+      public LoadTableJob(WorldSearchItem searchItem, SearchType searchType, WorldView worldView, boolean sort) {
+         super("Loading \"" + searchItem.getSelectedName(searchType) + "\"...");
          this.searchItem = searchItem;
+         this.searchType = searchType;
          this.sort = sort;
       }
 
@@ -358,41 +393,41 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       @Override
       protected IStatus run(IProgressMonitor monitor) {
 
-         setTableTitle("Loading \"" + searchItem.getSelectedName() + "\"...", false);
+         setTableTitle(
+               "Loading \"" + (searchItem.getSelectedName(searchType) != null ? searchItem.getSelectedName(searchType) : "") + "\"...",
+               false);
          cancel = false;
          searchItem.setCancelled(cancel);
          debug.report("Querying DB", true);
          final Collection<Artifact> artifacts;
          xViewer.clear();
          try {
-            artifacts = searchItem.performSearchGetResults(true, true);
+            artifacts = searchItem.performSearchGetResults(false, searchType);
             if (artifacts.size() == 0) {
                if (searchItem.isCancelled()) {
                   monitor.done();
-                  setTableTitle("CANCELLED - " + searchItem.getSelectedName(), false);
+                  setTableTitle("CANCELLED - " + searchItem.getSelectedName(searchType), false);
                   return Status.CANCEL_STATUS;
                } else {
                   monitor.done();
-                  setTableTitle("No Results Found - " + searchItem.getSelectedName(), true);
+                  setTableTitle("No Results Found - " + searchItem.getSelectedName(searchType), true);
                   return Status.OK_STATUS;
                }
             }
-         }
-
-         catch (final Exception ex) {
+            load((searchItem.getSelectedName(searchType) != null ? searchItem.getSelectedName(searchType) : ""),
+                  artifacts, false);
+         } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
                   " => " + ex.getLocalizedMessage();
-            setTableTitle("Searching Error - " + searchItem.getSelectedName(), false);
+            setTableTitle("Searching Error - " + searchItem.getSelectedName(searchType), false);
             logger.log(Level.SEVERE, "Searching Error - " + ex.getLocalizedMessage(), ex);
             monitor.done();
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, str, null);
          }
          monitor.done();
-         setTableTitle(searchItem.getSelectedName(), false);
          return Status.OK_STATUS;
       }
-
    }
 
    public void setTableTitle(final String title, final boolean warning) {
@@ -419,26 +454,6 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       } else
          extraInfoLabel.setText("");
       extraInfoLabel.getParent().layout();
-   }
-
-   public void loadTable(WorldSearchItem searchItem, boolean sort) {
-      this.lastSearchItem = searchItem;
-      debug.report("loadTable", true);
-      if (!ConnectionHandler.isConnected()) {
-         AWorkbench.popup("ERROR", "DB Connection Unavailable");
-         return;
-      }
-
-      if (searchItem == null) return;
-      LoadTableJob job = null;
-      try {
-         job = new LoadTableJob(searchItem, this, sort);
-         job.setUser(false);
-         job.setPriority(Job.LONG);
-         job.schedule();
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "Load Table Failed", ex, true);
-      }
    }
 
    protected void createActions() {
@@ -470,7 +485,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       Action refreshAction = new Action("Refresh") {
 
          public void run() {
-            if (lastSearchItem != null) loadTable(lastSearchItem, true);
+            if (lastSearchItem != null) loadTable(lastSearchItem, SearchType.ReSearch, true);
          }
       };
       refreshAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("refresh.gif"));
@@ -587,7 +602,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    }
 
    public String getActionDescription() {
-      if (lastSearchItem != null) return String.format("Search Item: %s", lastSearchItem.getSelectedName());
+      if (lastSearchItem != null) return String.format("Search Item: %s",
+            lastSearchItem.getSelectedName(SearchType.Search));
       return "";
    }
 

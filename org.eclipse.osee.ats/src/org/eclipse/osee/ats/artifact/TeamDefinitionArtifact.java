@@ -291,7 +291,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
                (VersionArtifact) configurationPersistenceManager.getArtifactSubtypeDescriptor(
                      VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
          versionArt.setDescriptiveName(name);
-         versionArt.persist();
+         versionArt.persistAttributes();
 
          relate(RelationSide.TeamDefinitionToVersion_Version, versionArt, true);
          return versionArt;

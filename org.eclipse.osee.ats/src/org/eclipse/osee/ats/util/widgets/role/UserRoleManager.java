@@ -77,7 +77,7 @@ public class UserRoleManager {
             sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
          sb.append("</" + ATS_DEFECT_TAG + ">");
          artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
-         if (persist) artifact.persist();
+         if (persist) artifact.persistAttributes();
          rollupHoursSpentToReviewState(persist);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, "Can't create ats review defect document", ex, true);
@@ -168,7 +168,7 @@ public class UserRoleManager {
             hoursSpent += role.getHoursSpent();
          SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
          smaMgr.getCurrentStateDam().setHoursSpent(hoursSpent);
-         if (artifact.isDirty() && persist) artifact.persist();
+         if (artifact.isDirty() && persist) artifact.persistAttributes();
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

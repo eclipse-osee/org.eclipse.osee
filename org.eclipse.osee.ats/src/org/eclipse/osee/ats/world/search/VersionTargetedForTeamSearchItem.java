@@ -46,18 +46,23 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName() {
-      return super.getName() + " - " + (selectedVersionArt != null ? selectedVersionArt : versionArt);
+   public String getSelectedName(SearchType searchType) {
+      if (getSearchVersionArtifact() != null) return super.getName() + " - " + getSearchVersionArtifact();
+      return "";
+   }
+
+   private VersionArtifact getSearchVersionArtifact() {
+      if (versionArt != null) return versionArt;
+      return selectedVersionArt;
    }
 
    @Override
-   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
 
-      if (versionArt == null && selectedVersionArt == null) throw new IllegalArgumentException(
-            "Invalid release version");
+      if (getSearchVersionArtifact() == null) throw new IllegalArgumentException("Invalid release version");
 
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Artifact art : (selectedVersionArt != null ? selectedVersionArt : versionArt).getTargetedForTeamArtifacts())
+      for (Artifact art : getSearchVersionArtifact().getTargetedForTeamArtifacts())
          if (returnAction)
             arts.add(((TeamWorkFlowArtifact) art).getParentActionArtifact());
          else
@@ -67,7 +72,9 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI() {
+   public void performUI(SearchType searchType) {
+      super.performUI(searchType);
+      if (searchType == SearchType.ReSearch && selectedVersionArt != null) return;
       if (versionArt != null) return;
       try {
          TeamDefinitionArtifact selectedTeamDef = teamDef;
@@ -82,10 +89,8 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
          }
          if (versionArt == null && selectedTeamDef != null) {
             final VersionListDialog vld =
-                  new VersionListDialog(
-                        "Select Version",
-                        "Select Version",
-                        selectedTeamDef.getVersionsArtifacts(AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased));
+                  new VersionListDialog("Select Version", "Select Version",
+                        selectedTeamDef.getVersionsArtifacts(VersionReleaseType.Both));
             if (vld.open() == 0) {
                selectedVersionArt = (VersionArtifact) vld.getResult()[0];
                return;

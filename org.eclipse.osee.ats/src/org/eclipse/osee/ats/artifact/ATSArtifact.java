@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.hyper.IHyperArtifact;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -25,11 +24,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public abstract class ATSArtifact extends BasicArtifact implements IHyperArtifact, IATSArtifact {
-
-   public static final String CELL_ERROR_PREFIX = "!Error";
 
    /**
     * @param parentFactory
@@ -48,15 +44,6 @@ public abstract class ATSArtifact extends BasicArtifact implements IHyperArtifac
 
    public String getHyperlinkHtml() {
       return Overview.getOpenHyperlinkHtml(this);
-   }
-
-   public String getCellExceptionString(String message) {
-      return CELL_ERROR_PREFIX + " - " + message;
-   }
-
-   public String getCellExceptionString(Exception ex) {
-      OSEELog.logException(AtsPlugin.class, ex, false);
-      return CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
    }
 
    /**

@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -87,7 +88,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       resetTitleOffChildren();
       resetValidationOffChildren();
       resetDescriptionOffChildren();
-      if (isDirty()) persist();
+      if (isDirty()) persistAttributes();
    }
 
    /**
@@ -232,7 +233,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          }
          return sb.toString().replaceFirst(", $", "");
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -244,7 +245,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          }
          return sb.toString().replaceFirst(", $", "");
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -258,7 +259,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewState())) return "";
          }
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -271,7 +272,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             pocs.addAll(team.getCurrentState().getAssignees());
          }
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return Artifacts.commaArts(pocs);
    }
@@ -279,10 +280,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public String getWorldViewCreatedDateStr() {
       try {
          Date date = getWorldViewCreatedDate();
-         if (date == null) return getCellExceptionString("No Creation Date Found");
+         if (date == null) return XViewerCells.getCellExceptionString("No Creation Date Found");
          return XDate.getDateStr(date, XDate.MMDDYYHHMM);
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -298,7 +299,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       try {
          return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -318,7 +319,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       try {
          return getAttributesToString(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -330,7 +331,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          }
          return sb.toString().replaceFirst(", $", "");
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -350,7 +351,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             teams.add(team.getTeamDefinition());
          }
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return Artifacts.commaArts(teams);
    }
@@ -365,7 +366,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewOriginator())) return "";
          }
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -418,7 +419,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewResolution())) return "";
          }
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -593,7 +594,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewNotes())) return "";
          }
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -613,7 +614,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewWorkPackage())) return "";
          }
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -628,7 +629,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewWorkPackage())) return "";
          }
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -643,7 +644,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewCategory2())) return "";
          }
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -658,7 +659,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewCategory3())) return "";
          }
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -677,7 +678,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          }
          return Collections.toString(",", versions);
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -708,7 +709,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       try {
          if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts().iterator().next().getHyperState();
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return "";
    }
@@ -722,7 +723,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       try {
          if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts().iterator().next().getHyperAssignee();
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return "";
    }
@@ -796,7 +797,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
                // ADD it
                if (!teamArt.getActionableItemsDam().getActionableItems().contains(aia)) {
                   teamArt.getActionableItemsDam().addActionableItem(aia);
-                  teamArt.persist();
+                  teamArt.persistAttributes();
                   sb.append(aia.getDescriptiveName() + " => added to existing team workflow \"" + tda.getDescriptiveName() + "\"\n");
                   teamExists = true;
                } else {
@@ -922,16 +923,17 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     */
    public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, boolean validationRequired, Date needByDate) throws SQLException {
       art.setDescriptiveName(title);
-      if (!desc.equals("")) art.setAttribute(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
-      art.setAttribute(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
+      if (!desc.equals("")) art.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+      art.setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
       DynamicAttributeManager dam = art.getAttributeManager(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
       for (String comm : userComms)
          dam.getNewAttribute().setStringData(comm);
-      if (priority != null) art.setAttribute(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
+      if (priority != null) art.setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             priority.getShortName());
-      if (needByDate != null) art.setAttribute(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(),
-            needByDate.getTime() + "");
-      if (validationRequired) art.setAttribute(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "yes");
+      if (needByDate != null) art.setSoleDateAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(),
+            needByDate);
+      if (validationRequired) art.setSoleBooleanAttributeValue(
+            ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), true);
    }
 
    /*
@@ -996,7 +998,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          }
          return str;
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -1006,7 +1008,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          if (date == null) return "";
          return XDate.getDateStr(date, XDate.MMDDYY);
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -1044,7 +1046,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewCompletedDateStr())) return "";
          }
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -1064,7 +1066,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewEstimatedReleaseDateStr())) return "";
          }
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -1114,7 +1116,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewChangeTypeStr())) return "";
          }
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -1134,7 +1136,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewImplementer())) return "";
          }
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -1174,7 +1176,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          if (date == null) return "";
          return XDate.getDateStr(date, XDate.MMDDYY);
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -1298,7 +1300,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             else if (!str.equals(team.getWorldViewLegacyPCR())) return "";
          }
       } catch (Exception ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
       return str;
    }
@@ -1317,7 +1319,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          }
          return Collections.toString(",", reworks);
       } catch (SQLException ex) {
-         return getCellExceptionString(ex);
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 

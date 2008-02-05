@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world.search;
 import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
@@ -46,18 +47,19 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public String getSelectedName() {
-      return String.format("%s - %s", super.getSelectedName(), getGroupSearchName());
+   public String getSelectedName(SearchType searchType) {
+      return String.format("%s - %s", super.getSelectedName(searchType), getGroupSearchName());
    }
 
    public void getProduct() {
       if (groupName == null) return;
-      if (group == null) group = UniversalGroup.getGroups(groupName).iterator().next();
+      if (group == null) group =
+            UniversalGroup.getGroups(groupName, BranchPersistenceManager.getInstance().getDefaultBranch()).iterator().next();
       if (group == null) throw new IllegalArgumentException("Can't Find Universal Group for " + getName());
    }
 
    @Override
-   public Collection<Artifact> performSearch() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
       getProduct();
       if (getSearchGroup() == null) return EMPTY_SET;
       Collection<Artifact> arts = getSearchGroup().getArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS);
@@ -72,9 +74,11 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public void performUI() {
+   public void performUI(SearchType searchType) {
+      super.performUI(searchType);
       if (groupName != null) return;
       if (group != null) return;
+      if (searchType == SearchType.ReSearch && selectedGroup != null) return;
       GroupListDialog gld = new GroupListDialog(Display.getCurrent().getActiveShell());
       int result = gld.open();
       if (result == 0) {
