@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jini.discovery;
 
+import java.net.InetAddress;
 import java.security.Permission;
 
 /**
@@ -17,19 +18,48 @@ import java.security.Permission;
  */
 public class RelaxedSecurity extends SecurityManager {
 
-   /**
-    * 
-    */
-   public RelaxedSecurity() {
-      super();
-   }
+	/**
+	 * 
+	 */
+	public RelaxedSecurity() {
+		super();
+	}
 
-   public void checkPermission(Permission perm) {
-      return;
-   }
+	public void checkPermission(Permission perm) {
+		return;
+	}
 
-   public void checkPermission(Permission perm, Object context) {
-      return;
-   }
+	public void checkPermission(Permission perm, Object context) {
+		return;
+	}
+
+	@Override
+	public void checkAccept(String host, int port) {
+		return;
+	}
+
+	@Override
+	public void checkConnect(String host, int port, Object context) {
+	}
+
+	@Override
+	public void checkMulticast(InetAddress maddr, byte ttl) {
+	}
+
+	@Override
+	public void checkMulticast(InetAddress maddr) {
+	}
+
+	@Override
+	public void checkConnect(String host, int port) {
+	}
+
+	@Override
+	public void checkPackageAccess(String pkg) {
+
+	}
+
+	
+
 
 }
