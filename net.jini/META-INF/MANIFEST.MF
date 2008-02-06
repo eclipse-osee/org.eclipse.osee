@@ -40,8 +40,7 @@ Bundle-ClassPath: jini.jar,
  jini2_1/lib/tools.jar
 Bundle-Activator: net.jini.JiniPlugin
 Bundle-Vendor: Sun
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
 Export-Package: com.sun.jini.action,
  com.sun.jini.admin,

@@ -1,8 +1,6 @@
-
 package net.jini;
 
 import java.net.URL;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
@@ -26,26 +24,24 @@ public class JiniPlugin extends Plugin {
    }
 
    public String[] getJiniVersion() {
-//      if (serviceGroups == null) {
-         Bundle bundle = Platform.getBundle("net.jini");
-         try {
-            if (bundle != null) {
-               URL home = FileLocator.resolve(bundle.getEntry("/"));
-               String id = home.getFile();
-               if (id.endsWith("/")) {
-                  id = id.substring(0, id.length() - 1);
-               }
-               id = id.substring(id.lastIndexOf("/") + 1, id.length());
-               System.out.println("Service group id: " + id);
-               serviceGroups = new String[1];
-               serviceGroups[0] = id;
+      //      if (serviceGroups == null) {
+      Bundle bundle = Platform.getBundle("net.jini");
+      try {
+         if (bundle != null) {
+            URL home = FileLocator.resolve(bundle.getEntry("/"));
+            String id = home.getFile();
+            if (id.endsWith("/")) {
+               id = id.substring(0, id.length() - 1);
             }
+            id = id.substring(id.lastIndexOf("/") + 1, id.length());
+            serviceGroups = new String[1];
+            serviceGroups[0] = id;
          }
-         catch (Exception e) {
-            System.err.println("Failed to extract jini version");
-            e.printStackTrace();
-         }
-//      }
+      } catch (Exception e) {
+         System.err.println("Failed to extract jini version");
+         e.printStackTrace();
+      }
+      //      }
       return serviceGroups;
    }
 }
