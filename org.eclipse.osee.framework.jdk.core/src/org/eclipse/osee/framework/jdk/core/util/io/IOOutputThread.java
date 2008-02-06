@@ -42,9 +42,10 @@ public class IOOutputThread extends Thread {
       String outLine = null;
       try {
          // *
+    	  String name = getName();
          while ((outLine = input.readLine()) != null) {
             if (verbose) {
-               output.write(this.getName());
+               output.write(name);
                output.write(": ");
             }
             output.write(outLine);
