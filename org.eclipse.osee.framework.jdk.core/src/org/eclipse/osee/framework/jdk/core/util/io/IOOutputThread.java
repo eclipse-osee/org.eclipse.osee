@@ -39,16 +39,16 @@ public class IOOutputThread extends Thread {
    }
 
    public void run() {
-      String outLine = null;
       try {
-         // *
-    	  String name = getName();
-         while ((outLine = input.readLine()) != null) {
+    	  final char[] threadNameChars = getName().toCharArray();
+    	  final char[] buffer = new char[4096];
+    	  int size;
+         while ((size = input.read(buffer)) != -1) {
             if (verbose) {
-               output.write(name);
+               output.write(threadNameChars);
                output.write(": ");
             }
-            output.write(outLine);
+            output.write(buffer, 0, size);
             output.write('\n');
             output.flush();
          }
