@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.sql.SQLException;
 import java.util.List;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -19,12 +20,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -86,21 +89,33 @@ public class CompressWordAttributesHandler extends AbstractSelectionChangedHandl
 
    @Override
    public boolean isEnabled() {
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-      try {
-         IStructuredSelection myIStructuredSelection = getActiveSiteSelection();
-         artifacts = Handlers.getArtifactsFromStructuredSelection(myIStructuredSelection);
-         if (artifacts.isEmpty()) {
-            return false;
-         }
+		boolean enabled = false;
+		if (PlatformUI.getWorkbench().isClosing()) {
+			return false;
+		}
+		try {
+			ISelectionProvider selectionProvider = AWorkbench.getActivePage()
+					.getActivePart().getSite().getSelectionProvider();
 
-         boolean writePermission = myAccessControlManager.checkObjectPermission(artifacts.get(0), PermissionEnum.WRITE);
-         return writePermission && OseeProperties.getInstance().isDeveloper();
-      } catch (Exception ex) {
-         OSEELog.logException(getClass(), ex, true);
-         return false;
-      }
-   }
+			if (selectionProvider != null
+					&& selectionProvider.getSelection() instanceof IStructuredSelection) {
+				IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider
+						.getSelection();
+				artifacts = Handlers
+						.getArtifactsFromStructuredSelection(structuredSelection);
+
+				if (!artifacts.isEmpty()) {
+					boolean writePermission = myAccessControlManager
+							.checkObjectPermission(artifacts.get(0),
+									PermissionEnum.WRITE);
+					enabled = writePermission
+							&& OseeProperties.getInstance().isDeveloper();
+				}
+			}
+		} catch (Exception ex) {
+			OSEELog.logException(getClass(), ex, true);
+			enabled = false;
+		}
+		return enabled;
+	}
 }
