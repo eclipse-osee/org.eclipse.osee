@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
  * 
  * @author Robert A. Fisher
  */
-/*default*/class TagFactory {
+class TagFactory {
 
    private static final LocalAliasTable TAG_ALIAS_1 = TAG_TABLE.aliasAs("tag1");
    private static final String SELECT_TAG =
@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
       super();
    }
 
-   public int getTagId(String tag, TagDescriptor tagDescriptor) {
+   public int getTagId(String tag, TagDescriptor tagDescriptor) throws SQLException {
       ConnectionHandlerStatement chStmt = null;
 
       try {
@@ -61,8 +61,6 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
 
             return tagId;
          }
-      } catch (SQLException ex) {
-         throw new RuntimeException(ex);
       } finally {
          DbUtil.close(chStmt);
       }

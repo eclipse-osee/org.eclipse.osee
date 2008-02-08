@@ -15,5 +15,5 @@ package org.eclipse.osee.framework.skynet.core.artifact;
  */
 public interface IAttributeSaveListener {
 
-   public void notifyOnAttributeSave(Artifact... artifacts) throws Exception;
+   public void notifyOnAttributeSave(Artifact artifacts) throws Exception;
 }

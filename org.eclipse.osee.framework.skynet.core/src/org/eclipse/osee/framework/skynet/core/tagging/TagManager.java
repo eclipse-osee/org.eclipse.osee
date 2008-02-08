@@ -15,8 +15,10 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TAG_TABLE;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -79,24 +81,6 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
    }
 
    /**
-    * Tag an artifact with a tag and tag type.
-    * 
-    * @param artifact The artifact to tag.
-    * @param tag The tag label to tag it with.
-    * @param tagDescriptor The type of tag to tag the artifact with.
-    * @throws SQLException
-    */
-   public void tag(Artifact artifact, String tag, TagDescriptor tagDescriptor) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(true, ADD_TAG_TO_ARTIFACT, getTagData(artifact, tag, tagDescriptor));
-   }
-
-   private Object[] getTagData(Artifact artifact, String tag, TagDescriptor tagDescriptor) {
-      return new Object[] {SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER, null, SQL3DataType.INTEGER,
-            null, SQL3DataType.INTEGER, artifact.getBranch().getBranchId(), SQL3DataType.INTEGER,
-            tagFactory.getTagId(tag, tagDescriptor)};
-   }
-
-   /**
     * Remove all tags of a specific type from an artifact. This is particularly useful with tags that are auto-generated
     * and must be regenerated.
     * 
@@ -112,17 +96,6 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
 
    /**
     * Perform system level tagging for a set of artifacts if autoTagging is enabled. If autoTagging is disabled then the
-    * artifact will just be marked as having stale tag data.
-    * 
-    * @param artifacts The artifacts to tag.
-    * @throws SQLException
-    */
-   public void autoTag(Artifact... artifacts) throws SQLException {
-      autoTag(false, artifacts);
-   }
-
-   /**
-    * Perform system level tagging for a set of artifacts if autoTagging is enabled. If autoTagging is disabled then the
     * artifact will just be marked as having stale tag data. The forceTagging boolean can be used to bypass the system
     * check for autoTagging.
     * 
@@ -130,27 +103,45 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
     * @param artifacts
     * @throws SQLException
     */
-   public synchronized void autoTag(boolean forceTagging, Artifact... artifacts) throws SQLException {
-      List<Object[]> artData = new LinkedList<Object[]>();
+   public synchronized void autoTag(boolean forceTagging, Artifact artifact) throws SQLException {
       if (forceTagging || plugin.isAutoTaggingEnabled()) {
          List<Object[]> tagData = new LinkedList<Object[]>();
-         for (Artifact artifact : artifacts) {
-            Tagger tagger = taggerManager.getBestTagger(artifact);
-            if (tagger != null) {
-               clearTags(artifact, AUTO_INDEXED.getDescriptor());
+         Tagger tagger = taggerManager.getBestTagger(artifact);
+         Set<Integer> tagIds = new HashSet<Integer>(); // use a set to force unqiueness on the tag ids
 
-               for (String tag : tagger.getTags(artifact)) {
-                  tagData.add(getTagData(artifact, tag, AUTO_INDEXED.getDescriptor()));
-               }
-               artData.add(new Object[] {SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-                     artifact.getBranch().getBranchId()});
-            } else {
-               logger.log(Level.WARNING,
-                     "Could not auto-tag " + artifact.getDescriptiveName() + ", no tagger was found for it.");
+         if (tagger == null) {
+            logger.log(Level.WARNING,
+                  "Could not auto-tag " + artifact.getDescriptiveName() + ", no tagger was found for it.");
+         } else {
+            clearTags(artifact, AUTO_INDEXED.getDescriptor());
+
+            for (String tag : tagger.getTags(artifact)) {
+               tagIds.add(tagFactory.getTagId(tag, AUTO_INDEXED.getDescriptor()));
+            }
+
+            for (String tag : tagger.getTags(artifact)) {
+               tagIds.add(tagFactory.getTagId(tag, AUTO_INDEXED.getDescriptor()));
+            }
+
+            for (Integer tagId : tagIds) {
+               tagData.add(new Object[] {SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER, null,
+                     SQL3DataType.INTEGER, null, SQL3DataType.INTEGER, artifact.getBranch().getBranchId(),
+                     SQL3DataType.INTEGER, tagId});
             }
          }
          ConnectionHandler.runBatchablePreparedUpdate(ADD_TAG_TO_ARTIFACT, true, tagData);
       }
+   }
+
+   /**
+    * Perform system level tagging for a set of artifacts if autoTagging is enabled. If autoTagging is disabled then the
+    * artifact will just be marked as having stale tag data.
+    * 
+    * @param artifacts The artifacts to tag.
+    * @throws SQLException
+    */
+   public void autoTag(Artifact artifact) throws SQLException {
+      autoTag(false, artifact);
    }
 
    /**
@@ -188,7 +179,7 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener#notifyOnAttributeSave(org.eclipse.osee.framework.skynet.core.artifact.Artifact[])
     */
-   public void notifyOnAttributeSave(Artifact... artifacts) throws SQLException {
-      autoTag(artifacts);
+   public void notifyOnAttributeSave(Artifact artifact) throws SQLException {
+      autoTag(artifact);
    }
 }

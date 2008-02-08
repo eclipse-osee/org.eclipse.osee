@@ -186,7 +186,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       if (baPhrasing == null || baPhrasing.equals("")) throw new IllegalArgumentException(
             "The baPhrasing can not be null or empty");
       if (shortName == null || shortName.equals("")) throw new IllegalArgumentException(
-            "The baPhrasing can not be null or empty");
+            "The shortName can not be null or empty");
 
       checkTransaction();
 
@@ -365,6 +365,16 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
             descriptor.getFactory().getFactoryId(), SQL3DataType.VARCHAR, descriptor.getName(), SQL3DataType.VARCHAR,
             descriptor.getFactoryKey(), SQL3DataType.INTEGER, gammaId, SQL3DataType.BLOB, new ByteArrayInputStream(
                   descriptor.getImageDescriptor().getData()));
+   }
+
+   public static void updateArtifactTypeImage(ArtifactSubtypeDescriptor descriptor, InputStreamImageDescriptor imageDescriptor) throws SQLException {
+      // Update DB
+      ConnectionHandler.runPreparedUpdate("UPDATE " + ARTIFACT_TYPE_TABLE + " SET image = ? where art_type_id = ?",
+            SQL3DataType.BLOB, new ByteArrayInputStream(imageDescriptor.getData()), SQL3DataType.INTEGER,
+            descriptor.getArtTypeId());
+
+      // TODO Update descriptor's cached copy of image
+      descriptor.setImageDescriptor(imageDescriptor);
    }
 
    /**

@@ -81,7 +81,7 @@ public class ArtifactSubtypeDescriptor implements Serializable {
    private String name;
    private TransactionId transactionId;
    transient private ImageRegistry imageRegistry;
-   transient private final InputStreamImageDescriptor imageDescriptor;
+   transient private InputStreamImageDescriptor imageDescriptor;
 
    /**
     * @param artTypeId
@@ -333,6 +333,15 @@ public class ArtifactSubtypeDescriptor implements Serializable {
       } catch (SQLException e) {
          throw new RuntimeException("Error while resolving descriptor", e);
       }
+   }
+
+   /**
+    * @param imageDescriptor the imageDescriptor to set
+    */
+   public void setImageDescriptor(InputStreamImageDescriptor imageDescriptor) {
+      this.imageDescriptor = imageDescriptor;
+      // Clear out the image cache so it will be re-created
+      if (imageRegistry != null) imageRegistry = null;
    }
 
 }
