@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
-import static org.eclipse.osee.framework.skynet.core.word.WordUtil.textOnly;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
@@ -45,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -126,7 +126,7 @@ public class WordTemplateProcessor {
       this.slaveTemplate = slaveTemplate;
       this.attributeElements = new LinkedList<AttributeElement>();
       this.updateParagraphNumbers = false;
-      this.saveParagraphNumOnArtifact = false;
+      this.saveParagraphNumOnArtifact = true;
       this.publishedArtifacts = new HashSet<Artifact>();
       this.ignoreAttributeExtensions = new HashSet<String>();
 
@@ -159,7 +159,6 @@ public class WordTemplateProcessor {
     * @throws IOException
     */
    private InputStream applyTemplate(BlamVariableMap variableMap, String template, IFolder folder, String nextParagraphNumber, String outlineType) throws Exception {
-      variableMap.setValue("useTree", Boolean.FALSE);
       CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
       Matcher matcher = headElementsPattern.matcher(template);
@@ -200,7 +199,6 @@ public class WordTemplateProcessor {
       WordMLProducer wordMl = new WordMLProducer(charBak);
       int lastEndIndex = 0;
 
-      variableMap.setValue("useTree", Boolean.FALSE);
       outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, variableMap);
       //modifications to the template must be done before the matcher
       template = wordMl.setHeadingNumbers(outlineNumber, template);
@@ -257,7 +255,7 @@ public class WordTemplateProcessor {
          if (elementType.equals(ARTIFACT)) {
             Matcher setNameMatcher = setNamePattern.matcher(elementValue);
             setNameMatcher.find();
-            final String artifactSetName = textOnly(setNameMatcher.group(2));
+            final String artifactSetName = WordUtil.textOnly(setNameMatcher.group(2));
 
             Collection<Artifact> artifacts = variableMap.getArtifacts(artifactSetName);
 
@@ -306,7 +304,7 @@ public class WordTemplateProcessor {
          if (treeNode.getSelf() instanceof Artifact) {
             Artifact artifact = (Artifact) treeNode.getSelf();
 
-            processObject(artifact, wordMl, true, outlineType);
+            processObject(artifact, wordMl, outlineType);
          } else if (treeNode.getSelf() instanceof String) {
             // process String
          }
@@ -319,7 +317,7 @@ public class WordTemplateProcessor {
          // extract Artifact set options
          Matcher setNameMatcher = setNamePattern.matcher(artifactElement);
          setNameMatcher.find();
-         final String artifactSetName = textOnly(setNameMatcher.group(2));
+         final String artifactSetName = WordUtil.textOnly(setNameMatcher.group(2));
 
          if (outlineNumber != null) {
             wordMl.setNextParagraphNumberTo(outlineNumber);
@@ -345,23 +343,12 @@ public class WordTemplateProcessor {
 
    @SuppressWarnings("unchecked")
    private void processArtifactSetHelper(String artifactSetName, BlamVariableMap variableMap, WordMLProducer wordMl, String outlineType) throws IOException, SQLException {
-      Boolean useTree = variableMap.getBoolean("useTree");
-
-      if (useTree.booleanValue()) {
-         Tree<Object> tree = (Tree<Object>) variableMap.getValue(Tree.class, artifactSetName);
-
-         for (TreeNode<Object> node : tree.getRoot().getChildren()) {
-
-            processObject(node, wordMl, false, outlineType);
-         }
-      } else {
-         for (Artifact artifact : variableMap.getArtifacts(artifactSetName)) {
-            if (artifact != null) {
-               processObject(artifact, wordMl, true, outlineType);
-            } else {
-               wordMl.startOutlineSubSection("Times New Roman", "  ", outlineType);
-               wordMl.endOutlineSubSection();
-            }
+      for (Artifact artifact : variableMap.getArtifacts(artifactSetName)) {
+         if (artifact != null) {
+            processObjectArtifact(artifact, wordMl, outlineType);
+         } else {
+            wordMl.startOutlineSubSection("Times New Roman", "  ", outlineType);
+            wordMl.endOutlineSubSection();
          }
       }
    }
@@ -375,17 +362,17 @@ public class WordTemplateProcessor {
 
       Matcher matcher = outlineNumberPattern.matcher(elementValue);
       if (matcher.find()) {
-         nextParagraphNumber = textOnly(matcher.group(4));
+         nextParagraphNumber = WordUtil.textOnly(matcher.group(4));
       }
 
       matcher = outlineTypePattern.matcher(elementValue);
       if (matcher.find()) {
-         outlineType = textOnly(matcher.group(4));
+         outlineType = WordUtil.textOnly(matcher.group(4));
       }
 
       matcher = namePattern.matcher(elementValue);
       if (matcher.find()) {
-         extensionName = textOnly(matcher.group(4));
+         extensionName = WordUtil.textOnly(matcher.group(4));
       } else {
          throw new IllegalArgumentException("Schema must contain an extension name.");
       }
@@ -398,7 +385,7 @@ public class WordTemplateProcessor {
          matcher = subDocElementsPattern.matcher(elementValue);
 
          if (matcher.find()) {
-            subdocumentName = textOnly(matcher.group(4));
+            subdocumentName = WordUtil.textOnly(matcher.group(4));
             doSubDocuments = true;
          }
 
@@ -416,12 +403,12 @@ public class WordTemplateProcessor {
 
                String key = null;
                while (matcher.find()) {
-                  String type = textOnly(matcher.group(3));
+                  String type = WordUtil.textOnly(matcher.group(3));
 
                   if (type.equalsIgnoreCase(KEY)) {
-                     key = textOnly(matcher.group(4));
+                     key = WordUtil.textOnly(matcher.group(4));
                   } else {
-                     String value = textOnly(matcher.group(4));
+                     String value = WordUtil.textOnly(matcher.group(4));
 
                      if (doSubDocuments) {
                         newVariableMap.setValue(key, value);
@@ -462,7 +449,7 @@ public class WordTemplateProcessor {
 
          while (matcher.find()) {
             String elementType = matcher.group(3);
-            String value = textOnly(matcher.group(4));
+            String value = WordUtil.textOnly(matcher.group(4));
 
             if (elementType.equals("HeadingAttribute")) {
                headingAttributeName = value;
@@ -481,91 +468,43 @@ public class WordTemplateProcessor {
    }
 
    @SuppressWarnings("unchecked")
-   private void processObject(Object object, WordMLProducer wordMl, boolean publishParent, String outlineType) throws IOException, SQLException {
-      Artifact artifact = null;
-      TreeNode treeNode = null;
-      String stringData = null;
-
-      if (object instanceof TreeNode) {
-         treeNode = (TreeNode) object;
-
-         Object self = treeNode.getSelf();
-         if (self instanceof Artifact) {
-            artifact = (Artifact) self;
-         } else if (self instanceof String) {
-            stringData = (String) self;
-         } else {
-            throw new IllegalArgumentException("TreeNode self data must be of type Artifact or String");
-         }
-      } else if (object instanceof Artifact) {
-         artifact = (Artifact) object;
-      } else {
-         throw new IllegalArgumentException("The Object must be of type Artifact or a TreeNode");
-      }
-
-      if (stringData != null) {
-         processObjectString(wordMl, stringData, treeNode, outlineType);
-      } else {
-         processObjectArtifact(artifact, wordMl, treeNode, publishParent, outlineType);
-      }
+   private void processObject(Object object, WordMLProducer wordMl, String outlineType) throws IOException, SQLException {
+      processObjectArtifact((Artifact) object, wordMl, outlineType);
 
    }
 
    @SuppressWarnings("unchecked")
-   private void processObjectString(WordMLProducer wordMl, String stringData, TreeNode treeNode, String outlineType) throws IOException, SQLException {
-      wordMl.startOutlineSubSection("Times New Roman", stringData, outlineType);
-
-      try {
-         for (Object childNode : treeNode.getChildren()) {
-            processObject(childNode, wordMl, true, outlineType);
-         }
-      } finally {
-         wordMl.endOutlineSubSection();
-      }
-   }
-
-   @SuppressWarnings("unchecked")
-   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, TreeNode treeNode, boolean publishParent, String outlineType) throws IOException, SQLException {
+   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType) throws IOException, SQLException {
       publishedArtifacts.add(artifact);
       boolean performedOutLining = false;
 
-      if (publishParent) {
-         if (outlining) {
-            performedOutLining = true;
-            String headingText = artifact.getSoleAttributeValue(headingAttributeName);
-            CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+      if (outlining) {
+         performedOutLining = true;
+         String headingText = artifact.getSoleAttributeValue(headingAttributeName);
+         CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
-            if (paragraphNumber != null && saveParagraphNumOnArtifact && !artifact.getSoleAttributeValue(
-                  "Imported Paragraph Number").equals("")) {
-               artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
+         if (paragraphNumber != null && saveParagraphNumOnArtifact) {//&& !artifact.getSoleAttributeValue(
+            //  "Imported Paragraph Number").equals("")) {
+            artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
 
-               try {
-                  artifact.persistAttributes();
-               } catch (SQLException ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
-               }
+            try {
+               artifact.persistAttributes();
+            } catch (SQLException ex) {
+               logger.log(Level.SEVERE, ex.toString(), ex);
             }
          }
-         processAttributes(artifact, wordMl);
       }
 
-      try {
-         if (performedOutLining || !publishParent) {
-            if (treeNode == null && recurseChildren) {
+      processAttributes(artifact, wordMl);
 
-               for (Artifact childArtifact : artifact.getArtifacts(outlineRelation)) {
-                  processObject(childArtifact, wordMl, true, outlineType);
-               }
-            } else if (treeNode != null) {
-               for (Object childNode : treeNode.getChildren()) {
-                  processObject(childNode, wordMl, true, outlineType);
-               }
+      if (performedOutLining) {
+         if (recurseChildren) {
+            for (Artifact childArtifact : artifact.getArtifacts(outlineRelation)) {
+               processObjectArtifact(childArtifact, wordMl, outlineType);
             }
-
-            if (performedOutLining) wordMl.endOutlineSubSection();
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+
+         if (performedOutLining) wordMl.endOutlineSubSection();
       }
    }
 
@@ -695,7 +634,7 @@ public class WordTemplateProcessor {
 
       Matcher matcher = setNamePattern.matcher(masterTemplate);
       while (matcher.find()) {
-         String key = textOnly(matcher.group(2));
+         String key = WordUtil.textOnly(matcher.group(2));
          if (!keySet.add(key)) {
             logger.log(Level.WARNING, "The Set_Name " + key + " appears in template more than once");
          }
@@ -737,7 +676,7 @@ public class WordTemplateProcessor {
             String elementType = matcher.group(3);
             String value = matcher.group(4).trim();
             if (elementType.equals("Outline")) {
-               value = textOnly(value);
+               value = WordUtil.textOnly(value);
                if (value.length() > 0) {
                   outlineNumber = value;
                } else {
@@ -746,7 +685,7 @@ public class WordTemplateProcessor {
             } else if (elementType.equals("Label")) {
                label = value;
             } else if (elementType.equals("Name")) {
-               attributeName = textOnly(value);
+               attributeName = WordUtil.textOnly(value);
             } else if (elementType.equals("Format")) {
                format = value;
             } else {

@@ -232,15 +232,22 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
                   txt = "Artifact Deleted";
                } else {
                   if (attributeAction != null && !attributeAction.noneSelected()) {
-                     String attributeText = attributeAction.getSelectedAttributeData(artifactChange.getArtifact());
-                     if (attributeText != null) {
-                        return txt + attributeText;
+                     String attributeText = "";
+                     try {
+                        attributeText = attributeAction.getSelectedAttributeData(artifactChange.getArtifact());
+                        if (attributeText != null) {
+                           return txt + attributeText;
+                        }
+                     } catch (Exception ex) {
+                        OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+                        return txt + ex.getLocalizedMessage();
                      }
                   }
                }
                return txt;
             } catch (SQLException ex) {
                OSEELog.logException(getClass(), ex, false);
+               return ex.getLocalizedMessage();
             }
          }
       } else if (element instanceof IAttributeChange) {

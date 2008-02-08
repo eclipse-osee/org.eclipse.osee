@@ -55,7 +55,7 @@ public class ShowAttributeAction extends Action {
       attributeDialog = new AttributeCheckListDialog(viewPart.getSite().getShell(), attrTypes, preferenceKey);
    }
 
-   public String getSelectedAttributeData(Artifact artifact) {
+   public String getSelectedAttributeData(Artifact artifact) throws Exception {
       return attributeDialog.getSelectedAttributeData(artifact);
    }
 

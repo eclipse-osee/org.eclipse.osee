@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -45,6 +46,7 @@ public class UserListDialog extends ListDialog {
          }
       });
       setInput(SkynetAuthentication.getInstance().getUsers());
+      setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
    @Override

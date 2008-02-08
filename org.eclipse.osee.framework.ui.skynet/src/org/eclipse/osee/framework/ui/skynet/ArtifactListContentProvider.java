@@ -38,7 +38,6 @@ public class ArtifactListContentProvider implements IStructuredContentProvider {
    }
 
    public Object[] getElements(Object inputElement) {
-      boolean firstTime = true;
       SkynetEventManager.getInstance().unRegisterAll(aPage);
 
       if (inputElement instanceof ArtifactSearchResult) {
@@ -51,23 +50,12 @@ public class ArtifactListContentProvider implements IStructuredContentProvider {
 
                   Artifact artifact = (Artifact) ((Match) objs[0]).getElement();
                   SkynetEventManager.getInstance().register(ArtifactModifiedEvent.class, artifact, aPage);
-
-                  if (firstTime) {
-                     updatePageBranch(artifact);
-                     firstTime = false;
-                  }
                }
             }
          }
          return objs;
       } else
          return EMPTY_ARR;
-   }
-
-   private void updatePageBranch(Artifact artifact) {
-      if (artifact != null) {
-         aPage.updateBranch(artifact.getBranch());
-      }
    }
 
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {

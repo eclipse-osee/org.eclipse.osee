@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
-import org.eclipse.osee.framework.ui.skynet.SkynetDefaultBranchContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -124,7 +123,6 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
       treeViewer.getTree().setMenu(popupMenu);
 
       OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Revision History");
-      SkynetDefaultBranchContributionItem.addTo(this, false);
       SkynetContributionItem.addTo(this, true);
 
       explore(artifact);

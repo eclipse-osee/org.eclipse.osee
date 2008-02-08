@@ -62,20 +62,16 @@ public class AttributeCheckListDialog extends SelectionDialog {
       }
    }
 
-   public String getSelectedAttributeData(Artifact artifact) {
+   public String getSelectedAttributeData(Artifact artifact) throws Exception {
       if (artifact == null) {
-         throw new IllegalArgumentException("Attribute data can not be acquired for null artifact.");
+         throw new IllegalArgumentException(" - ERROR: Null Artifact");
       }
 
       StringBuilder result = new StringBuilder();
-      try {
-         for (DynamicAttributeManager attributeManager : artifact.getAttributes()) {
-            if (selectedAttributes.contains(attributeManager.getDescriptor())) {
-               result.append(" - " + attributeManager.getAttributesStr());
-            }
+      for (DynamicAttributeManager attributeManager : artifact.getAttributes()) {
+         if (selectedAttributes.contains(attributeManager.getDescriptor())) {
+            result.append(" - " + attributeManager.getAttributesStr());
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       return result.toString();
    }

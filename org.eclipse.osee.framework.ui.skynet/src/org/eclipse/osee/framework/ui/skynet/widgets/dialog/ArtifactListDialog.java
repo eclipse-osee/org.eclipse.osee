@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -35,6 +36,7 @@ public class ArtifactListDialog extends ListDialog {
       super(parent);
       setContentProvider(new ArrayContentProvider());
       setLabelProvider(new ArtifactDescriptiveLabelProvider());
+      setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
    public Artifact getSelection() {

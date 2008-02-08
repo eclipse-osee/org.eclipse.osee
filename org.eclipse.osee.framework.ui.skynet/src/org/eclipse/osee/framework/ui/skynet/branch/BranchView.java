@@ -82,7 +82,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
-import org.eclipse.osee.framework.ui.skynet.SkynetDefaultBranchContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.TreeViewerReport;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
@@ -244,7 +243,6 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
       createActions();
 
-      SkynetDefaultBranchContributionItem.addTo(this, false);
       SkynetContributionItem.addTo(this, true);
 
       forcePopulateView();

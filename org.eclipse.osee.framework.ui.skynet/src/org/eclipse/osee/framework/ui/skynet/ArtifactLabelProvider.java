@@ -65,7 +65,12 @@ public class ArtifactLabelProvider extends LabelProvider {
             if (artifactExplorer.showArtType()) {
                name += " <" + artifact.getArtifactTypeName() + "> ";
             }
-            name += artifactExplorer.getSelectedAttributeData(artifact);
+            try {
+               name += artifactExplorer.getSelectedAttributeData(artifact);
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+               name += ex.getLocalizedMessage();
+            }
          }
          if (showBranch) {
             name += " <" + artifact.getBranch().getBranchShortName() + "> ";

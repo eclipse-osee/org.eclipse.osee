@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.BranchSelectionDialog;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -36,7 +38,7 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
    public SkynetDefaultBranchContributionItem() {
-      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP, eventManager, 30);
+      super(ID, ENABLED, DISABLED, ENABLED_TOOLTIP, DISABLED_TOOLTIP, eventManager, 25);
       init();
       setActionHandler(new Action() {
          /*
@@ -68,6 +70,8 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
    }
 
    public static void addTo(IStatusLineManager manager) {
+      for (IContributionItem item : manager.getItems())
+         if (item instanceof SkynetDefaultBranchContributionItem) return;
       manager.add(new SkynetDefaultBranchContributionItem());
    }
 
@@ -75,6 +79,11 @@ public class SkynetDefaultBranchContributionItem extends SkynetContributionItem 
       addTo(view.getViewSite().getActionBars().getStatusLineManager());
 
       if (update) view.getViewSite().getActionBars().updateActionBars();
+   }
+
+   public static void addTo(MultiPageEditorPart editorPart, boolean update) {
+      addTo(editorPart.getEditorSite().getActionBars().getStatusLineManager());
+      if (update) editorPart.getEditorSite().getActionBars().updateActionBars();
    }
 
    public void onEvent(Event event) {

@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.tagging.Tagger;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
-import org.eclipse.osee.framework.ui.skynet.SkynetDefaultBranchContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -149,7 +148,6 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
       initSearchTypeRadioButton();
 
-      SkynetDefaultBranchContributionItem.addTo(this, false);
       SkynetContributionItem.addTo(this, true);
 
       createActions();

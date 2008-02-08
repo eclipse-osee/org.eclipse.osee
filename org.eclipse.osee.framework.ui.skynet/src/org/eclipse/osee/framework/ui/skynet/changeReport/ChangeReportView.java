@@ -83,7 +83,6 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.LabelSorter;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
-import org.eclipse.osee.framework.ui.skynet.SkynetDefaultBranchContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.TreeViewerReport;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -233,7 +232,6 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
       createActions();
 
-      SkynetDefaultBranchContributionItem.addTo(this, false);
       SkynetContributionItem.addTo(this, true);
 
       setHelpContexts();

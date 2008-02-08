@@ -126,7 +126,6 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
          }
       });
 
-      SkynetDefaultBranchContributionItem.addTo(this, false);
       SkynetContributionItem.addTo(this, true);
 
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);

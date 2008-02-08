@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
@@ -69,7 +68,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
@@ -92,7 +90,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
-import org.eclipse.ui.texteditor.StatusLineContributionItem;
 import org.osgi.framework.Bundle;
 
 public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage implements IEventReceiver {
@@ -102,7 +99,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynetd.ArtifactSearchView";
    private IHandlerService handlerService;
-   private StatusLineContributionItem branchStatusItem;
    private TableViewer viewer;
    private ArtifactLabelProvider artifactLabelProvider;
 
@@ -131,9 +127,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    private ArtifactListContentProvider aContentProvider;
 
    public ArtifactSearchViewPage() {
-      branchStatusItem = new StatusLineContributionItem("skynet.branch", true, 30);
-      branchStatusItem.setImage(SkynetGuiPlugin.getInstance().getImage("branch.gif"));
-      branchStatusItem.setToolTipText("The branch that the artifacts in the explorer are from.");
    }
 
    @Override
@@ -157,7 +150,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
       new SearchDragAndDrop(viewer.getTable(), VIEW_ID);
 
-      getSite().getActionBars().getStatusLineManager().add(branchStatusItem);
       SkynetContributionItem.addTo(this, false);
       getSite().getActionBars().updateActionBars();
    }
@@ -425,14 +417,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       });
 
       menuManager.add(previewMenu);
-   }
-
-   /**
-    * 
-    */
-   public void updateBranch(Branch branch) {
-      branchStatusItem.setText(branch.getDisplayName());
-      branchStatusItem.setImage(BranchLabelProvider.getBranchImage(branch));
    }
 
    private void createViewTableHandler(MenuManager menuManager, final TableViewer viewer) {

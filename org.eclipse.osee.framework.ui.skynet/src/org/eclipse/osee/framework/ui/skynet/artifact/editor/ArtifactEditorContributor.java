@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.StatusLineContributionItem;
@@ -29,7 +28,6 @@ import org.eclipse.ui.texteditor.StatusLineContributionItem;
  */
 public class ArtifactEditorContributor extends MultiPageEditorActionBarContributor {
 
-   private StatusLineContributionItem branchStatusItem;
    private StatusLineContributionItem typeStatusItem;
    private ShowInExplorerAction showInExplorerAction;
 
@@ -47,8 +45,6 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
       if (part instanceof ArtifactEditor) {
          ArtifactEditor artifactEditor = (ArtifactEditor) part;
          Artifact artifact = artifactEditor.getEditorInput().getArtifact();
-         branchStatusItem.setText(artifact.getBranch().getDisplayName());
-         branchStatusItem.setImage(BranchLabelProvider.getBranchImage(artifact.getBranch()));
          typeStatusItem.setText(artifact.getDescriptor().getName());
          typeStatusItem.setImage(artifact.getDescriptor().getImage());
          showInExplorerAction.setArtifact(artifact);
@@ -62,9 +58,6 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
    }
 
    private void createActions() {
-      branchStatusItem = new StatusLineContributionItem("skynet.branch", true, 30);
-      branchStatusItem.setToolTipText("The branch that the artifact being edited is from.");
-
       typeStatusItem = new StatusLineContributionItem("skynet.artifactType", true, 25);
       typeStatusItem.setToolTipText("The type of the artifact being edited.");
 
@@ -74,7 +67,6 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
    @Override
    public void contributeToStatusLine(IStatusLineManager statusLineManager) {
       statusLineManager.add(typeStatusItem);
-      statusLineManager.add(branchStatusItem);
       SkynetContributionItem.addTo(statusLineManager);
    }
 

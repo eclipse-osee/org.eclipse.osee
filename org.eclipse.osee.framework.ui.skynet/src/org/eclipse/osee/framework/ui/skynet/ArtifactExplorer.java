@@ -281,7 +281,6 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       createSetDefaultBranchAction();
       OseeAts.addBugToViewToolbar(this, this, SkynetActivator.getInstance(), VIEW_ID, "Artifact Explorer");
 
-      SkynetDefaultBranchContributionItem.addTo(this, false);
       SkynetContributionItem.addTo(this, false);
       getViewSite().getActionBars().updateActionBars();
 
@@ -503,7 +502,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       }
    }
 
-   public String getSelectedAttributeData(Artifact artifact) {
+   public String getSelectedAttributeData(Artifact artifact) throws Exception {
       return attributesAction.getSelectedAttributeData(artifact);
    }
 
