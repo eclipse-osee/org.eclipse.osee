@@ -41,7 +41,7 @@ public class PublishSrs implements BlamOperation {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Master Template\" /><XWidget xwidgetType=\"XText\" displayName=\"Slave Template\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Master Template\" /><XWidget xwidgetType=\"XText\" displayName=\"Slave Template\" /><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /></xWidgets>";
    }
 
    /* (non-Javadoc)
