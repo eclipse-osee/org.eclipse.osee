@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
@@ -26,28 +26,23 @@ import org.eclipse.osee.framework.svn.entry.NullRepositoryEntry;
 import org.eclipse.osee.framework.svn.entry.RepositoryEntry;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.ControlledType;
 import org.eclipse.osee.framework.svn.enums.RepositoryEnums.EntryFields;
-import org.eclipse.team.svn.core.connector.ISVNConnector;
-import org.eclipse.team.svn.core.connector.ISVNEntryStatusCallback;
-import org.eclipse.team.svn.core.connector.SVNChangeStatus;
-import org.eclipse.team.svn.core.connector.SVNConnectorException;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
-import org.eclipse.team.svn.core.extension.CoreExtensionsManager;
-import org.eclipse.team.svn.core.operation.SVNNullProgressMonitor;
+import org.eclipse.team.svn.core.operation.local.InfoOperation;
 import org.eclipse.team.svn.core.operation.remote.CheckoutOperation;
+import org.eclipse.team.svn.core.resource.ILocalResource;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
 import org.eclipse.team.svn.core.resource.IRepositoryResource;
 import org.eclipse.team.svn.core.resource.IRepositoryRoot;
 import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 import org.eclipse.team.svn.ui.action.remote.CheckoutAction;
+import org.eclipse.team.svn.ui.utility.UIMonitorUtility;
 import org.eclipse.ui.PlatformUI;
-
 
 /**
  * @author Roberto E. Escobar
  */
 public class SvnAPI {
-
    private static SvnAPI instance = null;
 
    private SvnAPI() {
@@ -74,13 +69,11 @@ public class SvnAPI {
       return toReturn;
    }
 
-
-   
    private RepositoryEntry toRepositoryEntry(File file, SVNEntryInfo info) {
       String entryType = "undefined";
       if (info.kind >= 0 && info.kind < NodeKind.NAMES.length) {
-          entryType = NodeKind.NAMES[info.kind];
-       }
+         entryType = NodeKind.NAMES[info.kind];
+      }
       DateFormat dateFormat =
             DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.DEFAULT, Locale.getDefault());
       final RepositoryEntry entry = new RepositoryEntry(entryType, getVersionControlSystem());
@@ -99,50 +92,16 @@ public class SvnAPI {
       entry.addField(EntryFields.dateCommitted, dateFormat.format(new Date(info.lastChangedDate)));
       entry.addField(EntryFields.properTime, dateFormat.format(new Date(info.propTime)));
 
-         ISVNConnector proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
-         try {
-			proxy.status(file.getAbsolutePath(), 1, 0, new ISVNEntryStatusCallback(){
-				public void next(SVNChangeStatus status) {
-					entry.setModifiedFlag(getDescription(status.textStatus));
-				}}, new SVNNullProgressMonitor());
-		} catch (SVNConnectorException e) {
-			e.printStackTrace();
-		}
+      IFile[] files = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(file.toURI());
+      if (files != null && files.length > 0) {
+         InfoOperation op = new InfoOperation(files[0]);
+         UIMonitorUtility.doTaskBusyDefault(op);
+         ILocalResource local = op.getLocal();
+         entry.setModifiedFlag(SVNUtility.getStatusText(local.getStatus()));
+      }
       return entry;
    }
 
-   public static final String getDescription(int kind) {
-       switch (kind) {
-       case SVNChangeStatus.Kind.NONE:
-           return "non-svn";
-       case SVNChangeStatus.Kind.NORMAL:
-           return "normal";
-       case SVNChangeStatus.Kind.ADDED:
-           return "added";
-       case SVNChangeStatus.Kind.MISSING:
-           return "missing";
-       case SVNChangeStatus.Kind.DELETED:
-           return "deleted";
-       case SVNChangeStatus.Kind.REPLACED:
-           return "replaced";
-       case SVNChangeStatus.Kind.MODIFIED:
-           return "modified";
-       case SVNChangeStatus.Kind.MERGED:
-           return "merged";
-       case SVNChangeStatus.Kind.CONFLICTED:
-           return "conflicted";
-       case SVNChangeStatus.Kind.IGNORED:
-           return "ignored";
-       case SVNChangeStatus.Kind.INCOMPLETE:
-           return "incomplete";
-       case SVNChangeStatus.Kind.EXTERNAL:
-           return "external";
-       case SVNChangeStatus.Kind.UNVERSIONED:
-       default:
-           return "unversioned";
-       }
-   }
-   
    protected String getVersionControlSystem() {
       return "svn";
    }
@@ -162,7 +121,7 @@ public class SvnAPI {
    }
 
    private IRepositoryResource[] getRepositoryResources(String[] fileToCheckout) {
-      // TODO: Create Repository Locations if they are not available. 
+      // TODO: Create Repository Locations if they are not available.
       List<IRepositoryResource> toReturn = new ArrayList<IRepositoryResource>();
       IRepositoryLocation[] locations = SVNRemoteStorage.instance().getRepositoryLocations();
       for (IRepositoryLocation location : locations) {
