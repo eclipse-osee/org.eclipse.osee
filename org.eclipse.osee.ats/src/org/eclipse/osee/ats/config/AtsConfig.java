@@ -75,14 +75,15 @@ public class AtsConfig {
    }
 
    private void validateATSHeadingParent(Artifact art) {
-      if (art.getParent() == null) {
-         try {
+      try {
+         if (art.getParent() == null) {
+
             Artifact atsHeadingArtifact = getOrCreateAtsHeadingArtifact();
             atsHeadingArtifact.addChild(art);
             atsHeadingArtifact.persist(true);
-         } catch (SQLException ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
          }
+      } catch (SQLException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
 

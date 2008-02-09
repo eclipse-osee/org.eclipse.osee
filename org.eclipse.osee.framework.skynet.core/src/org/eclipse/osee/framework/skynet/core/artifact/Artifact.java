@@ -342,13 +342,18 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
       return attributes;
    }
 
-   public Artifact getParent() {
-      try {
-         return getLinkManager().getSoleArtifact(DEFAULT_HIERARCHICAL__PARENT);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+   public Artifact getParent() throws SQLException {
+      return getLinkManager().getSoleArtifact(DEFAULT_HIERARCHICAL__PARENT);
+   }
+
+   public boolean isOrphan() throws SQLException {
+      Artifact root = artifactManager.getDefaultHierarchyRootArtifact(getBranch());
+      for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
+         if (parent.equals(root)) {
+            return false;
+         }
       }
-      return null;
+      return true;
    }
 
    public Artifact getChild(String descriptiveName) throws SQLException {

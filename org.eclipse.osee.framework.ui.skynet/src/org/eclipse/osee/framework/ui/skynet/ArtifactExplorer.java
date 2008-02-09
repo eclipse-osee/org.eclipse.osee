@@ -298,10 +298,20 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
     */
    public static void revealArtifact(String guid, Branch branch) throws SQLException, PartInitException {
       Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifact(guid, branch);
-      IWorkbenchPage page = AWorkbench.getActivePage();
-      ArtifactExplorer artifactExplorer;
-      artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID);
-      artifactExplorer.treeViewer.setSelection(new StructuredSelection(artifact), true);
+      if (artifact == null) {
+         throw new IllegalArgumentException("A null artifact was returned for guid: " + guid + " and branch " + branch);
+      } else {
+         if (artifact.isOrphan()) {
+            OSEELog.logInfo(
+                  SkynetGuiPlugin.class,
+                  "The artifact " + artifact.getDescriptiveName() + " is detached from the default heirarchy (orphan).",
+                  true);
+         } else {
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            ArtifactExplorer artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID);
+            artifactExplorer.treeViewer.setSelection(new StructuredSelection(artifact), true);
+         }
+      }
    }
 
    private void setupPopupMenu() {
@@ -361,7 +371,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
                treeViewer.setExpandedElements(expandedPlus);
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }
       };
@@ -915,7 +925,14 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
    private void updateEnablementsEtAl() {
       // The upAction may be null if this viewpart has not been layed out yet
-      if (upAction != null) upAction.setEnabled(root != null && root.getParent() != null);
+      if (upAction != null) {
+         try {
+            upAction.setEnabled(root != null && root.getParent() != null);
+         } catch (SQLException ex) {
+            upAction.setEnabled(false);
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
+      }
 
       if (root != null)
          setContentDescription(root.getDescriptiveName());

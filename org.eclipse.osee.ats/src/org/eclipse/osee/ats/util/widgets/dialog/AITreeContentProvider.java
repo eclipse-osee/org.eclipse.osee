@@ -15,10 +15,12 @@ import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class AITreeContentProvider implements ITreeContentProvider {
 
@@ -45,7 +47,13 @@ public class AITreeContentProvider implements ITreeContentProvider {
    }
 
    public Object getParent(Object element) {
-      if (element instanceof ActionableItemArtifact) return ((ActionableItemArtifact) element).getParent();
+      try {
+         if (element instanceof ActionableItemArtifact) {
+            return ((ActionableItemArtifact) element).getParent();
+         }
+      } catch (SQLException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
       return null;
    }
 

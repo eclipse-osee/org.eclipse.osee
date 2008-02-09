@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * The basis for the comments in this class can be found at
@@ -118,7 +119,11 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     */
    public Object getParent(Object element) {
       if (element instanceof Artifact) {
-         return ((Artifact) element).getParent();
+         try {
+            return ((Artifact) element).getParent();
+         } catch (SQLException ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
       }
       return null;
    }
