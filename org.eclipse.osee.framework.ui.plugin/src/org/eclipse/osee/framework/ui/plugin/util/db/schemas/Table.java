@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.util.db.schemas;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.config.OSEEConfig;
 import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
@@ -17,6 +19,7 @@ import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
 public class Table {
    protected String name;
    private static final String aliassyntax;
+   private static final Matcher matcher = Pattern.compile(" *PUT_TABLE_ALIAS_HERE *").matcher("");
 
    static {
       OSEEConfig config = ConfigUtil.getConfigFactory().getOseeConfig();
@@ -28,6 +31,17 @@ public class Table {
          default:
             aliassyntax = " ";
       }
+   }
+
+   /**
+    * Remove all PUT_TABLE_ALIAS_HERE tags and replace with table alias specific to this DB
+    * 
+    * @param sql string with replace tag PUT_TABLE_ALIAS_HERE embedded
+    * @return sql with corresponding table alias replaced
+    */
+   public static String generateTableAliasedSql(String sql) {
+      matcher.reset(sql);
+      return matcher.replaceAll(aliassyntax);
    }
 
    /**

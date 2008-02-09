@@ -184,7 +184,7 @@ public class AJavaProject {
          for (int i = 0; i < paths.length; i++) {
             if (paths[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
                if (paths[i].getPath().toFile().exists()) {
-                  urls.add(paths[i].getPath().toFile());
+        //          urls.add(paths[i].getPath().toFile());
                } else {
                   File f = null;
                   f = new File(AWorkspace.getWorkspacePath().concat(paths[i].getPath().toOSString()));
