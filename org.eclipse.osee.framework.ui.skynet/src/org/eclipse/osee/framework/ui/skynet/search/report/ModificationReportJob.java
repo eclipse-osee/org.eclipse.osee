@@ -12,14 +12,14 @@ package org.eclipse.osee.framework.ui.skynet.search.report;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ExcelXmlWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -71,7 +71,7 @@ public class ModificationReportJob extends ReportJob {
    private void writeMatrix() throws IOException, CoreException {
       CharBackedInputStream charBak = new CharBackedInputStream();
       ExcelXmlWriter excelWriter = new ExcelXmlWriter(charBak.getWriter());
-      excelWriter.startSheet("Modification Report");
+      excelWriter.startSheet("Modification Report", 3);
 
       excelWriter.writeRow(header);
       for (String[] row : matrix.values()) {
@@ -79,7 +79,7 @@ public class ModificationReportJob extends ReportJob {
       }
       excelWriter.endWorkbook();
 
-      IFile iFile = OseeData.getIFile("Modification Report " + new Date().toString().replaceAll(":", ";") + ".xml");
+      IFile iFile = OseeData.getIFile("Modification_Report_" + Lib.getDateTimeString() + ".xml");
       AIFile.writeToFile(iFile, charBak);
 
       // Ensure Excel is used since the file assocation for xml could be off

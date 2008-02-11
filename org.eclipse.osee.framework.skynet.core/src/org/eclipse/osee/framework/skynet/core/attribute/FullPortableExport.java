@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ExcelXmlWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -118,7 +118,7 @@ public class FullPortableExport {
    }
 
    private void writeRelationsHeader() throws IOException {
-      excelWriter.startSheet("relations");
+      excelWriter.startSheet("relations", 6);
       row = new String[] {"Relation Type", "Side A Guid", "Side B Guid", "Order A", "Order B", "Rationale"};
       excelWriter.writeRow(row);
    }
@@ -145,7 +145,8 @@ public class FullPortableExport {
 
    private void createArtifactSheet(ArtifactSubtypeDescriptor descriptor, Collection<Artifact> artifacts) throws IOException, SQLException {
       if (artifacts.size() > 0) {
-         excelWriter.startSheet(descriptor.getName());
+         int columnNum = artifacts.iterator().next().getAttributes().size();
+         excelWriter.startSheet(descriptor.getName(), columnNum);
          writeArtifactHeader(descriptor);
          for (Artifact artifact : artifacts) {
             processArtifact(artifact);

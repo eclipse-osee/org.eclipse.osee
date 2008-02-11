@@ -44,7 +44,7 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
       try {
          Branch branch = mainPage.getSelectedBranch();
          File file = mainPage.getImportFile();
-         Jobs.startJob(new ImportTraceabilityJob(file, branch));
+         Jobs.startJob(new ImportTraceabilityJob(file, branch, true));
       } catch (Exception ex) {
          OSEELog.logException(getClass(), "Traceability Import Error", ex, true);
       }

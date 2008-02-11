@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ExcelXmlWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
@@ -90,7 +90,7 @@ public class RelationMatrixExportJob extends ReportJob {
    private void writeMatrix() throws IOException, CoreException {
       CharBackedInputStream charBak = new CharBackedInputStream();
       ExcelXmlWriter excelWriter = new ExcelXmlWriter(charBak.getWriter());
-      excelWriter.startSheet(relationTypeName + " Matrix");
+      excelWriter.startSheet(relationTypeName + " Matrix", columnCount);
 
       excelWriter.writeRow(header);
       for (String[] row : matrix.values()) {

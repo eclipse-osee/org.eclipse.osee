@@ -12,13 +12,11 @@ package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
 import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
-import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter;
 
 /**
  * @author Jeff C. Phillips
  */
-public class WordMlTableWriter implements ISheetWriter {
+public class WordMlTableWriter extends AbstractSheetWriter {
    private static final String TABLE_START =
          "<w:tbl><w:tblPr><w:tblBorders><w:top w:val=\"single\" w:sz=\"1\" /><w:left w:val=\"single\" w:sz=\"1\" /><w:bottom w:val=\"single\" w:sz=\"1\" /><w:right w:val=\"single\" w:sz=\"1\" /><w:insideH w:val=\"single\" w:sz=\"1\" /><w:insideV w:val=\"single\" w:sz=\"1\" /></w:tblBorders></w:tblPr>";
    private static final String TABLE_END = "</w:tbl>";
@@ -37,10 +35,6 @@ public class WordMlTableWriter implements ISheetWriter {
       this.str = str;
    }
 
-   public void startSheet(String worksheetName) throws IOException {
-      startSheet(worksheetName, -1);
-   }
-
    public void startSheet(String worksheetName, int columnCount) throws IOException {
       str.append(TABLE_START);
       columnSize = columnCount;
@@ -51,23 +45,21 @@ public class WordMlTableWriter implements ISheetWriter {
       str.append(TABLE_END);
    }
 
-   public void writeRow(String... row) throws IOException {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSheetWriter#startRow()
+    */
+   @Override
+   protected void startRow() throws IOException {
       // column size is set when the first row is created.
       if (startTable) {
-         if (columnSize < 0) {
-            columnSize = row.length;
-            writeTableGridData();
-         }
+         writeTableGridData();
       }
 
-      /*      if (row.length != columnSize) {
-               throw new IllegalArgumentException("Table columns need to be the same size.");
-            }*/
       str.append(ROW_START);
+   }
 
-      for (String data : row) {
-         writeTextCell(data);
-      }
+   @Override
+   public void writeEndRow() throws IOException {
       str.append(ROW_END);
    }
 
@@ -80,21 +72,15 @@ public class WordMlTableWriter implements ISheetWriter {
       str.append(END_TABLE_GRID);
    }
 
-   private void writeTextCell(String data) throws IOException {
+   @Override
+   public void writeCellText(String cellData, int cellIndex) throws IOException {
       str.append(CELL_STRART);
-      if (data != null) {
-         str.append(data);
+      if (cellData != null) {
+         str.append(cellData);
       }
       str.append(CELL_END);
    }
 
    public void endWorkbook() throws IOException {
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter#writeRow(java.util.Collection)
-    */
-   public void writeRow(Collection<String> row) throws IOException {
-      writeRow(row.toArray(new String[row.size()]));
    }
 }

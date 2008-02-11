@@ -31,14 +31,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ExcelXmlWriter;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -75,8 +75,9 @@ public class ImportTraceabilityJob extends Job {
    private int pathPrefixLength;
    private Collection<Artifact> softwareReqList;
    private Collection<Artifact> indirectSoftwareReqList;
+   private boolean writeOutResults;
 
-   public ImportTraceabilityJob(File file, Branch branch) throws IllegalArgumentException, CoreException, SQLException, IOException {
+   public ImportTraceabilityJob(File file, Branch branch, boolean writeOutResults) throws IllegalArgumentException, CoreException, SQLException, IOException {
       super("Importing Traceability");
       this.file = file;
       this.branch = branch;
@@ -90,10 +91,11 @@ public class ImportTraceabilityJob extends Job {
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
       ofpReqTraceMatcher = ofpReqTraceP.matcher("");
       scriptReqTraceMatcher = scriptReqTraceP.matcher("");
+      this.writeOutResults = writeOutResults;
    }
 
    private void getReqs(String artifactTypeName, Collection<Artifact> requirementsList, HashMap<String, Artifact> artifactMap, IProgressMonitor monitor) throws SQLException {
-      monitor.subTask("Aquiring" + artifactTypeName + "s"); // bulk load for performance reasons
+      monitor.subTask("Aquiring " + artifactTypeName + "s"); // bulk load for performance reasons
       if (requirementsList == null) {
          requirementsList = artifactManager.getArtifactsFromSubtypeName(artifactTypeName, branch);
       }
@@ -118,8 +120,10 @@ public class ImportTraceabilityJob extends Job {
          getReqs("Indirect Software Requirement", indirectSoftwareReqList, indirectReqs, monitor);
          monitor.worked(7);
 
-         excelWriter.startSheet("srs <--> code units", 6);
-         excelWriter.writeRow("Req in DB", "Code Unit", "Requirement Name", "Requirement Trace Mark in Code");
+         if (writeOutResults) {
+            excelWriter.startSheet("srs <--> code units", 6);
+            excelWriter.writeRow("Req in DB", "Code Unit", "Requirement Name", "Requirement Trace Mark in Code");
+         }
 
          if (file.isFile()) {
             for (String path : Lib.readListFromFile(file, true)) {
@@ -132,15 +136,17 @@ public class ImportTraceabilityJob extends Job {
             throw new IllegalStateException("unexpected file system type");
          }
 
-         excelWriter.endSheet();
+         if (writeOutResults) {
+            excelWriter.endSheet();
 
-         writeNoTraceFilesSheet();
-         writeTraceCountsSheet();
+            writeNoTraceFilesSheet();
+            writeTraceCountsSheet();
 
-         excelWriter.endWorkbook();
-         IFile iFile = OseeData.getIFile("CodeUnit_To_SRS_Trace.xml");
-         AIFile.writeToFile(iFile, charBak);
-         Program.launch(iFile.getLocation().toOSString());
+            excelWriter.endWorkbook();
+            IFile iFile = OseeData.getIFile("CodeUnit_To_SRS_Trace.xml");
+            AIFile.writeToFile(iFile, charBak);
+            Program.launch(iFile.getLocation().toOSString());
+         }
 
          monitor.done();
          return Status.OK_STATUS;
@@ -215,18 +221,10 @@ public class ImportTraceabilityJob extends Job {
       excelWriter.startSheet("trace counts", 3);
       excelWriter.writeRow("SRS Requirement from Database", "Trace Count", "Partitions");
       excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)");
-      StringBuffer partitionStrB = new StringBuffer(100);
+
       for (Artifact artifact : softwareReqs.values()) {
-         Collection<Attribute> partitions = artifact.getAttributeManager("Partition").getAttributes();
-
-         for (Attribute attribute : partitions) {
-            partitionStrB.append(attribute.getStringData());
-            partitionStrB.append(',');
-         }
-
          excelWriter.writeRow(artifact.getDescriptiveName(), String.valueOf(reqsTraceCounts.get(artifact)),
-               partitionStrB.substring(0, partitionStrB.length() - 1));
-         partitionStrB.delete(0, 99999);
+               Collections.toString(",", artifact.getAttributesToStringCollection("Partition")));
       }
 
       excelWriter.endSheet();
@@ -272,7 +270,10 @@ public class ImportTraceabilityJob extends Job {
          name = reqArtifact.getDescriptiveName();
          requirementToCodeUnitsMap.put(reqArtifact, path);
       }
-      excelWriter.writeRow(foundStr, path, name, traceMark);
+
+      if (writeOutResults) {
+         excelWriter.writeRow(foundStr, path, name, traceMark);
+      }
    }
 
    private Artifact getRequirementArtifact(String traceMark) {

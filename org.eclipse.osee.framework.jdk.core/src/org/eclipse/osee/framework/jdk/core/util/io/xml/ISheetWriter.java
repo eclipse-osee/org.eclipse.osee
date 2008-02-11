@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.util.io.xml.excel;
+package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -19,8 +19,6 @@ import java.util.Collection;
  */
 public interface ISheetWriter {
 
-   public void startSheet(String worksheetName) throws IOException;
-
    public void startSheet(String worksheetName, int columnCount) throws IOException;
 
    public void endSheet() throws IOException;
@@ -28,6 +26,17 @@ public interface ISheetWriter {
    public void writeRow(String... row) throws IOException;
 
    public void writeRow(Collection<String> row) throws IOException;
+
+   public void writeCell(String cellData) throws IOException;
+
+   /**
+    * @param cellData text value of cell
+    * @param cellIndex zero-based index
+    * @throws IOException
+    */
+   public void writeCell(String cellData, int cellIndex) throws IOException;
+
+   public void endRow() throws IOException;
 
    public void endWorkbook() throws IOException;
 

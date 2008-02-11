@@ -78,6 +78,12 @@ public enum RelationSide implements IRelationEnumeration {
    DEFAULT_HIERARCHICAL__CHILD(false, "Default Hierarchical"),
    DEFAULT_HIERARCHICAL__PARENT(true, "Default Hierarchical"),
 
+   Dependency__Dependency(false, "Dependency"),
+   Dependency__Artifact(true, "Dependency"),
+
+   Design__Design(true, "Desgin"),
+   Design__Requirement(false, "Desgin"),
+
    UNIVERSAL_GROUPING__MEMBERS(false, "Universal Grouping"),
    UNIVERSAL_GROUPING__GROUP(true, "Universal Grouping"),
 

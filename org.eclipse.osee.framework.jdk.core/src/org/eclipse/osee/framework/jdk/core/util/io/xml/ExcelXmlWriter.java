@@ -8,25 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.util.io.xml.excel;
+package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ExcelXmlWriter implements ISheetWriter {
+public class ExcelXmlWriter extends AbstractSheetWriter {
    private BufferedWriter out;
    private boolean inSheet;
    private boolean startTable;
    private int columnCount;
    private String emptyStringRepresentation;
+   private int previuosCellIndex;
+
    public static final String defaultEmptyStringXmlRep = "&#248;";
    public static final String defaultEmptyString = "\u00F8";
    public static final String blobMessage = "data stored in EmbeddedClob since longer than 32767 chars";
@@ -49,13 +50,6 @@ public class ExcelXmlWriter implements ISheetWriter {
       this(new FileWriter(file));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter#startSheet(java.lang.String)
-    */
-   public void startSheet(String worksheetName) throws IOException {
-      startSheet(worksheetName, -1);
-   }
-
    public void startSheet(String worksheetName, int columnCount) throws IOException {
       this.columnCount = columnCount;
       if (worksheetName.length() > 31) {
@@ -71,10 +65,8 @@ public class ExcelXmlWriter implements ISheetWriter {
     * @see org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter#endSheet()
     */
    public void endSheet() throws IOException {
-      if (startTable) {
-         out.write("  <Table x:FullColumns=\"1\" x:FullRows=\"1\">\n");
-         startTable = false;
-      }
+      startTableIfNecessary();
+
       out.write("  </Table>\n");
       out.write(" </Worksheet>\n");
       inSheet = false;
@@ -89,60 +81,56 @@ public class ExcelXmlWriter implements ISheetWriter {
       out.close();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter#writeRow(java.lang.String)
-    */
-   public void writeRow(String... row) throws IOException {
-      if (startTable) {
-         if (columnCount < 0) {
-            columnCount = row.length;
-         }
-         out.write("  <Table x:FullColumns=\"1\" x:FullRows=\"1\" ss:ExpandedColumnCount=\"" + columnCount + "\">\n");
-         startTable = false;
-      }
+   protected void startRow() throws IOException {
+      startTableIfNecessary();
 
       out.write("   <Row>\n");
-      boolean cellSkipped = false;
-      for (int cellIndex = 0; cellIndex < row.length; cellIndex++) {
-         String cellData = row[cellIndex];
-         if (cellData == null) {
-            cellSkipped = true;
-         } else {
-            out.write("    <Cell");
-            if (cellSkipped) {
-               out.write(" ss:Index=\"" + (cellIndex + 1) + "\"");
-               cellSkipped = false;
-            }
-            if (!cellData.equals("") && cellData.charAt(0) == '=') {
-               out.write(" ss:Formula=\"" + cellData + "\">");
-            } else {
-               out.write("><Data ss:Type=\"String\">");
-               if (cellData.equals("")) {
-                  out.write(emptyStringRepresentation);
-               } else {
-                  if (cellData.length() > 32767) {
-                     out.write(blobMessage);
-                  } else {
-                     Xml.writeAsCdata(out, cellData);
-                  }
-               }
-               out.write("</Data>");
-               if (cellData.length() > 32767) {
-                  out.write("<EmbeddedClob>");
-                  Xml.writeAsCdata(out, cellData);
-                  out.write("</EmbeddedClob>");
-               }
-            }
-            out.write("</Cell>\n");
-         }
-      }
+      previuosCellIndex = -1;
+   }
+
+   @Override
+   public void writeEndRow() throws IOException {
       out.write("   </Row>\n");
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.jdk.core.util.io.xml.excel.ISheetWriter#writeRow(java.util.Collection)
-    */
-   public void writeRow(Collection<String> row) throws IOException {
-      writeRow(row.toArray(new String[row.size()]));
+   private void startTableIfNecessary() throws IOException {
+      if (startTable) {
+         out.write("  <Table x:FullColumns=\"1\" x:FullRows=\"1\" ss:ExpandedColumnCount=\"" + columnCount + "\">\n");
+         startTable = false;
+      }
+   }
+
+   @Override
+   public void writeCellText(String cellData, int cellIndex) throws IOException {
+      if (cellData == null) {
+         previuosCellIndex = -1; // the next cell will need to use an explicit index
+      } else {
+         out.write("    <Cell");
+         if (previuosCellIndex + 1 != cellIndex) { // use explicit index if at least one cell was skipped 
+            out.write(" ss:Index=\"" + (cellIndex + 1) + "\"");
+         }
+         previuosCellIndex = cellIndex;
+         if (!cellData.equals("") && cellData.charAt(0) == '=') {
+            out.write(" ss:Formula=\"" + cellData + "\">");
+         } else {
+            out.write("><Data ss:Type=\"String\">");
+            if (cellData.equals("")) {
+               out.write(emptyStringRepresentation);
+            } else {
+               if (cellData.length() > 32767) {
+                  out.write(blobMessage);
+               } else {
+                  Xml.writeAsCdata(out, cellData);
+               }
+            }
+            out.write("</Data>");
+            if (cellData.length() > 32767) {
+               out.write("<EmbeddedClob>");
+               Xml.writeAsCdata(out, cellData);
+               out.write("</EmbeddedClob>");
+            }
+         }
+         out.write("</Cell>\n");
+      }
    }
 }
