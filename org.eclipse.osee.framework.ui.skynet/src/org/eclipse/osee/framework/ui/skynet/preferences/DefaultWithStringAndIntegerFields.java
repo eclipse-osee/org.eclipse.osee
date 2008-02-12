@@ -123,12 +123,13 @@ public class DefaultWithStringAndIntegerFields extends FieldEditor {
          String textField = text1.getText();
          String integerField = text2.getText();
          if (areValuesValid(textField, integerField)) {
-            store.setValue(getPreferenceName() + CUSTOM_BUTTON_KEY, userButton.getSelection());
+            store.setValue(getPreferenceName() + CUSTOM_BUTTON_KEY, true);
             store.setValue(getPreferenceName() + STRING_FIELD_KEY, textField);
             store.setValue(getPreferenceName() + INTEGER_FIELD_KEY, integerField);
             store.setValue(getPreferenceName(), textField + ":" + integerField);
          }
       } else {
+         store.setValue(getPreferenceName() + CUSTOM_BUTTON_KEY, false);
          store.setValue(getPreferenceName(), defaultValue);
       }
    }
@@ -157,8 +158,8 @@ public class DefaultWithStringAndIntegerFields extends FieldEditor {
       boolean wasCustomSelected = store.getBoolean(getPreferenceName() + CUSTOM_BUTTON_KEY);
       String stringField = store.getString(getPreferenceName() + STRING_FIELD_KEY);
       String integerField = store.getString(getPreferenceName() + INTEGER_FIELD_KEY);
-      if (areValuesValid(stringField, integerField)) {
-         selectDefaultButton(!wasCustomSelected);
+      if (wasCustomSelected && areValuesValid(stringField, integerField)) {
+         selectDefaultButton(false);
          text1.setText(stringField);
          text2.setText(integerField);
       } else {
