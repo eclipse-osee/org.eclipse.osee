@@ -30,13 +30,11 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    public static final class CompositeKey<A, B> {
       private final A key1;
       private final B key2;
-      private final int hashcode;
 
       public CompositeKey(A key1, B key2) {
          super();
          this.key1 = key1;
          this.key2 = key2;
-         hashcode = key1.hashCode() ^ key2.hashCode();
       }
 
       public A getKey1() {
@@ -58,7 +56,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
 
       @Override
       public int hashCode() {
-         return hashcode;
+         return key1.hashCode() ^ key2.hashCode();
       }
 
    }
