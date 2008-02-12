@@ -48,7 +48,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       layout.addShowViewShortcut(BranchView.VIEW_ID);
       layout.addShowViewShortcut(GroupExplorer.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
-      layout.addShowViewShortcut("org.eclipse.osee.framework.ui.admin.AdminView");
+      layout.addShowViewShortcut("osee.admin.AdminView");
       layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
 
    }
@@ -73,6 +73,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       lower.addView(WorldView.VIEW_ID);
       lower.addView(QuickSearchView.VIEW_ID);
       if (AtsPlugin.isAtsAdmin()) {
+         lower.addView("osee.admin.AdminView");
          lower.addView(ArtifactHyperView.VIEW_ID);
       }
 
