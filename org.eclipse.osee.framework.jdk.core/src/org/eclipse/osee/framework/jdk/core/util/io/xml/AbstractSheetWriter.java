@@ -54,6 +54,7 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
    public void writeCell(String data, int cellIndex) throws IOException {
       startRowIfNecessary();
       rowInProgress = true;
+      defaultCellIndex = cellIndex + 1;
       writeCellText(data, cellIndex);
    }
 
@@ -70,7 +71,7 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
     * @see org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter#writeCell(java.lang.String)
     */
    public void writeCell(String cellData) throws IOException {
-      writeCell(cellData, defaultCellIndex++);
+      writeCell(cellData, defaultCellIndex);
    }
 
    protected abstract void startRow() throws IOException;

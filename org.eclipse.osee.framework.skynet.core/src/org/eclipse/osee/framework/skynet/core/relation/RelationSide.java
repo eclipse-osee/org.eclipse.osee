@@ -81,8 +81,8 @@ public enum RelationSide implements IRelationEnumeration {
    Dependency__Dependency(false, "Dependency"),
    Dependency__Artifact(true, "Dependency"),
 
-   Design__Design(true, "Desgin"),
-   Design__Requirement(false, "Desgin"),
+   Design__Design(false, "Design"),
+   Design__Requirement(true, "Design"),
 
    UNIVERSAL_GROUPING__MEMBERS(false, "Universal Grouping"),
    UNIVERSAL_GROUPING__GROUP(true, "Universal Grouping"),
