@@ -70,8 +70,7 @@ public class AutoRunStartup implements IStartup {
             // Send email of completion
             AEmail email =
                   new AEmail(new String[] {"donald.g.dunne@boeing.com"}, "donald.g.dunne@boeing.com",
-                        "donald.g.dunne@boeing.com",
-                        "AutoRun - ERROR - Can't find AutoRunTask; Id=\"" + autoRunTaskId + "\" ", " ");
+                        "donald.g.dunne@boeing.com", "AutoRun - ERROR - Can't find Id=\"" + autoRunTaskId + "\" ", " ");
             email.send();
          } else {
             Result result = validateAutoRunExecution(autoRunTask);
@@ -84,7 +83,7 @@ public class AutoRunStartup implements IStartup {
             }
 
             // Email successful run
-            String subject = "AutoRun - Completed AutoRunTaskId=\"" + autoRunTaskId + "\"";
+            String subject = "AutoRun - Completed Id=\"" + autoRunTaskId + "\"";
             XResultPage page =
                   resultData.getReport("AutoRunTaskId=\"" + autoRunTaskId + "\"", Manipulations.ALL,
                         Manipulations.ERROR_WARNING_HEADER);
@@ -101,7 +100,7 @@ public class AutoRunStartup implements IStartup {
          String[] emails = new String[] {"donald.g.dunne@boeing.com"};
          if (autoRunTask != null) emails = autoRunTask.getNotificationEmailAddresses();
          // Email exception
-         String subject = "AutoRun - Exception running AutoRunTaskId=\"" + autoRunTaskId + "\" Exceptioned";
+         String subject = "AutoRun - Exception Running Id=\"" + autoRunTaskId + "\" Exceptioned";
          XResultPage page =
                resultData.getReport("AutoRunTaskId=\"" + autoRunTaskId + "\"", Manipulations.ALL,
                      Manipulations.ERROR_WARNING_HEADER);
@@ -121,7 +120,7 @@ public class AutoRunStartup implements IStartup {
          if (autoRunTaskId != null) {
             logger.log(Level.INFO, "Sleeping...");
             try {
-               Thread.sleep(2000);
+               Thread.sleep(8000);
             } catch (Exception ex) {
                // do nothing
             }
