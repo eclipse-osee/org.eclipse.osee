@@ -18,8 +18,10 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask.RunDb;
 
 /**
@@ -40,16 +42,18 @@ public class LaunchAutoRunWorkbench extends Action {
 
    public static Result launch(String autoRunExtensionUniqueId, String defaultDbConnection) throws Exception {
       ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-      String launchFile = "org.eclipse.osee.framework.ui.skynet\\AutoRun.launch";
-      File file = AWorkspace.getWorkspaceFile(launchFile);
-      if (!file.exists()) {
+      String launchFile = "AutoRun.launch";
+      File pluginFile = SkynetGuiPlugin.getInstance().getPluginFile(launchFile);
+      if (!pluginFile.exists()) {
          throw new IllegalArgumentException("Can't locate file \"" + launchFile + "\"");
       }
-      IFile iFile = AWorkspace.fileToIFile(file);
-      if (iFile == null || !iFile.exists()) {
-         throw new IllegalArgumentException("Can't locate file \"" + launchFile + "\"");
+      File workspaceFile = OseeData.getFile(launchFile);
+      AFile.writeFile(workspaceFile, AFile.readFile(pluginFile));
+      IFile workspaceIFile = OseeData.getIFile(launchFile);
+      if (workspaceIFile == null || !workspaceIFile.exists()) {
+         throw new IllegalArgumentException("Can't locate workspaceIFile \"" + launchFile + "\"");
       }
-      ILaunchConfiguration config = manager.getLaunchConfiguration(iFile);
+      ILaunchConfiguration config = manager.getLaunchConfiguration(workspaceIFile);
       //         System.out.println("Pre Config " + config.getAttributes());
       // Get a copy of the config to work with
       ILaunchConfigurationWorkingCopy copy = config.getWorkingCopy();
