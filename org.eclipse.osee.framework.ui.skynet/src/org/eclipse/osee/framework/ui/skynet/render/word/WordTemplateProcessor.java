@@ -126,7 +126,7 @@ public class WordTemplateProcessor {
       this.slaveTemplate = slaveTemplate;
       this.attributeElements = new LinkedList<AttributeElement>();
       this.updateParagraphNumbers = false;
-      this.saveParagraphNumOnArtifact = true;
+      this.saveParagraphNumOnArtifact = false;
       this.publishedArtifacts = new HashSet<Artifact>();
       this.ignoreAttributeExtensions = new HashSet<String>();
 
@@ -483,8 +483,7 @@ public class WordTemplateProcessor {
          String headingText = artifact.getSoleAttributeValue(headingAttributeName);
          CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
-         if (paragraphNumber != null && saveParagraphNumOnArtifact) {//&& !artifact.getSoleAttributeValue(
-            //  "Imported Paragraph Number").equals("")) {
+         if (paragraphNumber != null && saveParagraphNumOnArtifact) {
             artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
 
             try {
@@ -733,5 +732,12 @@ public class WordTemplateProcessor {
             }
          }
       }
+   }
+
+   /**
+    * @param saveParagraphNumOnArtifact the saveParagraphNumOnArtifact to set
+    */
+   public void setSaveParagraphNumOnArtifact(boolean saveParagraphNumOnArtifact) {
+      this.saveParagraphNumOnArtifact = saveParagraphNumOnArtifact;
    }
 }
