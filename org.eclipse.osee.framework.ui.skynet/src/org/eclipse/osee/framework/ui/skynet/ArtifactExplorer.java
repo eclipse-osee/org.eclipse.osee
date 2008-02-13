@@ -304,7 +304,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          if (artifact.isOrphan()) {
             OSEELog.logInfo(
                   SkynetGuiPlugin.class,
-                  "The artifact " + artifact.getDescriptiveName() + " is detached from the default heirarchy (orphan).",
+                  "The artifact " + artifact.getDescriptiveName() + " is detached from the default hierarchy (orphan).",
                   true);
          } else {
             IWorkbenchPage page = AWorkbench.getActivePage();

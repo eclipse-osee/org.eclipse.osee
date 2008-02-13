@@ -175,7 +175,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    private final ArtifactDhChildCountCache artifactDhChildCountCache;
    private IProgressMonitor monitor;
    public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
-   public static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Heirarchy Root";
+   public static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
 
    private static final ArtifactPersistenceManager instance = new ArtifactPersistenceManager();
 
