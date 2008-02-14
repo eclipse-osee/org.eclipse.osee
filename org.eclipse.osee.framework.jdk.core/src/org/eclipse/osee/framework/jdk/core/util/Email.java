@@ -20,21 +20,21 @@ public class Email {
 
    }
 
-   public void sendEmail(String email, String title, String message) throws MessagingException {
+   public void sendEmail(String email, String title, String message) throws MessagingException, InterruptedException {
       sendEmailWithAttachment(email, title, message, null);
    }
 
-   public void sendEmailWithAttachment(String email, String title, String message, File file) throws MessagingException {
+   public void sendEmailWithAttachment(String email, String title, String message, File file) throws MessagingException, InterruptedException {
       sendEmailWithAttachments(email, title, message, new File[] {file});
    }
 
-   public void sendEmailWithAttachment(String email, String title, String message, String content, String attachmentName) throws MessagingException {
+   public void sendEmailWithAttachment(String email, String title, String message, String content, String attachmentName) throws MessagingException, InterruptedException {
       AEmail emailMessage = createEmail(email, title, message);
       emailMessage.addAttachment(content, attachmentName);
       emailMessage.send();
    }
 
-   public void sendEmailWithAttachments(String email, String title, String message, File[] files) throws MessagingException {
+   public void sendEmailWithAttachments(String email, String title, String message, File[] files) throws MessagingException, InterruptedException {
 
       AEmail emailMessage = createEmail(email, title, message);
 

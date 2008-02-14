@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -149,7 +148,7 @@ public class NotifyUsersJob extends Job {
             System.out.println("notifyCompletion = sending to " + emails);
          else
             emailMessage.send();
-      } catch (MessagingException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Your Email Message could not be sent.", ex, true);
       }
    }
@@ -186,7 +185,7 @@ public class NotifyUsersJob extends Job {
             System.out.println("notifyOriginator = sending to " + emails);
          else
             emailMessage.send();
-      } catch (MessagingException ex) {
+      } catch (Exception ex) {
          MessageDialog.openInformation(null, "Message Could Not Be Sent", "Your Email Message could not be sent.");
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import java.util.ArrayList;
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.jdk.core.util.AEmail;
@@ -65,7 +64,7 @@ public class EmailWizard extends Wizard {
          // Remove hyperlinks cause they won't work in email.
          emailMessage.addHTMLBody(htmlMessage);
          emailMessage.send();
-      } catch (MessagingException e) {
+      } catch (Exception e) {
          MessageDialog.openInformation(null, "Message Could Not Be Sent",
                "Your Email Message could not be sent.\n\n" + e.getLocalizedMessage());
 

@@ -94,7 +94,7 @@ public class AutoRunStartup implements IStartup {
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(), subject);
             emailMessage.setSubject(subject);
             emailMessage.addHTMLBody(htmlBody);
-            emailMessage.send();
+            emailMessage.sendLocalThread();
          }
       } catch (Exception ex) {
          String[] emails = new String[] {"donald.g.dunne@boeing.com"};
@@ -112,7 +112,7 @@ public class AutoRunStartup implements IStartup {
          try {
             emailMessage.setSubject(subject);
             emailMessage.addHTMLBody(htmlBody);
-            emailMessage.send();
+            emailMessage.sendLocalThread();
          } catch (Exception ex2) {
             OSEELog.logException(SkynetGuiPlugin.class, ex2, false);
          }

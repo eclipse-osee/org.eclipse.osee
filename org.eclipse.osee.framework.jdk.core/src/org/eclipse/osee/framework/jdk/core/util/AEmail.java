@@ -267,21 +267,25 @@ public class AEmail extends MimeMessage {
       @Override
       public void run() {
          super.run();
-         MimeBodyPart messageBodyPart = new MimeBodyPart();
+         email.sendLocalThread();
+      }
+   }
 
-         if (bodyType == null) {
-            bodyType = plainText;
-            body = "";
-         } else if (bodyType.equals(HTMLText)) body += HTMLEnd;
+   public void sendLocalThread() {
+      MimeBodyPart messageBodyPart = new MimeBodyPart();
 
-         try {
-            messageBodyPart.setContent(body, bodyType);
-            mainMessage.addBodyPart(messageBodyPart, 0);
-            setContent(mainMessage);
-            Transport.send(email);
-         } catch (Exception ex) {
-            ex.printStackTrace();
-         }
+      if (bodyType == null) {
+         bodyType = plainText;
+         body = "";
+      } else if (bodyType.equals(HTMLText)) body += HTMLEnd;
+
+      try {
+         messageBodyPart.setContent(body, bodyType);
+         mainMessage.addBodyPart(messageBodyPart, 0);
+         setContent(mainMessage);
+         Transport.send(this);
+      } catch (Exception ex) {
+         ex.printStackTrace();
       }
    }
 

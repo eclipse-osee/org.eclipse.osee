@@ -63,6 +63,32 @@ public final class Artifacts {
       newActionTx.execute();
    }
 
+   public static void delete(final Collection<? extends Artifact> artifacts) throws Exception {
+      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
+
+         @Override
+         protected void handleTxWork() throws Exception {
+            for (Artifact art : artifacts)
+               art.delete();
+         }
+
+      };
+      newActionTx.execute();
+   }
+
+   public static void purge(final Collection<? extends Artifact> artifacts) throws Exception {
+      AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(artifacts.iterator().next().getBranch()) {
+
+         @Override
+         protected void handleTxWork() throws Exception {
+            for (Artifact art : artifacts)
+               art.purge();
+         }
+
+      };
+      newActionTx.execute();
+   }
+
    /**
     * Calculates the artifacts from the provided list that are not a descendant of any of the other artifacts in the
     * collection. The provided RelationSide should either produce no artifact or a single artifact from any artifact in
