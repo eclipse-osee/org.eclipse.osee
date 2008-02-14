@@ -109,13 +109,6 @@ public class AtsLib implements IAtsLib {
       if (result.isFalse() && !result.getText().equals("")) result.popup(result.isTrue());
    }
 
-   public static String commaStrs(Collection<String> strs) {
-      StringBuffer sb = new StringBuffer();
-      for (String str : strs)
-         sb.append(str + ", ");
-      return sb.toString().replaceFirst(", ", "");
-   }
-
    public static void open(String guid, OseeAts.OpenView view) {
       (new AtsLib()).openArtifact(guid, view);
    }

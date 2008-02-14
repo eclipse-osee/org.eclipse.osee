@@ -21,9 +21,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -72,7 +72,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
          if (actionArts.size() == 0) {
             // Attempt to open off legacy PCR field
             OSEELog.logException(AtsPlugin.class,
-                  "Invalid HRID/Guid/Legacy PCR Id(s): " + AtsLib.commaStrs(nonHridGuids), null, true);
+                  "Invalid HRID/Guid/Legacy PCR Id(s): " + Lib.getCommaString(nonHridGuids), null, true);
          } else {
             for (ActionArtifact teamWf : actionArts) {
                resultArts.add(teamWf);

@@ -34,20 +34,20 @@ import org.eclipse.swt.widgets.TreeItem;
 public class AutoRunXViewer extends XViewer {
 
    private static String NAMESPACE = "osee.ats.UserRoleXViewer";
-   private final XAutoRunViewer xUserRoleViewer;
    private Set<IAutoRunTask> runList = new HashSet<IAutoRunTask>();
+   private final XAutoRunViewer xAutoRunViewer;
 
    /**
     * @param parent
     * @param style
     */
-   public AutoRunXViewer(Composite parent, int style, XAutoRunViewer xViewer) {
-      this(parent, style, NAMESPACE, new AutoRunXViewerFactory(), xViewer);
+   public AutoRunXViewer(Composite parent, int style, XAutoRunViewer xAutoRunViewer) {
+      this(parent, style, NAMESPACE, new AutoRunXViewerFactory(), xAutoRunViewer);
    }
 
-   public AutoRunXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XAutoRunViewer xRoleViewer) {
+   public AutoRunXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XAutoRunViewer xAutoRunViewer) {
       super(parent, style, nameSpace, xViewerFactory);
-      this.xUserRoleViewer = xRoleViewer;
+      this.xAutoRunViewer = xAutoRunViewer;
    }
 
    public boolean isRun(IAutoRunTask autoRunTask) {
@@ -157,8 +157,8 @@ public class AutoRunXViewer extends XViewer {
    /**
     * @return the xUserRoleViewer
     */
-   public XAutoRunViewer getXUserRoleViewer() {
-      return xUserRoleViewer;
+   public XAutoRunViewer getXAutoRunViewer() {
+      return xAutoRunViewer;
    }
 
 }

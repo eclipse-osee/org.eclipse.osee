@@ -55,6 +55,30 @@ public class AutoRunStartup implements IStartup {
     */
    public void earlyStartup() {
       final String autoRunTaskId = OseeProperties.getInstance().getAutoRun();
+      try {
+         runAutoRunTask(autoRunTaskId);
+      } finally {
+         if (autoRunTaskId != null) {
+            logger.log(Level.INFO, "Sleeping...");
+            try {
+               Thread.sleep(8000);
+            } catch (Exception ex) {
+               // do nothing
+            }
+            logger.log(Level.INFO, "Exiting AutoRunStartup; Id=\"" + autoRunTaskId + "\"");
+            Displays.ensureInDisplayThread(new Runnable() {
+               /* (non-Javadoc)
+                * @see java.lang.Runnable#run()
+                */
+               public void run() {
+                  PlatformUI.getWorkbench().close();
+               }
+            });
+         }
+      }
+   }
+
+   public static void runAutoRunTask(String autoRunTaskId) {
       final XResultData resultData = new XResultData(SkynetGuiPlugin.getLogger());
       IAutoRunTask autoRunTask = null;
       try {
@@ -116,24 +140,6 @@ public class AutoRunStartup implements IStartup {
          } catch (Exception ex2) {
             OSEELog.logException(SkynetGuiPlugin.class, ex2, false);
          }
-      } finally {
-         if (autoRunTaskId != null) {
-            logger.log(Level.INFO, "Sleeping...");
-            try {
-               Thread.sleep(8000);
-            } catch (Exception ex) {
-               // do nothing
-            }
-            logger.log(Level.INFO, "Exiting AutoRunStartup; Id=\"" + autoRunTaskId + "\"");
-            Displays.ensureInDisplayThread(new Runnable() {
-               /* (non-Javadoc)
-                * @see java.lang.Runnable#run()
-                */
-               public void run() {
-                  PlatformUI.getWorkbench().close();
-               }
-            });
-         }
       }
    }
 
@@ -153,7 +159,7 @@ public class AutoRunStartup implements IStartup {
     * @param autoRunTaskId unique AutoRunTask extension id
     * @throws Exception
     */
-   private IAutoRunTask getAutoRunTask(String autoRunTaskId) throws Exception {
+   private static IAutoRunTask getAutoRunTask(String autoRunTaskId) throws Exception {
       List<IExtension> iExtensions =
             ExtensionPoints.getExtensionsByUniqueId(EXTENSION_POINT, Arrays.asList(new String[] {autoRunTaskId}));
       for (IExtension iExtension : iExtensions) {

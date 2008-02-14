@@ -12,7 +12,10 @@ package org.eclipse.osee.framework.ui.admin.autoRun;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.autoRun.AutoRunStartup;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.graphics.Font;
@@ -23,9 +26,9 @@ public class AutoRunLabelProvider implements ITableLabelProvider {
 
    private final AutoRunXViewer treeViewer;
 
-   public AutoRunLabelProvider(AutoRunXViewer treeViewer) {
+   public AutoRunLabelProvider(AutoRunXViewer autoRunXViewer) {
       super();
-      this.treeViewer = treeViewer;
+      this.treeViewer = autoRunXViewer;
    }
 
    public String getColumnText(Object element, int columnIndex) {
@@ -66,6 +69,7 @@ public class AutoRunLabelProvider implements ITableLabelProvider {
       if (aCol == AutoRunColumn.Task_Type) return autoRunTask.getTaskType().name();
       if (aCol == AutoRunColumn.Description) return autoRunTask.getDescription();
       if (aCol == AutoRunColumn.Category) return autoRunTask.getCategory();
+      if (aCol == AutoRunColumn.Category) return Lib.getCommaString(autoRunTask.getNotificationEmailAddresses());
       return "Unhandled Column";
    }
 
@@ -95,9 +99,17 @@ public class AutoRunLabelProvider implements ITableLabelProvider {
       if (xCol == null) return null;
       AutoRunColumn aCol = AutoRunColumn.getAtsXColumn(xCol);
       if (!xCol.isShow()) return null; // Since not shown, don't display
-      if (aCol == AutoRunColumn.Run_Col) return treeViewer.isRun(autoRunTask) ? SkynetGuiPlugin.getInstance().getImage(
-            "chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage("chkbox_disabled.gif");
+      if (treeViewer.getXAutoRunViewer().isLaunchNewWorkbench()) {
+         if (aCol == AutoRunColumn.Run_Col) return treeViewer.isRun(autoRunTask) ? SkynetGuiPlugin.getInstance().getImage(
+               "chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage("chkbox_disabled.gif");
+      } else {
+         if (aCol == AutoRunColumn.Run_Col) {
+            Result result = AutoRunStartup.validateAutoRunExecution(autoRunTask);
+            if (result.isFalse()) return SkynetGuiPlugin.getInstance().getImage("chkbox_redslash.gif");
+            return treeViewer.isRun(autoRunTask) ? SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage(
+                  "chkbox_disabled.gif");
+         }
+      }
       return null;
    }
-
 }

@@ -149,13 +149,25 @@ public class XAutoRunViewer extends XWidget {
 
    private void run() {
       try {
-         StringBuffer sb = new StringBuffer("Launch Auto Tasks:\n\n");
-         for (IAutoRunTask autoRunTask : xViewer.getRunList())
-            sb.append(" - " + autoRunTask.getAutoRunUniqueId() + " against " + getDefaultDbConnection(autoRunTask) + "\n");
-         sb.append("\nNOTE: Time scheduling not implemeted yet, all will kickoff immediately");
-         if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Launch Auto Tasks", sb.toString())) {
+         if (autoRunTab.getLaunchWBCheckBox().isSelected()) {
+            StringBuffer sb = new StringBuffer("Launch Auto Tasks:\n\n");
             for (IAutoRunTask autoRunTask : xViewer.getRunList())
-               LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask));
+               sb.append(" - " + autoRunTask.getAutoRunUniqueId() + " against " + getDefaultDbConnection(autoRunTask) + "\n");
+            sb.append("\nNOTE: Time scheduling not implemeted yet, all will kickoff immediately");
+            if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Launch Auto Tasks", sb.toString())) {
+               for (IAutoRunTask autoRunTask : xViewer.getRunList())
+                  LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask));
+            }
+         } else {
+            StringBuffer sb = new StringBuffer("Run Auto Tasks in Current Workbench:\n\n");
+            for (IAutoRunTask autoRunTask : xViewer.getRunList())
+               sb.append(" - " + autoRunTask.getAutoRunUniqueId() + " against " + getDefaultDbConnection(autoRunTask) + "\n");
+            sb.append("\nNOTE: All will kickoff immediately");
+            if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Launch Auto Tasks", sb.toString())) {
+               for (IAutoRunTask autoRunTask : xViewer.getRunList())
+                  AutoRunStartup.runAutoRunTask(autoRunTask.getAutoRunUniqueId());
+            }
+
          }
       } catch (Exception ex) {
          OSEELog.logException(AdminPlugin.class, ex, true);
@@ -164,6 +176,10 @@ public class XAutoRunViewer extends XWidget {
 
    private String getDefaultDbConnection(IAutoRunTask autoRunTask) {
       return autoRunTask.getRunDb() == RunDb.Production_Db ? autoRunTab.getProdDbConfigText().getText() : autoRunTab.getTestDbConfigText().getText();
+   }
+
+   public boolean isLaunchNewWorkbench() {
+      return autoRunTab.getLaunchWBCheckBox().isSelected();
    }
 
    public void loadTable() {

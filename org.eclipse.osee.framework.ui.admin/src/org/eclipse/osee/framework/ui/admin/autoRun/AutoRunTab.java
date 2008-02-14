@@ -14,7 +14,10 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.admin.OseeClientsTab;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -28,6 +31,8 @@ public class AutoRunTab {
    private Composite mainComposite;
    XText testDbConfigText;
    XText prodDbConfigText;
+   XCheckBox launchWBCheckBox;
+   XAutoRunViewer xAutoRunViewer;
 
    public AutoRunTab(TabFolder tabFolder) {
       super();
@@ -43,8 +48,21 @@ public class AutoRunTab {
       mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       Composite dbConfigComp = new Composite(mainComposite, SWT.NONE);
-      dbConfigComp.setLayout(new GridLayout(4, false));
+      dbConfigComp.setLayout(new GridLayout(6, false));
       dbConfigComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+
+      launchWBCheckBox = new XCheckBox("Launch New Workbench");
+      launchWBCheckBox.createWidgets(dbConfigComp, 2);
+      launchWBCheckBox.set(true);
+      launchWBCheckBox.setToolTip("If selected, tasks will be run in a newly launched WB;\nElse, tasks will be run in current workbench.");
+      launchWBCheckBox.addXModifiedListener(new XModifiedListener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
+          */
+         public void widgetModified(XWidget widget) {
+            updateEnablement();
+         }
+      });
 
       prodDbConfigText = new XText("Production DefaultDbConnection");
       prodDbConfigText.createWidgets(dbConfigComp, 1);
@@ -61,10 +79,19 @@ public class AutoRunTab {
       if (true != isUserAllowedToOperate(whoAmI)) {
          OseeClientsTab.createDefaultWarning(mainComposite);
       } else {
-         XAutoRunViewer xTaskViewer = new XAutoRunViewer(this);
-         xTaskViewer.setDisplayLabel(false);
-         xTaskViewer.createWidgets(mainComposite, 1);
+         xAutoRunViewer = new XAutoRunViewer(this);
+         xAutoRunViewer.setDisplayLabel(false);
+         xAutoRunViewer.createWidgets(mainComposite, 1);
       }
+      updateEnablement();
+   }
+
+   private void updateEnablement() {
+      prodDbConfigText.getStyledText().setEnabled(launchWBCheckBox.isSelected());
+      prodDbConfigText.getLabelWidget().setEnabled(launchWBCheckBox.isSelected());
+      testDbConfigText.getStyledText().setEnabled(launchWBCheckBox.isSelected());
+      testDbConfigText.getLabelWidget().setEnabled(launchWBCheckBox.isSelected());
+      xAutoRunViewer.getXViewer().refresh();
    }
 
    private boolean isUserAllowedToOperate(User user) {
@@ -83,6 +110,13 @@ public class AutoRunTab {
     */
    public XText getProdDbConfigText() {
       return prodDbConfigText;
+   }
+
+   /**
+    * @return the launchWBCheckBox
+    */
+   public XCheckBox getLaunchWBCheckBox() {
+      return launchWBCheckBox;
    }
 
 }

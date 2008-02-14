@@ -41,6 +41,7 @@ import java.security.ProtectionDomain;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -1063,6 +1064,20 @@ public final class Lib {
       String[] results = new String[theResults.size()];
       theResults.toArray(results);
       return results;
+   }
+
+   public static String getCommaString(Collection<String> strs) {
+      StringBuffer sb = new StringBuffer();
+      for (String str : strs)
+         sb.append(str + ", ");
+      return sb.toString().replaceFirst(", ", "");
+   }
+
+   public static String getCommaString(String[] strs) {
+      StringBuffer sb = new StringBuffer();
+      for (String str : strs)
+         sb.append(str + ", ");
+      return sb.toString().replaceFirst(", ", "");
    }
 
    /**
