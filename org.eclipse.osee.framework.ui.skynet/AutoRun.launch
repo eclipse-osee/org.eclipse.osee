@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
 <booleanAttribute key="askclear" value="true"/>
 <booleanAttribute key="automaticAdd" value="true"/>
@@ -16,7 +16,7 @@
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-nosplash -clean"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M -Dosee.jini.lookup.groups=LBA_DEVELOPMENT -DDefaultDbConnection=PUT_DB_CONNECTION_HERE -Dosee.autoRun=PUT_AUTORUN_ID_HERE -DDontLogUsage -XX:MaxPermSize=256m -Dosee.http.port=8010  -DOseeOverrideVersionCheck"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1024M -Dosee.jini.lookup.groups=LBA_DEVELOPMENT -DDefaultDbConnection=PUT_DB_CONNECTION_HERE -Dosee.autoRun=PUT_AUTORUN_ID_HERE -DDontLogUsage -XX:MaxPermSize=256m -Dosee.http.port=8010  -DOseeOverrideVersionCheck -DDisableOseeUpdateCheck"/>
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
 <stringAttribute key="templateConfig" value=""/>
