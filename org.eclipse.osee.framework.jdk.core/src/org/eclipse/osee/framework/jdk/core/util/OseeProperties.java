@@ -91,6 +91,10 @@ public class OseeProperties {
       return System.getProperty("EmailMe") != null;
    }
 
+   public boolean isDisableOseeUpdateCheck() {
+      return System.getProperty("DisableOseeUpdateCheck") != null;
+   }
+
    public boolean isPromptEnabled() {
       return !getBooleanProperty(OSEE_NO_PROMPT);
    }
