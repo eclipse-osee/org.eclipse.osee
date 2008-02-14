@@ -28,7 +28,7 @@ public class EditingFolderVisitor implements IResourceDeltaVisitor {
    private IFolder workingFolder;
    private String prefixPath;
    private int prefixLength;
-   public static int[] visitorCounters = new int[6];
+   public static int[] visitorCounters = new int[8];
    private static final Pattern tempFileP = Pattern.compile("(%7E|~)(\\$.*)");
    private Set<String> fileNameSet;
 
@@ -71,16 +71,19 @@ public class EditingFolderVisitor implements IResourceDeltaVisitor {
       visitorCounters[4]++;
       if (!tempFileP.matcher(fileName).matches()) { // skip temporary files
          File file = AWorkspace.getIFile(visitPathStr).getLocation().toFile();
-
+         visitorCounters[5]++;
          if (file.exists()) {
+            visitorCounters[6]++;
+            // we have seen this file before so this should be a save and not just a file creation
             if (fileNameSet.contains(file.getName())) {
-               visitorCounters[5]++;
+               visitorCounters[7]++;
                UpdateArtifactJob updateJob = new UpdateArtifactJob();
                updateJob.setWorkingFile(file);
                updateJob.setUser(false);
                updateJob.setPriority(Job.SHORT);
                updateJob.schedule();
             } else {
+               // don't process file on the first time it is "modified" because this happens as soon as the file is written out (and not yet modified)
                fileNameSet.add(file.getName());
             }
          }
