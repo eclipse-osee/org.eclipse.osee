@@ -13,8 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -23,6 +22,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -42,7 +42,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
 
    private static String NAMESPACE = "osee.skynet.gui.MergeXViewer";
    private final XMergeViewer xCommitViewer;
-   private Branch workingBranch;
+   private TransactionArtifactChange[] transactionArtifactChanges;
 
    /**
     * @param parent
@@ -113,12 +113,12 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setWorkingBranch(Branch workingBranch) throws SQLException {
-      this.workingBranch = workingBranch;
-      Set<Branch> branches = new HashSet<Branch>();
-      branches.add(workingBranch.getParentBranch());
-      setInput(branches.toArray());
-      expandAll();
+   public void setWorkingBranch(TransactionArtifactChange[] transactionArtifactChanges) throws SQLException {
+      this.transactionArtifactChanges = transactionArtifactChanges;
+//      Set<Branch> branches = new HashSet<Branch>();
+//      branches.add(workingBranch.getParentBranch());
+      setInput(transactionArtifactChanges);
+//      expandAll();
    }
 
    /**
@@ -172,13 +172,6 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       return xCommitViewer;
    }
 
-   /**
-    * @return the workingBranch
-    */
-   public Branch getWorkingBranch() {
-      return workingBranch;
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
     */
@@ -192,5 +185,12 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
    public boolean runOnEventInDisplayThread() {
       return true;
    }
+
+/**
+ * @return the transactionArtifactChanges
+ */
+public TransactionArtifactChange[] getTransactionArtifactChanges() {
+	return transactionArtifactChanges;
+}
 
 }

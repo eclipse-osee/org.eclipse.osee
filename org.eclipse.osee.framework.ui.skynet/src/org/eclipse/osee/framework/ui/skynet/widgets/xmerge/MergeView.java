@@ -12,21 +12,18 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.sql.SQLException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -45,7 +42,7 @@ public class MergeView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
    private static String HELP_CONTEXT_ID = "MergeManagerView";
    private XMergeViewer xMergeViewer;
-   private IBranchArtifact branchArtifact;
+   private TransactionArtifactChange[] transactionArtifactChanges;
    private static final String INPUT = "MergeViewInput";
 
    /**
@@ -54,7 +51,7 @@ public class MergeView extends ViewPart implements IActionable {
    public MergeView() {
    }
 
-   public static void openViewUpon(final IBranchArtifact branchArtifact) {
+   public static void openViewUpon(final TransactionArtifactChange[] transactionArtifactChanges) {
       Job job = new Job("Open Merge View") {
 
          @Override
@@ -62,13 +59,13 @@ public class MergeView extends ViewPart implements IActionable {
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
                   try {
-                     IWorkbenchPage page = AWorkbench.getActivePage();
-                     MergeView commitManagerView =
-                           (MergeView) page.showView(VIEW_ID,
-                                 String.valueOf(branchArtifact.getWorkingBranch().getBranchId()),
-                                 IWorkbenchPage.VIEW_ACTIVATE);
-                     commitManagerView.explore(branchArtifact);
-
+                	  if(transactionArtifactChanges.length == 0){
+                		 
+                	  } else{
+                		  IWorkbenchPage page = AWorkbench.getActivePage();
+                		  MergeView mergeView = (MergeView)page.showView(MergeView.VIEW_ID, String.valueOf(transactionArtifactChanges[0].getArtifact().getBranch().getBranchId()),IWorkbenchPage.VIEW_ACTIVATE);
+                		  mergeView.explore(transactionArtifactChanges);
+                	  }
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                   }
@@ -109,8 +106,11 @@ public class MergeView extends ViewPart implements IActionable {
       xMergeViewer = new XMergeViewer();
       xMergeViewer.setDisplayLabel(false);
       xMergeViewer.createWidgets(parent, 1);
+      
+      
+      
       try {
-         if (branchArtifact != null) xMergeViewer.setArtifact(branchArtifact.getArtifact(), "");
+         if (transactionArtifactChanges != null) xMergeViewer.setBranch(transactionArtifactChanges);
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
@@ -119,12 +119,12 @@ public class MergeView extends ViewPart implements IActionable {
 
    }
 
-   public void explore(IBranchArtifact branchArtifact) {
-      this.branchArtifact = branchArtifact;
+   public void explore(TransactionArtifactChange[] transactionArtifactChanges) {
+      this.transactionArtifactChanges = transactionArtifactChanges;
       try {
-         if (xMergeViewer != null && branchArtifact != null) xMergeViewer.setArtifact(branchArtifact.getArtifact(),
-               "");
-         setPartName("Commit Manager: " + branchArtifact.getWorkingBranch().getBranchShortestName());
+         if (transactionArtifactChanges != null) xMergeViewer.setBranch(transactionArtifactChanges);
+         setPartName("Commit Manager: " +"");
+         
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
@@ -137,27 +137,28 @@ public class MergeView extends ViewPart implements IActionable {
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
-
-      try {
-         if (memento != null) {
-            memento = memento.getChild(INPUT);
-            if (memento != null) {
-               int artId = memento.getInteger("artId");
-               if (artId > 0) {
-                  int branchId = memento.getInteger("branchId");
-                  if (branchId > 0) {
-                     Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
-                     if (branch != null) {
-                        Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, branch);
-                        if (artifact != null) explore((IBranchArtifact) artifact);
-                     }
-                  }
-               }
-            }
-         }
-      } catch (Exception ex) {
-         OSEELog.logWarning(getClass(), "Merge View error on init: " + ex.getLocalizedMessage(), false);
-      }
+//
+//      try {
+//         if (memento != null) {
+//            memento = memento.getChild(INPUT);
+//            if (memento != null) {
+////               int artId = memento.getInteger("artId");
+////               if (artId > 0) {
+//                  int branchId = memento.getInteger("branchId");
+//                  if (branchId > 0) {
+//                     Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
+//                     if (branch != null) {
+////                        Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, branch);
+////                        if (artifact != null) 
+//                        	explore(branch);
+//                     }
+//                  }
+////               }
+//            }
+//         }
+//      } catch (Exception ex) {
+//         OSEELog.logWarning(getClass(), "Merge View error on init: " + ex.getLocalizedMessage(), false);
+//      }
    }
 
    /*
@@ -168,13 +169,13 @@ public class MergeView extends ViewPart implements IActionable {
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
-      try {
-         memento = memento.createChild(INPUT);
-         memento.putInteger("artId", branchArtifact.getArtifact().getArtId());
-         memento.putInteger("branchId", branchArtifact.getArtifact().getBranch().getBranchId());
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-      }
+//      try {
+//         memento = memento.createChild(INPUT);
+//         memento.putInteger("artId", branchArtifact.getArtifact().getArtId());
+//         memento.putInteger("branchId", branch.getBranchId());
+//      } catch (Exception ex) {
+//         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+//      }
    }
 
 }

@@ -14,11 +14,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -294,15 +293,16 @@ public class XViewer extends TreeViewer {
    }
 
    public String getStatusLine1() {
-      StringBuffer sb = new StringBuffer();
-      int loadedNum = 0;
-      if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) loadedNum =
-            ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
-      sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
-      sb.append(customize.getStatusLabelAddition());
-      sb.append(filterDataUI.getStatusLabelAddition());
-      sb.append(getStatusString());
-      return sb.toString().replaceAll(" - $", "");
+//      StringBuffer sb = new StringBuffer();
+//      int loadedNum = 0;
+//      if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) loadedNum =
+//            ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
+//      sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
+//      sb.append(customize.getStatusLabelAddition());
+//      sb.append(filterDataUI.getStatusLabelAddition());
+//      sb.append(getStatusString());
+//      return sb.toString().replaceAll(" - $", "");
+	   return "";
    }
 
    public String getStatusLine2() {

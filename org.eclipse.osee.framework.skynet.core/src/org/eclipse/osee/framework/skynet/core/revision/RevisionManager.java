@@ -22,6 +22,7 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -44,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactIdSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -62,6 +65,9 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
+import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
+import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionAttributeChange;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
@@ -355,20 +361,136 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       return changes;
    }
 
-   public void getConflictsPerBranch(Branch source, Branch destination, TransactionId baselineTRansaction) {
-      String ATTRIBUTE_CONFLICTS =
-      //45sec
-            "SELECT t3.art_id, t3.value, t1.gamma_id as source_gamma, t1.tx_type as source_change t9.value, t9.gamma_id as dest_gamma FROM osee_define_txs t1, osee_define_attribute t9, osee_define_tx_details t2, osee_define_attribute t3, (SELECT MAX(t4.transaction_id) AS transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = 2 GROUP BY t6.attr_id ORDER BY transaction_id) t44 WHERE t1.transaction_id = t2.transaction_id AND t2.transaction_id > 343 AND t2.branch_id = 9 AND t1.gamma_id = t3.gamma_id AND t3.attr_id = t44.attr_id AND EXISTS (SELECT txs.gamma_id FROM osee_define_txs txs, osee_define_attribute attr WHERE attr.attr_id = t44.attr_id AND attr.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id and t9.gamma_id = txs.gamma_id AND t3.gamma_id <> txs.gamma_id AND txs.gamma_id NOT IN (SELECT gamma_id FROM osee_define_txs WHERE transaction_id = 343))";
-      String ARTIFACT_CONFLICTS =
-      //12sec   
-            "SELECT t3.art_id, t1.gamma_id AS source_gamma, t1.tx_type AS source_change, t9.gamma_id AS dest_gamma FROM osee_define_txs t1, osee_define_attribute t9, osee_define_tx_details t2, osee_define_artifact_version t3, (SELECT MAX(t4.transaction_id) AS transaction_id, t6.art_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_artifact_version t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = 2 GROUP BY t6.art_id ORDER BY transaction_id) t44 WHERE t1.transaction_id = t2.transaction_id AND t2.transaction_id > 343 AND t2.branch_id = 9 AND t1.gamma_id = t3.gamma_id AND t3.art_id = t44.art_id AND EXISTS (SELECT txs.gamma_id FROM osee_define_txs txs, osee_define_artifact_version artver WHERE artver.art_id = t44.art_id AND artver.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id AND t9.gamma_id = txs.gamma_id AND t3.gamma_id <> txs.gamma_id AND txs.gamma_id NOT IN (SELECT gamma_id FROM osee_define_txs WHERE transaction_id = 343))";
-      String A_RELATION_CONFLICTS = "";
-      String B_RELATION_CONFLICTS = "";
+   public Collection<TransactionArtifactChange> getConflictsPerBranch(Branch source, Branch destination, TransactionId baselineTransaction) throws SQLException {
+      Map<Integer, TransactionArtifactChange> transactionArtifactChanges =
+            new HashMap<Integer, TransactionArtifactChange>();
+      ConnectionHandlerStatement connectionHandlerStatement = null;
 
-      //get artifact
-      //add artifact to temp cache as artifact change
-      //add attr changes to art change
-      //add rel changes to art change
+      try {
+         String ATTRIBUTE_CONFLICTS =
+               "SELECT art4.art_type_id, t1.tx_type, t3.modification_id, t3.attr_type_id, t3.art_id, t3.attr_id, t3.gamma_id as source_gamma, t3.value as source_value, t3.content as source_content, t8.gamma_id as dest_gamma, t8.value as dest_value, t8.content as dest_content FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact art4, (SELECT MAX(t4.transaction_id) AS transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6 WHERE  t4.tx_type <> -4 and t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? GROUP BY t6.attr_id ORDER BY transaction_id) t44, osee_Define_txs t7, osee_define_attribute t8 WHERE t3.art_id = art4.art_id and t44.transaction_id = t7.transaction_id and t7.gamma_id = t8.gamma_id and t8.attr_id = t44.attr_id and t1.transaction_id = t2.transaction_id AND t2.transaction_id > ? AND t1.tx_type <> -4 AND t2.branch_id = ? AND t1.gamma_id = t3.gamma_id AND t3.attr_id = t44.attr_id AND EXISTS(SELECT 'x' FROM osee_define_txs txs, osee_define_attribute attr WHERE attr.attr_id = t44.attr_id AND attr.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id AND t3.gamma_id <> txs.gamma_id) order by t3.art_id, t3.attr_id, t3.gamma_id desc";
+         String DELETE_ARTIFACT_CONFLICTS =
+             "SELECT t1.tx_type, t3.modification_id, t3.art_id, t3.gamma_id, t8.gamma_id FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_artifact_version t3, (SELECT MAX(t4.transaction_id) AS transaction_id, t6.art_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_artifact_version t6 WHERE t4.tx_type <> -4 and t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? GROUP BY t6.art_id ORDER BY transaction_id) t44, osee_Define_txs t7, osee_define_artifact_version t8 WHERE t44.transaction_id = t7.transaction_id and t7.gamma_id = t8.gamma_id and t8.art_id = t44.art_id and t1.transaction_id = t2.transaction_id AND t2.transaction_id > ? AND t1.tx_type =-3 AND t2.branch_id = ? AND t1.gamma_id = t3.gamma_id AND t3.art_id = t44.art_id AND EXISTS (SELECT 'x' FROM osee_define_txs txs, osee_define_artifact_version attr WHERE attr.art_id = t44.art_id AND attr.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id AND t3.gamma_id <> txs.gamma_id) order by t3.art_id, t3.gamma_id desc";
+       String RELATION_CONFLICTS =
+             "SELECT t1.tx_type, t3.modification_id, t3.rel_link_id, t3.a_art_id, t3.b_art_id, t3.gamma_id, t8.gamma_id FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_rel_link t3, (SELECT MAX(t4.transaction_id) AS transaction_id, t6.rel_link_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_rel_link t6 WHERE t4.tx_type <> -4 and t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? GROUP BY t6.rel_link_id ORDER BY transaction_id) t44, osee_Define_txs t7, osee_define_rel_link t8 WHERE t44.transaction_id = t7.transaction_id and t7.gamma_id = t8.gamma_id and t8.rel_link_id = t44.rel_link_id and t1.transaction_id = t2.transaction_id AND t2.transaction_id > ? AND t1.tx_type <> -4 AND t2.branch_id = ? AND t1.gamma_id = t3.gamma_id AND t3.rel_link_id = t44.rel_link_id AND EXISTS (SELECT 'x' FROM osee_define_txs txs, osee_define_rel_link attr WHERE attr.rel_link_id = t44.rel_link_id AND attr.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id AND t3.gamma_id <> txs.gamma_id) order by t3.rel_link_id, a_art_id, b_art_id, t3.gamma_id desc";
+
+         connectionHandlerStatement =
+               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS, SQL3DataType.INTEGER, destination.getBranchId(),
+                     SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(), SQL3DataType.INTEGER,
+                     source.getBranchId());
+
+         TransactionId sourceHeadTransactionId = transactionIdManager.getEditableTransactionId(source);
+         ResultSet resultSet = connectionHandlerStatement.getRset();
+         TransactionArtifactChange transactionArtifactChange;
+         int attrId = 0;
+
+         while (resultSet.next()) {
+            int nextAttrId = resultSet.getInt("attr_id");
+            int artId = resultSet.getInt("art_id");
+            int sourceGamma = resultSet.getInt("source_gamma");
+            int destGamma = resultSet.getInt("dest_gamma");
+            int txTypeId = resultSet.getInt("tx_type");
+            int attrTypeId = resultSet.getInt("attr_type_id");
+
+            if (attrId != nextAttrId) {
+               attrId = nextAttrId;
+               if (transactionArtifactChanges.containsKey(artId)) {
+                  transactionArtifactChange = transactionArtifactChanges.get(artId);
+               } else {
+                  transactionArtifactChange =
+                        new TransactionArtifactChange(TransactionType.getTransactionType(txTypeId),
+                              ChangeType.CONFLICTING, baselineTransaction, sourceHeadTransactionId, artId, 2, sourceGamma,
+                              configurationManager.getArtifactSubtypeDescriptor(resultSet.getInt("art_type_id"),
+                                    sourceHeadTransactionId));
+
+                  transactionArtifactChanges.put(attrId, transactionArtifactChange);
+               }
+               transactionArtifactChange.addAttributeChange(new TransactionAttributeChange(
+                     TransactionType.getTransactionType(txTypeId), ChangeType.CONFLICTING, attrId, sourceGamma,
+                     resultSet.getString("source_value"), resultSet.getBinaryStream("source_content"), destGamma,
+                     resultSet.getString("dest_value"), resultSet.getBinaryStream("dest_content"), attrTypeId, source));
+            }
+         }
+
+         if(!transactionArtifactChanges.isEmpty()){
+         List<ISearchPrimitive> artIds = new LinkedList<ISearchPrimitive>();
+			for (Integer integer : transactionArtifactChanges.keySet()) {
+				artIds.add(new ArtifactIdSearch(integer));
+			}
+			ArtifactPersistenceManager.getInstance().getArtifacts(artIds, true, source);
+         }
+
+         connectionHandlerStatement =
+             ConnectionHandler.runPreparedQuery(DELETE_ARTIFACT_CONFLICTS, SQL3DataType.INTEGER, destination.getBranchId(),
+                   SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(), SQL3DataType.INTEGER,
+                   source.getBranchId());
+         
+         connectionHandlerStatement =
+             ConnectionHandler.runPreparedQuery(RELATION_CONFLICTS, SQL3DataType.INTEGER, destination.getBranchId(),
+                   SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(), SQL3DataType.INTEGER,
+                   source.getBranchId());
+         
+      } finally {
+         DbUtil.close(connectionHandlerStatement);
+      }
+      return transactionArtifactChanges.values();
+   }
+   
+   private Map<Integer, TransactionArtifactChange> loadAttributeConflicts(Branch source, Branch destination, TransactionId baselineTransaction, Map<Integer, TransactionArtifactChange> transactionArtifactChanges) throws SQLException{
+	   ConnectionHandlerStatement connectionHandlerStatement = null;
+	      try {
+	         String ATTRIBUTE_CONFLICTS =
+	             "SELECT t1.tx_type, t3.modification_id, t3.rel_link_id, t3.a_art_id, t3.b_art_id, t3.gamma_id, t8.gamma_id FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_rel_link t3, (SELECT MAX(t4.transaction_id) AS transaction_id, t6.rel_link_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_rel_link t6 WHERE t4.tx_type <> -4 and t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? GROUP BY t6.rel_link_id ORDER BY transaction_id) t44, osee_Define_txs t7, osee_define_rel_link t8 WHERE t44.transaction_id = t7.transaction_id and t7.gamma_id = t8.gamma_id and t8.rel_link_id = t44.rel_link_id and t1.transaction_id = t2.transaction_id AND t2.transaction_id > ? AND t1.tx_type <> -4 AND t2.branch_id = ? AND t1.gamma_id = t3.gamma_id AND t3.rel_link_id = t44.rel_link_id AND EXISTS (SELECT 'x' FROM osee_define_txs txs, osee_define_rel_link attr WHERE attr.rel_link_id = t44.rel_link_id AND attr.gamma_id = txs.gamma_id AND txs.transaction_id = t44.transaction_id AND t3.gamma_id <> txs.gamma_id) order by t3.rel_link_id, a_art_id, b_art_id, t3.gamma_id desc";
+
+	         connectionHandlerStatement =
+	               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS, SQL3DataType.INTEGER, destination.getBranchId(),
+	                     SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(), SQL3DataType.INTEGER,
+	                     source.getBranchId());
+
+	         TransactionId sourceHeadTransactionId = transactionIdManager.getEditableTransactionId(source);
+	         ResultSet resultSet = connectionHandlerStatement.getRset();
+	         TransactionArtifactChange transactionArtifactChange;
+	         int attrId = 0;
+
+	         while (resultSet.next()) {
+	            int nextAttrId = resultSet.getInt("attr_id");
+	            int artId = resultSet.getInt("art_id");
+	            int sourceGamma = resultSet.getInt("source_gamma");
+	            int destGamma = resultSet.getInt("dest_gamma");
+	            int txTypeId = resultSet.getInt("tx_type");
+	            int attrTypeId = resultSet.getInt("attr_type_id");
+
+	            if (attrId != nextAttrId) {
+	               attrId = nextAttrId;
+	               if (transactionArtifactChanges.containsKey(artId)) {
+	                  transactionArtifactChange = transactionArtifactChanges.get(artId);
+	               } else {
+	                  transactionArtifactChange =
+	                        new TransactionArtifactChange(TransactionType.getTransactionType(txTypeId),
+	                              ChangeType.CONFLICTING, baselineTransaction, sourceHeadTransactionId, artId, 2, sourceGamma,
+	                              configurationManager.getArtifactSubtypeDescriptor(resultSet.getInt("art_type_id"),
+	                                    sourceHeadTransactionId));
+
+	                  transactionArtifactChanges.put(attrId, transactionArtifactChange);
+	               }
+	               transactionArtifactChange.addAttributeChange(new TransactionAttributeChange(
+	                     TransactionType.getTransactionType(txTypeId), ChangeType.CONFLICTING, attrId, sourceGamma,
+	                     resultSet.getString("source_value"), resultSet.getBinaryStream("source_content"), destGamma,
+	                     resultSet.getString("dest_value"), resultSet.getBinaryStream("dest_content"), attrTypeId, source));
+	            }
+	         }
+
+	         if(!transactionArtifactChanges.isEmpty()){
+	         List<ISearchPrimitive> artIds = new LinkedList<ISearchPrimitive>();
+				for (Integer integer : transactionArtifactChanges.keySet()) {
+					artIds.add(new ArtifactIdSearch(integer));
+				}
+				ArtifactPersistenceManager.getInstance().getArtifacts(artIds, true, source);
+	         }
+	      } finally {
+	         DbUtil.close(connectionHandlerStatement);
+	      }
+	   return transactionArtifactChanges;
    }
 
    private Collection<AttributeChange> getAttributeChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId) {

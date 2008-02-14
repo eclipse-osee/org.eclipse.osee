@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WholeDocumentArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
@@ -20,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
  */
 public class WordArtifactFactory extends ArtifactFactory<WordArtifact> {
    private static WordArtifactFactory factory = null;
+   private static String[] WholeArtifactMatches = new String[]{"Checklist (WordML)", "Guideline", "How To","Roadmap", "Template (WordML)", "Test Procedure WML", "Work Instruction","Work Sheet (WordML)"};
 
    private WordArtifactFactory(int factoryId) {
       super(factoryId);
@@ -39,7 +42,7 @@ public class WordArtifactFactory extends ArtifactFactory<WordArtifact> {
    @Override
    public WordArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
       WordArtifact artifact = null;
-      if (factoryKey.matches("Checklist [(]WordML[)]|Template [(]WordML[)]|Work Sheet [(]WordML[)]")) {
+      if (Arrays.binarySearch(WholeArtifactMatches, factoryKey) >= 0){
          artifact = new WholeDocumentArtifact(this, guid, humandReadableId, branch);
       } else {
          artifact = new WordArtifact(this, guid, humandReadableId, branch);

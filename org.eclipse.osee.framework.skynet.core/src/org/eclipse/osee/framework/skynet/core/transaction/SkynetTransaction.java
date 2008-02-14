@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -67,7 +69,7 @@ public class SkynetTransaction {
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("transaction_id", TXD_COMMENT, "time", "author",
                "branch_id");
    private static final String INSERT_INTO_TRANSACTION_TABLE =
-         " INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id) VALUES (?, ?)";
+         " INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id, tx_type) VALUES (?, ?, ?)";
 
    private static final String DELETE_TRANSACTION_DETAIL =
          "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id =?";
@@ -149,7 +151,8 @@ public class SkynetTransaction {
    public void addToTransactionTableBatch(int gammaId) {
       if (batchToTransactionTable == null) throw new IllegalArgumentException("batchToTransactionTable can not be null");
 
-      batchToTransactionTable.add(new Object[] {SQL3DataType.INTEGER, transactionNumber, SQL3DataType.BIGINT, gammaId});
+      batchToTransactionTable.add(new Object[] {SQL3DataType.INTEGER, transactionNumber, SQL3DataType.BIGINT, gammaId,
+            SQL3DataType.BIGINT, 0});
    }
 
    public void addToBatch(String sql, Object... data) {
@@ -210,7 +213,9 @@ public class SkynetTransaction {
 
       for (ITransactionData transactionData : map.keySet()) {
          ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE, SQL3DataType.INTEGER,
-               transactionData.getTransactionId(), SQL3DataType.INTEGER, transactionData.getGammaId());
+               transactionData.getTransactionId(), SQL3DataType.INTEGER, transactionData.getGammaId(),
+               SQL3DataType.INTEGER, TransactionType.convertModificationTypeToTransactionType(
+                     transactionData.getModificationType()).getId());
          ConnectionHandler.runPreparedUpdate(transactionData.getTransactionChangeSql(),
                transactionData.getTransactionChangeData().toArray());
       }

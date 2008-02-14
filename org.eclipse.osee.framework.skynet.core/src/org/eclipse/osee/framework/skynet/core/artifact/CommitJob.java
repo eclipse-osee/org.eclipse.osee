@@ -16,9 +16,11 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -124,13 +126,18 @@ class CommitJob extends Job {
    private static final String DELETE_TO_BRANCH_TAG_DATA =
          "DELETE FROM osee_tag_art_map tam1 WHERE tam1.branch_id = ? AND EXISTS (SELECT 'x' FROM osee_tag_art_map tam2 WHERE tam1.art_id = tam2.art_id AND tam1.tag_id = tam2.tag_id AND branch_id = ?)";
    private static final String MOVE_TAG_DATA = "UPDATE osee_tag_art_map SET branch_id = ? WHERE branch_id = ?";
+   private static final String COMMIT_ATTRIBUTE =
+         "INSERT INTO OSEE_DEFINE_TXS(transaction_id, gamma_id, tx_type)" + " SELECT ?, txs1.gamma_id, ?" + " FROM osee_define_txs txs1," + " osee_define_tx_details txd2," + " osee_define_attribute attr3" + " WHERE txd2.branch_id = ?" + " AND txd2.transaction_id = txs1.transaction_id" + " AND txs1.gamma_id = attr3.gamma_id" + " AND txs1.transaction_id =" + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_attribute t6" + " WHERE t4.tx_type <> ? and t4.gamma_id = t6.gamma_id" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = txd2.branch_id" + " AND t6.attr_id = attr3.attr_id" + " GROUP BY t6.attr_id)" + " AND(txs1.tx_type <> ? OR EXISTS" + " (SELECT 'x'" + " FROM osee_define_txs txs7, osee_define_attribute attr8" + " WHERE txs7.transaction_id = ?" + " AND attr8.attr_id = attr3.attr_id" + " AND txs7.gamma_id = attr8.gamma_id))";
+   private static final String COMMIT_RELATIONS =
+         "INSERT INTO OSEE_DEFINE_TXS(transaction_id, gamma_id, tx_type)" + " SELECT ?, txs1.gamma_id, ?" + " FROM osee_define_txs txs1," + " osee_define_tx_details txd2," + " osee_define_rel_link rel3" + " WHERE txd2.branch_id = ?" + " AND txd2.transaction_id = txs1.transaction_id" + " AND txs1.gamma_id = rel3.gamma_id" + " AND txs1.transaction_id =" + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_rel_link t6" + " WHERE t4.tx_type <> ? and t4.gamma_id = t6.gamma_id" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = txd2.branch_id" + " AND t6.rel_link_id = rel3.rel_link_id" + " GROUP BY t6.rel_link_id)" + " AND(txs1.tx_type <> ? OR EXISTS" + " (SELECT 'x'" + " FROM osee_define_txs txs7, osee_define_rel_link rel8" + " WHERE txs7.transaction_id = ?" + " AND rel8.rel_link_id = rel3.rel_link_id" + " AND txs7.gamma_id = rel8.gamma_id))";
+   private static final String COMMIT_ARTIFACT =
+         "INSERT INTO OSEE_DEFINE_TXS(transaction_id, gamma_id, tx_type)" + " SELECT ?, txs1.gamma_id, ?" + " FROM osee_define_txs txs1," + " osee_define_tx_details txd2," + " osee_define_artifact_version atv3" + " WHERE txd2.branch_id = ?" + " AND txd2.transaction_id = txs1.transaction_id" + " AND txs1.gamma_id = atv3.gamma_id" + " AND txs1.transaction_id =" + " (SELECT MAX(t4.transaction_id) AS" + " transaction_id" + " FROM osee_define_txs t4," + " osee_define_tx_details t5," + " osee_define_artifact_version t6" + " WHERE t4.tx_type <> ? and t4.gamma_id = t6.gamma_id" + " AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = txd2.branch_id" + " AND t6.art_id = atv3.art_id" + " GROUP BY t6.art_id)" + " AND(txs1.tx_type <> ? OR EXISTS" + " (SELECT 'x'" + " FROM osee_define_txs txs7, osee_define_artifact_version atv8" + " WHERE txs7.transaction_id = ?" + " AND atv8.art_id = atv3.art_id" + " AND txs7.gamma_id = atv8.gamma_id))";
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private IProgressMonitor monitor;
-
    private CommitDbTx commitDbTx;
 
    public CommitJob(Branch toBranch, Branch fromBranch, boolean archiveBranch) {
@@ -161,14 +168,12 @@ class CommitJob extends Job {
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-
          toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, Status.OK, ex.getLocalizedMessage(), ex);
       }
       return toReturn;
    }
 
    private final class CommitDbTx extends AbstractDbTxTemplate {
-
       private TransactionId fromTransactionId;
       private int newTransactionNumber;
       private final Branch toBranch;
@@ -208,30 +213,36 @@ class CommitJob extends Job {
             sql = BRANCH_COMMIT;
             accessControlManager.removeAllPermissionsFromBranch(fromBranch);
          } else {
-            newTransactionNumber = branchManager.addTransactionToDatabase(toBranch, fromTransactionId, userToBlame);
-            fromBranchId = fromTransactionId.getBranch().getBranchId();
-            sql = TRANSACTION_COMMIT;
+            //            newTransactionNumber = branchManager.addTransactionToDatabase(toBranch, fromTransactionId, userToBlame);
+            //            fromBranchId = fromTransactionId.getBranch().getBranchId();
+            //            sql = TRANSACTION_COMMIT;
          }
 
          monitor.worked(25);
          monitor.setTaskName("Commit transactions");
 
          int insertCount =
-               ConnectionHandler.runPreparedUpdateReturnCount(sql, SQL3DataType.INTEGER, newTransactionNumber,
-                     SQL3DataType.INTEGER, TransactionType.COMMITTED.getId(), SQL3DataType.INTEGER, fromBranchId,
-                     SQL3DataType.INTEGER, baseTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                     baseTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                     baseTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                     baseTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ARTIFACT, SQL3DataType.INTEGER,
+                     newTransactionNumber, SQL3DataType.INTEGER, TransactionType.COMMITTED.getId(),
+                     SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
+                     SQL3DataType.INTEGER, TransactionType.DELETED.getId(), SQL3DataType.INTEGER,
                      baseTransactionId.getTransactionNumber());
 
-         monitor.worked(50);
-         monitor.setTaskName("Compress transaction data");
+         insertCount +=
+               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ATTRIBUTE, SQL3DataType.INTEGER,
+                     newTransactionNumber, SQL3DataType.INTEGER, TransactionType.COMMITTED.getId(),
+                     SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
+                     SQL3DataType.INTEGER, TransactionType.DELETED.getId(), SQL3DataType.INTEGER,
+                     baseTransactionId.getTransactionNumber());
+
+         insertCount +=
+               ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_RELATIONS, SQL3DataType.INTEGER,
+                     newTransactionNumber, SQL3DataType.INTEGER, TransactionType.COMMITTED.getId(),
+                     SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
+                     SQL3DataType.INTEGER, TransactionType.DELETED.getId(), SQL3DataType.INTEGER,
+                     baseTransactionId.getTransactionNumber());
 
          if (insertCount > 0) {
-            TransactionCompressor txCompressor = new TransactionCompressor(false, newTransactionNumber);
-            txCompressor.execute();
-
             transactionIdManager.resetEditableTransactionId(newTransactionNumber, toBranch);
             tagArtifacts(toBranch, fromBranchId, monitor);
 

@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
@@ -68,8 +69,11 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
+import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -94,8 +98,10 @@ import org.eclipse.osee.framework.ui.skynet.export.ImportBranchJob;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetSelections;
+import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.osee.framework.ui.swt.ColumnSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -312,7 +318,6 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       menuManager.add(new Separator());
       createMarkAsFavoriteCommand(menuManager);
       menuManager.add(new Separator());
-      // createClipboardCommand(menuManager);
       createDeleteBranchCommand(menuManager);
       createDeleteTransactionCommand(menuManager);
       createMoveTransactionCommand(menuManager);
@@ -323,7 +328,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       menuManager.add(new Separator());
       createViewTableMenuItem(menuManager);
       menuManager.add(new Separator());
-      createAccessControlMenuItem(menuManager);
+      createAccessControlCommand(menuManager);
+      createMergeViewCommand(menuManager);
 
       getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.branch.BranchView", menuManager, branchTable);
 
@@ -342,7 +348,69 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       loadPreferences();
    }
 
-   private Preferences getViewPreference() {
+   /**
+ * @param menuManager
+ */
+  class BranchArtifact implements IBranchArtifact{
+
+	  private Branch branch;
+	  
+	  public BranchArtifact(Branch branch){
+		  this.branch = branch;
+	  }
+	/* (non-Javadoc)
+	 * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getArtifact()
+	 */
+	public Artifact getArtifact() {
+		try {
+			return branch.getAssociatedArtifact();
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, ex.toString(), ex);
+		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getWorkingBranch()
+	 */
+	public Branch getWorkingBranch() throws IllegalStateException, SQLException {
+		return branch;
+	}
+	
+}
+private void createMergeViewCommand(MenuManager menuManager) {
+    CommandContributionItem accessControlCommand =
+        Commands.getLocalCommandContribution(getSite(), "mergeViewCommand", "Merge View", null, null,
+              null, "M", null, null);
+  menuManager.add(accessControlCommand);
+
+  handlerService.activateHandler(accessControlCommand.getId(),
+
+  new AbstractSelectionEnabledHandler(menuManager) {
+     @Override
+     public Object execute(ExecutionEvent event) throws ExecutionException {
+        IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+        Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+        try {
+           if (selectedBranch != null) {
+        	   TransactionArtifactChange[] transactionArtifactChanges = new TransactionArtifactChange[0];
+        	   MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(selectedBranch, selectedBranch.getParentBranch(), TransactionIdManager.getInstance().getParentBaseTransaction(selectedBranch)).toArray(transactionArtifactChanges));
+           }
+        } catch (Exception ex) {
+           logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+        }
+
+        return null;
+     }
+
+     @Override
+     public boolean isEnabled() {
+    	 return true;
+     }
+  });
+}
+
+private Preferences getViewPreference() {
       return preferencesService.getRootNode().node(InstanceScope.SCOPE).node(VIEW_ID);
    }
 
@@ -429,7 +497,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       }
    }
 
-   private void createAccessControlMenuItem(MenuManager menuManager) {
+   private void createAccessControlCommand(MenuManager menuManager) {
       CommandContributionItem accessControlCommand =
             Commands.getLocalCommandContribution(getSite(), "accessControlCommand", "Access Control...", null, null,
                   null, "A", null, null);
