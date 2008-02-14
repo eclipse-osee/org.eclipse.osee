@@ -27,7 +27,6 @@ public enum AutoRunColumn {
    Hour_Scheduled("Hour", 40, SWT.CENTER, true, SortDataType.Integer, false),
    Minute_Scheduled("Min", 40, SWT.CENTER, true, SortDataType.Integer, false),
    Run_Db("Run DB", 80, SWT.LEFT, true, SortDataType.String, false),
-   Db_Config("DB Config", 80, SWT.LEFT, true, SortDataType.String, false),
    Task_Type("Task Type", 80, SWT.LEFT, true, SortDataType.String, false),
    Category("Category", 80, SWT.LEFT, true, SortDataType.String, false),
    Description("Description", 700, SWT.LEFT, true, SortDataType.String, false);

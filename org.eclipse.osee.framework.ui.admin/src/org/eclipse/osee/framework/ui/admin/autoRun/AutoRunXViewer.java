@@ -18,10 +18,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -143,32 +140,6 @@ public class AutoRunXViewer extends XViewer {
       if (items.length > 0) for (TreeItem item : items)
          arts.add((IAutoRunTask) item.getData());
       return arts;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.viewer.XViewer#handleAltLeftClick(org.eclipse.swt.widgets.TreeColumn,
-    *      org.eclipse.swt.widgets.TreeItem)
-    */
-   @Override
-   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      try {
-         // System.out.println("Column " + treeColumn.getText() + " item " +
-         // treeItem);
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         AutoRunColumn aCol = AutoRunColumn.getAtsXColumn(xCol);
-         IAutoRunTask userRole = (IAutoRunTask) treeItem.getData();
-         boolean modified = false;
-         if (aCol == AutoRunColumn.Name_Col) {
-            AWorkbench.popup("ERROR", "Not implemented yet");
-         } else
-            throw new IllegalStateException("Unhandled user role column");
-
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiDebug.class, ex, true);
-      }
-      return false;
    }
 
    /* (non-Javadoc)
