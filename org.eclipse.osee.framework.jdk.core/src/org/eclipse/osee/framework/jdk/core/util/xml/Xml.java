@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
 public class Xml {
    private static final String[] XML_CHARS = new String[] {"[&]", "[<]", "[>]", "[\"]"};
    private static final String[] XML_ESCAPES = new String[] {"&amp;", "&lt;", "&gt;", "&quot;"};
+   private static final String LINEFEED = "&#10;";
+   private static final String CARRIAGE_RETURN = "&#13;";
    private static final Pattern squareBracket = Pattern.compile("\\]");
 
    /**
@@ -78,10 +80,8 @@ public class Xml {
    }
 
    public static void writeAsCdata(Appendable appendable, String string) throws IOException {
-      if (string.indexOf('<') == -1
-      //&& string.indexOf('&') == -1 
-      && string.indexOf("]]>") == -1) {
-         appendable.append(string);
+      if (string.indexOf('<') == -1 && string.indexOf('&') == -1 && string.indexOf("]]>") == -1) {
+         writeData(appendable, string);
       } else {
          if (string.indexOf(']') == -1) {
             writeCdata(appendable, string);
@@ -96,7 +96,6 @@ public class Xml {
             }
          }
       }
-
    }
 
    private static void writeCdata(Appendable appendable, String content) throws IOException {
@@ -105,4 +104,16 @@ public class Xml {
       appendable.append("]]>");
    }
 
+   private static void writeData(Appendable appendable, String string) throws IOException {
+      for (int index = 0; index < string.length(); index++) {
+         char value = string.charAt(index);
+         if (value == '\r') {
+            appendable.append(CARRIAGE_RETURN);
+         } else if (value == '\n') {
+            appendable.append(LINEFEED);
+         } else {
+            appendable.append(value);
+         }
+      }
+   }
 }

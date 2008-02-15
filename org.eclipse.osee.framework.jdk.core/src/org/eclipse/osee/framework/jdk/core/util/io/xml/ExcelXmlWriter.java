@@ -30,7 +30,6 @@ public class ExcelXmlWriter extends AbstractSheetWriter {
 
    public static final String defaultEmptyStringXmlRep = "&#248;";
    public static final String defaultEmptyString = "\u00F8";
-   public static final String newLineInCellString = "&#10;";
    public static final String blobMessage = "data stored in EmbeddedClob since longer than 32767 chars";
 
    public ExcelXmlWriter(Writer writer) throws IOException {
