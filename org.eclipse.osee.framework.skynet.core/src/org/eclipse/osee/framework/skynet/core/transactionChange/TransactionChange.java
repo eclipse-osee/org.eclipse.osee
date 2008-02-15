@@ -5,7 +5,10 @@
  */
 package org.eclipse.osee.framework.skynet.core.transactionChange;
 
+import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
@@ -15,7 +18,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public abstract class TransactionChange implements IAdaptable {
-
+   protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(TransactionChange.class);
    private TransactionType transactionType;
    private ChangeType changeType;
    private TransactionId toTransactionId;

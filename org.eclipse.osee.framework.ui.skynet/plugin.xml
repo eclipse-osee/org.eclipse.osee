@@ -282,19 +282,6 @@
    </command>
 		</menuContribution>
 	</extension>
-	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
-		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.ArtifactSearchView">
-			<command commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
-         </command>
-			<separator name="artifactSearchViewCopySeparator" visible="true">
-         </separator>
-   <command
-         commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.tagArtifacts.command">
-   </command>
-			<command commandId="org.eclipse.ui.edit.copy">
-         </command>
-		</menuContribution>
-	</extension>
 	<extension point="org.eclipse.ui.commandImages">ge>
 		<image commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command" icon="images/preview_artifact.gif">
          </image>
@@ -329,6 +316,30 @@
 		</wizard>
 		<category id="org.eclipse.osee.define.import.category" name="OSEE">
       </category>
+  <menuContribution
+        locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView">
+     <menu
+           label="Preview">
+        <command
+              commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
+        </command>
+        <command
+              commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
+        </command>
+     </menu>
+  </menuContribution>
+  <menuContribution
+        locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView.22">
+     <menu
+           label="Preview">
+        <command
+              commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
+        </command>
+        <command
+              commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
+        </command>
+     </menu>
+  </menuContribution>
 	</extension>
 	<extension point="org.eclipse.ui.editors">
 		<editor class="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" contributorClass="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorContributor" default="false" icon="images/laser_16_16.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor" name="Artifact Editor"/>
@@ -577,5 +588,34 @@
           id="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
           name="Http Server">
     </page>
+ </extension>
+	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.ArtifactSearchView">
+			<command commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
+         </command>
+			<separator name="artifactSearchViewCopySeparator" visible="true">
+         </separator>
+   <command
+         commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.tagArtifacts.command">
+   </command>
+			<command commandId="org.eclipse.ui.edit.copy">
+         </command>
+		</menuContribution>
+	</extension>
+ <extension
+       name="The merge view"
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          locationURI="popup:org.eclipse.osee.framework.ui.skynetd.widgets.xmerge.MergeView">
+       <menu
+             label="Preview">
+          <command
+                commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
+          </command>
+          <command
+                commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
+          </command>
+       </menu>
+    </menuContribution>
  </extension>
 </plugin>

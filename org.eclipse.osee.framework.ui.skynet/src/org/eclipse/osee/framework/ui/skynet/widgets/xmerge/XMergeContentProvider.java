@@ -29,14 +29,6 @@ public class XMergeContentProvider implements ITreeContentProvider {
 	   if (parentElement instanceof Object[]) {
        return (Object[]) parentElement;
    }
-//      if (parentElement instanceof Branch) {
-//    	  Branch branch = (Branch)parentElement;
-//          try {
-//             return;
-//          } catch (Exception ex) {
-//             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-//          }
-//       }
       if(parentElement instanceof TransactionArtifactChange){
     	  return ((TransactionArtifactChange)parentElement).getAttributeChanges().toArray();
       }

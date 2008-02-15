@@ -364,6 +364,9 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
    public Collection<TransactionArtifactChange> getConflictsPerBranch(Branch source, Branch destination, TransactionId baselineTransaction) throws SQLException {
       Map<Integer, TransactionArtifactChange> transactionArtifactChanges =
             new HashMap<Integer, TransactionArtifactChange>();
+      
+      //transactionArtifactChanges = loadAttributeConflicts(source, destination, baselineTransaction, transactionArtifactChanges);
+      
       ConnectionHandlerStatement connectionHandlerStatement = null;
 
       try {
@@ -479,7 +482,6 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 	                     resultSet.getString("dest_value"), resultSet.getBinaryStream("dest_content"), attrTypeId, source));
 	            }
 	         }
-
 	         if(!transactionArtifactChanges.isEmpty()){
 	         List<ISearchPrimitive> artIds = new LinkedList<ISearchPrimitive>();
 				for (Integer integer : transactionArtifactChanges.keySet()) {

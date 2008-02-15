@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -29,6 +31,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
@@ -107,14 +110,19 @@ public class MergeView extends ViewPart implements IActionable {
       xMergeViewer.setDisplayLabel(false);
       xMergeViewer.createWidgets(parent, 1);
       
-      
-      
       try {
          if (transactionArtifactChanges != null) xMergeViewer.setBranch(transactionArtifactChanges);
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
+      MenuManager menuManager = new MenuManager();
+      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+      
+      xMergeViewer.getXViewer().getTree().setMenu(menuManager.createContextMenu(xMergeViewer.getXViewer().getTree()));
+      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynetd.widgets.xmerge.MergeView", menuManager, xMergeViewer.getXViewer());
+      
+      getSite().setSelectionProvider(xMergeViewer.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
 
    }

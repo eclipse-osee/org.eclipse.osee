@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.skynet.core.transactionChange;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -82,11 +83,24 @@ public class TransactionArtifactChange extends TransactionChange {
       return destGammaId;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
+      if (adapter == null)
+         throw new IllegalArgumentException("adapter can not be null");
+	else
+		try {
+			if (adapter.isInstance(getArtifact())) {
+			     return getArtifact();
+			  }
+
+			  else if (adapter.isInstance(this)) {
+			     return this;
+			  }
+		} catch (IllegalArgumentException ex) {
+			logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+		}
       return null;
    }
 

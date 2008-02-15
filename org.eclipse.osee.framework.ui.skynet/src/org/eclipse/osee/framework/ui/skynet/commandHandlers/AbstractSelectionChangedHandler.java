@@ -28,15 +28,7 @@ public abstract class AbstractSelectionChangedHandler extends AbstractHandler {
    private ViewerMenuDetectListener viewerMenuDetectListener;
 
    public AbstractSelectionChangedHandler() {
-      if (!PlatformUI.getWorkbench().isClosing()) {
-         viewerMenuDetectListener = new ViewerMenuDetectListener();
-         IWorkbenchPart workbenchPart = AWorkbench.getActivePage().getActivePart();
-         Object object = workbenchPart.getSite().getSelectionProvider();
-
-         if (object instanceof Viewer) {
-            ((Viewer) object).getControl().addMenuDetectListener(viewerMenuDetectListener);
-         }
-      }
+	   addlistener();
    }
    private class ViewerMenuDetectListener implements MenuDetectListener {
       /* (non-Javadoc)
@@ -46,4 +38,18 @@ public abstract class AbstractSelectionChangedHandler extends AbstractHandler {
          fireHandlerChanged(enabledChangedEvent);
       }
    }
+   
+   protected void addlistener() {
+		if (!PlatformUI.getWorkbench().isClosing()) {
+			viewerMenuDetectListener = new ViewerMenuDetectListener();
+			IWorkbenchPart workbenchPart = AWorkbench.getActivePage()
+					.getActivePart();
+			Object object = workbenchPart.getSite().getSelectionProvider();
+
+			if (object instanceof Viewer) {
+				((Viewer) object).getControl().addMenuDetectListener(
+						viewerMenuDetectListener);
+			}
+		}
+	}
 }

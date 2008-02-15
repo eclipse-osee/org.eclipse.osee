@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -30,7 +32,14 @@ public abstract class PreviewArtifactHandler extends AbstractSelectionChangedHan
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private List<Artifact> artifacts;
 
-   /*
+   /**
+ * 
+ */
+public PreviewArtifactHandler() {
+	super();
+}
+
+/*
     * (non-Javadoc)
     * 
     * @see org.eclipse.core.commands.AbstractHandler#execute(org.eclipse.core.commands.ExecutionEvent)
@@ -50,10 +59,13 @@ public abstract class PreviewArtifactHandler extends AbstractSelectionChangedHan
       if (PlatformUI.getWorkbench().isClosing()) {
          return false;
       }
+      
+//      addlistener();
       boolean isEnabled = false;
 
-      ISelectionProvider selectionProvider =
-            AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
+      IWorkbenchPartSite partSite = AWorkbench.getActivePage().getActivePart().getSite();
+      
+      ISelectionProvider selectionProvider = partSite.getSelectionProvider();
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
