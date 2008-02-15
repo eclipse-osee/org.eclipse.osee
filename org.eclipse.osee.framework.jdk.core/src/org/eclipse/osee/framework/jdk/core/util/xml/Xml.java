@@ -78,7 +78,9 @@ public class Xml {
    }
 
    public static void writeAsCdata(Appendable appendable, String string) throws IOException {
-      if (string.indexOf('<') == -1 && string.indexOf('&') == -1 && string.indexOf("]]>") == -1) {
+      if (string.indexOf('<') == -1
+      //&& string.indexOf('&') == -1 
+      && string.indexOf("]]>") == -1) {
          appendable.append(string);
       } else {
          if (string.indexOf(']') == -1) {
