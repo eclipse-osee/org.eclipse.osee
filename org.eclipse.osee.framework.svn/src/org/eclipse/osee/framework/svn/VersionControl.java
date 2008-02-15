@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.svn;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Properties;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.svn.entry.IRepositoryEntry;
@@ -29,6 +30,10 @@ public class VersionControl {
    }
 
    private VersionControl() {
+   }
+
+   public URI getLocalFileMatchingRepositoryUrl(String url, String revision) {
+      return SvnAPI.getInstance().getLocalFileMatchingRepositoryUrl(url, revision);
    }
 
    public IRepositoryEntry getRepositoryEntry(File file) {

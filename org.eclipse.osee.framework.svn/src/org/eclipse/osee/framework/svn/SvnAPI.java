@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.svn;
 
 import java.io.File;
+import java.net.URI;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -145,6 +146,10 @@ public class SvnAPI {
          checkoutMap.put(repositoryResource.getName(), repositoryResource);
       }
       return checkoutMap;
+   }
+
+   public URI getLocalFileMatchingRepositoryUrl(String url, String revision) {
+      return null;
    }
 
    private final class CheckoutOperationBuilder {
