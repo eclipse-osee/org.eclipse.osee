@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 /**
  * @author Ryan D. Brooks
  */
-public class DeleteArchivedBranches implements BlamOperation {
+public class DeleteArchivedBranches extends AbstractBlam {
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)

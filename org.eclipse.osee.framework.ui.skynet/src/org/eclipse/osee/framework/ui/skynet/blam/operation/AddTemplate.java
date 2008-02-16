@@ -52,4 +52,11 @@ public class AddTemplate implements BlamOperation {
    public String getDescriptionUsage() {
       return "Select parameters below and click the play button at the top right.";
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#wrapOperationForBranch()
+    */
+   public Branch wrapOperationForBranch(BlamVariableMap variableMap) {
+      return variableMap.getBranch("Branch");
+   }
 }

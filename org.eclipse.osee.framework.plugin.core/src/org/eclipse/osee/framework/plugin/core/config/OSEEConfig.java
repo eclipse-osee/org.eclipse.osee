@@ -81,7 +81,7 @@ public class OSEEConfig {
          parseMode(rootElement);
          parseLogger(rootElement);
          ServerConfigUtil.getInstance().parseDatabaseConfigFile(rootElement);
-         getDefaultClientData();
+         getDefaultDatabaseService();
          parseWebServers(rootElement);
          parseAuthenticationScheme(rootElement);
          parseHttpServer(rootElement);
@@ -302,20 +302,6 @@ public class OSEEConfig {
       return runMode;
    }
 
-   //   /**
-   //    * @return Returns the defaultWorkspace.
-   //    */
-   //   public String getDefaultWorkspace() {
-   //      return defaultWorkspace;
-   //   }
-
-   //   /**
-   //    * @return Returns the bypassSecurity.
-   //    */
-   //   public boolean isBypassSecurity() {
-   //      return bypassSecurity;
-   //   }
-
    /**
     * Get the configured database type. If we don't have a database configured the default value returned is
     * SupportedDatabase.oracle.
@@ -353,11 +339,16 @@ public class OSEEConfig {
       return ServerConfigUtil.getInstance().getService(servicesId);
    }
 
-   public DbInformation getDefaultClientData() {
+   //getDefaultDatabaseService
+   public DbInformation getDefaultDatabaseService() {
       if (databaseService == null) {
          databaseService = ServerConfigUtil.getInstance().getDefaultService();
       }
       return databaseService;
+   }
+
+   public void setDefaultDatabaseService(String serviceName) {
+      databaseService = getDatabaseService(serviceName);
    }
 
    //   public DbInformation[] getAllDbInformation() {
@@ -406,5 +397,4 @@ public class OSEEConfig {
    public String getAuthenticationProviderId() {
       return authenticationProvider;
    }
-
 }

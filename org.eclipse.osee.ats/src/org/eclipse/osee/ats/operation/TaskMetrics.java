@@ -41,13 +41,13 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.swt.program.Program;
 
 /**
  * @author Ryan D. Brooks
  */
-public class TaskMetrics implements BlamOperation {
+public class TaskMetrics extends AbstractBlam {
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private final CountingMap<User> metrics;
    private final CharBackedInputStream charBak;
@@ -130,12 +130,5 @@ public class TaskMetrics implements BlamOperation {
     */
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Descriptor\" /></xWidgets>";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 }

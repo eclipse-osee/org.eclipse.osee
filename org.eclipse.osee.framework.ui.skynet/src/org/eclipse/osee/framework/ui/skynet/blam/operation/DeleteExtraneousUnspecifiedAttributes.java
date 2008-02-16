@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 /**
  * @author Ryan D. Brooks
  */
-public class DeleteExtraneousUnspecifiedAttributes implements BlamOperation {
+public class DeleteExtraneousUnspecifiedAttributes extends AbstractBlam {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
@@ -53,12 +53,5 @@ public class DeleteExtraneousUnspecifiedAttributes implements BlamOperation {
     */
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts\" /><XWidget xwidgetType=\"XAttributeTypeListViewer\" displayName=\"Attribute Type\" /></xWidgets>";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 }

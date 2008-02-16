@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactSnapshotAllItems implements BlamOperation {
+public class ArtifactSnapshotAllItems extends AbstractBlam {
 
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       try {
@@ -56,19 +56,5 @@ public class ArtifactSnapshotAllItems implements BlamOperation {
       } finally {
          monitor.done();
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
-   public String getXWidgetsXml() {
-      return branchXWidgetXml;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 }

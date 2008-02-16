@@ -93,7 +93,7 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
    private RemoteEventManager() {
       super();
 
-      DbDetailData dbData = ConfigUtil.getConfigFactory().getOseeConfig().getDefaultClientData().getDatabaseDetails();
+      DbDetailData dbData = ConfigUtil.getConfigFactory().getOseeConfig().getDefaultDatabaseService().getDatabaseDetails();
       String dbName = dbData.getFieldValue(DbDetailData.ConfigField.DatabaseName);
       String userName = dbData.getFieldValue(DbDetailData.ConfigField.UserName);
 

@@ -39,7 +39,7 @@ public class DemoTeams {
 
    public TeamDefinitionArtifact getTeamDef(Team team) throws Exception {
       // Add check to keep exception from occurring for OSEE developers running against production
-      ConfigUtil.getConfigFactory().getOseeConfig().getDefaultClientData();
+      ConfigUtil.getConfigFactory().getOseeConfig().getDefaultDatabaseService();
       if (DatabaseActivator.getInstance().isProductionDb()) return null;
       try {
          return (new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, team.name().replaceAll("_", " "),

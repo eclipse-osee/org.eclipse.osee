@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Ryan D. Brooks
  */
-public class UpdateArtifactTypeImage implements BlamOperation {
+public class UpdateArtifactTypeImage extends AbstractBlam {
 
    public static String ARTIFACT_TYPE_NAME = "Select Artifact Type";
    public static String SELECT_IMAGE = "Select Image GIF";

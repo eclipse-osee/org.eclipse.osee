@@ -28,12 +28,12 @@ import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ConnectWorkflowToBranchOrTransaction implements BlamOperation {
+public class ConnectWorkflowToBranchOrTransaction extends AbstractBlam {
    private static final Logger logger =
          ConfigUtil.getConfigFactory().getLogger(ConnectWorkflowToBranchOrTransaction.class);
    private static final String SELECT_COMMIT_TRANSACTIONS =
@@ -91,12 +91,5 @@ public class ConnectWorkflowToBranchOrTransaction implements BlamOperation {
     */
    public String getXWidgetsXml() {
       return emptyXWidgetsXml;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 }

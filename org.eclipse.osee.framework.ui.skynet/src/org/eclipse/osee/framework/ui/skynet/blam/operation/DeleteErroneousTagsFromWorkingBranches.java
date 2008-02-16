@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 /**
  * @author Ryan D. Brooks
  */
-public class DeleteErroneousTagsFromWorkingBranches implements BlamOperation {
+public class DeleteErroneousTagsFromWorkingBranches extends AbstractBlam {
    public static final String DELETE_ERRONEOUS_TAGS =
          "Delete FROM osee_tag_art_map tam1 WHERE tam1.branch_id = ? AND NOT EXISTS (SELECT * FROM osee_define_tx_details txd1, osee_define_txs txs2, osee_define_artifact_version arv3 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs2.transaction_id AND txs2.tx_type <> -4 AND txs2.gamma_id = arv3.gamma_id AND arv3.art_id = tam1.art_id)";
 
@@ -44,12 +44,5 @@ public class DeleteErroneousTagsFromWorkingBranches implements BlamOperation {
     */
    public String getXWidgetsXml() {
       return emptyXWidgetsXml;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 }

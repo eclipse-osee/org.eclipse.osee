@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 /**
  * @author Ryan D. Brooks
  */
-public class UpdateFromParentBranch implements BlamOperation {
+public class UpdateFromParentBranch extends AbstractBlam {
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_1 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t1");
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_2 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t2");
 
@@ -123,12 +123,5 @@ public class UpdateFromParentBranch implements BlamOperation {
     */
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Child Branch Name\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Parent Branch Artifacts to update to Child Branch\" /></xWidgets>";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 }

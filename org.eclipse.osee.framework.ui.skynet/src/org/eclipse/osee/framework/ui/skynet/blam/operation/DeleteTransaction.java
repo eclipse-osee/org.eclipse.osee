@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 /**
  * @author Ryan D. Brooks
  */
-public class DeleteTransaction implements BlamOperation {
+public class DeleteTransaction extends AbstractBlam {
    public static final Pattern transactionPattern = Pattern.compile("\\d+");
 
    /* (non-Javadoc)
@@ -40,12 +40,5 @@ public class DeleteTransaction implements BlamOperation {
     */
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Transaction List\" /></xWidgets>";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 }

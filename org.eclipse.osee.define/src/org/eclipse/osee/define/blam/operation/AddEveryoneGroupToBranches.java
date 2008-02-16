@@ -19,12 +19,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 
 /**
  * @author Jeff C. Phillips
  */
-public class AddEveryoneGroupToBranches implements BlamOperation {
+public class AddEveryoneGroupToBranches extends AbstractBlam {
 
    AccessControlManager accessControlManager = AccessControlManager.getInstance();
    BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
@@ -49,21 +49,5 @@ public class AddEveryoneGroupToBranches implements BlamOperation {
          }
       }
 
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
-   public String getXWidgetsXml() {
-      return emptyXWidgetsXml;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 }

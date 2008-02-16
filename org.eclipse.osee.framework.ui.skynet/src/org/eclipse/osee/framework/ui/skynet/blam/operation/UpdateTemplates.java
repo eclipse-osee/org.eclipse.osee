@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 /**
  * @author Ryan D. Brooks
  */
-public class UpdateTemplates implements BlamOperation {
+public class UpdateTemplates extends AbstractBlam {
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
@@ -35,20 +35,5 @@ public class UpdateTemplates implements BlamOperation {
          wordRenderer.setDefaultTemplates(null, presentationType, branch);
          monitor.worked(1);
       }
-   }
-
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
-    */
-   public String getXWidgetsXml() {
-      return branchXWidgetXml;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 }

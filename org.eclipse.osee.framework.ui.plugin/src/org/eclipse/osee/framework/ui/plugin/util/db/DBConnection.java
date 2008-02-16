@@ -99,13 +99,12 @@ public class DBConnection {
                   (IConnection) Platform.getBundle(element.getContributor().getName()).loadClass(connectionClass).newInstance();
             connections.put(driver, connection);
          } catch (InstantiationException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          } catch (IllegalAccessException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          } catch (ClassNotFoundException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
       }
    }
-
 }

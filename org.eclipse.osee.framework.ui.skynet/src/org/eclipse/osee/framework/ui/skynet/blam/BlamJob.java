@@ -30,11 +30,10 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 public class BlamJob extends Job {
    private final BlamWorkflow workflow;
    private final BlamVariableMap variableMap;
-   private final Branch branch;
    private final Collection<IBlamEventListener> listeners;
 
-   public BlamJob(BlamVariableMap variableMap, BlamWorkflow workflow, Branch branch, String name) {
-      super(name);
+   public BlamJob(BlamVariableMap variableMap, BlamWorkflow workflow) {
+      super(workflow.getDescriptiveName());
 
       if (variableMap == null) {
          throw new IllegalArgumentException("VariableMap can not be null");
@@ -42,11 +41,7 @@ public class BlamJob extends Job {
       if (workflow == null) {
          throw new IllegalArgumentException("Workflow can not be null");
       }
-      if (branch == null) {
-         throw new IllegalArgumentException("Branch can not be null");
-      }
 
-      this.branch = branch;
       this.variableMap = variableMap;
       this.workflow = workflow;
       this.listeners = new LinkedList<IBlamEventListener>();
@@ -58,7 +53,24 @@ public class BlamJob extends Job {
       long startTime = System.currentTimeMillis();
       notifyListeners(new BlamStartedEvent());
       try {
-         new BlamOperationTx(branch, monitor).execute();
+         List<BlamOperation> operations = workflow.getOperations();
+         if (operations.size() == 0) {
+            throw new IllegalStateException("No operations were found for this workflow");
+         }
+         monitor.beginTask(workflow.getDescriptiveName(), operations.size());
+
+         for (BlamOperation operation : operations) {
+            Branch branch = operation.wrapOperationForBranch(variableMap);
+            IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+
+            if (branch == null) {
+               operation.runOperation(variableMap, subMonitor);
+            } else {
+               new BlamOperationTx(branch, operation, subMonitor).execute();
+            }
+            monitor.worked(1);
+         }
+
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, false);
@@ -90,10 +102,12 @@ public class BlamJob extends Job {
 
    final private class BlamOperationTx extends AbstractSkynetTxTemplate {
       private IProgressMonitor monitor;
+      BlamOperation operation;
 
-      public BlamOperationTx(Branch branch, IProgressMonitor monitor) {
+      public BlamOperationTx(Branch branch, BlamOperation operation, IProgressMonitor monitor) {
          super(branch);
          this.monitor = monitor;
+         this.operation = operation;
       }
 
       /* (non-Javadoc)
@@ -101,16 +115,7 @@ public class BlamJob extends Job {
        */
       @Override
       protected void handleTxWork() throws Exception {
-         List<BlamOperation> operations = workflow.getOperations();
-         if (operations.size() == 0) {
-            throw new IllegalStateException("No operations were found for this workflow");
-         }
-         monitor.beginTask("Delete Unspecified Partitions", operations.size());
-
-         for (BlamOperation operation : operations) {
-            operation.runOperation(variableMap, new SubProgressMonitor(monitor, 1));
-            monitor.worked(1);
-         }
+         operation.runOperation(variableMap, monitor);
       }
    }
 }

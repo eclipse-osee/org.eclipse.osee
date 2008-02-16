@@ -27,7 +27,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class SkynetConnectionContributionItem extends SkynetContributionItem {
    private static final DbDetailData dbData =
-         ConfigUtil.getConfigFactory().getOseeConfig().getDefaultClientData().getDatabaseDetails();
+         ConfigUtil.getConfigFactory().getOseeConfig().getDefaultDatabaseService().getDatabaseDetails();
    private static final String dbName = dbData.getFieldValue(DbDetailData.ConfigField.DatabaseName);
    private static final String userName = dbData.getFieldValue(DbDetailData.ConfigField.UserName);
    private static final String ID = "skynet.connection";

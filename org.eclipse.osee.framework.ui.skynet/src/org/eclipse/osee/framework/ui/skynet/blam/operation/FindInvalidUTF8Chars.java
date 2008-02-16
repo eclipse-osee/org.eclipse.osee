@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 /**
  * @author Ryan D. Brooks
  */
-public class FindInvalidUTF8Chars implements BlamOperation {
+public class FindInvalidUTF8Chars extends AbstractBlam {
    private static final String READ_ATTRIBUTE_VALUES = "SELECT art_id, value FROM " + ATTRIBUTE_VERSION_TABLE;
 
    /* (non-Javadoc)
@@ -52,13 +52,6 @@ public class FindInvalidUTF8Chars implements BlamOperation {
          DbUtil.close(chStmt);
          System.out.println("count:  " + count);
       }
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 
    /* (non-Javadoc)

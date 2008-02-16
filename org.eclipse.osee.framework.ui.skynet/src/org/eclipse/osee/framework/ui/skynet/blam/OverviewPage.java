@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.IHelpContextIds;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -105,10 +104,7 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
    private void createToolBarActions(ScrolledForm form) {
       Action runAction = new Action("Run Workflow in Job", Action.AS_PUSH_BUTTON) {
          public void run() {
-            BlamJob blamJob =
-                  new BlamJob(editor.getBlamVariableMap(), editor.getWorkflow(),
-                        BranchPersistenceManager.getInstance().getDefaultBranch(),
-                        editor.getWorkflow().getDescriptiveName());
+            BlamJob blamJob = new BlamJob(editor.getBlamVariableMap(), editor.getWorkflow());
             blamJob.addListener(editor);
             Jobs.startJob(blamJob);
          }

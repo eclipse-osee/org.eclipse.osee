@@ -133,7 +133,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       Logger.getLogger("org.eclipse.osee.framework.jdk.core.sql.manager.OracleSqlManager").setLevel(Level.SEVERE);
       Logger.getLogger("org.eclipse.osee.framework.jdk.core.sql.manager.OracleSqlManager").setLevel(Level.SEVERE);
 
-      DbInformation dbInfo = ConfigUtil.getConfigFactory().getOseeConfig().getDefaultClientData();
+      DbInformation dbInfo = ConfigUtil.getConfigFactory().getOseeConfig().getDefaultDatabaseService();
       String dbName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
       String userName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.UserName);
 

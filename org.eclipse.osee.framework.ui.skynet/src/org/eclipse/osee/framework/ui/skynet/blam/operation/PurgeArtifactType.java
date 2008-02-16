@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 /**
  * @author Ryan D. Brooks
  */
-public class PurgeArtifactType implements BlamOperation {
+public class PurgeArtifactType extends AbstractBlam {
    public static final String DELETE_VALID_REL_GAMMAS =
          "delete from osee_define_txs txs3 where exists (select * from osee_define_valid_relations vrl1, osee_define_txs txs2 where vrl1.art_type_id = ? and vrl1.gamma_id = txs2.gamma_id AND txs2.gamma_id = txs3.gamma_id)";
    public static final String DELETE_VALID_ATTRIBUTE_GAMMAS =
@@ -62,13 +62,6 @@ public class PurgeArtifactType implements BlamOperation {
       ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, SQL3DataType.INTEGER, artTypeId);
       ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE_GAMMAS, SQL3DataType.INTEGER, artTypeId);
       ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE, SQL3DataType.INTEGER, artTypeId);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 
    /* (non-Javadoc)

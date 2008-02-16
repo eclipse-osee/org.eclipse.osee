@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -34,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLinkBase;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -42,7 +43,7 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @author Jeff C. Phillips
  */
-public class ChangeArtifactType implements BlamOperation {
+public class ChangeArtifactType extends AbstractBlam {
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ChangeArtifactType.class);
    private static final ConfigurationPersistenceManager configurationPersistenceManager =
@@ -206,9 +207,11 @@ public class ChangeArtifactType implements BlamOperation {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
     */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
+   @Override
+   public Branch wrapOperationForBranch(BlamVariableMap variableMap) {
+      return variableMap.getArtifactSubtypeDescriptor("descriptor").getTransactionId().getBranch();
    }
+
 }

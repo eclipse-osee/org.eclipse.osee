@@ -85,10 +85,10 @@ public final class ConnectionHandler {
 
    private static Connection getNewConnection() throws SQLException {
       OSEEConfig config = ConfigUtil.getConfigFactory().getOseeConfig();
-      if (config.getDefaultClientData() == null) {
+      if (config.getDefaultDatabaseService() == null) {
          throw new SQLException("Unable to get the default database service.");
       }
-      return DBConnection.getNewConnection(config.getDefaultClientData());
+      return DBConnection.getNewConnection(config.getDefaultDatabaseService());
    }
 
    /**

@@ -14,7 +14,7 @@ import java.io.FileInputStream;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
-import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 /**
  * @author Robert A. Fisher
  */
-public class PublishSrs implements BlamOperation {
+public class PublishSrs extends AbstractBlam {
 
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       String masterTemplate =
@@ -42,12 +42,5 @@ public class PublishSrs implements BlamOperation {
     */
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Master Template\" /><XWidget xwidgetType=\"XText\" displayName=\"Slave Template\" /><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /></xWidgets>";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 }
