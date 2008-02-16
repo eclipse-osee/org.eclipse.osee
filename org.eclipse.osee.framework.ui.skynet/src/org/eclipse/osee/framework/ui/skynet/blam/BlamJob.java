@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -104,9 +105,11 @@ public class BlamJob extends Job {
          if (operations.size() == 0) {
             throw new IllegalStateException("No operations were found for this workflow");
          }
+         monitor.beginTask("Delete Unspecified Partitions", operations.size());
 
          for (BlamOperation operation : operations) {
-            operation.runOperation(variableMap, monitor);
+            operation.runOperation(variableMap, new SubProgressMonitor(monitor, 1));
+            monitor.worked(1);
          }
       }
    }
