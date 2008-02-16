@@ -22,9 +22,10 @@ public interface IAutoRunTask {
 
    public void startTasks(XResultData resultData) throws Exception;
 
-   public int getHourStartTime();
-
-   public int getMinuteStartTime();
+   /**
+    * @return xx:xx start time
+    */
+   public String get24HourStartTime();
 
    public String[] getNotificationEmailAddresses();
 

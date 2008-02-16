@@ -24,11 +24,11 @@ import org.eclipse.swt.graphics.Image;
 public class AutoRunLabelProvider implements ITableLabelProvider {
    Font font = null;
 
-   private final AutoRunXViewer treeViewer;
+   private final AutoRunXViewer autoRunXViewer;
 
    public AutoRunLabelProvider(AutoRunXViewer autoRunXViewer) {
       super();
-      this.treeViewer = autoRunXViewer;
+      this.autoRunXViewer = autoRunXViewer;
    }
 
    public String getColumnText(Object element, int columnIndex) {
@@ -40,7 +40,7 @@ public class AutoRunLabelProvider implements ITableLabelProvider {
       }
       IAutoRunTask autoRunTask = ((IAutoRunTask) element);
       if (autoRunTask == null) return "";
-      XViewerColumn xCol = treeViewer.getXTreeColumn(columnIndex);
+      XViewerColumn xCol = autoRunXViewer.getXTreeColumn(columnIndex);
       if (xCol != null) {
          AutoRunColumn aCol = AutoRunColumn.getAtsXColumn(xCol);
          return getColumnText(element, columnIndex, autoRunTask, xCol, aCol);
@@ -63,13 +63,12 @@ public class AutoRunLabelProvider implements ITableLabelProvider {
       if (!xCol.isShow()) return ""; // Since not shown, don't display
       if (aCol == AutoRunColumn.Run_Col) return "";
       if (aCol == AutoRunColumn.Name_Col) return autoRunTask.getAutoRunUniqueId();
-      if (aCol == AutoRunColumn.Hour_Scheduled) return autoRunTask.getHourStartTime() + "";
-      if (aCol == AutoRunColumn.Minute_Scheduled) return autoRunTask.getMinuteStartTime() + "";
+      if (aCol == AutoRunColumn.Schedule_Time) return autoRunTask.get24HourStartTime();
       if (aCol == AutoRunColumn.Run_Db) return autoRunTask.getRunDb().name();
       if (aCol == AutoRunColumn.Task_Type) return autoRunTask.getTaskType().name();
       if (aCol == AutoRunColumn.Description) return autoRunTask.getDescription();
       if (aCol == AutoRunColumn.Category) return autoRunTask.getCategory();
-      if (aCol == AutoRunColumn.Category) return Lib.getCommaString(autoRunTask.getNotificationEmailAddresses());
+      if (aCol == AutoRunColumn.Notification) return Lib.getCommaString(autoRunTask.getNotificationEmailAddresses());
       return "Unhandled Column";
    }
 
@@ -89,26 +88,29 @@ public class AutoRunLabelProvider implements ITableLabelProvider {
    }
 
    public AutoRunXViewer getTreeViewer() {
-      return treeViewer;
+      return autoRunXViewer;
    }
 
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof String) return null;
       IAutoRunTask autoRunTask = (IAutoRunTask) element;
-      XViewerColumn xCol = treeViewer.getXTreeColumn(columnIndex);
+      XViewerColumn xCol = autoRunXViewer.getXTreeColumn(columnIndex);
       if (xCol == null) return null;
       AutoRunColumn aCol = AutoRunColumn.getAtsXColumn(xCol);
       if (!xCol.isShow()) return null; // Since not shown, don't display
-      if (treeViewer.getXAutoRunViewer().isLaunchNewWorkbench()) {
-         if (aCol == AutoRunColumn.Run_Col) return treeViewer.isRun(autoRunTask) ? SkynetGuiPlugin.getInstance().getImage(
+      if (autoRunXViewer.getXAutoRunViewer().isLaunchNewWorkbench()) {
+         if (aCol == AutoRunColumn.Run_Col) return autoRunXViewer.isRun(autoRunTask) ? SkynetGuiPlugin.getInstance().getImage(
                "chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage("chkbox_disabled.gif");
       } else {
          if (aCol == AutoRunColumn.Run_Col) {
             Result result = AutoRunStartup.validateAutoRunExecution(autoRunTask);
             if (result.isFalse()) return SkynetGuiPlugin.getInstance().getImage("chkbox_redslash.gif");
-            return treeViewer.isRun(autoRunTask) ? SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage(
+            return autoRunXViewer.isRun(autoRunTask) ? SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage(
                   "chkbox_disabled.gif");
          }
+      }
+      if (aCol == AutoRunColumn.Name_Col && autoRunXViewer.getXAutoRunViewer().isScheduled(autoRunTask)) {
+         return SkynetGuiPlugin.getInstance().getImage("clock.gif");
       }
       return null;
    }

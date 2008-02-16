@@ -12,16 +12,21 @@
 package org.eclipse.osee.framework.ui.admin.autoRun;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.autoRun.AutoRunStartup;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.autoRun.LaunchAutoRunWorkbench;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask.RunDb;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -45,6 +50,9 @@ public class XAutoRunViewer extends XWidget {
    private AutoRunXViewer xViewer;
    private Label extraInfoLabel;
    private final AutoRunTab autoRunTab;
+   private Set<IAutoRunTask> scheduledTasks = new HashSet<IAutoRunTask>();
+   private ToolItem startSchedulerAction;
+   private ToolItem stopShedulerAction;
 
    /**
     * @param label
@@ -121,10 +129,28 @@ public class XAutoRunViewer extends XWidget {
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(SkynetGuiPlugin.getInstance().getImage("run_exc.gif"));
-      item.setToolTipText("Run");
+      item.setToolTipText("Run Selected Tasks");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
             run();
+         }
+      });
+
+      startSchedulerAction = new ToolItem(toolBar, SWT.PUSH);
+      startSchedulerAction.setImage(SkynetGuiPlugin.getInstance().getImage("clock.gif"));
+      startSchedulerAction.setToolTipText("Start Scheduler for Selected Tasks/Times");
+      startSchedulerAction.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
+            startScheduler();
+         }
+      });
+
+      stopShedulerAction = new ToolItem(toolBar, SWT.PUSH);
+      stopShedulerAction.setImage(SkynetGuiPlugin.getInstance().getImage("redRemove.gif"));
+      stopShedulerAction.setToolTipText("Stop Scheduler");
+      stopShedulerAction.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
+            stopScheduler();
          }
       });
 
@@ -145,7 +171,91 @@ public class XAutoRunViewer extends XWidget {
             xViewer.getCustomize().handleTableCustomization();
          }
       });
+      updateToolBarInfo();
    }
+
+   private void startScheduler() {
+      if (getSelectedAutoRunItems().size() == 0) {
+         AWorkbench.popup("Schedule Error", "No Tasks Selected");
+         return;
+      }
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Start Scheduler",
+            "Start Scheduler for Selected Tasks Below")) return;
+      scheduledTasks.clear();
+      scheduledTasks.addAll(getSelectedAutoRunItems());
+      if (!runningSchedule) {
+         scheduleThread.start();
+      }
+      xViewer.refresh();
+      updateToolBarInfo();
+   }
+
+   public boolean isScheduled(IAutoRunTask autoRunTask) {
+      return scheduledTasks.contains(autoRunTask);
+   }
+
+   private void stopScheduler() {
+      stopSchedule = true;
+   }
+
+   public void updateToolBarInfo() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            if (runningSchedule) {
+               extraInfoLabel.setText("  Scheduler Running: " + timeStamp);
+            } else
+               extraInfoLabel.setText("  Scheduler Stopped");
+            startSchedulerAction.setEnabled(!runningSchedule);
+            stopShedulerAction.setEnabled(runningSchedule);
+            extraInfoLabel.getParent().layout();
+         };
+      });
+   }
+
+   private String timeStamp = "";
+   private boolean runningSchedule = false;
+   private boolean stopSchedule = false;
+
+   Thread scheduleThread = new Thread() {
+      /* (non-Javadoc)
+        * @see java.lang.Thread#run()
+        */
+      @Override
+      public void run() {
+         while (true) {
+            if (stopSchedule) {
+               runningSchedule = false;
+               stopSchedule = false;
+               updateToolBarInfo();
+               System.out.println("Stopped Scheduler");
+               return;
+            }
+            runningSchedule = true;
+            System.out.println("Timestamp " + XDate.getDateNow(XDate.MMDDYYHHMM));
+            timeStamp = XDate.getDateNow(XDate.HHMM);
+            updateToolBarInfo();
+
+            // Process auto-run tasks
+            for (IAutoRunTask autoRunTask : scheduledTasks) {
+               if (autoRunTask.get24HourStartTime().equals(timeStamp)) {
+                  try {
+                     System.out.println("Running " + autoRunTask.getAutoRunUniqueId());
+                     LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask));
+                  } catch (Exception ex) {
+                     OSEELog.logException(AdminPlugin.class, ex, false);
+                  }
+               }
+            }
+
+            try {
+               Thread.sleep(60000);
+            } catch (Exception ex) {
+               ex.printStackTrace();
+               stopSchedule = true;
+            }
+         }
+      }
+   };
 
    private void run() {
       try {
@@ -153,7 +263,7 @@ public class XAutoRunViewer extends XWidget {
             StringBuffer sb = new StringBuffer("Launch Auto Tasks:\n\n");
             for (IAutoRunTask autoRunTask : xViewer.getRunList())
                sb.append(" - " + autoRunTask.getAutoRunUniqueId() + " against " + getDefaultDbConnection(autoRunTask) + "\n");
-            sb.append("\nNOTE: Time scheduling not implemeted yet, all will kickoff immediately");
+            sb.append("\nNOTE: All will kickoff immediately");
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Launch Auto Tasks", sb.toString())) {
                for (IAutoRunTask autoRunTask : xViewer.getRunList())
                   LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask));
