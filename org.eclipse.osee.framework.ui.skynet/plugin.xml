@@ -442,8 +442,11 @@
 	<extension id="FindInvalidUTF8Chars" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindInvalidUTF8Chars"/>
 	</extension>
-	<extension id="DeleteSelectedAttributes" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteSelectedAttributes"/>
+	<extension
+       id="DeleteExtraneousUnspecifiedAttributes"
+       name="Delete Extraneous Unspecified Attributes"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteExtraneousUnspecifiedAttributes"/>
 	</extension>
 	<extension id="AddTemplate" name="Add Word Template" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.AddTemplate"/>

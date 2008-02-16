@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 /**
  * @author Ryan D. Brooks
  */
-public class DeleteSelectedAttributes implements BlamOperation {
+public class DeleteExtraneousUnspecifiedAttributes implements BlamOperation {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
@@ -29,7 +29,7 @@ public class DeleteSelectedAttributes implements BlamOperation {
       List<Artifact> artifacts = variableMap.getArtifacts("Artifacts");
       DynamicAttributeDescriptor attributeDescriptor = variableMap.getAttributeDescriptor("Attribute Type");
 
-      monitor.beginTask("Delete Unspecified Partitions", IProgressMonitor.UNKNOWN);
+      monitor.beginTask("Delete Unspecified " + attributeDescriptor.getName() + " attributes", artifacts.size());
 
       for (Artifact artifact : artifacts) {
          Collection<Attribute> attributes = artifact.getAttributeManager(attributeDescriptor).getAttributes();
@@ -37,11 +37,12 @@ public class DeleteSelectedAttributes implements BlamOperation {
          if (attributes.size() > 1) {
             for (Attribute attribute : attributes) {
                if (attribute.getStringData().equals("Unspecified")) {
-                  System.out.println(artifact.getDescriptiveName());
                   attribute.delete();
                }
             }
          }
+         artifact.persistAttributes();
+         monitor.worked(1);
       }
       monitor.done();
    }
