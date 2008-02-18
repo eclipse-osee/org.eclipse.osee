@@ -29,25 +29,29 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAutoRunAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
  */
-public class UnAssignedAssignedAtsObjects extends XNavigateItemAction {
+public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction implements IAutoRunTask {
 
    boolean fixIt = false;
-   XResultData rd = new XResultData(AtsPlugin.getLogger());
 
    /**
     * @param parent
     */
    public UnAssignedAssignedAtsObjects(XNavigateItem parent) {
       super(parent, "Report UnAssigned AND Assigned / NoOne Assigned (partial fix available)");
+   }
+
+   public UnAssignedAssignedAtsObjects() {
+      this(null);
    }
 
    /*
@@ -76,19 +80,9 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAction {
       protected IStatus run(IProgressMonitor monitor) {
          IStatus toReturn = Status.CANCEL_STATUS;
          try {
-            if (fixIt) {
-               AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
-                        @Override
-                        protected void handleTxWork() throws Exception {
-                           getUnassignedAtsObjectHelper();
-                        }
-                     };
-               txWrapper.execute();
-
-            } else {
-               getUnassignedAtsObjectHelper();
-            }
+            final XResultData rd = new XResultData(AtsPlugin.getLogger());
+            runIt(monitor, rd);
+            rd.report(getName());
             toReturn = Status.OK_STATUS;
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
@@ -100,10 +94,25 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAction {
       }
    }
 
-   private void getUnassignedAtsObjectHelper() throws Exception {
+   private void runIt(IProgressMonitor monitor, final XResultData rd) throws Exception {
+      if (fixIt) {
+         AbstractSkynetTxTemplate txWrapper =
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  @Override
+                  protected void handleTxWork() throws Exception {
+                     getUnassignedAtsObjectHelper(rd);
+                  }
+               };
+         txWrapper.execute();
+
+      } else {
+         getUnassignedAtsObjectHelper(rd);
+      }
+   }
+
+   private void getUnassignedAtsObjectHelper(final XResultData rd) throws Exception {
       User unAssignedUser = SkynetAuthentication.getInstance().getUser(UserEnum.UnAssigned);
       User noOneUser = SkynetAuthentication.getInstance().getUser(UserEnum.NoOne);
-      final XResultData rd = new XResultData(AtsPlugin.getLogger());
 
       for (Artifact art : StateMachineArtifact.getAllSMATypeArtifacts()) {
          StateMachineArtifact sma = (StateMachineArtifact) art;
@@ -133,8 +142,49 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAction {
          if (sma.isDirty()) {
             sma.persistAttributes();
          }
-         rd.report(getName());
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#get24HourStartTime()
+    */
+   public String get24HourStartTime() {
+      return "23:35";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getCategory()
+    */
+   public String getCategory() {
+      return "OSEE ATS";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getDescription()
+    */
+   public String getDescription() {
+      return getName();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getRunDb()
+    */
+   public RunDb getRunDb() {
+      return IAutoRunTask.RunDb.Production_Db;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getTaskType()
+    */
+   public TaskType getTaskType() {
+      return IAutoRunTask.TaskType.Db_Health;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#startTasks(org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData)
+    */
+   public void startTasks(XResultData resultData) throws Exception {
+      runIt(null, resultData);
    }
 
 }

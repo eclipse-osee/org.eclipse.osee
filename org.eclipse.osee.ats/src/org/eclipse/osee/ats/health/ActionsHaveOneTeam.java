@@ -106,7 +106,7 @@ public class ActionsHaveOneTeam extends XNavigateItemAutoRunAction implements IA
 
       int x = 0;
       for (Artifact art : artifacts) {
-         monitor.subTask(String.format("Processing %d/%d...", x++, artifacts.size()));
+         if (monitor != null) monitor.subTask(String.format("Processing %d/%d...", x++, artifacts.size()));
          try {
             if (art instanceof ActionArtifact) {
                if (((ActionArtifact) art).getTeamWorkFlowArtifacts().size() == 0) {
@@ -156,7 +156,7 @@ public class ActionsHaveOneTeam extends XNavigateItemAutoRunAction implements IA
     * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getTaskType()
     */
    public TaskType getTaskType() {
-      return IAutoRunTask.TaskType.Db_Health_Check;
+      return IAutoRunTask.TaskType.Db_Health;
    }
 
    /* (non-Javadoc)

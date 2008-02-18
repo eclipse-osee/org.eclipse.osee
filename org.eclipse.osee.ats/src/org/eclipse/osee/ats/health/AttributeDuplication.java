@@ -83,7 +83,7 @@ public class AttributeDuplication extends XNavigateItemAutoRunAction implements 
 
    private void runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
       for (String type : StateMachineArtifact.getAllSMATypeNames()) {
-         monitor.subTask("Loading " + type + "...");
+         if (monitor != null) monitor.subTask("Loading " + type + "...");
          try {
             // just need to load the artifacts for them to exception out
             ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(type,
@@ -127,7 +127,7 @@ public class AttributeDuplication extends XNavigateItemAutoRunAction implements 
     * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getTaskType()
     */
    public TaskType getTaskType() {
-      return IAutoRunTask.TaskType.Db_Health_Check;
+      return IAutoRunTask.TaskType.Db_Health;
    }
 
    /* (non-Javadoc)

@@ -24,22 +24,27 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAutoRunAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
  */
-public class DuplicateUsersItem extends XNavigateItemAction {
+public class DuplicateUsersItem extends XNavigateItemAutoRunAction implements IAutoRunTask {
 
    /**
     * @param parent
     */
    public DuplicateUsersItem(XNavigateItem parent) {
       super(parent, "Report Duplicate Users in DB");
+   }
+
+   public DuplicateUsersItem() {
+      this(null);
    }
 
    /*
@@ -68,27 +73,73 @@ public class DuplicateUsersItem extends XNavigateItemAction {
       protected IStatus run(IProgressMonitor monitor) {
          try {
             XResultData rd = new XResultData(AtsPlugin.getLogger());
-            Set<User> users = new HashSet<User>();
-            for (Artifact user : ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName("User",
-                  BranchPersistenceManager.getInstance().getAtsBranch())) {
-               if (!users.add((User) user)) {
-                  User otherUser = null;
-                  for (User userArt : users)
-                     if (userArt.equals(user)) {
-                        otherUser = userArt;
-                        break;
-                     }
-                  rd.logError("Duplicate User => " + ((User) user).getUserId() + " " + user.getHumanReadableId() + " and " + otherUser.getUserId() + " " + otherUser.getHumanReadableId());
-               }
-            }
+            runIt(monitor, rd);
             rd.report(getName());
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;
       }
+   }
+
+   private void runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
+      Set<User> users = new HashSet<User>();
+      for (Artifact user : ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName("User",
+            BranchPersistenceManager.getInstance().getAtsBranch())) {
+         if (!users.add((User) user)) {
+            User otherUser = null;
+            for (User userArt : users)
+               if (userArt.equals(user)) {
+                  otherUser = userArt;
+                  break;
+               }
+            rd.logError("Duplicate User => " + ((User) user).getUserId() + " " + user.getHumanReadableId() + " and " + otherUser.getUserId() + " " + otherUser.getHumanReadableId());
+         }
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#get24HourStartTime()
+    */
+   public String get24HourStartTime() {
+      return "23:15";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getCategory()
+    */
+   public String getCategory() {
+      return "OSEE ATS";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getDescription()
+    */
+   public String getDescription() {
+      return "Ensure there are no duplicpate users in the DB.";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getRunDb()
+    */
+   public RunDb getRunDb() {
+      return IAutoRunTask.RunDb.Production_Db;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getTaskType()
+    */
+   public TaskType getTaskType() {
+      return IAutoRunTask.TaskType.Db_Health;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#startTasks(org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData)
+    */
+   public void startTasks(XResultData resultData) throws Exception {
+      runIt(null, resultData);
    }
 
 }

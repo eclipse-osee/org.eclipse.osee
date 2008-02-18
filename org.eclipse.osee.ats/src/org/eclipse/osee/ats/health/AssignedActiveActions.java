@@ -172,7 +172,7 @@ public class AssignedActiveActions extends XNavigateItemAutoRunAction implements
     * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getTaskType()
     */
    public TaskType getTaskType() {
-      return IAutoRunTask.TaskType.Db_Health_Check;
+      return IAutoRunTask.TaskType.Db_Health;
    }
 
    /* (non-Javadoc)

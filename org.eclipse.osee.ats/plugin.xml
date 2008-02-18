@@ -287,4 +287,39 @@
             classname="org.eclipse.osee.ats.health.AttributeDuplication">
       </AutoRunTask>
    </extension>
+   <extension
+         id="DuplicateUsersItem"
+         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
+      <AutoRunTask
+            classname="org.eclipse.osee.ats.health.DuplicateUsersItem">
+      </AutoRunTask>
+   </extension>
+   <extension
+         id="InvalidEstimatedHoursAttribute"
+         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
+      <AutoRunTask
+            classname="org.eclipse.osee.ats.health.InvalidEstimatedHoursAttribute">
+      </AutoRunTask>
+   </extension>
+   <extension
+         id="OrphanedTasks"
+         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
+      <AutoRunTask
+            classname="org.eclipse.osee.ats.health.OrphanedTasks">
+      </AutoRunTask>
+   </extension>
+   <extension
+         id="TeamWorkflowsHaveZeroOrOneVersion"
+         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
+      <AutoRunTask
+            classname="org.eclipse.osee.ats.health.TeamWorkflowsHaveZeroOrOneVersion">
+      </AutoRunTask>
+   </extension>
+   <extension
+         id="UnAssignedAssignedAtsObjects"
+         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
+      <AutoRunTask
+            classname="org.eclipse.osee.ats.health.UnAssignedAssignedAtsObjects">
+      </AutoRunTask>
+   </extension>
 </plugin>
