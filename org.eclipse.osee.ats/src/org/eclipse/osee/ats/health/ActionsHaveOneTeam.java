@@ -30,22 +30,27 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAutoRunAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
  */
-public class ActionsHaveOneTeam extends XNavigateItemAction {
+public class ActionsHaveOneTeam extends XNavigateItemAutoRunAction implements IAutoRunTask {
 
    /**
     * @param parent
     */
    public ActionsHaveOneTeam(XNavigateItem parent) {
       super(parent, "Report Actions Have One Team");
+   }
+
+   public ActionsHaveOneTeam() {
+      this(null);
    }
 
    /*
@@ -74,44 +79,90 @@ public class ActionsHaveOneTeam extends XNavigateItemAction {
       protected IStatus run(IProgressMonitor monitor) {
          try {
             final XResultData rd = new XResultData(AtsPlugin.getLogger());
-            List<ISearchPrimitive> artifactTypeCriteria = new LinkedList<ISearchPrimitive>();
-
-            // Get Team and Action artifacts
-            java.util.Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
-            artTypeNames.add(ActionArtifact.ARTIFACT_NAME);
-
-            for (String artType : artTypeNames)
-               artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
-
-            Collection<Artifact> artifacts =
-                  ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
-                        BranchPersistenceManager.getInstance().getAtsBranch());
-
-            int x = 0;
-            for (Artifact art : artifacts) {
-               monitor.subTask(String.format("Processing %d/%d...", x++, artifacts.size()));
-               try {
-                  if (art instanceof ActionArtifact) {
-                     if (((ActionArtifact) art).getTeamWorkFlowArtifacts().size() == 0) {
-                        rd.logError("Action " + art.getHumanReadableId() + " has no Team Workflows\n");
-                     }
-                  }
-                  if (art instanceof TeamWorkFlowArtifact) {
-                     if (((TeamWorkFlowArtifact) art).getParentActionArtifact() == null) {
-                        rd.logError("Team " + art.getHumanReadableId() + " has no parent Action\n");
-                     }
-                  }
-               } catch (IllegalStateException ex) {
-                  rd.logError("Team " + art.getHumanReadableId() + " has no parent Action\n" + ex.getLocalizedMessage() + "\n");
-               }
-            }
+            runIt(monitor, rd);
             rd.report(getName());
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
          }
          monitor.done();
          return Status.OK_STATUS;
       }
+   }
+
+   private void runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
+      List<ISearchPrimitive> artifactTypeCriteria = new LinkedList<ISearchPrimitive>();
+
+      // Get Team and Action artifacts
+      java.util.Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
+      artTypeNames.add(ActionArtifact.ARTIFACT_NAME);
+
+      for (String artType : artTypeNames)
+         artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
+
+      Collection<Artifact> artifacts =
+            ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
+                  BranchPersistenceManager.getInstance().getAtsBranch());
+
+      int x = 0;
+      for (Artifact art : artifacts) {
+         monitor.subTask(String.format("Processing %d/%d...", x++, artifacts.size()));
+         try {
+            if (art instanceof ActionArtifact) {
+               if (((ActionArtifact) art).getTeamWorkFlowArtifacts().size() == 0) {
+                  rd.logError("Action " + art.getHumanReadableId() + " has no Team Workflows\n");
+               }
+            }
+            if (art instanceof TeamWorkFlowArtifact) {
+               if (((TeamWorkFlowArtifact) art).getParentActionArtifact() == null) {
+                  rd.logError("Team " + art.getHumanReadableId() + " has no parent Action\n");
+               }
+            }
+         } catch (IllegalStateException ex) {
+            rd.logError("Team " + art.getHumanReadableId() + " has no parent Action\n" + ex.getLocalizedMessage() + "\n");
+         }
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#get24HourStartTime()
+    */
+   public String get24HourStartTime() {
+      return "23:00";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getCategory()
+    */
+   public String getCategory() {
+      return "OSEE ATS";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getDescription()
+    */
+   public String getDescription() {
+      return "Ensure Actions have at least on Team Workflow and Workflows are related to one Action";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getRunDb()
+    */
+   public RunDb getRunDb() {
+      return IAutoRunTask.RunDb.Production_Db;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getTaskType()
+    */
+   public TaskType getTaskType() {
+      return IAutoRunTask.TaskType.Db_Health_Check;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#startTasks(org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData)
+    */
+   public void startTasks(XResultData resultData) throws Exception {
+      runIt(null, resultData);
    }
 }

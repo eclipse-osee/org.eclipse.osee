@@ -266,4 +266,11 @@
             classname="org.eclipse.osee.ats.util.widgets.XWidgetProvider">
       </XWidgetProvider>
    </extension>
+   <extension
+         id="ActionsHaveOneTeam"
+         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
+      <AutoRunTask
+            classname="org.eclipse.osee.ats.health.ActionsHaveOneTeam">
+      </AutoRunTask>
+   </extension>
 </plugin>
