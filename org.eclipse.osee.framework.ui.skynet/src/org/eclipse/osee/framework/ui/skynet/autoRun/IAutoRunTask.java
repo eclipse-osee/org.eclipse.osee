@@ -17,7 +17,7 @@ public interface IAutoRunTask {
    };
 
    public enum TaskType {
-      Regression, Db_Health_Check, Data_Exchange, Backup
+      Regression, Db_Health, Data_Exchange, Backup
    }
 
    public void startTasks(XResultData resultData) throws Exception;
