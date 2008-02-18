@@ -50,6 +50,19 @@ public class AutoRunXViewer extends XViewer {
       this.xAutoRunViewer = xAutoRunViewer;
    }
 
+   public void selectAll() {
+      runList.clear();
+      for (TreeItem treeItem : xAutoRunViewer.getXViewer().getTree().getItems()) {
+         runList.add((IAutoRunTask) treeItem.getData());
+      }
+      xAutoRunViewer.refresh();
+   }
+
+   public void delSelectAll() {
+      runList.clear();
+      xAutoRunViewer.refresh();
+   }
+
    public boolean isRun(IAutoRunTask autoRunTask) {
       return runList.contains(autoRunTask);
    }

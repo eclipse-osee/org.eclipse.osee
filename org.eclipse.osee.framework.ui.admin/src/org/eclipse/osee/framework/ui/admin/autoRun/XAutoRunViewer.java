@@ -47,7 +47,7 @@ import org.eclipse.swt.widgets.Tree;
  */
 public class XAutoRunViewer extends XWidget {
 
-   private AutoRunXViewer xViewer;
+   private AutoRunXViewer autoRunXViewer;
    private Label extraInfoLabel;
    private final AutoRunTab autoRunTab;
    private Set<IAutoRunTask> scheduledTasks = new HashSet<IAutoRunTask>();
@@ -85,13 +85,13 @@ public class XAutoRunViewer extends XWidget {
 
       createTaskActionBar(mainComp);
 
-      xViewer = new AutoRunXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
-      xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+      autoRunXViewer = new AutoRunXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      autoRunXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xViewer.setContentProvider(new AutoRunContentProvider(xViewer));
-      xViewer.setLabelProvider(new AutoRunLabelProvider(xViewer));
+      autoRunXViewer.setContentProvider(new AutoRunContentProvider(autoRunXViewer));
+      autoRunXViewer.setLabelProvider(new AutoRunLabelProvider(autoRunXViewer));
 
-      Tree tree = xViewer.getTree();
+      Tree tree = autoRunXViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
       gridData.heightHint = 100;
       tree.setLayout(ALayout.getZeroMarginLayout());
@@ -155,6 +155,24 @@ public class XAutoRunViewer extends XWidget {
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif"));
+      item.setToolTipText("Select All");
+      item.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
+            autoRunXViewer.selectAll();
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(SkynetGuiPlugin.getInstance().getImage("chkbox_disabled.gif"));
+      item.setToolTipText("De-Select All");
+      item.addSelectionListener(new SelectionAdapter() {
+         public void widgetSelected(SelectionEvent e) {
+            autoRunXViewer.delSelectAll();
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
       item.setToolTipText("Refresh Roles");
       item.addSelectionListener(new SelectionAdapter() {
@@ -168,26 +186,33 @@ public class XAutoRunViewer extends XWidget {
       item.setToolTipText("Customize Table");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            xViewer.getCustomize().handleTableCustomization();
+            autoRunXViewer.getCustomize().handleTableCustomization();
          }
       });
       updateToolBarInfo();
    }
 
    private void startScheduler() {
-      if (getSelectedAutoRunItems().size() == 0) {
-         AWorkbench.popup("Schedule Error", "No Tasks Selected");
-         return;
-      }
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Start Scheduler",
-            "Start Scheduler for Selected Tasks Below")) return;
-      scheduledTasks.clear();
-      scheduledTasks.addAll(getSelectedAutoRunItems());
-      if (!runningSchedule) {
-         scheduleThread.start();
-      }
-      xViewer.refresh();
-      updateToolBarInfo();
+      Displays.ensureInDisplayThread(new Runnable() {
+         /* (non-Javadoc)
+          * @see java.lang.Runnable#run()
+          */
+         public void run() {
+            if (autoRunXViewer.getRunList().size() == 0) {
+               AWorkbench.popup("Schedule Error", "No Tasks Selected");
+               return;
+            }
+            if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Start Scheduler",
+                  "Start Scheduler for Selected Tasks Below")) return;
+            scheduledTasks.clear();
+            scheduledTasks.addAll(autoRunXViewer.getRunList());
+            if (!runningSchedule) {
+               scheduleThread.start();
+            }
+            autoRunXViewer.refresh();
+            updateToolBarInfo();
+         }
+      });
    }
 
    public boolean isScheduled(IAutoRunTask autoRunTask) {
@@ -235,17 +260,20 @@ public class XAutoRunViewer extends XWidget {
             timeStamp = XDate.getDateNow(XDate.HHMM);
             updateToolBarInfo();
 
-            // Process auto-run tasks
-            for (IAutoRunTask autoRunTask : scheduledTasks) {
-               if (autoRunTask.get24HourStartTime().equals(timeStamp)) {
-                  try {
-                     System.out.println("Running " + autoRunTask.getAutoRunUniqueId());
-                     LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask));
-                  } catch (Exception ex) {
-                     OSEELog.logException(AdminPlugin.class, ex, false);
+            Displays.ensureInDisplayThread(new Runnable() {
+               public void run() {// Process auto-run tasks
+                  for (IAutoRunTask autoRunTask : scheduledTasks) {
+                     if (autoRunTask.get24HourStartTime().equals(timeStamp)) {
+                        try {
+                           System.out.println("Running " + autoRunTask.getAutoRunUniqueId());
+                           LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask));
+                        } catch (Exception ex) {
+                           OSEELog.logException(AdminPlugin.class, ex, false);
+                        }
+                     }
                   }
-               }
-            }
+               };
+            });
 
             try {
                Thread.sleep(60000);
@@ -261,20 +289,20 @@ public class XAutoRunViewer extends XWidget {
       try {
          if (autoRunTab.getLaunchWBCheckBox().isSelected()) {
             StringBuffer sb = new StringBuffer("Launch Auto Tasks:\n\n");
-            for (IAutoRunTask autoRunTask : xViewer.getRunList())
+            for (IAutoRunTask autoRunTask : autoRunXViewer.getRunList())
                sb.append(" - " + autoRunTask.getAutoRunUniqueId() + " against " + getDefaultDbConnection(autoRunTask) + "\n");
             sb.append("\nNOTE: All will kickoff immediately");
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Launch Auto Tasks", sb.toString())) {
-               for (IAutoRunTask autoRunTask : xViewer.getRunList())
+               for (IAutoRunTask autoRunTask : autoRunXViewer.getRunList())
                   LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask));
             }
          } else {
             StringBuffer sb = new StringBuffer("Run Auto Tasks in Current Workbench:\n\n");
-            for (IAutoRunTask autoRunTask : xViewer.getRunList())
+            for (IAutoRunTask autoRunTask : autoRunXViewer.getRunList())
                sb.append(" - " + autoRunTask.getAutoRunUniqueId() + " against " + getDefaultDbConnection(autoRunTask) + "\n");
             sb.append("\nNOTE: All will kickoff immediately");
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Launch Auto Tasks", sb.toString())) {
-               for (IAutoRunTask autoRunTask : xViewer.getRunList())
+               for (IAutoRunTask autoRunTask : autoRunXViewer.getRunList())
                   AutoRunStartup.runAutoRunTask(autoRunTask.getAutoRunUniqueId());
             }
 
@@ -294,7 +322,7 @@ public class XAutoRunViewer extends XWidget {
 
    public void loadTable() {
       try {
-         xViewer.set(AutoRunStartup.getAutoRunTasks());
+         autoRunXViewer.set(AutoRunStartup.getAutoRunTasks());
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
@@ -304,9 +332,9 @@ public class XAutoRunViewer extends XWidget {
    @SuppressWarnings("unchecked")
    public ArrayList<IAutoRunTask> getSelectedAutoRunItems() {
       ArrayList<IAutoRunTask> items = new ArrayList<IAutoRunTask>();
-      if (xViewer == null) return items;
-      if (xViewer.getSelection().isEmpty()) return items;
-      Iterator i = ((IStructuredSelection) xViewer.getSelection()).iterator();
+      if (autoRunXViewer == null) return items;
+      if (autoRunXViewer.getSelection().isEmpty()) return items;
+      Iterator i = ((IStructuredSelection) autoRunXViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
          items.add((IAutoRunTask) obj);
@@ -316,21 +344,21 @@ public class XAutoRunViewer extends XWidget {
 
    @Override
    public Control getControl() {
-      return xViewer.getTree();
+      return autoRunXViewer.getTree();
    }
 
    @Override
    public void dispose() {
-      xViewer.dispose();
+      autoRunXViewer.dispose();
    }
 
    @Override
    public void setFocus() {
-      xViewer.getTree().setFocus();
+      autoRunXViewer.getTree().setFocus();
    }
 
    public void refresh() {
-      xViewer.refresh();
+      autoRunXViewer.refresh();
       setLabelError();
    }
 
@@ -361,7 +389,7 @@ public class XAutoRunViewer extends XWidget {
     * @return Returns the xViewer.
     */
    public AutoRunXViewer getXViewer() {
-      return xViewer;
+      return autoRunXViewer;
    }
 
    /*
@@ -371,7 +399,7 @@ public class XAutoRunViewer extends XWidget {
     */
    @Override
    public Object getData() {
-      return xViewer.getInput();
+      return autoRunXViewer.getInput();
    }
 
    public boolean isEditable() {
