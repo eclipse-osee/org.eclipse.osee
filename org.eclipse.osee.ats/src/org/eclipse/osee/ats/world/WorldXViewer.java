@@ -739,6 +739,35 @@ public class WorldXViewer extends XViewer {
       return handleAltLeftClick(treeColumn, treeItem, true);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#handleLeftClickInIconArea(org.eclipse.swt.widgets.TreeColumn, org.eclipse.swt.widgets.TreeItem)
+    */
+   @Override
+   public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
+      try {
+         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
+         AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
+         WorldArtifactItem wai = ((WorldArtifactItem) treeItem.getData());
+         Artifact useArt = wai.getArtifact();
+         SMAManager smaMgr = new SMAManager((StateMachineArtifact) useArt);
+         boolean modified = false;
+         if (useArt instanceof ActionArtifact) {
+            if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1)
+               useArt = (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next());
+            else
+               return false;
+         } else if (aCol == AtsXColumn.Priority_Col) modified = smaMgr.promptChangePriority(true);
+         if (aCol == AtsXColumn.Change_Type_Col) modified = smaMgr.promptChangeType(true);
+         if (modified) {
+            update(wai, null);
+            return true;
+         }
+      } catch (SQLException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+      return false;
+   }
+
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem, boolean persist) {
       try {
          super.handleAltLeftClick(treeColumn, treeItem);

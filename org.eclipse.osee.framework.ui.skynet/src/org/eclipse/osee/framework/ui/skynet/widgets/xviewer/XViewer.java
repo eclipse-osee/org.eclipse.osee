@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -133,6 +132,9 @@ public class XViewer extends TreeViewer {
                if (rect.contains(pt)) {
                   // System.out.println("Column " + colNum);
                   handleLeftClick(getTree().getColumns()[colNum], item);
+                  if (event.x <= (rect.x + 18)) {
+                     handleLeftClickInIconArea(getTree().getColumns()[colNum], item);
+                  }
                }
             }
          }
@@ -167,10 +169,40 @@ public class XViewer extends TreeViewer {
       updateStatusLabel();
    }
 
+   /**
+    * Will be called when Alt-Left-Click is done within table cell
+    * 
+    * @param treeColumn
+    * @param treeItem
+    * @return
+    */
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       return false;
    }
 
+   private static int num = 0;
+
+   /**
+    * Will be called when click is within the first 18 pixels of the cell rectangle where the icon would be. This method
+    * will be called in addition to handleLeftClick since both are true.
+    * 
+    * @param treeColumn
+    * @param treeItem
+    * @return
+    */
+   public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
+      System.out.println("Left click in Icon Area " + num++);
+      return false;
+   }
+
+   /**
+    * Will be called when cell is obtains a mouse left-click. This method will be called in addition to
+    * handleLeftClickInIconArea if both are true
+    * 
+    * @param treeColumn
+    * @param treeItem
+    * @return
+    */
    public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       return false;
    }
@@ -293,15 +325,15 @@ public class XViewer extends TreeViewer {
    }
 
    public String getStatusLine1() {
-//      StringBuffer sb = new StringBuffer();
-//      int loadedNum = 0;
-//      if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) loadedNum =
-//            ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
-//      sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
-//      sb.append(customize.getStatusLabelAddition());
-//      sb.append(filterDataUI.getStatusLabelAddition());
-//      sb.append(getStatusString());
-//      return sb.toString().replaceAll(" - $", "");
+      StringBuffer sb = new StringBuffer();
+      int loadedNum = 0;
+      if (getRoot() != null && ((ITreeContentProvider) getContentProvider()) != null) loadedNum =
+            ((ITreeContentProvider) getContentProvider()).getChildren(getRoot()).length;
+      sb.append(" " + loadedNum + " Loaded - " + getVisibleItemCount(getTree().getItems()) + " Shown - " + ((IStructuredSelection) getSelection()).size() + " Selected - ");
+      sb.append(customize.getStatusLabelAddition());
+      sb.append(filterDataUI.getStatusLabelAddition());
+      sb.append(getStatusString());
+      return sb.toString().replaceAll(" - $", "");
 	   return "";
    }
 
