@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -94,6 +95,14 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
       return values;
    }
 
+   public Collection<Value> allValues(KeyOne key) {
+	   HashMap<KeyTwo, Value> map = k1ToHashMap.get(key);
+	   if (map != null) {
+		   return new HashSet<Value>(map.values());
+	   }
+	   return new HashSet<Value>();
+   }
+   
    public Map<KeyTwo, Value> getSubHash(KeyOne k1) {
       return k1ToHashMap.get(k1);
    }
