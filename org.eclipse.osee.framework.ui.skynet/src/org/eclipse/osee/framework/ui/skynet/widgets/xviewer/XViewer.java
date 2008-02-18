@@ -17,6 +17,8 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -334,7 +336,6 @@ public class XViewer extends TreeViewer {
       sb.append(filterDataUI.getStatusLabelAddition());
       sb.append(getStatusString());
       return sb.toString().replaceAll(" - $", "");
-	   return "";
    }
 
    public String getStatusLine2() {
