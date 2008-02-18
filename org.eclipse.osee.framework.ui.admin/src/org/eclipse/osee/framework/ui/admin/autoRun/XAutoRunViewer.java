@@ -257,7 +257,7 @@ public class XAutoRunViewer extends XWidget {
             }
             runningSchedule = true;
             System.out.println("Timestamp " + XDate.getDateNow(XDate.MMDDYYHHMM));
-            timeStamp = XDate.getDateNow(XDate.HHMM);
+            timeStamp = XDate.getDateNow("HH:mm");
             updateToolBarInfo();
 
             Displays.ensureInDisplayThread(new Runnable() {
