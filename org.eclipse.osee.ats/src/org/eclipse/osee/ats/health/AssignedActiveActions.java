@@ -33,16 +33,17 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAutoRunAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
  */
-public class AssignedActiveActions extends XNavigateItemAction {
+public class AssignedActiveActions extends XNavigateItemAutoRunAction implements IAutoRunTask {
 
    boolean fixIt = true;
 
@@ -51,6 +52,10 @@ public class AssignedActiveActions extends XNavigateItemAction {
     */
    public AssignedActiveActions(XNavigateItem parent) {
       super(parent, "Report Assigned Active Actions (fix available)");
+   }
+
+   public AssignedActiveActions() {
+      this(null);
    }
 
    /*
@@ -80,18 +85,7 @@ public class AssignedActiveActions extends XNavigateItemAction {
          IStatus toReturn = Status.CANCEL_STATUS;
          final XResultData rd = new XResultData(AtsPlugin.getLogger());
          try {
-            if (fixIt) {
-               AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
-                        @Override
-                        protected void handleTxWork() throws Exception {
-                           assignedActiveActionsHelper(rd);
-                        }
-                     };
-               txWrapper.execute();
-            } else {
-               assignedActiveActionsHelper(rd);
-            }
+            runIt(monitor, rd);
             rd.report(getName());
             toReturn = Status.OK_STATUS;
          } catch (Exception ex) {
@@ -101,6 +95,21 @@ public class AssignedActiveActions extends XNavigateItemAction {
             monitor.done();
          }
          return toReturn;
+      }
+   }
+
+   private void runIt(IProgressMonitor monitor, final XResultData rd) throws Exception {
+      if (fixIt) {
+         AbstractSkynetTxTemplate txWrapper =
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  @Override
+                  protected void handleTxWork() throws Exception {
+                     assignedActiveActionsHelper(rd);
+                  }
+               };
+         txWrapper.execute();
+      } else {
+         assignedActiveActionsHelper(rd);
       }
    }
 
@@ -129,6 +138,48 @@ public class AssignedActiveActions extends XNavigateItemAction {
             rd.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " In Work without assignees");
          }
       }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#get24HourStartTime()
+    */
+   public String get24HourStartTime() {
+      return "23:05";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getCategory()
+    */
+   public String getCategory() {
+      return "OSEE ATS";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getDescription()
+    */
+   public String getDescription() {
+      return "Ensure active Actions have at least one assignee";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getRunDb()
+    */
+   public RunDb getRunDb() {
+      return IAutoRunTask.RunDb.Production_Db;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getTaskType()
+    */
+   public TaskType getTaskType() {
+      return IAutoRunTask.TaskType.Db_Health_Check;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#startTasks(org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData)
+    */
+   public void startTasks(XResultData resultData) throws Exception {
+      runIt(null, resultData);
    }
 
 }

@@ -273,4 +273,18 @@
             classname="org.eclipse.osee.ats.health.ActionsHaveOneTeam">
       </AutoRunTask>
    </extension>
+   <extension
+         id="AssignedActiveActions"
+         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
+      <AutoRunTask
+            classname="org.eclipse.osee.ats.health.AssignedActiveActions">
+      </AutoRunTask>
+   </extension>
+   <extension
+         id="ActionAttributeDuplication"
+         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
+      <AutoRunTask
+            classname="org.eclipse.osee.ats.health.AttributeDuplication">
+      </AutoRunTask>
+   </extension>
 </plugin>

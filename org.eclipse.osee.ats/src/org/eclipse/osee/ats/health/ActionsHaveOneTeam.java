@@ -142,7 +142,7 @@ public class ActionsHaveOneTeam extends XNavigateItemAutoRunAction implements IA
     * @see org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask#getDescription()
     */
    public String getDescription() {
-      return "Ensure Actions have at least on Team Workflow and Workflows are related to one Action";
+      return "Ensure Actions have at least one Team Workflow and Workflows are related to one Action";
    }
 
    /* (non-Javadoc)
