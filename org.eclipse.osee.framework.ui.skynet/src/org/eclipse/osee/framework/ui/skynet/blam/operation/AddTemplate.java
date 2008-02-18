@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 /**
  * @author Ryan D. Brooks
  */
-public class AddTemplate implements BlamOperation {
+public class AddTemplate extends AbstractBlam {
    /**
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap,
     *      org.eclipse.core.runtime.IProgressMonitor)
@@ -44,13 +44,6 @@ public class AddTemplate implements BlamOperation {
     */
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /><XWidget xwidgetType=\"XText\" displayName=\"Presentation Type\" /><XWidget xwidgetType=\"XText\" displayName=\"Bundle Name\" /><XWidget xwidgetType=\"XText\" displayName=\"Template Name\" /><XWidget xwidgetType=\"XText\" displayName=\"Template Path\" /></xWidgets>";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
-    */
-   public String getDescriptionUsage() {
-      return "Select parameters below and click the play button at the top right.";
    }
 
    /* (non-Javadoc)
