@@ -165,7 +165,8 @@ public class ByteUtil {
          if (hex) {
             strBuilder.append(String.format("%02x ", data[i]));
          } else {
-            strBuilder.append(String.format("%d ", data[i]));
+        	 
+            strBuilder.append(data[i]).append(' ');
          }
          columnCount++;
       }
