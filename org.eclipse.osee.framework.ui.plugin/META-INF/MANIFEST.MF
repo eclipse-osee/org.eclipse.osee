@@ -20,7 +20,6 @@ Require-Bundle: org.apache.commons.lang,
  org.eclipse.ui.editors,
  org.eclipse.ui.console,
  org.eclipse.ui.forms,
- org.eclipse.osee.framework.ui.product,
  org.junit
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.framework.ui.plugin,

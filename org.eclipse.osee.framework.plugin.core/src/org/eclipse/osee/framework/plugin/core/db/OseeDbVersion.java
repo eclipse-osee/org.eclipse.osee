@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.ui.plugin.util;
+package org.eclipse.osee.framework.plugin.core.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -17,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.ui.product.OseeProductActivator;
 
 /**
  * Provides the necessary methods to ensure old versions of OSEE code do not get run against versions of the database
@@ -80,12 +79,12 @@ public class OseeDbVersion {
       // If runtime parameter to override is set, All Ok
       if (OseeProperties.getInstance().isOverrideVersionCheck()) return;
       // If this is runtime development, All Ok
-      if (OseeProductActivator.getInstance().isDevelopmentVersion()) return;
+      if (OseeCodeVersion.getInstance().isDevelopmentVersion()) return;
       // If this check is overridden in OSEE_LOG, All Ok
       if (!getOseeDbCheckVersion(connection)) return;
 
       String dbVersionStr = getOseeDbVersion(connection);
-      String codeVersionStr = OseeProductActivator.getInstance().getOseeVersion();
+      String codeVersionStr = OseeCodeVersion.getInstance().get();
 
       // If match, All Ok
       if (dbVersionStr.equals(codeVersionStr)) return;
@@ -131,7 +130,7 @@ public class OseeDbVersion {
    }
 
    public static void initializeDbVersion(Connection connection) throws SQLException {
-      setOseeDbVersion(connection, OseeProductActivator.DEFAULT_DEVELOPMENT_VERSION);
+      setOseeDbVersion(connection, OseeCodeVersion.DEFAULT_DEVELOPMENT_VERSION);
       setOseeDbCheckVersion(connection, false);
    }
 }

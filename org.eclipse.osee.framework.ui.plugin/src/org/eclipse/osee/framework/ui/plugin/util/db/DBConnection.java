@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.config.data.DbInformation;
 import org.eclipse.osee.framework.plugin.core.config.data.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.plugin.core.db.IConnection;
+import org.eclipse.osee.framework.plugin.core.db.OseeDbVersion;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion;
 import org.osgi.framework.Bundle;
 
 /**

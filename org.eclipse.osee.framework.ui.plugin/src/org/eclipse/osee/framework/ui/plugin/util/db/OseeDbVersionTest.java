@@ -3,13 +3,13 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.ui.plugin.util;
+package org.eclipse.osee.framework.ui.plugin.util.db;
 
 import java.sql.SQLException;
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.product.OseeProductActivator;
+import org.eclipse.osee.framework.plugin.core.db.OseeCodeVersion;
+import org.eclipse.osee.framework.plugin.core.db.OseeDbVersion;
 
 /**
  * @author Donald G. Dunne
@@ -22,30 +22,29 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#setOseeDbVersion(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#setOseeDbVersion(java.sql.Connection)}.
     */
    public void testSetOseeDbVersion() throws Exception {
       OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(), TIME_STAMP);
       String str = OseeDbVersion.getOseeDbVersion(ConnectionHandler.getConnection());
       assertTrue(str.equals(TIME_STAMP));
-      OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(),
-            OseeProductActivator.DEFAULT_DEVELOPMENT_VERSION);
+      OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(), OseeCodeVersion.DEFAULT_DEVELOPMENT_VERSION);
       str = OseeDbVersion.getOseeDbVersion(ConnectionHandler.getConnection());
-      assertTrue(str.equals(OseeProductActivator.DEFAULT_DEVELOPMENT_VERSION));
+      assertTrue(str.equals(OseeCodeVersion.DEFAULT_DEVELOPMENT_VERSION));
    }
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#getOseeDbVersion(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#getOseeDbVersion(java.sql.Connection)}.
     */
    public void testGetOseeDbVersion() throws SQLException {
       String str = OseeDbVersion.getOseeDbVersion(ConnectionHandler.getConnection());
-      assertTrue(str.equals(OseeProductActivator.DEFAULT_DEVELOPMENT_VERSION));
+      assertTrue(str.equals(OseeCodeVersion.DEFAULT_DEVELOPMENT_VERSION));
    }
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#setOseeDbCheckVersion(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#setOseeDbCheckVersion(java.sql.Connection)}.
     */
    public void testSetOseeDbCheckVersion() throws SQLException {
       OseeDbVersion.setOseeDbCheckVersion(ConnectionHandler.getConnection(), false);
@@ -58,7 +57,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#getOseeDbCheckVersion(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#getOseeDbCheckVersion(java.sql.Connection)}.
     */
    public void testGetOseeDbCheckVersion() throws SQLException {
       boolean check = OseeDbVersion.getOseeDbCheckVersion(ConnectionHandler.getConnection());
@@ -67,24 +66,23 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_DevDevCheck() throws Exception {
       // codeVersion = "Development";  dbVersion = "Development"; checkVersion = true; == PASS 
-      OseeProductActivator.getInstance().setOseeCodeVersion(OseeProductActivator.DEFAULT_DEVELOPMENT_VERSION);
-      OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(),
-            OseeProductActivator.DEFAULT_DEVELOPMENT_VERSION);
+      OseeCodeVersion.getInstance().set(OseeCodeVersion.DEFAULT_DEVELOPMENT_VERSION);
+      OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(), OseeCodeVersion.DEFAULT_DEVELOPMENT_VERSION);
       OseeDbVersion.setOseeDbCheckVersion(ConnectionHandler.getConnection(), true);
       OseeDbVersion.ensureDatabaseCompatability(ConnectionHandler.getConnection());
    }
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_DevTimeCheck() throws Exception {
       // codeVersion = "Development";  dbVersion = TIME_STAMP; checkVersion = true; == PASS 
-      OseeProductActivator.getInstance().setOseeCodeVersion(OseeProductActivator.DEFAULT_DEVELOPMENT_VERSION);
+      OseeCodeVersion.getInstance().set(OseeCodeVersion.DEFAULT_DEVELOPMENT_VERSION);
       OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(), TIME_STAMP);
       OseeDbVersion.setOseeDbCheckVersion(ConnectionHandler.getConnection(), true);
       OseeDbVersion.ensureDatabaseCompatability(ConnectionHandler.getConnection());
@@ -92,11 +90,11 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_TimeTimeCheck() throws Exception {
       // codeVersion = TIME_STAMP;  dbVersion = TIME_STAMP; checkVersion = true; == PASS 
-      OseeProductActivator.getInstance().setOseeCodeVersion(TIME_STAMP);
+      OseeCodeVersion.getInstance().set(TIME_STAMP);
       OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(), TIME_STAMP);
       OseeDbVersion.setOseeDbCheckVersion(ConnectionHandler.getConnection(), true);
       OseeDbVersion.ensureDatabaseCompatability(ConnectionHandler.getConnection());
@@ -104,11 +102,11 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_PosttimeTimeCheck() throws Exception {
       // codeVersion = POST_TIME_STAMP;  dbVersion = TIME_STAMP; checkVersion = true; == PASS 
-      OseeProductActivator.getInstance().setOseeCodeVersion(POST_TIME_STAMP);
+      OseeCodeVersion.getInstance().set(POST_TIME_STAMP);
       OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(), TIME_STAMP);
       OseeDbVersion.setOseeDbCheckVersion(ConnectionHandler.getConnection(), true);
       OseeDbVersion.ensureDatabaseCompatability(ConnectionHandler.getConnection());
@@ -116,11 +114,11 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_PretimeTimeCheck() throws Exception {
       // codeVersion = PRE_TIME_STAMP;  dbVersion = TIME_STAMP; checkVersion = true; == Exception
-      OseeProductActivator.getInstance().setOseeCodeVersion(PRE_TIME_STAMP);
+      OseeCodeVersion.getInstance().set(PRE_TIME_STAMP);
       OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(), TIME_STAMP);
       OseeDbVersion.setOseeDbCheckVersion(ConnectionHandler.getConnection(), true);
       boolean exception = false;
@@ -134,11 +132,11 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_PretimeTimeDontcheck() throws Exception {
       // codeVersion = PRE_TIME_STAMP;  dbVersion = TIME_STAMP; checkVersion = false; == PASS
-      OseeProductActivator.getInstance().setOseeCodeVersion(PRE_TIME_STAMP);
+      OseeCodeVersion.getInstance().set(PRE_TIME_STAMP);
       OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(), TIME_STAMP);
       OseeDbVersion.setOseeDbCheckVersion(ConnectionHandler.getConnection(), false);
       OseeDbVersion.ensureDatabaseCompatability(ConnectionHandler.getConnection());
@@ -146,12 +144,12 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.ui.plugin.util.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.plugin.core.db.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_PretimeTimeCheckParamoverride() throws Exception {
       // codeVersion = PRE_TIME_STAMP;  dbVersion = TIME_STAMP; checkVersion = true; == Exception
       // AND set runtime parameter to override check == Ok
-      OseeProductActivator.getInstance().setOseeCodeVersion(PRE_TIME_STAMP);
+      OseeCodeVersion.getInstance().set(PRE_TIME_STAMP);
       OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(), TIME_STAMP);
       OseeDbVersion.setOseeDbCheckVersion(ConnectionHandler.getConnection(), true);
       System.setProperty(OseeProperties.OSEE_OVERRIDE_VERSION_CHECK, "");
