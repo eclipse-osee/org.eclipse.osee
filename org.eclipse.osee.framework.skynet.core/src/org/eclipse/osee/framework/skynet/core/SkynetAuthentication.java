@@ -244,6 +244,7 @@ public class SkynetAuthentication implements PersistenceManager {
    }
 
    public User getUserByIdWithError(String userId) throws SQLException, IllegalArgumentException, IllegalStateException {
+      if (userId == null || userId.equals("")) throw new IllegalStateException("UserId can't be null or \"\"");
       User user = nameOrIdToUserMap.get(userId);
 
       if (user == null) {
