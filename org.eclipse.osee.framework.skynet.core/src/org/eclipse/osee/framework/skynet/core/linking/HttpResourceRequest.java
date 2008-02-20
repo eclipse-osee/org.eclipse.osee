@@ -81,7 +81,7 @@ public class HttpResourceRequest implements IHttpMethod {
             try {
                File file = new File(uploadPath + File.separator + urlRequested);
                if (file != null && file.exists() && file.canRead()) {
-                  resource = file.toURL();
+                  resource = file.toURI().toURL();
                }
             } catch (Exception ex) {
                // Don't do anything since we will continue to look in other places
