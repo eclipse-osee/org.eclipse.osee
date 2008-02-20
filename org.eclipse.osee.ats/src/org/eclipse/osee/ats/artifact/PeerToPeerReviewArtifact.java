@@ -77,7 +77,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       // If in review state, all roles must have hours spent entered
       if (getCurrentStateName().equals(PeerToPeerReviewArtifact.State.Review.name())) {
          for (UserRole uRole : userRoleManager.getUserRoles()) {
-            if (uRole.getHoursSpent() == 0) return new Result("Hours spent must be entered for each role.");
+            if (uRole.getHoursSpent() == null) return new Result("Hours spent must be entered for each role.");
          }
       }
       return super.isUserRoleValid();

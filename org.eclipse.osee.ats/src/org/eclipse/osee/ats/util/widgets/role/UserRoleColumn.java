@@ -29,6 +29,8 @@ public enum UserRoleColumn {
 
    Hours_Spent_Col("Hours Spent", 80, SWT.LEFT, true, SortDataType.Float, false),
 
+   Completed_Col("Completed", 80, SWT.LEFT, true, SortDataType.String, false),
+
    Num_Major_Col("Major", 60, SWT.CENTER, true, SortDataType.Integer, false),
 
    Num_Minor_Col("Minor", 60, SWT.CENTER, true, SortDataType.Integer, false),

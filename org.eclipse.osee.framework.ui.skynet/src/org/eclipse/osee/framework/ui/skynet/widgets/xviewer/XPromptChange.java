@@ -30,6 +30,9 @@ public class XPromptChange {
    private final static String VALID_INTEGER_REG_EX = "^[0-9]+$";
    private final static String VALID_PERCENT_REG_EX =
          "^(0*100{1,1}\\.?((?<=\\.)0*)?%?$)|(^0*\\d{0,2}\\.?((?<=\\.)\\d*)?%?)$";
+   public static enum Option {
+      SINGLE_LINE, MULTI_LINE
+   };
 
    public static Date promptChangeDate(String displayName, Date currDate) throws SQLException {
       // prompt that current release is (get from attribute); want to
@@ -81,9 +84,14 @@ public class XPromptChange {
    }
 
    public static String promptChangeString(String displayName, String currEntry, String validationRegEx) throws SQLException {
+      return promptChangeString(displayName, currEntry, validationRegEx, Option.SINGLE_LINE);
+   }
+
+   public static String promptChangeString(String displayName, String currEntry, String validationRegEx, Option option) throws SQLException {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
+      if (option == Option.MULTI_LINE) ed.setFillVertically(true);
       if (currEntry != null && !currEntry.equals("")) ed.setEntry(currEntry);
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();

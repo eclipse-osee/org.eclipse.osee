@@ -23,11 +23,11 @@ public enum DefectColumn {
 
    Empty_Col("", 0, SWT.LEFT, false, SortDataType.String, false),
 
-   Severity_Col("Severity", 35, SWT.LEFT, true, SortDataType.String, false),
+   Severity_Col("Severity", 70, SWT.LEFT, true, SortDataType.String, false),
 
-   Disposition_Col("Disposition", 35, SWT.CENTER, true, SortDataType.String, false),
+   Disposition_Col("Disposition", 70, SWT.CENTER, true, SortDataType.String, false),
 
-   Closed_Col("Closed", 80, SWT.LEFT, true, SortDataType.Boolean, false),
+   Closed_Col("Closed", 70, SWT.LEFT, true, SortDataType.Boolean, false),
 
    User_Col("User", 100, SWT.LEFT, true, SortDataType.String, false),
 
@@ -35,11 +35,11 @@ public enum DefectColumn {
 
    Injection_Activity_Col("Injection Activity", 35, SWT.LEFT, true, SortDataType.String, false),
 
-   Description_Col("Description", 200, SWT.CENTER, true, SortDataType.String, false),
+   Description_Col("Description", 200, SWT.CENTER, true, SortDataType.String_MultiLine, false),
 
-   Location_Col("Location", 200, SWT.LEFT, true, SortDataType.String, false),
+   Location_Col("Location", 200, SWT.LEFT, true, SortDataType.String_MultiLine, false),
 
-   Resolution_Col("Resolution", 200, SWT.LEFT, true, SortDataType.String, false);
+   Resolution_Col("Resolution", 200, SWT.LEFT, true, SortDataType.String_MultiLine, false);
 
    private final String name;
    private final int width;

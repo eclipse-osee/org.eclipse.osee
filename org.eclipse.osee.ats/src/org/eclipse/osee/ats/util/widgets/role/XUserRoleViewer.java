@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.util.widgets.role;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +21,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
-import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -243,7 +243,7 @@ public class XUserRoleViewer extends XWidget implements IDamWidget, IEventReceiv
       }
    }
 
-   private void removeUserRoleHelper(List<UserRole> items) {
+   private void removeUserRoleHelper(List<UserRole> items) throws SQLException {
       for (UserRole userRole : items) {
          reviewArt.getUserRoleManager().removeUserRole(userRole, false);
          xViewer.remove(userRole);
@@ -331,8 +331,7 @@ public class XUserRoleViewer extends XWidget implements IDamWidget, IEventReceiv
                "Issues"}));
          for (UserRole item : reviewArt.getUserRoleManager().getUserRoles()) {
             html.append(AHTML.addRowMultiColumnTable(new String[] {item.getRole().name(), item.getUser().getName(),
-                  AtsLib.doubleToStrString(item.getHoursSpent(), true),
-                  reviewArt.getUserRoleManager().getNumMajor(item.getUser()) + "",
+                  item.getHoursSpentStr(), reviewArt.getUserRoleManager().getNumMajor(item.getUser()) + "",
                   reviewArt.getUserRoleManager().getNumMinor(item.getUser()) + "",
                   reviewArt.getUserRoleManager().getNumIssues(item.getUser()) + ""}));
          }

@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.util.widgets.role;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -62,9 +64,11 @@ public class UserRoleLabelProvider implements ITableLabelProvider {
       if (aCol == UserRoleColumn.User_Col)
          return defectItem.getUser().getName();
       else if (aCol == UserRoleColumn.Hours_Spent_Col)
-         return AtsLib.doubleToStrString(defectItem.getHoursSpent(), true);
+         return defectItem.getHoursSpent() == null ? "" : AtsLib.doubleToStrString(defectItem.getHoursSpent(), false);
       else if (aCol == UserRoleColumn.Role_Col)
          return defectItem.getRole().name();
+      else if (aCol == UserRoleColumn.Completed_Col)
+         return String.valueOf(defectItem.isCompleted());
       else if (aCol == UserRoleColumn.Num_Major_Col)
          return treeViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumMajor(defectItem.getUser()) + "";
       else if (aCol == UserRoleColumn.Num_Minor_Col)
@@ -96,16 +100,29 @@ public class UserRoleLabelProvider implements ITableLabelProvider {
 
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof String) return null;
-      UserRole defectItem = (UserRole) element;
+      UserRole roleItem = (UserRole) element;
       XViewerColumn xCol = treeViewer.getXTreeColumn(columnIndex);
       if (xCol == null) return null;
       UserRoleColumn dCol = UserRoleColumn.getAtsXColumn(xCol);
       if (!xCol.isShow()) return null; // Since not shown, don't display
       if (dCol == UserRoleColumn.User_Col) {
-         if (defectItem.getUser().equals(SkynetAuthentication.getInstance().getAuthenticatedUser()))
+         if (roleItem.getUser().equals(SkynetAuthentication.getInstance().getAuthenticatedUser()))
             return SkynetGuiPlugin.getInstance().getImage("red_user_sm.gif");
          else
             return SkynetGuiPlugin.getInstance().getImage("user_sm.gif");
+      } else if (dCol == UserRoleColumn.Role_Col) {
+         return AtsPlugin.getInstance().getImage("role.gif");
+      } else if (dCol == UserRoleColumn.Hours_Spent_Col) {
+         return SkynetGuiPlugin.getInstance().getImage("clock.gif");
+      } else if (dCol == UserRoleColumn.Completed_Col) {
+         return roleItem.isCompleted() ? SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage(
+               "chkbox_disabled.gif");
+      } else if (dCol == UserRoleColumn.Num_Major_Col) {
+         return Severity.getImage(Severity.Major);
+      } else if (dCol == UserRoleColumn.Num_Minor_Col) {
+         return Severity.getImage(Severity.Minor);
+      } else if (dCol == UserRoleColumn.Num_Issues_Col) {
+         return Severity.getImage(Severity.Issue);
       }
       return null;
    }

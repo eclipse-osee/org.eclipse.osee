@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
@@ -24,7 +25,6 @@ import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -33,13 +33,13 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  */
 public class UserRoleManager {
 
-   private final Artifact artifact;
+   private final ReviewSMArtifact artifact;
    private boolean enabled = true;
    private static String ATS_DEFECT_TAG = "AtsRole";
    private static String DEFECT_ITEM_TAG = "Role";
    private static String REVIEW_DEFECT_ATTRIBUTE_NAME = "ats.Role";
 
-   public UserRoleManager(Artifact artifact) {
+   public UserRoleManager(ReviewSMArtifact artifact) {
       this.artifact = artifact;
    }
 
@@ -70,13 +70,14 @@ public class UserRoleManager {
       return roles;
    }
 
-   private void saveDefectItems(Set<UserRole> defectItems, boolean persist) {
+   private void saveRoleItems(Set<UserRole> defectItems, boolean persist) {
       try {
          StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");
          for (UserRole item : defectItems)
             sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
          sb.append("</" + ATS_DEFECT_TAG + ">");
          artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
+         updateAssignees();
          if (persist) artifact.persistAttributes();
          rollupHoursSpentToReviewState(persist);
       } catch (Exception ex) {
@@ -85,26 +86,36 @@ public class UserRoleManager {
    }
 
    public void addOrUpdateUserRole(UserRole userRole, boolean persist) throws SQLException {
-      Set<UserRole> defectItems = getUserRoles();
+      Set<UserRole> roleItems = getUserRoles();
       boolean found = false;
-      for (UserRole uRole : defectItems) {
+      for (UserRole uRole : roleItems) {
          if (userRole.equals(uRole)) {
             uRole.update(userRole);
             found = true;
          }
       }
-      if (!found) defectItems.add(userRole);
-      saveDefectItems(defectItems, persist);
+      if (!found) roleItems.add(userRole);
+      saveRoleItems(roleItems, persist);
    }
 
-   public void removeUserRole(UserRole userRole, boolean persist) {
-      Set<UserRole> defectItems = getUserRoles();
-      defectItems.remove(userRole);
-      saveDefectItems(defectItems, persist);
+   private void updateAssignees() throws SQLException {
+      // Set assigness based on roles that are not set as completed
+      Set<User> assignees = new HashSet<User>();
+      for (UserRole uRole : getUserRoles()) {
+         if (!uRole.isCompleted() && uRole.getUser() != null) assignees.add(uRole.getUser());
+      }
+      // Set assigness based on roles
+      artifact.getSmaMgr().setAssignees(assignees);
+   }
+
+   public void removeUserRole(UserRole userRole, boolean persist) throws SQLException {
+      Set<UserRole> roleItems = getUserRoles();
+      roleItems.remove(userRole);
+      saveRoleItems(roleItems, persist);
    }
 
    public void clearLog(boolean persist) {
-      saveDefectItems(new HashSet<UserRole>(), persist);
+      saveRoleItems(new HashSet<UserRole>(), persist);
    }
 
    public String getTable() {
@@ -122,7 +133,7 @@ public class UserRoleManager {
          builder.append("<TR>");
          builder.append("<TD>" + item.getRole().name() + "</TD>");
          builder.append("<TD>" + item.getUser().getDescriptiveName() + "</TD>");
-         builder.append("<TD>" + item.getHoursSpent() + "</TD>");
+         builder.append("<TD>" + item.getHoursSpentStr() + "</TD>");
          builder.append("<TD>" + getNumMajor(item.getUser()) + "</TD>");
          builder.append("<TD>" + getNumMinor(item.getUser()) + "</TD>");
          builder.append("<TD>" + getNumIssues(item.getUser()) + "</TD>");
@@ -165,7 +176,7 @@ public class UserRoleManager {
       double hoursSpent = 0.0;
       try {
          for (UserRole role : getUserRoles())
-            hoursSpent += role.getHoursSpent();
+            hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
          SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
          smaMgr.getCurrentStateDam().setHoursSpent(hoursSpent);
          if (artifact.isDirty() && persist) artifact.persistAttributes();

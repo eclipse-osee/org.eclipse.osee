@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -28,8 +29,9 @@ public class UserRole {
 
    private Role role = Role.Reviewer;
    private User user;
-   private Double hoursSpent = 0.0;
+   private Double hoursSpent = null;
    private String guid = GUID.generateGuidStr();
+   private boolean completed = false;
 
    public static enum Role {
       Moderator, Reviewer, Author;
@@ -43,7 +45,7 @@ public class UserRole {
    };
 
    public UserRole() {
-      this(Role.Reviewer, SkynetAuthentication.getInstance().getAuthenticatedUser(), 0.0);
+      this(Role.Reviewer, SkynetAuthentication.getInstance().getAuthenticatedUser(), null);
    }
 
    public UserRole(Role role, User user) {
@@ -72,7 +74,8 @@ public class UserRole {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("role", role.name()));
       sb.append(AXml.addTagData("userId", user.getUserId()));
-      sb.append(AXml.addTagData("hoursSpent", String.valueOf(hoursSpent)));
+      sb.append(AXml.addTagData("hoursSpent", hoursSpent == null ? "" : String.valueOf(hoursSpent)));
+      sb.append(AXml.addTagData("completed", String.valueOf(completed)));
       sb.append(AXml.addTagData("guid", guid));
       return sb.toString();
    }
@@ -80,7 +83,13 @@ public class UserRole {
    public void fromXml(String xml) throws SQLException {
       this.role = Role.valueOf(AXml.getTagData(xml, "role"));
       this.user = SkynetAuthentication.getInstance().getUserByIdWithError(AXml.getTagData(xml, "userId"));
-      this.hoursSpent = Double.valueOf(AXml.getTagData(xml, "hoursSpent")).doubleValue();
+      this.hoursSpent =
+            AXml.getTagData(xml, "hoursSpent").equals("") ? null : Double.valueOf(AXml.getTagData(xml, "hoursSpent")).doubleValue();
+      String completedStr = AXml.getTagData(xml, "completed");
+      if (completedStr != null)
+         this.completed = completedStr.equals("true");
+      else
+         this.completed = false;
       this.guid = AXml.getTagData(xml, "guid");
    }
 
@@ -99,7 +108,7 @@ public class UserRole {
    }
 
    public String toString() {
-      return role + " - " + user + " - " + hoursSpent;
+      return role + " - " + user + " - " + hoursSpent + " - " + (completed ? "Completed" : "InWork");
    }
 
    /**
@@ -137,6 +146,10 @@ public class UserRole {
       return hoursSpent;
    }
 
+   public String getHoursSpentStr() {
+      return hoursSpent == null ? "" : AtsLib.doubleToStrString(hoursSpent, true);
+   }
+
    /**
     * @param hoursSpent the hoursSpent to set
     */
@@ -156,6 +169,20 @@ public class UserRole {
     */
    public void setGuid(String guid) {
       this.guid = guid;
+   }
+
+   /**
+    * @return the completed
+    */
+   public boolean isCompleted() {
+      return completed;
+   }
+
+   /**
+    * @param completed the completed to set
+    */
+   public void setCompleted(boolean completed) {
+      this.completed = completed;
    }
 
 }

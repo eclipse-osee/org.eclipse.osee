@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.util.widgets.defect;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
@@ -111,9 +112,14 @@ public class DefectLabelProvider implements ITableLabelProvider {
       if (!xCol.isShow()) return null; // Since not shown, don't display
       if (dCol == DefectColumn.Severity_Col)
          return Severity.getImage(defectItem.getSeverity());
+      else if (dCol == DefectColumn.Injection_Activity_Col)
+         return AtsPlugin.getInstance().getImage("info.gif");
       else if (dCol == DefectColumn.Disposition_Col)
          return Disposition.getImage(defectItem.getDisposition());
-      else if (dCol == DefectColumn.User_Col) {
+      else if (dCol == DefectColumn.Closed_Col) {
+         return defectItem.isClosed() ? SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage(
+               "chkbox_disabled.gif");
+      } else if (dCol == DefectColumn.User_Col) {
          if (defectItem.getUser().equals(SkynetAuthentication.getInstance().getAuthenticatedUser()))
             return SkynetGuiPlugin.getInstance().getImage("red_user_sm.gif");
          else

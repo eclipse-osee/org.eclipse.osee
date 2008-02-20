@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets.defect;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -34,6 +35,9 @@ public class DefectManager {
    private static String ATS_DEFECT_TAG = "AtsDefect";
    private static String DEFECT_ITEM_TAG = "Item";
    private static String REVIEW_DEFECT_ATTRIBUTE_NAME = "ats.Review Defect";
+   private Matcher defectMatcher =
+         java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">",
+               Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    public DefectManager(Artifact artifact) {
       this.artifact = artifact;
@@ -50,10 +54,9 @@ public class DefectManager {
    public Set<DefectItem> getDefectItems() {
       Set<DefectItem> defectItems = new HashSet<DefectItem>();
       String xml = artifact.getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME);
-      Matcher m =
-            java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(xml);
-      while (m.find()) {
-         DefectItem item = new DefectItem(m.group());
+      defectMatcher.reset(xml);
+      while (defectMatcher.find()) {
+         DefectItem item = new DefectItem(defectMatcher.group());
          defectItems.add(item);
       }
       return defectItems;

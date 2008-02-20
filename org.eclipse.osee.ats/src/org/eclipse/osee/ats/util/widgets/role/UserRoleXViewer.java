@@ -136,6 +136,14 @@ public class UserRoleXViewer extends XViewer {
       return arts;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#handleLeftClickInIconArea(org.eclipse.swt.widgets.TreeColumn, org.eclipse.swt.widgets.TreeItem)
+    */
+   @Override
+   public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
+      return handleAltLeftClick(treeColumn, treeItem);
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -152,13 +160,22 @@ public class UserRoleXViewer extends XViewer {
          UserRole userRole = (UserRole) treeItem.getData();
          boolean modified = false;
          if (aCol == UserRoleColumn.Hours_Spent_Col) {
-            String hours = XPromptChange.promptChangeFloat(aCol.getName(), userRole.getHoursSpent());
+            String hours =
+                  XPromptChange.promptChangeFloat(aCol.getName(),
+                        userRole.getHoursSpent() == null ? 0 : userRole.getHoursSpent());
             if (hours != null) {
                modified = true;
-               userRole.setHoursSpent((new Double(hours)).doubleValue());
+               userRole.setHoursSpent(hours.equals("") ? 0 : (new Double(hours)).doubleValue());
             }
          } else if (aCol == UserRoleColumn.Num_Minor_Col || aCol == UserRoleColumn.Num_Major_Col || aCol == UserRoleColumn.Num_Issues_Col) {
             AWorkbench.popup("ERROR", "Field is calculated");
+         } else if (aCol == UserRoleColumn.Completed_Col) {
+            if (userRole.getHoursSpent() == null) {
+               AWorkbench.popup("ERROR", "Must enter Hours Spent");
+               return false;
+            }
+            modified = true;
+            userRole.setCompleted(!userRole.isCompleted());
          } else if (aCol == UserRoleColumn.User_Col) {
             UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
             int result = ld.open();

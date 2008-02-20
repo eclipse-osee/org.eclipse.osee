@@ -129,7 +129,13 @@ public class DefectItem {
    }
 
    public String toXml() {
-      return "<severity>" + severity.name() + "</severity><disposition>" + disposition.name() + "</disposition><injectionActivity>" + injectionActivity.name() + "</injectionActivity><date>" + date.getTime() + "</date><user>" + user.getUserId() + "</user><description>" + description + "</description><location>" + location + "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><guid>" + guid + "</guid>";
+      return "<severity>" + severity.name() + "</severity><disposition>" + disposition.name() + 
+      //
+      "</disposition><injectionActivity>" + injectionActivity.name() + "</injectionActivity><date>" + date.getTime() + 
+      //
+      "</date><user>" + user.getUserId() + "</user><description>" + description + "</description><location>" + location + 
+      //
+      "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><guid>" + guid + "</guid>";
    }
 
    public void fromXml(String xml) {
@@ -146,7 +152,7 @@ public class DefectItem {
       }
       this.description = AXml.getTagData(xml, "description");
       this.location = AXml.getTagData(xml, "location");
-      this.resolution = AXml.getTagData(xml, "resoltuion");
+      this.resolution = AXml.getTagData(xml, "resolution");
       this.closed = AXml.getTagBooleanData(xml, "closed");
       this.guid = AXml.getTagData(xml, "guid");
    }

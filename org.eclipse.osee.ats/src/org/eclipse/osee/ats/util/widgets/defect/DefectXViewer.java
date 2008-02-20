@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XPromptChange;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XPromptChange.Option;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -138,6 +139,49 @@ public class DefectXViewer extends XViewer {
       return arts;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#handleLeftClickInIconArea(org.eclipse.swt.widgets.TreeColumn, org.eclipse.swt.widgets.TreeItem)
+    */
+   @Override
+   public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
+      XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
+      DefectColumn aCol = DefectColumn.getAtsXColumn(xCol);
+      if (aCol == DefectColumn.User_Col) {
+         return handleAltLeftClick(treeColumn, treeItem);
+      } else if (aCol == DefectColumn.Injection_Activity_Col) {
+         return handleAltLeftClick(treeColumn, treeItem);
+      }
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#handleLeftClick(org.eclipse.swt.widgets.TreeColumn, org.eclipse.swt.widgets.TreeItem)
+    */
+   @Override
+   public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
+      XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
+      DefectColumn aCol = DefectColumn.getAtsXColumn(xCol);
+      DefectItem defectItem = (DefectItem) treeItem.getData();
+      boolean modified = false;
+      if (aCol == DefectColumn.Closed_Col) {
+         modified = true;
+         defectItem.setClosed(!defectItem.isClosed());
+      }
+      if (aCol == DefectColumn.Severity_Col) {
+         return handleAltLeftClick(treeColumn, treeItem);
+      }
+      if (aCol == DefectColumn.Disposition_Col) {
+         return handleAltLeftClick(treeColumn, treeItem);
+      }
+      if (modified) {
+         xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false);
+         xDefectViewer.notifyXModifiedListeners();
+         update(defectItem, null);
+         return true;
+      }
+      return false;
+   }
+
    /*
     * (non-Javadoc)
     * 
@@ -166,19 +210,22 @@ public class DefectXViewer extends XViewer {
                defectItem.setClosed(closed);
             }
          } else if (aCol == DefectColumn.Description_Col) {
-            String desc = XPromptChange.promptChangeString(aCol.getName(), defectItem.getDescription(), null);
+            String desc =
+                  XPromptChange.promptChangeString(aCol.getName(), defectItem.getDescription(), null, Option.MULTI_LINE);
             if (desc != null && !defectItem.getDescription().equals(desc)) {
                modified = true;
                defectItem.setDescription(desc);
             }
          } else if (aCol == DefectColumn.Resolution_Col) {
-            String resolution = XPromptChange.promptChangeString(aCol.getName(), defectItem.getResolution(), null);
+            String resolution =
+                  XPromptChange.promptChangeString(aCol.getName(), defectItem.getResolution(), null, Option.MULTI_LINE);
             if (resolution != null && !defectItem.getResolution().equals(resolution)) {
                modified = true;
                defectItem.setResolution(resolution);
             }
          } else if (aCol == DefectColumn.Location_Col) {
-            String desc = XPromptChange.promptChangeString(aCol.getName(), defectItem.getLocation(), null);
+            String desc =
+                  XPromptChange.promptChangeString(aCol.getName(), defectItem.getLocation(), null, Option.MULTI_LINE);
             if (desc != null && !defectItem.getLocation().equals(desc)) {
                modified = true;
                defectItem.setLocation(desc);

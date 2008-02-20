@@ -35,7 +35,7 @@ public class XViewerColumn {
    private static ArrayList<XViewerColumn> registeredColumns = new ArrayList<XViewerColumn>();
    private String toolTip = "";
    public enum SortDataType {
-      Date, Float, Percent, String, Boolean, Integer
+      Date, Float, Percent, String, String_MultiLine, Boolean, Integer
    };
 
    public XViewerColumn(XViewer xViewer, String name, int width, int defaultWidth, int align, boolean show, SortDataType sortDataType, int orderNum) {
