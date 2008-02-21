@@ -39,7 +39,7 @@ public class ArtifactTypeValidityCache {
 
    public Collection<ArtifactSubtypeDescriptor> getValidArtifactTypes(Branch branch) throws SQLException {
       ensurePopulated();
-      Branch rootBranch = branch.getParentBranch();
+      Branch rootBranch = branch.getRootBranch();
       Collection<ArtifactSubtypeDescriptor> artifactTypes = branchToartifactTypeMap.getValues(rootBranch);
       if (artifactTypes == null) {
          throw new IllegalArgumentException("There are no valid artifact types available for the branch " + rootBranch);
