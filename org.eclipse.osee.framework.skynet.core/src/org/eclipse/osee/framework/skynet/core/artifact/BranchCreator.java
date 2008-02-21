@@ -159,7 +159,7 @@ public class BranchCreator implements PersistenceManager {
       skynetAuth = SkynetAuthentication.getInstance();
    }
 
-   private void copyBranchAddressing(Branch newBranch, int newTransactionNumber, TransactionId parentTransactionId, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
+   private void copyBranchAddressing(Branch newBranch, int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       if (compressArtTypes != null && preserveArtTypes != null) {
          Set<ArtifactSubtypeDescriptor> intersection = new HashSet<ArtifactSubtypeDescriptor>(compressArtTypes);
          intersection.retainAll(preserveArtTypes);
@@ -188,12 +188,12 @@ public class BranchCreator implements PersistenceManager {
     * @param newTransactionNumber
     * @throws SQLException
     */
-   public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
+   public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                                                                                                              * parent
-                                                                                                                                                                                                              * transactoin_id
-                                                                                                                                                                                                              */, Integer /* gamma_id */>(
+                                                                                                                                                                                                                                                                                           * parent
+                                                                                                                                                                                                                                                                                           * transactoin_id
+                                                                                                                                                                                                                                                                                           */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -252,7 +252,7 @@ public class BranchCreator implements PersistenceManager {
     * @param preserveArtTypes
     * @return
     */
-   private static HashCollection<Integer, Integer> initSelectLinkHistory(Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes, TransactionId parentTransactionId, HashCollection<Integer, Integer> historyMap) {
+   private static HashCollection<Integer, Integer> initSelectLinkHistory(Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes, TransactionId parentTransactionId, HashCollection<Integer, Integer> historyMap) {
       String preservedTypeSet = makeArtTypeSet(null, preserveArtTypes);
       String compressTypeSet = makeArtTypeSet(compressArtTypes, null);
 
@@ -322,7 +322,7 @@ public class BranchCreator implements PersistenceManager {
             "rel_link_type_id", "art_type_id");
    }
 
-   private void createBaselineTransaction(int newTransactionNumber, TransactionId parentTransactionId, Set<ArtifactSubtypeDescriptor> compressArtTypes) throws SQLException {
+   private void createBaselineTransaction(int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes) throws SQLException {
       for (ArtifactSubtypeDescriptor artifactType : compressArtTypes) {
          int count =
                ConnectionHandler.runPreparedUpdateReturnCount(SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED,
@@ -367,7 +367,7 @@ public class BranchCreator implements PersistenceManager {
       logger.log(Level.INFO, "inserted row count for " + table1 + ": " + count);
    }
 
-   private static String makeArtTypeSet(Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) {
+   private static String makeArtTypeSet(Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) {
       StringBuilder typeStrB = new StringBuilder();
       typeStrB.append("(");
       boolean firstItem = true;
@@ -381,7 +381,7 @@ public class BranchCreator implements PersistenceManager {
       return typeStrB.toString();
    }
 
-   private static boolean addTypes(StringBuilder typeStrB, Set<ArtifactSubtypeDescriptor> artifactTypes, boolean firstItem) {
+   private static boolean addTypes(StringBuilder typeStrB, Collection<ArtifactSubtypeDescriptor> artifactTypes, boolean firstItem) {
       for (ArtifactSubtypeDescriptor artifactType : artifactTypes) {
          if (firstItem) {
             firstItem = false;
@@ -476,7 +476,7 @@ public class BranchCreator implements PersistenceManager {
     * @param childBranchName
     * @throws SQLException
     */
-   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) throws Exception {
+   public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws Exception {
 
       CreateChildBranchTx createChildBranchTx =
             new CreateChildBranchTx(parentTransactionId, childBranchShortName, childBranchName, associatedArtifact,
@@ -491,11 +491,11 @@ public class BranchCreator implements PersistenceManager {
       private String childBranchName;
       private TransactionId parentTransactionId;
       private Artifact associatedArtifact;
-      private Set<ArtifactSubtypeDescriptor> compressArtTypes;
-      private Set<ArtifactSubtypeDescriptor> preserveArtTypes;
+      private Collection<ArtifactSubtypeDescriptor> compressArtTypes;
+      private Collection<ArtifactSubtypeDescriptor> preserveArtTypes;
       private boolean success = false;
 
-      public CreateChildBranchTx(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact, Set<ArtifactSubtypeDescriptor> compressArtTypes, Set<ArtifactSubtypeDescriptor> preserveArtTypes) {
+      public CreateChildBranchTx(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) {
          this.childBranch = null;
          this.parentTransactionId = parentTransactionId;
          this.childBranchShortName = childBranchShortName;

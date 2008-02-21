@@ -12,14 +12,13 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
@@ -28,7 +27,6 @@ public class ArtifactTypeContentProvider implements ITreeContentProvider {
 
    private static final ConfigurationPersistenceManager configurationPersistenceManager =
          ConfigurationPersistenceManager.getInstance();
-   protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactTypeContentProvider.class);
 
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
@@ -39,11 +37,12 @@ public class ArtifactTypeContentProvider implements ITreeContentProvider {
          ArrayList<Object> descriptors = new ArrayList<Object>();
 
          try {
-            for (ArtifactSubtypeDescriptor descriptor : configurationPersistenceManager.getArtifactSubtypeDescriptors((Branch) parentElement)) {
+            for (ArtifactSubtypeDescriptor descriptor : configurationPersistenceManager.getValidArtifactTypes((Branch) parentElement)) {
                descriptors.add((Object) descriptor);
             }
          } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+
          }
          return descriptors.toArray();
       }

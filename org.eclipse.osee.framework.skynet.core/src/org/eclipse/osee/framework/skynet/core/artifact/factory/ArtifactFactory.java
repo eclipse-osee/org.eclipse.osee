@@ -53,22 +53,20 @@ public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFa
       this.factoryId = factoryId;
    }
 
-   public A makeNewArtifact(ArtifactSubtypeDescriptor descriptor) throws SQLException {
-      return makeNewArtifact(descriptor, null, null);
+   public A makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor descriptor) throws SQLException {
+      return makeNewArtifact(branch, descriptor, null, null);
    }
 
    protected boolean compatibleWith(ArtifactSubtypeDescriptor descriptor) {
       return descriptor.getFactory().getFactoryId() == this.factoryId;
    }
 
-   public A makeNewArtifact(ArtifactSubtypeDescriptor descriptor, String guid, String humandReadableId) throws SQLException {
+   public A makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor descriptor, String guid, String humandReadableId) throws SQLException {
       if (!compatibleWith(descriptor)) {
          throw new IllegalArgumentException("The supplied descriptor is not appropriate for this factory");
       }
 
-      A artifact =
-            getNewArtifact(guid, humandReadableId, descriptor.getFactoryKey(),
-                  descriptor.getTransactionId().getBranch());
+      A artifact = getNewArtifact(guid, humandReadableId, descriptor.getFactoryKey(), branch);
 
       // For now, the only difference we make is the ID, all other initialization is the same
       artifact.setDescriptor(descriptor);
@@ -158,7 +156,7 @@ public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFa
                   getNewArtifact(desc.getGuid(), desc.getHumandReadableId(), desc.getFactoryKey(),
                         transactionId.getBranch());
             artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, desc.getArtId(), desc.getGammaId()));
-            artifact.setDescriptor(configurationManger.getArtifactSubtypeDescriptor(desc.getArtTypeId(), transactionId));
+            artifact.setDescriptor(configurationManger.getArtifactSubtypeDescriptor(desc.getArtTypeId()));
             cache(artifact);
             artifactsToInit.add(artifact);
          }

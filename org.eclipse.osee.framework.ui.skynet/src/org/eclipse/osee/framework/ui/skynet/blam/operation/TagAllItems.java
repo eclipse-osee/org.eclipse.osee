@@ -32,7 +32,7 @@ public class TagAllItems extends AbstractBlam {
 
          monitor.setTaskName("Loading Artifact Type Descriptors");
          Collection<ArtifactSubtypeDescriptor> descriptors =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors(branch);
+               ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(branch);
 
          monitor.beginTask("Tagging Artifacts", descriptors.size());
 
@@ -41,15 +41,17 @@ public class TagAllItems extends AbstractBlam {
 
          for (ArtifactSubtypeDescriptor descriptor : descriptors) {
             monitor.subTask("Loading artifact of type " + descriptor.getName());
-            Collection<Artifact> staleArtifacts = artifactManager.getArtifactsFromSubtype(descriptor);
+            Collection<Artifact> artifacts = artifactManager.getArtifactsFromSubtype(branch, descriptor);
 
             int count = 0;
-            int total = staleArtifacts.size();
-            for (Artifact artifact : staleArtifacts) {
+            int total = artifacts.size();
+            for (Artifact artifact : artifacts) {
                monitor.subTask("Tagging " + descriptor.getName() + " artifact " + ++count + " of " + total);
                tagManager.autoTag(true, artifact);
                monitor.worked(1);
-               if (monitor.isCanceled()) return;
+               if (monitor.isCanceled()) {
+                  return;
+               }
             }
          }
       } finally {

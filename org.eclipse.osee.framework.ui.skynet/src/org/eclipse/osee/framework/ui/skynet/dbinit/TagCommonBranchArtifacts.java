@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -38,14 +39,15 @@ public class TagCommonBranchArtifacts extends DbInitializationTask {
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
    public void run(Connection connection) throws Exception {
+      Branch branch = BranchPersistenceManager.getInstance().getCommonBranch();
       List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-      for (ArtifactSubtypeDescriptor asd : ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors(
-            BranchPersistenceManager.getInstance().getAtsBranch()))
-         criteria.add(new ArtifactTypeSearch(asd.getName(), Operator.EQUAL));
 
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(criteria, false,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+      for (ArtifactSubtypeDescriptor artifactType : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
+            branch)) {
+         criteria.add(new ArtifactTypeSearch(artifactType.getName(), Operator.EQUAL));
+      }
+
+      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(criteria, false, branch);
 
       TagArtifactsJob job = new TagArtifactsJob(arts);
       job.setUser(true);

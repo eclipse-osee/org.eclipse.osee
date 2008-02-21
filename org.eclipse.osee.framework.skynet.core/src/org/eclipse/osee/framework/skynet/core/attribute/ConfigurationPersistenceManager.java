@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeValidityCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
@@ -50,8 +51,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManage
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTypeTransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeValidityTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.data.RelationLinkTypeTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.data.RelationLinkValidityTransactionData;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
@@ -69,13 +68,20 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ConfigurationPersistenceManager.class);
    private static final String SELECT_ATTRIBUTE_BASE_TYPE =
          "SELECT attr_base_type_id FROM " + ATTRIBUTE_BASE_TYPE_TABLE + " WHERE attribute_class = ?";
-   private static final String SELECT_REL_LINK =
+   private static final String SELECT_REL_LINK_TYPE =
          "SELECT gamma_id, rel_link_type_id FROM " + RELATION_LINK_TYPE_TABLE + " WHERE type_name = ?";
-   private static final String SELECT_ART_TYPE =
-         "SELECT gamma_id, art_type_id FROM " + ARTIFACT_TYPE_TABLE + " WHERE name = ?";
+   private static final String INSERT_ARTIFACT_TYPE =
+         "INSERT INTO osee_define_artifact_type (art_type_id, factory_id, namespace, name, factory_key, image) VALUES (?,?,?,?,?,?)";
+   private static final String INSERT_VALID_ATTRIBUTE =
+         "INSERT INTO osee_define_valid_attributes (art_type_id, attr_type_id) VALUES (?, ?)";
+   private static final String INSERT_ATTRIBUTE_TYPE =
+         "INSERT INTO osee_define_attribiute_type (attr_type_id, attr_base_type_id, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text) VALUES (?,?,?,?,?,?,?,?,?)";
+   private static final String INSERT_BASE_ATTRIBUTE_TYPE =
+         "INSERT INTO osee_define_attr_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
    private final ArtifactSubtypeDescriptorCache cacheArtifactSubtypeDescriptors;
    private final DynamicAttributeDescriptorCache cacheDynamicAttributeDescriptors;
    private final AttributeTypeValidityCache cacheAttributeTypeValidity;
+   private final ArtifactTypeValidityCache artifactTypeValidityCache;
    private RelationPersistenceManager relationPersistenceManager;
    private ArtifactFactoryCache artifactFactoryCache;
    private TransactionIdManager transactionIdManager;
@@ -88,9 +94,10 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
 
    private ConfigurationPersistenceManager() {
       super();
-      this.cacheArtifactSubtypeDescriptors = new ArtifactSubtypeDescriptorCache();
-      this.cacheDynamicAttributeDescriptors = new DynamicAttributeDescriptorCache();
-      this.cacheAttributeTypeValidity = new AttributeTypeValidityCache();
+      cacheArtifactSubtypeDescriptors = new ArtifactSubtypeDescriptorCache();
+      cacheDynamicAttributeDescriptors = new DynamicAttributeDescriptorCache();
+      cacheAttributeTypeValidity = new AttributeTypeValidityCache();
+      artifactTypeValidityCache = new ArtifactTypeValidityCache();
    }
 
    public static ConfigurationPersistenceManager getInstance() {
@@ -109,30 +116,26 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       transactionIdManager = TransactionIdManager.getInstance();
    }
 
-   public void makePersistent(Class<? extends Attribute> baseAttributeClass, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
+   public void makePersistent(Class<? extends Attribute> baseAttributeClass, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
+      DynamicAttributeDescriptor attributeType = cacheDynamicAttributeDescriptors.getDescriptor(namespace, name);
 
-      // If the attribute type does not exist add it, otherwise do nothing
-      if (!cacheDynamicAttributeDescriptors.hasDescriptor(name, transaction.getBranch())) {
-         checkTransaction();
-
+      if (attributeType == null) {
          int attrTypeId = Query.getNextSeqVal(null, ATTR_TYPE_ID_SEQ);
-         int gammaId = SkynetDatabase.getNextGammaId();
+         int attrBaseTypeId = getOrCreateAttributeBaseType(baseAttributeClass);
 
-         int attrBaseTypeId = makePersistent(baseAttributeClass);
-
-         transaction.addTransactionDataItem(new AttributeTypeTransactionData(attrTypeId, attrBaseTypeId, name,
-               defaultValue, validityXml, minOccurrences, maxOccurrences, tipText, gammaId,
-               transaction.getTransactionNumber()));
+         ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrTypeId,
+               SQL3DataType.INTEGER, attrBaseTypeId, SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, name,
+               SQL3DataType.VARCHAR, defaultValue, SQL3DataType.VARCHAR, validityXml, SQL3DataType.INTEGER,
+               minOccurrences, SQL3DataType.INTEGER, maxOccurrences, SQL3DataType.VARCHAR, tipText);
 
          // Add this new description to the cache
          DynamicAttributeDescriptor descriptor =
-               new DynamicAttributeDescriptor(baseAttributeClass, name, defaultValue, validityXml, minOccurrences,
-                     maxOccurrences, tipText, attrTypeId, transaction.getTransactionId());
-         cacheDynamicAttributeDescriptors.cache(descriptor);
+               new DynamicAttributeDescriptor(cacheDynamicAttributeDescriptors, attrTypeId, baseAttributeClass,
+                     namespace, name, defaultValue, validityXml, minOccurrences, maxOccurrences, tipText);
       }
    }
 
-   public int makePersistent(Class<? extends Attribute> baseClass) throws SQLException {
+   public int getOrCreateAttributeBaseType(Class<? extends Attribute> baseClass) throws SQLException {
       int attrBaseTypeId = -1;
       String attributeClass = baseClass.getCanonicalName();
       if (attributeClass == null) {
@@ -147,19 +150,15 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
          if (rSet.next()) {
             attrBaseTypeId = rSet.getInt("attr_base_type_id");
          } else {
-            attrBaseTypeId = insertAttributeBaseType(attributeClass);
+            attrBaseTypeId = Query.getNextSeqVal(null, ATTR_BASE_TYPE_ID_SEQ);
+
+            ConnectionHandler.runPreparedUpdate(INSERT_BASE_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrBaseTypeId,
+                  SQL3DataType.VARCHAR, attributeClass);
          }
       } finally {
          DbUtil.close(chStmt);
       }
 
-      return attrBaseTypeId;
-   }
-
-   protected int insertAttributeBaseType(String attributeClass) throws SQLException {
-      int attrBaseTypeId = Query.getNextSeqVal(null, ATTR_BASE_TYPE_ID_SEQ);
-
-      ConnectionHandler.runPreparedUpdate("INSERT INTO " + ATTRIBUTE_BASE_TYPE_TABLE + " (attr_base_type_id, attribute_class)" + " VALUES (" + attrBaseTypeId + ", '" + attributeClass + "')");
       return attrBaseTypeId;
    }
 
@@ -192,7 +191,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
 
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_REL_LINK, SQL3DataType.VARCHAR, linkTypeName);
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_REL_LINK_TYPE, SQL3DataType.VARCHAR, linkTypeName);
          if (chStmt.next()) {
             IRelationLinkDescriptor descriptor =
                   relationPersistenceManager.getIRelationLinkDescriptor(linkTypeName, branch);
@@ -228,77 +227,29 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       }
    }
 
-   public int makeSubtypePersistent(String factory, String artifactTypeName, Branch branch) throws SQLException {
-      return makeSubtypePersistent(factory, artifactTypeName, artifactTypeName, branch);
-   }
-
-   public int makeSubtypePersistent(String factoryName, String artifactTypeName, String factoryKey, Branch branch) throws SQLException {
-      int artTypeId;
-      ArtifactSubtypeDescriptor descriptor;
-
-      ConnectionHandlerStatement chStmt = null;
-      chStmt = ConnectionHandler.runPreparedQuery(SELECT_ART_TYPE, SQL3DataType.VARCHAR, artifactTypeName);
-
-      if (chStmt.next()) {
-         descriptor = cacheArtifactSubtypeDescriptors.getDescriptor(artifactTypeName, branch);
-         if (descriptor == null) {
-            artTypeId = chStmt.getRset().getInt("art_type_id");
-            transaction.addToTransactionTableBatch(chStmt.getRset().getInt("gamma_id"));
-            TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
-            InputStreamImageDescriptor imageDescriptor = getDefaultImageDescriptor(artifactTypeName);
-            descriptor =
-                  new ArtifactSubtypeDescriptor(artTypeId, factoryKey,
-                        artifactFactoryCache.getFactoryFromName(factoryName), artifactTypeName, transactionId,
-                        imageDescriptor);
-            cacheArtifactSubtypeDescriptors.cache(descriptor);
-         } else {
-            artTypeId = descriptor.getArtTypeId();
-            // Check if anything valuable is different
-            if (!descriptor.getFactoryKey().equals(factoryKey) || !descriptor.getFactory().getClass().getCanonicalName().equals(
-                  factoryName)) {
-               putDescriptorInTransaction(descriptor);
-            }
-         }
-      } else {
-         descriptor = cacheArtifactSubtypeDescriptors.getDescriptor(artifactTypeName, branch);
-         if (descriptor != null) {
-            artTypeId = descriptor.getArtTypeId();
-            // Check if anything valuable is different
-            if (!descriptor.getFactoryKey().equals(factoryKey) || !descriptor.getFactory().getClass().getCanonicalName().equals(
-                  factoryName)) {
-               putDescriptorInTransaction(descriptor);
-            }
-         } else {
-            artTypeId = putNewDescriptorOnBranch(factoryName, artifactTypeName, factoryKey, branch);
-         }
-      }
-      return artTypeId;
-   }
-
-   protected int putNewDescriptorOnBranch(String factoryName, String artifactTypeName, String factoryKey, Branch branch) throws SQLException {
-      checkTransaction();
-
-      ArtifactSubtypeDescriptor descriptor;
-      int artTypeId = Query.getNextSeqVal(null, SkynetDatabase.ART_TYPE_ID_SEQ);
-
-      // Handle null factoryKey's
-      if (factoryKey == null) factoryKey = "";
-
-      try {
-
-         TransactionId transactionId = TransactionIdManager.getInstance().getEditableTransactionId(branch);
-
+   public void makeSubtypePersistent(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws SQLException {
+      ArtifactSubtypeDescriptor artifactType =
+            cacheArtifactSubtypeDescriptors.getDescriptor(namespace, artifactTypeName);
+      if (artifactType == null) {
+         int artTypeId = Query.getNextSeqVal(null, SkynetDatabase.ART_TYPE_ID_SEQ);
          InputStreamImageDescriptor imageDescriptor = getDefaultImageDescriptor(artifactTypeName);
-         descriptor =
-               new ArtifactSubtypeDescriptor(artTypeId, factoryKey,
-                     artifactFactoryCache.getFactoryFromName(factoryName), artifactTypeName, transactionId,
-                     imageDescriptor);
-         putDescriptorInTransaction(descriptor);
-         cacheArtifactSubtypeDescriptors.cache(descriptor);
-      } catch (Exception ex) {
-         throw new IllegalStateException(ex);
+         IArtifactFactory factory = artifactFactoryCache.getFactoryFromName(factoryName);
+
+         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, SQL3DataType.INTEGER, artTypeId,
+               SQL3DataType.INTEGER, factory.getFactoryId(), SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR,
+               artifactTypeName, SQL3DataType.VARCHAR, factoryKey, SQL3DataType.BLOB, new ByteArrayInputStream(
+                     imageDescriptor.getData()));
+
+         artifactType =
+               new ArtifactSubtypeDescriptor(cacheArtifactSubtypeDescriptors, artTypeId, factoryKey, factory,
+                     namespace, artifactTypeName, imageDescriptor);
+      } else {
+         // Check if anything valuable is different
+         if (!artifactType.getFactoryKey().equals(factoryKey) || !artifactType.getFactory().getClass().getCanonicalName().equals(
+               factoryName)) {
+            // update factory information
+         }
       }
-      return descriptor.getArtTypeId();
    }
 
    private InputStreamImageDescriptor getDefaultImageDescriptor(String typeName) {
@@ -353,20 +304,6 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return Platform.getBundle(location.getKey()).getEntry(location.getValue());
    }
 
-   private void putDescriptorInTransaction(ArtifactSubtypeDescriptor descriptor) throws SQLException {
-      checkTransaction();
-
-      int gammaId = SkynetDatabase.getNextGammaId();
-
-      transaction.addToTransactionTableBatch(gammaId);
-      transaction.addToBatch(
-            "INSERT INTO " + ARTIFACT_TYPE_TABLE + " (art_type_id, factory_id, name, factory_key, gamma_id, image)" + " VALUES (?,?,?,?,?,?)",
-            SQL3DataType.INTEGER, descriptor.getArtTypeId(), SQL3DataType.INTEGER,
-            descriptor.getFactory().getFactoryId(), SQL3DataType.VARCHAR, descriptor.getName(), SQL3DataType.VARCHAR,
-            descriptor.getFactoryKey(), SQL3DataType.INTEGER, gammaId, SQL3DataType.BLOB, new ByteArrayInputStream(
-                  descriptor.getImageDescriptor().getData()));
-   }
-
    public static void updateArtifactTypeImage(ArtifactSubtypeDescriptor descriptor, InputStreamImageDescriptor imageDescriptor) throws SQLException {
       // Update DB
       ConnectionHandler.runPreparedUpdate("UPDATE " + ARTIFACT_TYPE_TABLE + " SET image = ? where art_type_id = ?",
@@ -384,17 +321,12 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
     * @param artifactType
     * @throws SQLException
     */
-   public void persistAttributeValidity(DynamicAttributeDescriptor attributeType, ArtifactSubtypeDescriptor artifactType) throws SQLException {
-      checkTransaction();
+   public void persistAttributeValidity(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws SQLException {
+      if (!cacheAttributeTypeValidity.isValid(artifactType, attributeType)) {
+         ConnectionHandler.runPreparedUpdate(INSERT_VALID_ATTRIBUTE, SQL3DataType.INTEGER, artifactType.getArtTypeId(),
+               SQL3DataType.INTEGER, attributeType.getAttrTypeId());
 
-      Collection<DynamicAttributeDescriptor> validityMap =
-            cacheAttributeTypeValidity.getValidAttributeDescriptors(artifactType);
-      if (validityMap == null || !validityMap.contains(attributeType)) {
-         int gammaId = SkynetDatabase.getNextGammaId();
-
-         cacheAttributeTypeValidity.add(attributeType, artifactType);
-         transaction.addTransactionDataItem(new AttributeValidityTransactionData(artifactType.getArtTypeId(),
-               attributeType.getAttrTypeId(), gammaId, transaction.getTransactionNumber()));
+         cacheAttributeTypeValidity.add(artifactType, attributeType);
       }
    }
 
@@ -402,44 +334,33 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return cacheAttributeTypeValidity.getArtifactSubtypeDescriptorsForAttribute(attributeType);
    }
 
-   public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(String name, Branch branch) throws SQLException {
-      return cacheArtifactSubtypeDescriptors.getDescriptor(name, branch);
+   public Collection<ArtifactSubtypeDescriptor> getValidArtifactTypes(Branch branch) throws SQLException {
+      return artifactTypeValidityCache.getValidArtifactTypes(branch);
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getArtifactSubtypeDescriptors(Branch branch) throws SQLException {
-      return cacheArtifactSubtypeDescriptors.getAllDescriptors(branch);
+   public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(String name) throws SQLException {
+      return cacheArtifactSubtypeDescriptors.getDescriptor(name);
    }
 
-   public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(String name, TransactionId transactionId) throws SQLException {
-      return cacheArtifactSubtypeDescriptors.getDescriptor(name, transactionId);
+   public Collection<ArtifactSubtypeDescriptor> getArtifactSubtypeDescriptors(String namespace) throws SQLException {
+      return cacheArtifactSubtypeDescriptors.getDescriptors(namespace);
    }
 
-   public Set<ArtifactSubtypeDescriptor> getArtifactSubtypeDescriptors(TransactionId transactionId) throws SQLException {
-      return cacheArtifactSubtypeDescriptors.getAllDescriptors(transactionId);
+   @Deprecated
+   public Collection<ArtifactSubtypeDescriptor> getArtifactSubtypeDescriptors() throws SQLException {
+      return cacheArtifactSubtypeDescriptors.getAllDescriptors();
    }
 
-   public DynamicAttributeDescriptor getDynamicAttributeType(int attrTypeId, Branch branch) throws SQLException {
-      return cacheDynamicAttributeDescriptors.getDescriptor(attrTypeId, branch);
+   public DynamicAttributeDescriptor getDynamicAttributeType(int attrTypeId) throws SQLException {
+      return cacheDynamicAttributeDescriptors.getDescriptor(attrTypeId);
    }
 
-   public DynamicAttributeDescriptor getDynamicAttributeType(int attrTypeId, TransactionId transactionId) throws SQLException {
-      return cacheDynamicAttributeDescriptors.getDescriptor(attrTypeId, transactionId);
-   }
-
-   public DynamicAttributeDescriptor getDynamicAttributeType(String attributeName, Branch branch) throws SQLException {
-      return cacheDynamicAttributeDescriptors.getDescriptor(attributeName, branch);
+   public DynamicAttributeDescriptor getDynamicAttributeType(String attributeName) throws SQLException {
+      return cacheDynamicAttributeDescriptors.getDescriptor(attributeName);
    }
 
    public Collection<DynamicAttributeDescriptor> getDynamicAttributeDescriptors(Branch branch) throws SQLException {
       return cacheDynamicAttributeDescriptors.getAllDescriptors(branch);
-   }
-
-   public DynamicAttributeDescriptor getDynamicAttributeType(String attributeName, TransactionId transactionId) throws SQLException {
-      return cacheDynamicAttributeDescriptors.getDescriptor(attributeName, transactionId);
-   }
-
-   public Collection<DynamicAttributeDescriptor> getDynamicAttributeDescriptors(TransactionId transactionId) throws SQLException {
-      return cacheDynamicAttributeDescriptors.getAllDescriptors(transactionId);
    }
 
    public Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor descriptor) throws SQLException {
@@ -450,7 +371,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       Set<String> names = new HashSet<String>();
       try {
          DynamicAttributeDescriptor dad =
-               ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeName, branch);
+               ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeName);
          String str = dad.getValidityXml();
          Matcher m = Pattern.compile("<Enum>(.*?)</Enum>").matcher(str);
          while (m.find())
@@ -528,8 +449,8 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       if (transaction == null) throw new RuntimeException("Batch has not been started");
    }
 
-   public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(int artTypeId, TransactionId transactionId) throws SQLException {
-      return cacheArtifactSubtypeDescriptors.getDescriptor(artTypeId, transactionId);
+   public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(int artTypeId) throws SQLException {
+      return cacheArtifactSubtypeDescriptors.getDescriptor(artTypeId);
    }
 
    public IArtifactFactory getFactoryFromId(int factoryId) {

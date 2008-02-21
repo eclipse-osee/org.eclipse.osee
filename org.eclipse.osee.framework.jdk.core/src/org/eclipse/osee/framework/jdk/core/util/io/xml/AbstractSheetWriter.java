@@ -55,6 +55,7 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
       startRowIfNecessary();
       rowInProgress = true;
       defaultCellIndex = cellIndex + 1;
+      System.out.println(defaultCellIndex);
       writeCellText(data, cellIndex);
    }
 

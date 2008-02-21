@@ -35,10 +35,12 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       Artifact realArtifact = null;
       if (usePolymorphicArtifactFactory) {
          realArtifact =
-               polymorphicArtifactFactory.makeNewArtifact(descriptor, roughArtifact.getGuid(),
-                     roughArtifact.getHumandReadableId());
+               polymorphicArtifactFactory.makeNewArtifact(roughArtifact.getBranch(), descriptor,
+                     roughArtifact.getGuid(), roughArtifact.getHumandReadableId());
       } else {
-         realArtifact = descriptor.makeNewArtifact(roughArtifact.getGuid(), roughArtifact.getHumandReadableId());
+         realArtifact =
+               descriptor.makeNewArtifact(roughArtifact.getBranch(), roughArtifact.getGuid(),
+                     roughArtifact.getHumandReadableId());
       }
 
       // Try to confer attributes in 'initialization mode' to avoid default attributes

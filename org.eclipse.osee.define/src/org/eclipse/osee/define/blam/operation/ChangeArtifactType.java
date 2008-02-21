@@ -14,14 +14,10 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -44,8 +40,6 @@ import org.eclipse.swt.widgets.Display;
  * @author Jeff C. Phillips
  */
 public class ChangeArtifactType extends AbstractBlam {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ChangeArtifactType.class);
    private static final ConfigurationPersistenceManager configurationPersistenceManager =
          ConfigurationPersistenceManager.getInstance();
    private static final RelationPersistenceManager relationPersistenceManager =
@@ -88,22 +82,18 @@ public class ChangeArtifactType extends AbstractBlam {
     * 
     * @param artifact
     * @param descriptor
+    * @throws SQLException
     */
-   private void processAttributes(Artifact artifact, ArtifactSubtypeDescriptor descriptor) {
+   private void processAttributes(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws SQLException {
       attributesToPurge = new LinkedList<Attribute>();
 
-      try {
-         Collection<DynamicAttributeDescriptor> descriptorAttrTypes =
-               configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor);
+      Collection<DynamicAttributeDescriptor> descriptorAttrTypes =
+            configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor);
 
-         for (DynamicAttributeManager attributeManager : artifact.getAttributes()) {
-
-            if (!descriptorAttrTypes.contains(attributeManager.getDescriptor())) {
-               attributesToPurge.addAll(attributeManager.getAttributes());
-            }
+      for (DynamicAttributeManager attributeManager : artifact.getAttributes()) {
+         if (!descriptorAttrTypes.contains(attributeManager.getDescriptor())) {
+            attributesToPurge.addAll(attributeManager.getAttributes());
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
       }
    }
 
@@ -127,7 +117,6 @@ public class ChangeArtifactType extends AbstractBlam {
                linksToPurge.add(linkBase);
             }
          }
-
       }
    }
 
@@ -194,7 +183,6 @@ public class ChangeArtifactType extends AbstractBlam {
       }
 
       artifact.changeArtifactType(descriptor);
-      artifact.persistAttributes();
    }
 
    /*
@@ -205,13 +193,4 @@ public class ChangeArtifactType extends AbstractBlam {
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"descriptor\" /></xWidgets>";
    }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam#wrapOperationForBranch(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap)
-    */
-   @Override
-   public Branch wrapOperationForBranch(BlamVariableMap variableMap) {
-      return variableMap.getArtifactSubtypeDescriptor("descriptor").getTransactionId().getBranch();
-   }
-
 }

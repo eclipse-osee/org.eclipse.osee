@@ -95,7 +95,7 @@ public class SkyWalkerOptions {
       if (artTypes == null) {
          artTypes = new HashMap<ArtifactSubtypeDescriptor, Boolean>();
          try {
-            for (ArtifactSubtypeDescriptor descriptor : ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors(
+            for (ArtifactSubtypeDescriptor descriptor : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
                   artifact.getBranch())) {
                artTypes.put(descriptor, true);
             }

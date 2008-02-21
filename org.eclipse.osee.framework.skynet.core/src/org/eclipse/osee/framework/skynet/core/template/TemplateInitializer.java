@@ -32,13 +32,13 @@ public class TemplateInitializer {
             ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch, true);
 
       ArtifactSubtypeDescriptor descriptor =
-            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Folder", programBranch);
-      Artifact documentFolder = descriptor.makeNewArtifact();
+            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Folder");
+      Artifact documentFolder = descriptor.makeNewArtifact(programBranch);
       documentFolder.setDescriptiveName(TEMPLATE_FOLDER_NAME);
       programRoot.addChild(documentFolder);
 
       createDocumentTemplates(documentFolder,
-            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Document", programBranch));
+            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Document"));
 
       programRoot.persist(true);
    }

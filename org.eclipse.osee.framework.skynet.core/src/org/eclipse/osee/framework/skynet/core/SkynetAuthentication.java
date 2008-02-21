@@ -194,8 +194,8 @@ public class SkynetAuthentication implements PersistenceManager {
       User user = null;
       try {
          user =
-               (User) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(User.ARTIFACT_NAME,
-                     branchManager.getCommonBranch()).makeNewArtifact();
+               (User) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(User.ARTIFACT_NAME).makeNewArtifact(
+                     branchManager.getCommonBranch());
          user.setActive(active);
          user.setUserID(userID);
          user.setName(name);

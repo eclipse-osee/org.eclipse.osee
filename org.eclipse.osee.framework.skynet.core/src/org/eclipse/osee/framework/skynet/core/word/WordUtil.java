@@ -98,7 +98,7 @@ public class WordUtil {
 
       ConfigurationPersistenceManager manager = ConfigurationPersistenceManager.getInstance();
       DynamicAttributeDescriptor attributeDescriptor =
-            manager.getDynamicAttributeType(WordAttribute.CONTENT_NAME, branch);
+            manager.getDynamicAttributeType(WordAttribute.CONTENT_NAME);
 
       ConnectionHandlerStatement chStmt = null;
       try {

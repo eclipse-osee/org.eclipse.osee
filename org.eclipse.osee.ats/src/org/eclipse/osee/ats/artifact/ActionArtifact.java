@@ -857,11 +857,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       if (guid == null)
          twa =
                (TeamWorkFlowArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     artifactName, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+                     artifactName).makeNewArtifact(BranchPersistenceManager.getInstance().getAtsBranch());
       else
          twa =
                (TeamWorkFlowArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     artifactName, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact(guid, hrid);
+                     artifactName).makeNewArtifact(BranchPersistenceManager.getInstance().getAtsBranch(), guid, hrid);
       setArtifactIdentifyData(this, twa);
 
       twa.getLog().addLog(LogType.Originated, "", "");
@@ -930,8 +930,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          dam.getNewAttribute().setStringData(comm);
       if (priority != null) art.setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             priority.getShortName());
-      if (needByDate != null) art.setSoleDateAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(),
-            needByDate);
+      if (needByDate != null) art.setSoleDateAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), needByDate);
       if (validationRequired) art.setSoleBooleanAttributeValue(
             ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), true);
    }

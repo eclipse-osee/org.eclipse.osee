@@ -86,7 +86,7 @@ public class WordOutlineExtractor extends WordExtractor {
 
       this.currentListStack = new Stack<String>();
       this.clonedCurrentListStack = new Stack<String>();
-      this.headingDescriptor = configurationPersistenceManager.getArtifactSubtypeDescriptor("Heading", branch);
+      this.headingDescriptor = configurationPersistenceManager.getArtifactSubtypeDescriptor("Heading");
       this.mainDescriptor = mainDescriptor;
       this.maxExtractionDepth = maxExtractionDepth;
    }

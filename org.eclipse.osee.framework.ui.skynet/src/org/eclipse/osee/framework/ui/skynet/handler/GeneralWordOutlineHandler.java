@@ -103,7 +103,7 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
       RoughArtifact roughArtifact;
       RoughArtifact duplicateArtifact = duplicateCatcher.get(parNumber);
       if (duplicateArtifact == null) {
-         roughArtifact = new RoughArtifact();
+         roughArtifact = new RoughArtifact(extractor.getBranch());
          duplicateCatcher.put(parNumber, roughArtifact);
       } else {
          throw new IllegalStateException(String.format(

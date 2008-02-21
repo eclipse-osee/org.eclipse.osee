@@ -94,7 +94,7 @@ public class RelationValidity {
          for (String artifactTypeName : importer.determineConcreateTypes(row.artifactSuperTypeName)) {
 
             ArtifactSubtypeDescriptor artifactType =
-                  configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName, branch);
+                  configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName);
             if (artifactType == null) {
                logger.log(Level.SEVERE, "ArtifactSubtypeDescriptor == null ( " + artifactTypeName + " )");
                continue;

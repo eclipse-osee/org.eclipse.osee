@@ -43,15 +43,22 @@ public class OseeDbVersion {
    private static String getDatabaseValue(Connection connection, String key) throws SQLException {
       // NOTE: Can't use OSEEInfo class cause it uses connection framework which requires compatibility check
       String DB_VERSION_QUERY = "SELECT OSEE_VALUE FROM OSEE_INFO WHERE OSEE_KEY = \'" + key + "\'";
+      String value = null;
+      Statement statement = null;
 
-      Statement statement = connection.createStatement();
-      statement.setFetchSize(1);
-      ResultSet rset = statement.executeQuery(DB_VERSION_QUERY);
-      if (rset.next()) {
-         return rset.getString("OSEE_VALUE");
+      try {
+         statement = connection.createStatement();
+         statement.setFetchSize(1);
+         ResultSet rset = statement.executeQuery(DB_VERSION_QUERY);
+         if (rset.next()) {
+            value = rset.getString("OSEE_VALUE");
+         }
+      } finally {
+         if (statement != null) {
+            statement.close();
+         }
       }
-      statement.close();
-      return null;
+      return value;
    }
 
    public static void setOseeDbVersion(Connection connection, String oseeDbVersion) throws SQLException {

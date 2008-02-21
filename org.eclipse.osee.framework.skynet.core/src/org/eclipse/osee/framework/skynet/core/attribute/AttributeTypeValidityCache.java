@@ -10,28 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.VALID_ATTRIBUTES_TABLE;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.TreeSet;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
 
 /**
  * Caches the mapping of valid attribute types to artifact subtypes for which they are valid
@@ -40,71 +28,51 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
  * @author Ryan D. Brooks
  */
 public class AttributeTypeValidityCache {
-
-   private static final LocalAliasTable VAL_ATTR_ALIAS_1 = new LocalAliasTable(VALID_ATTRIBUTES_TABLE, "t1");
-   private static final LocalAliasTable VAL_ATTR_ALIAS_2 = new LocalAliasTable(VALID_ATTRIBUTES_TABLE, "t2");
-
-   private static final String attributeValiditySql = "SELECT " + VAL_ATTR_ALIAS_1.columns("art_type_id",
-         "attr_type_id") + " FROM " + VAL_ATTR_ALIAS_1 + "," + TRANSACTIONS_TABLE
-
-   + " WHERE " + VAL_ATTR_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + VAL_ATTR_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + VAL_ATTR_ALIAS_2.column("attr_type_id") + "=" + VAL_ATTR_ALIAS_1.column("attr_type_id") + " AND " + VAL_ATTR_ALIAS_2.column("art_type_id") + "=" + VAL_ATTR_ALIAS_1.column("art_type_id") + " AND " + VAL_ATTR_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=" + "?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)";
-
-   private final DoubleKeyHashMap<TransactionId, ArtifactSubtypeDescriptor, List<DynamicAttributeDescriptor>> validityMap;
+   private static final String attributeValiditySql =
+         "SELECT art_type_id, attr_type_id FROM osee_define_valid_attributes order by art_type_id";
+   private final HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor> artifactToAttributeMap;
+   private final HashCollection<DynamicAttributeDescriptor, ArtifactSubtypeDescriptor> attributeToartifactMap;
 
    public AttributeTypeValidityCache() {
-      super();
-      validityMap = new DoubleKeyHashMap<TransactionId, ArtifactSubtypeDescriptor, List<DynamicAttributeDescriptor>>();
+      artifactToAttributeMap =
+            new HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor>(false, TreeSet.class);
+      attributeToartifactMap =
+            new HashCollection<DynamicAttributeDescriptor, ArtifactSubtypeDescriptor>(false, TreeSet.class);
    }
 
    public Collection<DynamicAttributeDescriptor> getValidAttributeDescriptors(ArtifactSubtypeDescriptor artifactType) throws SQLException {
-      TransactionId transactionId = artifactType.getTransactionId();
-      ensurePopulated(transactionId);
-
-      Collection<DynamicAttributeDescriptor> validDescriptors = validityMap.get(transactionId, artifactType);
-      if (validDescriptors == null) {
-         validDescriptors = new ArrayList<DynamicAttributeDescriptor>();
-      }
-
-      return validDescriptors;
+      ensurePopulated();
+      return artifactToAttributeMap.getValues(artifactType);
    }
 
-   private synchronized void ensurePopulated(TransactionId transactionId) throws SQLException {
-      if (validityMap.getSubHash(transactionId) == null) {
-         populateCache(transactionId);
+   private synchronized void ensurePopulated() throws SQLException {
+      if (artifactToAttributeMap.size() == 0) {
+         populateCache();
       }
    }
 
-   private void populateCache(TransactionId transactionId) throws SQLException {
+   private void populateCache() throws SQLException {
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(attributeValiditySql, SQL3DataType.INTEGER,
-               transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER, transactionId.getTransactionNumber());
-
-         ResultSet rSet = chStmt.getRset();
          ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
-         HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor> map = new HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor>(
-               100);
+         HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor> map =
+               new HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor>(100);
+
+         chStmt = ConnectionHandler.runPreparedQuery(attributeValiditySql);
+         ResultSet rSet = chStmt.getRset();
 
          while (rSet.next()) {
             try {
-               ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(
-                     rSet.getInt("art_type_id"), transactionId);
-               DynamicAttributeDescriptor attributeType = configurationManager.getDynamicAttributeType(
-                     rSet.getInt("attr_type_id"), transactionId);
+               ArtifactSubtypeDescriptor artifactType =
+                     configurationManager.getArtifactSubtypeDescriptor(rSet.getInt("art_type_id"));
+               DynamicAttributeDescriptor attributeType =
+                     configurationManager.getDynamicAttributeType(rSet.getInt("attr_type_id"));
 
-               map.put(artifactType, attributeType);
+               artifactToAttributeMap.put(artifactType, attributeType);
+               attributeToartifactMap.put(attributeType, artifactType);
             } catch (IllegalArgumentException ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
-         }
-
-         for (ArtifactSubtypeDescriptor artifactType : map.keySet()) {
-            Collection<DynamicAttributeDescriptor> attributeTypes = map.getValues(artifactType);
-            List<DynamicAttributeDescriptor> typeList = new ArrayList<DynamicAttributeDescriptor>(attributeTypes.size());
-            ;
-            typeList.addAll(attributeTypes);
-            Collections.sort(typeList);
-            validityMap.put(transactionId, artifactType, typeList);
          }
       } finally {
          DbUtil.close(chStmt);
@@ -112,22 +80,25 @@ public class AttributeTypeValidityCache {
    }
 
    public Collection<ArtifactSubtypeDescriptor> getArtifactSubtypeDescriptorsForAttribute(DynamicAttributeDescriptor requestedAttributeType) throws SQLException {
-      TransactionId transactionId = requestedAttributeType.getTransactionId();
-      ensurePopulated(transactionId);
-      Collection<ArtifactSubtypeDescriptor> artifactTypes = new ArrayList<ArtifactSubtypeDescriptor>();
-      Map<ArtifactSubtypeDescriptor, List<DynamicAttributeDescriptor>> map = validityMap.getSubHash(transactionId);
+      ensurePopulated();
 
-      for (Entry<ArtifactSubtypeDescriptor, List<DynamicAttributeDescriptor>> entry : map.entrySet()) {
-         ArtifactSubtypeDescriptor artifactType = entry.getKey();
-         for (DynamicAttributeDescriptor attributeType : entry.getValue()) {
-            if (requestedAttributeType.equals(attributeType)) {
-               artifactTypes.add(artifactType);
-               break;
-            }
-         }
+      Collection<ArtifactSubtypeDescriptor> artifactTypes = attributeToartifactMap.getValues(requestedAttributeType);
+      if (artifactTypes == null) {
+         throw new IllegalArgumentException(
+               "There are no valid artifact types available for the attribute type " + requestedAttributeType);
       }
 
       return artifactTypes;
+   }
+
+   public boolean isValid(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws SQLException {
+      ensurePopulated();
+      for (DynamicAttributeDescriptor otherAttributeType : getValidAttributeDescriptors(artifactType)) {
+         if (attributeType.equals(otherAttributeType)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /**
@@ -135,16 +106,9 @@ public class AttributeTypeValidityCache {
     * @param artifactType
     * @throws SQLException
     */
-   public void add(DynamicAttributeDescriptor attributeType, ArtifactSubtypeDescriptor artifactType) throws SQLException {
-      TransactionId transactionId = artifactType.getTransactionId();
-      ensurePopulated(transactionId);
-
-      List<DynamicAttributeDescriptor> typeList = validityMap.get(transactionId, artifactType);
-      if (typeList == null) {
-         typeList = new ArrayList<DynamicAttributeDescriptor>();
-         validityMap.put(transactionId, artifactType, typeList);
-      }
-      typeList.add(attributeType);
-      Collections.sort(typeList);
+   public void add(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws SQLException {
+      ensurePopulated();
+      artifactToAttributeMap.put(artifactType, attributeType);
+      attributeToartifactMap.put(attributeType, artifactType);
    }
 }

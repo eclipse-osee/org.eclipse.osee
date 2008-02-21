@@ -14,8 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -23,12 +21,12 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -39,8 +37,6 @@ import org.eclipse.swt.widgets.TableItem;
 public class RelationTableViewer {
    private static final ConfigurationPersistenceManager configurationManger =
          ConfigurationPersistenceManager.getInstance();
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationTableViewer.class);
 
    private Table validTable;
    private TableViewer tableViewer;
@@ -70,14 +66,13 @@ public class RelationTableViewer {
     * @param invalidTable -
     */
    public RelationTableViewer(Table validTable, Table invalidTable) {
-      Branch defaultBranch = branchPersistenceManager.getDefaultBranch();
       try {
          fullDescriptorList =
                new ArrayList<ArtifactSubtypeDescriptor>(
-                     configurationManger.getArtifactSubtypeDescriptors(defaultBranch));
-         defaultArtifactType = configurationManger.getArtifactSubtypeDescriptor("Test Script", defaultBranch);
+                     configurationManger.getValidArtifactTypes(BranchPersistenceManager.getInstance().getDefaultBranch()));
+         defaultArtifactType = configurationManger.getArtifactSubtypeDescriptor("Test Script");
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
       this.validTable = validTable;

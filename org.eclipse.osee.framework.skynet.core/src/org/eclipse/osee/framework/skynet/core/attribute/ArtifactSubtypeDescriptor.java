@@ -26,10 +26,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictionType;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
@@ -43,7 +43,7 @@ import org.eclipse.swt.graphics.Image;
  * @see org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager
  * @author Robert A. Fisher
  */
-public class ArtifactSubtypeDescriptor implements Serializable {
+public class ArtifactSubtypeDescriptor implements Serializable, Comparable<ArtifactSubtypeDescriptor> {
    private static final long serialVersionUID = 1L;
    private static final ImageDescriptor favorite = SkynetActivator.getInstance().getImageDescriptor("favorite.gif");
    private static final ImageDescriptor subscribed = SkynetActivator.getInstance().getImageDescriptor("subscribed.gif");
@@ -79,48 +79,19 @@ public class ArtifactSubtypeDescriptor implements Serializable {
    private final String factoryKey;
    private final IArtifactFactory factory;
    private String name;
-   private TransactionId transactionId;
+   private String namespace;
    transient private ImageRegistry imageRegistry;
    transient private InputStreamImageDescriptor imageDescriptor;
 
-   /**
-    * @param artTypeId
-    * @param factory
-    * @param name
-    */
-   protected ArtifactSubtypeDescriptor(int artTypeId, String factoryKey, IArtifactFactory factory, String name, TransactionId transactionId, InputStreamImageDescriptor imageDescriptor) {
+   protected ArtifactSubtypeDescriptor(ArtifactSubtypeDescriptorCache artifactTypeCache, int artTypeId, String factoryKey, IArtifactFactory factory, String namespace, String name, InputStreamImageDescriptor imageDescriptor) {
       this.artTypeId = artTypeId;
       this.factory = factory;
       this.name = name;
-      this.factoryKey = factoryKey;
-      this.transactionId = transactionId;
+      this.factoryKey = factoryKey == null ? "" : factoryKey;
+      this.namespace = namespace;
       this.imageDescriptor = imageDescriptor;
       this.imageRegistry = null;
-   }
-
-   //   /**
-   //    * Constructor for deserialization
-   //    */
-   //   private ArtifactSubtypeDescriptor() {
-   //      this.artTypeId = 0;
-   //      this.factoryKey = null;
-   //      this.factory = null;
-   //      this.imageDescriptor = null;
-   //      this.name = null;
-   //      this.transactionId = null;
-   //   }
-
-   /**
-    * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
-    * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
-    * branch.
-    * 
-    * @return Return artifact reference
-    * @throws SQLException
-    * @see IArtifactFactory#makeNewArtifact(ArtifactSubtypeDescriptor)
-    */
-   public Artifact makeNewArtifact() throws SQLException {
-      return factory.makeNewArtifact(this);
+      artifactTypeCache.cache(this);
    }
 
    /**
@@ -130,10 +101,24 @@ public class ArtifactSubtypeDescriptor implements Serializable {
     * 
     * @return Return artifact reference
     * @throws SQLException
-    * @see IArtifactFactory#makeNewArtifact(ArtifactSubtypeDescriptor, String, String)
+    * @see IArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor)
     */
-   public Artifact makeNewArtifact(String guid, String humandReadableId) throws SQLException {
-      return factory.makeNewArtifact(this, guid, humandReadableId);
+   public Artifact makeNewArtifact(Branch branch) throws SQLException {
+      return factory.makeNewArtifact(branch, this);
+   }
+
+   /**
+    * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
+    * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
+    * branch.
+    * 
+    * @param branch branch on which artifact will be created
+    * @return Return artifact reference
+    * @throws SQLException
+    * @see IArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String)
+    */
+   public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws SQLException {
+      return factory.makeNewArtifact(branch, this, guid, humandReadableId);
    }
 
    /**
@@ -162,13 +147,6 @@ public class ArtifactSubtypeDescriptor implements Serializable {
     */
    public String getFactoryKey() {
       return factoryKey;
-   }
-
-   /**
-    * @return Returns the transactionId.
-    */
-   public TransactionId getTransactionId() {
-      return transactionId;
    }
 
    /**
@@ -308,7 +286,6 @@ public class ArtifactSubtypeDescriptor implements Serializable {
     */
    private void writeObject(ObjectOutputStream stream) throws IOException {
       stream.writeObject(name);
-      stream.writeObject(transactionId);
    }
 
    /**
@@ -320,7 +297,6 @@ public class ArtifactSubtypeDescriptor implements Serializable {
     */
    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
       name = (String) stream.readObject();
-      transactionId = (TransactionId) stream.readObject();
    }
 
    /**
@@ -329,7 +305,7 @@ public class ArtifactSubtypeDescriptor implements Serializable {
     */
    private Object readResolve() throws ObjectStreamException {
       try {
-         return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(name, transactionId);
+         return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(name);
       } catch (SQLException e) {
          throw new RuntimeException("Error while resolving descriptor", e);
       }
@@ -344,4 +320,20 @@ public class ArtifactSubtypeDescriptor implements Serializable {
       if (imageRegistry != null) imageRegistry = null;
    }
 
+   /**
+    * @return the namespace
+    */
+   public String getNamespace() {
+      return namespace;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Comparable#compareTo(java.lang.Object)
+    */
+   public int compareTo(ArtifactSubtypeDescriptor artifactType) {
+      if (artifactType == null) {
+         return -1;
+      }
+      return name.compareTo(artifactType.name);
+   }
 }

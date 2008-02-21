@@ -52,7 +52,8 @@ public class GlobalPreferences extends Artifact {
       if (srch.getArtifacts(Artifact.class).size() == 0) {
          Artifact art =
                ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     GlobalPreferences.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getCommonBranch()).makeNewArtifact();
+                     GlobalPreferences.ARTIFACT_NAME).makeNewArtifact(
+                     BranchPersistenceManager.getInstance().getCommonBranch());
          art.setDescriptiveName(GlobalPreferences.ARTIFACT_NAME);
          art.persistAttributes();
       }

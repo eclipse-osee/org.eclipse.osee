@@ -186,6 +186,17 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return getParentBranch() != null;
    }
 
+   /**
+    * @return the branch that is this oldest ancestor for this branch (which could be itself)
+    * @throws SQLException
+    */
+   public Branch getRootBranch() throws SQLException {
+      Branch branchCursor = null;
+      for (branchCursor = this; branchCursor.getParentBranch() != null; branchCursor = branchCursor.getParentBranch())
+         ;
+      return branchCursor;
+   }
+
    public Collection<Branch> getChildBranches() throws SQLException {
       return getChildBranches(false);
    }
@@ -282,6 +293,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return associatedArtifactId != skynetAuth.getNoOneArtifactId();
    }
 
+   // TODO fix this HACK
    public boolean isBaselineBranch() {
       System.out.println("Branch.isBaselineBranch...fix this");
       return !getBranchName().contains("RPCR");

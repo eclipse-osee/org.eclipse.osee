@@ -81,8 +81,7 @@ public class RendererManager {
                      String applicableArtifactSubType = element.getAttribute("ApplicableArtifactSubtype");
                      if (applicableArtifactSubType != null) {
                         ArtifactSubtypeDescriptor artifactSubtype =
-                              configurationManager.getArtifactSubtypeDescriptor(applicableArtifactSubType,
-                                    branchManager.getCommonBranch());
+                              configurationManager.getArtifactSubtypeDescriptor(applicableArtifactSubType);
                         applicableArtifactSubTypes.put(artifactSubtype, renderer);
                      }
                   } catch (Exception ex) {

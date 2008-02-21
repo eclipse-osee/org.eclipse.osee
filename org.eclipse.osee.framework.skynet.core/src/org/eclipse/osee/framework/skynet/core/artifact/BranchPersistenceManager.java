@@ -822,8 +822,8 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    public Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws Exception {
-      Set<ArtifactSubtypeDescriptor> compressArtTypes =
-            configurationManager.getArtifactSubtypeDescriptors(parentTransactionId);
+      Collection<ArtifactSubtypeDescriptor> compressArtTypes =
+            configurationManager.getValidArtifactTypes(parentTransactionId.getBranch());
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, false, compressArtTypes, null);
@@ -837,21 +837,21 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    public Branch createTestBranch(TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws Exception {
-      Set<ArtifactSubtypeDescriptor> preserveArtTypes =
-            configurationManager.getArtifactSubtypeDescriptors(parentTransactionId);
+      Collection<ArtifactSubtypeDescriptor> preserveArtTypes =
+            configurationManager.getValidArtifactTypes(parentTransactionId.getBranch());
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, false, null, preserveArtTypes);
    }
 
-   private Set<ArtifactSubtypeDescriptor> getSubtypeDescriptors(String[] artTypeNames, TransactionId parentTransactionId) throws SQLException {
+   private Set<ArtifactSubtypeDescriptor> getSubtypeDescriptors(String[] artTypeNames) throws SQLException {
       Set<ArtifactSubtypeDescriptor> artifactTypes;
       if (artTypeNames == null) {
          artifactTypes = new HashSet<ArtifactSubtypeDescriptor>(0);
       } else {
          artifactTypes = new HashSet<ArtifactSubtypeDescriptor>(artTypeNames.length);
          for (String typeName : artTypeNames) {
-            artifactTypes.add(configurationManager.getArtifactSubtypeDescriptor(typeName, parentTransactionId));
+            artifactTypes.add(configurationManager.getArtifactSubtypeDescriptor(typeName));
          }
       }
       return artifactTypes;
@@ -863,11 +863,8 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @return The created Branch
     */
    public Branch createBranchWithFiltering(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact, String[] compressArtTypeNames, String[] preserveArtTypeNames) throws Exception {
-
-      Set<ArtifactSubtypeDescriptor> compressArtTypes =
-            getSubtypeDescriptors(compressArtTypeNames, parentTransactionId);
-      Set<ArtifactSubtypeDescriptor> preserveArtTypes =
-            getSubtypeDescriptors(preserveArtTypeNames, parentTransactionId);
+      Set<ArtifactSubtypeDescriptor> compressArtTypes = getSubtypeDescriptors(compressArtTypeNames);
+      Set<ArtifactSubtypeDescriptor> preserveArtTypes = getSubtypeDescriptors(preserveArtTypeNames);
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, true, compressArtTypes, preserveArtTypes);

@@ -76,7 +76,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
          gd.heightHint = 300;
          gd.widthHint = 200;
          artTypeList.getControl().setLayoutData(gd);
-         artTypeList.setInput(ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors(
+         artTypeList.setInput(ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
                BranchPersistenceManager.getInstance().getAtsBranch()));
          artTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {

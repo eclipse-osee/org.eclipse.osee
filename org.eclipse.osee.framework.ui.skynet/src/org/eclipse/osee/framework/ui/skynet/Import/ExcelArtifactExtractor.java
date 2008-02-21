@@ -100,7 +100,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5], Integer.parseInt(row[3]),
                Integer.parseInt(row[4])));
       } else {
-         RoughArtifact roughArtifact = new RoughArtifact();
+         RoughArtifact roughArtifact = new RoughArtifact(getBranch());
          roughArtifact.setHeadingDescriptor(primaryDescriptor);
          roughArtifact.setPrimaryDescriptor(primaryDescriptor);
          for (int i = 0; i < row.length; i++) {
@@ -208,7 +208,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
             importingRelations = true;
             return;
          }
-         primaryDescriptor = configurationPersistenceManager.getArtifactSubtypeDescriptor(sheetName, branch);
+         primaryDescriptor = configurationPersistenceManager.getArtifactSubtypeDescriptor(sheetName);
          if (primaryDescriptor == null) {
             throw new IllegalArgumentException("The sheet name: " + sheetName + " is not a valid artifact type name.");
          }

@@ -48,7 +48,7 @@ public class ArtifactImportJob extends Job {
 
       this.file = file;
       this.extractor = extractor;
-      this.folderDescriptor = configurationManager.getArtifactSubtypeDescriptor("Folder", branch);
+      this.folderDescriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
       this.artifactResolver = artifactResolver;
       this.roughArtifacts = new ArrayList<RoughArtifact>();
       this.roughRelations = new ArrayList<RoughRelation>();
@@ -121,7 +121,7 @@ public class ArtifactImportJob extends Job {
                }
             }
          } else if (file.isDirectory()) {
-            RoughArtifact directoryArtifact = new RoughArtifact(file.getName());
+            RoughArtifact directoryArtifact = new RoughArtifact(branch, file.getName());
             directoryArtifact.setHeadingDescriptor(folderDescriptor);
             directoryArtifact.setPrimaryDescriptor(folderDescriptor);
             roughArtifacts.add(directoryArtifact);

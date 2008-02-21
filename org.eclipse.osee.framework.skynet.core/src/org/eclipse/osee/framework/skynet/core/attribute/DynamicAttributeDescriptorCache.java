@@ -10,156 +10,125 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_BASE_TYPE_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.db.Query;
+import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
+import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
 
 /**
- * Caches artifact subtype descriptors.
+ * Caches all attribute descriptors during persistence manager startup.
  * 
  * @see org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor
  * @author Robert A. Fisher
  */
 public class DynamicAttributeDescriptorCache {
    private static final String SELECT_ATTRIBUTE_TYPES =
-         "SELECT " + ATTRIBUTE_BASE_TYPE_TABLE.column("attribute_class") + ", " + ATTRIBUTE_TYPE_TABLE.columns(
-               "attr_type_id", "name", "default_value", "validity_xml", "min_occurence", "max_occurence", "tip_text") + " FROM " + ATTRIBUTE_TYPE_TABLE + ", " + ATTRIBUTE_BASE_TYPE_TABLE + "," + TRANSACTIONS_TABLE + ", (SELECT " + TRANSACTION_DETAIL_TABLE.max(
-               "transaction_id", "transaction_id") + ", " + ATTRIBUTE_TYPE_TABLE.columns("attr_type_id") + " FROM " + ATTRIBUTE_TYPE_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_TYPE_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=" + "?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " GROUP BY " + ATTRIBUTE_TYPE_TABLE.columns("attr_type_id") + ") T1 "
+         "SELECT * FROM osee_define_attribute_type aty1, osee_define_attr_base_type aby2 WHERE aty1.attr_base_type_id = aby2.attr_base_type_id";
 
-         + " WHERE " + ATTRIBUTE_BASE_TYPE_TABLE.column("attr_base_type_id") + EQUAL + ATTRIBUTE_TYPE_TABLE.column("attr_base_type_id") + " AND " + ATTRIBUTE_TYPE_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=T1.transaction_id" + " AND " + ATTRIBUTE_TYPE_TABLE.column("attr_type_id") + "=T1.attr_type_id";
-
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-   private final HashCollection<TransactionId, DynamicAttributeDescriptor> allDescriptors;
-   private final DoubleKeyHashMap<Integer, TransactionId, DynamicAttributeDescriptor> idToDescriptors;
-   private final DoubleKeyHashMap<String, TransactionId, DynamicAttributeDescriptor> nameToDescriptors;
-   private final HashSet<TransactionId> populated;
+   private final DoubleKeyHashMap<String, String, DynamicAttributeDescriptor> nameToTypeMap;
+   private final HashMap<Integer, DynamicAttributeDescriptor> idToTypeMap;
 
    protected DynamicAttributeDescriptorCache() {
-      this.allDescriptors = new HashCollection<TransactionId, DynamicAttributeDescriptor>();
-      this.idToDescriptors = new DoubleKeyHashMap<Integer, TransactionId, DynamicAttributeDescriptor>();
-      this.nameToDescriptors = new DoubleKeyHashMap<String, TransactionId, DynamicAttributeDescriptor>();
-      this.populated = new HashSet<TransactionId>();
+      nameToTypeMap = new DoubleKeyHashMap<String, String, DynamicAttributeDescriptor>();
+      idToTypeMap = new HashMap<Integer, DynamicAttributeDescriptor>();
    }
 
-   private synchronized void ensurePopulated(TransactionId transactionId) {
-      if (!populated.contains(transactionId)) {
-         populated.add(transactionId);
-         populateCache(transactionId);
+   private synchronized void ensurePopulated() throws SQLException {
+      if (idToTypeMap.size() == 0) {
+         populateCache();
       }
    }
 
-   private void populateCache(TransactionId transactionId) {
+   private void populateCache() throws SQLException {
+      ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+      ConnectionHandlerStatement chStmt = null;
+
       try {
-         int currentTransactionNumber =
-               transactionIdManager.getEditableTransactionId(transactionId.getBranch()).getTransactionNumber();
-         // don't populate the cache using a transaction number that is not yet in the DB
-         int transactionNumber =
-               transactionId.getTransactionNumber() > currentTransactionNumber ? currentTransactionNumber : transactionId.getTransactionNumber();
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_TYPES);
 
-         Collection<DynamicAttributeDescriptor> savedDescriptors = new LinkedList<DynamicAttributeDescriptor>();
-         Query.acquireCollection(savedDescriptors, new DynamicAttributeTypeProcessor(transactionId),
-               SELECT_ATTRIBUTE_TYPES, SQL3DataType.INTEGER, transactionId.getBranch().getBranchId(),
-               SQL3DataType.INTEGER, transactionNumber);
+         ResultSet rSet = chStmt.getRset();
+         while (rSet.next()) {
+            String baseClassString = rSet.getString("attribute_class");
 
-         for (DynamicAttributeDescriptor descriptor : savedDescriptors) {
-            cache(descriptor);
+            try {
+               Class<? extends Attribute> baseClass = Class.forName(baseClassString).asSubclass(Attribute.class);
+               new DynamicAttributeDescriptor(this, rSet.getInt("attr_type_id"), baseClass,
+                     rSet.getString("namespace"), rSet.getString("name"), rSet.getString("default_value"),
+                     rSet.getString("validity_xml"), rSet.getInt("min_occurence"), rSet.getInt("max_occurence"),
+                     rSet.getString("tip_text"));
+
+            } catch (IllegalStateException ex) {
+               SkynetActivator.getLogger().log(Level.WARNING, ex.getLocalizedMessage(), ex);
+            } catch (ClassNotFoundException ex) {
+               SkynetActivator.getLogger().log(Level.WARNING, ex.getLocalizedMessage(), ex);
+            }
          }
-      } catch (SQLException ex) {
-         throw new IllegalStateException(ex);
+      } finally {
+         DbUtil.close(chStmt);
       }
    }
 
    /**
     * @return Returns all of the descriptors.
+    * @throws SQLException
     */
-   public Collection<DynamicAttributeDescriptor> getAllDescriptors(Branch branch) {
-      return getAllDescriptors(transactionIdManager.getEditableTransactionId(branch));
+   @Deprecated
+   //use attribute validitiy to get attributes by branch
+   public Collection<DynamicAttributeDescriptor> getAllDescriptors(Branch branch) throws SQLException {
+      ensurePopulated();
+      return idToTypeMap.values();
    }
 
    /**
-    * @return Returns the descriptor with a particular name, null if it does not exist.
+    * @return Returns the descriptor with a particular namespace and name, null if it does not exist.
+    * @throws SQLException
     */
-   public DynamicAttributeDescriptor getDescriptor(String name, Branch branch) {
-      return getDescriptor(name, transactionIdManager.getEditableTransactionId(branch));
-   }
-
-   /**
-    * @return Returns the descriptor with a particular name, null if it does not exist.
-    */
-   public DynamicAttributeDescriptor getDescriptor(int attrTypeId, Branch branch) {
-      return getDescriptor(attrTypeId, transactionIdManager.getEditableTransactionId(branch));
-   }
-
-   /**
-    * @return Returns all of the descriptors.
-    */
-   public Collection<DynamicAttributeDescriptor> getAllDescriptors(TransactionId transactionId) {
-      ensurePopulated(transactionId);
-      return new ArrayList<DynamicAttributeDescriptor>(allDescriptors.getValues(transactionId));
-   }
-
-   /**
-    * @return Returns the descriptor with a particular name, null if it does not exist.
-    */
-   public DynamicAttributeDescriptor getDescriptor(String name, TransactionId transactionId) {
-      ensurePopulated(transactionId);
-      DynamicAttributeDescriptor descriptor = nameToDescriptors.get(name, transactionId);
-
-      if (descriptor == null) {
-         throw new IllegalArgumentException(
-               "Attribute Descriptor does not exist for attribute type name: \"" + name + "\" for transaction id: " + transactionId);
+   public DynamicAttributeDescriptor getDescriptor(String namespace, String name) throws SQLException {
+      ensurePopulated();
+      DynamicAttributeDescriptor attributeType = nameToTypeMap.get(namespace, name);
+      if (attributeType == null) {
+         throw new IllegalArgumentException("Attribute type: " + namespace + "." + name + " is not available.");
       }
-      return descriptor;
-   }
-
-   public boolean hasDescriptor(String name, Branch branch) {
-      return hasDescriptor(name, transactionIdManager.getEditableTransactionId(branch));
-   }
-
-   public boolean hasDescriptor(String name, TransactionId transactionId) {
-      ensurePopulated(transactionId);
-      return nameToDescriptors.get(name, transactionId) != null;
+      return attributeType;
    }
 
    /**
-    * @return Returns the descriptor with a particular id, null if it does not exist.
+    * @return Returns the descriptor with a particular name, null if it does not exist.
+    * @throws SQLException
     */
-   public DynamicAttributeDescriptor getDescriptor(int attrTypeId, TransactionId transactionId) {
-      ensurePopulated(transactionId);
-      DynamicAttributeDescriptor descriptor = idToDescriptors.get(attrTypeId, transactionId);
-      if (descriptor == null) {
-         throw new IllegalArgumentException(
-               "Attribute Descriptor does not exist for attribute type id: " + attrTypeId + " and transaction id: " + transactionId);
+   public DynamicAttributeDescriptor getDescriptor(int attrTypeId) throws SQLException {
+      ensurePopulated();
+      DynamicAttributeDescriptor attributeType = idToTypeMap.get(attrTypeId);
+      if (attributeType == null) {
+         throw new IllegalArgumentException("Attribute type: " + attrTypeId + " is not available.");
       }
-      return descriptor;
+      return attributeType;
+   }
+
+   /**
+    * @return Returns the descriptor with a particular name, null if it does not exist.
+    * @throws SQLException
+    */
+   public DynamicAttributeDescriptor getDescriptor(String name) throws SQLException {
+      return getDescriptor(null, name);
    }
 
    /**
     * Cache a newly created descriptor.
     * 
     * @param descriptor The descriptor to cache
+    * @throws SQLException
     * @throws IllegalArgumentException if descriptor is null.
     */
-   public void cache(DynamicAttributeDescriptor descriptor) {
-      ensurePopulated(descriptor.getTransactionId());
-      if (descriptor == null) throw new IllegalArgumentException("The descriptor parameter can not be null");
-
-      allDescriptors.put(descriptor.getTransactionId(), descriptor);
-      nameToDescriptors.put(descriptor.getName(), descriptor.getTransactionId(), descriptor);
-      idToDescriptors.put(descriptor.getAttrTypeId(), descriptor.getTransactionId(), descriptor);
+   public void cache(DynamicAttributeDescriptor descriptor) throws SQLException {
+      nameToTypeMap.put(descriptor.getNamespace(), descriptor.getName(), descriptor);
+      idToTypeMap.put(descriptor.getAttrTypeId(), descriptor);
    }
 }

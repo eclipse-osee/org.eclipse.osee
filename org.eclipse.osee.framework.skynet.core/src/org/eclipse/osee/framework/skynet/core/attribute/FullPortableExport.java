@@ -124,8 +124,8 @@ public class FullPortableExport {
    }
 
    public void createArtifactSheets(Branch branch) throws IOException, SQLException {
-      for (ArtifactSubtypeDescriptor descriptor : configurationManager.getArtifactSubtypeDescriptors(branch)) {
-         createArtifactSheet(descriptor, artifactManager.getArtifactsFromSubtype(descriptor));
+      for (ArtifactSubtypeDescriptor descriptor : configurationManager.getValidArtifactTypes(branch)) {
+         createArtifactSheet(descriptor, artifactManager.getArtifactsFromSubtype(branch, descriptor));
       }
    }
 
@@ -138,8 +138,7 @@ public class FullPortableExport {
       for (String artifactTypeName : hash.keySet()) {
          Collection<Artifact> groupedArtifacts = hash.getValues(artifactTypeName);
          Branch branch = groupedArtifacts.iterator().next().getBranch();
-         createArtifactSheet(configurationManager.getArtifactSubtypeDescriptor(artifactTypeName, branch),
-               groupedArtifacts);
+         createArtifactSheet(configurationManager.getArtifactSubtypeDescriptor(artifactTypeName), groupedArtifacts);
       }
    }
 

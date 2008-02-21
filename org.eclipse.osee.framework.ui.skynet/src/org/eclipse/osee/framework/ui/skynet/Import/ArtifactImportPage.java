@@ -299,7 +299,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       try {
          String[] selection = typeList.getSelection();
          typeList.removeAll();
-         for (ArtifactSubtypeDescriptor descriptor : configurationManager.getArtifactSubtypeDescriptors(branch)) {
+         for (ArtifactSubtypeDescriptor descriptor : configurationManager.getValidArtifactTypes(branch)) {
             typeList.add(descriptor.getName());
             typeList.setData(descriptor.getName(), descriptor);
          }

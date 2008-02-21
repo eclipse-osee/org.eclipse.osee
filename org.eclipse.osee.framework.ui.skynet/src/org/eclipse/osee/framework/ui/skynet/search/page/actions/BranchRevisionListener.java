@@ -12,18 +12,16 @@ package org.eclipse.osee.framework.ui.skynet.search.page.actions;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.page.ArtifactSearchComposite;
 import org.eclipse.osee.framework.ui.skynet.search.page.manager.IDataListener;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Display;
 
 public class BranchRevisionListener implements IDataListener {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchRevisionListener.class);
    private static final ConfigurationPersistenceManager configurationManager =
          ConfigurationPersistenceManager.getInstance();
    private ArtifactSearchComposite parentWindow;
@@ -49,10 +47,10 @@ public class BranchRevisionListener implements IDataListener {
             if (branch > 0 && revision > 0) {
                try {
                   descriptors =
-                        configurationManager.getArtifactSubtypeDescriptors(BranchPersistenceManager.getInstance().getBranch(
+                        configurationManager.getValidArtifactTypes(BranchPersistenceManager.getInstance().getBranch(
                               branch));
                } catch (SQLException ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
+                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                }
             }
 

@@ -285,8 +285,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          File file = OseeAtsConfigDemoPlugin.getInstance().getPluginFile(filename);
          IArtifactImportResolver artifactResolver = null;
          ArtifactSubtypeDescriptor mainDescriptor =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(requirementArtifactName,
-                     branch);
+               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(requirementArtifactName);
          ArtifactExtractor extractor =
                new WordOutlineExtractor(mainDescriptor, branch, 0, new GeneralWordOutlineHandler());
          Job job = new ArtifactImportJob(file, systemReq, extractor, branch, artifactResolver);

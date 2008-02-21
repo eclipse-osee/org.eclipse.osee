@@ -54,7 +54,7 @@ public class WorkflowDiagramFactory {
       // System.out.println("Importing diagram " + name);
       art =
             (NativeArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  GENERAL_DOCUMENT_ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+                  GENERAL_DOCUMENT_ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getInstance().getAtsBranch());
       art.setDescriptiveName(name);
       art.setSoleAttributeValue("Extension", "vue");
       art.setNativeContent(inputStream);

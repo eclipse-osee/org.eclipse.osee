@@ -126,7 +126,7 @@ public class NewActionJob extends Job {
       if (monitor != null) monitor.subTask("Creating Action");
       ActionArtifact actionArt =
             (ActionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  ActionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+                  ActionArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getInstance().getAtsBranch());
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
             validationRequired, needByDate);
 

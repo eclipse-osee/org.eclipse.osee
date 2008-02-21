@@ -753,10 +753,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return artifacts;
    }
 
-   public Collection<Artifact> getArtifactsFromSubtype(ArtifactSubtypeDescriptor descriptor) throws SQLException {
+   public Collection<Artifact> getArtifactsFromSubtype(Branch branch, ArtifactSubtypeDescriptor descriptor) throws SQLException {
       // TODO: this should be more direct by using the descriptor and not just its name
-      return getArtifacts(new ArtifactTypeSearch(descriptor.getName(), Operator.EQUAL),
-            descriptor.getTransactionId().getBranch());
+      return getArtifacts(new ArtifactTypeSearch(descriptor.getName(), Operator.EQUAL), branch);
    }
 
    public Collection<Artifact> getArtifactsFromSubtypeName(String subtypeName, Branch branch) throws SQLException {
@@ -814,7 +813,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                   // defined in the schema as being appropriate for this Artifact.
                   if (type == null) {
                      type =
-                           configurationPersistenceManager.getDynamicAttributeType(attrTypeId, transactionId).createAttributeManager(
+                           configurationPersistenceManager.getDynamicAttributeType(attrTypeId).createAttributeManager(
                                  artifact, false);
                      type.setupForInitialization(false);
                      typeHash.put(attrTypeId, type);
@@ -870,8 +869,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                   "The artifact with id " + artId + " was deleted in or before the (transactionId) \"" + transactionId + "\"");
          } else {
             artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, artId, rSet.getInt("gamma_id")));
-            artifact.setDescriptor(configurationPersistenceManager.getArtifactSubtypeDescriptor(
-                  rSet.getInt("art_type_id"), transactionId));
+            artifact.setDescriptor(configurationPersistenceManager.getArtifactSubtypeDescriptor(rSet.getInt("art_type_id")));
 
             setAttributesOnArtifact(artifact);
          }
@@ -956,7 +954,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             attributeManager = typeHash.get(artId, attrTypeId);
             if (attributeManager == null) {
                attributeManager =
-                     configurationPersistenceManager.getDynamicAttributeType(attrTypeId, transactionId).createAttributeManager(
+                     configurationPersistenceManager.getDynamicAttributeType(attrTypeId).createAttributeManager(
                            artifact, false);
                typeHash.put(artId, attrTypeId, attributeManager);
                attributeManager.setupForInitialization(false);
@@ -1345,8 +1343,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    private Artifact createRoot(Branch branch) throws SQLException {
       ArtifactSubtypeDescriptor descriptor =
-            configurationPersistenceManager.getArtifactSubtypeDescriptor(ROOT_ARTIFACT_TYPE_NAME, branch);
-      Artifact root = descriptor.makeNewArtifact();
+            configurationPersistenceManager.getArtifactSubtypeDescriptor(ROOT_ARTIFACT_TYPE_NAME);
+      Artifact root = descriptor.makeNewArtifact(branch);
       root.setDescriptiveName(DEFAULT_HIERARCHY_ROOT_NAME);
       root.persistAttributes();
       return root;
@@ -1380,11 +1378,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    public void changeArtifactSubStype(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws SQLException {
-
-      if (!artifact.getPersistenceMemo().getTransactionId().equals(descriptor.getTransactionId())) {
-         throw new IllegalArgumentException("The artifact and descriptor must be on the same transaction.");
-      }
-
       ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE, SQL3DataType.INTEGER, descriptor.getArtTypeId(),
             SQL3DataType.INTEGER, artifact.getArtId());
    }

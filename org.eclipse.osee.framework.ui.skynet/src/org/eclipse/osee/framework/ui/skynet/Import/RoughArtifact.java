@@ -19,22 +19,21 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.FullPortableExport;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Robert A. Fisher
+ * @author Ryan D. Brooks
  */
 public class RoughArtifact {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RoughArtifact.class);
    private Artifact realArtifact;
    private RoughArtifact roughParent;
    private ReqNumbering number;
@@ -46,25 +45,27 @@ public class RoughArtifact {
    private ArtifactSubtypeDescriptor primaryDescriptor;
    private boolean forcePrimaryType;
    private HashMap<String, File> fileAttributes;
+   private final Branch branch;
 
-   public RoughArtifact() {
+   public RoughArtifact(Branch branch) {
       attributes = new ArrayList<NameAndVal>();
       children = new ArrayList<RoughArtifact>();
       forcePrimaryType = false;
+      this.branch = branch;
    }
 
    public RoughArtifact(Artifact associatedArtifact) {
-      this();
+      this(associatedArtifact.getBranch());
       realArtifact = associatedArtifact;
+   }
+
+   public RoughArtifact(Branch branch, String name) {
+      this(branch);
+      addAttribute("Name", name);
    }
 
    public boolean hasHierarchicalRelation() {
       return number != null;
-   }
-
-   public RoughArtifact(String name) {
-      this();
-      addAttribute("Name", name);
    }
 
    public void addChild(RoughArtifact child) {
@@ -127,7 +128,7 @@ public class RoughArtifact {
                   }
                }
             } catch (IllegalStateException ex) {
-               logger.log(Level.SEVERE, "", ex);
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }
       }
@@ -295,5 +296,12 @@ public class RoughArtifact {
          }
       }
       return "";
+   }
+
+   /**
+    * @return the branch
+    */
+   public Branch getBranch() {
+      return branch;
    }
 }

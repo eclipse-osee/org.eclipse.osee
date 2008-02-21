@@ -403,8 +403,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                   transactionArtifactChange =
                         new TransactionArtifactChange(TransactionType.getTransactionType(txTypeId),
                               ChangeType.CONFLICTING, baselineTransaction, sourceHeadTransactionId, artId, 2, sourceGamma,
-                              configurationManager.getArtifactSubtypeDescriptor(resultSet.getInt("art_type_id"),
-                                    sourceHeadTransactionId));
+                              configurationManager.getArtifactSubtypeDescriptor(resultSet.getInt("art_type_id")));
 
                   transactionArtifactChanges.put(attrId, transactionArtifactChange);
                }
@@ -471,8 +470,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 	                  transactionArtifactChange =
 	                        new TransactionArtifactChange(TransactionType.getTransactionType(txTypeId),
 	                              ChangeType.CONFLICTING, baselineTransaction, sourceHeadTransactionId, artId, 2, sourceGamma,
-	                              configurationManager.getArtifactSubtypeDescriptor(resultSet.getInt("art_type_id"),
-	                                    sourceHeadTransactionId));
+	                              configurationManager.getArtifactSubtypeDescriptor(resultSet.getInt("art_type_id")));
 
 	                  transactionArtifactChanges.put(attrId, transactionArtifactChange);
 	               }
@@ -621,8 +619,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
          while (chStmt.next()) {
             changes.add(new ArtifactChange(changeType, artId, chStmt.getRset().getInt("modification_id"),
                   chStmt.getRset().getInt("gamma_id"), toTransactionId, fromTransactionId,
-                  configurationManager.getArtifactSubtypeDescriptor(chStmt.getRset().getInt("art_type_id"),
-                        fromTransactionId)));
+                  configurationManager.getArtifactSubtypeDescriptor(chStmt.getRset().getInt("art_type_id"))));
          }
       } finally {
          DbUtil.close(chStmt);
@@ -826,7 +823,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                         lastGoodTransactionNumber);
             Branch branch = BranchPersistenceManager.getInstance().getBranch(set.getInt("branch_id"));
             ArtifactSubtypeDescriptor descriptor =
-                  configurationManager.getArtifactSubtypeDescriptor(set.getString("type_name"), branch);
+                  configurationManager.getArtifactSubtypeDescriptor(set.getString("type_name"));
             String name = set.getString("name");
 
             if (artifactNameDescriptorCache != null) artifactNameDescriptorCache.cache(set.getInt("art_id"), name,

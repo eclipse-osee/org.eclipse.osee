@@ -412,7 +412,7 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
     * @throws SQLException
     */
    public void addNewChild(ArtifactSubtypeDescriptor descriptor, String name) throws SQLException {
-      Artifact child = descriptor.makeNewArtifact();
+      Artifact child = descriptor.makeNewArtifact(branch);
       child.setDescriptiveName(name);
       addChild(child);
       child.persistAttributes();
@@ -1360,8 +1360,7 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
     * @throws SQLException
     */
    public Artifact duplicate(Branch branch) throws CloneNotSupportedException, SQLException {
-      ArtifactSubtypeDescriptor newDescriptor = getDescriptor(branch);
-      Artifact newArtifact = newDescriptor.makeNewArtifact();
+      Artifact newArtifact = descriptor.makeNewArtifact(branch);
 
       if (newArtifact.attributesNotLoaded()) {
          newArtifact.startAttributeInitialization();
@@ -1407,24 +1406,6 @@ public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparab
       // }
       // }
       // attributeManager.enforceMinMaxConstraints();
-   }
-
-   /**
-    * Get the descriptor on the supplied branch that represents the descriptor of this artifact.
-    * 
-    * @param branch
-    * @return
-    * @throws SQLException
-    */
-   protected ArtifactSubtypeDescriptor getDescriptor(Branch branch) throws SQLException {
-      ArtifactSubtypeDescriptor descriptor =
-            configurationPersistenceManager.getArtifactSubtypeDescriptor(getArtifactTypeName(), branch);
-      if (descriptor == null) {
-         throw new IllegalArgumentException(
-               "Artifact type " + getArtifactTypeName() + " does not exist on branch " + branch);
-      }
-
-      return descriptor;
    }
 
    /*

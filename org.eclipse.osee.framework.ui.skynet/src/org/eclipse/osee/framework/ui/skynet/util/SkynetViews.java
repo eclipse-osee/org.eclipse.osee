@@ -15,31 +15,27 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Jeff C. Phillips
  */
 public class SkynetViews {
-
    private static final ConfigurationPersistenceManager configurationPersistenceManager =
          ConfigurationPersistenceManager.getInstance();
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
    /**
     * @param memento
     * @return Returns a collection of <code>DynamicAttributeDescriptor</code> stored in a memento.
     * @throws SQLException
     */
-   public static List<DynamicAttributeDescriptor> loadAttrTypesFromPreferenceStore(String preferenceKey) throws SQLException {
+   public static List<DynamicAttributeDescriptor> loadAttrTypesFromPreferenceStore(String preferenceKey, Branch branch) throws SQLException {
       List<DynamicAttributeDescriptor> attributeDescriptors = new LinkedList<DynamicAttributeDescriptor>();
       Collection<DynamicAttributeDescriptor> descriptors =
-            configurationPersistenceManager.getDynamicAttributeDescriptors(transactionIdManager.getEditableTransactionId(branchManager.getDefaultBranch()));
+            configurationPersistenceManager.getDynamicAttributeDescriptors(branch);
 
       IPreferenceStore preferenceStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
       for (String attributeType : preferenceStore.getString(preferenceKey).split("\\|")) {

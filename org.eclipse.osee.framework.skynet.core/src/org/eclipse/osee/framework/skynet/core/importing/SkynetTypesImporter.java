@@ -47,11 +47,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class SkynetTypesImporter implements RowProcessor {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetTypesImporter.class);
-
    private static final Pattern nonJavaCharP = Pattern.compile("[^a-zA-Z_0-9]");
-
    private String upCaseEnums = "";
-
    private String normalEnums = "";
 
    private enum Table {
@@ -59,25 +56,15 @@ public class SkynetTypesImporter implements RowProcessor {
    }
 
    private static final String description = "Setup artifact, attribute, and relation type data";
-
    private final ExcelSaxHandler excelHandler;
-
    private Table currentTable;
-
    private Iterator<Table> tableIterator;
-
    private final HashMap<String, ArrayList<String>> superTypeMap;
-
    private final RelationValidity relationValidity;
-
    private final List<AttributeMapRow> attributeMapRows;
-
    private boolean done;
-
    private final boolean debugRows = false;
-
    private final XMLReader xmlReader;
-
    private Branch branch;
 
    private static final ConfigurationPersistenceManager configurationManager =
@@ -209,8 +196,8 @@ public class SkynetTypesImporter implements RowProcessor {
             Class.forName(basePackageName + "." + attrBaseType, true, Attribute.class.getClassLoader()).asSubclass(
                   Attribute.class);
 
-      configurationManager.makePersistent(baseAttributeClass, attributeName, defaultValue, validityXml, minOccurrence,
-            maxOccurrence, tipText);
+      configurationManager.makePersistent(baseAttributeClass, null, attributeName, defaultValue, validityXml,
+            minOccurrence, maxOccurrence, tipText);
    }
 
    /**
@@ -281,8 +268,8 @@ public class SkynetTypesImporter implements RowProcessor {
 
       associateWithSuperType(artifactTypeName, superTypeName);
 
-      if (configurationManager.getArtifactSubtypeDescriptor(artifactTypeName, branch) == null) {
-         configurationManager.makeSubtypePersistent(factoryClassName, artifactTypeName, branch);
+      if (configurationManager.getArtifactSubtypeDescriptor(artifactTypeName) == null) {
+         configurationManager.makeSubtypePersistent(factoryClassName, null, artifactTypeName, artifactTypeName);
 
          addValidityAlreadyInDb(artifactTypeName, superTypeName);
 
@@ -299,10 +286,8 @@ public class SkynetTypesImporter implements RowProcessor {
       if (superTypeName.equals("Artifact")) {
          superTypeName = "Root Artifact"; // this is a concrete type that should be on every branch
       }
-      ArtifactSubtypeDescriptor superArtifactType =
-            configurationManager.getArtifactSubtypeDescriptor(superTypeName, branch);
-      ArtifactSubtypeDescriptor artifactType =
-            configurationManager.getArtifactSubtypeDescriptor(artifactTypeName, branch);
+      ArtifactSubtypeDescriptor superArtifactType = configurationManager.getArtifactSubtypeDescriptor(superTypeName);
+      ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(artifactTypeName);
 
       if (superArtifactType != null) {
 
@@ -310,11 +295,11 @@ public class SkynetTypesImporter implements RowProcessor {
                configurationManager.getAttributeTypesFromArtifactType(superArtifactType);
          Iterator<DynamicAttributeDescriptor> it = parentAttributes.iterator();
          while (it.hasNext()) {
-            configurationManager.persistAttributeValidity(it.next(), artifactType);
+            configurationManager.persistAttributeValidity(artifactType, it.next());
          }
 
          Collection<IRelationLinkDescriptor> links =
-               RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(superArtifactType);
+               RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(superArtifactType, branch);
          Iterator<IRelationLinkDescriptor> linksIt = links.iterator();
          while (linksIt.hasNext()) {
             IRelationLinkDescriptor desc = linksIt.next();

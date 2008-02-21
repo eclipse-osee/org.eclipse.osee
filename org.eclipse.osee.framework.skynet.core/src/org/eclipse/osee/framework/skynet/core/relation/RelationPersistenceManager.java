@@ -295,12 +295,8 @@ public class RelationPersistenceManager implements PersistenceManager {
          link.delete();
       }
       deleteSql.append(" ) ");
-      try {
-         ConnectionHandler.runPreparedUpdate(deleteSql.toString());
-         links.clear();
-      } catch (SQLException ex) {
-         ex.printStackTrace();
-      }
+      ConnectionHandler.runPreparedUpdate(deleteSql.toString());
+      links.clear();
    }
 
    public void doSave(IRelationLink link, SkynetTransaction transaction) throws SQLException {
@@ -419,9 +415,9 @@ public class RelationPersistenceManager implements PersistenceManager {
     * 
     * @return A collection of all the available descriptors.
     */
-   public Collection<IRelationLinkDescriptor> getIRelationLinkDescriptors(ArtifactSubtypeDescriptor artifactDescriptor) {
+   public Collection<IRelationLinkDescriptor> getIRelationLinkDescriptors(ArtifactSubtypeDescriptor artifactDescriptor, Branch branch) {
       Collection<IRelationLinkDescriptor> linkDescriptors = new LinkedList<IRelationLinkDescriptor>();
-      for (IRelationLinkDescriptor linkDescriptor : getIRelationLinkDescriptors(artifactDescriptor.getTransactionId())) {
+      for (IRelationLinkDescriptor linkDescriptor : getIRelationLinkDescriptors(branch)) {
          if (linkDescriptor.canLinkType(artifactDescriptor.getArtTypeId())) {
             linkDescriptors.add(linkDescriptor);
          }

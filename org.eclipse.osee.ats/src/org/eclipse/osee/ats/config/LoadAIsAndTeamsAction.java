@@ -286,7 +286,8 @@ public class LoadAIsAndTeamsAction extends Action {
          if (aia == null) {
             aia =
                   (ActionableItemArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                        ActionableItemArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+                        ActionableItemArtifact.ARTIFACT_NAME).makeNewArtifact(
+                        BranchPersistenceManager.getInstance().getAtsBranch());
             aia.setDescriptiveName(page.getName());
             for (String staticId : staticIds) {
                aia.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setStringData(

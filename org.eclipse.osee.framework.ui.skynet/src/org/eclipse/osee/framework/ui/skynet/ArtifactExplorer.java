@@ -135,6 +135,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActionable, ISelectionProvider {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactExplorer.class);
+   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final Image ACCESS_DENIED_IMAGE = SkynetGuiPlugin.getInstance().getImage("lockkey.gif");
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
@@ -179,7 +180,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, new GUID().toString(),
                      IWorkbenchPage.VIEW_ACTIVATE);
          artifactExplorer.setPartName("Artifacts");
-         artifactExplorer.setContentDescription("These artifact must be edited singly");
+         artifactExplorer.setContentDescription("These artifact must be edited individually");
          artifactExplorer.treeViewer.setInput(artifacts);
       } catch (Exception ex) {
          throw new RuntimeException(ex);
@@ -424,7 +425,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch");
             int result = branchSelection.open();
             if (result == Window.OK) {
-               BranchPersistenceManager.getInstance().setDefaultBranch(branchSelection.getSelection());
+               branchManager.setDefaultBranch(branchSelection.getSelection());
             }
          }
       };
@@ -463,7 +464,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                      (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
                            IWorkbenchPage.VIEW_ACTIVATE);
                artifactExplorer.explore(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                     BranchPersistenceManager.getInstance().getDefaultBranch()));
+                     branchManager.getDefaultBranch()));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
                throw new RuntimeException(ex);
@@ -505,8 +506,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    protected void createAttributesAction() {
       try {
          attributesAction = new ShowAttributeAction(treeViewer, SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
-         attributesAction.addToView(this,
-               SkynetViews.loadAttrTypesFromPreferenceStore(SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF));
+         attributesAction.addToView(this, SkynetViews.loadAttrTypesFromPreferenceStore(
+               SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF, branchManager.getDefaultBranch()));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
@@ -547,8 +548,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
       try {
          Collection<ArtifactSubtypeDescriptor> descriptors =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors(
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+               ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(branchManager.getDefaultBranch());
          for (ArtifactSubtypeDescriptor descriptor : descriptors) {
             if (!descriptor.getName().equals("Root Artifact")) {
                MenuItem item = new MenuItem(subMenu, SWT.PUSH);
@@ -1110,7 +1110,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                try {
                   // Check that we are not already displaying the default
                   // branch
-                  Branch defaultBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
+                  Branch defaultBranch = branchManager.getDefaultBranch();
 
                   if (root == null) {
                      explore(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch));
@@ -1139,7 +1139,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                   Artifact artifact = (Artifact) object;
                   try {
                      explore(ArtifactPersistenceManager.getInstance().getArtifact(artifact.getGuid(),
-                           BranchPersistenceManager.getInstance().getDefaultBranch()));
+                           branchManager.getDefaultBranch()));
                   } catch (IllegalArgumentException ex) {
                      logger.log(Level.SEVERE, ex.toString(), ex);
                   } catch (CoreException ex) {
@@ -1194,7 +1194,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
             Artifact previousArtifact =
                   ArtifactPersistenceManager.getInstance().getArtifact(memento.getString(ROOT_GUID),
-                        BranchPersistenceManager.getInstance().getDefaultBranch());
+                        branchManager.getDefaultBranch());
             if (previousArtifact != null) {
                explore(previousArtifact);
                return;
@@ -1206,7 +1206,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
       try {
          explore(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-               BranchPersistenceManager.getInstance().getDefaultBranch()));
+               branchManager.getDefaultBranch()));
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }

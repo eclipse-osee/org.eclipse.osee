@@ -83,7 +83,7 @@ public class WordTemplateProvider extends AbstractTemplateProvider {
    public void initializeTemplates(Artifact parentFolder, ArtifactSubtypeDescriptor documentDescriptor) throws Exception {
       String wordRendererId = "org.eclipse.osee.framework.ui.skynet.word";
       for (PresentationType presentationType : PresentationType.values()) {
-         Artifact document = documentDescriptor.makeNewArtifact();
+         Artifact document = documentDescriptor.makeNewArtifact(parentFolder.getBranch());
          parentFolder.addChild(document);
          setDefaultTemplates(wordRendererId, document, presentationType.name(), parentFolder.getBranch());
       }

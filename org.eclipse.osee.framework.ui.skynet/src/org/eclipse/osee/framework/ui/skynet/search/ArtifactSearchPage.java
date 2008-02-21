@@ -12,8 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -23,7 +21,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -34,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManage
 import org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.search.ui.IReplacePage;
 import org.eclipse.search.ui.ISearchPage;
 import org.eclipse.search.ui.ISearchPageContainer;
@@ -61,7 +59,6 @@ import org.eclipse.swt.widgets.Text;
  * @author Michael S. Rodgers
  */
 public class ArtifactSearchPage extends DialogPage implements ISearchPage, IReplacePage {
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSearchPage.class);
    private static final ConfigurationPersistenceManager configurationPersistenceManager =
          ConfigurationPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
@@ -162,12 +159,12 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       artifactTypeList.setSorter(new SearchSorter());
 
       try {
-         for (ArtifactSubtypeDescriptor descriptor : configurationPersistenceManager.getArtifactSubtypeDescriptors(branchManager.getDefaultBranch())) {
+         for (ArtifactSubtypeDescriptor descriptor : configurationPersistenceManager.getValidArtifactTypes(branchManager.getDefaultBranch())) {
             artifactTypeList.add(descriptor.getName());
             artifactTypeList.setData(descriptor.getName(), descriptor);
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, "Error encountered while getting list of artifact types", ex);
+         OSEELog.logException(SkynetGuiPlugin.class, "Error encountered while getting list of artifact types", ex, true);
       }
       artifactTypeList.getList().select(0);
       addToSearchTypeList(new ArtifactTypeFilter(artifactTypeControls, artifactTypeList));
@@ -278,7 +275,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             attributeTypeList.setData(type.getName(), type);
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, "Error encountered while getting list of attribute types", ex);
+         OSEELog.logException(SkynetGuiPlugin.class, "Error encountered while getting list of attribute types", ex,
+               true);
       }
       attributeTypeList.getCombo().setVisibleItemCount(Math.min(attributeTypeList.getCombo().getItemCount(), 15));
       attributeTypeList.getCombo().select(0);

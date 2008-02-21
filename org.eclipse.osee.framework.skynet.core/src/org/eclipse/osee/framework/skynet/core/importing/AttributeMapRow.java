@@ -44,16 +44,16 @@ public class AttributeMapRow {
 
    public void persist() throws SQLException {
       DynamicAttributeDescriptor attributeType =
-            configurationPersistencManager.getDynamicAttributeType(attributeName, branch);
+            configurationPersistencManager.getDynamicAttributeType(attributeName);
       if (attributeType == null) {
          throw new IllegalArgumentException("The attribute " + attributeName + " is not defined.");
       }
 
       for (String artifactTypeName : importer.determineConcreateTypes(artifactSuperTypeName)) {
          ArtifactSubtypeDescriptor artifactType =
-               configurationPersistencManager.getArtifactSubtypeDescriptor(artifactTypeName, branch);
+               configurationPersistencManager.getArtifactSubtypeDescriptor(artifactTypeName);
          if (artifactType != null) {
-            configurationPersistencManager.persistAttributeValidity(attributeType, artifactType);
+            configurationPersistencManager.persistAttributeValidity(artifactType, attributeType);
          } else {
             logger.log(Level.SEVERE, artifactTypeName + " was not found when querying the DB.");
          }

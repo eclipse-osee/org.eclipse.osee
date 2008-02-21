@@ -25,7 +25,7 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
 
    public NativeDocumentExtractor(ArtifactSubtypeDescriptor primaryDescriptor, Branch branch) throws SQLException {
       super(branch);
-      folderDescriptor = configurationPersistenceManager.getArtifactSubtypeDescriptor("Folder", branch);
+      folderDescriptor = configurationPersistenceManager.getArtifactSubtypeDescriptor("Folder");
       this.primaryDescriptor = primaryDescriptor;
    }
 
@@ -37,7 +37,7 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
     * @see osee.define.artifact.Import.ArtifactExtractor#discoverArtifactAndRelationData(java.io.File)
     */
    public void discoverArtifactAndRelationData(File importFile) throws Exception {
-      RoughArtifact roughArtifact = new RoughArtifact(Lib.stripExtension(importFile.getName()));
+      RoughArtifact roughArtifact = new RoughArtifact(getBranch(), Lib.stripExtension(importFile.getName()));
       roughArtifact.setHeadingDescriptor(folderDescriptor);
       roughArtifact.setPrimaryDescriptor(primaryDescriptor);
       addRoughArtifact(roughArtifact);

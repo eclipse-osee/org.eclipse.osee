@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 import java.io.File;
 import java.io.FileFilter;
 import java.sql.SQLException;
-
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -37,7 +36,7 @@ public class WholeWordDocumentExtractor extends WordExtractor {
     */
    public void discoverArtifactAndRelationData(File importFile) throws Exception {
       if (importFile == null) throw new IllegalArgumentException("importFile can not be null");
-      RoughArtifact roughArtifact = new RoughArtifact(Lib.stripExtension(importFile.getName()));
+      RoughArtifact roughArtifact = new RoughArtifact(getBranch(), Lib.stripExtension(importFile.getName()));
       roughArtifact.setPrimaryDescriptor(primaryDescriptor);
       addRoughArtifact(roughArtifact);
       roughArtifact.addFileAttribute(WordAttribute.CONTENT_NAME, importFile);

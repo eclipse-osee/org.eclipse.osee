@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * Type information for dynamic attributes.
@@ -22,13 +22,13 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
    public static final DynamicAttributeDescriptor[] EMPTY_ARRAY = new DynamicAttributeDescriptor[0];
    private Class<? extends Attribute> baseAttributeClass;
    private int attrTypeId;
+   private String namespace;
    private String name;
    private String defaultValue;
    private String validityXml;
    private int maxOccurrences;
    private int minOccurrences;
    private String tipText;
-   private final TransactionId transactionId;
 
    // These arrays are going to be used for reflection
    private static final Class<?>[] reflectionSignature = new Class<?>[] {String.class};
@@ -45,21 +45,26 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
     * @param minOccurrences
     * @param maxOccurrences
     * @param tipText
+    * @throws SQLException
     */
-   protected DynamicAttributeDescriptor(Class<? extends Attribute> baseAttributeClass, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, int attrTypeId, TransactionId transactionId) {
-      if (minOccurrences < 0) throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
-      if (maxOccurrences < minOccurrences) throw new IllegalArgumentException(
-            "maxOccurences must be greater than or equal to minOccurences");
+   public DynamicAttributeDescriptor(DynamicAttributeDescriptorCache cache, int attrTypeId, Class<? extends Attribute> baseAttributeClass, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
+      if (minOccurrences < 0) {
+         throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
+      }
+      if (maxOccurrences < minOccurrences) {
+         throw new IllegalArgumentException("maxOccurences can not be less than minOccurences");
+      }
 
       this.attrTypeId = attrTypeId;
       this.baseAttributeClass = baseAttributeClass;
+      this.namespace = namespace;
       this.name = name;
       this.defaultValue = defaultValue;
       this.validityXml = validityXml;
       this.maxOccurrences = maxOccurrences;
       this.minOccurrences = minOccurrences;
       this.tipText = tipText;
-      this.transactionId = transactionId;
+      cache.cache(this);
 
       this.reflectionParams = new Object[] {name};
    }
@@ -128,6 +133,13 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
    }
 
    /**
+    * @return the namespace
+    */
+   public String getNamespace() {
+      return namespace;
+   }
+
+   /**
     * @return Returns the tipText.
     */
    public String getTipText() {
@@ -139,13 +151,6 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
     */
    public String getValidityXml() {
       return validityXml;
-   }
-
-   /**
-    * @return Returns the transactionId.
-    */
-   public TransactionId getTransactionId() {
-      return transactionId;
    }
 
    public String toString() {

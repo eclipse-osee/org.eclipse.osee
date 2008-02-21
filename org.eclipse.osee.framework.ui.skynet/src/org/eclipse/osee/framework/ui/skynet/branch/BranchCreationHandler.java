@@ -98,9 +98,10 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
                   // Artifact"};
 
                   Set<String> allArtifactTypes = new HashSet<String>();
-                  for (ArtifactSubtypeDescriptor asd : ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors(
-                        parentTransactionId))
-                     allArtifactTypes.add(asd.getName());
+                  for (ArtifactSubtypeDescriptor artifactType : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
+                        parentTransactionId.getBranch())) {
+                     allArtifactTypes.add(artifactType.getName());
+                  }
 
                   // Compress all but software requirements
                   Set<String> compressTypes = new HashSet<String>();

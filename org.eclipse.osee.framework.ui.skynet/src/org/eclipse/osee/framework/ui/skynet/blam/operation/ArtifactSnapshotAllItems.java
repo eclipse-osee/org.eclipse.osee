@@ -31,7 +31,7 @@ public class ArtifactSnapshotAllItems extends AbstractBlam {
 
          monitor.setTaskName("Loading Artifact Type Descriptors");
          Collection<ArtifactSubtypeDescriptor> descriptors =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors(branch);
+               ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(branch);
 
          monitor.beginTask("Regenerating Artifact Preview Snapshots", descriptors.size());
 
@@ -39,7 +39,7 @@ public class ArtifactSnapshotAllItems extends AbstractBlam {
          ArtifactSnapshotManager artifactSnapshotManager = ArtifactSnapshotManager.getInstance();
          for (ArtifactSubtypeDescriptor descriptor : descriptors) {
             monitor.subTask(String.format("Loading artifacts of type [%s]", descriptor.getName()));
-            Collection<Artifact> artifacts = artifactManager.getArtifactsFromSubtype(descriptor);
+            Collection<Artifact> artifacts = artifactManager.getArtifactsFromSubtype(branch, descriptor);
             int count = 0;
             int total = artifacts.size();
             for (Artifact artifact : artifacts) {

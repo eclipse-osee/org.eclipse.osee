@@ -18,9 +18,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeProcessor;
+import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeTypeProcessor;
 import org.eclipse.osee.framework.skynet.core.relation.DynamicRelationLinkDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.LinkDescriptorPersistenceMemo;
@@ -78,19 +77,6 @@ public class SkynetArtifactAdapter {
       return map;
    }
 
-   private Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactTypeId(int artTypeid, int branchId, int revision) throws SQLException {
-      Collection<DynamicAttributeDescriptor> attributes = new LinkedList<DynamicAttributeDescriptor>();
-      String sql =
-            skynetSql.getMetaDataSql().getAttributeTypeBy("art_type_id", Integer.toString(artTypeid), branchId,
-                  revision);
-      try {
-         Query.acquireCollection(attributes, sql, new DynamicAttributeTypeProcessor(branchManager.getBranch(branchId)));
-      } catch (SQLException ex) {
-         ex.printStackTrace();
-      }
-      return attributes;
-   }
-
    private Collection<IRelationLinkDescriptor> getIRelationLinkDescriptorsFromArtifactTypeId(int artTypeid, int branchId, final int revision) throws SQLException {
       Collection<IRelationLinkDescriptor> relationsTypes = new LinkedList<IRelationLinkDescriptor>();
       String sql =
@@ -130,15 +116,7 @@ public class SkynetArtifactAdapter {
 
    private Collection<ArtifactSubtypeDescriptor> getArtifactTypeDescriptorsFromRelationLinkId(int relationLinkId, int branchId, int revision) throws SQLException {
       Collection<ArtifactSubtypeDescriptor> descriptors = new LinkedList<ArtifactSubtypeDescriptor>();
-
-      String sql =
-            skynetSql.getMetaDataSql().getArtifactTypesWithRelationTypesById("rel_link_type_id",
-                  Integer.toString(relationLinkId), branchId, revision);
-      try {
-         Query.acquireCollection(descriptors, sql, new ArtifactSubtypeProcessor(branchManager.getDefaultBranch()));
-      } catch (SQLException ex) {
-         ex.printStackTrace();
-      }
+      // TODO this method should just ask the ConfigurationPersistenceManager and return the result
       return descriptors;
    }
 
@@ -156,7 +134,7 @@ public class SkynetArtifactAdapter {
          parentRelationName = "";
       }
       try {
-         attributeTypes = getAttributeTypesFromArtifactTypeId(artTypeid, branchId, revision);
+         attributeTypes = ConfigurationPersistenceManager.getInstance().getAttributeTypesFromArtifactType(artifactType);
          relationsTypes = getIRelationLinkDescriptorsFromArtifactTypeId(artTypeid, branchId, revision);
       } catch (SQLException ex) {
          ex.printStackTrace();

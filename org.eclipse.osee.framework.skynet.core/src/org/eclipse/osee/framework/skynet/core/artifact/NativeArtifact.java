@@ -18,7 +18,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
@@ -83,9 +82,7 @@ public class NativeArtifact extends Artifact {
    public Artifact duplicate(Branch branch) {
       NativeArtifact newArtifact = null;
       try {
-         ArtifactSubtypeDescriptor newDescriptor = getDescriptor(branch);
-
-         newArtifact = (NativeArtifact) newDescriptor.makeNewArtifact();
+         newArtifact = (NativeArtifact) getDescriptor().makeNewArtifact(branch);
          duplicateAttributes(newArtifact);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);

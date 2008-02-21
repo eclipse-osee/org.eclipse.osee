@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
  * Defines the necessary methods for being an artifact factory.
  * 
  * @author Robert A. Fisher
+ * @author Ryan D. Brooks
  */
 public interface IArtifactFactory {
 
@@ -29,9 +30,9 @@ public interface IArtifactFactory {
 
    public abstract void deCache(Artifact artifact);
 
-   public abstract Artifact makeNewArtifact(ArtifactSubtypeDescriptor descriptor) throws SQLException;
+   public abstract Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor descriptor) throws SQLException;
 
-   public abstract Artifact makeNewArtifact(ArtifactSubtypeDescriptor descriptor, String guid, String humandReadableId) throws SQLException;
+   public abstract Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor descriptor, String guid, String humandReadableId) throws SQLException;
 
    public abstract Artifact getArtifact(int artId, String guid, String humandReadableId, String factoryKey, Branch tag, TransactionId transactionId) throws SQLException;
 

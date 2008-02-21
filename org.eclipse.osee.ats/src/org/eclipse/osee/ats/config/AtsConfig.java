@@ -132,8 +132,8 @@ public class AtsConfig {
       Artifact rootArt = null;
       try {
          rootArt =
-               (Artifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName,
-                     BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+               (Artifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName).makeNewArtifact(
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          rootArt.setDescriptiveName(name);
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

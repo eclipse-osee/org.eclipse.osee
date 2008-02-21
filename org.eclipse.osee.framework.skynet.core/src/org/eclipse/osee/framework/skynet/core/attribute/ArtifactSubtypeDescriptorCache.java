@@ -10,18 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.db.Query;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
+import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
+import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
+import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
 
 /**
  * Caches artifact subtype descriptors.
@@ -30,140 +30,107 @@ import org.eclipse.osee.framework.ui.plugin.util.db.Query;
  * @author Robert A. Fisher
  */
 public class ArtifactSubtypeDescriptorCache {
-	private static final TransactionIdManager transactionIdManager = TransactionIdManager
-			.getInstance();
-	private final HashCollection<TransactionId, ArtifactSubtypeDescriptor> allDescriptors;
-	private final DoubleKeyHashMap<String, TransactionId, ArtifactSubtypeDescriptor> nameToDescriptors;
-	private final DoubleKeyHashMap<Integer, TransactionId, ArtifactSubtypeDescriptor> idToDescriptors;
+   private static final String SELECT_ARTIFACT_TYPES =
+         "SELECT * FROM osee_define_artifact_type aty1, osee_define_factory fac2 WHERE aty1.factory_id = fac2.factory_id ORDER BY aty1.namespace, aty1.name";
 
-	private static final String SELECT_ARTIFACT_TYPES = "SELECT * FROM osee_define_artifact_type aty1, osee_define_factory fac2, osee_define_txs txs3 WHERE aty1.factory_id = fac2.factory_id AND aty1.gamma_id = txs3.gamma_id AND txs3.transaction_id = (SELECT MAX(txs4.transaction_id) FROM osee_define_txs txs4, osee_define_tx_details txd5 WHERE txs4.gamma_id = aty1.gamma_id AND txs4.transaction_id <= ? AND txs4.transaction_id = txd5.transaction_id AND txd5.branch_id = ?) ORDER BY aty1.name";
+   private final DoubleKeyHashMap<String, String, ArtifactSubtypeDescriptor> nameToartifactTypeMap;
+   private final HashMap<Integer, ArtifactSubtypeDescriptor> idToartifactTypeMap;
 
-	protected ArtifactSubtypeDescriptorCache() {
-		this.allDescriptors = new HashCollection<TransactionId, ArtifactSubtypeDescriptor>(
-				false, LinkedHashSet.class);
-		this.nameToDescriptors = new DoubleKeyHashMap<String, TransactionId, ArtifactSubtypeDescriptor>();
-		this.idToDescriptors = new DoubleKeyHashMap<Integer, TransactionId, ArtifactSubtypeDescriptor>();
-	}
+   protected ArtifactSubtypeDescriptorCache() {
+      this.nameToartifactTypeMap = new DoubleKeyHashMap<String, String, ArtifactSubtypeDescriptor>();
+      this.idToartifactTypeMap = new HashMap<Integer, ArtifactSubtypeDescriptor>();
+   }
 
-	private synchronized void checkPopulated(TransactionId transactionId)
-			throws SQLException {
-		if (!allDescriptors.containsKey(transactionId)) {
-			populateCache(transactionId);
-		}
-	}
+   private synchronized void ensurePopulated() throws SQLException {
+      if (idToartifactTypeMap.size() == 0) {
+         populateCache();
+      }
+   }
 
-	private void populateCache(TransactionId transactionId) throws SQLException {
-		Collection<ArtifactSubtypeDescriptor> descriptors = new LinkedList<ArtifactSubtypeDescriptor>();
-		Query.acquireCollection(descriptors, new ArtifactSubtypeProcessor(
-				transactionId), SELECT_ARTIFACT_TYPES, SQL3DataType.INTEGER,
-				transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-				transactionId.getBranch().getBranchId());
+   private void populateCache() throws SQLException {
+      ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+      ConnectionHandlerStatement chStmt = null;
 
-		for (ArtifactSubtypeDescriptor descriptor : descriptors) {
-			cache(descriptor);
-		}
-	}
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_TYPES);
 
-	/**
-	 * @return Returns all of the descriptors.
-	 * @throws SQLException
-	 */
-	public Collection<ArtifactSubtypeDescriptor> getAllDescriptors(Branch branch)
-			throws SQLException {
-		TransactionId transactionId = transactionIdManager
-				.getEditableTransactionId(branch);
+         ResultSet rSet = chStmt.getRset();
+         while (rSet.next()) {
+            try {
+               IArtifactFactory factory = configurationManager.getFactoryFromName(rSet.getString("factory_class"));
+               new ArtifactSubtypeDescriptor(this, rSet.getInt("art_type_id"), rSet.getString("factory_key"), factory,
+                     rSet.getString("namespace"), rSet.getString("name"), new InputStreamImageDescriptor(
+                           rSet.getBinaryStream("image")));
+            } catch (IllegalStateException ex) {
+               SkynetActivator.getLogger().log(Level.WARNING, ex.getLocalizedMessage(), ex);
+            }
+         }
+      } finally {
+         DbUtil.close(chStmt);
+      }
+   }
 
-		return getAllDescriptors(transactionId);
-	}
+   /**
+    * @return Returns all of the descriptors.
+    * @throws SQLException
+    */
+   @Deprecated
+   // should use ArtifactTypeValidityCache
+   public Collection<ArtifactSubtypeDescriptor> getAllDescriptors() throws SQLException {
+      ensurePopulated();
+      return idToartifactTypeMap.values();
+   }
 
-	/**
-	 * @return Returns the descriptor with a particular name, null if it does
-	 *         not exist.
-	 * @throws SQLException
-	 */
-	public ArtifactSubtypeDescriptor getDescriptor(String name, Branch branch)
-			throws SQLException {
-		return getDescriptor(name, transactionIdManager
-				.getEditableTransactionId(branch));
-	}
+   /**
+    * @return Returns all artifact types with a given namespace
+    * @throws SQLException
+    */
+   public Collection<ArtifactSubtypeDescriptor> getDescriptors(String namespace) throws SQLException {
+      ensurePopulated();
+      return nameToartifactTypeMap.get(namespace);
+   }
 
-	/**
-	 * @return Returns the descriptor with a particular name, null if it does
-	 *         not exist.
-	 * @throws SQLException
-	 */
-	public ArtifactSubtypeDescriptor getDescriptor(int artTypeId, Branch branch)
-			throws SQLException {
-		TransactionId transactionId = transactionIdManager
-				.getEditableTransactionId(branch);
+   /**
+    * @return Returns the descriptor with a particular namespace and name, null if it does not exist.
+    * @throws SQLException
+    */
+   public ArtifactSubtypeDescriptor getDescriptor(String namespace, String name) throws SQLException {
+      ensurePopulated();
+      return nameToartifactTypeMap.get(namespace, name);
+   }
 
-		return getDescriptor(artTypeId, transactionId);
-	}
+   /**
+    * @return Returns the descriptor with a particular name (uses null for namespace), null if it does not exist.
+    * @throws SQLException
+    */
+   public ArtifactSubtypeDescriptor getDescriptor(String name) throws SQLException {
+      ensurePopulated();
+      return nameToartifactTypeMap.get(null, name);
+   }
 
-	/**
-	 * @return Returns all of the descriptors.
-	 * @throws SQLException
-	 */
-	public Set<ArtifactSubtypeDescriptor> getAllDescriptors(
-			TransactionId transactionId) throws SQLException {
-		checkPopulated(transactionId);
-		return (Set<ArtifactSubtypeDescriptor>) allDescriptors
-				.getValues(transactionId);
-	}
+   /**
+    * @return Returns the descriptor with a particular name, null if it does not exist.
+    * @throws SQLException
+    */
+   public ArtifactSubtypeDescriptor getDescriptor(int artTypeId) throws SQLException {
+      ensurePopulated();
 
-	/**
-	 * @return Returns the descriptor with a particular name, null if it does
-	 *         not exist.
-	 * @throws SQLException
-	 */
-	public ArtifactSubtypeDescriptor getDescriptor(String name,
-			TransactionId transactionId) throws SQLException {
-		checkPopulated(transactionId);
-		return nameToDescriptors.get(name, transactionId);
-	}
+      ArtifactSubtypeDescriptor artifactSubtypeDescriptor = idToartifactTypeMap.get(artTypeId);
 
-	/**
-	 * @return Returns the descriptor with a particular name, null if it does
-	 *         not exist.
-	 * @throws SQLException
-	 */
-	public ArtifactSubtypeDescriptor getDescriptor(int artTypeId,
-			TransactionId transactionId) throws SQLException {
-		checkPopulated(transactionId);
+      if (artifactSubtypeDescriptor == null) {
+         throw new IllegalArgumentException("Atrifact type: " + artTypeId + " is not available.");
+      }
+      return artifactSubtypeDescriptor;
+   }
 
-		ArtifactSubtypeDescriptor artifactSubtypeDescriptor = idToDescriptors
-				.get(artTypeId, transactionId);
-
-		if (artifactSubtypeDescriptor == null) {
-			throw new IllegalArgumentException("Atrifact type: " + artTypeId
-					+ " is not available for transaction: " + transactionId);
-		}
-		return artifactSubtypeDescriptor;
-	}
-
-	/**
-	 * Cache a newly created descriptor.
-	 * 
-	 * @param descriptor
-	 *            The descriptor to cache
-	 * @throws IllegalArgumentException
-	 *             if descriptor is null.
-	 */
-	public void cache(ArtifactSubtypeDescriptor descriptor) {
-		if (descriptor == null) {
-			throw new IllegalArgumentException(
-					"The descriptor parameter can not be null");
-		}
-
-		if (nameToDescriptors.containsKey(descriptor.getName(), descriptor
-				.getTransactionId())) {
-			System.out.println("bad");
-		}
-
-		allDescriptors.put(descriptor.getTransactionId(), descriptor);
-		nameToDescriptors.put(descriptor.getName(), descriptor
-				.getTransactionId(), descriptor);
-		idToDescriptors.put(descriptor.getArtTypeId(), descriptor
-				.getTransactionId(), descriptor);
-	}
+   /**
+    * Cache a newly created descriptor.
+    * 
+    * @param descriptor The descriptor to cache
+    * @throws IllegalArgumentException if descriptor is null.
+    */
+   public void cache(ArtifactSubtypeDescriptor descriptor) {
+      nameToartifactTypeMap.put(descriptor.getNamespace(), descriptor.getName(), descriptor);
+      idToartifactTypeMap.put(descriptor.getArtTypeId(), descriptor);
+   }
 }

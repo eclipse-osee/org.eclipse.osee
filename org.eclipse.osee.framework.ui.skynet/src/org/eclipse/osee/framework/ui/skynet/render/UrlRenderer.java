@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -39,7 +38,7 @@ public class UrlRenderer extends Renderer {
       try {
          descriptors =
                configurationPersistenceManager.getArtifactSubtypeDescriptorsForAttribute(configurationPersistenceManager.getDynamicAttributeType(
-                     "Content URL", BranchPersistenceManager.getInstance().getCommonBranch()));
+                     "Content URL"));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, "", ex);
       }

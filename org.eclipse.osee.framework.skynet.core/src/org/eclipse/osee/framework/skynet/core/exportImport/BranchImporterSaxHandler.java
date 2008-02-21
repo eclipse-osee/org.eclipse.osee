@@ -247,7 +247,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          currentArtifactId = Query.getNextSeqVal(null, ART_ID_SEQ);
 
          ArtifactSubtypeDescriptor artifactType =
-               configurationManager.getArtifactSubtypeDescriptor(type, curBranch.peek());
+               configurationManager.getArtifactSubtypeDescriptor(type);
          if (artifactType == null) {
             logger.log(Level.WARNING, "The artifact type " + type + " was not found for artifact " + guid);
             currentArtifactId = null;
@@ -290,7 +290,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
                attributeGuid);
       }
 
-      int attrTypeId = configurationManager.getDynamicAttributeType(attributeType, curBranch.peek()).getAttrTypeId();
+      int attrTypeId = configurationManager.getDynamicAttributeType(attributeType).getAttrTypeId();
       int gammaId = Query.getNextSeqVal(null, GAMMA_ID_SEQ);
       ModificationType modificationType = getModType(modified, deleted);
 

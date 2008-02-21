@@ -61,11 +61,10 @@ public class EveryoneGroup extends Group {
          if (searchResults != null && searchResults.size() != 0) {
             everyoneGroup = searchResults.iterator().next();
          } else {
-            ArtifactSubtypeDescriptor descriptor =
-                  configurationManager.getArtifactSubtypeDescriptor("User Group", branchManager.getCommonBranch());
+            ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor("User Group");
 
             if (descriptor != null) {
-               everyoneGroup = descriptor.makeNewArtifact();
+               everyoneGroup = descriptor.makeNewArtifact(branchManager.getCommonBranch());
                everyoneGroup.setDescriptiveName(GROUP_NAME);
 
                boolean wasNotInDbInit = !SkynetDbInit.isDbInit();

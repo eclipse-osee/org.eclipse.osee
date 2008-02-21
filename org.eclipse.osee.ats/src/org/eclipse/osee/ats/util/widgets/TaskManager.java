@@ -73,7 +73,7 @@ public class TaskManager {
       TaskArtifact taskArt = null;
       taskArt =
             (TaskArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  TaskArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+                  TaskArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getInstance().getAtsBranch());
       taskArt.getLog().addLog(LogType.Originated, "", "");
       taskArt.setDescriptiveName(title);
 

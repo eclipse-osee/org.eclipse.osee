@@ -91,13 +91,12 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                   "Hydraulics", "Navigation", "Backup", "Accuracy", "Propulsion", "Unknown"};
 
       Branch programBranch = branchManager.getKeyedBranch(branchName);
-      ArtifactSubtypeDescriptor descriptor =
-            configurationManager.getArtifactSubtypeDescriptor("Component", programBranch);
-      Artifact sawProduct = descriptor.makeNewArtifact();
+      ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor("Component");
+      Artifact sawProduct = descriptor.makeNewArtifact(programBranch);
       sawProduct.setDescriptiveName("SAW Product Decomposition");
 
       for (String subsystem : subsystems) {
-         Artifact artifact = descriptor.makeNewArtifact();
+         Artifact artifact = descriptor.makeNewArtifact(programBranch);
          artifact.setDescriptiveName(subsystem);
          sawProduct.addChild(artifact);
       }
@@ -106,23 +105,23 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
             ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch, true);
       programRoot.addChild(sawProduct);
 
-      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder", programBranch);
-      systemReq = descriptor.makeNewArtifact();
+      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
+      systemReq = descriptor.makeNewArtifact(programBranch);
       systemReq.setDescriptiveName("System Requirements");
       programRoot.addChild(systemReq);
 
-      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder", programBranch);
-      Artifact subsystem = descriptor.makeNewArtifact();
+      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
+      Artifact subsystem = descriptor.makeNewArtifact(programBranch);
       subsystem.setDescriptiveName("Subsystem Requirements");
       programRoot.addChild(subsystem);
 
-      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder", programBranch);
-      Artifact software = descriptor.makeNewArtifact();
+      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
+      Artifact software = descriptor.makeNewArtifact(programBranch);
       software.setDescriptiveName("Software Requirements");
       programRoot.addChild(software);
 
-      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder", programBranch);
-      Artifact hardware = descriptor.makeNewArtifact();
+      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
+      Artifact hardware = descriptor.makeNewArtifact(programBranch);
       hardware.setDescriptiveName("Hardware Requirements");
       programRoot.addChild(hardware);
 
@@ -147,7 +146,8 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
             SawBuilds.SAW_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+                     VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          ver.setDescriptiveName(verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleBooleanAttributeValue(
@@ -161,7 +161,8 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
             CISBuilds.CIS_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+                     VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          ver.setDescriptiveName(verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleBooleanAttributeValue(

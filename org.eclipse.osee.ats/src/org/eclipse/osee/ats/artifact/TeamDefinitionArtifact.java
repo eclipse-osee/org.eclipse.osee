@@ -60,7 +60,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       TeamDefinitionArtifact tda = null;
       tda =
             (TeamDefinitionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  TeamDefinitionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+                  TeamDefinitionArtifact.ARTIFACT_NAME).makeNewArtifact(
+                  BranchPersistenceManager.getInstance().getAtsBranch());
       tda.setDescriptiveName(name);
       tda.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       tda.setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
@@ -289,7 +290,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       try {
          VersionArtifact versionArt =
                (VersionArtifact) configurationPersistenceManager.getArtifactSubtypeDescriptor(
-                     VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+                     VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          versionArt.setDescriptiveName(name);
          versionArt.persistAttributes();
 

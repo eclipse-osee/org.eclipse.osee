@@ -112,7 +112,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       protected void handleTxWork() throws Exception {
          VersionArtifact ver =
                (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     VersionArtifact.ARTIFACT_NAME, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
+                     VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
+                     BranchPersistenceManager.getInstance().getAtsBranch());
          ver.setDescriptiveName(newVersionName);
          teamDefHoldingVersions.relate(RelationSide.TeamDefinitionToVersion_Version, ver);
          ver.persistAttributesAndLinks();

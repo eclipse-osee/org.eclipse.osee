@@ -24,7 +24,7 @@ public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
          ConfigurationPersistenceManager.getInstance();
    private final ArrayList<RoughArtifact> roughArtifacts;
    private final ArrayList<RoughRelation> roughRelations;
-   protected final Branch branch;
+   private final Branch branch;
 
    public AbstractArtifactExtractor(Branch branch) {
       super();
@@ -81,5 +81,12 @@ public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
 
    public void addRoughRelation(RoughRelation roughRelation) {
       roughRelations.add(roughRelation);
+   }
+
+   /**
+    * @return the branch
+    */
+   public Branch getBranch() {
+      return branch;
    }
 }

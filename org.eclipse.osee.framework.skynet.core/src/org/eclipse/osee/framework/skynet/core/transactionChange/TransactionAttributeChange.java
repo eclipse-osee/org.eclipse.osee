@@ -7,7 +7,6 @@ package org.eclipse.osee.framework.skynet.core.transactionChange;
 
 import java.io.InputStream;
 import java.sql.SQLException;
-
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
@@ -32,37 +31,36 @@ public class TransactionAttributeChange extends TransactionChange {
    private DynamicAttributeDescriptor dynamicAttributeDescriptor;
 
    /**
- * @param transactionType
- * @param changeType
- * @param toTransactionId
- * @param fromTransactionId
- * @param attrId
- * @param sourceGammaId
- * @param sourceValue
- * @param sourceContent
- * @param destGammaId
- * @param destValue
- * @param destContent
- * @param attrTypeId
- */
-public TransactionAttributeChange(TransactionType transactionType, ChangeType changeType, int attrId, int sourceGammaId, String sourceValue, InputStream sourceContent, int destGammaId,
-		String destValue, InputStream destContent, int attrTypeId, Branch sourceBranch) {
-	
-	super(transactionType, changeType, null, null);
-	this.attrId = attrId;
-	this.sourceGammaId = sourceGammaId;
-	this.sourceValue = sourceValue;
-	this.sourceContent = sourceContent;
-	this.destGammaId = destGammaId;
-	this.destValue = destValue;
-	this.destContent = destContent;
-	this.attrTypeId = attrTypeId;
-	this.sourceBranch = sourceBranch;
-}
-
-/* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transactionChange.TransactionChange#getImage()
+    * @param transactionType
+    * @param changeType
+    * @param toTransactionId
+    * @param fromTransactionId
+    * @param attrId
+    * @param sourceGammaId
+    * @param sourceValue
+    * @param sourceContent
+    * @param destGammaId
+    * @param destValue
+    * @param destContent
+    * @param attrTypeId
     */
+   public TransactionAttributeChange(TransactionType transactionType, ChangeType changeType, int attrId, int sourceGammaId, String sourceValue, InputStream sourceContent, int destGammaId, String destValue, InputStream destContent, int attrTypeId, Branch sourceBranch) {
+
+      super(transactionType, changeType, null, null);
+      this.attrId = attrId;
+      this.sourceGammaId = sourceGammaId;
+      this.sourceValue = sourceValue;
+      this.sourceContent = sourceContent;
+      this.destGammaId = destGammaId;
+      this.destValue = destValue;
+      this.destContent = destContent;
+      this.attrTypeId = attrTypeId;
+      this.sourceBranch = sourceBranch;
+   }
+
+   /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.skynet.core.transactionChange.TransactionChange#getImage()
+       */
    @Override
    public Image getImage() {
       return null;
@@ -125,21 +123,21 @@ public TransactionAttributeChange(TransactionType transactionType, ChangeType ch
       return null;
    }
 
-/**
- * @return the dynamicAttributeDescriptor
- */
-public int getAttrTypeID() {
-	return attrTypeId;
-}
+   /**
+    * @return the dynamicAttributeDescriptor
+    */
+   public int getAttrTypeID() {
+      return attrTypeId;
+   }
 
-/**
- * @return the dynamicAttributeDescriptor
- * @throws SQLException 
- */
-public DynamicAttributeDescriptor getDynamicAttributeDescriptor() throws SQLException {
-	if(dynamicAttributeDescriptor == null){
-		dynamicAttributeDescriptor = ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attrTypeId, sourceBranch);
-	}
-	return dynamicAttributeDescriptor;
-}
+   /**
+    * @return the dynamicAttributeDescriptor
+    * @throws SQLException
+    */
+   public DynamicAttributeDescriptor getDynamicAttributeDescriptor() throws SQLException {
+      if (dynamicAttributeDescriptor == null) {
+         dynamicAttributeDescriptor = ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attrTypeId);
+      }
+      return dynamicAttributeDescriptor;
+   }
 }

@@ -17,11 +17,13 @@ import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlEvent;
@@ -298,13 +300,12 @@ public class RelationExplorerWindow {
             if (artifact == null) {
                if (descriptor != null) {
                   try {
-                     artifact = descriptor.makeNewArtifact();
+                     artifact = descriptor.makeNewArtifact(BranchPersistenceManager.getInstance().getDefaultBranch());
                      artifact.setSoleAttributeValue("Name", model.getName());
                      artifact.setSoleAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
                      artifact.persistAttributes();
                   } catch (SQLException ex) {
-                     AWorkbench.popup("ERROR", ex.getLocalizedMessage());
-                     SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                     OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                   }
                }
             } else
