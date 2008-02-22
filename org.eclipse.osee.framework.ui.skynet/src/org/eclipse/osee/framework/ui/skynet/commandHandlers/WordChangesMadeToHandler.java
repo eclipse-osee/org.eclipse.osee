@@ -51,19 +51,22 @@ public class WordChangesMadeToHandler extends AbstractSelectionChangedHandler {
    public Object execute(ExecutionEvent event) throws ExecutionException {
       ArtifactChange selectedArtifactChange = mySelectedArtifactChangeList.get(0);
       try {
-         Artifact firstArtifact =
-               selectedArtifactChange.getModType() == NEW ? null : myArtifactPersistenceManager.getArtifactFromId(
-                     selectedArtifactChange.getArtifact().getArtId(), selectedArtifactChange.getBaselineTransactionId());
-         Artifact secondArtifact =
-               selectedArtifactChange.getModType() == DELETE ? null : myArtifactPersistenceManager.getArtifactFromId(
-                     selectedArtifactChange.getArtifact().getArtId(), selectedArtifactChange.getToTransactionId());
-         RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
-
+         execute(selectedArtifactChange);
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, false);
       }
 
       return null;
+   }
+
+   public void execute(ArtifactChange artifactChange) throws Exception {
+      Artifact firstArtifact =
+            artifactChange.getModType() == NEW ? null : myArtifactPersistenceManager.getArtifactFromId(
+                  artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
+      Artifact secondArtifact =
+            artifactChange.getModType() == DELETE ? null : myArtifactPersistenceManager.getArtifactFromId(
+                  artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId());
+      RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
    }
 
    @Override
