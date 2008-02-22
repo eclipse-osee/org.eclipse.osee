@@ -256,4 +256,32 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       return this;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
+    */
+   public String getWorldViewReviewAuthor() {
+      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Author));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
+    */
+   public String getWorldViewReviewDecider() {
+      return "";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
+    */
+   public String getWorldViewReviewModerator() {
+      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Moderator));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
+    */
+   public String getWorldViewReviewReviewer() {
+      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Reviewer));
+   }
+
 }

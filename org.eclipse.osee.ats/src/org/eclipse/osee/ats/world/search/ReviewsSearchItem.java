@@ -27,19 +27,18 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 
 /**
+ * Returns all reviews that user had a role in
+ * 
  * @author Donald G. Dunne
  */
-public class MyReviewWorkflowItem extends UserSearchItem {
+public class ReviewsSearchItem extends UserSearchItem {
 
-   private final ReviewState reviewState;
+   public ReviewsSearchItem(String name) {
+      this(name, null);
+   }
 
-   public enum ReviewState {
-      InWork, All
-   };
-
-   public MyReviewWorkflowItem(String name, User user, ReviewState reviewState) {
+   public ReviewsSearchItem(String name, User user) {
       super(name, user);
-      this.reviewState = reviewState;
    }
 
    @Override
@@ -47,14 +46,8 @@ public class MyReviewWorkflowItem extends UserSearchItem {
 
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
-      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
+      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.ROLE_ATTRIBUTE.getStoreName(),
             "<" + user.getUserId() + ">", Operator.CONTAINS));
-      if (reviewState == ReviewState.All) {
-         currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-               "<" + user.getUserId() + ">", Operator.CONTAINS));
-         currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.ROLE_ATTRIBUTE.getStoreName(),
-               "userId>" + user.getUserId() + "</userId", Operator.CONTAINS));
-      }
       FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
 
       // Find all Team Workflows artifact types

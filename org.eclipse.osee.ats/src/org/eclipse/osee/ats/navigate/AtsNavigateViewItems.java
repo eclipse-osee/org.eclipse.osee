@@ -62,6 +62,7 @@ import org.eclipse.osee.ats.world.search.UnReleasedTeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
+import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
@@ -108,7 +109,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", skynetAuth.getAuthenticatedUser())));
       items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites",
             skynetAuth.getAuthenticatedUser())));
-      items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", skynetAuth.getAuthenticatedUser())));
+      items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", skynetAuth.getAuthenticatedUser(),
+            ReviewState.InWork)));
 
       items.add(new VisitedItems(null));
 
@@ -124,6 +126,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - All", skynetAuth.getAuthenticatedUser(),
             false));
       new SearchNavigateItem(otherItems, new MyCompletedSearchItem("My Completed", skynetAuth.getAuthenticatedUser()));
+      new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("My Reviews - All",
+            skynetAuth.getAuthenticatedUser(), ReviewState.All));
       items.add(otherItems);
 
       otherItems = new XNavigateItem(null, "Other User Searches");
@@ -136,7 +140,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new SearchNavigateItem(otherItems, new MyCompletedSearchItem("User's Completed"));
       new SearchNavigateItem(otherItems, new MyFavoritesSearchItem("User's Favorites"));
       new SearchNavigateItem(otherItems, new MySubscribedSearchItem("User's Subscribed"));
-      new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews"));
+      new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - InWork", null, ReviewState.InWork));
+      new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - All", null, ReviewState.All));
       items.add(otherItems);
 
       items.add(new SearchNavigateItem(null, new GroupWorldSearchItem()));

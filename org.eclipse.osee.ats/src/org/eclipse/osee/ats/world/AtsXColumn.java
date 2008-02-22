@@ -96,6 +96,14 @@ public enum AtsXColumn {
 
    Implementor_Col("Implementer", 80, SWT.LEFT, false, SortDataType.String, false, "User assigned to the Implementation of the changes."),
 
+   Review_Author_Col("Review Author", 100, SWT.LEFT, false, SortDataType.String, false, "Review Author(s)"),
+
+   Review_Moderator_Col("Review Moderator", 100, SWT.LEFT, false, SortDataType.String, false, "Review Moderator(s)"),
+
+   Review_Reviewer_Col("Review Reviewer", 100, SWT.LEFT, false, SortDataType.String, false, "Review Reviewer(s)"),
+
+   Review_Decider_Col("Review Decider", 100, SWT.LEFT, false, SortDataType.String, false, "Review Decider"),
+
    Completed_Date_Col("Completed Date", 80, SWT.CENTER, false, SortDataType.Date, false),
 
    Cancelled_Date_Col("Cancelled Date", 80, SWT.CENTER, false, SortDataType.Date, false),

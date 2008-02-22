@@ -1330,4 +1330,33 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public int getWorldViewPercentRework() {
       return 0;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
+    */
+   public String getWorldViewReviewAuthor() {
+      return "";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
+    */
+   public String getWorldViewReviewDecider() {
+      return "";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
+    */
+   public String getWorldViewReviewModerator() {
+      return "";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
+    */
+   public String getWorldViewReviewReviewer() {
+      return "";
+   }
+
 }

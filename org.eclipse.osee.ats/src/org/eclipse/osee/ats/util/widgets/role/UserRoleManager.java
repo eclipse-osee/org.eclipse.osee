@@ -70,6 +70,13 @@ public class UserRoleManager {
       return roles;
    }
 
+   public Set<User> getRoleUsers(Role role) {
+      Set<User> users = new HashSet<User>();
+      for (UserRole uRole : getUserRoles())
+         if (uRole.getRole() == role) users.add(uRole.getUser());
+      return users;
+   }
+
    private void saveRoleItems(Set<UserRole> defectItems, boolean persist) {
       try {
          StringBuffer sb = new StringBuffer("<" + ATS_DEFECT_TAG + ">");

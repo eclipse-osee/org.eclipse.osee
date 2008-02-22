@@ -992,4 +992,33 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    public SMAManager getSmaMgr() {
       return smaMgr;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
+    */
+   public String getWorldViewReviewAuthor() {
+      return "";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
+    */
+   public String getWorldViewReviewDecider() {
+      return "";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
+    */
+   public String getWorldViewReviewModerator() {
+      return "";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
+    */
+   public String getWorldViewReviewReviewer() {
+      return "";
+   }
+
 }

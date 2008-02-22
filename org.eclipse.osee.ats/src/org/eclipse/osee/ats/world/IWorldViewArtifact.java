@@ -114,6 +114,14 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewImplementer();
 
+   public String getWorldViewReviewAuthor();
+
+   public String getWorldViewReviewModerator();
+
+   public String getWorldViewReviewReviewer();
+
+   public String getWorldViewReviewDecider();
+
    public String getWorldViewVersion();
 
    public String getWorldViewID();
