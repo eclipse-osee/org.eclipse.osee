@@ -195,6 +195,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
             "Show Workflows Waiting " + PeerToPeerReviewArtifact.ARTIFACT_NAME + "s",
             Arrays.asList(new String[] {PeerToPeerReviewArtifact.ARTIFACT_NAME}), false, true));
       new NewPeerToPeerReviewItem(reviewItem);
+      new GenerateReviewParticipationReport(reviewItem);
       items.add(reviewItem);
 
       XNavigateItem stateItems = new XNavigateItem(null, "States");

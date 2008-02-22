@@ -857,11 +857,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       if (guid == null)
          twa =
                (TeamWorkFlowArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     artifactName).makeNewArtifact(BranchPersistenceManager.getInstance().getAtsBranch());
+                     artifactName, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact();
       else
          twa =
                (TeamWorkFlowArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     artifactName).makeNewArtifact(BranchPersistenceManager.getInstance().getAtsBranch(), guid, hrid);
+                     artifactName, BranchPersistenceManager.getInstance().getAtsBranch()).makeNewArtifact(guid, hrid);
       setArtifactIdentifyData(this, twa);
 
       twa.getLog().addLog(LogType.Originated, "", "");
