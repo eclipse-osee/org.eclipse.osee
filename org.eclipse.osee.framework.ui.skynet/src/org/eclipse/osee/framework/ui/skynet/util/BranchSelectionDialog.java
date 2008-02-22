@@ -11,18 +11,19 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchContentProvider;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -109,8 +110,7 @@ public class BranchSelectionDialog extends MessageDialog {
 
    private Branch getSelectedBranch() {
       IStructuredSelection sel = (IStructuredSelection) oseeFilteredTree.getViewer().getSelection();
-      if (!sel.isEmpty() && (((JobbedNode) sel.getFirstElement()).getBackingData() instanceof Branch)) selected =
-            (Branch) ((JobbedNode) sel.getFirstElement()).getBackingData();
+      if (!sel.isEmpty() && (sel.getFirstElement() instanceof Branch)) selected = (Branch) sel.getFirstElement();
       return selected;
    }
 
@@ -125,6 +125,7 @@ public class BranchSelectionDialog extends MessageDialog {
          AWorkbench.popup("ERROR", "Must make selection.");
          return;
       }
+      oseeFilteredTree.getViewer().getTree().dispose();
       super.okPressed();
    }
 
@@ -158,4 +159,47 @@ public class BranchSelectionDialog extends MessageDialog {
       this.selected = selected;
    }
 
+   private class BranchContentProvider implements ITreeContentProvider {
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+       */
+      public Object[] getChildren(Object parentElement) {
+         return null;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+       */
+      public Object getParent(Object element) {
+         return null;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+       */
+      public boolean hasChildren(Object element) {
+         return false;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+       */
+      public Object[] getElements(Object inputElement) {
+         return ((Collection<?>) inputElement).toArray();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+       */
+      public void dispose() {
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+       */
+      public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+      }
+
+   }
 }
