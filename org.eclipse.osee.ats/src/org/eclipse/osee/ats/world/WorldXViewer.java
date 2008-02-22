@@ -749,18 +749,20 @@ public class WorldXViewer extends XViewer {
          AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
          WorldArtifactItem wai = ((WorldArtifactItem) treeItem.getData());
          Artifact useArt = wai.getArtifact();
-         SMAManager smaMgr = new SMAManager((StateMachineArtifact) useArt);
-         boolean modified = false;
-         if (useArt instanceof ActionArtifact) {
-            if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1)
-               useArt = (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next());
-            else
-               return false;
-         } else if (aCol == AtsXColumn.Priority_Col) modified = smaMgr.promptChangePriority(true);
-         if (aCol == AtsXColumn.Change_Type_Col) modified = smaMgr.promptChangeType(true);
-         if (modified) {
-            update(wai, null);
-            return true;
+         if (useArt instanceof StateMachineArtifact) {
+            SMAManager smaMgr = new SMAManager((StateMachineArtifact) useArt);
+            boolean modified = false;
+            if (useArt instanceof ActionArtifact) {
+               if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1)
+                  useArt = (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next());
+               else
+                  return false;
+            } else if (aCol == AtsXColumn.Priority_Col) modified = smaMgr.promptChangePriority(true);
+            if (aCol == AtsXColumn.Change_Type_Col) modified = smaMgr.promptChangeType(true);
+            if (modified) {
+               update(wai, null);
+               return true;
+            }
          }
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
