@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchContentProvider;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -387,6 +388,41 @@ public class BranchManager {
          return new Result("Commit Branch Failed" + ex.getLocalizedMessage());
       }
       return Result.TrueResult;
+   }
+
+   public ArtifactChange getArtifactChange(String artifactName) throws Exception {
+      for (ArtifactChange artChange : getArtifactChanges()) {
+         if (artChange.getName().equals(artifactName)) return artChange;
+      }
+      return null;
+   }
+
+   public Collection<ArtifactChange> getArtifactChanges() throws Exception {
+      ArrayList<ArtifactChange> artChanges = new ArrayList<ArtifactChange>();
+      if (smaMgr.getBranchMgr().isWorkingBranch()) {
+         Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
+         if (workingBranch != null) {
+            try {
+               for (Object obj : BranchContentProvider.getArtifactChanges(new ChangeReportInput(workingBranch))) {
+                  if (obj instanceof ArtifactChange) artChanges.add((ArtifactChange) obj);
+               }
+            } catch (SQLException ex) {
+               OSEELog.logSevere(AtsPlugin.class, "Error getting branch artifact changes", true);
+            }
+         }
+      } else if (smaMgr.getBranchMgr().isCommittedBranch()) {
+         TransactionId transactionId = getTransactionId();
+         if (transactionId != null) {
+            try {
+               for (Object obj : BranchContentProvider.getArtifactChanges(new ChangeReportInput("", transactionId))) {
+                  if (obj instanceof ArtifactChange) artChanges.add((ArtifactChange) obj);
+               }
+            } catch (SQLException ex) {
+               OSEELog.logSevere(AtsPlugin.class, "Error getting transaction artifact changes", true);
+            }
+         }
+      }
+      return artChanges;
    }
 
    /**
