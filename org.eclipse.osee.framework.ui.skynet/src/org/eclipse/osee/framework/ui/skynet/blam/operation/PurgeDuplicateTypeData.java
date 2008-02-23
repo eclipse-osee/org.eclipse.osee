@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -32,11 +33,13 @@ public class PurgeDuplicateTypeData extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      for (ArtifactSubtypeDescriptor artifactType : configurationManager.getArtifactSubtypeDescriptors()) {
+      for (ArtifactSubtypeDescriptor artifactType : new HashSet<ArtifactSubtypeDescriptor>(
+            configurationManager.getArtifactSubtypeDescriptors())) {
          purgeArtifactTypeAndGammas(artifactType.getName());
       }
 
-      for (DynamicAttributeDescriptor attributeType : configurationManager.getDynamicAttributeDescriptors(null)) {
+      for (DynamicAttributeDescriptor attributeType : new HashSet<DynamicAttributeDescriptor>(
+            configurationManager.getDynamicAttributeDescriptors(null))) {
          purgeAttributeTypeAndGammas(attributeType.getName());
       }
    }
