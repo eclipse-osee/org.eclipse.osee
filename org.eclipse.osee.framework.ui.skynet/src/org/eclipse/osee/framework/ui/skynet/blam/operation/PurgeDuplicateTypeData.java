@@ -95,12 +95,11 @@ public class PurgeDuplicateTypeData extends AbstractBlam {
    }
 
    private void eliminateAttributeTypeAndGamma(int oldAttributeTypeId, int newAttributeTypeId, int oldGammaId, int newGammaId) throws SQLException {
+      updateGamma(oldGammaId, newGammaId);
+
       ConnectionHandler.runPreparedUpdate(
             "UPDATE osee_define_valid_attributes set attr_type_id = ? where attr_type_id = ?", SQL3DataType.INTEGER,
             newAttributeTypeId, SQL3DataType.INTEGER, oldAttributeTypeId);
-
-      ConnectionHandler.runPreparedUpdate("UPDATE osee_define_txs set gamma_id = ? where gamma_id = ?",
-            SQL3DataType.INTEGER, newGammaId, SQL3DataType.INTEGER, oldGammaId);
 
       ConnectionHandler.runPreparedUpdate("UPDATE osee_define_attribute set attr_type_id = ? where attr_type_id = ?",
             SQL3DataType.INTEGER, newAttributeTypeId, SQL3DataType.INTEGER, oldAttributeTypeId);
@@ -109,7 +108,15 @@ public class PurgeDuplicateTypeData extends AbstractBlam {
             SQL3DataType.INTEGER, oldAttributeTypeId);
    }
 
+   private void updateGamma(int oldGammaId, int newGammaId) throws SQLException {
+      ConnectionHandler.runPreparedUpdate(
+            "UPDATE osee_define_txs txs1 set gamma_id = ? where gamma_id = ? and not exists (select 'x' from osee_define_txs txs2 where txs1.transaction_id = txs2.transaction_id and txs2.gamma_id = ?)",
+            SQL3DataType.INTEGER, newGammaId, SQL3DataType.INTEGER, oldGammaId, SQL3DataType.INTEGER, newGammaId);
+   }
+
    private void eliminateArtifactTypeAndGamma(int oldArtifactTypeId, int newArtifactTypeId, int oldGammaId, int newGammaId) throws SQLException {
+      updateGamma(oldGammaId, newGammaId);
+
       ConnectionHandler.runPreparedUpdate(
             "UPDATE osee_define_valid_relations set art_type_id = ? where art_type_id = ?", SQL3DataType.INTEGER,
             newArtifactTypeId, SQL3DataType.INTEGER, oldArtifactTypeId);
@@ -117,9 +124,6 @@ public class PurgeDuplicateTypeData extends AbstractBlam {
       ConnectionHandler.runPreparedUpdate(
             "UPDATE osee_define_valid_attributes set art_type_id = ? where art_type_id = ?", SQL3DataType.INTEGER,
             newArtifactTypeId, SQL3DataType.INTEGER, oldArtifactTypeId);
-
-      ConnectionHandler.runPreparedUpdate("UPDATE osee_define_txs set gamma_id = ? where gamma_id = ?",
-            SQL3DataType.INTEGER, newGammaId, SQL3DataType.INTEGER, oldGammaId);
 
       ConnectionHandler.runPreparedUpdate("UPDATE osee_define_artifact set art_type_id = ? where art_type_id = ?",
             SQL3DataType.INTEGER, newArtifactTypeId, SQL3DataType.INTEGER, oldArtifactTypeId);

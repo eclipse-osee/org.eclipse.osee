@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.artifact;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -306,19 +307,23 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     */
    public String getWorldViewImplementer() {
       try {
-         SMAState state = null;
-         if (getCurrentStateName().equals(INWORK_STATE)) {
-            state = getCurrentState();
-         } else {
-            state = getStateDam().getState(INWORK_STATE, false);
-         }
-         if (state != null) {
-            return Artifacts.commaArts(state.getAssignees());
-         }
-         return "";
+         return Artifacts.commaArts(getImplementers());
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
+   }
+
+   public Collection<User> getImplementers() {
+      SMAState state = null;
+      if (getCurrentStateName().equals(INWORK_STATE)) {
+         state = getCurrentState();
+      } else {
+         state = getStateDam().getState(INWORK_STATE, false);
+      }
+      if (state != null) {
+         return state.getAssignees();
+      }
+      return Collections.emptyList();
    }
 
    /*

@@ -36,11 +36,20 @@ public final class Artifacts {
       // This constructor is private because there is no reason to instantiate this class
    }
 
-   public static String commaArts(Collection<? extends Artifact> arts) {
+   public static String commaArts(Collection<? extends Artifact> artifacts) {
+      return toTextList(artifacts, ", ");
+   }
+
+   public static String toTextList(Collection<? extends Artifact> artifacts, String separator) {
       StringBuilder sb = new StringBuilder();
-      for (Artifact art : arts)
-         sb.append(art.getDescriptiveName() + ", ");
-      return sb.toString().replaceFirst(", $", "");
+      for (Artifact art : artifacts) {
+         sb.append(art.getDescriptiveName());
+         sb.append(separator);
+      }
+      if (sb.length() > separator.length()) {
+         return sb.substring(0, sb.length() - separator.length());
+      }
+      return "";
    }
 
    public static Collection<String> artNames(Collection<? extends Artifact> arts) {
