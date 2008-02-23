@@ -89,6 +89,9 @@ public enum RelationSide implements IRelationEnumeration {
 
    ALLOCATION__REQUIREMENT(true, "Allocation"),
    ALLOCATION__COMPONENT(false, "Allocation"),
+   Validation__Requirement(true, "Validation"),
+   Validation__Validator(false, "Validation"),
+
    TestConfigurationRelation_TestScript(true, "Test Configuration Relation"),
    TestConfigurationRelation_TestConfiguration(false, "Test Configuration Relation"),
    RunByRelation_User(true, "Run By Relation"),
