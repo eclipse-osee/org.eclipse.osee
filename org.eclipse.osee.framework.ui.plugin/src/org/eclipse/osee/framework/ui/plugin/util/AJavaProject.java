@@ -15,8 +15,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -30,7 +33,18 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class AJavaProject {
 
-   // public static URL[] getClasspathAsURLArray(IJavaProject javaProject) {
+   private static Map<IJavaProject, IClasspathEntry[]> cachedPath = new HashMap<IJavaProject, IClasspathEntry[]>();
+
+   
+   private static IClasspathEntry[] localGetResolvedClasspath(IJavaProject javaProject) throws JavaModelException {
+	   IClasspathEntry[] paths = cachedPath.get(javaProject);
+       if(paths == null){
+      	 paths = javaProject.getResolvedClasspath(true);
+      	 cachedPath.put(javaProject, paths);
+       }
+       return paths;
+   }
+// public static URL[] getClasspathAsURLArray(IJavaProject javaProject) {
    // if (javaProject == null)
    // return null;
    // Set visited = new HashSet();
@@ -65,7 +79,9 @@ public class AJavaProject {
       IJavaProject javaProject = getJavaProject(new File(file));
       //ArrayList<File> urls = new ArrayList<File>();
       try {
-         IClasspathEntry[] paths = javaProject.getResolvedClasspath(true);
+    	 
+         IClasspathEntry[] paths = localGetResolvedClasspath(javaProject);
+         
          for (int i = 0; i < paths.length; i++) {
             if (paths[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
                File projectlocation = javaProject.getProject().getLocation().toFile();
@@ -115,7 +131,7 @@ public class AJavaProject {
       IJavaProject javaProject = getJavaProject(new File(file));
       //ArrayList<File> urls = new ArrayList<File>();
       try {
-         IClasspathEntry[] paths = javaProject.getResolvedClasspath(true);
+    	  IClasspathEntry[] paths = localGetResolvedClasspath(javaProject);
          for (int i = 0; i < paths.length; i++) {
             if (paths[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
                File projectlocation = javaProject.getProject().getLocation().toFile();
@@ -180,7 +196,7 @@ public class AJavaProject {
    public static ArrayList<File> getJavaProjectProjectDependancies(IJavaProject javaProject) {
       ArrayList<File> urls = new ArrayList<File>();
       try {
-         IClasspathEntry[] paths = javaProject.getResolvedClasspath(true);
+         IClasspathEntry[] paths = localGetResolvedClasspath(javaProject);
          for (int i = 0; i < paths.length; i++) {
             if (paths[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
                if (paths[i].getPath().toFile().exists()) {
