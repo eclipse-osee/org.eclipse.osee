@@ -48,9 +48,10 @@ public class ClassServer extends Thread {
       socketThreads = Executors.newCachedThreadPool(new ThreadFactory(){
 		@Override
 		public Thread newThread(Runnable arg0) {
-			return new Thread("ClassServer Task");
+			Thread th = new Thread(arg0, "ClassServer Task");
+			th.setDaemon(true);
+			return th;
 		}
-    	  
       });
       hostName = new URL("http://" + address.getHostAddress() + ":" + port + "/");
 
@@ -75,7 +76,7 @@ public class ClassServer extends Thread {
 
       logger.log(Level.INFO, msg, new Object[0]);
       try {
-         while (!server.isClosed()) {
+         while (true) {
         	Socket socket = server.accept();
         	socketThreads.submit(new Task(socket));
          }
@@ -154,13 +155,13 @@ public class ClassServer extends Thread {
       return hostName;
    }
 
-   private class Task implements Runnable {
+   private class Task implements Runnable {// Thread {
 
       private Socket sock;
 
       public Task(Socket sock) {
          this.sock = sock;
-         setDaemon(true);
+//         setDaemon(true);
       }
 
       /**
