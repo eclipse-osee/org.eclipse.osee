@@ -39,7 +39,7 @@ public abstract class AbstractSelectionChangedHandler extends AbstractHandler {
       }
    }
    
-   protected void addlistener() {
+   private void addlistener() {
 		if (!PlatformUI.getWorkbench().isClosing()) {
 			viewerMenuDetectListener = new ViewerMenuDetectListener();
 			IWorkbenchPart workbenchPart = AWorkbench.getActivePage()

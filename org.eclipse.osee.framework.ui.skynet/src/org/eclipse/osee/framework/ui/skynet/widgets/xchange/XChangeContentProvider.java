@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
-import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 
 public class XChangeContentProvider implements ITreeContentProvider {
 
@@ -27,20 +24,12 @@ public class XChangeContentProvider implements ITreeContentProvider {
       this.changeXViewer = commitXViewer;
    }
 
-   @SuppressWarnings("unchecked")
-   public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof Object[]) {
-         return (Object[]) parentElement;
-      }
-      if (parentElement instanceof Collection) {
-         return ((Collection) parentElement).toArray();
-      }
-      if (parentElement instanceof Branch) {
-         try {
-            return ((Branch) parentElement).getChildBranches().toArray();
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         }
+   public Object[] getChildren(Object parentElement) {      
+	   if (parentElement instanceof Object[]) {
+       return (Object[]) parentElement;
+   }
+      if(parentElement instanceof TransactionArtifactChange){
+    	  return ((TransactionArtifactChange)parentElement).getAttributeChanges().toArray();
       }
       return EMPTY_ARRAY;
    }

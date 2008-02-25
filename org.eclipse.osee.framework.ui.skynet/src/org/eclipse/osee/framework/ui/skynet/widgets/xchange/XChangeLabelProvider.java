@@ -11,11 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.sql.SQLException;
+
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
+import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionAttributeChange;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -37,16 +39,28 @@ public class XChangeLabelProvider implements ITableLabelProvider {
          else
             return "";
       }
-      Branch branch = ((Branch) element);
-      if (branch == null) return "";
-      XViewerColumn xCol = changeXViewer.getXTreeColumn(columnIndex);
-      if (xCol != null) {
-         ChangeColumn aCol = ChangeColumn.getAtsXColumn(xCol);
-         try {
-            return getColumnText(element, columnIndex, branch, xCol, aCol);
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         }
+      try{
+		if (element instanceof TransactionArtifactChange) {
+			if (columnIndex == 0) {
+				return ((TransactionArtifactChange) element).getArtifact()
+						.getDescriptiveName();
+			}
+		}
+
+		if (element instanceof TransactionAttributeChange) {
+			TransactionAttributeChange attributeChange = (TransactionAttributeChange) element;
+			if (columnIndex == 0) {
+				return attributeChange.getDynamicAttributeDescriptor().getName();
+			} else if (columnIndex == 1) {
+				return attributeChange.getSourceValue() != null? attributeChange.getSourceValue():"Stream data";
+			} else if (columnIndex == 2)
+				return attributeChange.getDestValue() != null? attributeChange.getDestValue():"Stream data";
+			else if (columnIndex == 3)
+				return "Merge";
+
+		}
+      }catch(SQLException exception){
+    	  
       }
       return "";
    }

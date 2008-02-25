@@ -14,24 +14,20 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -50,14 +46,13 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XChangeViewer extends XWidget implements IEventReceiver, IDamWidget {
+public class XChangeViewer extends XWidget implements IEventReceiver {
 
    private ChangeXViewer xChangeViewer;
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
-   private Artifact artifact;
-
+   private TransactionArtifactChange[] transactionArtifactChanges;
    /**
     * @param label
     */
@@ -149,10 +144,10 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IDamWidget
       item.setToolTipText("Show Change Report");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            if (xChangeViewer.getWorkingBranch() != null)
-               ChangeReportView.openViewUpon(xChangeViewer.getWorkingBranch());
-            else
-               AWorkbench.popup("ERROR", "Not implemented yet.");
+//            if (xChangeViewer.getWorkingBranch() != null)
+//               ChangeReportView.openViewUpon(xChangeViewer.getWorkingBranch());
+//            else
+//               AWorkbench.popup("ERROR", "Not implemented yet.");
          }
       });
 
@@ -181,12 +176,12 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IDamWidget
    }
 
    public void loadTable() {
-      try {
-         if (artifact != null && (artifact instanceof IBranchArtifact)) xChangeViewer.setWorkingBranch(((IBranchArtifact) artifact).getWorkingBranch());
-         extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
+//      try {
+//         if (artifact != null && (artifact instanceof IBranchArtifact)) xChangeViewer.setWorkingBranch(((IBranchArtifact) artifact).getWorkingBranch());
+//         extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
+//      } catch (Exception ex) {
+//         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+//      }
       refresh();
    }
 
@@ -306,9 +301,10 @@ public class XChangeViewer extends XWidget implements IEventReceiver, IDamWidget
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
     */
-   public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException, SQLException {
-      this.artifact = artifact;
-      loadTable();
+   public void setArtifact(TransactionArtifactChange[] transactionArtifactChanges) throws IllegalStateException, SQLException {
+	      this.transactionArtifactChanges = transactionArtifactChanges;
+	      loadTable();
+	      xChangeViewer.setWorkingBranch(transactionArtifactChanges);
    }
 
 }
