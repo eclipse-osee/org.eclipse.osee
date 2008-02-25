@@ -10,20 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Ryan D. Brooks
  */
 public class EditChangeListener implements IResourceChangeListener {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(EditChangeListener.class);
    private IResourceDeltaVisitor visitor;
 
    public EditChangeListener(IFolder workingFolder) {
@@ -40,10 +38,10 @@ public class EditChangeListener implements IResourceChangeListener {
          try {
             event.getDelta().accept(visitor);
          } catch (CoreException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       } else {
-         logger.log(Level.SEVERE, "unexpected event type: " + event.getType());
+         OSEELog.logException(SkynetGuiPlugin.class, null, true);
       }
    }
 }

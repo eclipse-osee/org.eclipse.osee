@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -113,6 +115,8 @@ public abstract class FileSystemRenderer extends Renderer {
 
          case EDIT:
             if (workingFolder == null || !workingFolder.exists()) {
+               OSEELog.logInfo(SkynetGuiPlugin.class, "Created edit change listener", true);
+
                workingFolder = OseeData.getFolder(".working");
                // Set the visitor to this directory
                IResourceChangeListener listener = new EditChangeListener(workingFolder);
