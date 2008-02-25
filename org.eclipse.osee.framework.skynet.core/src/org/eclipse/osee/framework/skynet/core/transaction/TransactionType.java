@@ -64,13 +64,13 @@ public enum TransactionType {
 
 	      switch (transactionType.getId()) {
 	         case -1:
-	        	 modificationType = modificationType.NEW;
+	        	 modificationType = ModificationType.NEW;
 	            break;
 	         case -2:
-	        	 modificationType = modificationType.CHANGE;
+	        	 modificationType = ModificationType.CHANGE;
 	            break;
 	         case -3:
-	        	 modificationType = modificationType.DELETE;
+	        	 modificationType = ModificationType.DELETE;
 	            break;
 	         default:
 	            break;
