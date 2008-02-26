@@ -54,8 +54,8 @@ public abstract class XStateAssigneesDam extends XTextDam {
             }
          }
          if (create) return new SMAState(stateName);
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, "Error parsing state data for " + sma.getHumanReadableId(), ex, false);
       }
       return null;
    }
@@ -68,23 +68,27 @@ public abstract class XStateAssigneesDam extends XTextDam {
             state.setFromXml(attr.getStringData());
             states.add(state);
          }
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, "Error parsing state data for " + sma.getHumanReadableId(), ex, false);
       }
       return states;
    }
 
    public void setState(SMAState state) throws IllegalStateException, SQLException {
       // Update attribute if it already exists
-      for (Attribute attr : getDam().getAttributes()) {
-         SMAState storedState = new SMAState();
-         storedState.setFromXml(attr.getStringData());
-         if (state.getName().equals(storedState.getName())) {
-            attr.setStringData(state.toXml());
-            return;
+      try {
+         for (Attribute attr : getDam().getAttributes()) {
+            SMAState storedState = new SMAState();
+            storedState.setFromXml(attr.getStringData());
+            if (state.getName().equals(storedState.getName())) {
+               attr.setStringData(state.toXml());
+               return;
+            }
          }
+         // Else, doesn't exist yet, create
+         getDam().getNewAttribute().setStringData(state.toXml());
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, "Error setting state data for " + sma.getHumanReadableId(), ex, false);
       }
-      // Else, doesn't exist yet, create
-      getDam().getNewAttribute().setStringData(state.toXml());
    }
 }

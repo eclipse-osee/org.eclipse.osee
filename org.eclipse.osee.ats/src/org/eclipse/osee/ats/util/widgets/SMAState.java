@@ -10,16 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class SMAState {
    private String name;
@@ -143,7 +140,7 @@ public class SMAState {
    public static Pattern storagePattern = Pattern.compile("^(.*?);(.*?);(.*?);(.*?)$");
    public static Pattern userPattern = Pattern.compile("<(.*?)>");
 
-   public void setFromXml(String xml) {
+   public void setFromXml(String xml) throws Exception {
       if (xml.equals("")) {
          name = "Unknown";
          return;
@@ -155,15 +152,13 @@ public class SMAState {
          if (!m.group(4).equals("")) percentComplete = new Integer(m.group(4)).intValue();
          m = userPattern.matcher(m.group(2));
          while (m.find()) {
-            try {
-               User u = SkynetAuthentication.getInstance().getUserByIdWithError(m.group(1));
-               if (u == null)
-                  throw new IllegalArgumentException("Can't retrieve user => " + m.group(1));
-               else
-                  assignees.add(u);
-            } catch (SQLException ex) {
-               OSEELog.logException(AtsPlugin.class, ex, false);
-            }
+            String userId = m.group(1);
+            if (userId == null || userId.equals("")) throw new IllegalArgumentException("Blank userId specified.");
+            User u = SkynetAuthentication.getInstance().getUserByIdWithError(m.group(1));
+            if (u == null)
+               throw new IllegalArgumentException("Can't retrieve user => " + m.group(1));
+            else
+               assignees.add(u);
          }
       } else
          throw new IllegalArgumentException("Can't unpack state data => " + xml);

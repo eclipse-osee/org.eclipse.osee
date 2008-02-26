@@ -259,7 +259,7 @@ public class SkynetAuthentication implements PersistenceManager {
                      Level.WARNING,
                      "Duplicate User userId: \"" + userId + "\" with the name: \"" + duplicate.getDescriptiveName() + "\"");
             }
-            throw new IllegalStateException(String.format("User \"%s\" (%s) in DB more than once",
+            throw new IllegalStateException(String.format("User name: \"%s\" userId: \"%s\" in DB more than once",
                   users.iterator().next().getDescriptiveName(), userId));
          } else {
             // Note this is normal for the creation of this user (i.e. db init)
