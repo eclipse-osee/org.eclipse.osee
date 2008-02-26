@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.swt.SWT;
@@ -22,12 +21,15 @@ import org.eclipse.swt.SWT;
  */
 public enum MergeColumn {
 
-	Conflict_Resolved("", 25, SWT.LEFT, true, SortDataType.String, false),
-	   
+   // Need empty column cause of how certain operating systems handle the first column of a table
+   Empty("", 0, SWT.LEFT, true, SortDataType.String, false),
+
+   Conflict_Resolved("Conflict Resolved", 25, SWT.LEFT, true, SortDataType.String, false),
+
    Artifact_Name("Artifact", 250, SWT.LEFT, true, SortDataType.String, false),
 
    Change_Item("Change Item", 200, SWT.LEFT, true, SortDataType.String, false),
-   
+
    Source("Source", 100, SWT.LEFT, true, SortDataType.String, false),
 
    Destination("Destination", 100, SWT.LEFT, true, SortDataType.String, false),
