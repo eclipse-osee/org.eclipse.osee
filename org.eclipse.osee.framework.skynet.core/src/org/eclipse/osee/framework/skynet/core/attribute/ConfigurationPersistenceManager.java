@@ -342,10 +342,6 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return cacheArtifactSubtypeDescriptors.getDescriptor(name);
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getArtifactSubtypeDescriptors(String namespace) throws SQLException {
-      return cacheArtifactSubtypeDescriptors.getDescriptors(namespace);
-   }
-
    @Deprecated
    public Collection<ArtifactSubtypeDescriptor> getArtifactSubtypeDescriptors() throws SQLException {
       return cacheArtifactSubtypeDescriptors.getAllDescriptors();

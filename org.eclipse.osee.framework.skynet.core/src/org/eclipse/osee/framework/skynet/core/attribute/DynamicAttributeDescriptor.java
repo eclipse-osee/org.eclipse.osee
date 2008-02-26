@@ -57,7 +57,7 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
 
       this.attrTypeId = attrTypeId;
       this.baseAttributeClass = baseAttributeClass;
-      this.namespace = namespace;
+      this.namespace = namespace == null ? "" : namespace;
       this.name = name;
       this.defaultValue = defaultValue;
       this.validityXml = validityXml;

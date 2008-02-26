@@ -31,7 +31,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.jdk.core.persistence.Unique;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.PersistenceMemo;
 import org.eclipse.osee.framework.jdk.core.util.PersistenceObject;
@@ -67,7 +66,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 
-public class Artifact implements Unique, PersistenceObject, IAdaptable, Comparable<Artifact> {
+public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artifact> {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";

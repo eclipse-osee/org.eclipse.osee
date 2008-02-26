@@ -92,6 +92,10 @@ public class XWidgetParser {
             dynamicXWidgetLayoutData.setHeight(Integer.parseInt(node.getNodeValue()));
          else if (nodeName.equals("align"))
             dynamicXWidgetLayoutData.setAlign(Align.valueOf(node.getNodeValue()));
+         else if (nodeName.equals("defaultValue"))
+            dynamicXWidgetLayoutData.setDefaultValue(node.getNodeValue());
+         else if (nodeName.equals("keyedBranch"))
+            dynamicXWidgetLayoutData.setKeyedBranchName(node.getNodeValue());
          else {
             OSEELog.logException(SkynetGuiPlugin.class, new Exception(
                   "Unsupported XWidget attribute \"" + nodeName + "\""), false);

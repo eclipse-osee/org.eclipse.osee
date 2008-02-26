@@ -64,9 +64,11 @@ public class XWidgetFactory {
       XWidget xWidget = null;
 
       // Look for widget provider to create widget
-      for (IXWidgetProvider widgetProviders : getXWidgetProviders()) {
-         xWidget = widgetProviders.createXWidget(xWidgetName, name, labelAfter, xWidgetLayoutData);
-         if (xWidget != null) return xWidget;
+      for (IXWidgetProvider widgetProvider : getXWidgetProviders()) {
+         xWidget = widgetProvider.createXWidget(xWidgetName, name, labelAfter, xWidgetLayoutData);
+         if (xWidget != null) {
+            return xWidget;
+         }
       }
 
       // Otherwise, use default widget creation
@@ -134,9 +136,11 @@ public class XWidgetFactory {
       } else if (xWidgetName.startsWith("XListDropViewer")) {
          xWidget = new XListDropViewer(name);
       } else if (xWidgetName.equals("XArtifactTypeListViewer")) {
-         xWidget = new XArtifactTypeListViewer();
+         xWidget =
+               new XArtifactTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
       } else if (xWidgetName.equals("XAttributeTypeListViewer")) {
-         xWidget = new XAttributeTypeListViewer();
+         xWidget =
+               new XAttributeTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
       } else if (xWidgetName.equals("XRelationTypeListViewer")) {
          xWidget = new XRelationTypeListViewer();
       } else if (xWidgetName.equals("XBranchListViewer")) {
@@ -158,7 +162,6 @@ public class XWidgetFactory {
       }
       return xWidget;
    }
-
    private static Set<IXWidgetProvider> widgetProviders;
 
    @SuppressWarnings("deprecation")

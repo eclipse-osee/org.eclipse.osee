@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
@@ -57,9 +56,9 @@ public class ImportTraceabilityJob extends Job {
    private final Matcher scriptReqTraceMatcher;
    private static final Pattern structuredReqNameP = Pattern.compile("\\[?(\\{[^\\}]+\\})(.*)");
    private static final Pattern filePattern = Pattern.compile(".*\\.(java|ada|ads|adb|c|h)");
-   private static final Pattern embeddedVolumePattern = Pattern.compile("\\{\\d+ (.*)\\}");
+   private static final Pattern embeddedVolumePattern = Pattern.compile("\\{\\d+ (.*)\\}[ .]*");
    private static final Pattern invalidTraceMarkPattern = Pattern.compile("(\\[[A-Za-z]|USES_).*");
-   private static final Pattern curlyBracesPattern = Pattern.compile("[{}]");
+   private static final Pattern nonWordPattern = Pattern.compile("[^A-Z0-9]");
 
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private final File file;
@@ -157,21 +156,13 @@ public class ImportTraceabilityJob extends Job {
 
    private String getCanonicalReqName(String reqReference) {
       String canonicalReqReference = reqReference.toUpperCase();
-      if (canonicalReqReference.endsWith(".")) {
-         canonicalReqReference = canonicalReqReference.substring(0, canonicalReqReference.length() - 1);
-      }
 
       Matcher embeddedVolumeMatcher = embeddedVolumePattern.matcher(canonicalReqReference);
       if (embeddedVolumeMatcher.find()) {
          canonicalReqReference = embeddedVolumeMatcher.group(1);
       }
 
-      int lastCurlyBraceIndex = canonicalReqReference.lastIndexOf('}');
-      if (lastCurlyBraceIndex > -1) {
-         canonicalReqReference = canonicalReqReference.substring(0, lastCurlyBraceIndex);
-      }
-
-      canonicalReqReference = curlyBracesPattern.matcher(canonicalReqReference).replaceAll("");
+      canonicalReqReference = nonWordPattern.matcher(canonicalReqReference).replaceAll("");
 
       return canonicalReqReference;
    }
@@ -184,7 +175,7 @@ public class ImportTraceabilityJob extends Job {
 
       pathPrefixLength = directory.getParentFile().getAbsolutePath().length();
 
-      for (File sourceFile : (List<File>) Lib.recursivelyListFiles(directory, filePattern)) {
+      for (File sourceFile : Lib.recursivelyListFiles(directory, filePattern)) {
          CharBuffer buf = Lib.fileToCharBuffer(sourceFile);
          Matcher reqTraceMatcher = getReqTraceMatcher(sourceFile);
          reqTraceMatcher.reset(buf);

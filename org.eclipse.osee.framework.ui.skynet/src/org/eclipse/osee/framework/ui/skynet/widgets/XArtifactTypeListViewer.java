@@ -11,21 +11,32 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
  */
 public class XArtifactTypeListViewer extends XTypeListViewer {
+   private static final ConfigurationPersistenceManager configurationManager =
+         ConfigurationPersistenceManager.getInstance();
    private static final String NAME = "XArtifactTypeListViewer";
-   private BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
 
-   public XArtifactTypeListViewer() {
+   public XArtifactTypeListViewer(String keyedBranchName, String defaultValue) {
       super(NAME);
+
+      try {
+         ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(defaultValue);
+         setSelected(artifactType);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
 
       setContentProvider(new DefaultBranchContentProvider(new ArtifactTypeContentProvider()));
       ArrayList<Object> input = new ArrayList<Object>(1);
-      input.add(branchPersistenceManager.getDefaultBranch());
+      input.add(resolveBranch(keyedBranchName));
 
       setInput(input);
    }

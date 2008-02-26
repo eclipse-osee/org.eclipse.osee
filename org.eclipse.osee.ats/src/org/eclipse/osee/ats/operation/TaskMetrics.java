@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -49,6 +49,7 @@ import org.eclipse.swt.program.Program;
  */
 public class TaskMetrics extends AbstractBlam {
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
+   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private final CountingMap<User> metrics;
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
@@ -66,7 +67,6 @@ public class TaskMetrics extends AbstractBlam {
       monitor.beginTask("TaskMetrics", 5);
       metrics.clear();
 
-      Branch branch = variableMap.getBranch("Branch");
       ArtifactSubtypeDescriptor descriptor = variableMap.getArtifactSubtypeDescriptor("Descriptor");
 
       FromArtifactsSearch teamWorkflowSearch =
@@ -74,7 +74,8 @@ public class TaskMetrics extends AbstractBlam {
       LinkedList<ISearchPrimitive> relatedCriteria = new LinkedList<ISearchPrimitive>();
       relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, RelationSide.SmaToTask_Task));
 
-      Collection<Artifact> artifacts = artifactManager.getArtifacts(relatedCriteria, true, branch);
+      Collection<Artifact> artifacts =
+            artifactManager.getArtifacts(relatedCriteria, true, branchManager.getAtsBranch());
       for (Artifact artifact : artifacts) {
          tallyState((TaskArtifact) artifact);
       }
@@ -129,6 +130,6 @@ public class TaskMetrics extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Descriptor\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Descriptor\" keyedBranch=\"common\" defaultValue=\"LBA B3 Test Team Workflow\" /></xWidgets>";
    }
 }

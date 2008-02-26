@@ -10,25 +10,39 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
  */
 public class XAttributeTypeListViewer extends XTypeListViewer {
    private static final String NAME = "XAttributeTypeListViewer";
-   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
+
+   private static final ConfigurationPersistenceManager configurationManager =
+         ConfigurationPersistenceManager.getInstance();
 
    /**
     * @param name
+    * @throws SQLException
     */
-   public XAttributeTypeListViewer() {
+   public XAttributeTypeListViewer(String keyedBranchName, String defaultValue) {
       super(NAME);
+
+      try {
+         DynamicAttributeDescriptor attributeType = configurationManager.getDynamicAttributeType(defaultValue);
+         setSelected(attributeType);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
 
       setContentProvider(new DefaultBranchContentProvider(new AttributeContentProvider()));
       ArrayList<Object> input = new ArrayList<Object>(1);
-      input.add(branchPersistenceManager.getDefaultBranch());
+      input.add(resolveBranch(keyedBranchName));
 
       setInput(input);
    }

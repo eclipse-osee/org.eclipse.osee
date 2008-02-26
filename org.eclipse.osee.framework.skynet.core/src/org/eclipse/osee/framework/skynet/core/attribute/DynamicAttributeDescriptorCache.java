@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
@@ -32,11 +31,11 @@ public class DynamicAttributeDescriptorCache {
    private static final String SELECT_ATTRIBUTE_TYPES =
          "SELECT * FROM osee_define_attribute_type aty1, osee_define_attr_base_type aby2 WHERE aty1.attr_base_type_id = aby2.attr_base_type_id";
 
-   private final DoubleKeyHashMap<String, String, DynamicAttributeDescriptor> nameToTypeMap;
+   private final HashMap<String, DynamicAttributeDescriptor> nameToTypeMap;
    private final HashMap<Integer, DynamicAttributeDescriptor> idToTypeMap;
 
    protected DynamicAttributeDescriptorCache() {
-      nameToTypeMap = new DoubleKeyHashMap<String, String, DynamicAttributeDescriptor>();
+      nameToTypeMap = new HashMap<String, DynamicAttributeDescriptor>();
       idToTypeMap = new HashMap<Integer, DynamicAttributeDescriptor>();
    }
 
@@ -47,7 +46,6 @@ public class DynamicAttributeDescriptorCache {
    }
 
    private void populateCache() throws SQLException {
-      ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
       ConnectionHandlerStatement chStmt = null;
 
       try {
@@ -92,9 +90,10 @@ public class DynamicAttributeDescriptorCache {
     */
    public DynamicAttributeDescriptor getDescriptor(String namespace, String name) throws SQLException {
       ensurePopulated();
-      DynamicAttributeDescriptor attributeType = nameToTypeMap.get(namespace, name);
+      DynamicAttributeDescriptor attributeType = nameToTypeMap.get(namespace + name);
       if (attributeType == null) {
-         throw new IllegalArgumentException("Attribute type: " + namespace + "." + name + " is not available.");
+         throw new IllegalArgumentException(
+               "Attribute with namespace \"" + namespace + "\" and name \"" + name + "\" is not available.");
       }
       return attributeType;
    }
@@ -117,7 +116,7 @@ public class DynamicAttributeDescriptorCache {
     * @throws SQLException
     */
    public DynamicAttributeDescriptor getDescriptor(String name) throws SQLException {
-      return getDescriptor(null, name);
+      return getDescriptor("", name);
    }
 
    /**
@@ -128,7 +127,7 @@ public class DynamicAttributeDescriptorCache {
     * @throws IllegalArgumentException if descriptor is null.
     */
    public void cache(DynamicAttributeDescriptor descriptor) throws SQLException {
-      nameToTypeMap.put(descriptor.getNamespace(), descriptor.getName(), descriptor);
+      nameToTypeMap.put(descriptor.getNamespace() + descriptor.getName(), descriptor);
       idToTypeMap.put(descriptor.getAttrTypeId(), descriptor);
    }
 }

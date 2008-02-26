@@ -294,7 +294,15 @@ public class XListViewer extends XWidget {
    }
 
    public void setSelected(ArrayList<Object> selected) {
-      listViewer.setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
+      setSelected(new StructuredSelection(selected.toArray(new Object[selected.size()])));
+   }
+
+   public void setSelected(Object selected) {
+      setSelected(new StructuredSelection(selected));
+   }
+
+   private void setSelected(StructuredSelection selection) {
+      listViewer.setSelection(selection);
       updateListWidget();
    }
 

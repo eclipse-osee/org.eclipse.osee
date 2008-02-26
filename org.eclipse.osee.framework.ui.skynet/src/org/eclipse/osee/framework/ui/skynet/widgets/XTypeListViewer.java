@@ -12,12 +12,17 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
  */
 public abstract class XTypeListViewer extends XListViewer {
+   private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
    SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
    public XTypeListViewer(String name) {
@@ -25,5 +30,21 @@ public abstract class XTypeListViewer extends XListViewer {
 
       setLabelProvider(new LabelProvider());
       setSorter(new ViewerSorter());
+   }
+
+   public Branch resolveBranch(String keyedBranchName) {
+      Branch branch = null;
+      try {
+         if (keyedBranchName != null) {
+            branch = branchPersistenceManager.getKeyedBranch(keyedBranchName);
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
+
+      if (branch == null) {
+         branch = branchPersistenceManager.getDefaultBranch();
+      }
+      return branch;
    }
 }

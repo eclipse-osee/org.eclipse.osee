@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
@@ -33,11 +32,11 @@ public class ArtifactSubtypeDescriptorCache {
    private static final String SELECT_ARTIFACT_TYPES =
          "SELECT * FROM osee_define_artifact_type aty1, osee_define_factory fac2 WHERE aty1.factory_id = fac2.factory_id ORDER BY aty1.namespace, aty1.name";
 
-   private final DoubleKeyHashMap<String, String, ArtifactSubtypeDescriptor> nameToartifactTypeMap;
+   private final HashMap<String, ArtifactSubtypeDescriptor> nameToartifactTypeMap;
    private final HashMap<Integer, ArtifactSubtypeDescriptor> idToartifactTypeMap;
 
    protected ArtifactSubtypeDescriptorCache() {
-      this.nameToartifactTypeMap = new DoubleKeyHashMap<String, String, ArtifactSubtypeDescriptor>();
+      this.nameToartifactTypeMap = new HashMap<String, ArtifactSubtypeDescriptor>();
       this.idToartifactTypeMap = new HashMap<Integer, ArtifactSubtypeDescriptor>();
    }
 
@@ -82,21 +81,18 @@ public class ArtifactSubtypeDescriptorCache {
    }
 
    /**
-    * @return Returns all artifact types with a given namespace
-    * @throws SQLException
-    */
-   public Collection<ArtifactSubtypeDescriptor> getDescriptors(String namespace) throws SQLException {
-      ensurePopulated();
-      return nameToartifactTypeMap.get(namespace);
-   }
-
-   /**
-    * @return Returns the descriptor with a particular namespace and name, null if it does not exist.
+    * @return Returns the descriptor with a particular namespace and name
     * @throws SQLException
     */
    public ArtifactSubtypeDescriptor getDescriptor(String namespace, String name) throws SQLException {
       ensurePopulated();
-      return nameToartifactTypeMap.get(namespace, name);
+      ArtifactSubtypeDescriptor artifactType = nameToartifactTypeMap.get(namespace + name);
+
+      if (artifactType == null) {
+         throw new IllegalArgumentException(
+               "Atrifact type with namespace \"" + namespace + "\" and name \"" + name + "\" is not available.");
+      }
+      return artifactType;
    }
 
    /**
@@ -104,8 +100,7 @@ public class ArtifactSubtypeDescriptorCache {
     * @throws SQLException
     */
    public ArtifactSubtypeDescriptor getDescriptor(String name) throws SQLException {
-      ensurePopulated();
-      return nameToartifactTypeMap.get(null, name);
+      return getDescriptor("", name);
    }
 
    /**
@@ -115,12 +110,12 @@ public class ArtifactSubtypeDescriptorCache {
    public ArtifactSubtypeDescriptor getDescriptor(int artTypeId) throws SQLException {
       ensurePopulated();
 
-      ArtifactSubtypeDescriptor artifactSubtypeDescriptor = idToartifactTypeMap.get(artTypeId);
+      ArtifactSubtypeDescriptor artifactType = idToartifactTypeMap.get(artTypeId);
 
-      if (artifactSubtypeDescriptor == null) {
+      if (artifactType == null) {
          throw new IllegalArgumentException("Atrifact type: " + artTypeId + " is not available.");
       }
-      return artifactSubtypeDescriptor;
+      return artifactType;
    }
 
    /**
@@ -130,7 +125,7 @@ public class ArtifactSubtypeDescriptorCache {
     * @throws IllegalArgumentException if descriptor is null.
     */
    public void cache(ArtifactSubtypeDescriptor descriptor) {
-      nameToartifactTypeMap.put(descriptor.getNamespace(), descriptor.getName(), descriptor);
+      nameToartifactTypeMap.put(descriptor.getNamespace() + descriptor.getName(), descriptor);
       idToartifactTypeMap.put(descriptor.getArtTypeId(), descriptor);
    }
 }

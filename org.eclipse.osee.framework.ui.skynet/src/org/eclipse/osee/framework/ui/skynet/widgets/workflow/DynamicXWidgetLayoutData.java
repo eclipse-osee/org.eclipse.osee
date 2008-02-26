@@ -40,6 +40,8 @@ public class DynamicXWidgetLayoutData {
    };
    private Fill fill = Fill.None;
    private final DynamicXWidgetLayout dynamicXWidgetLayout;
+   private String defaultValue;
+   private String keyedBranchName;
 
    public DynamicXWidgetLayoutData(DynamicXWidgetLayout dynamicXWidgetLayout) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -126,6 +128,10 @@ public class DynamicXWidgetLayoutData {
     */
    public void setAlign(Align align) {
       this.align = align;
+   }
+
+   public void setDefaultValue(String defaultValue) {
+      this.defaultValue = defaultValue;
    }
 
    /**
@@ -233,4 +239,24 @@ public class DynamicXWidgetLayoutData {
       return dynamicXWidgetLayout;
    }
 
+   /**
+    * @return the defaultValue
+    */
+   public String getDefaultValue() {
+      return defaultValue;
+   }
+
+   /**
+    * 
+    */
+   public void setKeyedBranchName(String keyedBranchName) {
+      this.keyedBranchName = keyedBranchName;
+   }
+
+   /**
+    * @return the keyedBranchName
+    */
+   public String getKeyedBranchName() {
+      return keyedBranchName;
+   }
 }

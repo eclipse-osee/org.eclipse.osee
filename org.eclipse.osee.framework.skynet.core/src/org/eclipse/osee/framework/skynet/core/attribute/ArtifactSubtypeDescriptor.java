@@ -88,7 +88,7 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
       this.factory = factory;
       this.name = name;
       this.factoryKey = factoryKey == null ? "" : factoryKey;
-      this.namespace = namespace;
+      this.namespace = namespace == null ? "" : namespace;
       this.imageDescriptor = imageDescriptor;
       this.imageRegistry = null;
       artifactTypeCache.cache(this);
@@ -344,8 +344,8 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((name == null) ? 0 : name.hashCode());
-      result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
+      result = prime * result + name.hashCode();
+      result = prime * result + namespace.hashCode();
       return result;
    }
 
