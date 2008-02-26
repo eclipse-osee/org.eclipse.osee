@@ -14,9 +14,9 @@ import java.sql.SQLException;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionAttributeChange;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.conflict.AttributeConflict;
+import org.eclipse.osee.framework.ui.skynet.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.graphics.Font;
@@ -69,22 +69,17 @@ public class XMergeLabelProvider implements ITableLabelProvider {
 		if (!xCol.isShow())
 			return ""; // Since not shown, don't display
 
-		if (element instanceof TransactionArtifactChange) {
-			if (aCol == MergeColumn.Attribute_Name) {
-				return ((TransactionArtifactChange) element).getArtifact()
-						.getDescriptiveName();
-			}
-		}
-
-		if (element instanceof TransactionAttributeChange) {
-			TransactionAttributeChange attributeChange = (TransactionAttributeChange) element;
-			if (aCol == MergeColumn.Attribute_Name) {
+		if (element instanceof AttributeConflict) {
+			AttributeConflict attributeChange = (AttributeConflict) element;
+			if (aCol == MergeColumn.Artifact_Name) {
+				return attributeChange.getArtifact().getDescriptiveName();
+			} else if (aCol == MergeColumn.Change_Item) {
 				return attributeChange.getDynamicAttributeDescriptor().getName();
-			} else if (aCol == MergeColumn.From_Parent_Version) {
-				return attributeChange.getSourceValue() != null? attributeChange.getSourceValue():"Stream data";
-			} else if (aCol == MergeColumn.To_Branch_Version)
-				return attributeChange.getDestValue() != null? attributeChange.getDestValue():"Stream data";
-			else if (aCol == MergeColumn.Merged_Version)
+			} else if (aCol == MergeColumn.Source) {
+				return attributeChange.getSourceDisplayData();
+			} else if (aCol == MergeColumn.Destination)
+				return attributeChange.getDestDisplayData();
+			else if (aCol == MergeColumn.Merged)
 				return "Merge";
 
 		}
@@ -117,13 +112,23 @@ public class XMergeLabelProvider implements ITableLabelProvider {
       MergeColumn dCol = MergeColumn.getAtsXColumn(xCol);
       if (!xCol.isShow()) return null; // Since not shown, don't display
       
-      if(element instanceof TransactionArtifactChange){
-    	  if (dCol == MergeColumn.Attribute_Name) {
-    		  return ((TransactionArtifactChange)element).getImage();
+      if(element instanceof Conflict){
+    	  Conflict conflict = (Conflict)element;
+    	  
+    	  if (dCol == MergeColumn.Artifact_Name) {
+    		  try {
+				return conflict.getArtifactImage();
+			} catch (IllegalArgumentException ex) {
+				OSEELog.logException(XMergeContentProvider.class, ex, true);
+			} catch (SQLException ex) {
+				OSEELog.logException(XMergeContentProvider.class, ex, true);
+			}
+    	  }else if(dCol == MergeColumn.Change_Item){
+    		  return conflict.getImage();
     	  }
       }
       
-      if (dCol == MergeColumn.To_Branch_Version) {
+      if (dCol == MergeColumn.Source) {
 //         return SkynetGuiPlugin.getInstance().getImage("branch.gif");
     	  return null;
       }

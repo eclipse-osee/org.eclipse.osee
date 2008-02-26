@@ -22,10 +22,10 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
@@ -42,7 +42,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
 
    private static String NAMESPACE = "osee.skynet.gui.MergeXViewer";
    private final XMergeViewer xCommitViewer;
-   private TransactionArtifactChange[] transactionArtifactChanges;
+   private Conflict[] transactionArtifactChanges;
 
    /**
     * @param parent
@@ -113,7 +113,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setWorkingBranch(TransactionArtifactChange[] transactionArtifactChanges) throws SQLException {
+   public void setWorkingBranch(Conflict[] transactionArtifactChanges) throws SQLException {
       this.transactionArtifactChanges = transactionArtifactChanges;
 //      Set<Branch> branches = new HashSet<Branch>();
 //      branches.add(workingBranch.getParentBranch());
@@ -189,7 +189,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
 /**
  * @return the transactionArtifactChanges
  */
-public TransactionArtifactChange[] getTransactionArtifactChanges() {
+public Conflict[] getTransactionArtifactChanges() {
 	return transactionArtifactChanges;
 }
 

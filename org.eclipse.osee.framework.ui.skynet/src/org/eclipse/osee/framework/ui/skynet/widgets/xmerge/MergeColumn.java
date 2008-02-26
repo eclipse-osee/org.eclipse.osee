@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.swt.SWT;
@@ -21,13 +22,17 @@ import org.eclipse.swt.SWT;
  */
 public enum MergeColumn {
 
-   Attribute_Name("Attribute", 100, SWT.LEFT, true, SortDataType.String, false),
+	Conflict_Resolved("", 25, SWT.LEFT, true, SortDataType.String, false),
+	   
+   Artifact_Name("Artifact", 250, SWT.LEFT, true, SortDataType.String, false),
 
-   From_Parent_Version("From Branch Version", 200, SWT.LEFT, true, SortDataType.String, false),
+   Change_Item("Change Item", 200, SWT.LEFT, true, SortDataType.String, false),
+   
+   Source("Source", 100, SWT.LEFT, true, SortDataType.String, false),
 
-   To_Branch_Version("To Branch Version", 200, SWT.LEFT, true, SortDataType.String, false),
+   Destination("Destination", 100, SWT.LEFT, true, SortDataType.String, false),
 
-   Merged_Version("Merged", 200, SWT.LEFT, true, SortDataType.String, false);
+   Merged("Merged", 100, SWT.LEFT, true, SortDataType.String, false);
 
    private final String name;
    private final int width;

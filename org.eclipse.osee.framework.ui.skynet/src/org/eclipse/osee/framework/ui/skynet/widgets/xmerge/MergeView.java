@@ -19,12 +19,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
+import org.eclipse.osee.framework.ui.skynet.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -45,7 +45,7 @@ public class MergeView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
    private static String HELP_CONTEXT_ID = "MergeManagerView";
    private XMergeViewer xMergeViewer;
-   private TransactionArtifactChange[] transactionArtifactChanges;
+   private Conflict[] transactionArtifactChanges;
    private static final String INPUT = "MergeViewInput";
 
    /**
@@ -54,7 +54,7 @@ public class MergeView extends ViewPart implements IActionable {
    public MergeView() {
    }
 
-   public static void openViewUpon(final TransactionArtifactChange[] transactionArtifactChanges) {
+   public static void openViewUpon(final Conflict[] transactionArtifactChanges) {
       Job job = new Job("Open Merge View") {
 
          @Override
@@ -127,7 +127,7 @@ public class MergeView extends ViewPart implements IActionable {
 
    }
 
-   public void explore(TransactionArtifactChange[] transactionArtifactChanges) {
+   public void explore(Conflict[] transactionArtifactChanges) {
       this.transactionArtifactChanges = transactionArtifactChanges;
       try {
          if (transactionArtifactChanges != null) xMergeViewer.setBranch(transactionArtifactChanges);

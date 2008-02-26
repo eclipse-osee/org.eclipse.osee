@@ -93,6 +93,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
+import org.eclipse.osee.framework.ui.skynet.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.export.ExportBranchJob;
 import org.eclipse.osee.framework.ui.skynet.export.ImportBranchJob;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -392,7 +393,7 @@ private void createMergeViewCommand(MenuManager menuManager) {
         Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
         try {
            if (selectedBranch != null) {
-        	   TransactionArtifactChange[] transactionArtifactChanges = new TransactionArtifactChange[0];
+        	   Conflict[] transactionArtifactChanges = new Conflict[0];
         	   MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(selectedBranch, selectedBranch.getParentBranch(), TransactionIdManager.getInstance().getStartEndPoint(selectedBranch).getKey()).toArray(transactionArtifactChanges));
            }
         } catch (Exception ex) {

@@ -45,7 +45,8 @@ Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.user,
  org.eclipse.osee.framework.skynet.core.util,
  org.eclipse.osee.framework.skynet.core.utility,
- org.eclipse.osee.framework.skynet.core.word
+ org.eclipse.osee.framework.skynet.core.word,
+ org.eclipse.osee.framework.ui.skynet.conflict
 Bundle-Vendor: Eclipse.org
 Bundle-ClassPath: library.jar
 DynamicImport-Package: *
