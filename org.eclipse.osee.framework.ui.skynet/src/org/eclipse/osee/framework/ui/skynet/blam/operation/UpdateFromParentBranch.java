@@ -16,14 +16,15 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
@@ -56,9 +57,11 @@ public class UpdateFromParentBranch extends AbstractBlam {
       monitor.beginTask("Update From Parent Branch", IProgressMonitor.UNKNOWN);
 
       List<Artifact> artifacts = variableMap.getArtifacts("Parent Branch Artifacts to update to Child Branch");
-      String childBranchName = variableMap.getString("Child Branch Name");
-      Branch childBranch = BranchPersistenceManager.getInstance().getBranch(childBranchName);
+//      String childBranchName = variableMap.getString("Child Branch Name");
+//      Branch childBranch = BranchPersistenceManager.getInstance().getBranch(childBranchName);
 
+      Branch childBranch = variableMap.getBranch("Child Branch Name");
+      
       int baselineTransactionNumber =
             transactionIdManager.getStartEndPoint(childBranch).getKey().getTransactionNumber();
 
