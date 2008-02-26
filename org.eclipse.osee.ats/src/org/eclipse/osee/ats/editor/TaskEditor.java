@@ -303,8 +303,17 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                   return Status.CANCEL_STATUS;
                } else {
                   monitor.done();
-                  return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, "No Tasks Found", null);
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     /* (non-Javadoc)
+                      * @see java.lang.Runnable#run()
+                      */
+                     @Override
+                     public void run() {
+                        AWorkbench.popup("ERROR", "No Tasks Found for \"" + searchItem.getName() + "\"");
+                     }
+                  }, true);
                }
+               return Status.OK_STATUS;
             }
             List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
             for (Artifact artifact : artifacts)
