@@ -1159,7 +1159,7 @@ public final class Lib {
          String jarTitle = attributes.getValue("Implementation-Title");
          String jarVersion = attributes.getValue("Implementation-Version");
          if (jarTitle != null && jarVersion != null && jarTitle.equals(title) && jarVersion.equals(version)) {
-            return jars[i].toURL();
+            return jars[i].toURI().toURL();
          }
       }
       throw new IllegalArgumentException("The specified version: " + version + " for " + title + " was not found.");
@@ -1169,7 +1169,7 @@ public final class Lib {
       String[] strPaths = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
       URL[] urlPaths = new URL[strPaths.length];
       for (int i = 0; i < strPaths.length; i++) {
-         urlPaths[i] = new File(strPaths[i]).toURL();
+         urlPaths[i] = new File(strPaths[i]).toURI().toURL();
       }
       return urlPaths;
    }
