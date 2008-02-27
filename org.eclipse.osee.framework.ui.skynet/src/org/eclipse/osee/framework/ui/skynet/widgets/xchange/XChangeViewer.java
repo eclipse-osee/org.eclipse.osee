@@ -20,11 +20,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -52,7 +52,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
-   private TransactionArtifactChange[] transactionArtifactChanges;
+   private Change[] changes;
    /**
     * @param label
     */
@@ -298,13 +298,10 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
       this.editable = editable;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
-    */
-   public void setArtifact(TransactionArtifactChange[] transactionArtifactChanges) throws IllegalStateException, SQLException {
-	      this.transactionArtifactChanges = transactionArtifactChanges;
+   public void setChanges(Change[] changes) throws IllegalStateException, SQLException {
+	      this.changes = changes;
 	      loadTable();
-	      xChangeViewer.setWorkingBranch(transactionArtifactChanges);
+	      xChangeViewer.setWorkingBranch(changes);
    }
 
 }

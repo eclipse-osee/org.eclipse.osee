@@ -63,6 +63,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
@@ -73,7 +75,6 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -93,7 +94,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
-import org.eclipse.osee.framework.ui.skynet.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.export.ExportBranchJob;
 import org.eclipse.osee.framework.ui.skynet.export.ImportBranchJob;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -412,7 +412,7 @@ private void createMergeViewCommand(MenuManager menuManager) {
 
 private void createChangeViewCommand(MenuManager menuManager) {
     CommandContributionItem accessControlCommand =
-        Commands.getLocalCommandContribution(getSite(), "change2ViewCommand", "Merge View", null, null,
+        Commands.getLocalCommandContribution(getSite(), "change2ViewCommand", "New Change Report View", null, null,
               null, "M", null, null);
   menuManager.add(accessControlCommand);
 
@@ -425,8 +425,8 @@ private void createChangeViewCommand(MenuManager menuManager) {
         Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
         try {
            if (selectedBranch != null) {
-        	   TransactionArtifactChange[] transactionArtifactChanges = new TransactionArtifactChange[0];
-        	   ChangeView.openViewUpon(RevisionManager.getInstance().getArtifactChanges(selectedBranch).toArray(transactionArtifactChanges));
+        	   Change[] changes = new Change[0];
+        	   ChangeView.openViewUpon(RevisionManager.getInstance().getArtifactChanges(selectedBranch).toArray(changes));
            }
         } catch (Exception ex) {
            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);

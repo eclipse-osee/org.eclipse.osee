@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -39,7 +39,7 @@ public class ChangeView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView";
    private static String HELP_CONTEXT_ID = "ChangeView";
    private XChangeViewer xChangeViewer;
-   private TransactionArtifactChange[] transactionArtifactChanges;
+   private Change[] changes;
 
    /**
     * @author Donald G. Dunne
@@ -47,7 +47,7 @@ public class ChangeView extends ViewPart implements IActionable {
    public ChangeView() {
    }
 
-   public static void openViewUpon(final TransactionArtifactChange[] transactionArtifactChanges) {
+   public static void openViewUpon(final Change[] changes) {
       Job job = new Job("Open Change View") {
 
          @Override
@@ -56,15 +56,15 @@ public class ChangeView extends ViewPart implements IActionable {
                public void run() {
                   try {
                 	  
-                	  if(transactionArtifactChanges.length == 0){
+                	  if(changes.length == 0){
                  		 
                 	  } else{
 	                     IWorkbenchPage page = AWorkbench.getActivePage();
 	                     ChangeView commitManagerView =
 	                           (ChangeView) page.showView(VIEW_ID,
-	                                 String.valueOf(transactionArtifactChanges[0].getArtifact().getBranch().getBranchId()),
+	                                 String.valueOf(changes[0].getToTransactionId().getBranch().getBranchId()),
 	                                 IWorkbenchPage.VIEW_ACTIVATE);
-	                     commitManagerView.explore(transactionArtifactChanges);
+	                     commitManagerView.explore(changes);
                 	  }
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -107,7 +107,7 @@ public class ChangeView extends ViewPart implements IActionable {
       xChangeViewer.setDisplayLabel(false);
       xChangeViewer.createWidgets(parent, 1);
       try {
-         if (transactionArtifactChanges != null) xChangeViewer.setArtifact(transactionArtifactChanges);
+         if (changes != null) xChangeViewer.setChanges(changes);
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
@@ -116,11 +116,11 @@ public class ChangeView extends ViewPart implements IActionable {
 
    }
 
-   public void explore(final TransactionArtifactChange[] transactionArtifactChanges) {
-      this.transactionArtifactChanges = transactionArtifactChanges;
+   public void explore(final Change[] changes) {
+      this.changes = changes;
       try {
-         if (xChangeViewer != null && transactionArtifactChanges != null) xChangeViewer.setArtifact(transactionArtifactChanges);
-         setPartName("Commit Manager: " + transactionArtifactChanges[0].getArtifact().getBranch().getBranchShortestName());
+         if (xChangeViewer != null && changes != null) xChangeViewer.setChanges(changes);
+         setPartName("Change Report: " + changes[0].getToTransactionId().getBranch().getBranchShortName());
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
 
 public class XChangeContentProvider implements ITreeContentProvider {
 
@@ -28,9 +27,6 @@ public class XChangeContentProvider implements ITreeContentProvider {
 	   if (parentElement instanceof Object[]) {
        return (Object[]) parentElement;
    }
-      if(parentElement instanceof TransactionArtifactChange){
-    	  return ((TransactionArtifactChange)parentElement).getAttributeChanges().toArray();
-      }
       return EMPTY_ARRAY;
    }
 
@@ -53,5 +49,12 @@ public class XChangeContentProvider implements ITreeContentProvider {
    @SuppressWarnings("unchecked")
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
+
+	/**
+	 * @return the changeXViewer
+	 */
+	public ChangeXViewer getChangeXViewer() {
+		return changeXViewer;
+	}
 
 }

@@ -17,21 +17,18 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
-import org.eclipse.osee.framework.ui.skynet.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
@@ -45,8 +42,7 @@ public class MergeView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
    private static String HELP_CONTEXT_ID = "MergeManagerView";
    private XMergeViewer xMergeViewer;
-   private Conflict[] transactionArtifactChanges;
-   private static final String INPUT = "MergeViewInput";
+   private Conflict[] conflicts;
 
    /**
     * @author Donald G. Dunne
@@ -54,7 +50,7 @@ public class MergeView extends ViewPart implements IActionable {
    public MergeView() {
    }
 
-   public static void openViewUpon(final Conflict[] transactionArtifactChanges) {
+   public static void openViewUpon(final Conflict[] conflicts) {
       Job job = new Job("Open Merge View") {
 
          @Override
@@ -62,12 +58,12 @@ public class MergeView extends ViewPart implements IActionable {
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
                   try {
-                	  if(transactionArtifactChanges.length == 0){
+                	  if(conflicts.length == 0){
                 		 
                 	  } else{
                 		  IWorkbenchPage page = AWorkbench.getActivePage();
-                		  MergeView mergeView = (MergeView)page.showView(MergeView.VIEW_ID, String.valueOf(transactionArtifactChanges[0].getArtifact().getBranch().getBranchId()),IWorkbenchPage.VIEW_ACTIVATE);
-                		  mergeView.explore(transactionArtifactChanges);
+                		  MergeView mergeView = (MergeView)page.showView(MergeView.VIEW_ID, String.valueOf(conflicts[0].getArtifact().getBranch().getBranchId()),IWorkbenchPage.VIEW_ACTIVATE);
+                		  mergeView.explore(conflicts);
                 	  }
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -111,27 +107,27 @@ public class MergeView extends ViewPart implements IActionable {
       xMergeViewer.createWidgets(parent, 1);
       
       try {
-         if (transactionArtifactChanges != null) xMergeViewer.setBranch(transactionArtifactChanges);
+         if (conflicts != null) xMergeViewer.setConflicts(conflicts);
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
-      MenuManager menuManager = new MenuManager();
-      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-      
-      xMergeViewer.getXViewer().getTree().setMenu(menuManager.createContextMenu(xMergeViewer.getXViewer().getTree()));
-      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynetd.widgets.xmerge.MergeView", menuManager, xMergeViewer.getXViewer());
-      
-      getSite().setSelectionProvider(xMergeViewer.getXViewer());
+//      MenuManager menuManager = new MenuManager();
+//      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+//      
+//      xMergeViewer.getXViewer().getTree().setMenu(menuManager.createContextMenu(xMergeViewer.getXViewer().getTree()));
+//      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynetd.widgets.xmerge.MergeView", menuManager, xMergeViewer.getXViewer());
+//      
+//      getSite().setSelectionProvider(xMergeViewer.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
 
    }
 
-   public void explore(Conflict[] transactionArtifactChanges) {
-      this.transactionArtifactChanges = transactionArtifactChanges;
+   public void explore(Conflict[] conflicts) {
+      this.conflicts = conflicts;
       try {
-         if (transactionArtifactChanges != null) xMergeViewer.setBranch(transactionArtifactChanges);
-         setPartName("Commit Manager: " +"");
+         if (conflicts != null) xMergeViewer.setConflicts(conflicts);
+         setPartName("Merge Manager: " +"");
          
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

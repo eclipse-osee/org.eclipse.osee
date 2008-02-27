@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -52,7 +52,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
-   private Conflict[] transactionArtifactChanges;
+   private Conflict[] conflicts;
 
    /**
     * @param label
@@ -302,11 +302,10 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget#setArtifact(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)
     */
-   public void setBranch(Conflict[] transactionArtifactChanges) throws IllegalStateException, SQLException {
-      this.transactionArtifactChanges = transactionArtifactChanges;
+   public void setConflicts(Conflict[] conflicts) throws IllegalStateException, SQLException {
+      this.conflicts = conflicts;
       loadTable();
-      xCommitViewer.setWorkingBranch(transactionArtifactChanges);
+      xCommitViewer.setWorkingBranch(conflicts);
 
    }
-
 }

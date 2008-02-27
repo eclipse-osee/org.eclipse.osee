@@ -19,6 +19,7 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -99,7 +101,6 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
 import org.eclipse.osee.framework.ui.swt.TreeNode;
 import org.eclipse.swt.SWT;
@@ -201,14 +202,14 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       changeTable = new TreeViewer(parent, SWT.FULL_SELECTION | SWT.MULTI);
       changeTable.setContentProvider(new BranchContentProvider());
 
-      try {
-         attributesAction = new ShowAttributeAction(changeTable, SkynetGuiPlugin.CHANGE_REPORT_ATTRIBUTES_PREF);
-         attributesAction.addToView(this, SkynetViews.loadAttrTypesFromPreferenceStore(
-               SkynetGuiPlugin.CHANGE_REPORT_ATTRIBUTES_PREF, baseTransactionId.getBranch()));
-
-      } catch (SQLException ex) {
-         OSEELog.logException(getClass(), ex, false);
-      }
+//      try {
+//         attributesAction = new ShowAttributeAction(changeTable, SkynetGuiPlugin.CHANGE_REPORT_ATTRIBUTES_PREF);
+//         attributesAction.addToView(this, SkynetViews.loadAttrTypesFromPreferenceStore(
+//               SkynetGuiPlugin.CHANGE_REPORT_ATTRIBUTES_PREF, baseTransactionId.getBranch()));
+//
+//      } catch (SQLException ex) {
+//         OSEELog.logException(getClass(), ex, false);
+//      }
 
       changeTable.setLabelProvider(new BranchLabelProvider(attributesAction));
       changeTable.setSorter(new LabelSorter());

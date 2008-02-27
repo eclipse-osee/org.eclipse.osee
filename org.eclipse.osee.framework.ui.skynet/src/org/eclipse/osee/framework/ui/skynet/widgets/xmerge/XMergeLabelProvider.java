@@ -11,11 +11,12 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.sql.SQLException;
+
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.conflict.AttributeConflict;
-import org.eclipse.osee.framework.ui.skynet.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.graphics.Font;
@@ -76,7 +77,9 @@ public class XMergeLabelProvider implements ITableLabelProvider {
             return attributeChange.getSourceDisplayData();
          } else if (aCol == MergeColumn.Destination)
             return attributeChange.getDestDisplayData();
-         else if (aCol == MergeColumn.Merged) return "Merge";
+         else if (aCol == MergeColumn.Merged){ 
+        	 return attributeChange.getArtifact().getSoleAttributeValue(attributeChange.getDynamicAttributeDescriptor().getName());
+        	 }
 
       }
       return "";

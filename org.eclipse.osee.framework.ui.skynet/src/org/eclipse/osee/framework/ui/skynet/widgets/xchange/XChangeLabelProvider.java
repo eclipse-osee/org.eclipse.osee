@@ -15,9 +15,10 @@ import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionAttributeChange;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -40,23 +41,21 @@ public class XChangeLabelProvider implements ITableLabelProvider {
             return "";
       }
       try{
-		if (element instanceof TransactionArtifactChange) {
+		if (element instanceof Change) {
 			if (columnIndex == 0) {
-				return ((TransactionArtifactChange) element).getArtifact()
-						.getDescriptiveName();
+				return ((Change) element).getArtifactName();
 			}
 		}
 
-		if (element instanceof TransactionAttributeChange) {
-			TransactionAttributeChange attributeChange = (TransactionAttributeChange) element;
+		if (element instanceof AttributeChanged) {
+			AttributeChanged attributeChange = (AttributeChanged) element;
 			if (columnIndex == 0) {
-				return attributeChange.getDynamicAttributeDescriptor().getName();
+				return attributeChange.getArtifactName();
 			} else if (columnIndex == 1) {
-				return attributeChange.getSourceValue() != null? attributeChange.getSourceValue():"Stream data";
-			} else if (columnIndex == 2)
-				return attributeChange.getDestValue() != null? attributeChange.getDestValue():"Stream data";
-			else if (columnIndex == 3)
-				return "Merge";
+				return attributeChange.getDynamicAttributeDescriptor().getName();
+			} 
+			else if (columnIndex == 2)
+				return attributeChange.getSourceDisplayData();
 
 		}
       }catch(SQLException exception){
@@ -79,13 +78,12 @@ public class XChangeLabelProvider implements ITableLabelProvider {
     */
    public String getColumnText(Object element, int columnIndex, Branch branch, XViewerColumn xCol, ChangeColumn aCol) throws SQLException {
       if (!xCol.isShow()) return ""; // Since not shown, don't display
-      if (aCol == ChangeColumn.Attribute_Name) {
-         return "Attribute Name here";
-      } else if (aCol == ChangeColumn.From_Parent_Version) {
-         return "From Parent Version";
-      } else if (aCol == ChangeColumn.To_Branch_Version)
-         return "To Branch info";
-      else if (aCol == ChangeColumn.From_Parent_Version) return "From Branch info";
+      if (aCol == ChangeColumn.Artifact_Name) {
+         return "Artifact";
+      } else if (aCol == ChangeColumn.Attribute_Name) {
+         return "Attribute";
+      } else if (aCol == ChangeColumn.Value)
+         return "Value";
       return "Unhandled Column";
    }
 
@@ -114,10 +112,23 @@ public class XChangeLabelProvider implements ITableLabelProvider {
       if (xCol == null) return null;
       ChangeColumn dCol = ChangeColumn.getAtsXColumn(xCol);
       if (!xCol.isShow()) return null; // Since not shown, don't display
-      if (dCol == ChangeColumn.To_Branch_Version) {
-         return SkynetGuiPlugin.getInstance().getImage("branch.gif");
+      
+      if (element instanceof Change) {
+          Change change = (Change) element;
+
+          if (dCol == ChangeColumn.Artifact_Name) {
+             try {
+                return change.getArtifactImage();
+             } catch (IllegalArgumentException ex) {
+                OSEELog.logException(XMergeContentProvider.class, ex, true);
+             } catch (SQLException ex) {
+                OSEELog.logException(XMergeContentProvider.class, ex, true);
+             }
+          } else if (dCol == ChangeColumn.Attribute_Name) {
+             return change.getImage();
+          } 
       }
+      
       return null;
    }
-
 }

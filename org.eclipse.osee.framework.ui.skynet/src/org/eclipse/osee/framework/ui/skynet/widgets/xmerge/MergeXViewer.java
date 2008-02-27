@@ -20,12 +20,12 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
@@ -42,7 +42,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
 
    private static String NAMESPACE = "osee.skynet.gui.MergeXViewer";
    private final XMergeViewer xCommitViewer;
-   private Conflict[] transactionArtifactChanges;
+   private Conflict[] conflicts;
 
    /**
     * @param parent
@@ -113,12 +113,9 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setWorkingBranch(Conflict[] transactionArtifactChanges) throws SQLException {
-      this.transactionArtifactChanges = transactionArtifactChanges;
-//      Set<Branch> branches = new HashSet<Branch>();
-//      branches.add(workingBranch.getParentBranch());
-      setInput(transactionArtifactChanges);
-//      expandAll();
+   public void setWorkingBranch(Conflict[] conflicts) throws SQLException {
+      this.conflicts = conflicts;
+      setInput(conflicts);
    }
 
    /**
@@ -145,8 +142,6 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         // System.out.println("Column " + treeColumn.getText() + " item " +
-         // treeItem);
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          MergeColumn aCol = MergeColumn.getAtsXColumn(xCol);
          Branch userRole = (Branch) treeItem.getData();
@@ -154,7 +149,6 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
          AWorkbench.popup("ERROR", "Not handled");
 
          if (modified) {
-            //            xUserRoleViewer.getReviewArt().getUserRoleManager().addOrUpdateUserRole(userRole, false);
             xCommitViewer.notifyXModifiedListeners();
             update(userRole, null);
             return true;
@@ -190,7 +184,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
  * @return the transactionArtifactChanges
  */
 public Conflict[] getTransactionArtifactChanges() {
-	return transactionArtifactChanges;
+	return conflicts;
 }
 
 }
