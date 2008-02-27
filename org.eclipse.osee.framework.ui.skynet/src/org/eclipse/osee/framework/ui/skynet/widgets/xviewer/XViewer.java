@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -193,7 +194,6 @@ public class XViewer extends TreeViewer {
     * @return
     */
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
-      System.out.println("Left click in Icon Area " + num++);
       return false;
    }
 
