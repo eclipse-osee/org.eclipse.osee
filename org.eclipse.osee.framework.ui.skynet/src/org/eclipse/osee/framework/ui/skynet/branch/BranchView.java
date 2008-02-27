@@ -380,7 +380,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 }
 private void createMergeViewCommand(MenuManager menuManager) {
     CommandContributionItem accessControlCommand =
-        Commands.getLocalCommandContribution(getSite(), "mergeViewCommand", "Merge View", null, null,
+        Commands.getLocalCommandContribution(getSite(), "mergeViewCommand", "Experimental Only -Merge View- Not For Production", null, null,
               null, "M", null, null);
   menuManager.add(accessControlCommand);
 
@@ -412,7 +412,7 @@ private void createMergeViewCommand(MenuManager menuManager) {
 
 private void createChangeViewCommand(MenuManager menuManager) {
     CommandContributionItem accessControlCommand =
-        Commands.getLocalCommandContribution(getSite(), "change2ViewCommand", "New Change Report View", null, null,
+        Commands.getLocalCommandContribution(getSite(), "change2ViewCommand", "Experimental Use Only -New Change Report- Not For Production", null, null,
               null, "M", null, null);
   menuManager.add(accessControlCommand);
 
