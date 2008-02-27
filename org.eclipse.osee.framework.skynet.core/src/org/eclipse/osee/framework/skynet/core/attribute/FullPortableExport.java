@@ -137,7 +137,6 @@ public class FullPortableExport {
 
       for (String artifactTypeName : hash.keySet()) {
          Collection<Artifact> groupedArtifacts = hash.getValues(artifactTypeName);
-         Branch branch = groupedArtifacts.iterator().next().getBranch();
          createArtifactSheet(configurationManager.getArtifactSubtypeDescriptor(artifactTypeName), groupedArtifacts);
       }
    }

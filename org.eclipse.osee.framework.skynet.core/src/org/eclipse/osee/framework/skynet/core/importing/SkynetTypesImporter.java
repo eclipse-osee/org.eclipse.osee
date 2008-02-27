@@ -268,17 +268,15 @@ public class SkynetTypesImporter implements RowProcessor {
 
       associateWithSuperType(artifactTypeName, superTypeName);
 
-      if (configurationManager.getArtifactSubtypeDescriptor(artifactTypeName) == null) {
-         configurationManager.makeSubtypePersistent(factoryClassName, null, artifactTypeName, artifactTypeName);
+      configurationManager.makeSubtypePersistent(factoryClassName, "", artifactTypeName, artifactTypeName);
 
-         addValidityAlreadyInDb(artifactTypeName, superTypeName);
+      addValidityAlreadyInDb(artifactTypeName, superTypeName);
 
-         // Hack for the sake that the current inheritance is only ever 2 levels deep
-         // i.e. assume that the superType (since it is not "Artifact") must itself inherit from
-         // "Artifact"
-         if (!superTypeName.equals("Artifact")) {
-            addValidityAlreadyInDb(artifactTypeName, "Artifact");
-         }
+      // Hack for the sake that the current inheritance is only ever 2 levels deep
+      // i.e. assume that the superType (since it is not "Artifact") must itself inherit from
+      // "Artifact"
+      if (!superTypeName.equals("Artifact")) {
+         addValidityAlreadyInDb(artifactTypeName, "Artifact");
       }
    }
 
@@ -286,10 +284,10 @@ public class SkynetTypesImporter implements RowProcessor {
       if (superTypeName.equals("Artifact")) {
          superTypeName = "Root Artifact"; // this is a concrete type that should be on every branch
       }
-      ArtifactSubtypeDescriptor superArtifactType = configurationManager.getArtifactSubtypeDescriptor(superTypeName);
-      ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(artifactTypeName);
 
-      if (superArtifactType != null) {
+      if (configurationManager.artifactTypeExists("", superTypeName)) {
+         ArtifactSubtypeDescriptor superArtifactType = configurationManager.getArtifactSubtypeDescriptor(superTypeName);
+         ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(artifactTypeName);
 
          Collection<DynamicAttributeDescriptor> parentAttributes =
                configurationManager.getAttributeTypesFromArtifactType(superArtifactType);

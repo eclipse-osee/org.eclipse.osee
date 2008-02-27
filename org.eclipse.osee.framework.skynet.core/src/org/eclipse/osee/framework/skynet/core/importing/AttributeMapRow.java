@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -43,20 +42,12 @@ public class AttributeMapRow {
    }
 
    public void persist() throws SQLException {
-      DynamicAttributeDescriptor attributeType =
-            configurationPersistencManager.getDynamicAttributeType(attributeName);
-      if (attributeType == null) {
-         throw new IllegalArgumentException("The attribute " + attributeName + " is not defined.");
-      }
+      DynamicAttributeDescriptor attributeType = configurationPersistencManager.getDynamicAttributeType(attributeName);
 
       for (String artifactTypeName : importer.determineConcreateTypes(artifactSuperTypeName)) {
          ArtifactSubtypeDescriptor artifactType =
                configurationPersistencManager.getArtifactSubtypeDescriptor(artifactTypeName);
-         if (artifactType != null) {
-            configurationPersistencManager.persistAttributeValidity(artifactType, attributeType);
-         } else {
-            logger.log(Level.SEVERE, artifactTypeName + " was not found when querying the DB.");
-         }
+         configurationPersistencManager.persistAttributeValidity(artifactType, attributeType);
       }
    }
 }

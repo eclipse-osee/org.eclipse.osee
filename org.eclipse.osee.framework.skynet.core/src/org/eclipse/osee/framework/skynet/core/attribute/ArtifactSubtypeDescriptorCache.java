@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
@@ -33,11 +32,11 @@ public class ArtifactSubtypeDescriptorCache {
    private static final String SELECT_ARTIFACT_TYPES =
          "SELECT * FROM osee_define_artifact_type aty1, osee_define_factory fac2 WHERE aty1.factory_id = fac2.factory_id ORDER BY aty1.namespace, aty1.name";
 
-   private final HashMap<String, ArtifactSubtypeDescriptor> nameToartifactTypeMap;
+   private final HashMap<String, ArtifactSubtypeDescriptor> nameToTypeMap;
    private final HashMap<Integer, ArtifactSubtypeDescriptor> idToartifactTypeMap;
 
    protected ArtifactSubtypeDescriptorCache() {
-      this.nameToartifactTypeMap = new HashMap<String, ArtifactSubtypeDescriptor>();
+      this.nameToTypeMap = new HashMap<String, ArtifactSubtypeDescriptor>();
       this.idToartifactTypeMap = new HashMap<Integer, ArtifactSubtypeDescriptor>();
    }
 
@@ -81,13 +80,18 @@ public class ArtifactSubtypeDescriptorCache {
       return idToartifactTypeMap.values();
    }
 
+   public boolean descriptorExists(String namespace, String name) throws SQLException {
+      ensurePopulated();
+      return nameToTypeMap.get(namespace + name) != null;
+   }
+
    /**
     * @return Returns the descriptor with a particular namespace and name
     * @throws SQLException
     */
    public ArtifactSubtypeDescriptor getDescriptor(String namespace, String name) throws SQLException {
       ensurePopulated();
-      ArtifactSubtypeDescriptor artifactType = nameToartifactTypeMap.get(namespace + name);
+      ArtifactSubtypeDescriptor artifactType = nameToTypeMap.get(namespace + name);
 
       if (artifactType == null) {
          throw new IllegalArgumentException(
@@ -126,7 +130,7 @@ public class ArtifactSubtypeDescriptorCache {
     * @throws IllegalArgumentException if descriptor is null.
     */
    public void cache(ArtifactSubtypeDescriptor descriptor) {
-      nameToartifactTypeMap.put(descriptor.getNamespace() + descriptor.getName(), descriptor);
+      nameToTypeMap.put(descriptor.getNamespace() + descriptor.getName(), descriptor);
       idToartifactTypeMap.put(descriptor.getArtTypeId(), descriptor);
    }
 }

@@ -42,7 +42,14 @@ public class AttributeTypeValidityCache {
 
    public Collection<DynamicAttributeDescriptor> getValidAttributeDescriptors(ArtifactSubtypeDescriptor artifactType) throws SQLException {
       ensurePopulated();
-      return artifactToAttributeMap.getValues(artifactType);
+
+      Collection<DynamicAttributeDescriptor> attributeTypes = artifactToAttributeMap.getValues(artifactType);
+      if (attributeTypes == null) {
+         throw new IllegalArgumentException(
+               "There are no valid attribute types available for the artifact type \"" + artifactType + "\"");
+      }
+
+      return attributeTypes;
    }
 
    private synchronized void ensurePopulated() throws SQLException {
@@ -93,9 +100,12 @@ public class AttributeTypeValidityCache {
 
    public boolean isValid(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws SQLException {
       ensurePopulated();
-      for (DynamicAttributeDescriptor otherAttributeType : getValidAttributeDescriptors(artifactType)) {
-         if (attributeType.equals(otherAttributeType)) {
-            return true;
+      Collection<DynamicAttributeDescriptor> attributeTypes = artifactToAttributeMap.getValues(artifactType);
+      if (attributeTypes != null) {
+         for (DynamicAttributeDescriptor otherAttributeType : attributeTypes) {
+            if (attributeType.equals(otherAttributeType)) {
+               return true;
+            }
          }
       }
       return false;

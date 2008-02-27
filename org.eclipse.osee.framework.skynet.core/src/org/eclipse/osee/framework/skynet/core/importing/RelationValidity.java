@@ -93,19 +93,19 @@ public class RelationValidity {
       for (ValidityRow row : validityArray) {
          for (String artifactTypeName : importer.determineConcreateTypes(row.artifactSuperTypeName)) {
 
-            ArtifactSubtypeDescriptor artifactType =
-                  configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName);
-            if (artifactType == null) {
-               logger.log(Level.SEVERE, "ArtifactSubtypeDescriptor == null ( " + artifactTypeName + " )");
-               continue;
+            try {
+               ArtifactSubtypeDescriptor artifactType =
+                     configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName);
+               IRelationLinkDescriptor linkDescriptor =
+                     relationManager.getIRelationLinkDescriptor(row.relationTypeName, branch);
+               if (linkDescriptor == null) {
+                  logger.log(Level.SEVERE, "IRelationLinkDescriptor == null ( " + row.relationTypeName + " )");
+                  continue;
+               }
+               validitySet.add(new ValidityConstraint(artifactType, linkDescriptor, row.sideAmax, row.sideBmax));
+            } catch (IllegalArgumentException ex) {
+               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
-            IRelationLinkDescriptor linkDescriptor =
-                  relationManager.getIRelationLinkDescriptor(row.relationTypeName, branch);
-            if (linkDescriptor == null) {
-               logger.log(Level.SEVERE, "IRelationLinkDescriptor == null ( " + row.relationTypeName + " )");
-               continue;
-            }
-            validitySet.add(new ValidityConstraint(artifactType, linkDescriptor, row.sideAmax, row.sideBmax));
          }
       }
       for (ValidityConstraint constraint : validitySet) {

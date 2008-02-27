@@ -75,7 +75,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    private static final String INSERT_VALID_ATTRIBUTE =
          "INSERT INTO osee_define_valid_attributes (art_type_id, attr_type_id) VALUES (?, ?)";
    private static final String INSERT_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_define_attribiute_type (attr_type_id, attr_base_type_id, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text) VALUES (?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO osee_define_attribute_type (attr_type_id, attr_base_type_id, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text) VALUES (?,?,?,?,?,?,?,?,?)";
    private static final String INSERT_BASE_ATTRIBUTE_TYPE =
          "INSERT INTO osee_define_attr_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
    private final ArtifactSubtypeDescriptorCache cacheArtifactSubtypeDescriptors;
@@ -117,9 +117,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    }
 
    public void makePersistent(Class<? extends Attribute> baseAttributeClass, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
-      DynamicAttributeDescriptor attributeType = cacheDynamicAttributeDescriptors.getDescriptor(namespace, name);
-
-      if (attributeType == null) {
+      if (cacheDynamicAttributeDescriptors.descriptorExists(namespace, name)) {
          int attrTypeId = Query.getNextSeqVal(null, ATTR_TYPE_ID_SEQ);
          int attrBaseTypeId = getOrCreateAttributeBaseType(baseAttributeClass);
 
@@ -128,10 +126,8 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
                SQL3DataType.VARCHAR, defaultValue, SQL3DataType.VARCHAR, validityXml, SQL3DataType.INTEGER,
                minOccurrences, SQL3DataType.INTEGER, maxOccurrences, SQL3DataType.VARCHAR, tipText);
 
-         // Add this new description to the cache
-         DynamicAttributeDescriptor descriptor =
-               new DynamicAttributeDescriptor(cacheDynamicAttributeDescriptors, attrTypeId, baseAttributeClass,
-                     namespace, name, defaultValue, validityXml, minOccurrences, maxOccurrences, tipText);
+         new DynamicAttributeDescriptor(cacheDynamicAttributeDescriptors, attrTypeId, baseAttributeClass, namespace,
+               name, defaultValue, validityXml, minOccurrences, maxOccurrences, tipText);
       }
    }
 
@@ -228,9 +224,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    }
 
    public void makeSubtypePersistent(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws SQLException {
-      ArtifactSubtypeDescriptor artifactType =
-            cacheArtifactSubtypeDescriptors.getDescriptor(namespace, artifactTypeName);
-      if (artifactType == null) {
+      if (!cacheArtifactSubtypeDescriptors.descriptorExists(namespace, artifactTypeName)) {
          int artTypeId = Query.getNextSeqVal(null, SkynetDatabase.ART_TYPE_ID_SEQ);
          InputStreamImageDescriptor imageDescriptor = getDefaultImageDescriptor(artifactTypeName);
          IArtifactFactory factory = artifactFactoryCache.getFactoryFromName(factoryName);
@@ -240,11 +234,12 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
                artifactTypeName, SQL3DataType.VARCHAR, factoryKey, SQL3DataType.BLOB, new ByteArrayInputStream(
                      imageDescriptor.getData()));
 
-         artifactType =
-               new ArtifactSubtypeDescriptor(cacheArtifactSubtypeDescriptors, artTypeId, factoryKey, factory,
-                     namespace, artifactTypeName, imageDescriptor);
+         new ArtifactSubtypeDescriptor(cacheArtifactSubtypeDescriptors, artTypeId, factoryKey, factory, namespace,
+               artifactTypeName, imageDescriptor);
       } else {
          // Check if anything valuable is different
+         ArtifactSubtypeDescriptor artifactType =
+               cacheArtifactSubtypeDescriptors.getDescriptor(namespace, artifactTypeName);
          if (!artifactType.getFactoryKey().equals(factoryKey) || !artifactType.getFactory().getClass().getCanonicalName().equals(
                factoryName)) {
             // update factory information
@@ -340,6 +335,10 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
 
    public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(String name) throws SQLException {
       return cacheArtifactSubtypeDescriptors.getDescriptor(name);
+   }
+
+   public boolean artifactTypeExists(String namespace, String name) throws SQLException {
+      return cacheArtifactSubtypeDescriptors.descriptorExists(namespace, name);
    }
 
    @Deprecated

@@ -63,20 +63,16 @@ public class EveryoneGroup extends Group {
          } else {
             ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor("User Group");
 
-            if (descriptor != null) {
-               everyoneGroup = descriptor.makeNewArtifact(branchManager.getCommonBranch());
-               everyoneGroup.setDescriptiveName(GROUP_NAME);
+            everyoneGroup = descriptor.makeNewArtifact(branchManager.getCommonBranch());
+            everyoneGroup.setDescriptiveName(GROUP_NAME);
 
-               boolean wasNotInDbInit = !SkynetDbInit.isDbInit();
-               if (wasNotInDbInit) { // EveryoneGroup needs to be created under the special condition of the init
-                  SkynetDbInit.setIsInDbInit(true);
-               }
-               everyoneGroup.persistAttributes();
-               if (wasNotInDbInit) { // if we were not in an init before this method then go back to that state
-                  SkynetDbInit.setIsInDbInit(false);
-               }
-            } else {
-               throw new IllegalStateException("No User Group Descriptor.");
+            boolean wasNotInDbInit = !SkynetDbInit.isDbInit();
+            if (wasNotInDbInit) { // EveryoneGroup needs to be created under the special condition of the init
+               SkynetDbInit.setIsInDbInit(true);
+            }
+            everyoneGroup.persistAttributes();
+            if (wasNotInDbInit) { // if we were not in an init before this method then go back to that state
+               SkynetDbInit.setIsInDbInit(false);
             }
          }
       } catch (SQLException ex) {

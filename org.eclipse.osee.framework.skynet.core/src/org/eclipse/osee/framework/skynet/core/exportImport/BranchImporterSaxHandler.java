@@ -246,13 +246,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          }
          currentArtifactId = Query.getNextSeqVal(null, ART_ID_SEQ);
 
-         ArtifactSubtypeDescriptor artifactType =
-               configurationManager.getArtifactSubtypeDescriptor(type);
-         if (artifactType == null) {
-            logger.log(Level.WARNING, "The artifact type " + type + " was not found for artifact " + guid);
-            currentArtifactId = null;
-            return;
-         }
+         ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(type);
          int artTypeId = artifactType.getArtTypeId();
          artifactGuidCache.map(currentArtifactId, guid);
          ConnectionHandler.runPreparedUpdate(INSERT_NEW_ARTIFACT, SQL3DataType.INTEGER, currentArtifactId,

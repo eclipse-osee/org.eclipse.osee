@@ -84,6 +84,11 @@ public class DynamicAttributeDescriptorCache {
       return idToTypeMap.values();
    }
 
+   public boolean descriptorExists(String namespace, String name) throws SQLException {
+      ensurePopulated();
+      return nameToTypeMap.get(namespace + name) != null;
+   }
+
    /**
     * @return Returns the descriptor with a particular namespace and name, null if it does not exist.
     * @throws SQLException
