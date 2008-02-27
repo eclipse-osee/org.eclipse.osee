@@ -72,6 +72,12 @@ public enum TransactionType {
 	         case -3:
 	        	 modificationType = ModificationType.DELETE;
 	            break;
+	         case -4:
+	        	 modificationType = ModificationType.CHANGE;
+	            break;
+	         case -5:
+	        	 modificationType = ModificationType.CHANGE;
+	            break;
 	         default:
 	            break;
 	      }
