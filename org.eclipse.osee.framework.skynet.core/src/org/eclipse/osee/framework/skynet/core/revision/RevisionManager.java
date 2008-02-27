@@ -53,6 +53,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchToArtifactCacheUpdateEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
@@ -66,8 +70,6 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionArtifactChange;
-import org.eclipse.osee.framework.skynet.core.transactionChange.TransactionAttributeChange;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
@@ -80,8 +82,6 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.Table;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
-import org.eclipse.osee.framework.ui.skynet.conflict.AttributeConflict;
-import org.eclipse.osee.framework.ui.skynet.conflict.Conflict;
 
 /**
  * Manages artifact versions in Skynet
@@ -370,67 +370,69 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @return
     * @throws SQLException
     */
-   public Collection<TransactionArtifactChange> getArtifactChanges(Branch sourceBranch) throws SQLException{
-	      Map<Integer, TransactionArtifactChange> transactionArtifactChanges =
-	            new HashMap<Integer, TransactionArtifactChange>();
-	      
-	      transactionArtifactChanges = loadAttributeChanges(sourceBranch, transactionArtifactChanges);
-	 return transactionArtifactChanges.values();
+   public Collection<Change> getArtifactChanges(Branch sourceBranch) throws SQLException{
+	      ArrayList<Change> changes = new ArrayList<Change>();
+	      changes = loadAttributeChanges(sourceBranch, changes);
+	 return changes;
    }
    
    /**
     * 
     * @param sourceBranch
-    * @param transactionArtifactChanges
+    * @param changes
     * @return
-    * @throws SQLException
+    * @throws SQLExceptio
     */
-   private Map<Integer, TransactionArtifactChange> loadAttributeChanges(Branch sourceBranch, Map<Integer, TransactionArtifactChange> transactionArtifactChanges) throws SQLException{
+   private ArrayList<Change> loadAttributeChanges(Branch sourceBranch, ArrayList<Change> changes) throws SQLException{
 	      ConnectionHandlerStatement connectionHandlerStatement = null;
-	      String ATTRIBUTE_CHANGES = "SELECT t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value, t3.content, t1.tx_type, t8.art_type_id FROM osee_define_txs t1, osee_define_attribute t3, osee_define_artifact t8, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6  WHERE  t4.tx_type <> -4 and t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ?   GROUP BY t6.attr_id   ORDER BY transaction_id, attr_id)t7 WHERE t8.art_id = t3.art_id and t1.transaction_id = t7.transaction_id AND t7.attr_id = t3.attr_id and t3.gamma_id = t1.gamma_id order by t3.art_id, t3.attr_id";
-	     
+	      Set<Integer> artIds = new HashSet<Integer>();
+	      //Does not handle deleted artifacts yet using -3 to filter them out
+	      String ATTRIBUTE_CHANGES = "SELECT t9.value as art_name, t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value, t3.content, t1.tx_type, t8.art_type_id FROM osee_define_txs t1, osee_define_attribute t3, osee_define_artifact t8, osee_define_attribute t9, osee_Define_attribute_type t10, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6  WHERE  t4.tx_type <> -4 and t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ?   GROUP BY t6.attr_id   ORDER BY transaction_id, attr_id)t7 WHERE t8.art_id = t9.art_id and t9.attr_type_id = t10.attr_type_id and t10.name = 'Name' and t8.art_id = t3.art_id and t1.transaction_id = t7.transaction_id AND t7.attr_id = t3.attr_id and t3.gamma_id = t1.gamma_id order by t3.art_id, t3.attr_id";
+	     //"SELECT t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value, t3.content, t1.tx_type, t8.art_type_id FROM osee_define_txs t1, osee_define_attribute t3, osee_define_artifact t8, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6  WHERE  t4.tx_type <> -4 and t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ?   GROUP BY t6.attr_id   ORDER BY transaction_id, attr_id)t7 WHERE t8.art_id = t3.art_id and t1.transaction_id = t7.transaction_id AND t7.attr_id = t3.attr_id and t3.gamma_id = t1.gamma_id order by t3.art_id, t3.attr_id";
 	      try {
 	         connectionHandlerStatement =
 	               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CHANGES, SQL3DataType.INTEGER, sourceBranch.getBranchId());
 
 	         TransactionId sourceHeadTransactionId = transactionIdManager.getEditableTransactionId(sourceBranch);
 	         ResultSet resultSet = connectionHandlerStatement.getRset();
-	         TransactionArtifactChange transactionArtifactChange;
+	         AttributeChanged attributeChanged;
+	         int tempAttrId = -1;
 
 	         while (resultSet.next()) {
-	            int attrId = resultSet.getInt("attr_id");
-	            int artId = resultSet.getInt("art_id");
-	            int sourceGamma = resultSet.getInt("gamma_id");
-	            int txTypeId = resultSet.getInt("tx_type");
-	            int attrTypeId = resultSet.getInt("attr_type_id");
+				int attrId = resultSet.getInt("attr_id");
+				int artId = resultSet.getInt("art_id");
+				int sourceGamma = resultSet.getInt("gamma_id");
+				int txTypeId = resultSet.getInt("tx_type");
+				int attrTypeId = resultSet.getInt("attr_type_id");
+				int artTypeId = resultSet.getInt("art_type_id");
 
-               if (transactionArtifactChanges.containsKey(artId)) {
-                  transactionArtifactChange = transactionArtifactChanges.get(artId);
-               } else {
-                  transactionArtifactChange =
-                        new TransactionArtifactChange(TransactionType.getTransactionType(txTypeId),
-                              ChangeType.OUTGOING, sourceHeadTransactionId, sourceHeadTransactionId, artId, 2, sourceGamma,
-                              configurationManager.getArtifactSubtypeDescriptor(resultSet.getInt("art_type_id")));
+				if (tempAttrId != attrId) {
+					tempAttrId = attrId;
+					attributeChanged = new AttributeChanged(artTypeId,
+							resultSet.getString("art_name"), sourceGamma,
+							artId, sourceHeadTransactionId,
+							sourceHeadTransactionId, TransactionType
+									.getTransactionType(txTypeId),
+							ChangeType.OUTGOING, resultSet.getString("value"),
+							resultSet.getBinaryStream("content"), attrId,
+							attrTypeId);
 
-                  transactionArtifactChanges.put(artId, transactionArtifactChange);
-               }
-               transactionArtifactChange.addAttributeChange(new TransactionAttributeChange(
-                     TransactionType.getTransactionType(txTypeId), ChangeType.CONFLICTING, attrId, sourceGamma,
-                     resultSet.getString("value"), resultSet.getBinaryStream("content"), sourceGamma,
-                     null, null, attrTypeId, sourceBranch));
-	         }
-
-	         if(!transactionArtifactChanges.isEmpty()){
-	         List<ISearchPrimitive> artIds = new LinkedList<ISearchPrimitive>();
-				for (Integer integer : transactionArtifactChanges.keySet()) {
-					artIds.add(new ArtifactIdSearch(integer));
+					changes.add(attributeChanged);
+					artIds.add(artId);
 				}
-//				ArtifactPersistenceManager.getInstance().getArtifacts(artIds, true, sourceBranch);
+			}
+
+	         if(!artIds.isEmpty()){
+	         List<ISearchPrimitive> artIdCriteria = new LinkedList<ISearchPrimitive>();
+				for (Integer integer : artIds) {
+					artIdCriteria.add(new ArtifactIdSearch(integer));
+				}
+//				ArtifactPersistenceManager.getInstance().getArtifacts(artIdCriteria,true , sourceBranch);
 	         }
 	      } finally {
 	         DbUtil.close(connectionHandlerStatement);
 	      }
-	   return transactionArtifactChanges;
+	   return changes;
    }
    
    /**
@@ -442,11 +444,10 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @throws SQLException
     */
    public Collection<Conflict> getConflictsPerBranch(Branch source, Branch destination, TransactionId baselineTransaction) throws SQLException {
-      Map<Integer, Conflict> transactionArtifactChanges =
-            new HashMap<Integer, Conflict>();
+      ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
       
-      transactionArtifactChanges = loadAttributeConflicts(source, destination, baselineTransaction, transactionArtifactChanges);
-      return transactionArtifactChanges.values();
+      conflicts = loadAttributeConflicts(source, destination, baselineTransaction, conflicts);
+      return conflicts;
    }
    
    /**
@@ -454,12 +455,13 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param source
     * @param destination
     * @param baselineTransaction
-    * @param transactionArtifactChanges
+    * @param conflicts
     * @return
     * @throws SQLException
     */
-   private Map<Integer, Conflict> loadAttributeConflicts(Branch source, Branch destination, TransactionId baselineTransaction, Map<Integer, Conflict> transactionArtifactChanges) throws SQLException{
+   private ArrayList<Conflict> loadAttributeConflicts(Branch source, Branch destination, TransactionId baselineTransaction, ArrayList<Conflict> conflicts) throws SQLException{
 	      ConnectionHandlerStatement connectionHandlerStatement = null;
+	      Set<Integer> artIdSet = new HashSet<Integer>();
 
 	      try {
 	         String ATTRIBUTE_CONFLICTS =
@@ -482,6 +484,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 	         ResultSet resultSet = connectionHandlerStatement.getRset();
 	         AttributeConflict attributeConflict;
 	         int attrId = 0;
+	         Branch mergeBranch = BranchPersistenceManager.getInstance().getBranch(676);
 
 	         while (resultSet.next()) {
 	            int nextAttrId = resultSet.getInt("attr_id");
@@ -496,18 +499,19 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 	               attrId = nextAttrId;
 	               attributeConflict =
 	                        new AttributeConflict(sourceGamma, destGamma, artId, baselineTransaction, sourceHeadTransactionId,TransactionType.getTransactionType(txTypeId),
-	                              ChangeType.CONFLICTING, resultSet.getString("source_value"), resultSet.getString("dest_value"), resultSet.getBinaryStream("source_content"), resultSet.getBinaryStream("dest_content"), attrId, attrTypeId);
+	                              ChangeType.CONFLICTING, resultSet.getString("source_value"), resultSet.getString("dest_value"), resultSet.getBinaryStream("source_content"), resultSet.getBinaryStream("dest_content"), attrId, attrTypeId, mergeBranch);
 	                              
-	               transactionArtifactChanges.put(attrId, attributeConflict);    
+	               conflicts.add(attributeConflict);    
+	               artIdSet.add(artId);
 //	            }
 	         }
 
-	         if(!transactionArtifactChanges.isEmpty()){
+	         if(!artIdSet.isEmpty()){
 	         List<ISearchPrimitive> artIds = new LinkedList<ISearchPrimitive>();
-				for (Integer integer : transactionArtifactChanges.keySet()) {
+				for (Integer integer : artIdSet) {
 					artIds.add(new ArtifactIdSearch(integer));
 				}
-//				ArtifactPersistenceManager.getInstance().getArtifacts(artIds, true, source);
+				ArtifactPersistenceManager.getInstance().getArtifacts(artIds, true, BranchPersistenceManager.getInstance().getBranch(676));
 	         }
 
 //	         connectionHandlerStatement =
@@ -523,7 +527,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 	      } }finally {
 	         DbUtil.close(connectionHandlerStatement);
 	      }
-	      return transactionArtifactChanges;
+	      return conflicts;
    }
 
    private Collection<AttributeChange> getAttributeChanges(ChangeType changeType, int fromTransactionNumber, int toTransactionNumber, int artId) {
