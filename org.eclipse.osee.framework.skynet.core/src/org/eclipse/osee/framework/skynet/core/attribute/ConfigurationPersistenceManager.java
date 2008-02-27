@@ -117,7 +117,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    }
 
    public void makePersistent(Class<? extends Attribute> baseAttributeClass, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
-      if (cacheDynamicAttributeDescriptors.descriptorExists(namespace, name)) {
+      if (!cacheDynamicAttributeDescriptors.descriptorExists(namespace, name)) {
          int attrTypeId = Query.getNextSeqVal(null, ATTR_TYPE_ID_SEQ);
          int attrBaseTypeId = getOrCreateAttributeBaseType(baseAttributeClass);
 

@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,12 +29,8 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -267,45 +262,7 @@ public class SkynetTypesImporter implements RowProcessor {
       String superTypeName = row[2];
 
       associateWithSuperType(artifactTypeName, superTypeName);
-
       configurationManager.makeSubtypePersistent(factoryClassName, "", artifactTypeName, artifactTypeName);
-
-      addValidityAlreadyInDb(artifactTypeName, superTypeName);
-
-      // Hack for the sake that the current inheritance is only ever 2 levels deep
-      // i.e. assume that the superType (since it is not "Artifact") must itself inherit from
-      // "Artifact"
-      if (!superTypeName.equals("Artifact")) {
-         addValidityAlreadyInDb(artifactTypeName, "Artifact");
-      }
-   }
-
-   private void addValidityAlreadyInDb(String artifactTypeName, String superTypeName) throws SQLException {
-      if (superTypeName.equals("Artifact")) {
-         superTypeName = "Root Artifact"; // this is a concrete type that should be on every branch
-      }
-
-      if (configurationManager.artifactTypeExists("", superTypeName)) {
-         ArtifactSubtypeDescriptor superArtifactType = configurationManager.getArtifactSubtypeDescriptor(superTypeName);
-         ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(artifactTypeName);
-
-         Collection<DynamicAttributeDescriptor> parentAttributes =
-               configurationManager.getAttributeTypesFromArtifactType(superArtifactType);
-         Iterator<DynamicAttributeDescriptor> it = parentAttributes.iterator();
-         while (it.hasNext()) {
-            configurationManager.persistAttributeValidity(artifactType, it.next());
-         }
-
-         Collection<IRelationLinkDescriptor> links =
-               RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(superArtifactType, branch);
-         Iterator<IRelationLinkDescriptor> linksIt = links.iterator();
-         while (linksIt.hasNext()) {
-            IRelationLinkDescriptor desc = linksIt.next();
-            int sideAmax = desc.getRestrictionSizeFor(superArtifactType.getArtTypeId(), true);
-            int sideBmax = desc.getRestrictionSizeFor(superArtifactType.getArtTypeId(), false);
-            configurationManager.persistRelationLinkValidity(artifactType, desc, sideAmax, sideBmax);
-         }
-      }
    }
 
    /*
