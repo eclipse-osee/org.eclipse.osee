@@ -16,27 +16,37 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
  */
 public class XBranchListViewer extends XTypeListViewer {
-
+   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final String NAME = "XBranchListViewer";
 
    /**
     * @param name
     */
-   public XBranchListViewer() {
+   public XBranchListViewer(String defaultValue) {
       super(NAME);
 
       setContentProvider(new ContentProvider());
 
       ArrayList<Object> input = new ArrayList<Object>(1);
-      input.add(BranchPersistenceManager.getInstance());
+      input.add(branchManager);
 
       setInput(input);
       setMultiSelect(false);
+
+      try {
+         if (defaultValue != null) {
+            setDefaultSelected(branchManager.getBranch(defaultValue));
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
    }
 
    /* (non-Javadoc)

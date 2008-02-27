@@ -33,17 +33,17 @@ public class XAttributeTypeListViewer extends XTypeListViewer {
    public XAttributeTypeListViewer(String keyedBranchName, String defaultValue) {
       super(NAME);
 
-      try {
-         DynamicAttributeDescriptor attributeType = configurationManager.getDynamicAttributeType(defaultValue);
-         setSelected(attributeType);
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
-
       setContentProvider(new DefaultBranchContentProvider(new AttributeContentProvider()));
       ArrayList<Object> input = new ArrayList<Object>(1);
       input.add(resolveBranch(keyedBranchName));
 
       setInput(input);
+
+      try {
+         DynamicAttributeDescriptor attributeType = configurationManager.getDynamicAttributeType(defaultValue);
+         setDefaultSelected(attributeType);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
    }
 }

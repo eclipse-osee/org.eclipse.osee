@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;

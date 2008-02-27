@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -40,7 +39,7 @@ import org.eclipse.ui.forms.widgets.Section;
 /**
  * @author Ryan D. Brooks
  */
-public class OverviewPage extends FormPage implements IActionable, XModifiedListener {
+public class OverviewPage extends FormPage implements IActionable {
    private final BlamWorkflow workflow;
    private final DynamicXWidgetLayout dynamicXWidgetLayout;
    private final XFormToolkit toolkit;
@@ -64,7 +63,7 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
          control.dispose();
       }
 
-      dynamicXWidgetLayout.createBody(toolkit, parametersContainer, null, this, true);
+      dynamicXWidgetLayout.createBody(toolkit, parametersContainer, null, null, true);
       parametersContainer.layout();
       parametersContainer.getParent().layout();
    }
@@ -104,6 +103,13 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
    private void createToolBarActions(ScrolledForm form) {
       Action runAction = new Action("Run Workflow in Job", Action.AS_PUSH_BUTTON) {
          public void run() {
+
+            BlamVariableMap blamVariableMap = editor.getBlamVariableMap();
+            for (DynamicXWidgetLayoutData xWidgetData : dynamicXWidgetLayout.getLayoutDatas()) {
+               XWidget widget = xWidgetData.getXWidget();
+               blamVariableMap.setValue(widget.getLabel(), widget.getData());
+            }
+
             BlamJob blamJob = new BlamJob(editor.getBlamVariableMap(), editor.getWorkflow());
             blamJob.addListener(editor);
             Jobs.startJob(blamJob);
@@ -155,17 +161,6 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
       parameterSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       parametersContainer = toolkit.createClientContainer(parameterSection, 2);
-
-      /*
-       * for (int i = 0; i < 4; i++) { Label parameterNameLabel = toolkit.createLabel(container,
-       * "Parameter Name" + i + ":"); parameterNameLabel.setLayoutData(new GridData(SWT.FILL,
-       * SWT.TOP, false, false)); FormText formText = toolkit.createFormText(container, true);
-       * formText.setText("parameter documentation should go here which could even wrap several
-       * lines and long as it does then ", false, false); formText.setLayoutData(new
-       * GridData(SWT.FILL, SWT.FILL, true, true, 1, 2)); Text parameterValueWidget =
-       * toolkit.createText(container, "default value"); parameterValueWidget.setLayoutData(new
-       * GridData(SWT.FILL, SWT.TOP, false, false)); }
-       */
    }
 
    private void createOutputSection(Composite body) {
@@ -192,9 +187,5 @@ public class OverviewPage extends FormPage implements IActionable, XModifiedList
     */
    public void setOuputText(String output) {
       outputText.setText(output);
-   }
-
-   public void widgetModified(XWidget widget) {
-      editor.getBlamVariableMap().setValue(widget.getLabel(), widget.getData());
    }
 }

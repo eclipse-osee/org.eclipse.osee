@@ -67,7 +67,7 @@ public class TaskMetrics extends AbstractBlam {
       monitor.beginTask("TaskMetrics", 5);
       metrics.clear();
 
-      ArtifactSubtypeDescriptor descriptor = variableMap.getArtifactSubtypeDescriptor("Descriptor");
+      ArtifactSubtypeDescriptor descriptor = variableMap.getArtifactSubtypeDescriptor("Artifact Type");
 
       FromArtifactsSearch teamWorkflowSearch =
             new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(), Operator.EQUAL));
@@ -130,6 +130,6 @@ public class TaskMetrics extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Descriptor\" keyedBranch=\"common\" defaultValue=\"LBA B3 Test Team Workflow\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" keyedBranch=\"common\" defaultValue=\"Lba B3 Test Team Workflow\" /></xWidgets>";
    }
 }

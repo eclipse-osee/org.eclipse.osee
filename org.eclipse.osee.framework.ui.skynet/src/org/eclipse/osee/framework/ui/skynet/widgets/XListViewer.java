@@ -47,6 +47,7 @@ public class XListViewer extends XWidget {
    private int requiredMaxSelected = 0;
    private boolean grabHorizontal = false;
    private boolean multiSelect = false;
+   private Object defaultSelectedObject;
 
    protected SelectionListener listListener = new SelectionListener() {
 
@@ -205,6 +206,10 @@ public class XListViewer extends XWidget {
       gd.grabExcessVerticalSpace = true;
       listViewer.getTable().setLayoutData(gd);
       listViewer.getTable().addSelectionListener(listListener);
+
+      if (defaultSelectedObject != null) {
+         setSelected(defaultSelectedObject);
+      }
       updateListWidget();
    }
 
@@ -377,5 +382,9 @@ public class XListViewer extends XWidget {
    @Override
    public Object getData() {
       return getSelected();
+   }
+
+   public void setDefaultSelected(Object defaultSelectedObject) {
+      this.defaultSelectedObject = defaultSelectedObject;
    }
 }

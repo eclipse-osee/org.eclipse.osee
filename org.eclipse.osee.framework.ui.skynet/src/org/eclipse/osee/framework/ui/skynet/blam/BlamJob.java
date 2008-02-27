@@ -60,14 +60,15 @@ public class BlamJob extends Job {
          monitor.beginTask(workflow.getDescriptiveName(), operations.size());
 
          for (BlamOperation operation : operations) {
-            Branch branch = operation.wrapOperationForBranch(variableMap);
             IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
 
+            Branch branch = operation.wrapOperationForBranch(variableMap);
             if (branch == null) {
                operation.runOperation(variableMap, subMonitor);
             } else {
                new BlamOperationTx(branch, operation, subMonitor).execute();
             }
+
             monitor.worked(1);
          }
 

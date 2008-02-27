@@ -144,7 +144,7 @@ public class XWidgetFactory {
       } else if (xWidgetName.equals("XRelationTypeListViewer")) {
          xWidget = new XRelationTypeListViewer();
       } else if (xWidgetName.equals("XBranchListViewer")) {
-         xWidget = new XBranchListViewer();
+         xWidget = new XBranchListViewer(xWidgetLayoutData.getDefaultValue());
       } else if (xWidgetName.startsWith("XList")) {
          String values[] =
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
@@ -198,5 +198,4 @@ public class XWidgetFactory {
       }
       return widgetProviders;
    }
-
 }

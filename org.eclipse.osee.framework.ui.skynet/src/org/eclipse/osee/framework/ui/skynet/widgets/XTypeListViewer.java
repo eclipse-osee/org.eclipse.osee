@@ -14,7 +14,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  */
 public abstract class XTypeListViewer extends XListViewer {
    private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
-   SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
    public XTypeListViewer(String name) {
       super(name);

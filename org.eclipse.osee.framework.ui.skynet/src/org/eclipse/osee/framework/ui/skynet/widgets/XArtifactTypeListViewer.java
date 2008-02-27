@@ -27,17 +27,17 @@ public class XArtifactTypeListViewer extends XTypeListViewer {
    public XArtifactTypeListViewer(String keyedBranchName, String defaultValue) {
       super(NAME);
 
-      try {
-         ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(defaultValue);
-         setSelected(artifactType);
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
-
       setContentProvider(new DefaultBranchContentProvider(new ArtifactTypeContentProvider()));
       ArrayList<Object> input = new ArrayList<Object>(1);
       input.add(resolveBranch(keyedBranchName));
 
       setInput(input);
+
+      try {
+         ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(defaultValue);
+         setDefaultSelected(artifactType);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
    }
 }

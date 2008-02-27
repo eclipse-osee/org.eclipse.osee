@@ -494,15 +494,8 @@
 	<extension id="default" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer"/>
 	</extension>
- <extension
-       id="Whole document"
-       point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-    <Renderer
-          classname="org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer">
-    </Renderer>
- </extension>
-	<extension id="blam" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.BlamRenderer"/>
+	<extension id="Whole document" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+   	<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer"/>
 	</extension>
 	<extension point="org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate">
 		<Template presentationType="ALL" templateFile="support/templates/PREVIEW default.xml" templateName="default"/>
