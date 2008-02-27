@@ -26,7 +26,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
 public class ClassServer extends Thread {
@@ -36,6 +35,7 @@ public class ClassServer extends Thread {
    private List<ResourceFinder> resourceFinders;
 
    private ExecutorService socketThreads;
+
    /**
     * Construct a server
     * 
@@ -45,13 +45,13 @@ public class ClassServer extends Thread {
     */
    public ClassServer(int port, InetAddress address) throws IOException {
       server = new ServerSocket(port, 50, address);
-      socketThreads = Executors.newCachedThreadPool(new ThreadFactory(){
-		@Override
-		public Thread newThread(Runnable arg0) {
-			Thread th = new Thread(arg0, "ClassServer Task");
-			th.setDaemon(true);
-			return th;
-		}
+      socketThreads = Executors.newCachedThreadPool(new ThreadFactory() {
+
+         public Thread newThread(Runnable arg0) {
+            Thread th = new Thread(arg0, "ClassServer Task");
+            th.setDaemon(true);
+            return th;
+         }
       });
       hostName = new URL("http://" + address.getHostAddress() + ":" + port + "/");
 
@@ -77,8 +77,8 @@ public class ClassServer extends Thread {
       logger.log(Level.INFO, msg, new Object[0]);
       try {
          while (true) {
-        	Socket socket = server.accept();
-        	socketThreads.submit(new Task(socket));
+            Socket socket = server.accept();
+            socketThreads.submit(new Task(socket));
          }
       } catch (IOException e) {
          synchronized (this) {
@@ -161,7 +161,7 @@ public class ClassServer extends Thread {
 
       public Task(Socket sock) {
          this.sock = sock;
-//         setDaemon(true);
+         //         setDaemon(true);
       }
 
       /**
