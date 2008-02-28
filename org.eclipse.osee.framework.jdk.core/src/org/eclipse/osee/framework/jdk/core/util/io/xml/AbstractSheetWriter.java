@@ -13,7 +13,6 @@ import java.util.Collection;
  */
 public abstract class AbstractSheetWriter implements ISheetWriter {
    private boolean startRow;
-   private boolean rowInProgress;
    private int defaultCellIndex;
 
    public AbstractSheetWriter() {
@@ -53,18 +52,15 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
 
    public void writeCell(String data, int cellIndex) throws IOException {
       startRowIfNecessary();
-      rowInProgress = true;
       defaultCellIndex = cellIndex + 1;
       writeCellText(data, cellIndex);
    }
 
    public void endRow() throws IOException {
-      if (rowInProgress) {
-         rowInProgress = false;
-         startRow = true;
-         defaultCellIndex = 0;
-         writeEndRow();
-      }
+      startRowIfNecessary();
+      startRow = true;
+      defaultCellIndex = 0;
+      writeEndRow();
    }
 
    /* (non-Javadoc)
