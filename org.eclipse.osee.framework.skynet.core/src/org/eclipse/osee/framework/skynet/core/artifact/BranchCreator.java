@@ -12,9 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_TYPE_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.BRANCH_DEFINITIONS;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.BRANCH_ID_SEQ;
@@ -25,7 +23,6 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.VALID_ATTRIBUTES_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.VALID_RELATIONS_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -71,19 +68,10 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.Modif
 public class BranchCreator implements PersistenceManager {
    static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
 
-   private static final LocalAliasTable ART_TYPE_ALIAS_1 = new LocalAliasTable(ARTIFACT_TYPE_TABLE, "t1");
-   private static final LocalAliasTable ART_TYPE_ALIAS_2 = new LocalAliasTable(ARTIFACT_TYPE_TABLE, "t2");
-
-   private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_TYPE_TABLE, "t1");
-   private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_2 = new LocalAliasTable(ATTRIBUTE_TYPE_TABLE, "t2");
-
    private static final LocalAliasTable RELATION_LINK_TYPE_ALIAS_1 =
          new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "t1");
    private static final LocalAliasTable RELATION_LINK_TYPE_ALIAS_2 =
          new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "t2");
-
-   private static final LocalAliasTable VALID_ATTRIBUTES_ALIAS_1 = new LocalAliasTable(VALID_ATTRIBUTES_TABLE, "t1");
-   private static final LocalAliasTable VALID_ATTRIBUTES_ALIAS_2 = new LocalAliasTable(VALID_ATTRIBUTES_TABLE, "t2");
 
    private static final LocalAliasTable VALID_RELATIONS_ALIAS_1 = new LocalAliasTable(VALID_RELATIONS_TABLE, "t1");
    private static final LocalAliasTable VALID_RELATIONS_ALIAS_2 = new LocalAliasTable(VALID_RELATIONS_TABLE, "t2");
@@ -191,9 +179,9 @@ public class BranchCreator implements PersistenceManager {
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                                                                                                                                                                                           * parent
-                                                                                                                                                                                                                                                                                           * transactoin_id
-                                                                                                                                                                                                                                                                                           */, Integer /* gamma_id */>(
+                                                                                                                                                                                                                                                                                                                            * parent
+                                                                                                                                                                                                                                                                                                                            * transactoin_id
+                                                                                                                                                                                                                                                                                                                            */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -311,13 +299,8 @@ public class BranchCreator implements PersistenceManager {
    }
 
    private void copyTypeConfigurationAddressing(int newTransactionNumber, TransactionId parentTransactionId) throws SQLException {
-      insertGamms(newTransactionNumber, parentTransactionId, ART_TYPE_ALIAS_1, ART_TYPE_ALIAS_2, "art_type_id");
-      insertGamms(newTransactionNumber, parentTransactionId, ATTRIBUTE_TYPE_ALIAS_1, ATTRIBUTE_TYPE_ALIAS_2,
-            "attr_type_id");
       insertGamms(newTransactionNumber, parentTransactionId, RELATION_LINK_TYPE_ALIAS_1, RELATION_LINK_TYPE_ALIAS_2,
             "rel_link_type_id");
-      insertGamms(newTransactionNumber, parentTransactionId, VALID_ATTRIBUTES_ALIAS_1, VALID_ATTRIBUTES_ALIAS_2,
-            "attr_type_id", "art_type_id");
       insertGamms(newTransactionNumber, parentTransactionId, VALID_RELATIONS_ALIAS_1, VALID_RELATIONS_ALIAS_2,
             "rel_link_type_id", "art_type_id");
    }
@@ -561,5 +544,4 @@ public class BranchCreator implements PersistenceManager {
          return childBranch;
       }
    }
-
 }
