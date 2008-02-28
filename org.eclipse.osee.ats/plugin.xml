@@ -322,4 +322,10 @@
             classname="org.eclipse.osee.ats.health.UnAssignedAssignedAtsObjects">
       </AutoRunTask>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.ArtifactCheck">
+      <ArtifactCheck
+            classname="org.eclipse.osee.ats.util.AtsArtifactChecks">
+      </ArtifactCheck>
+   </extension>
 </plugin>

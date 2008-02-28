@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -58,8 +57,8 @@ public class DeleteArtifactHandler extends AbstractSelectionChangedHandler {
             if (dialog.open() == 0) {
                ArtifactPersistenceManager.getInstance().deleteArtifact(artifacts.toArray(Artifact.EMPTY_ARRAY));
             }
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
       return null;

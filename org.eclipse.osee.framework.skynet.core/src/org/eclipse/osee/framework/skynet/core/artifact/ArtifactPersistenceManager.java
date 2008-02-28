@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -88,6 +89,7 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
@@ -1028,8 +1030,14 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @param artifacts The artifacts to delete.
     * @throws SQLException
     */
-   public void deleteArtifact(final Artifact... artifacts) throws SQLException {
+   public void deleteArtifact(final Artifact... artifacts) throws Exception {
       if (artifacts.length == 0) return;
+
+      // Confirm artifacts are fit to delete
+      for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
+         Result result = check.isDeleteable(Arrays.asList(artifacts));
+         if (result.isFalse()) throw new IllegalStateException(result.getText());
+      }
 
       final Branch branch = artifacts[0].getBranch();
       if (transactionManager.isInBatch(branch)) {

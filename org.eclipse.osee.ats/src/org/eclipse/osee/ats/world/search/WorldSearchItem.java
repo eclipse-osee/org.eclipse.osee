@@ -29,7 +29,7 @@ public abstract class WorldSearchItem {
    protected ArtifactPersistenceManager apm = ArtifactPersistenceManager.getInstance();
    private LoadView loadView;
    public static enum LoadView {
-      WorldView, TaskEditor
+      WorldView, TaskEditor, None
    }
    public static enum SearchType {
       Search, ReSearch

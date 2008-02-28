@@ -55,8 +55,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
          WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWsi();
          if (worldSearchItem.getLoadView() == LoadView.WorldView)
             openWorld(worldSearchItem);
-         else
-            openTaskEditor(worldSearchItem);
+         else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) openTaskEditor(worldSearchItem);
       } else
          super.handleDoubleClick();
    }
