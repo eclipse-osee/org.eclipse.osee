@@ -179,7 +179,7 @@ public class SkynetTransaction {
 
       try {
     	  //Verify that the stripechecker is working correclty
-         performStripeCheck();
+         performStripeCheckAndSetArtifactsNotDirty();
 
          boolean insertBatchToTransactions = executeBatchToTransactions(monitor);
          boolean insertTransactionDataItems = executeTransactionDataItems();
@@ -221,7 +221,7 @@ public class SkynetTransaction {
       return insertTransactionDataItems;
    }
 
-   private void performStripeCheck() throws SQLException {
+   private void performStripeCheckAndSetArtifactsNotDirty() throws SQLException {
       Set<Artifact> allArtifacts = new HashSet<Artifact>();
       Map<Integer, Artifact> potentialConflictedArtifacts = new HashMap<Integer, Artifact>();
       Map<Integer, Integer> artIdToNewGamma = new HashMap<Integer, Integer>();
