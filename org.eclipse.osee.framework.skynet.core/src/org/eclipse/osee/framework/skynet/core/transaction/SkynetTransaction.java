@@ -19,12 +19,15 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,16 +39,21 @@ import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
+import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
+import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
 
 /**
  * @author Robert A. Fisher
@@ -171,7 +179,7 @@ public class SkynetTransaction {
 
       try {
     	  //Verify that the stripechecker is working correclty
-//         performStripeCheck();
+         performStripeCheck();
 
          boolean insertBatchToTransactions = executeBatchToTransactions(monitor);
          boolean insertTransactionDataItems = executeTransactionDataItems();
@@ -213,62 +221,62 @@ public class SkynetTransaction {
       return insertTransactionDataItems;
    }
 
-//   private void performStripeCheck() throws SQLException {
-//      Set<Artifact> allArtifacts = new HashSet<Artifact>();
-//      Map<Integer, Artifact> potentialConflictedArtifacts = new HashMap<Integer, Artifact>();
-//      Map<Integer, Integer> artIdToNewGamma = new HashMap<Integer, Integer>();
-//
-//      for (ITransactionData transactionData : transactionItems.keySet()) {
-//         if (transactionData instanceof ArtifactTransactionData) {
-//            Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();
-//            ModificationType modificationType = ((ArtifactTransactionData) transactionData).getModificationType();
-//
-//            allArtifacts.add(artifact);
-//            if (!remoteEventManager.isConnected() && modificationType != ModificationType.NEW) {
-//               potentialConflictedArtifacts.put(artifact.getArtId(), artifact);
-//            }
-//            artIdToNewGamma.put(artifact.getArtId(), ((ArtifactTransactionData) transactionData).getGammaId());
-//         }
-//      }
-//
-//      ArrayList<Artifact> tempArts = new ArrayList<Artifact>(potentialConflictedArtifacts.values());
-//      ConnectionHandlerStatement chStmt = null;
-//      int local_transaction_id;
-//      int db_transaction_id;
-//      int art_id;
-//
-//      while (!tempArts.isEmpty()) {
-//         Branch branch = tempArts.get(0).getBranch();
-//         String artIdList = artifactPersistenceManager.getArtIdList(tempArts);
-//         chStmt =
-//               ConnectionHandler.runPreparedQuery(SELECT_MAX_TRANSACTION + artIdList + ") group by art_id",
-//                     SQL3DataType.INTEGER, branch.getBranchId());
-//         local_transaction_id = transactionId.getLastSavedTransactionNumber();
-//
-//         while (chStmt.next()) {
-//            db_transaction_id = chStmt.getRset().getInt("transaction_id");
-//
-//            if (local_transaction_id < db_transaction_id) {
-//               for (Artifact artifact : allArtifacts) {
-//                  artifact.setInTransaction(false);
-//               }
-//               art_id = chStmt.getRset().getInt("art_id");
-//               logger.log(
-//                     Level.WARNING,
-//                     "A collision has occurred.  Artifact " + art_id + " with local transaction_id " + local_transaction_id + " has database transaction_id " + db_transaction_id);
-//            }
-//         }
-//         DbUtil.close(chStmt);
-//      }
-//
-//      for (Artifact artifact : allArtifacts) {
-//         artifact.setInTransaction(false);
-//         if (!artifact.isDeleted()) {
-//            artifact.setNotDirty();
-//            artifact.getPersistenceMemo().setGammaId(artIdToNewGamma.get(artifact.getArtId()));
-//         }
-//      }
-//   }
+   private void performStripeCheck() throws SQLException {
+      Set<Artifact> allArtifacts = new HashSet<Artifact>();
+      Map<Integer, Artifact> potentialConflictedArtifacts = new HashMap<Integer, Artifact>();
+      Map<Integer, Integer> artIdToNewGamma = new HashMap<Integer, Integer>();
+
+      for (ITransactionData transactionData : transactionItems.keySet()) {
+         if (transactionData instanceof ArtifactTransactionData) {
+            Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();
+            ModificationType modificationType = ((ArtifactTransactionData) transactionData).getModificationType();
+
+            allArtifacts.add(artifact);
+            if (!remoteEventManager.isConnected() && modificationType != ModificationType.NEW) {
+               potentialConflictedArtifacts.put(artifact.getArtId(), artifact);
+            }
+            artIdToNewGamma.put(artifact.getArtId(), ((ArtifactTransactionData) transactionData).getGammaId());
+         }
+      }
+
+      ArrayList<Artifact> tempArts = new ArrayList<Artifact>(potentialConflictedArtifacts.values());
+      ConnectionHandlerStatement chStmt = null;
+      int local_transaction_id;
+      int db_transaction_id;
+      int art_id;
+
+      while (!tempArts.isEmpty()) {
+         Branch branch = tempArts.get(0).getBranch();
+         String artIdList = artifactPersistenceManager.getArtIdList(tempArts);
+         chStmt =
+               ConnectionHandler.runPreparedQuery(SELECT_MAX_TRANSACTION + artIdList + ") group by art_id",
+                     SQL3DataType.INTEGER, branch.getBranchId());
+         local_transaction_id = transactionId.getLastSavedTransactionNumber();
+
+         while (chStmt.next()) {
+            db_transaction_id = chStmt.getRset().getInt("transaction_id");
+
+            if (local_transaction_id < db_transaction_id) {
+               for (Artifact artifact : allArtifacts) {
+                  artifact.setInTransaction(false);
+               }
+               art_id = chStmt.getRset().getInt("art_id");
+               logger.log(
+                     Level.WARNING,
+                     "A collision has occurred.  Artifact " + art_id + " with local transaction_id " + local_transaction_id + " has database transaction_id " + db_transaction_id);
+            }
+         }
+         DbUtil.close(chStmt);
+      }
+
+      for (Artifact artifact : allArtifacts) {
+         artifact.setInTransaction(false);
+         if (!artifact.isDeleted()) {
+            artifact.setNotDirty();
+            artifact.getPersistenceMemo().setGammaId(artIdToNewGamma.get(artifact.getArtId()));
+         }
+      }
+   }
 
    // Supports adding configuration information, adding new artifacts to the artifact table and
    // updating attributes that are not versioned.
