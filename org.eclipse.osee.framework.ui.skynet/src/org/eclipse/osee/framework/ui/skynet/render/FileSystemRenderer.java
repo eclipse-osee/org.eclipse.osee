@@ -115,7 +115,7 @@ public abstract class FileSystemRenderer extends Renderer {
 
          case EDIT:
             if (workingFolder == null || !workingFolder.exists()) {
-               OSEELog.logInfo(SkynetGuiPlugin.class, "Created edit change listener", true);
+               OSEELog.logInfo(SkynetGuiPlugin.class, "Created edit change listener", false);
 
                workingFolder = OseeData.getFolder(".working");
                // Set the visitor to this directory

@@ -1660,6 +1660,31 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       if (otherArtifact == null) {
          return -1;
       }
-      return getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
+
+      int diff = getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
+      if (diff == 0) {
+         // include art_id when the artifact names are equal in case the artifacts are different artifacts
+         return getArtId() - otherArtifact.getArtId();
+      }
+      return diff;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      return 31 * getArtId() + ((getDescriptiveName() == null) ? 0 : getDescriptiveName().hashCode());
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof Artifact) {
+         return compareTo((Artifact) obj) == 0;
+      }
+      return false;
    }
 }
