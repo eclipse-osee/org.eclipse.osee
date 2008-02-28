@@ -29,7 +29,7 @@ public class SearchNavigateItem extends XNavigateItem {
       this.wsi = wsi;
    }
 
-   public WorldSearchItem getWsi() {
+   public WorldSearchItem getWorldSearchItem() {
       return wsi;
    }
 

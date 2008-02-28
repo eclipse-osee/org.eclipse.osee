@@ -48,8 +48,14 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
             "<" + user.getUserId() + ">", Operator.CONTAINS));
+      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
+            "<" + user.getUserId() + ">", Operator.CONTAINS));
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "userId>" + user.getUserId() + "<userId", Operator.CONTAINS));
+            "userId>" + user.getUserId() + "</userId", Operator.CONTAINS));
+      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
+            "user>" + user.getUserId() + "</user", Operator.CONTAINS));
+      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
+            "userId=\"" + user.getUserId() + "\"", Operator.CONTAINS));
       FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
 
       List<ISearchPrimitive> smaArtifactTypeCriteria = new LinkedList<ISearchPrimitive>();

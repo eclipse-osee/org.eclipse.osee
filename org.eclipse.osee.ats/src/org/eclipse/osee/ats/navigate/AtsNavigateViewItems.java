@@ -144,7 +144,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new SearchNavigateItem(otherItems, new MySubscribedSearchItem("User's Subscribed"));
       new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - InWork", null, ReviewState.InWork));
       new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - All", null, ReviewState.All));
-      new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch("User's All", null));
+      if (AtsPlugin.isAtsAdmin()) new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch(
+            "User's All - Admin Only", null, LoadView.WorldView));
       items.add(otherItems);
 
       items.add(new SearchNavigateItem(null, new GroupWorldSearchItem()));

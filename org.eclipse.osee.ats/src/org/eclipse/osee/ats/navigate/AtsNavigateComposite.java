@@ -52,7 +52,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
       if (!sel.iterator().hasNext()) return;
       XNavigateItem item = (XNavigateItem) sel.iterator().next();
       if (item instanceof SearchNavigateItem) {
-         WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWsi();
+         WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWorldSearchItem();
          if (worldSearchItem.getLoadView() == LoadView.WorldView)
             openWorld(worldSearchItem);
          else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) openTaskEditor(worldSearchItem);
