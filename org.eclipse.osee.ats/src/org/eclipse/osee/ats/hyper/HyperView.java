@@ -780,7 +780,7 @@ public class HyperView extends ViewPart implements IPartListener {
                         if (art instanceof StateMachineArtifact) SMAEditor.close((StateMachineArtifact) art, false);
                         try {
                            art.delete();
-                        } catch (SQLException ex) {
+                        } catch (Exception ex) {
                            OSEELog.logException(AtsPlugin.class, ex, true);
                         }
                      }
