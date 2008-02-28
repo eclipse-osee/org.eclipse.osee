@@ -1032,7 +1032,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * 
     * @throws SQLException
     */
-   public void delete() throws SQLException {
+   public void delete() throws Exception {
       checkDeleted();
 
       artifactManager.deleteArtifact(this);
@@ -1664,7 +1664,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       int diff = getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
       if (diff == 0) {
          // include art_id when the artifact names are equal in case the artifacts are different artifacts
-         return getArtId() - otherArtifact.getArtId();
+         return guid.hashCode() - otherArtifact.getGuid().hashCode();
       }
       return diff;
    }
@@ -1674,7 +1674,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     */
    @Override
    public int hashCode() {
-      return 31 * getArtId() + ((getDescriptiveName() == null) ? 0 : getDescriptiveName().hashCode());
+      return 31 * guid.hashCode() + ((getDescriptiveName() == null) ? 0 : getDescriptiveName().hashCode());
    }
 
    /* (non-Javadoc)
