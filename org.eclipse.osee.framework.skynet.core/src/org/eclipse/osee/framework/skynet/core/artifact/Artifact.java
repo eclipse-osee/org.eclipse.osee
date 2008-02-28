@@ -1657,9 +1657,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @see java.lang.Comparable#compareTo(java.lang.Object)
     */
    public int compareTo(Artifact otherArtifact) {
-      if (otherArtifact == null) {
+      if (otherArtifact == null || otherArtifact.isDeleted()) {
          return -1;
-      }
+      } else if (this.isDeleted()) return 1;
 
       int diff = getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
       if (diff == 0) {
@@ -1674,7 +1674,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     */
    @Override
    public int hashCode() {
-      return 31 * guid.hashCode() + ((getDescriptiveName() == null) ? 0 : getDescriptiveName().hashCode());
+      return 31 * guid.hashCode();
    }
 
    /* (non-Javadoc)
