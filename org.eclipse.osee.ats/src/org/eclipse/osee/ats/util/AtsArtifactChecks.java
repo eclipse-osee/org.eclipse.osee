@@ -104,7 +104,8 @@ public class AtsArtifactChecks implements IArtifactCheck {
       for (User user : users) {
          UserRelatedToAtsObjectSearch srch = new UserRelatedToAtsObjectSearch("User search", user, LoadView.None);
          if (srch.performSearchGetResults().size() > 0) return new Result(
-               "User id: \"" + user.getUserId() + "\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.");
+               "User name: \"" + user.getDescriptiveName() + "\" userId: \"" + user.getUserId() + "\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.");
+
       }
       return Result.TrueResult;
    }

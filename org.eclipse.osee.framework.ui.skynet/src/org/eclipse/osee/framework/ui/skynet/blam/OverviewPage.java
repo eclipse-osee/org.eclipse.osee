@@ -136,15 +136,15 @@ public class OverviewPage extends FormPage implements IActionable {
       PlatformUI.getWorkbench().getHelpSystem().setHelp(body, IHelpContextIds.MAIN_WORKFLOW_PAGE);
 
       createUsageSection(body);
-      createParametersSection(body);
       createOutputSection(body);
+      createParametersSection(body);
    }
 
    private void createUsageSection(Composite body) {
       Section section = toolkit.createSection(body, Section.TWISTIE | Section.TITLE_BAR);
       section.setText("Description and Usage");
       section.setExpanded(true);
-      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       toolkit.addHelpLinkToSection(section, "/org.eclipse.pde.doc.user/guide/pde_running.htm");
 
       FormText formText = toolkit.createFormText(section, true);
@@ -167,7 +167,7 @@ public class OverviewPage extends FormPage implements IActionable {
       Section section = toolkit.createSection(body, Section.TWISTIE | Section.TITLE_BAR);
       section.setText("Output");
       section.setExpanded(true);
-      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       Composite outputContainer = toolkit.createClientContainer(section, 2);
 

@@ -37,6 +37,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
          overviewPage = new OverviewPage(this);
          addPage(overviewPage);
          addPage(new WorkflowDataPage(this, overviewPage));
+         setPartName("BLAM: " + getWorkflow().getDescriptiveName());
+         setTitleImage(SkynetGuiPlugin.getInstance().getImage("blam.gif"));
       } catch (PartInitException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

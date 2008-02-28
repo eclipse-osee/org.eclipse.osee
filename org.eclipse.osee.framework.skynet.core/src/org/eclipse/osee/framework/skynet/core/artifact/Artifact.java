@@ -1244,7 +1244,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public String getVersionedName() {
       String name = getDescriptiveName();
 
-      if (memo != null && !memo.getTransactionId().isEditable()) name += " (" + memo.getTransactionNumber() + ")";
+      if (memo != null && !memo.getTransactionId().isEditable()) name +=
+            " (Revision:" + memo.getTransactionNumber() + ")";
 
       return name;
    }

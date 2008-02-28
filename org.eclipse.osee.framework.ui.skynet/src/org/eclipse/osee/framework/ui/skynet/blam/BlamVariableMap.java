@@ -80,7 +80,9 @@ public class BlamVariableMap {
    }
 
    public List<Artifact> getArtifacts(String parameterName) {
-      return new ArrayList<Artifact>(getCollection(Artifact.class, parameterName));
+      Collection<Artifact> arts = getCollection(Artifact.class, parameterName);
+      if (arts == null) return new ArrayList<Artifact>();
+      return new ArrayList<Artifact>(arts);
    }
 
    public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(String parameterName) {
