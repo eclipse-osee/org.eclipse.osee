@@ -43,7 +43,7 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations");
-      for (BlamOperation blamOperation : BlamOperations.getBlamOperations()) {
+      for (BlamOperation blamOperation : BlamOperations.getBlamOperationsNameSort()) {
          new XNavigateItemBlam(blamOperationItems, blamOperation);
       }
       items.add(blamOperationItems);

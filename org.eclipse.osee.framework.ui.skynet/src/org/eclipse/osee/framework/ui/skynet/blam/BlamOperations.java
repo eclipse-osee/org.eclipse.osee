@@ -6,8 +6,11 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -20,6 +23,22 @@ import org.osgi.framework.Bundle;
  * @author Donald G. Dunne
  */
 public class BlamOperations {
+   private static List<BlamOperation> blamsSortedByName;
+
+   public static Collection<BlamOperation> getBlamOperationsNameSort() {
+      if (blamsSortedByName == null) {
+         blamsSortedByName = new ArrayList<BlamOperation>();
+         Map<String, BlamOperation> blamMap = new HashMap<String, BlamOperation>();
+         for (BlamOperation blam : getBlamOperations()) {
+            blamMap.put(blam.getClass().getSimpleName(), blam);
+         }
+         String names[] = blamMap.keySet().toArray(new String[blamMap.keySet().size()]);
+         Arrays.sort(names);
+         for (String name : names)
+            blamsSortedByName.add(blamMap.get(name));
+      }
+      return blamsSortedByName;
+   }
 
    public static Collection<BlamOperation> getBlamOperations() {
       List<BlamOperation> blamOperations = new ArrayList<BlamOperation>();
