@@ -40,6 +40,10 @@ public class XNavigateItem {
       children.add(item);
    }
 
+   public void removeChild(XNavigateItem item) {
+      children.remove(item);
+   }
+
    public List<XNavigateItem> getChildren() {
       return children;
    }
