@@ -41,7 +41,7 @@ public class OpenInArtifactEditorOperation extends WorkPageService {
          }
       };
       action.setToolTipText(getName());
-      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("laser_16_16.gif"));
+      action.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("artifact_editor.gif"));
       return action;
    }
 
