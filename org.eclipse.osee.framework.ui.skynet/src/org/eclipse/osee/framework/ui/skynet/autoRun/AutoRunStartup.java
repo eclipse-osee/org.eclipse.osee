@@ -129,7 +129,7 @@ public class AutoRunStartup implements IStartup {
                resultData.getReport("AutoRunTaskId=\"" + autoRunTaskId + "\"", Manipulations.ALL,
                      Manipulations.ERROR_WARNING_HEADER);
          String htmlBody =
-               "<b><font color='red'>Exception Occurred</font></b>: " + ex.getLocalizedMessage() + " (see end for full trace)<br>Output:\n\n" + page.getManipulatedHtml() + "\n\nException:\n\n" + Lib.exceptionToString(ex);
+               "<b><font color='red'>Exception Occurred</font></b>: \"" + ex.getLocalizedMessage() + "\" (see end for full trace)<br>Output:\n\n" + page.getManipulatedHtml() + "\n\nException:\n\n" + Lib.exceptionToString(ex);
          AEmail emailMessage =
                new AEmail(autoRunTask.getNotificationEmailAddresses(),
                      SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(),
