@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.health;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -114,7 +115,8 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction imp
       User unAssignedUser = SkynetAuthentication.getInstance().getUser(UserEnum.UnAssigned);
       User noOneUser = SkynetAuthentication.getInstance().getUser(UserEnum.NoOne);
 
-      for (Artifact art : StateMachineArtifact.getAllSMATypeArtifacts()) {
+      Collection<Artifact> arts = StateMachineArtifact.getAllSMATypeArtifacts();
+      for (Artifact art : arts) {
          StateMachineArtifact sma = (StateMachineArtifact) art;
          SMAManager smaMgr = new SMAManager(sma);
          if (smaMgr.getAssignees().size() > 1) {
@@ -143,6 +145,7 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction imp
             sma.persistAttributes();
          }
       }
+      rd.log("Completed processing " + arts.size() + " artifacts.");
    }
 
    /* (non-Javadoc)

@@ -138,6 +138,7 @@ public class AssignedActiveActions extends XNavigateItemAutoRunAction implements
             rd.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " In Work without assignees");
          }
       }
+      rd.log("Completed processing " + artifacts.size() + " artifacts.");
    }
 
    /* (non-Javadoc)

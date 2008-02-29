@@ -109,6 +109,7 @@ public class OrphanedTasks extends XNavigateItemAutoRunAction implements IAutoRu
             rd.logError("Orphaned => " + taskArt.getHumanReadableId());
          }
       }
+      rd.log("Completed processing " + arts.size() + " artifacts.");
       return orphanedTasks;
    }
 

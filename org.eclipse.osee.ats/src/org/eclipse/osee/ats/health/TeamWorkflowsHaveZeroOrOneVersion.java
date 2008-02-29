@@ -136,6 +136,7 @@ public class TeamWorkflowsHaveZeroOrOneVersion extends XNavigateItemAutoRunActio
                      RelationSide.TeamWorkflowTargetedForVersion_Version).size() + " versions");
             }
          }
+         rd.log("Completed processing " + arts.size() + " artifacts.");
          rd.report(jobName);
       }
    }

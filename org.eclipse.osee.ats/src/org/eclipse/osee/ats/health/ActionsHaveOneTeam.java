@@ -122,6 +122,7 @@ public class ActionsHaveOneTeam extends XNavigateItemAutoRunAction implements IA
             rd.logError("Team " + art.getHumanReadableId() + " has no parent Action\n" + ex.getLocalizedMessage() + "\n");
          }
       }
+      rd.log("Completed processing " + artifacts.size() + " artifacts.");
    }
 
    /* (non-Javadoc)

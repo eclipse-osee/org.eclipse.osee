@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.health;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -86,8 +87,10 @@ public class DuplicateUsersItem extends XNavigateItemAutoRunAction implements IA
 
    private void runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
       Set<User> users = new HashSet<User>();
-      for (Artifact user : ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName("User",
-            BranchPersistenceManager.getInstance().getAtsBranch())) {
+      Collection<Artifact> userArts =
+            ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName("User",
+                  BranchPersistenceManager.getInstance().getAtsBranch());
+      for (Artifact user : userArts) {
          if (!users.add((User) user)) {
             User otherUser = null;
             for (User userArt : users)
@@ -98,6 +101,7 @@ public class DuplicateUsersItem extends XNavigateItemAutoRunAction implements IA
             rd.logError("Duplicate User => " + ((User) user).getUserId() + " " + user.getHumanReadableId() + " and " + otherUser.getUserId() + " " + otherUser.getHumanReadableId());
          }
       }
+      rd.log("Completed processing " + userArts.size() + " artifacts.");
    }
 
    /* (non-Javadoc)
@@ -140,6 +144,13 @@ public class DuplicateUsersItem extends XNavigateItemAutoRunAction implements IA
     */
    public void startTasks(XResultData resultData) throws Exception {
       runIt(null, resultData);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.util.IAutoRunTask#getNotificationEmailAddresses()
+    */
+   public String[] getNotificationEmailAddresses() {
+      return new String[] {"donald.g.dunne@boeing.com, ryan.d.brooks@boeing.com"};
    }
 
 }

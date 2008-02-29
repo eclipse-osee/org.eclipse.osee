@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.health.ActionsHaveOneTeam;
 import org.eclipse.osee.ats.health.AssignedActiveActions;
 import org.eclipse.osee.ats.health.AttributeDuplication;
 import org.eclipse.osee.ats.health.DuplicateUsersItem;
-import org.eclipse.osee.ats.health.InvalidEstimatedHoursAttribute;
 import org.eclipse.osee.ats.health.OrphanedTasks;
 import org.eclipse.osee.ats.health.TeamWorkflowsHaveZeroOrOneVersion;
 import org.eclipse.osee.ats.health.UnAssignedAssignedAtsObjects;
@@ -144,7 +143,6 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
       new AttributeDuplication(healthItems);
       new OrphanedTasks(healthItems);
-      new InvalidEstimatedHoursAttribute(healthItems);
       new ActionsHaveOneTeam(healthItems);
       new AssignedActiveActions(healthItems);
       new DuplicateUsersItem(healthItems);
