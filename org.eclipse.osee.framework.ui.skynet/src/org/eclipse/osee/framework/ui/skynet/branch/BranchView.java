@@ -106,18 +106,26 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.osee.framework.ui.swt.ColumnSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TreeEditor;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
@@ -144,12 +152,13 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    private static final String FLAT_KEY = "flat";
    private static final String[] columnNames = {"", "Short Name", "Time Stamp", "Author", "Comment"};
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchView.class);
-
    private IHandlerService handlerService;
    private final IPreferencesService preferencesService;
    private IPreferenceChangeListener preferenceChangeListener = null;
-
    private TreeViewer branchTable;
+   private TreeEditor myTreeEditor;
+   private Text myTextBeingRenamed;
+   final Color myYellowColor = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
    private Text filterText;
    private BranchNameFilter nameFilter;
    private FavoritesSorter sorter;
@@ -261,6 +270,11 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       SkynetEventManager.getInstance().register(AuthenticationEvent.class, this);
 
       setHelpContexts();
+      myTreeEditor = new TreeEditor(branchTable.getTree());
+      myTreeEditor.horizontalAlignment = SWT.LEFT;
+      myTreeEditor.grabHorizontal = true;
+      myTreeEditor.minimumWidth = 50;
+
    }
 
    protected void createActions() {
@@ -323,7 +337,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       createDeleteBranchCommand(menuManager);
       createDeleteTransactionCommand(menuManager);
       createMoveTransactionCommand(menuManager);
-      createRenameBranchCommand(menuManager);
+      createRenameBranchMenuItem(menuManager);
       createSetBranchShortNameCommand(menuManager);
       createSetAssociatedArtifactCommand(menuManager);
       createOpenAssociatedArtifactCommand(menuManager);
@@ -351,98 +365,100 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       loadPreferences();
    }
 
-  class BranchArtifact implements IBranchArtifact{
+   class BranchArtifact implements IBranchArtifact {
 
-	  private Branch branch;
-	  
-	  public BranchArtifact(Branch branch){
-		  this.branch = branch;
-	  }
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getArtifact()
-	 */
-	public Artifact getArtifact() {
-		try {
-			return branch.getAssociatedArtifact();
-		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, ex.toString(), ex);
-		}
-		return null;
-	}
+      private Branch branch;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getWorkingBranch()
-	 */
-	public Branch getWorkingBranch() throws IllegalStateException, SQLException {
-		return branch;
-	}
-	
-}
-private void createMergeViewCommand(MenuManager menuManager) {
-    CommandContributionItem accessControlCommand =
+      public BranchArtifact(Branch branch) {
+         this.branch = branch;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getArtifact()
+       */
+      public Artifact getArtifact() {
+         try {
+            return branch.getAssociatedArtifact();
+         } catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
+         }
+         return null;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getWorkingBranch()
+       */
+      public Branch getWorkingBranch() throws IllegalStateException, SQLException {
+         return branch;
+      }
+
+   }
+
+   private void createMergeViewCommand(MenuManager menuManager) {
+      CommandContributionItem accessControlCommand =
         Commands.getLocalCommandContribution(getSite(), "mergeViewCommand", "Experimental Only -Merge View- Not For Production", null, null,
               null, "M", null, null);
-  menuManager.add(accessControlCommand);
+      menuManager.add(accessControlCommand);
 
-  handlerService.activateHandler(accessControlCommand.getId(),
+      handlerService.activateHandler(accessControlCommand.getId(),
 
-  new AbstractSelectionEnabledHandler(menuManager) {
-     @Override
-     public Object execute(ExecutionEvent event) throws ExecutionException {
-        IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-        Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-        try {
-           if (selectedBranch != null) {
-        	   Conflict[] transactionArtifactChanges = new Conflict[0];
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+            Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+            try {
+               if (selectedBranch != null) {
+                  Conflict[] transactionArtifactChanges = new Conflict[0];
         	   MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(selectedBranch, selectedBranch.getParentBranch(), TransactionIdManager.getInstance().getStartEndPoint(selectedBranch).getKey()).toArray(transactionArtifactChanges));
-           }
-        } catch (Exception ex) {
-           logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        }
+               }
+            } catch (Exception ex) {
+               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
 
-        return null;
-     }
+            return null;
+         }
 
-     @Override
-     public boolean isEnabled() {
-    	 return true;
-     }
-  });
-}
+         @Override
+         public boolean isEnabled() {
+            return true;
+         }
+      });
+   }
 
-private void createChangeViewCommand(MenuManager menuManager) {
-    CommandContributionItem accessControlCommand =
+   private void createChangeViewCommand(MenuManager menuManager) {
+      CommandContributionItem accessControlCommand =
         Commands.getLocalCommandContribution(getSite(), "change2ViewCommand", "Experimental Use Only -New Change Report- Not For Production", null, null,
               null, "M", null, null);
-  menuManager.add(accessControlCommand);
+      menuManager.add(accessControlCommand);
 
-  handlerService.activateHandler(accessControlCommand.getId(),
+      handlerService.activateHandler(accessControlCommand.getId(),
 
-  new AbstractSelectionEnabledHandler(menuManager) {
-     @Override
-     public Object execute(ExecutionEvent event) throws ExecutionException {
-        IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-        Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-        try {
-           if (selectedBranch != null) {
-        	   Change[] changes = new Change[0];
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+            Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+            try {
+               if (selectedBranch != null) {
+                  Change[] changes = new Change[0];
         	   ChangeView.openViewUpon(RevisionManager.getInstance().getArtifactChanges(selectedBranch).toArray(changes));
-           }
-        } catch (Exception ex) {
-           logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        }
+               }
+            } catch (Exception ex) {
+               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
 
-        return null;
-     }
+            return null;
+         }
 
-     @Override
-     public boolean isEnabled() {
-    	 return true;
-     }
-  });
-}
+         @Override
+         public boolean isEnabled() {
+            return true;
+         }
+      });
+   }
 
-private Preferences getViewPreference() {
+   private Preferences getViewPreference() {
       return preferencesService.getRootNode().node(InstanceScope.SCOPE).node(VIEW_ID);
    }
 
@@ -715,56 +731,71 @@ private Preferences getViewPreference() {
       });
    }
 
-   private void createRenameBranchCommand(MenuManager menuManager) {
-      CommandContributionItem renameBranchCommand =
-            Commands.getLocalCommandContribution(getSite(), "renameBranchCommand", "Rename Branch", null, null, null,
+   private void createRenameBranchMenuItem(MenuManager menuManager) {
+      CommandContributionItem renameBranchCommand2 =
+            Commands.getLocalCommandContribution(getSite(), "renameBranchCommand2", "Rename Branch", null, null, null,
                   null, null, null);
-      menuManager.add(renameBranchCommand);
-
-      handlerService.activateHandler(renameBranchCommand.getId(),
+      menuManager.add(renameBranchCommand2);
+      handlerService.activateHandler(renameBranchCommand2.getId(),
 
       new AbstractSelectionEnabledHandler(menuManager) {
-         @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-
-            IInputValidator inputValidator = new IInputValidator() {
-               public String isValid(String newText) {
-                  if (newText == null || newText.length() == 0) {
-                     return "The new branch name must not be blank"; // return error message
-                  }
-                  if (newText.length() > SkynetDatabase.BRANCH_NAME_SIZE) {
-                     return "The new branch name must not be longer than " + SkynetDatabase.BRANCH_NAME_SIZE + " characters"; // return
-                     // error
-                     // message
-                  }
-                  return null; // to indicate the input is valid
-               }
-            };
-            InputDialog dialog =
-                  new InputDialog(Display.getCurrent().getActiveShell(), "Rename Branch", "Enter new branch name",
-                        selectedBranch.getBranchName(), inputValidator);
-
-            if (dialog.open() != Window.CANCEL) {
-               try {
-                  selectedBranch.rename(dialog.getValue());
-               } catch (SQLException ex) {
-                  MessageDialog.openError(Display.getCurrent().getActiveShell(), "Error Renaming Branch",
-                        ex.getMessage());
-                  logger.log(Level.SEVERE, ex.toString(), ex);
-               }
-               refresh();
+            final Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+            TreeItem[] myTreeItemsSelected = branchTable.getTree().getSelection();
+            if (myTreeItemsSelected.length != 1) {
+               return null;
             }
+            final TreeItem myTreeItem = myTreeItemsSelected[0];
+            Control oldEditor = myTreeEditor.getEditor();
+            if (oldEditor != null) {
+               oldEditor.dispose();
+            }
+            myTextBeingRenamed = new Text(branchTable.getTree(), SWT.BORDER);
+            myTextBeingRenamed.setBackground(myYellowColor);
+            myTextBeingRenamed.setText(selectedBranch.getBranchName());
+            myTextBeingRenamed.addFocusListener(new FocusAdapter() {
+               public void focusLost(FocusEvent e) {
+                  updateText(myTextBeingRenamed.getText(), selectedBranch);
+                  myTextBeingRenamed.dispose();
+               }
+
+               public void focusGained(FocusEvent e) {
+               }
+            });
+            myTextBeingRenamed.addKeyListener(new KeyAdapter() {
+               public void keyReleased(KeyEvent e) {
+                  if ((e.character == SWT.CR)) {
+                     updateText(myTextBeingRenamed.getText(), selectedBranch);
+                     myTextBeingRenamed.dispose();
+                  } else if (e.keyCode == SWT.ESC) {
+                     myTextBeingRenamed.dispose();
+                  }
+               }
+            });
+            myTextBeingRenamed.selectAll();
+            myTextBeingRenamed.setFocus();
+            myTreeEditor.setEditor(myTextBeingRenamed, myTreeItem);
             return null;
+         }
+
+         private void updateText(String newLabel, Branch selectedBranch) {
+            selectedBranch.setBranchName(newLabel);
+            try {
+               selectedBranch.rename(newLabel);
+            } catch (SQLException mySQLException) {
+               mySQLException.printStackTrace();
+            }
+            branchTable.refresh();
          }
 
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return SkynetSelections.oneBranchSelected(selection);
+            return OseeProperties.getInstance().isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getInstance().getDefaultBranch();
          }
       });
+
    }
 
    private void createSetBranchShortNameCommand(MenuManager menuManager) {
