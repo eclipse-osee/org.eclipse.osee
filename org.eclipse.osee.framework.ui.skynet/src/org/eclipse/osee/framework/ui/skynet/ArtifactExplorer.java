@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.ArtifactVersionIncrementedEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
@@ -98,9 +100,13 @@ import org.eclipse.osee.framework.ui.swt.MenuItems;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MenuEvent;
@@ -108,6 +114,7 @@ import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -119,6 +126,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IMemento;
@@ -136,6 +144,7 @@ import org.eclipse.ui.part.ViewPart;
 public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActionable, ISelectionProvider {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactExplorer.class);
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
+   private static AccessControlManager accessManager = AccessControlManager.getInstance();
    private static final Image ACCESS_DENIED_IMAGE = SkynetGuiPlugin.getInstance().getImage("lockkey.gif");
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
@@ -156,8 +165,13 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    private MenuItem goIntoMenuItem;
    private MenuItem copyMenuItem;
    private MenuItem pasteMenuItem;
+   private MenuItem renameArtifactMenuItem;
    private NeedArtifactMenuListener needArtifactListener;
    private NeedProjectMenuListener needProjectListener;
+   private Tree myTree; 
+   private TreeEditor myTreeEditor; 
+   private Text myTextBeingRenamed; 
+   final Color myYellowColor = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW); 
    private Action showArtIds;
    private Action showArtType;
    private Action newArtifactExplorer;
@@ -244,6 +258,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       branchUnreadableWarning = createDefaultWarning(stackComposite);
 
       treeViewer = new TreeViewer(stackComposite);
+      myTree = treeViewer.getTree();
       Tree tree = treeViewer.getTree();
       treeViewer.setContentProvider(new ArtifactContentProvider(this));
       treeViewer.setLabelProvider(new ArtifactLabelProvider(this));
@@ -335,6 +350,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       createSkywalkerMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       new GlobalMenu(popupMenu, globalMenuHelper);
+      createRenameArtifactMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createReportMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -351,6 +367,11 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createAccessControlMenuItem(popupMenu);
       treeViewer.getTree().setMenu(popupMenu);
+      myTreeEditor = new TreeEditor(myTree); 
+      myTreeEditor.horizontalAlignment = SWT.LEFT; 
+      myTreeEditor.grabHorizontal = true; 
+      myTreeEditor.minimumWidth = 50; 
+
    }
 
    protected void createUpAction() {
@@ -652,6 +673,87 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             MassArtifactEditor.editArtifacts("", selectedItems);
          }
       });
+   }
+
+   private void createRenameArtifactMenuItem(Menu parentMenu) {
+      renameArtifactMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      renameArtifactMenuItem.setText("Rename Artifact");
+      needArtifactListener.add(renameArtifactMenuItem);
+
+      ArtifactMenuListener listener = new ArtifactMenuListener();
+      parentMenu.addMenuListener(listener);
+      renameArtifactMenuItem.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent mySelectionEvent) {
+            handleRenameArtifactSelectionEvent(mySelectionEvent);
+         }
+      });
+   }
+   
+   private void handleRenameArtifactSelectionEvent(SelectionEvent mySelectionEvent) {
+      // Clean up any previous editor control
+      Control oldEditor = myTreeEditor.getEditor();
+
+      if (oldEditor != null) {
+         oldEditor.dispose();
+      }
+
+      // Identify the selected row, only allow input if there is a single
+      // selected row
+      TreeItem[] selection = myTree.getSelection();
+
+      if (selection.length != 1) {
+         return;
+      }
+
+      final TreeItem myTreeItem = selection[0];
+
+      if (myTreeItem == null) {
+         return;
+      }
+      myTextBeingRenamed = new Text(myTree, SWT.BORDER);
+      myTextBeingRenamed.setBackground(myYellowColor);
+      myTextBeingRenamed.setText(myTreeItem.getText());
+      myTextBeingRenamed.addFocusListener(new FocusAdapter() {
+         public void focusLost(FocusEvent e) {
+            updateText(myTextBeingRenamed.getText(), myTreeItem);
+            myTextBeingRenamed.dispose();
+
+         }
+
+         public void focusGained(FocusEvent e) {
+         }
+      });
+
+      myTextBeingRenamed.addKeyListener(new KeyAdapter() {
+         public void keyReleased(KeyEvent e) {
+            if ((e.character == SWT.CR)) {
+               updateText(myTextBeingRenamed.getText(), myTreeItem);
+               myTextBeingRenamed.dispose();
+            } else if (e.keyCode == SWT.ESC) {
+               myTextBeingRenamed.dispose();
+            }
+         }
+      });
+      myTextBeingRenamed.selectAll();
+      myTextBeingRenamed.setFocus();
+      myTreeEditor.setEditor(myTextBeingRenamed, myTreeItem);
+   }
+
+   private void updateText(String newLabel, TreeItem item) {
+      myTreeEditor.getItem().setText(newLabel);
+      Object myTreeItemObject = item.getData();
+      if (myTreeItemObject instanceof Artifact) {
+         Artifact myArtifact = (Artifact) myTreeItemObject;
+         try {
+            myArtifact.setSoleAttributeValue("Name", newLabel);
+            myArtifact.persistAttributes();
+         } catch (SQLException mySQLException) {
+            mySQLException.printStackTrace();
+         }
+      }
+      treeViewer.refresh();
    }
 
    private void createSkywalkerMenuItem(Menu parentMenu) {
@@ -1383,4 +1485,24 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    private void setHelpContexts() {
       SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer");
    }
+   public class MenuEnablingListener implements MenuListener {
+
+      public void menuHidden(MenuEvent e) {
+      }
+
+      public void menuShown(MenuEvent e) {
+         TreeItem[] myTreeItems = myTree.getSelection();
+         if (myTreeItems.length != 1) {
+            renameArtifactMenuItem.setEnabled(false);
+            return;
+         }
+         Object myTreeItemObject = myTreeItems[0].getData();
+         if (myTreeItemObject instanceof Artifact) {
+            Artifact mySelectedArtifact = (Artifact) myTreeItemObject;
+            boolean writePermission = accessManager.checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
+            renameArtifactMenuItem.setEnabled(writePermission);
+         }
+      }
+   }
+
 }
