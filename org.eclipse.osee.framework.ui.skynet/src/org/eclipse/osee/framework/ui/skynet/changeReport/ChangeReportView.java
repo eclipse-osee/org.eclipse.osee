@@ -407,6 +407,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                try {
                   ((ChangeReportInput) input).setForceRefresh(true);
                   ((BranchContentProvider) changeTable.getContentProvider()).refresh(true);
+                  refreshContentDescription();
                   changeTable.refresh();
                } catch (IllegalStateException ex) {
                   OSEELog.logException(getClass(), ex, true);
@@ -1011,6 +1012,17 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          }
       });
    }
+   
+  public void refreshContentDescription() { 
+       int baseNum = this.baseTransactionId.getTransactionNumber(); 
+       int toNum = this.toTransactionId.getTransactionNumber(); 
+       if (this.baseParentTransactionId == null) { 
+          setContentDescription("Changes on " + this.baseTransactionId.getBranch().getBranchName() + " from transaction " + baseNum + " to transaction " + toNum + " at " + new Date()); 
+       } else { 
+          setContentDescription("Changes on " + this.baseTransactionId.getBranch().getBranchName() + " from transaction " + baseNum + " to transaction " + toNum + " against " + baseParentTransactionId.getBranch() + ":" + baseParentTransactionId.getTransactionNumber() + " at " + new Date()); 
+       } 
+    } 
+
 
    /**
     * Explores the changes on the branch.
