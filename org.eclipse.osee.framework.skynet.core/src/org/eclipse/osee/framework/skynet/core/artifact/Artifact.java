@@ -110,7 +110,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       // Make sure that the stack trace is available at debug time
       this.birthPlace.getStackTrace();
 
-      // System.out.println("%%%" + aaaSerialId);
       if (guid == null) {
          this.guid = GUID.generateGuidStr();
       } else {
@@ -1659,9 +1658,17 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public int compareTo(Artifact otherArtifact) {
       if (otherArtifact == null || otherArtifact.isDeleted()) {
          return -1;
-      } else if (this.isDeleted()) return 1;
+      } else if (this.isDeleted()) {
+         return 1;
+      }
 
-      int diff = getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
+      int diff;
+      try {
+         diff = getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
+      } catch (Exception ex) {
+         diff = 0;
+      }
+
       if (diff == 0) {
          // include art_id when the artifact names are equal in case the artifacts are different artifacts
          return guid.hashCode() - otherArtifact.getGuid().hashCode();
