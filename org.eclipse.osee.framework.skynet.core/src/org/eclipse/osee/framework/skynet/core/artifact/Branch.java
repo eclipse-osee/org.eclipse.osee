@@ -229,7 +229,9 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof Branch) return ((Branch) obj).branchId == branchId;
+      if (obj instanceof Branch) {
+         return ((Branch) obj).branchId == branchId;
+      }
 
       return false;
    }

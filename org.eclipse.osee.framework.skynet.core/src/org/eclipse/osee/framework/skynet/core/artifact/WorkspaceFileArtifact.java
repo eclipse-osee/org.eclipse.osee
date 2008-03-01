@@ -58,7 +58,7 @@ public class WorkspaceFileArtifact extends Artifact {
       else if (artifacts.isEmpty()) {
          try {
             Collection<ArtifactSubtypeDescriptor> descriptors =
-                  configurationPersistenceManager.getArtifactSubtypeDescriptorsForAttribute(configurationPersistenceManager.getDynamicAttributeType(
+                  configurationPersistenceManager.getArtifactTypesFromAttributeType(configurationPersistenceManager.getDynamicAttributeType(
                         "Content URL"));
             dialog =
                   new ArtifactDescriptorDialog(

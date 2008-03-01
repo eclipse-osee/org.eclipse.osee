@@ -325,8 +325,12 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       }
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getArtifactSubtypeDescriptorsForAttribute(DynamicAttributeDescriptor attributeType) throws SQLException {
-      return cacheAttributeTypeValidity.getArtifactSubtypeDescriptorsForAttribute(attributeType);
+   public Collection<ArtifactSubtypeDescriptor> getArtifactTypesFromAttributeType(DynamicAttributeDescriptor attributeType) throws SQLException {
+      return cacheAttributeTypeValidity.getArtifactTypesFromAttributeType(attributeType);
+   }
+
+   public Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor descriptor, Branch branch) throws SQLException {
+      return cacheAttributeTypeValidity.getAttributeTypesFromArtifactType(descriptor, branch);
    }
 
    public Collection<ArtifactSubtypeDescriptor> getValidArtifactTypes(Branch branch) throws SQLException {
@@ -356,10 +360,6 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
 
    public Collection<DynamicAttributeDescriptor> getDynamicAttributeDescriptors(Branch branch) throws SQLException {
       return cacheDynamicAttributeDescriptors.getAllDescriptors(branch);
-   }
-
-   public Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor descriptor) throws SQLException {
-      return cacheAttributeTypeValidity.getValidAttributeDescriptors(descriptor);
    }
 
    public Set<String> getValidEnumerationAttributeValues(String attributeName, Branch branch) {

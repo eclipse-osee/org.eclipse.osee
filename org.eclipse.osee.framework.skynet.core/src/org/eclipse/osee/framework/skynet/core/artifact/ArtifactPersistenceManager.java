@@ -784,7 +784,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       DynamicAttributeManager attributeManager;
 
       Collection<DynamicAttributeDescriptor> attributeTypeDescriptors =
-            configurationPersistenceManager.getAttributeTypesFromArtifactType(artifact.getDescriptor());
+            configurationPersistenceManager.getAttributeTypesFromArtifactType(artifact.getDescriptor(),
+                  artifact.getBranch());
       for (DynamicAttributeDescriptor attributeType : attributeTypeDescriptors) {
          attributeManager = attributeType.createAttributeManager(artifact, false);
          attributeManager.setupForInitialization(false);
@@ -909,7 +910,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       DynamicAttributeManager attributeManager;
 
       for (Artifact artifact : artifacts) {
-         for (DynamicAttributeDescriptor attributeType : configurationPersistenceManager.getAttributeTypesFromArtifactType(artifact.getDescriptor())) {
+         for (DynamicAttributeDescriptor attributeType : configurationPersistenceManager.getAttributeTypesFromArtifactType(
+               artifact.getDescriptor(), artifact.getBranch())) {
             attributeManager = attributeType.createAttributeManager(artifact, false);
             attributeManager.setupForInitialization(false);
             typeHash.put(artifact.getArtId(), attributeType.getAttrTypeId(), attributeManager);

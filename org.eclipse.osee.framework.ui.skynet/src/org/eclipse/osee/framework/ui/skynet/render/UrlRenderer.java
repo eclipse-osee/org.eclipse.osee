@@ -37,7 +37,7 @@ public class UrlRenderer extends Renderer {
    public UrlRenderer() {
       try {
          descriptors =
-               configurationPersistenceManager.getArtifactSubtypeDescriptorsForAttribute(configurationPersistenceManager.getDynamicAttributeType(
+               configurationPersistenceManager.getArtifactTypesFromAttributeType(configurationPersistenceManager.getDynamicAttributeType(
                      "Content URL"));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, "", ex);

@@ -1589,7 +1589,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
             "Can't perform attribute initialization on artifacts with loaded attributes");
 
       Collection<DynamicAttributeDescriptor> attributeTypeDescriptors =
-            configurationPersistenceManager.getAttributeTypesFromArtifactType(getDescriptor());
+            configurationPersistenceManager.getAttributeTypesFromArtifactType(getDescriptor(), branch);
       Collection<DynamicAttributeManager> attributes =
             new ArrayList<DynamicAttributeManager>(attributeTypeDescriptors.size());
 

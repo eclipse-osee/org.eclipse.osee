@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -23,7 +22,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -38,9 +37,7 @@ import org.eclipse.ui.IWorkbench;
  * @author Ryan D. Brooks
  */
 public class ArtifactImportWizard extends Wizard implements IImportWizard {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactImportWizard.class);
    private static final String TITLE = "Import artifacts into Define";
-
    private ArtifactImportPage mainPage;
    private AttributeTypePage attributeTypePage;
    private OutlineContentHandlerPage handlerPage;
@@ -153,26 +150,24 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
             ArtifactSubtypeDescriptor importDescriptor = mainPage.getSelectedType();
 
             HashSet<DynamicAttributeDescriptor> rootAttributes =
-                  new HashSet<DynamicAttributeDescriptor>(manager.getAttributeTypesFromArtifactType(rootDescriptor));
+                  new HashSet<DynamicAttributeDescriptor>(manager.getAttributeTypesFromArtifactType(rootDescriptor,
+                        mainPage.getSelectedBranch()));
 
             if (rootDescriptor == importDescriptor) {
                attributeTypePage.setDescription("Identifying attributes for " + rootDescriptor.getName() + " artifacts");
                attributeTypePage.setDescriptors(rootAttributes);
             } else {
                HashSet<DynamicAttributeDescriptor> importAttributes =
-                     new HashSet<DynamicAttributeDescriptor>(
-                           manager.getAttributeTypesFromArtifactType(importDescriptor));
+                     new HashSet<DynamicAttributeDescriptor>(manager.getAttributeTypesFromArtifactType(
+                           importDescriptor, mainPage.getSelectedBranch()));
 
                attributeTypePage.setDescription("Identifying attributes common to " + rootDescriptor.getName() + " and " + importDescriptor.getName() + " artifacts");
 
                importAttributes.addAll(rootAttributes);
                attributeTypePage.setDescriptors(importAttributes);
-               // attributeTypePage.setDescriptors(Sets.intersect(rootAttributes,
-               // importAttributes));
-
             }
          } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
          return attributeTypePage;
       } else if (mainPage.isWordOutlineExtractor() && page != handlerPage) {

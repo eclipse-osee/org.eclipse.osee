@@ -88,7 +88,7 @@ public class ChangeArtifactType extends AbstractBlam {
       attributesToPurge = new LinkedList<Attribute>();
 
       Collection<DynamicAttributeDescriptor> descriptorAttrTypes =
-            configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor);
+            configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor, artifact.getBranch());
 
       for (DynamicAttributeManager attributeManager : artifact.getAttributes()) {
          if (!descriptorAttrTypes.contains(attributeManager.getDescriptor())) {

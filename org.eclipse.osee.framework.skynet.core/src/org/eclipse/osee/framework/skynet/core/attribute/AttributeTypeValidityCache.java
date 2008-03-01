@@ -17,19 +17,20 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
 
 /**
- * Caches the mapping of valid attribute types to artifact subtypes for which they are valid
+ * Caches the mapping of valid attribute types to artifact types for which they are valid
  * 
  * @see org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor
  * @author Ryan D. Brooks
  */
 public class AttributeTypeValidityCache {
    private static final String attributeValiditySql =
-         "SELECT art_type_id, attr_type_id FROM osee_define_valid_attributes order by art_type_id";
+         "SELECT art_type_id, attr_type_id FROM osee_define_valid_attributes";
    private final HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor> artifactToAttributeMap;
    private final HashCollection<DynamicAttributeDescriptor, ArtifactSubtypeDescriptor> attributeToartifactMap;
 
@@ -40,7 +41,7 @@ public class AttributeTypeValidityCache {
             new HashCollection<DynamicAttributeDescriptor, ArtifactSubtypeDescriptor>(false, TreeSet.class);
    }
 
-   public Collection<DynamicAttributeDescriptor> getValidAttributeDescriptors(ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
       ensurePopulated();
 
       Collection<DynamicAttributeDescriptor> attributeTypes = artifactToAttributeMap.getValues(artifactType);
@@ -48,8 +49,24 @@ public class AttributeTypeValidityCache {
          throw new IllegalArgumentException(
                "There are no valid attribute types available for the artifact type \"" + artifactType + "\"");
       }
+      //Partition attribute type id = 107, CSCI attribute type id = 695,
+      int rootBranchId = branch.getRootBranch().getBranchId();
+      if (rootBranchId == 2) {
+         removeAttributeType(attributeTypes, 695);
+      } else if (rootBranchId == 221) {
+         removeAttributeType(attributeTypes, 107);
+      }
 
       return attributeTypes;
+   }
+
+   private void removeAttributeType(Collection<DynamicAttributeDescriptor> attributeTypes, int attributeTypeId) {
+      for (DynamicAttributeDescriptor attributeType : attributeTypes) {
+         if (attributeType.getAttrTypeId() == attributeTypeId) {
+            attributeTypes.remove(attributeType);
+            return;
+         }
+      }
    }
 
    private synchronized void ensurePopulated() throws SQLException {
@@ -62,8 +79,6 @@ public class AttributeTypeValidityCache {
       ConnectionHandlerStatement chStmt = null;
       try {
          ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
-         HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor> map =
-               new HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor>(100);
 
          chStmt = ConnectionHandler.runPreparedQuery(attributeValiditySql);
          ResultSet rSet = chStmt.getRset();
@@ -86,7 +101,7 @@ public class AttributeTypeValidityCache {
       }
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getArtifactSubtypeDescriptorsForAttribute(DynamicAttributeDescriptor requestedAttributeType) throws SQLException {
+   public Collection<ArtifactSubtypeDescriptor> getArtifactTypesFromAttributeType(DynamicAttributeDescriptor requestedAttributeType) throws SQLException {
       ensurePopulated();
 
       Collection<ArtifactSubtypeDescriptor> artifactTypes = attributeToartifactMap.getValues(requestedAttributeType);
