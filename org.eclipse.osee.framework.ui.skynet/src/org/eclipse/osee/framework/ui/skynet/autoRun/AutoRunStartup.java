@@ -90,17 +90,7 @@ public class AutoRunStartup implements IStartup {
       }
 
       // Set emails to notify of results
-      Collection<String> emails = null;
-      // If notify parameter specified upon startup, override task configured emails
-      if (autoRunTaskNotify != null && !autoRunTaskNotify.equals(""))
-         emails = Collections.fromString(autoRunTaskNotify, ";");
-      // Else if task has configured emails, use those
-      else if (autoRunTask.getNotificationEmailAddresses().length > 0)
-         emails = Arrays.asList(autoRunTask.getNotificationEmailAddresses());
-      // Otherwise, default to the man, the myth, the legend
-      else
-         emails = Arrays.asList(new String[] {"donald.g.dunne@boeing.com"});
-
+      final Collection<String> emails = new ArrayList<String>();
       try {
 
          // Run the tasks that match the taskId
@@ -109,6 +99,17 @@ public class AutoRunStartup implements IStartup {
                "AutoRunTaskNotify=\"" + autoRunTaskNotify + "\"");
 
          autoRunTask = getAutoRunTask(autoRunTaskId);
+
+         // If notify parameter specified upon startup, override task configured emails
+         if (autoRunTaskNotify != null && !autoRunTaskNotify.equals(""))
+            emails.addAll(Collections.fromString(autoRunTaskNotify, ";"));
+         // Else if task has configured emails, use those
+         else if (autoRunTask.getNotificationEmailAddresses().length > 0)
+            emails.addAll(Arrays.asList(autoRunTask.getNotificationEmailAddresses()));
+         // Otherwise, default to the man, the myth, the legend
+         else
+            emails.addAll(Arrays.asList(new String[] {"donald.g.dunne@boeing.com"}));
+
          if (autoRunTask == null) {
             // Send email of completion
             AEmail email =
