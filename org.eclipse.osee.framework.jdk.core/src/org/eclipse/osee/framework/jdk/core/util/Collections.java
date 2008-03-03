@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -21,6 +22,10 @@ import java.util.Set;
  * @author David Diepenbrock
  */
 public class Collections {
+
+   public static Collection<String> fromString(String string, String seperator) {
+      return Arrays.asList(string.split(seperator));
+   }
 
    /**
     * An flexible alternative for converting a Collection to a String.

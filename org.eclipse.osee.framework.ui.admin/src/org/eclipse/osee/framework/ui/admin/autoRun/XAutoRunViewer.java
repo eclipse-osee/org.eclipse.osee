@@ -267,7 +267,8 @@ public class XAutoRunViewer extends XWidget {
                      if (autoRunTask.get24HourStartTime().equals(timeStamp)) {
                         try {
                            System.out.println("Running " + autoRunTask.getAutoRunUniqueId());
-                           LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask));
+                           LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask),
+                                 autoRunTab.isEmailOverridden() ? autoRunTab.getOverriddenEmail() : null);
                         } catch (Exception ex) {
                            OSEELog.logException(AdminPlugin.class, ex, false);
                         }
@@ -295,13 +296,14 @@ public class XAutoRunViewer extends XWidget {
       try {
          if (autoRunTab.getLaunchWBCheckBox().isSelected()) {
             StringBuffer sb = new StringBuffer("Launch Auto Tasks:\n\n");
-
             for (IAutoRunTask autoRunTask : autoRunXViewer.getRunList())
                sb.append(" - " + autoRunTask.getAutoRunUniqueId() + " against " + getDefaultDbConnection(autoRunTask) + "\n");
             sb.append("\nNOTE: All will kickoff immediately");
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Launch Auto Tasks", sb.toString())) {
                for (IAutoRunTask autoRunTask : autoRunXViewer.getRunList())
-                  LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask));
+                  // TODO NEED TO SYNC WITH CODE ON TIM TO FIX THESE METHOD CALLS
+                  LaunchAutoRunWorkbench.launch(autoRunTask, getDefaultDbConnection(autoRunTask),
+                        autoRunTab.isEmailOverridden() ? autoRunTab.getOverriddenEmail() : null);
             }
          } else {
             StringBuffer sb = new StringBuffer("Run Auto Tasks in Current Workbench:\n\n");
@@ -310,7 +312,8 @@ public class XAutoRunViewer extends XWidget {
             sb.append("\nNOTE: All will kickoff immediately");
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Launch Auto Tasks", sb.toString())) {
                for (IAutoRunTask autoRunTask : autoRunXViewer.getRunList())
-                  AutoRunStartup.runAutoRunTask(autoRunTask.getAutoRunUniqueId());
+                  AutoRunStartup.runAutoRunTask(autoRunTask.getAutoRunUniqueId(),
+                        autoRunTab.isEmailOverridden() ? autoRunTab.getOverriddenEmail() : null);
             }
 
          }

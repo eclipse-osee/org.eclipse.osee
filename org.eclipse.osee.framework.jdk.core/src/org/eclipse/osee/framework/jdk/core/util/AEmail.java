@@ -91,6 +91,17 @@ public class AEmail extends MimeMessage {
    }
 
    /**
+    * Constructs an AEmail with the given arguments
+    * 
+    * @param fromToReplyEmail - recipient email, from email and replyTo email address
+    * @param subject - the subject of the message
+    * @param textBody - the plain text of the body
+    */
+   public AEmail(String fromToReplyEmail, String subject, String textBody) {
+      this(new String[] {fromToReplyEmail}, fromToReplyEmail, fromToReplyEmail, subject, textBody);
+   }
+
+   /**
     * Adds a single address to the recipient list
     * 
     * @param addresses - a valid address to send the message TO

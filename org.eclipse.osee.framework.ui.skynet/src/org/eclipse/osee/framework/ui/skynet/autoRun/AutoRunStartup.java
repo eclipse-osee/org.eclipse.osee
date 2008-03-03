@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.autoRun;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,11 +21,11 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.DatabaseActivator;
 import org.eclipse.osee.framework.jdk.core.util.AEmail;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -55,8 +56,9 @@ public class AutoRunStartup implements IStartup {
     */
    public void earlyStartup() {
       final String autoRunTaskId = OseeProperties.getInstance().getAutoRun();
+      final String autoRunTaskNotify = OseeProperties.getInstance().getAutoRunNotify();
       try {
-         runAutoRunTask(autoRunTaskId);
+         runAutoRunTask(autoRunTaskId, autoRunTaskNotify);
       } finally {
          if (autoRunTaskId != null) {
             logger.log(Level.INFO, "Sleeping...");
@@ -78,23 +80,40 @@ public class AutoRunStartup implements IStartup {
       }
    }
 
-   public static void runAutoRunTask(String autoRunTaskId) {
+   public static void runAutoRunTask(String autoRunTaskId, String autoRunTaskNotify) {
       final XResultData resultData = new XResultData(SkynetGuiPlugin.getLogger());
       IAutoRunTask autoRunTask = null;
+
+      if (autoRunTaskId == null) {
+         logger.log(Level.INFO, "Checked AutoRunStartup...Nothing to run.");
+         return;
+      }
+
+      // Set emails to notify of results
+      Collection<String> emails = null;
+      // If notify parameter specified upon startup, override task configured emails
+      if (autoRunTaskNotify != null && !autoRunTaskNotify.equals(""))
+         emails = Collections.fromString(autoRunTaskNotify, ";");
+      // Else if task has configured emails, use those
+      else if (autoRunTask.getNotificationEmailAddresses().length > 0)
+         emails = Arrays.asList(autoRunTask.getNotificationEmailAddresses());
+      // Otherwise, default to the man, the myth, the legend
+      else
+         emails = Arrays.asList(new String[] {"donald.g.dunne@boeing.com"});
+
       try {
-         if (autoRunTaskId == null) {
-            logger.log(Level.INFO, "Checked AutoRunStartup...Nothing to run.");
-            return;
-         }
 
          // Run the tasks that match the taskId
          logger.log(Level.INFO, "Running AutoRunStartup; Id=\"" + autoRunTaskId + "\"");
+         if (autoRunTaskNotify != null && !autoRunTaskNotify.equals("")) logger.log(Level.INFO,
+               "AutoRunTaskNotify=\"" + autoRunTaskNotify + "\"");
+
          autoRunTask = getAutoRunTask(autoRunTaskId);
          if (autoRunTask == null) {
             // Send email of completion
             AEmail email =
-                  new AEmail(new String[] {"donald.g.dunne@boeing.com"}, "donald.g.dunne@boeing.com",
-                        "donald.g.dunne@boeing.com", "AutoRun - ERROR - Can't find Id=\"" + autoRunTaskId + "\" ", " ");
+                  new AEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
+                        emails.iterator().next(), "AutoRun - ERROR - Can't find Id=\"" + autoRunTaskId + "\" ", " ");
             email.send();
          } else {
             Result result = validateAutoRunExecution(autoRunTask);
@@ -113,16 +132,13 @@ public class AutoRunStartup implements IStartup {
                         Manipulations.ERROR_WARNING_HEADER);
             String htmlBody = page.getManipulatedHtml();
             AEmail emailMessage =
-                  new AEmail(autoRunTask.getNotificationEmailAddresses(),
-                        SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(),
-                        SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(), subject);
+                  new AEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
+                        emails.iterator().next(), subject);
             emailMessage.setSubject(subject);
             emailMessage.addHTMLBody(htmlBody);
             emailMessage.sendLocalThread();
          }
       } catch (Exception ex) {
-         String[] emails = new String[] {"donald.g.dunne@boeing.com"};
-         if (autoRunTask != null) emails = autoRunTask.getNotificationEmailAddresses();
          // Email exception
          String subject = "AutoRun - Exception Running Id=\"" + autoRunTaskId + "\" Exceptioned";
          XResultPage page =
@@ -131,9 +147,8 @@ public class AutoRunStartup implements IStartup {
          String htmlBody =
                "<b><font color='red'>Exception Occurred</font></b>: \"" + ex.getLocalizedMessage() + "\" (see end for full trace)<br>Output:\n\n" + page.getManipulatedHtml() + "\n\nException:\n\n" + Lib.exceptionToString(ex);
          AEmail emailMessage =
-               new AEmail(autoRunTask.getNotificationEmailAddresses(),
-                     SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(),
-                     SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(), subject);
+               new AEmail(emails.toArray(new String[emails.size()]), emails.iterator().next(),
+                     emails.iterator().next(), subject);
          try {
             emailMessage.setSubject(subject);
             emailMessage.addHTMLBody(htmlBody);

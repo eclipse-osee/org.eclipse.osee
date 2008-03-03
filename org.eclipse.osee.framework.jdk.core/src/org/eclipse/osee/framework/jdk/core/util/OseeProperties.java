@@ -27,11 +27,12 @@ public class OseeProperties {
    public static final String OSEE_DEVELOPER = "Developer";
    public static final String OSEE_OVERRIDE_VERSION_CHECK = "OseeOverrideVersionCheck";
 
-   public static final String OSEE_NO_PROMPT = "OseeNoPrompt";
+   private static final String OSEE_NO_PROMPT = "OseeNoPrompt";
    private static final String OSEE_USE_FILE_SPECIFIED_SCHEMAS = "OseeUseFileSpecifiedSchemas";
    private static final String PRINT_SQL = "PrintSql";
    private static final String DONT_LOG_USAGE = "DontLogUsage";
-   public static final String OSEE_AUTORUN = "osee.autoRun";
+   private static final String OSEE_AUTORUN = "osee.autoRun";
+   private static final String OSEE_AUTORUN_NOTIFY = "osee.autoRunNotify";
    private static final String OSEE_DB_CONFIG_INIT_CHOICE = "osee.db.config.init.choice";
    private static final String OSEE_REMOTE_HTTP_SERVER = "osee.remote.http.server";
    private static final String OSEE_REMOTE_HTTP_UPLOAD_PATH = "osee.remote.http.upload.path";
@@ -77,6 +78,10 @@ public class OseeProperties {
 
    public String getAutoRun() {
       return System.getProperty(OSEE_AUTORUN);
+   }
+
+   public String getAutoRunNotify() {
+      return System.getProperty(OSEE_AUTORUN_NOTIFY);
    }
 
    public boolean isOverrideVersionCheck() {

@@ -31,14 +31,14 @@ import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask.RunDb;
  */
 public class LaunchAutoRunWorkbench extends Action {
 
-   public static Result launch(IAutoRunTask autoRunTask, String defaultDbConnection) throws Exception {
+   public static Result launch(IAutoRunTask autoRunTask, String defaultDbConnection, String autoRunTaskNotify) throws Exception {
       if (autoRunTask.getRunDb() != RunDb.Production_Db && defaultDbConnection.equals("oracle7")) {
          throw new IllegalArgumentException("Can't run non-production task on production.");
       }
-      return launch(autoRunTask.getAutoRunUniqueId(), defaultDbConnection);
+      return launch(autoRunTask.getAutoRunUniqueId(), defaultDbConnection, autoRunTaskNotify);
    }
 
-   public static Result launch(String autoRunExtensionUniqueId, String defaultDbConnection) throws Exception {
+   public static Result launch(String autoRunExtensionUniqueId, String defaultDbConnection, String autoRunTaskNotify) throws Exception {
       ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
       String launchFile = "org.eclipse.osee.framework.ui.skynet\\AutoRun.launch";
       File file = AWorkspace.getWorkspaceFile(launchFile);
@@ -56,6 +56,11 @@ public class LaunchAutoRunWorkbench extends Action {
       // Add the AutoRun property to the VM_ARGUEMENTS
       copy.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", copy.getAttribute(
             "org.eclipse.jdt.launching.VM_ARGUMENTS", "").replaceFirst("PUT_AUTORUN_ID_HERE", autoRunExtensionUniqueId));
+      copy.setAttribute(
+            "org.eclipse.jdt.launching.VM_ARGUMENTS",
+            copy.getAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", "").replaceFirst(
+                  "PUT_AUTORUN_NOTIFY_HERE",
+                  (autoRunTaskNotify == null || autoRunTaskNotify.equals("")) ? "" : " -Dosee.autoRunNotify=" + autoRunTaskNotify + " "));
       copy.setAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", copy.getAttribute(
             "org.eclipse.jdt.launching.VM_ARGUMENTS", "").replaceFirst("PUT_DB_CONNECTION_HERE", defaultDbConnection));
       copy.setAttribute("location", copy.getAttribute("location", "").replaceFirst("PUT_ID_HERE",

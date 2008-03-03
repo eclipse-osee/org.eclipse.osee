@@ -116,6 +116,14 @@ public class AutoRunTab {
       updateEnablement();
    }
 
+   public String getOverriddenEmail() {
+      return emailResultsText.getText();
+   }
+
+   public boolean isEmailOverridden() {
+      return !isEmailConfiguredEmails();
+   }
+
    public boolean isEmailConfiguredEmails() {
       return emailResultsRadio.getSelectedNames().contains(EMAIL_RESULTS_TO_CONFIGURED_EMAILS);
    }

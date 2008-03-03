@@ -33,17 +33,21 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
 public class BackupBranchesJob extends EmailableJob {
 
    public static String JOB_NAME = "Backup OSEE Database";
-   XResultData rd = new XResultData(SkynetGuiPlugin.getLogger());
+   XResultData rd;
    private final String path;
    private final Collection<Branch> branches;
 
    /**
     * @param name
     */
-   public BackupBranchesJob(Collection<Branch> branches, String path) {
+   public BackupBranchesJob(Collection<Branch> branches, String path, XResultData rd) {
       super(JOB_NAME);
       this.branches = branches;
       this.path = path;
+      if (rd != null)
+         this.rd = rd;
+      else
+         this.rd = new XResultData(SkynetGuiPlugin.getLogger());
    }
 
    /*
@@ -58,6 +62,7 @@ public class BackupBranchesJob extends EmailableJob {
          if (rd.toString().equals("")) rd.log("No Problems Found");
          rd.report(getName());
          XResultPage page = rd.getReport(getName());
+
          notifyOfCompletion(JOB_NAME, page.getManipulatedHtml());
          monitor.done();
          return Status.OK_STATUS;
