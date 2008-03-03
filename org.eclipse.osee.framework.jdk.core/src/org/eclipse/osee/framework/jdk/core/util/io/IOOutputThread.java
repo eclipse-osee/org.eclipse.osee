@@ -44,12 +44,7 @@ public class IOOutputThread extends Thread {
     	  final char[] buffer = new char[4096];
     	  int size;
          while ((size = input.read(buffer)) != -1) {
-            if (verbose) {
-               output.write(threadNameChars);
-               output.write(": ");
-            }
             output.write(buffer, 0, size);
-            output.write('\n');
             output.flush();
          }
       } catch (IOException ex) {
