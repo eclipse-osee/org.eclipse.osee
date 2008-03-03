@@ -25,8 +25,6 @@ public class HttpServerPreferences extends FieldEditorPreferencePage implements 
 
    public HttpServerPreferences() {
       super(GRID);
-      setPreferenceStore(SkynetActivator.getInstance().getPreferenceStore());
-      setDescription("Select an HTTP server from the drop down or specify a server address and port in the entry box below.");
    }
 
    /* (non-Javadoc)
@@ -46,6 +44,8 @@ public class HttpServerPreferences extends FieldEditorPreferencePage implements 
     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
     */
    public void init(IWorkbench workbench) {
+      setPreferenceStore(SkynetActivator.getInstance().getPreferenceStore());
+      setDescription("Select an HTTP server from the drop down or specify a server address and port in the entry box below.");
    }
 
 }
