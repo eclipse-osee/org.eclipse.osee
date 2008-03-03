@@ -1077,7 +1077,7 @@ public final class Lib {
       StringBuffer sb = new StringBuffer();
       for (String str : strs)
          sb.append(str + ", ");
-      return sb.toString().replaceFirst(", ", "");
+      return sb.toString().replaceFirst(", $", "");
    }
 
    /**

@@ -14,10 +14,13 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.admin.OseeClientsTab;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtons;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -33,6 +36,10 @@ public class AutoRunTab {
    XText prodDbConfigText;
    XCheckBox launchWBCheckBox;
    XAutoRunViewer xAutoRunViewer;
+   XRadioButtons emailResultsRadio;
+   XText emailResultsText;
+   private static String EMAIL_RESULTS_TO_CONFIGURED_EMAILS = "Configured Emails";
+   private static String EMAIL_RESULTS_TO_ENTERED_EMAILS = "Email Address(s)";
 
    public AutoRunTab(TabFolder tabFolder) {
       super();
@@ -44,7 +51,7 @@ public class AutoRunTab {
 
    private void createControl(TabFolder tabFolder) {
       mainComposite = new Composite(tabFolder, SWT.NONE);
-      mainComposite.setLayout(new GridLayout());
+      mainComposite.setLayout(ALayout.getZeroMarginLayout());
       mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       Composite dbConfigComp = new Composite(mainComposite, SWT.NONE);
@@ -72,6 +79,29 @@ public class AutoRunTab {
       testDbConfigText.createWidgets(dbConfigComp, 1);
       testDbConfigText.setText("postgresqlLocalhost");
 
+      Composite emailResultsComp = new Composite(mainComposite, SWT.NONE);
+      emailResultsComp.setLayout(ALayout.getZeroMarginLayout(6, false));
+      emailResultsComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+
+      emailResultsRadio = new XRadioButtons("Email Results To", "");
+      emailResultsRadio.addButton(EMAIL_RESULTS_TO_CONFIGURED_EMAILS);
+      emailResultsRadio.addButton(EMAIL_RESULTS_TO_ENTERED_EMAILS);
+      emailResultsRadio.createWidgets(emailResultsComp, 2);
+      emailResultsRadio.setRequiredEntry(true);
+      emailResultsRadio.setToolTip("Select who to email results to.");
+      emailResultsRadio.addXModifiedListener(new XModifiedListener() {
+         /* (non-Javadoc)
+          * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
+          */
+         public void widgetModified(XWidget widget) {
+            updateEnablement();
+         }
+      });
+
+      emailResultsText = new XText("");
+      emailResultsText.createWidgets(emailResultsComp, 1);
+      emailResultsText.setText(SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail());
+
       TabItem tab = new TabItem(tabFolder, SWT.NONE);
       tab.setControl(mainComposite);
       tab.setText("Auto Run Tasks");
@@ -86,11 +116,35 @@ public class AutoRunTab {
       updateEnablement();
    }
 
+   public boolean isEmailConfiguredEmails() {
+      return emailResultsRadio.getSelectedNames().contains(EMAIL_RESULTS_TO_CONFIGURED_EMAILS);
+   }
+
+   public Result isRunnable() {
+      if (emailResultsRadio.getSelectedNames().size() == 0) return new Result(
+            "Must select \"Email Results To\" option.");
+      if (isEmailConfiguredEmails()) {
+         if (emailResultsText.getText().equals("")) return new Result("Must enter Email Address");
+      }
+      if (xAutoRunViewer.getXViewer().getRunList().size() == 0) {
+         return new Result("No Tasks Selected");
+      }
+      return Result.TrueResult;
+   }
+
    private void updateEnablement() {
       prodDbConfigText.getStyledText().setEnabled(launchWBCheckBox.isSelected());
       prodDbConfigText.getLabelWidget().setEnabled(launchWBCheckBox.isSelected());
       testDbConfigText.getStyledText().setEnabled(launchWBCheckBox.isSelected());
       testDbConfigText.getLabelWidget().setEnabled(launchWBCheckBox.isSelected());
+
+      if (isEmailConfiguredEmails()) {
+         emailResultsText.setEnabled(false);
+      } else {
+         emailResultsText.setEnabled(true);
+      }
+      emailResultsRadio.refresh();
+
       xAutoRunViewer.getXViewer().refresh();
    }
 

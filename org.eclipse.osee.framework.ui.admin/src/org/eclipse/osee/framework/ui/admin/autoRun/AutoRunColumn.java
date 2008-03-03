@@ -28,7 +28,7 @@ public enum AutoRunColumn {
    Run_Db("Run DB", 80, SWT.LEFT, true, SortDataType.String, false),
    Task_Type("Task Type", 80, SWT.LEFT, true, SortDataType.String, false),
    Category("Category", 80, SWT.LEFT, true, SortDataType.String, false),
-   Notification("Results to Email", 80, SWT.LEFT, true, SortDataType.String, false),
+   Notification("Email Results To", 80, SWT.LEFT, true, SortDataType.String, false),
    Description("Description", 700, SWT.LEFT, true, SortDataType.String, false);
 
    private final String name;

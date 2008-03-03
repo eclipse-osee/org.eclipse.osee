@@ -18,8 +18,8 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.autoRun.AutoRunStartup;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
@@ -198,8 +198,9 @@ public class XAutoRunViewer extends XWidget {
           * @see java.lang.Runnable#run()
           */
          public void run() {
-            if (autoRunXViewer.getRunList().size() == 0) {
-               AWorkbench.popup("Schedule Error", "No Tasks Selected");
+            Result runnable = autoRunTab.isRunnable();
+            if (runnable.isFalse()) {
+               runnable.popup();
                return;
             }
             if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Start Scheduler",
@@ -286,9 +287,15 @@ public class XAutoRunViewer extends XWidget {
    };
 
    private void run() {
+      Result runnable = autoRunTab.isRunnable();
+      if (runnable.isFalse()) {
+         runnable.popup();
+         return;
+      }
       try {
          if (autoRunTab.getLaunchWBCheckBox().isSelected()) {
             StringBuffer sb = new StringBuffer("Launch Auto Tasks:\n\n");
+
             for (IAutoRunTask autoRunTask : autoRunXViewer.getRunList())
                sb.append(" - " + autoRunTask.getAutoRunUniqueId() + " against " + getDefaultDbConnection(autoRunTask) + "\n");
             sb.append("\nNOTE: All will kickoff immediately");
