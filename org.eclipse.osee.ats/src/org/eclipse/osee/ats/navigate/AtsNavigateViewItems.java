@@ -214,6 +214,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(new ArtifactImpactToActionSearchItem(null));
 
       XNavigateItem reportItems = new XNavigateItem(null, "Reports");
+      new FirstTimeQualityMetricReportItem(reportItems);
       XNavigateItem atsReportItems =
             new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World");
       new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");

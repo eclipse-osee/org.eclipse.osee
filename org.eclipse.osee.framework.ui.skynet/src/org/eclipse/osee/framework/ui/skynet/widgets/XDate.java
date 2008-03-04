@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -287,6 +288,41 @@ public class XDate extends XWidget {
    @Override
    public Object getData() {
       return getDate();
+   }
+
+   public int getDifference(Date date) {
+      return calculateDifference(getDate(), date);
+   }
+
+   public static int calculateDifference(Date a, Date b) {
+      int tempDifference = 0;
+      int difference = 0;
+      Calendar earlier = Calendar.getInstance();
+      Calendar later = Calendar.getInstance();
+
+      if (a.compareTo(b) < 0) {
+         earlier.setTime(a);
+         later.setTime(b);
+      } else {
+         earlier.setTime(b);
+         later.setTime(a);
+      }
+
+      while (earlier.get(Calendar.YEAR) != later.get(Calendar.YEAR)) {
+         tempDifference = 365 * (later.get(Calendar.YEAR) - earlier.get(Calendar.YEAR));
+         difference += tempDifference;
+
+         earlier.add(Calendar.DAY_OF_YEAR, tempDifference);
+      }
+
+      if (earlier.get(Calendar.DAY_OF_YEAR) != later.get(Calendar.DAY_OF_YEAR)) {
+         tempDifference = later.get(Calendar.DAY_OF_YEAR) - earlier.get(Calendar.DAY_OF_YEAR);
+         difference += tempDifference;
+
+         earlier.add(Calendar.DAY_OF_YEAR, tempDifference);
+      }
+
+      return difference;
    }
 
 }
