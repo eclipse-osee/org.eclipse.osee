@@ -56,8 +56,17 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       this(parent, "First Time Quality Metric Report", null);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem#getDescription()
+    */
+   @Override
+   public String getDescription() {
+      return "This report will genereate a metric comprised of:\n\n# of priority 1 and 2 OSEE problem actions orginated between release\n__________________________________\n# of non-support actions in that released";
+   }
+
    @Override
    public void run() throws SQLException {
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
          ArtifactTypeNameSearch srch =
@@ -134,7 +143,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
          if (startDate != null && endDate != null) {
             Collection<TeamWorkFlowArtifact> arts = teamMet.getWorkflowsOriginatedBetween(startDate, endDate);
             for (TeamWorkFlowArtifact team : arts) {
-               if (team.getPriority() == PriorityType.Priority_1 || team.getPriority() == PriorityType.Priority_2) {
+               if (team.getChangeType() == ChangeType.Problem && (team.getPriority() == PriorityType.Priority_1 || team.getPriority() == PriorityType.Priority_2)) {
                   if (numOrigDurning == null) numOrigDurning = new Integer(0);
                   numOrigDurning++;
                }

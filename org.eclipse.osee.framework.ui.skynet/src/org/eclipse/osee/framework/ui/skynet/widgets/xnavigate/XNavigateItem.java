@@ -56,6 +56,10 @@ public class XNavigateItem {
       return parent;
    }
 
+   public String getDescription() {
+      return "";
+   }
+
    /**
     * @return the image
     */
