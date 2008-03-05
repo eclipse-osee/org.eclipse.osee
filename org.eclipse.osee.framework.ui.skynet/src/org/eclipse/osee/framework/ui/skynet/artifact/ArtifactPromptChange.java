@@ -47,17 +47,17 @@ public class ArtifactPromptChange {
    public static boolean promptChangeAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws SQLException {
       try {
          DynamicAttributeManager dam = artifacts.iterator().next().getAttributeManager(attributeName);
-         if (dam.getDescriptor().getBaseAttributeClass().equals(DateAttribute.class)) {
+         if (dam.getAttributeType().getBaseAttributeClass().equals(DateAttribute.class)) {
             return ArtifactPromptChange.promptChangeDate(attributeName, displayName, artifacts, persist);
-         } else if (dam.getDescriptor().getBaseAttributeClass().equals(FloatingPointAttribute.class)) {
+         } else if (dam.getAttributeType().getBaseAttributeClass().equals(FloatingPointAttribute.class)) {
             return ArtifactPromptChange.promptChangeFloatAttribute(attributeName, displayName, artifacts, persist);
-         } else if (dam.getDescriptor().getBaseAttributeClass().equals(IntegerAttribute.class)) {
+         } else if (dam.getAttributeType().getBaseAttributeClass().equals(IntegerAttribute.class)) {
             return ArtifactPromptChange.promptChangeIntegerAttribute(attributeName, displayName, artifacts, persist);
-         } else if (dam.getDescriptor().getBaseAttributeClass().equals(BooleanAttribute.class)) {
+         } else if (dam.getAttributeType().getBaseAttributeClass().equals(BooleanAttribute.class)) {
             return ArtifactPromptChange.promptChangeBoolean(attributeName, displayName, artifacts, null, persist);
-         } else if (dam.getDescriptor().getBaseAttributeClass().equals(EnumeratedAttribute.class)) {
+         } else if (dam.getAttributeType().getBaseAttributeClass().equals(EnumeratedAttribute.class)) {
             return ArtifactPromptChange.promptChangeEnumeratedAttribute(attributeName, displayName, artifacts, persist);
-         } else if (dam.getDescriptor().getBaseAttributeClass().equals(StringAttribute.class)) {
+         } else if (dam.getAttributeType().getBaseAttributeClass().equals(StringAttribute.class)) {
             return ArtifactPromptChange.promptChangeStringAttribute(attributeName, displayName, artifacts, persist);
          } else
             AWorkbench.popup("ERROR", "Unhandled attribute type.  Can't edit through this view");
@@ -118,7 +118,7 @@ public class ArtifactPromptChange {
             if (diag.isNoneSelected())
                artifact.clearSoleAttributeValue(attributeName);
             else
-               artifact.setSoleAttributeValue(attributeName, diag.getSelectedDate().getTime() + "");
+               artifact.setSoleStringAttributeValue(attributeName, diag.getSelectedDate().getTime() + "");
             if (persist) artifact.persistAttributes();
          }
       }
@@ -167,15 +167,15 @@ public class ArtifactPromptChange {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
-      if (smas.size() == 1) ed.setEntry(smas.iterator().next().getSoleAttributeValue(attributeName));
+      if (smas.size() == 1) ed.setEntry(smas.iterator().next().getSoleStringAttributeValue(attributeName));
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();
       if (result == 0 || result == 1) {
          for (Artifact sma : smas) {
             if (result == 0)
-               sma.setSoleAttributeValue(attributeName, ed.getEntry());
+               sma.setSoleStringAttributeValue(attributeName, ed.getEntry());
             else
-               sma.setSoleAttributeValue(attributeName, "");
+               sma.setSoleStringAttributeValue(attributeName, "");
             if (persist) sma.persistAttributes();
          }
          return true;
