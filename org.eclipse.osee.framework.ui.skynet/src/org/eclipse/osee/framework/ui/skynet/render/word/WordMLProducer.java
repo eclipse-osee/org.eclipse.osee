@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.render.word;
 
 import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
@@ -228,9 +229,13 @@ public class WordMLProducer {
     * Sets the page layout to either portrait/landscape depending on the artifacts pageType attribute value. Note: This
     * call should be done after processing each artifact so if a previous artifact was landscaped the following artifact
     * would be set back to portrait.
+    * 
+    * @throws SQLException
+    * @throws IllegalStateException
     */
-   public void setPageLayout(Attribute pageTypeAttr) throws IOException {
-      boolean landscape = (pageTypeAttr != null && pageTypeAttr.getStringData().equals("Landscape"));
+   protected void setPageLayout(Artifact artifact) throws IOException, IllegalStateException, SQLException {
+      String pageTypeValue = artifact.getSoleXAttributeValue("Page Type");
+      boolean landscape = (pageTypeValue != null && pageTypeValue.equals("Landscape"));
 
       if (landscape || previousPageLandsacpe) {
          strB.append("<w:p>");

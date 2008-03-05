@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -136,8 +134,9 @@ public class SkynetArtifactAdapter {
          parentRelationName = "";
       }
       try {
-    	 Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
-         attributeTypes = ConfigurationPersistenceManager.getInstance().getAttributeTypesFromArtifactType(artifactType, branch);
+         attributeTypes =
+               ConfigurationPersistenceManager.getInstance().getAttributeTypesFromArtifactType(artifactType,
+                     BranchPersistenceManager.getInstance().getBranch(branchId));
          relationsTypes = getIRelationLinkDescriptorsFromArtifactTypeId(artTypeid, branchId, revision);
       } catch (SQLException ex) {
          ex.printStackTrace();

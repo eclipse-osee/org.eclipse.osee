@@ -37,7 +37,7 @@ public class XDateDam extends XDate implements IDamWidget {
       DynamicAttributeManager udat = getUdat();
       if (udat == null) return "";
       String dateStr = getUdatStringValue();
-      if (!dateStr.equals("")) return ((DateAttribute) udat.getSoleAttribute()).getStringValue(DateAttribute.MMDDYY);
+      if (!dateStr.equals("")) return ((DateAttribute) udat.getSoleAttribute()).getAsFormattedString(DateAttribute.MMDDYY);
       return "";
    }
 
@@ -97,7 +97,7 @@ public class XDateDam extends XDate implements IDamWidget {
          if (udat == null)
             super.setDate(null);
          else
-            super.setDate(((DateAttribute) udat.getSoleAttribute()).getDate());
+            super.setDate(((DateAttribute) udat.getSoleAttribute()).getValue());
       }
 
       this.addModifyListener(new ModifyListener() {

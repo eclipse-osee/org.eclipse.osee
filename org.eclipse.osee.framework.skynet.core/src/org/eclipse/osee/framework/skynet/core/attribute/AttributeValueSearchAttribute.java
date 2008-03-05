@@ -19,17 +19,8 @@ public class AttributeValueSearchAttribute extends StringAttribute implements IS
    /**
     * @param name
     */
-   public AttributeValueSearchAttribute(String name) {
-      super(name);
-   }
-
-   /**
-    * @param name
-    * @param value
-    */
-   public AttributeValueSearchAttribute(String name, String value) {
-      super(name);
-      setStringData(value);
+   public AttributeValueSearchAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType, defaultValue);
    }
 
    /**

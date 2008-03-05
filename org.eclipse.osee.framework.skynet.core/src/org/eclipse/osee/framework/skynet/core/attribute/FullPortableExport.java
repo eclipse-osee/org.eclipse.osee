@@ -144,7 +144,7 @@ public class FullPortableExport {
    private void createArtifactSheet(ArtifactSubtypeDescriptor descriptor, Collection<Artifact> artifacts) throws IOException, SQLException {
       if (artifacts.size() > 0) {
          Artifact sampleArtifact = artifacts.iterator().next();
-         int columnNum = sampleArtifact.getAttributes().size();
+         int columnNum = sampleArtifact.getAttributeManagers().size();
          excelWriter.startSheet(descriptor.getName(), columnNum);
          writeArtifactHeader(descriptor, sampleArtifact.getBranch());
          for (Artifact artifact : artifacts) {
@@ -175,15 +175,15 @@ public class FullPortableExport {
       Arrays.fill(row, 0, row.length, null);
       row[0] = artifact.getGuid();
       row[1] = artifact.getHumanReadableId();
-      Collection<DynamicAttributeManager> attributes = artifact.getAttributes();
+      Collection<DynamicAttributeManager> attributes = artifact.getAttributeManagers();
       for (DynamicAttributeManager attributeType : attributes) {
-         row[columnIndexHash.get(attributeType.getDescriptor().getName())] = prepareAttributes(attributeType);
+         row[columnIndexHash.get(attributeType.getAttributeType().getName())] = prepareAttributes(attributeType);
       }
       excelWriter.writeRow(row);
    }
 
    private String prepareAttributes(DynamicAttributeManager attributeType) {
-      Collection<Attribute> attributes = attributeType.getAttributes();
+      Collection<Attribute<Object>> attributes = attributeType.getAttributes();
       if (attributes.size() == 0) {
          return null;
       } else if (attributes.size() == 1) {

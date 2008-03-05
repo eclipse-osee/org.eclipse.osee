@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.util.AtsLib;
@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSe
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -63,8 +64,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
                   TeamDefinitionArtifact.ARTIFACT_NAME).makeNewArtifact(
                   BranchPersistenceManager.getInstance().getAtsBranch());
       tda.setDescriptiveName(name);
-      tda.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
-      tda.setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
+      tda.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
+      tda.setSoleStringAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
          tda.relate(RelationSide.TeamLead_Lead, user);
          // All leads are members
@@ -74,7 +75,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          tda.relate(RelationSide.TeamMember_Member, user);
       }
 
-      if (usesVersions) tda.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), "yes");
+      if (usesVersions) tda.setSoleStringAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(),
+            "yes");
       tda.persist(true);
 
       Artifact parentTeamDefinition = parentTeamDef;
@@ -289,8 +291,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    public VersionArtifact createVersion(String name) {
       try {
          VersionArtifact versionArt =
-               (VersionArtifact) configurationPersistenceManager.getArtifactSubtypeDescriptor(
-                     VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
+               (VersionArtifact) configurationManager.getArtifactSubtypeDescriptor(VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
                      BranchPersistenceManager.getInstance().getAtsBranch());
          versionArt.setDescriptiveName(name);
          versionArt.persistAttributes();
@@ -298,7 +299,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          relate(RelationSide.TeamDefinitionToVersion_Version, versionArt, true);
          return versionArt;
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return null;
    }

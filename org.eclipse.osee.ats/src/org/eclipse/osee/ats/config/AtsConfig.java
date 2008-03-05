@@ -50,7 +50,7 @@ public class AtsConfig {
       Artifact art = getOrCreateHeadingArtifact(ActionableItemArtifact.ARTIFACT_NAME, ACTIONABLE_ITEMS_HEADING);
       if (!art.getAttributesToStringCollection(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
             ActionableItemArtifact.TOP_AI_STATIC_ID)) {
-         art.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setVarchar(
+         art.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setStringData(
                ActionableItemArtifact.TOP_AI_STATIC_ID);
       }
       validateATSHeadingParent(art);
@@ -61,7 +61,7 @@ public class AtsConfig {
       Artifact art = getOrCreateHeadingArtifact(TeamDefinitionArtifact.ARTIFACT_NAME, TEAMS_HEADING);
       if (!art.getAttributesToStringCollection(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
             TeamDefinitionArtifact.TOP_TEAM_STATIC_ID)) {
-         art.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setVarchar(
+         art.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setStringData(
                TeamDefinitionArtifact.TOP_TEAM_STATIC_ID);
       }
       validateATSHeadingParent(art);

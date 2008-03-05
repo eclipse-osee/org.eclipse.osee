@@ -39,7 +39,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
 
    @Override
    public void setState(SMAState state) throws IllegalStateException, SQLException {
-      sma.setSoleAttributeValue(attributeName, state.toXml());
+      sma.setSoleStringAttributeValue(attributeName, state.toXml());
    }
 
    public void logMetrics() {

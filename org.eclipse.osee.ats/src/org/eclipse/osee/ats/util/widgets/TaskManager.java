@@ -52,7 +52,7 @@ public class TaskManager {
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws SQLException {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
       for (TaskArtifact taskArt : smaMgr.getSma().getArtifacts(RelationSide.SmaToTask_Task, TaskArtifact.class)) {
-         if (taskArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName()).equals(stateName)) arts.add(taskArt);
+         if (taskArt.getSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName()).equals(stateName)) arts.add(taskArt);
       }
       return arts;
    }
@@ -82,7 +82,7 @@ public class TaskManager {
       taskArt.getLog().addLog(LogType.StateEntered, "InWork", "");
 
       // Set parent state task is related to
-      taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
+      taskArt.setSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
             smaMgr.getSma().getCurrentStateName());
 
       if (persist) taskArt.persistAttributes();

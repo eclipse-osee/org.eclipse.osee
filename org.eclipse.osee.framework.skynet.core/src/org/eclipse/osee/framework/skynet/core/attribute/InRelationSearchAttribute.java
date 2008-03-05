@@ -19,17 +19,8 @@ public class InRelationSearchAttribute extends StringAttribute implements ISearc
    /**
     * @param name
     */
-   public InRelationSearchAttribute(String name) {
-      super(name);
-   }
-
-   /**
-    * @param name
-    * @param value
-    */
-   public InRelationSearchAttribute(String name, String value) {
-      super(name);
-      setStringData(value);
+   public InRelationSearchAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType, defaultValue);
    }
 
    /**

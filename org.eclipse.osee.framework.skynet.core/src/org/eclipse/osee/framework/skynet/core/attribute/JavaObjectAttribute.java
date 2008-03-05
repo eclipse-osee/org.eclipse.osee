@@ -16,50 +16,56 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import org.xml.sax.SAXException;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
-public class JavaObjectAttribute extends Attribute {
-   public static final String TYPE_NAME = "Object";
+public class JavaObjectAttribute extends Attribute<Object> {
 
-   public JavaObjectAttribute(String name) {
-      super(new BlobMediaResolver(), name);
+   public JavaObjectAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
+    */
    @Override
-   public String getTypeName() {
-      return TYPE_NAME;
-   }
-
-   @Override
-   public void setDat(InputStream data) {
-      this.getResolver().setBlobData(data);
-      this.dirty = true;
-   }
-
-   @Override
-   public void setValidityXml(String validityXml) throws SAXException {
-   }
-
-   public Object getObject() throws IOException, ClassNotFoundException {
-      byte[] bytes = this.getResolver().getBlobData();
-
-      if (bytes.length == 0) {
-         return null;
+   public Object getValue() {
+      Object obj = null;
+      try {
+         ByteArrayInputStream inputStream = getRawContentStream();
+         if (inputStream != null) {
+            ObjectInputStream objectStream = new ObjectInputStream(inputStream);
+            obj = objectStream.readObject();
+            objectStream.close();
+         }
+      } catch (Exception ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
-
-      ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-      ObjectInputStream ois = new ObjectInputStream(bis);
-      Object obj = ois.readObject();
-      ois.close();
       return obj;
    }
 
-   public void setObject(Object obj) throws IOException {
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      ObjectOutputStream oos = new ObjectOutputStream(bos);
-      oos.writeObject(obj);
-      oos.flush();
-      oos.close();
-      setDat(new ByteArrayInputStream(bos.toByteArray()));
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
+    */
+   @Override
+   public void setValue(Object value) {
+      try {
+         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+         ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
+         objectStream.writeObject(value);
+         objectStream.flush();
+         objectStream.close();
+         setRawContent(byteStream.toByteArray());
+      } catch (Exception ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    */
+   @Override
+   public void setValueFromInputStream(InputStream value) throws IOException {
+      throw new UnsupportedOperationException();
    }
 }

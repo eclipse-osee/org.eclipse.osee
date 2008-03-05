@@ -36,7 +36,7 @@ public class NativeRenderer extends FileRenderer {
     */
    @Override
    public String getAssociatedExtension(Artifact artifact) {
-      return ((NativeArtifact) artifact).getExtension();
+      return ((NativeArtifact) artifact).getFileExtension();
    }
 
    /* (non-Javadoc)
@@ -46,10 +46,10 @@ public class NativeRenderer extends FileRenderer {
    public Program getAssociatedProgram(Artifact artifact) {
       NativeArtifact nativeArtifact = (NativeArtifact) artifact;
 
-      Program program = Program.findProgram(nativeArtifact.getExtension());
+      Program program = Program.findProgram(nativeArtifact.getFileExtension());
       if (program == null) {
          throw new IllegalArgumentException(
-               "No program associated with the extension " + nativeArtifact.getExtension() + " found on your local machine.");
+               "No program associated with the extension " + nativeArtifact.getFileExtension() + " found on your local machine.");
       }
       return program;
    }

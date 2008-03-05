@@ -67,7 +67,7 @@ public class ATSLog {
 
    public List<LogItem> getLogItems() {
       List<LogItem> logItems = new ArrayList<LogItem>();
-      String xml = artifact.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName());
+      String xml = artifact.getSoleStringAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName());
       if (!xml.equals("")) {
          try {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
@@ -99,7 +99,7 @@ public class ATSLog {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         artifact.setSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
+         artifact.setSoleStringAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't create ats log document", ex, true);
       }

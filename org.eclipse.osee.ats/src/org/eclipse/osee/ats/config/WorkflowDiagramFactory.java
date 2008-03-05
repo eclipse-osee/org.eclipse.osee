@@ -56,7 +56,7 @@ public class WorkflowDiagramFactory {
             (NativeArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
                   GENERAL_DOCUMENT_ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getInstance().getAtsBranch());
       art.setDescriptiveName(name);
-      art.setSoleAttributeValue("Extension", "vue");
+      art.setSoleStringAttributeValue("Extension", "vue");
       art.setNativeContent(inputStream);
       art.persistAttributes();
 

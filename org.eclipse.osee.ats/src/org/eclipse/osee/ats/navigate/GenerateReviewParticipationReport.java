@@ -106,7 +106,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          ReviewSMArtifact reviewArt = (ReviewSMArtifact) art;
          try {
             sb.append(AHTML.addRowMultiColumnTable(new String[] {reviewArt.getHumanReadableId(),
-                  reviewArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName()),
+                  reviewArt.getSoleStringAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName()),
                   getDateString(reviewArt.getWorldViewCompletedDate()), reviewArt.getArtifactTypeName(),
                   getRolesStr(reviewArt, user), reviewArt.getCurrentStateName(), reviewArt.getDescriptiveName()}));
          } catch (Exception ex) {

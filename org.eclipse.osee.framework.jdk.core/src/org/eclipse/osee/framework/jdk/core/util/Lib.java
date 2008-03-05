@@ -1077,7 +1077,7 @@ public final class Lib {
       StringBuffer sb = new StringBuffer();
       for (String str : strs)
          sb.append(str + ", ");
-      return sb.toString().replaceFirst(", $", "");
+      return sb.toString().replaceFirst(", ", "");
    }
 
    /**
@@ -1234,10 +1234,6 @@ public final class Lib {
       }
    }
 
-   public static byte[] compressFile(InputStream in) throws IOException {
-      return compressFile(in, in.toString());
-   }
-
    public static byte[] compressFile(InputStream in, String name) throws IOException {
       // Create a buffer for reading the files
       byte[] buf = new byte[1024];
@@ -1287,10 +1283,10 @@ public final class Lib {
       return bos.toByteArray();
    }
 
-   public static byte[] decompressBytes(byte[] bytes) throws IOException {
+   public static byte[] decompressBytes(ByteArrayInputStream inputStream) throws IOException {
       ByteArrayOutputStream out = null;
       // Open the ZIP file
-      ZipInputStream in = new ZipInputStream(new ByteArrayInputStream(bytes));
+      ZipInputStream in = new ZipInputStream(inputStream);
 
       // Get the first entry
       in.getNextEntry();

@@ -68,9 +68,10 @@ public class AttributeCheckListDialog extends SelectionDialog {
       }
 
       StringBuilder result = new StringBuilder();
-      for (DynamicAttributeManager attributeManager : artifact.getAttributes()) {
-         if (selectedAttributes.contains(attributeManager.getDescriptor())) {
-            result.append(" - " + attributeManager.getAttributesStr());
+      for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
+         if (selectedAttributes.contains(attributeManager.getAttributeType())) {
+            result.append(" - ");
+            result.append(Collections.toString(", ", artifact.getAttributes(attributeManager.getAttributeType())));
          }
       }
       return result.toString();

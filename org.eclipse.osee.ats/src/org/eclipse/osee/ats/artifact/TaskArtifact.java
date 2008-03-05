@@ -102,7 +102,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       try {
          StateMachineArtifact parentSMA = getParentSMA();
          boolean unCancellable =
-               (parentSMA.getCurrentStateName().equals(getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName())));
+               (parentSMA.getCurrentStateName().equals(getSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName())));
          if (!unCancellable) return false;
          return super.isUnCancellable();
       } catch (SQLException ex) {
@@ -123,12 +123,12 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    @Override
    public String getDescription() {
-      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
    }
 
    @Override
    public String getWorldViewRelatedToState() {
-      return getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName());
    }
 
    @Override
@@ -166,7 +166,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    public void transitionToCancelled(String reason, boolean persist) throws IllegalStateException, SQLException {
       if (getCurrentState().equals(DefaultTeamState.Cancelled.name())) return;
-      setSoleAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getStoreName(), reason);
+      setSoleStringAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getStoreName(), reason);
       Result result = smaMgr.transition(DefaultTeamState.Cancelled.name(), (User) null, persist);
       if (result.isFalse()) result.popup();
    }
@@ -237,7 +237,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    public String getWorldViewDescription() {
-      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
    }
 
    public String getWorldViewNumberOfTasks() {

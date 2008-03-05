@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.template.SimpleTemplateProvider;
 import org.eclipse.osee.framework.skynet.core.template.TemplateLocator;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
@@ -84,12 +85,14 @@ public class WordRenderer extends FileRenderer {
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
-   private WordTemplateProcessor templateProcessor;
-   private WordTemplateProvider templateProvider;
+   private final WordTemplateProcessor templateProcessor;
+   private final WordTemplateProvider templateProvider;
+   private final SimpleTemplateProvider simpleTemplateProvider;
 
    public WordRenderer() throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
       this.templateProcessor = new WordTemplateProcessor();
       this.templateProvider = WordTemplateProvider.getInstance();
+      this.simpleTemplateProvider = new SimpleTemplateProvider();
    }
 
    /**
@@ -415,16 +418,16 @@ public class WordRenderer extends FileRenderer {
          template = getTemplate(firstArtifact.getBranch(), firstArtifact, presentationType, option);
 
          if (isSingleEdit) {
-            if (!firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME).equals("")) {
+            if (!firstArtifact.getSoleStringAttributeValue(WordAttribute.OLE_DATA_NAME).equals("")) {
                template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
                template =
                      template.replaceAll(
                            STYLES_END,
-                           STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME) + OLE_END);
+                           STYLES_END + OLE_START + firstArtifact.getSoleStringAttributeValue(WordAttribute.OLE_DATA_NAME) + OLE_END);
             }
          } else {
             for (Artifact artifact : artifacts) {
-               if (!artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME).equals("") && presentationType == PresentationType.EDIT) {
+               if (!artifact.getSoleStringAttributeValue(WordAttribute.OLE_DATA_NAME).equals("") && presentationType == PresentationType.EDIT) {
                   notMultiEditableArtifacts.add(artifact);
                }
             }
@@ -448,6 +451,9 @@ public class WordRenderer extends FileRenderer {
    }
 
    private String getTemplate(Branch branch, Artifact artifact, PresentationType presentationType, String option) throws Exception {
+      if (artifact.getArtifactTypeName().equals("Test Information Sheet")) {
+         return simpleTemplateProvider.getTemplate(getId(), branch, artifact, presentationType.name(), option);
+      }
       return templateProvider.getTemplate(getId(), branch, artifact, presentationType.name(), option);
    }
 }

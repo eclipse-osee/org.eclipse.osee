@@ -90,7 +90,7 @@ public class PublishSoftwareTestPlan extends AbstractBlam {
    private void publishRequirementsTrace(Collection<Artifact> requirements) throws IllegalStateException, IOException {
       for (Artifact requirement : requirements) {
          excelWriter.writeRow(requirement.getDescriptiveName(),
-               requirement.getSoleAttributeValue("Qualification Method"));
+               requirement.getSoleStringAttributeValue("Qualification Method"));
       }
    }
 

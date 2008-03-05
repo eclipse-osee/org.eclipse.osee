@@ -10,36 +10,40 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Ryan D. Brooks
  */
-public class FloatingPointAttribute extends Attribute {
-   public static final String TYPE_NAME = "Floating Point";
+public class FloatingPointAttribute extends Attribute<Double> {
 
-   /**
-    * @param name
+   public FloatingPointAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType);
+      setRawStringVaule(defaultValue);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
     */
-   public FloatingPointAttribute(String name) {
-      this(name, 0);
-   }
-
-   public FloatingPointAttribute(String name, double value) {
-      super(new VarcharMediaResolver(), name);
-      setStringData(Double.toString(value));
-   }
-
-   public double getFloat() {
-      return new Double(getStringData()).doubleValue();
-   }
-
    @Override
-   public String getTypeName() {
-      return TYPE_NAME;
+   public Double getValue() {
+      return Double.valueOf(getRawStringVaule());
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
+    */
    @Override
-   public void setValidityXml(String validityXml) throws SAXException {
+   public void setValue(Double value) {
+      setRawStringVaule(String.valueOf(value));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    */
+   @Override
+   public void setValueFromInputStream(InputStream value) throws IOException {
+      throw new UnsupportedOperationException();
    }
 }

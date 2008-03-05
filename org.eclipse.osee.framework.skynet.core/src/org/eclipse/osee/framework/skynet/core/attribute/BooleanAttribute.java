@@ -10,57 +10,33 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Ryan D. Brooks
  */
-public class BooleanAttribute extends EnumeratedAttribute {
+public class BooleanAttribute extends Attribute<Boolean> {
    private static final String[] booleanChoices = new String[] {"yes", "no"};
 
-   public BooleanAttribute(String name) {
-      super(name);
+   public BooleanAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType);
+      setRawStringVaule(defaultValue);
    }
 
-   @Override
-   public String getTypeName() {
-      return "Boolean";
+   public Boolean getValue() {
+      return getRawStringVaule().equals(booleanChoices[0]);
    }
 
-   @Override
-   public void setValidityXml(String validityXml) throws SAXException {
-      if (validityXml != null && !validityXml.equals("") && !validityXml.equals("null")) {
-         throw new IllegalArgumentException(
-               "BooleanAttribute does not allow a non-empty validityXml to be set (since it is predefined)");
-      }
-   }
-
-   @Override
-   public String[] getChoices() {
-      return booleanChoices;
-   }
-
-   public boolean getValue() {
-      return getStringData().equals(booleanChoices[0]);
-
-   }
-
-   public void setValue(boolean value) {
-      setStringData(value ? booleanChoices[0] : booleanChoices[1]);
+   public void setValue(Boolean value) {
+      setRawStringVaule(value ? booleanChoices[0] : booleanChoices[1]);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setStringData(java.lang.String)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
     */
    @Override
-   public void setStringData(String value) {
-      if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("yes")) {
-         super.setStringData(booleanChoices[0]);
-      } else if (value.equalsIgnoreCase("false") || value.equalsIgnoreCase("no")) {
-         super.setStringData(booleanChoices[1]);
-      } else {
-         throw new IllegalArgumentException(
-               String.format("\"%s\" is not a valid value for a boolean attribute.", value));
-      }
+   public void setValueFromInputStream(InputStream value) throws IOException {
+      throw new UnsupportedOperationException();
    }
 }

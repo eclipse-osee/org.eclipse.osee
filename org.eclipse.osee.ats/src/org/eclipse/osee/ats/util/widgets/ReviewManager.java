@@ -68,8 +68,8 @@ public class ReviewManager {
 
          DecisionReviewArtifact decRev = NewDecisionReviewJob.createNewDecisionReview(smaMgr.getSma(), true);
          decRev.setDescriptiveName(VALIDATE_REVIEW_TITLE);
-         decRev.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
-         decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
+         decRev.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+         decRev.setSoleStringAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
          decRev.setSoleBooleanAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(),
                smaMgr.getWorkPage().isValidateReviewBlocking());
@@ -102,7 +102,7 @@ public class ReviewManager {
 
       if (teamParent != null) {
          teamParent.relate(RelationSide.TeamWorkflowToReview_Review, peerToPeerRev);
-         if (againstState != null) peerToPeerRev.setSoleAttributeValue(
+         if (againstState != null) peerToPeerRev.setSoleStringAttributeValue(
                ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
       }
 
@@ -156,7 +156,7 @@ public class ReviewManager {
       Set<ReviewSMArtifact> arts = new HashSet<ReviewSMArtifact>();
       if (!smaMgr.getSma().isTaskable()) return arts;
       for (ReviewSMArtifact revArt : getReviews()) {
-         if (revArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName()).equals(stateName)) arts.add(revArt);
+         if (revArt.getSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName()).equals(stateName)) arts.add(revArt);
       }
       return arts;
    }

@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
+import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -53,7 +54,7 @@ public class WordUtil {
          "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("content", "gamma_id") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE art_id=? AND attr_type_id=? AND " + ATTRIBUTE_VERSION_TABLE.join(
                TRANSACTIONS_TABLE, "gamma_id") + " AND " + TRANSACTIONS_TABLE.join(TRANSACTION_DETAIL_TABLE,
                "transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? ORDER BY gamma_id DESC";
-   private static final Pattern binDataIdPattern = Pattern.compile("wordml://(.+?)[.]");
+   private static final Matcher binIdMatcher = Pattern.compile("wordml://(.+?)[.]").matcher("");
    private static final Pattern tagKiller = Pattern.compile("<.*?>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern paragraphPattern = Pattern.compile("<w:p( .*?)?>");
 
@@ -70,9 +71,11 @@ public class WordUtil {
       ChangeSet changeSet = new ChangeSet(content);
       Map<String, String> guidMap = new HashMap<String, String>();
 
-      Matcher binMatcher = binDataIdPattern.matcher(content);
-      while (binMatcher.find()) {
-         String oldName = binMatcher.group(1);
+      binIdMatcher.reset(content);
+      boolean atLeastOneMatch = false;
+      while (binIdMatcher.find()) {
+         atLeastOneMatch = true;
+         String oldName = binIdMatcher.group(1);
 
          String guid = guidMap.get(oldName);
          if (guid == null) {
@@ -80,9 +83,12 @@ public class WordUtil {
             guidMap.put(oldName, guid);
          }
 
-         changeSet.replace(binMatcher.start(1), binMatcher.start(1), guid);
+         changeSet.replace(binIdMatcher.start(1), binIdMatcher.start(1), guid);
       }
-      return changeSet.toString();
+      if (atLeastOneMatch) {
+         return changeSet.toString();
+      }
+      return content;
    }
 
    /**
@@ -97,8 +103,7 @@ public class WordUtil {
       if (branch == null) throw new IllegalArgumentException("branch can not be null");
 
       ConfigurationPersistenceManager manager = ConfigurationPersistenceManager.getInstance();
-      DynamicAttributeDescriptor attributeDescriptor =
-            manager.getDynamicAttributeType(WordAttribute.CONTENT_NAME);
+      DynamicAttributeDescriptor attributeDescriptor = manager.getDynamicAttributeType(WordAttribute.CONTENT_NAME);
 
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -165,7 +170,7 @@ public class WordUtil {
    }
 
    public static String textOnly(String string) {
-      string = paragraphPattern.matcher(string).replaceAll(" ");
+      string = paragraphPattern.matcher(Xml.unescape(string)).replaceAll(" ");
       return tagKiller.matcher(string).replaceAll("");
    }
 

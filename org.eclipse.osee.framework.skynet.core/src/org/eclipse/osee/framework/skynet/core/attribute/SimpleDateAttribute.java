@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.util.Date;
-
 /**
  * @author Ryan D. Brooks
  */
@@ -20,15 +18,7 @@ public class SimpleDateAttribute extends DateAttribute {
    /**
     * @param name
     */
-   public SimpleDateAttribute(String name) {
-      super(new VarcharMediaResolver(), name);
-   }
-
-   /**
-    * @param name
-    * @param value
-    */
-   public SimpleDateAttribute(String name, Date value) {
-      super(new VarcharMediaResolver(), name, value);
+   public SimpleDateAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType, defaultValue);
    }
 }

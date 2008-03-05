@@ -159,7 +159,7 @@ public class AttributesComposite extends Composite {
 
             if (selected instanceof Attribute) {
                Attribute attribute = (Attribute) selected;
-               DynamicAttributeDescriptor descriptor = attribute.getManager().getDescriptor();
+               DynamicAttributeDescriptor descriptor = attribute.getManager().getAttributeType();
                if (descriptor.getTipText() != null && !descriptor.getTipText().equals("null"))
                   helpText.setText(descriptor.getTipText());
                else
@@ -242,7 +242,7 @@ public class AttributesComposite extends Composite {
       try {
          SelectionAdapter listener = new AttributeMenuSelectionListener(this, tableViewer, editor);
          for (DynamicAttributeManager type : attributeContentProvider.populateAttributeTypes(artifact)) {
-            DynamicAttributeDescriptor descriptor = type.getDescriptor();
+            DynamicAttributeDescriptor descriptor = type.getAttributeType();
             // TODO ADD BACK WHEN ACCESS CONTROL IS PUT IN -- Only let the user add attributes intended for them
             MenuItem item = new MenuItem(attributesMenu, SWT.CASCADE);
             item.setText(descriptor.getName() + " Attribute");

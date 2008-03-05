@@ -30,15 +30,15 @@ public class AttributeAnnotationHandler implements IArtifactAnnotation {
     * @see org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation#getAnnotations(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
     */
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
-      if (artifact.isAttributeTypeValid(AttributeAnnotationManager.ANNOTATION_ATTRIBUTE)) {
-         try {
+      try {
+         if (artifact.isAttributeTypeValid(AttributeAnnotationManager.ANNOTATION_ATTRIBUTE)) {
             if (artifact.getAttributeManager(AttributeAnnotationManager.ANNOTATION_ATTRIBUTE).getAttributes().size() > 0) {
                AttributeAnnotationManager mgr = new AttributeAnnotationManager(artifact);
                annotations.addAll(mgr.getAnnotations());
             }
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
+      } catch (SQLException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
    }
 }

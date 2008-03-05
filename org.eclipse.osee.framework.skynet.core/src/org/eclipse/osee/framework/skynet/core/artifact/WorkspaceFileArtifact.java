@@ -58,8 +58,7 @@ public class WorkspaceFileArtifact extends Artifact {
       else if (artifacts.isEmpty()) {
          try {
             Collection<ArtifactSubtypeDescriptor> descriptors =
-                  configurationPersistenceManager.getArtifactTypesFromAttributeType(configurationPersistenceManager.getDynamicAttributeType(
-                        "Content URL"));
+                  configurationManager.getArtifactTypesFromAttributeType(configurationManager.getDynamicAttributeType("Content URL"));
             dialog =
                   new ArtifactDescriptorDialog(
                         shell,
@@ -75,8 +74,8 @@ public class WorkspaceFileArtifact extends Artifact {
             descriptor = dialog.getEntry();
             try {
                artifact = descriptor.makeNewArtifact(branchManager.getDefaultBranch());
-               artifact.setSoleAttributeValue("Content URL", location);
-               artifact.setSoleAttributeValue("Name", new File(location).getName());
+               artifact.setSoleStringAttributeValue("Content URL", location);
+               artifact.setSoleStringAttributeValue("Name", new File(location).getName());
                artifact.persistAttributes();
             } catch (SQLException ex) {
                ex.printStackTrace();

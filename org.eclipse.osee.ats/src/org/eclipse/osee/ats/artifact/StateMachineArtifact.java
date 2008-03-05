@@ -544,7 +544,14 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    }
 
    public String getWorldViewLegacyPCR() {
-      if (isAttributeTypeValid(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName())) return getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName());
+      try {
+         if (isAttributeTypeValid(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName())) {
+            return getSoleStringAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName());
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+         return "";
+      }
       return "";
    }
 
@@ -582,7 +589,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
             }
             return hours;
          } else {
-            String value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+            String value = getSoleStringAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
             if (value == null || value.equals("")) return 0;
             return new Float(value).doubleValue();
          }
@@ -619,7 +626,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    }
 
    public Result isWorldViewRemainHoursValid() {
-      String value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+      String value = getSoleStringAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
       if (value == null || value.equals("")) return new Result("Estimated Hours not set.");
       try {
          new Float(value).doubleValue();
@@ -661,7 +668,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    public Result isWorldViewAnnualCostAvoidanceValid() {
       Result result = isWorldViewRemainHoursValid();
       if (result.isFalse()) return result;
-      String value = getSoleAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName());
+      String value = getSoleStringAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName());
       if (value == null || value.equals("")) return new Result("Weekly Benefit Hours not set.");
       try {
          double val = new Float(value).doubleValue();
@@ -685,23 +692,23 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    }
 
    public String getWorldViewNotes() {
-      return getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName());
    }
 
    public String getWorldViewWorkPackage() {
-      return getSoleAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName());
    }
 
    public String getWorldViewCategory() {
-      return getSoleAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName());
    }
 
    public String getWorldViewCategory2() {
-      return getSoleAttributeValue(ATSAttributes.CATEGORY2_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.CATEGORY2_ATTRIBUTE.getStoreName());
    }
 
    public String getWorldViewCategory3() {
-      return getSoleAttributeValue(ATSAttributes.CATEGORY3_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.CATEGORY3_ATTRIBUTE.getStoreName());
    }
 
    public int getWorldViewStatePercentComplete() {

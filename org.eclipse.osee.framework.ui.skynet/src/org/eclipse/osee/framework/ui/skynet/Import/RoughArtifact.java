@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -111,20 +111,20 @@ public class RoughArtifact {
       return number.isChild(otherArtifact.number);
    }
 
-   public void conferAttributesUpon(Artifact artifact) throws FileNotFoundException, SQLException {
+   public void conferAttributesUpon(Artifact artifact) throws SQLException, IllegalStateException, IOException {
       for (NameAndVal attr : attributes) {
-         String attributeName = attr.getName();
+         String attributeTypeName = attr.getName();
          String fullValue = attr.getValue();
 
          if (fullValue != null) {
             try {
-               DynamicAttributeManager attributeManager = artifact.getAttributeManager(attributeName);
-               DynamicAttributeDescriptor descriptor = attributeManager.getDescriptor();
+               DynamicAttributeManager attributeManager = artifact.getAttributeManager(attributeTypeName);
+               DynamicAttributeDescriptor descriptor = attributeManager.getAttributeType();
                if (descriptor.getMinOccurrences() == 1 && descriptor.getMaxOccurrences() == 1) {
-                  attributeManager.setValue(fullValue);
+                  artifact.setSoleXAttributeValue(attributeTypeName, fullValue);
                } else {
                   for (String value : fullValue.split(FullPortableExport.ATTRIBUTE_VALUE_DELIMITER_REGEX)) {
-                     attributeManager.getNewAttribute().setStringData(value);
+                     attributeManager.getNewAttribute().setValue(value);
                   }
                }
             } catch (IllegalStateException ex) {
@@ -136,11 +136,10 @@ public class RoughArtifact {
       setFileAttributes(artifact);
    }
 
-   private void setFileAttributes(Artifact artifact) throws FileNotFoundException, SQLException {
+   private void setFileAttributes(Artifact artifact) throws SQLException, IllegalStateException, IOException {
       if (fileAttributes != null) {
          for (Entry<String, File> entry : fileAttributes.entrySet()) {
-            DynamicAttributeManager attributeManager = artifact.getAttributeManager(entry.getKey());
-            attributeManager.setData(new FileInputStream(entry.getValue()));
+            artifact.setSoleAttributeFromStream(entry.getKey(), new FileInputStream(entry.getValue()));
          }
       }
    }
@@ -232,9 +231,9 @@ public class RoughArtifact {
       return children.isEmpty() || forcePrimaryType ? primaryDescriptor : headingDescriptor;
    }
 
-   public void updateValues(Artifact artifact) throws SQLException, FileNotFoundException {
+   public void updateValues(Artifact artifact) throws SQLException, IllegalStateException, IOException {
       for (NameAndVal value : attributes) {
-         artifact.setSoleAttributeValue(value.getName(), value.getValue());
+         artifact.setSoleStringAttributeValue(value.getName(), value.getValue());
       }
 
       setFileAttributes(artifact);

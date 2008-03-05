@@ -14,8 +14,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
  * @author Jeff C. Phillips
  */
 public class BlobWordAttribute extends WordAttribute {
-
-   public BlobWordAttribute(String name) {
-      super(new BlobMediaResolver(), name);
+   public BlobWordAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType, defaultValue);
    }
 }

@@ -63,25 +63,25 @@ public class XComboDam extends XCombo implements IDamWidget {
       this.artifact = artifact;
       this.attrName = attrName;
 
-      super.set(artifact.getSoleAttributeValue(attrName));
+      super.set(artifact.getSoleStringAttributeValue(attrName));
    }
 
    @Override
    public void set(String text) throws IllegalStateException, SQLException {
       super.set(text);
-      artifact.setSoleAttributeValue(attrName, text);
+      artifact.setSoleStringAttributeValue(attrName, text);
    }
 
    @Override
    public void save() throws IllegalStateException, SQLException {
       if (isDirty()) {
-         artifact.setSoleAttributeValue(attrName, get());
+         artifact.setSoleStringAttributeValue(attrName, get());
       }
    }
 
    @Override
    public boolean isDirty() {
-      return !artifact.getSoleAttributeValue(attrName).equals(get());
+      return !artifact.getSoleStringAttributeValue(attrName).equals(get());
    }
 
 }

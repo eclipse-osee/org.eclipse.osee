@@ -274,7 +274,7 @@ public class MassXViewer extends XViewer {
 
       try {
          for (Artifact art : artifacts) {
-            dams.addAll(art.getAttributes());
+            dams.addAll(art.getAttributeManagers());
          }
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -293,23 +293,23 @@ public class MassXViewer extends XViewer {
 
       // Add other attributes
       for (DynamicAttributeManager dam : dams) {
-         if (!attrNames.contains(dam.getDescriptor().getName())) {
+         if (!attrNames.contains(dam.getAttributeType().getName())) {
             // System.out.println(dam.getDescriptor().getName());
             SortDataType sortType = SortDataType.String;
-            if (dam.getDescriptor().getBaseAttributeClass().equals(DateAttribute.class))
+            if (dam.getAttributeType().getBaseAttributeClass().equals(DateAttribute.class))
                sortType = SortDataType.Date;
-            else if (dam.getDescriptor().getBaseAttributeClass().equals(FloatingPointAttribute.class))
+            else if (dam.getAttributeType().getBaseAttributeClass().equals(FloatingPointAttribute.class))
                sortType = SortDataType.Float;
-            else if (dam.getDescriptor().getBaseAttributeClass().equals(IntegerAttribute.class))
+            else if (dam.getAttributeType().getBaseAttributeClass().equals(IntegerAttribute.class))
                sortType = SortDataType.Integer;
-            else if (dam.getDescriptor().getBaseAttributeClass().equals(BooleanAttribute.class)) sortType =
+            else if (dam.getAttributeType().getBaseAttributeClass().equals(BooleanAttribute.class)) sortType =
                   SortDataType.Boolean;
-            newCol = new XViewerColumn(this, dam.getDescriptor().getName(), 75, 75, SWT.CENTER);
+            newCol = new XViewerColumn(this, dam.getAttributeType().getName(), 75, 75, SWT.CENTER);
             newCol.setSortDataType(sortType);
             newCol.setOrderNum(x++);
             newCol.setTreeViewer(this);
             cols.add(newCol);
-            attrNames.add(dam.getDescriptor().getName());
+            attrNames.add(dam.getAttributeType().getName());
          }
       }
 

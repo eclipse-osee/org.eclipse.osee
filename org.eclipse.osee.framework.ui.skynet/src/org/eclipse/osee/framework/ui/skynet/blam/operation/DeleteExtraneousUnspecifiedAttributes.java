@@ -32,11 +32,11 @@ public class DeleteExtraneousUnspecifiedAttributes extends AbstractBlam {
       monitor.beginTask("Delete Unspecified " + attributeDescriptor.getName() + " attributes", artifacts.size());
 
       for (Artifact artifact : artifacts) {
-         Collection<Attribute> attributes = artifact.getAttributeManager(attributeDescriptor).getAttributes();
+         Collection<Attribute<String>> attributes = artifact.getAttributeManager(attributeDescriptor).getAttributes();
 
          if (attributes.size() > 1) {
-            for (Attribute attribute : attributes) {
-               if (attribute.getStringData().equals("Unspecified")) {
+            for (Attribute<String> attribute : attributes) {
+               if (attribute.getValue().equals("Unspecified")) {
                   attribute.delete();
                }
             }

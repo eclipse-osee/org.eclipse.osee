@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__CHILD;
 import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__PARENT;
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -35,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.PersistenceMemo;
 import org.eclipse.osee.framework.jdk.core.util.PersistenceObject;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
@@ -50,10 +49,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
@@ -72,11 +69,10 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    public static final Artifact[] EMPTY_ARRAY = new Artifact[0];
    protected static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   protected static final ConfigurationPersistenceManager configurationPersistenceManager =
+   protected static final ConfigurationPersistenceManager configurationManager =
          ConfigurationPersistenceManager.getInstance();
    protected static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
    protected static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-   protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(Artifact.class);
    private static final AccessControlManager accessManager = AccessControlManager.getInstance();
    private static int count = 0;
    public final int aaaSerialId = count++;
@@ -86,15 +82,13 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    private final Exception birthPlace = new Exception();
    private final Branch branch;
    private final String guid;
-
    protected boolean deleteCheckOveride;
    protected boolean dirty;
    protected boolean inTransaction;
    private String artifactTypeName;
-   private Collection<DynamicAttributeManager> attributes;
+   private Collection<DynamicAttributeManager> attributeManagers;
    private boolean deleted;
    private ArtifactSubtypeDescriptor descriptor;
-   private StringAttribute nameAttribute;
    private String humanReadableId;
    private LinkManager linkManager;
    private boolean initializingAttributes;
@@ -123,7 +117,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       }
 
       this.parentFactory = parentFactory;
-      this.attributes = null;
+      this.attributeManagers = null;
       this.branch = branch;
       this.dirty = true;
       this.inTransaction = false;
@@ -172,9 +166,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
             boolean released = getSoleBooleanAttributeValue("ats.Released");
             return descriptor.getImage(next, released);
          } catch (IllegalStateException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
       }
       return descriptor.getAnnotationImage(getMainAnnotationType());
@@ -189,7 +183,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       try {
          return getLinkManager().hasArtifacts(side);
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
       return false;
 
@@ -222,7 +216,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
             arts.add((A) a);
          }
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
       return arts;
    }
@@ -234,7 +228,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          Set<A> arts = getArtifactsViaSearch(side, clazz);
          if (arts.size() > 0) return (A) arts.iterator().next();
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
       return null;
    }
@@ -310,7 +304,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
             int id = getArtTypeId();
             artifactTypeName = artifactManager.getArtifactTypeName(id);
          } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "", ex);
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
       }
       return artifactTypeName;
@@ -322,11 +316,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return getDescriptiveName();
    }
 
-   public String[] getDetails() {
-      checkDeleted();
-      return new String[] {getArtifactTypeName(),};
-   }
-
    /**
     * also initializes the attributes if necessary
     * 
@@ -334,10 +323,10 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     * @throws SQLException
     */
-   public Collection<DynamicAttributeManager> getAttributes() throws SQLException {
+   public Collection<DynamicAttributeManager> getAttributeManagers() throws SQLException {
       checkDeleted();
       acquireAttributes(false);
-      return attributes;
+      return attributeManagers;
    }
 
    public Artifact getParent() throws SQLException {
@@ -440,66 +429,13 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       }
    }
 
-   /**
-    * Set an attribute on this artifact to a particular value.</br></br>
-    * 
-    * @param attributeName
-    * @param value
-    * @throws IllegalStateException if any of the following conditions are present
-    *            <ul>
-    *            <li>The provided name does not match any of the available attributes for this artifact.</li>
-    *            <li>The max occurrences for the named attribute is not equal to 1.</li>
-    *            </ul>
-    */
-   @Deprecated
-   // use setSoleAttributeValue instead
-   public void setAttribute(String attributeName, String value) throws IllegalStateException {
-      checkDeleted();
-      try {
-         DynamicAttributeManager userAttr = getAttributeManager(attributeName);
-         userAttr.setValue(value);
-      } catch (Exception ex) {
-         logger.log(Level.WARNING, "The attribute " + attributeName + " can't be set on " + getDescriptiveName(), ex);
-      }
-   }
-
    public void setAttribute(SkynetAttributeChange attrChange) throws SQLException {
-      checkDeleted();
       DynamicAttributeManager userAttr = getAttributeManager(attrChange.getName());
       try {
          userAttr.getAttribute(attrChange).setStringData(attrChange.getValue());
       } catch (Exception ex) {
          throw new IllegalStateException(
                "The attribute " + attrChange.getName() + " can't be set on " + getDescriptiveName(), ex);
-      }
-   }
-
-   public void loadAttribute(String attributeName, String value) throws IllegalStateException, SQLException {
-      checkDeleted();
-
-      DynamicAttributeManager userAttr = getAttributeManager(attributeName);
-      userAttr.loadValue(value);
-   }
-
-   public void swagAttribute(String attributeName, String value) throws SQLException {
-      checkDeleted();
-      DynamicAttributeManager userAttr = getAttributeManager(attributeName);
-      try {
-         userAttr.swagValue(value);
-      } catch (Exception ex) {
-         throw new IllegalStateException("The attribute " + attributeName + " can't be set on " + getDescriptiveName(),
-               ex);
-      }
-   }
-
-   public void setAttribute(String attributeName, InputStream data) throws IllegalStateException, SQLException {
-      checkDeleted();
-      DynamicAttributeManager userAttr = getAttributeManager(attributeName);
-      try {
-         userAttr.setData(data);
-      } catch (Exception ex) {
-         throw new IllegalStateException("The attribute " + attributeName + " can't be set on " + getDescriptiveName(),
-               ex);
       }
    }
 
@@ -513,8 +449,18 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     * @throws SQLException
     */
-   public DynamicAttributeManager getAttributeManager(DynamicAttributeDescriptor attributeDescriptor) throws SQLException {
-      return getAttributeManager(attributeDescriptor.getName());
+   public DynamicAttributeManager getAttributeManager(DynamicAttributeDescriptor attributeType) throws SQLException {
+      checkDeleted();
+
+      for (DynamicAttributeManager attributeManager : getAttributeManagers()) {
+         if (attributeManager.getAttributeType().equals(attributeType)) {
+            return attributeManager;
+         }
+      }
+
+      throw new IllegalStateException(String.format(
+            "The attribute \'%s\' is not valid for artifact type \'%s\' named \'%s\' guid \'%s\'",
+            attributeType.getName(), getArtifactTypeName(), getDescriptiveName(), getGuid()));
    }
 
    /**
@@ -528,35 +474,35 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public DynamicAttributeManager getAttributeManager(String attributeName) throws SQLException {
-      checkDeleted();
-
-      for (DynamicAttributeManager userAttr : getAttributes()) {
-
-         if (userAttr.getDescriptor().getName().equals(attributeName)) {
-            return userAttr;
-         }
-      }
-
-      throw new IllegalStateException(String.format(
-            "The attribute \'%s\' is not valid for artifact type \'%s\' named \'%s\' guid \'%s\'", attributeName,
-            getArtifactTypeName(), getDescriptiveName(), getGuid()));
-
+      return getAttributeManager(configurationManager.getDynamicAttributeType(attributeName));
    }
 
    /**
     * @param attributeName
-    * @return true if attributeName is valid for this artifact
+    * @return true if attributeName is valid for the artifact type of this artifact
+    * @throws SQLException
     */
-   public boolean isAttributeTypeValid(String attributeName) {
-      try {
-         getAttributeManager(attributeName);
-         return true;
-      } catch (IllegalStateException ex) {
-         return false;
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-         return false;
+   public boolean isAttributeTypeValid(String attributeName) throws SQLException {
+      Collection<DynamicAttributeDescriptor> attributeTypes =
+            configurationManager.getAttributeTypesFromArtifactType(artifactTypeName, branch);
+      for (DynamicAttributeDescriptor attributeType : attributeTypes) {
+         if (attributeType.getName().equals(attributeName)) {
+            return true;
+         }
       }
+      return false;
+   }
+
+   public <T> Collection<Attribute<T>> getAttributes(String attributeTypeName) throws SQLException {
+      return getAttributeManager(attributeTypeName).getAttributes();
+   }
+
+   public <T> Collection<Attribute<T>> getAttributes(DynamicAttributeDescriptor attributeType) throws SQLException {
+      return getAttributeManager(attributeType).getAttributes();
+   }
+
+   private <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws IllegalStateException, SQLException {
+      return getSoleAttribute(getAttributeManager(attributeTypeName));
    }
 
    /**
@@ -567,25 +513,42 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @return Attribute string.
     * @throws IllegalStateException
     */
-   public String getSoleAttributeValue(String attributeName) throws IllegalStateException {
-      checkDeleted();
-      try {
-         for (DynamicAttributeManager attributeManager : getAttributes()) {
-            if (attributeManager.getDescriptor().getName().equals(attributeName)) {
-               Collection<Attribute> attrs = attributeManager.getAttributes();
-               if (attrs.size() > 1) throw new IllegalStateException(String.format(
-                     "The attribute \'%s\' can only have max 1 for getSoleAttributeValue; guid \'%s\'", attributeName,
-                     getGuid()));
-               if (attrs.size() == 0)
-                  return "";
-               else
-                  return attrs.iterator().next().getStringData();
-            }
-         }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+   public String getSoleStringAttributeValue(String attributeTypeName) throws IllegalStateException {
+      String value = getSoleXAttributeValueHideException(attributeTypeName);
+      return value == null ? "" : value;
+   }
+
+   private <T> Attribute<T> getSoleAttribute(DynamicAttributeDescriptor attributeType) throws IllegalStateException, SQLException {
+      return getSoleAttribute(getAttributeManager(attributeType));
+   }
+
+   private <T> Attribute<T> getSoleAttribute(DynamicAttributeManager attributeManager) throws IllegalStateException, SQLException {
+      Collection<Attribute<T>> attributes = attributeManager.getAttributes();
+      if (attributes.size() > 1) {
+         throw new IllegalStateException(String.format(
+               "The attribute \'%s\' can only have max 1 for sole attribute operations; guid \'%s\'",
+               attributeManager.getAttributeType().getName(), getGuid()));
+      } else if (attributes.size() == 0) {
+         return null;
       }
-      return "";
+      return (attributes.iterator().next());
+   }
+
+   private <T> Attribute<T> getSoleAttributeForSet(String attributeTypeName) throws IllegalStateException, SQLException {
+      return getSoleAttributeForSet(getAttributeManager(attributeTypeName));
+   }
+
+   private <T> Attribute<T> getSoleAttributeForSet(DynamicAttributeDescriptor attributeType) throws IllegalStateException, SQLException {
+      return getSoleAttributeForSet(getAttributeManager(attributeType));
+   }
+
+   private <T> Attribute<T> getSoleAttributeForSet(DynamicAttributeManager attributeManager) throws IllegalStateException, SQLException {
+      Attribute<T> attribute = getSoleAttribute(attributeManager);
+
+      if (attribute == null) {
+         return attributeManager.getNewAttribute();
+      }
+      return attribute;
    }
 
    /**
@@ -595,14 +558,16 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @return
     * @throws IllegalStateException
     */
-   public Integer getSoleIntegerAttributeValue(String attributeName) throws IllegalStateException {
-      if (getSoleAttributeValue(attributeName).equals("")) return null;
-      return new Integer(getSoleAttributeValue(attributeName)).intValue();
+   public Integer getSoleIntegerAttributeValue(String attributeTypeName) throws IllegalStateException {
+      return getSoleXAttributeValueHideException(attributeTypeName);
    }
 
-   public Double getSoleDoubleAttributeValue(String attributeName) throws IllegalStateException {
-      if (getSoleAttributeValue(attributeName).equals("")) return null;
-      return new Double(getSoleAttributeValue(attributeName)).doubleValue();
+   public Double getSoleDoubleAttributeValue(String attributeTypeName) throws IllegalStateException {
+      return getSoleXAttributeValueHideException(attributeTypeName);
+   }
+
+   public Date getSoleDateAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
+      return getSoleXAttributeValue(attributeTypeName);
    }
 
    /**
@@ -611,40 +576,64 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws IllegalStateException
     * @throws SQLException
     */
-   public boolean getSoleBooleanAttributeValue(String attributeName) throws IllegalStateException, SQLException {
-      checkDeleted();
-      if (getAttributeManager(attributeName).getAttributes().size() == 0) return false;
-      return getSoleAttributeValue(attributeName).equals("yes");
+   public boolean getSoleBooleanAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
+      return getSoleXAttributeValue(attributeTypeName);
    }
 
-   public void setSoleBooleanAttributeValue(String attributeName, boolean set) throws IllegalStateException, SQLException {
-      checkDeleted();
-      Attribute attr = null;
-      if (getAttributeManager(attributeName).getAttributes().size() > 1) throw new IllegalArgumentException(
-            "Found " + getAttributeManager(attributeName).getAttributes().size() + " attributes; Should only be 1 " + getHumanReadableId());
-      if (getAttributeManager(attributeName).getAttributes().size() == 0)
-         attr = getAttributeManager(attributeName).getNewAttribute();
-      else
-         attr = getAttributeManager(attributeName).getAttributes().iterator().next();
-      attr.setStringData(set ? "yes" : "no");
+   public <T> T getSoleXAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
+      Attribute<T> attribute = getSoleAttribute(attributeTypeName);
+      if (attribute == null) {
+         return null;
+      }
+      return attribute.getValue();
    }
 
-   public void setSoleDateAttributeValue(String attributeName, Date date) throws IllegalStateException, SQLException {
-      checkDeleted();
-      Attribute attr = null;
-      if (getAttributeManager(attributeName).getAttributes().size() > 1) throw new IllegalArgumentException(
-            "Found " + getAttributeManager(attributeName).getAttributes().size() + " attributes; Should only be 1 " + getHumanReadableId());
-      if (getAttributeManager(attributeName).getAttributes().size() == 0)
-         attr = getAttributeManager(attributeName).getNewAttribute();
-      else
-         attr = getAttributeManager(attributeName).getAttributes().iterator().next();
-      attr.setStringData(date.getTime() + "");
+   public <T> T getSoleXAttributeValueHideException(String attributeTypeName) throws IllegalStateException {
+      try {
+         return getSoleXAttributeValue(attributeTypeName);
+
+      } catch (SQLException ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         return null;
+      }
    }
 
-   public Date getSoleDateAttributeValue(String attributeName) throws IllegalStateException, SQLException {
-      checkDeleted();
-      if (getAttributeManager(attributeName).getAttributes().size() == 0) return null;
-      return ((DateAttribute) getAttributeManager(attributeName).getSoleAttribute()).getDate();
+   public <T> void setSoleXAttributeValue(String attributeTypeName, T value) throws IllegalStateException, SQLException {
+      Attribute<T> attribute = getSoleAttributeForSet(attributeTypeName);
+      attribute.setValue(value);
+   }
+
+   public void setSoleAttributeFromStream(String attributeTypeName, InputStream stream) throws IllegalStateException, SQLException, IOException {
+      Attribute<Object> attribute = getSoleAttributeForSet(attributeTypeName);
+      attribute.setValueFromInputStream(stream);
+   }
+
+   /**
+    * This method is for use on min 0, max 1 attributes. If the attribute exists, it's string is replaced with value.
+    * Else, an attribute is added and value set.
+    * 
+    * @param attributeName
+    * @throws IllegalStateException
+    * @throws SQLException
+    */
+   public void setSoleStringAttributeValue(String attributeTypeName, String value) throws IllegalStateException, SQLException {
+      setSoleXAttributeValue(attributeTypeName, value);
+   }
+
+   public void clearSoleAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
+      Attribute<String> attribute = getSoleAttribute(attributeTypeName);
+
+      if (attribute != null) {
+         attribute.delete();
+      }
+   }
+
+   public void setSoleBooleanAttributeValue(String attributeTypeName, Boolean value) throws IllegalStateException, SQLException {
+      setSoleXAttributeValue(attributeTypeName, value);
+   }
+
+   public void setSoleDateAttributeValue(String attributeTypeName, Date value) throws IllegalStateException, SQLException {
+      setSoleXAttributeValue(attributeTypeName, value);
    }
 
    /**
@@ -672,8 +661,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public void setDamAttributes(String attributeName, Collection<String> dataStrs) throws SQLException {
       ArrayList<String> storedNames = new ArrayList<String>();
       DynamicAttributeManager dam = getAttributeManager(attributeName);
-      int minOccur = dam.getDescriptor().getMinOccurrences();
-      int maxOccur = dam.getDescriptor().getMaxOccurrences();
+      int minOccur = dam.getAttributeType().getMinOccurrences();
+      int maxOccur = dam.getAttributeType().getMaxOccurrences();
       for (Attribute attr : getAttributeManager(attributeName).getAttributes()) {
          storedNames.add(attr.getStringData());
       }
@@ -724,83 +713,30 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return items;
    }
 
-   /**
-    * This method is for use on min 0, max 1 attributes. If the attribute exists, it's string is replaced with value.
-    * Else, an attribute is added and value set.
-    * 
-    * @param attributeName
-    * @throws IllegalStateException
-    * @throws SQLException
-    */
-   public void setSoleAttributeValue(String attributeName, String value) throws IllegalStateException, SQLException {
-      checkDeleted();
-      for (DynamicAttributeManager userAttr : getAttributes()) {
-         if (userAttr.getDescriptor().getName().equals(attributeName)) {
-            Collection<Attribute> attrs = userAttr.getAttributes();
-            if (attrs.size() > 1) throw new IllegalStateException(String.format(
-                  "The attribute \'%s\' can only have max 1 for getSoleAttributeValue", attributeName));
-            if (attrs.size() == 0) {
-               userAttr.getNewAttribute().setStringData(value);
-            } else {
-               attrs.iterator().next().setStringData(value);
-            }
-         }
-      }
-   }
-
-   public void clearSoleAttributeValue(String attributeName) throws IllegalStateException, SQLException {
-      checkDeleted();
-      for (DynamicAttributeManager userAttr : getAttributes()) {
-         if (userAttr.getDescriptor().getName().equals(attributeName)) {
-            Collection<Attribute> attrs = userAttr.getAttributes();
-            if (attrs.size() > 1) throw new IllegalStateException(String.format(
-                  "The attribute \'%s\' can only have max 1 for getSoleAttributeValue", attributeName));
-            if (attrs.size() == 1) attrs.iterator().next().delete();
-         }
-      }
-   }
-
    public String getDescriptiveName() {
-      checkDeleted();
       try {
-         StringAttribute attribute = getDescriptiveNameAttribute();
-         if (attribute != null) {
-            return attribute.getStringData();
-         } else {
+         Attribute<String> attribute = getSoleAttribute("Name");
+         if (attribute == null) {
             return UNNAMED;
+         } else {
+            return attribute.getValue();
          }
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          return "<error>";
       }
    }
 
    public void setDescriptiveName(String name) {
-      checkDeleted();
       try {
-         getDescriptiveNameAttribute().setStringData(name);
+         setSoleXAttributeValue("Name", name);
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
-      dirty = true;
-   }
-
-   public StringAttribute getDescriptiveNameAttribute() throws SQLException {
-      checkDeleted();
-
-      // This may be acquired by 'late acquisition', so make sure it is available
-      if (nameAttribute == null) {
-         acquireAttributes(false);
-
-         DynamicAttributeManager userAttr = getAttributeManager("Name");
-         nameAttribute = (StringAttribute) userAttr.getAttributes().iterator().next();
-      }
-
-      return nameAttribute;
    }
 
    private void acquireAttributes(boolean force) throws SQLException {
-      if (force || attributes == null) {
+      if (force || attributeManagers == null) {
          artifactManager.setAttributesOnArtifact(this);
       }
    }
@@ -822,8 +758,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       checkDeleted();
       dirty = false;
 
-      if (attributes != null) {
-         for (DynamicAttributeManager userAttr : attributes) {
+      if (attributeManagers != null) {
+         for (DynamicAttributeManager userAttr : attributeManagers) {
             for (Attribute attr : userAttr.getAttributes()) {
                attr.setNotDirty();
             }
@@ -876,8 +812,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    private boolean anAttributeIsDirty() {
 
       // An attribute can only be dirty if the attributes are loaded
-      if (attributes != null) {
-         for (DynamicAttributeManager userAttr : attributes) {
+      if (attributeManagers != null) {
+         for (DynamicAttributeManager userAttr : attributeManagers) {
 
             if (userAttr.isDirty()) return true;
          }
@@ -886,9 +822,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return false;
    }
 
-   protected void setAttributes(Collection<DynamicAttributeManager> attributes) {
+   protected void setAttributeManagers(Collection<DynamicAttributeManager> attributes) {
       checkDeleted();
-      this.attributes = attributes;
+      this.attributeManagers = attributes;
    }
 
    /**
@@ -963,7 +899,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
             descendants.addAll(child.getDescendants(humanReadableId, caseSensitive));
          }
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
 
       return descendants;
@@ -984,7 +920,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
             }
          }
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
 
       return descendants;
@@ -1081,7 +1017,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
             linkManager = new LinkManager(this);
          }
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
       return linkManager;
    }
@@ -1117,7 +1053,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          relate(relationSide, artifacts, false);
       } catch (SQLException ex) {
          // This should never happen
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 
@@ -1126,7 +1062,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          unrelate(relationSide, artifact, false);
       } catch (SQLException ex) {
          // Should never happen because not persisting
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 
@@ -1167,7 +1103,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    public final boolean attributesNotLoaded() {
-      return attributes == null;
+      return attributeManagers == null;
    }
 
    public final boolean isLinkManagerLoaded() {
@@ -1271,7 +1207,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          if (isDirty()) {
             info.append(getArtifactTypeName() + " \"" + this + "\" => dirty\n");
             for (DynamicAttributeManager dam : getDirtyAttributes())
-               if (dam.isDirty()) info.append("===> Dirty Attribute - " + dam.getDescriptor().getName() + "\n");
+               if (dam.isDirty()) info.append("===> Dirty Attribute - " + dam.getAttributeType().getName() + "\n");
             return true;
          }
          // Loop through all relations
@@ -1291,7 +1227,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
             }
          }
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
       return false;
    }
@@ -1371,39 +1307,12 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return newArtifact;
    }
 
-   public Artifact copyAttributes(Artifact artifact) throws IllegalStateException, SQLException {
-      if (artifact == null) throw new IllegalArgumentException("Artifact can not be null.");
-
-      for (DynamicAttributeManager attrManager : getAttributes()) {
+   private void copyAttributes(Artifact artifact) throws IllegalStateException, SQLException {
+      for (DynamicAttributeManager attrManager : getAttributeManagers()) {
          for (Attribute attribute : attrManager.getAttributes()) {
-            if (artifact.isInAttributeInitialization()) {
-               artifact.getAttributeManager(attribute.getName()).getNewAttribute().setDat(
-                     new ByteArrayInputStream(attribute.getDat()));
-            } else {
-               artifact.setAttribute(attribute.getName(), new ByteArrayInputStream(attribute.getDat()));
-            }
+            attribute.copyTo(artifact);
          }
       }
-      return artifact;
-
-      // AttributeMemo memo;
-      // Attribute newAttribute;
-      //
-      // attributeManager.setupForInitialization(false);
-      //
-      // for (Attribute attribute : getAttributes()) {
-      // boolean containsBlobData = attribute.getBlobData() == null;
-      // newAttribute = attributeManager.injectFromDb(attribute.getBlobData() == null? null :new
-      // ByteArrayInputStream(attribute.getBlobData()),
-      // attribute.getStringData());
-      //
-      // memo = attribute.getPersistenceMemo();
-      //
-      // if (memo != null) {
-      // newAttribute.setPersistenceMemo(memo);
-      // }
-      // }
-      // attributeManager.enforceMinMaxConstraints();
    }
 
    /*
@@ -1426,16 +1335,16 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
                getPersistenceMemo().getGammaId()));
          getFactory().cache(clonedArtifact);
 
-         for (DynamicAttributeManager attrManager : getAttributes()) {
+         for (DynamicAttributeManager attrManager : getAttributeManagers()) {
             attributeManagers.add((DynamicAttributeManager) attrManager.clone(clonedArtifact));
          }
 
-         clonedArtifact.setAttributes(attributeManagers);
+         clonedArtifact.setAttributeManagers(attributeManagers);
          clonedArtifact.onInitializationComplete();
          clonedArtifact.setNotDirty();
 
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
 
       return clonedArtifact;
@@ -1443,8 +1352,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
    public Collection<DynamicAttributeManager> getDirtyAttributes() {
       ArrayList<DynamicAttributeManager> dirtyAttrs = new ArrayList<DynamicAttributeManager>();
-      if (attributes == null) return dirtyAttrs;
-      for (DynamicAttributeManager userAttr : attributes) {
+      if (attributeManagers == null) return dirtyAttrs;
+      for (DynamicAttributeManager userAttr : attributeManagers) {
          if (userAttr.isDirty()) dirtyAttrs.add(userAttr);
       }
       return dirtyAttrs;
@@ -1457,11 +1366,12 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public Collection<SkynetAttributeChange> getDirtyAttributeSkynetAttributeChanges() throws SQLException {
       List<SkynetAttributeChange> dirtyAttributes = new LinkedList<SkynetAttributeChange>();
 
-      for (DynamicAttributeManager attributeManager : getAttributes()) {
+      for (DynamicAttributeManager attributeManager : getAttributeManagers()) {
          for (Attribute attribute : attributeManager.getAttributes()) {
             if (attribute.isDirty()) {
-               dirtyAttributes.add(new SkynetAttributeChange(attribute.getName(), attribute.getStringData(),
-                     attribute.getPersistenceMemo().getAttrId(), attribute.getPersistenceMemo().getGammaId()));
+               dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(),
+                     attribute.getStringData(), attribute.getPersistenceMemo().getAttrId(),
+                     attribute.getPersistenceMemo().getGammaId()));
             }
          }
       }
@@ -1469,7 +1379,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    public void setAttributesNotDirty() throws SQLException {
-      for (DynamicAttributeManager attributeManager : getAttributes()) {
+      for (DynamicAttributeManager attributeManager : getAttributeManagers()) {
          for (Attribute attribute : attributeManager.getAttributes()) {
             attribute.setNotDirty();
          }
@@ -1588,7 +1498,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
             "Can't perform attribute initialization on artifacts with loaded attributes");
 
       Collection<DynamicAttributeDescriptor> attributeTypeDescriptors =
-            configurationPersistenceManager.getAttributeTypesFromArtifactType(getDescriptor(), branch);
+            configurationManager.getAttributeTypesFromArtifactType(getDescriptor(), branch);
       Collection<DynamicAttributeManager> attributes =
             new ArrayList<DynamicAttributeManager>(attributeTypeDescriptors.size());
 
@@ -1600,7 +1510,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          attributes.add(attribute);
       }
 
-      this.setAttributes(attributes);
+      this.setAttributeManagers(attributes);
 
       this.initializingAttributes = true;
    }
@@ -1617,7 +1527,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public synchronized void finalizeAttributeInitialization() throws IllegalStateException {
       if (!initializingAttributes) throw new IllegalStateException("Artifact not in attribute initialization mode");
 
-      for (DynamicAttributeManager attribute : attributes) {
+      for (DynamicAttributeManager attribute : attributeManagers) {
          attribute.enforceMinMaxConstraints();
       }
 

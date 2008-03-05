@@ -10,14 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.CharacterCodingException;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.PersistenceMemo;
 import org.eclipse.osee.framework.jdk.core.util.PersistenceObject;
-import org.eclipse.osee.framework.jdk.core.util.io.Streams;
+import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
@@ -26,45 +32,25 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class Attribute implements PersistenceObject {
-
+public abstract class Attribute<T> implements PersistenceObject {
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-
-   private String name;
+   private final DynamicAttributeDescriptor attributeType;
    private DynamicAttributeManager manager;
    private AttributeMemo memo;
    private boolean required;
    private boolean deletable;
    private boolean deleted;
    protected boolean dirty;
-   private IMediaResolver resolver;
 
-   /**
-    * Create a default attribute. This is available for persistance
-    */
-   protected Attribute(IMediaResolver resolver) {
-      this.name = null;
-      this.required = false;
-      this.deletable = false;
-      this.dirty = true;
-      this.deleted = false;
-      this.memo = null;
-      this.resolver = resolver;
-   }
+   private String rawStringVaule;
+   private byte[] rawContent;
 
-   /**
-    * Create an attribute with a particular name. Attributes are required by default.
-    * 
-    * @param name The name of the attribute
-    */
-   protected Attribute(IMediaResolver resolver, String name) {
-      super();
-      this.name = name;
+   protected Attribute(DynamicAttributeDescriptor attributeType) {
+      this.attributeType = attributeType;
       this.required = true;
       this.deletable = true;
       this.dirty = false;
       this.memo = null;
-      this.resolver = resolver;
    }
 
    public void setDirty() {
@@ -77,20 +63,10 @@ public abstract class Attribute implements PersistenceObject {
    }
 
    /**
-    * @return Returns the name.
+    * @return the attributeType
     */
-   public String getName() {
-      checkDeleted();
-      return name;
-   }
-
-   /**
-    * @param name The name to set.
-    */
-   public void setName(String name) {
-      checkDeleted();
-      this.name = name;
-      dirty = true;
+   public DynamicAttributeDescriptor getAttributeType() {
+      return attributeType;
    }
 
    /**
@@ -109,8 +85,6 @@ public abstract class Attribute implements PersistenceObject {
       this.required = required;
    }
 
-   public abstract String getTypeName();
-
    /*
     * (non-Javadoc)
     * 
@@ -118,13 +92,12 @@ public abstract class Attribute implements PersistenceObject {
     */
    @Override
    public String toString() {
-      checkDeleted();
-      //      return getTypeName() + ": " + getStringData();
-      return getNameValueDescription();
+      Object value = getValue();
+      return value == null ? "" : value.toString();
    }
 
    public String getNameValueDescription() {
-      return manager.getDescriptor().getName() + ": " + getStringData();
+      return attributeType.getName() + ": " + toString();
    }
 
    /**
@@ -142,8 +115,6 @@ public abstract class Attribute implements PersistenceObject {
       checkDeleted();
       this.deletable = deletable;
    }
-
-   public abstract void setValidityXml(String validityXml) throws Exception;
 
    /**
     * @param parent The parent to set.
@@ -216,85 +187,51 @@ public abstract class Attribute implements PersistenceObject {
    }
 
    /**
-    * @param data
+    * Provides Attribute subclasses access to the raw large object value from the datastore
+    * 
+    * @return exact bytes from datastore
     */
-   public void setDat(InputStream data) {
-      if (resolver == null) throw new IllegalStateException("Resolver can not be null");
-
-      if (resolver.setValue(data)) setDirty();
+   public ByteArrayInputStream getRawContentStream() {
+      if (rawContent == null) {
+         return null;
+      }
+      return new ByteArrayInputStream(rawContent);
    }
 
-   public void loadDat(InputStream data) {
-      if (resolver == null) throw new IllegalStateException("Resolver can not be null");
-
-      resolver.setValue(data);
+   /**
+    * Copies this attribute onto the specified artifact. Can not handle attribute types with multiple instances
+    */
+   public void copyTo(Artifact artifact) throws SQLException {
+      Attribute<?> attributeCopy;
+      if (artifact.isInAttributeInitialization()) {
+         attributeCopy = artifact.getAttributeManager(attributeType).getNewAttribute();
+      } else {
+         attributeCopy = artifact.getAttributeManager(attributeType).getAttributeForSet();
+      }
+      attributeCopy.setRawContent(rawContent);
+      attributeCopy.setRawStringVaule(rawStringVaule);
    }
 
-   public byte[] getDat() {
-      if (resolver == null) throw new IllegalStateException("Resolver can not be null");
-
-      return resolver.getValue();
-   }
-
-   public void setBlobData(InputStream stream) {
-      resolver.setBlobData(stream);
-   }
-
-   public byte[] getBlobData() {
-      return resolver.getBlobData();
-   }
-
-   public void setVarchar(String varchar) {
-      resolver.setVarchar(varchar);
-   }
-
-   public String getVarchar() {
-      return resolver.getvarchar();
-   }
-
+   @Deprecated
    public String getStringData() {
-      try {
-         // TODO this is inefficient for a value stored as a string to begin with
-         byte[] data = getDat();
-         if (data == null) {
-            return null;
-         }
-         return new String(data, "UTF-8");
-      } catch (IOException ex) {
-         throw new RuntimeException("This should never happen", ex);
-      }
+      return getRawStringVaule();
    }
 
-   public void setStringData(String value) {
-      setStringData(value, true);
+   @Deprecated
+   public void setStringData(String rawStringVaule) {
+      setRawStringVaule(rawStringVaule);
    }
 
-   public void setStringData(String value, boolean perssistAttribute) {
-      if (value.equals(getStringData())) return;
-      try {
-         if (value != null) {
-            if (perssistAttribute)
-               setDat(Streams.convertStringToInputStream(value, "UTF-8"));
-            else
-               loadDat(Streams.convertStringToInputStream(value, "UTF-8"));
-         }
-      } catch (UnsupportedEncodingException ex) {
-         throw new RuntimeException("This should never happen", ex);
-      }
-   }
+   public abstract void setValue(T value);
 
-   public void swagValue(String value) {
-      setStringData(value);
-   }
+   public abstract T getValue();
 
-   protected IMediaResolver getResolver() {
-      return resolver;
-   }
+   public abstract void setValueFromInputStream(InputStream value) throws IOException;
 
-   public void replaceAll(String regex, String replacement) {
-      replaceAll(Pattern.compile(regex), replacement);
-   }
-
+   /**
+    * callers to this should ensure they have string attributes and then do the replacements themselves
+    */
+   @Deprecated
    public void replaceAll(Pattern pattern, String replacement) {
       setStringData(pattern.matcher(getStringData()).replaceAll(replacement));
    }
@@ -307,14 +244,76 @@ public abstract class Attribute implements PersistenceObject {
       deleted = true;
    }
 
-   public boolean isEqualInValueTo(Attribute attribute) {
-      if (attribute == null) throw new IllegalArgumentException("attribute can not be null");
+   /**
+    * Provides Attribute subclasses access to the raw String value from the datastore
+    * 
+    * @return exact String from datastore
+    */
+   public String getRawStringVaule() {
+      return rawStringVaule;
+   }
 
-      String stringData = getStringData();
-      if (stringData == null) {
-         return attribute.getStringData() == null;
+   /**
+    * Provides Attribute subclasses access to the raw large object value from the datastore
+    * 
+    * @return exact bytes from datastore
+    */
+   protected byte[] getRawContent() {
+      return rawContent;
+   }
+
+   /**
+    * Provides Attribute subclasses access to an inputstream that is either the large object value from the datastore if
+    * it is not null or the string value
+    * 
+    * @return raw string or lob as appropriate as a stream
+    * @throws CharacterCodingException
+    */
+   @Deprecated
+   // probably not needed
+   protected InputStream getRawValueAsStream() throws CharacterCodingException {
+      if (rawContent == null) {
+         return new CharBackedInputStream(rawStringVaule);
+      }
+      return new ByteArrayInputStream(rawContent);
+   }
+
+   /**
+    * @param rawStringVaule the rawStringVaule to set
+    */
+   protected void setRawStringVaule(String rawStringVaule) {
+      // the == is used to handle equality when both are null
+      if (this.rawStringVaule == rawStringVaule) {
+         return;
+      }
+      if (this.rawStringVaule != null && this.rawStringVaule.equals(rawStringVaule)) {
+         return;
+      }
+      this.rawStringVaule = rawStringVaule;
+      setDirty();
+   }
+
+   /**
+    * @param rawContent the rawContent to set
+    */
+   protected void setRawContent(byte[] rawContent) {
+      if (Arrays.equals(this.rawContent, rawContent)) {
+         return;
       }
 
-      return stringData.equals(attribute.getStringData());
+      this.rawContent = rawContent;
+      setDirty();
+   }
+
+   /**
+    * This should never be called from the application software.
+    */
+   protected void injectFromDb(InputStream rawContent, String rawStringVaule) {
+      try {
+         this.rawContent = rawContent == null ? null : Lib.inputStreamToBytes(rawContent);
+         this.rawStringVaule = rawStringVaule;
+      } catch (IOException ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
+      }
    }
 }

@@ -53,7 +53,7 @@ public class UserRoleManager {
 
    public Set<UserRole> getUserRoles() {
       Set<UserRole> uRoles = new HashSet<UserRole>();
-      String xml = artifact.getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME);
+      String xml = artifact.getSoleStringAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME);
       Matcher m =
             java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(xml);
       while (m.find()) {
@@ -83,7 +83,7 @@ public class UserRoleManager {
          for (UserRole item : defectItems)
             sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
          sb.append("</" + ATS_DEFECT_TAG + ">");
-         artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
+         artifact.setSoleStringAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
          updateAssignees();
          if (persist) artifact.persistAttributes();
          rollupHoursSpentToReviewState(persist);

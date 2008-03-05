@@ -107,19 +107,19 @@ public class User extends Artifact implements Serializable {
    }
 
    public String getUserId() {
-      return getSoleAttributeValue(userIdAttributeName);
+      return getSoleStringAttributeValue(userIdAttributeName);
    }
 
    public void setUserID(String userId) throws IllegalStateException, SQLException {
-      setSoleAttributeValue(userIdAttributeName, userId);
+      setSoleStringAttributeValue(userIdAttributeName, userId);
    }
 
    public String getEmail() {
-      return getSoleAttributeValue(Attributes.Email.toString());
+      return getSoleStringAttributeValue(Attributes.Email.toString());
    }
 
    public void setEmail(String email) throws IllegalStateException, SQLException {
-      setSoleAttributeValue(Attributes.Email.toString(), email);
+      setSoleStringAttributeValue(Attributes.Email.toString(), email);
    }
 
    public String getName() {
@@ -131,16 +131,16 @@ public class User extends Artifact implements Serializable {
    }
 
    public String getPhone() {
-      return getSoleAttributeValue(Attributes.Phone.toString());
+      return getSoleStringAttributeValue(Attributes.Phone.toString());
    }
 
    public void setPhone(String phone) throws IllegalStateException, SQLException {
-      setSoleAttributeValue(Attributes.Phone.toString(), phone);
+      setSoleStringAttributeValue(Attributes.Phone.toString(), phone);
    }
 
    public Boolean isActive() throws SQLException {
-      String str = getAttributeManager(Attributes.Active.toString()).getSoleAttribute().getStringData();
-      return (str.equals("yes"));
+      Boolean active = getSoleXAttributeValue(Attributes.Active.toString());
+      return active;
    }
 
    public void setActive(boolean required) throws IllegalStateException, SQLException {
@@ -169,9 +169,9 @@ public class User extends Artifact implements Serializable {
          for (Attribute attribute : attributeManager.getAttributes()) {
             branchAttr = (IntegerAttribute) attribute;
             // Remove attributes that are no longer valid
-            if (!branchIds.contains(branchAttr.getInt())) {
+            if (!branchIds.contains(branchAttr.getValue())) {
                attribute.delete();
-            } else if (favoriteBranch.getBranchId() == branchAttr.getInt()) {
+            } else if (favoriteBranch.getBranchId() == branchAttr.getValue()) {
                attribute.delete();
                found = true;
                break;
@@ -179,11 +179,10 @@ public class User extends Artifact implements Serializable {
          }
 
          if (!found) {
-            branchAttr = (IntegerAttribute) attributeManager.getNewAttribute();
-            branchAttr.setInt(favoriteBranch.getBranchId());
+            attributeManager.getNewAttribute().setValue(favoriteBranch.getBranchId());
          }
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 
@@ -193,7 +192,7 @@ public class User extends Artifact implements Serializable {
          IntegerAttribute branchAttr;
          for (Attribute attribute : attributeManager.getAttributes()) {
             branchAttr = (IntegerAttribute) attribute;
-            if (branch.getBranchId() == branchAttr.getInt()) {
+            if (branch.getBranchId() == branchAttr.getValue()) {
                return true;
             }
          }

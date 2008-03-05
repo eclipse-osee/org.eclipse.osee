@@ -149,7 +149,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDecision()
     */
    public String getWorldViewDecision() {
-      return getSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName());
    }
 
    /*
@@ -158,7 +158,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    public String getWorldViewDescription() {
-      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
    }
 
    public String getWorldViewCategory() {

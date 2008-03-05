@@ -74,7 +74,7 @@ public class ConnectWorkflowToBranchOrTransaction extends AbstractBlam {
          String hrid = hridMatcher.group(1);
          for (Artifact workflow : teamWorkflows) {
             if (workflow.getHumanReadableId().equals(hrid)) {
-               workflow.setSoleAttributeValue("ats.Transaction Id", String.valueOf(rSet.getInt("transaction_id")));
+               workflow.setSoleStringAttributeValue("ats.Transaction Id", String.valueOf(rSet.getInt("transaction_id")));
                workflow.persistAttributes();
                return;
             }

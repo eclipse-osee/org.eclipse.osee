@@ -241,7 +241,7 @@ public class ImportTraceabilityJob extends Job {
                   // for local data and procedures search requirement text for traceMark
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
                   String textContent =
-                        WordUtil.textOnly(reqArtifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME)).toUpperCase();
+                        WordUtil.textOnly(reqArtifact.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME)).toUpperCase();
                   if (textContent.contains(getCanonicalReqName(structuredReqNameMatcher.group(2)))) {
                      foundStr = "req body match";
                   } else {

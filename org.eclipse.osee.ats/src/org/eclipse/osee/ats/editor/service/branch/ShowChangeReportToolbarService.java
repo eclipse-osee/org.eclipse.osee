@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchToArtifactCacheUpdateEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -26,8 +25,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Donald G. Dunne
  */
 public class ShowChangeReportToolbarService extends WorkPageService implements IEventReceiver {
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-
    private Action action;
 
    // Since this service is only going to be added for the Implement state, Location.AllState will
@@ -98,5 +95,4 @@ public class ShowChangeReportToolbarService extends WorkPageService implements I
    private void performService() {
       smaMgr.getBranchMgr().showChangeReport();
    }
-
 }

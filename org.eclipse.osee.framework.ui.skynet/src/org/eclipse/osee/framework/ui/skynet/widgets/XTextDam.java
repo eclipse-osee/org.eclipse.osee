@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 public class XTextDam extends XText implements IDamWidget {
 
    private Artifact artifact;
-   private String attrName;
+   private String attributeTypeName;
 
    public XTextDam(String displayLabel) {
       super(displayLabel);
@@ -28,19 +28,17 @@ public class XTextDam extends XText implements IDamWidget {
 
    public void setArtifact(Artifact artifact, String attrName) throws SQLException {
       this.artifact = artifact;
-      this.attrName = attrName;
+      this.attributeTypeName = attrName;
 
       super.set(getUdatStringValue());
    }
 
    public DynamicAttributeManager getUdat() throws SQLException {
-      return artifact.getAttributeManager(attrName);
+      return artifact.getAttributeManager(attributeTypeName);
    }
 
    public String getUdatStringValue() throws SQLException {
-      DynamicAttributeManager udat = getUdat();
-      if (udat == null) return "";
-      return udat.getSoleAttributeValue();
+      return artifact.getSoleXAttributeValue(attributeTypeName);
    }
 
    XModifiedListener modifyListener = new XModifiedListener() {
@@ -72,15 +70,11 @@ public class XTextDam extends XText implements IDamWidget {
 
    @Override
    public void save() throws SQLException {
-      if (isDirty()) {
-         DynamicAttributeManager udat = getUdat();
-         udat.setSoleAttributeValue(get());
-      }
+      artifact.setSoleXAttributeValue(attributeTypeName, get());
    }
 
    @Override
    public boolean isDirty() throws SQLException {
       return (!getUdatStringValue().equals(get()));
    }
-
 }

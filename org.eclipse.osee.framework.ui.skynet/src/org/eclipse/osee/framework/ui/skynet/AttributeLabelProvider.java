@@ -43,14 +43,14 @@ public class AttributeLabelProvider implements ITableLabelProvider {
     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
     */
    public String getColumnText(Object element, int columnIndex) {
-      Attribute attribute = (Attribute) element;
+      Attribute<?> attribute = (Attribute<?>) element;
       if (columnIndex == 0) {
-         return attribute.getName();
+         return attribute.getAttributeType().getName();
       }
-      if ((attribute instanceof EnumeratedAttribute) && attribute.getStringData() == null) {
+      if ((attribute instanceof EnumeratedAttribute) && attribute.toString() == null) {
          return "<Select>";
       }
-      return attribute.getStringData();
+      return attribute.toString();
    }
 
    /*

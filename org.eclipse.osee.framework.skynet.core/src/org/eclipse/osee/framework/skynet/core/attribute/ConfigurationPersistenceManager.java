@@ -329,6 +329,11 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return cacheAttributeTypeValidity.getArtifactTypesFromAttributeType(attributeType);
    }
 
+   public Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactType(String artifactTypeName, Branch branch) throws SQLException {
+      return cacheAttributeTypeValidity.getAttributeTypesFromArtifactType(
+            getArtifactSubtypeDescriptor(artifactTypeName), branch);
+   }
+
    public Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor descriptor, Branch branch) throws SQLException {
       return cacheAttributeTypeValidity.getAttributeTypesFromArtifactType(descriptor, branch);
    }

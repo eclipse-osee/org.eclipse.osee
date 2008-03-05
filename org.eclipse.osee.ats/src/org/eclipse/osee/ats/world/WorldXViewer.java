@@ -306,10 +306,15 @@ public class WorldXViewer extends XViewer {
       final Set<Artifact> useArts = new HashSet<Artifact>();
       for (TreeItem item : treeItems) {
          Artifact art = ((WorldArtifactItem) item.getData()).getArtifact();
-         if (art.isAttributeTypeValid(attrName))
-            useArts.add(art);
-         else
-            rData.logError(attrName + " not valid for artifact " + art.getHumanReadableId() + " - " + art.getDescriptiveName());
+         try {
+            if (art.isAttributeTypeValid(attrName)) {
+               useArts.add(art);
+            } else {
+               rData.logError(attrName + " not valid for artifact " + art.getHumanReadableId() + " - " + art.getDescriptiveName());
+            }
+         } catch (SQLException ex) {
+            rData.logError(ex.getLocalizedMessage());
+         }
       }
       if (!rData.isEmpty()) {
          rData.report("Column Multi Edit Errors");
@@ -368,7 +373,14 @@ public class WorldXViewer extends XViewer {
       for (TreeItem item : treeItems) {
          Artifact art = ((WorldArtifactItem) item.getData()).getArtifact();
          if (art instanceof ActionArtifact) return false;
-         if (!art.isAttributeTypeValid(attrName)) return false;
+         try {
+            if (!art.isAttributeTypeValid(attrName)) {
+               return false;
+            }
+         } catch (SQLException ex) {
+            OSEELog.logException(AtsPlugin.class, ex, false);
+            return false;
+         }
       }
       return true;
    }

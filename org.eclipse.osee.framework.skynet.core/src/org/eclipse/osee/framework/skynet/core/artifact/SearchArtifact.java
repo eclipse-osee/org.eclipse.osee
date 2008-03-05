@@ -53,7 +53,7 @@ public class SearchArtifact extends BasicArtifact implements WorkflowStep {
    public List<ISearchPrimitive> getCriteria() throws SQLException {
       List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
 
-      for (DynamicAttributeManager userAttr : getAttributes()) {
+      for (DynamicAttributeManager userAttr : getAttributeManagers()) {
          for (Attribute attr : userAttr.getAttributes()) {
             if (attr instanceof ISearchAttribute) {
                criteria.add(((ISearchAttribute) attr).getSearchPrimitive());

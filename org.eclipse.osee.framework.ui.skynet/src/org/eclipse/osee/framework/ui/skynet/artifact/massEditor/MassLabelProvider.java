@@ -50,11 +50,16 @@ public class MassLabelProvider implements ITableLabelProvider {
       else if (colName.equals(Extra_Columns.GUID.name()))
          return artifact.getGuid();
       else if (colName.equals(Extra_Columns.Artifact_Type.name())) return artifact.getArtifactTypeName();
-      if (!artifact.isAttributeTypeValid(colName)) return "";
+
       try {
-         if (artifact.getAttributeManager(colName).getDescriptor().getBaseAttributeClass().equals(DateAttribute.class)) {
-            if (artifact.getAttributeManager(colName).getAttributes().size() > 0) return ((DateAttribute) artifact.getAttributeManager(
-                  colName).getAttributes().iterator().next()).getStringValue(DateAttribute.MMDDYYHHMM);
+         if (!artifact.isAttributeTypeValid(colName)) {
+            return "";
+         }
+         if (artifact.getAttributeManager(colName).getAttributeType().getBaseAttributeClass().equals(
+               DateAttribute.class)) {
+            if (artifact.getAttributeManager(colName).getAttributes().size() > 0) {
+               DateAttribute.MMDDYYHHMM.format(artifact.getSoleXAttributeValue(colName));
+            }
             return "";
          }
 

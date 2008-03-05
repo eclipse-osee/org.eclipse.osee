@@ -46,7 +46,7 @@ public class UrlRenderer extends Renderer {
 
    @Override
    public String getArtifactUrl(Artifact artifact) {
-      String url = artifact.getSoleAttributeValue("Content URL");
+      String url = artifact.getSoleStringAttributeValue("Content URL");
       if (url.startsWith("ws:")) {
          IFile iFile = WorkspaceURL.getIFile(url);
          url = iFile.getLocation().toString();

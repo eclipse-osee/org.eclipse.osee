@@ -81,7 +81,7 @@ public class RelationMatrixExportJob extends ReportJob {
       if (row == null) {
          row = new String[columnCount];
          row[0] = artifact.getDescriptiveName();
-         row[1] = artifact.getSoleAttributeValue("Imported Paragraph Number");
+         row[1] = artifact.getSoleStringAttributeValue("Imported Paragraph Number");
          matrix.put(artifact, row);
       }
       return row;

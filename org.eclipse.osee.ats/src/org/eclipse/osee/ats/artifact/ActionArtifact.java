@@ -126,10 +126,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       String desc = "";
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          if (desc.equals(""))
-            desc = team.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
-         else if (!desc.equals(team.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName()))) return;
+            desc = team.getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+         else if (!desc.equals(team.getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName()))) return;
       }
-      if (!desc.equals(getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName()))) setSoleAttributeValue(
+      if (!desc.equals(getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName()))) setSoleStringAttributeValue(
             ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
    }
 
@@ -184,19 +184,19 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public void setChangeType(ChangeType type) throws IllegalStateException, SQLException {
-      setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
+      setSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
    }
 
    public ChangeType getChangeType() {
-      return ChangeType.getChangeType(getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
+      return ChangeType.getChangeType(getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
    }
 
    public PriorityType getPriority() {
-      return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName()));
+      return PriorityType.getPriority(getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName()));
    }
 
    public void setPriority(PriorityType type) throws IllegalStateException, SQLException {
-      setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
+      setSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
    }
 
    /**
@@ -219,7 +219,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public ChangeType getWorldViewChangeType() {
-      return ChangeType.getChangeType(getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
+      return ChangeType.getChangeType(getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
    }
 
    /* (non-Javadoc)
@@ -297,7 +297,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public String getWorldViewPriority() {
       try {
-         return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
+         return PriorityType.getPriority(getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -897,7 +897,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @throws IllegalStateException
     */
    public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws IllegalStateException, SQLException {
-      String priorityStr = fromAction.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName());
+      String priorityStr = fromAction.getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName());
       PriorityType priType = null;
       if (priorityStr.equals(""))
          priType = null;
@@ -908,8 +908,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       setArtifactIdentifyData(
             toTeam,
             fromAction.getDescriptiveName(),
-            fromAction.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName()),
-            ChangeType.getChangeType(fromAction.getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName())),
+            fromAction.getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName()),
+            ChangeType.getChangeType(fromAction.getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName())),
             priType, fromAction.getAttributesToStringCollection(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()),
             fromAction.getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName()),
             fromAction.getSoleDateAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName()));
@@ -923,12 +923,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     */
    public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, boolean validationRequired, Date needByDate) throws SQLException {
       art.setDescriptiveName(title);
-      if (!desc.equals("")) art.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
-      art.setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
+      if (!desc.equals("")) art.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+      art.setSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
       DynamicAttributeManager dam = art.getAttributeManager(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
       for (String comm : userComms)
          dam.getNewAttribute().setStringData(comm);
-      if (priority != null) art.setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
+      if (priority != null) art.setSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             priority.getShortName());
       if (needByDate != null) art.setSoleDateAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), needByDate);
       if (validationRequired) art.setSoleBooleanAttributeValue(
@@ -959,7 +959,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    public String getWorldViewDescription() {
-      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
    }
 
    /*

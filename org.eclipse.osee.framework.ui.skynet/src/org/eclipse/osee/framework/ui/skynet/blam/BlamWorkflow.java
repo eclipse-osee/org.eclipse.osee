@@ -99,7 +99,7 @@ public class BlamWorkflow extends Artifact {
    }
 
    private void loadFromXml() throws ParserConfigurationException, SAXException, IOException, IllegalArgumentException, CoreException {
-      String blamXml = getSoleAttributeValue("Workflow Definition");
+      String blamXml = getSoleStringAttributeValue("Workflow Definition");
       Document document = Jaxp.readXmlDocument(blamXml);
       Element rootElement = document.getDocumentElement();
 
@@ -166,7 +166,7 @@ public class BlamWorkflow extends Artifact {
    }
 
    public void saveLayoutData(String xml) throws ParserConfigurationException, SAXException, IOException, IllegalArgumentException, CoreException, SQLException {
-      String blamXml = getSoleAttributeValue("Workflow Definition");
+      String blamXml = getSoleStringAttributeValue("Workflow Definition");
       Document document = Jaxp.readXmlDocument(blamXml);
       Element rootElement = document.getDocumentElement();
 
@@ -180,7 +180,7 @@ public class BlamWorkflow extends Artifact {
       String doc = Jaxp.getDocumentXml(document);
       doc = doc.replace("<Workflow>", "<Workflow>" + xml);
 
-      setSoleAttributeValue("Workflow Definition", doc);
+      setSoleStringAttributeValue("Workflow Definition", doc);
       persistAttributes();
    }
 

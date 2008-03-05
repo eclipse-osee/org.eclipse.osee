@@ -64,19 +64,19 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public String getFullName() {
-      return getSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName());
    }
 
    public void setFullName(String name) throws IllegalStateException, SQLException {
-      setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), name);
+      setSoleStringAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), name);
    }
 
    public String getDescription() {
-      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
    }
 
    public void setDescription(String desc) throws IllegalStateException, SQLException {
-      setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+      setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
    }
 
    public Collection<TeamWorkFlowArtifact> getTargetedForTeamArtifacts() throws SQLException {

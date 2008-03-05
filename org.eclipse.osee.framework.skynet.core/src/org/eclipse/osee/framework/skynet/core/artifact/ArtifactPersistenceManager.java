@@ -20,7 +20,6 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -68,7 +67,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
@@ -85,7 +83,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -253,7 +250,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       try {
          artifactPersistTx.execute();
       } catch (Exception ex) {
-         throw new SQLException(ex.getLocalizedMessage());
+         throw new SQLException(ex);
       }
    }
 
@@ -305,17 +302,11 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       if (persistAttributes) {
          notifyOnAttributeSave(artifact);
 
-         Collection<DynamicAttributeManager> userAttributes = artifact.getAttributes();
-         String content;
+         Collection<DynamicAttributeManager> userAttributes = artifact.getAttributeManagers();
 
          for (DynamicAttributeManager attributeManager : userAttributes) {
             for (Attribute attribute : attributeManager.getAttributes()) {
                if (attribute.isDirty()) {
-                  if (attribute.getName().equals(WordAttribute.CONTENT_NAME)) {
-                     //remove smart after each save
-                     content = WordUtil.removeWordMarkupSmartTags(attribute.getStringData());
-                     attribute.setStringData(content);
-                  }
                   addAttributeData(attribute, artifact, transaction, artGamma);
                }
             }
@@ -359,16 +350,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    protected void addAttributeData(Attribute attribute, Artifact artifact, SkynetTransaction transaction, int artGamma) throws SQLException {
-      int branchId = artifact.getBranch().getBranchId();
-      String value = attribute.getVarchar();
-      ByteArrayInputStream stream = null;
-
-      if (attribute.getBlobData() != null) stream = new ByteArrayInputStream(attribute.getBlobData());
-
-      addToAttributeTable(attribute, artifact, branchId, value, stream, transaction, artGamma);
-   }
-
-   private void addToAttributeTable(Attribute attribute, Artifact artifact, int tagId, String value, InputStream stream, SkynetTransaction transaction, int artGamma) throws SQLException {
+      String value = attribute.getRawStringVaule();
+      InputStream stream = attribute.getRawContentStream();
       AttributeMemo memo;
       ModType modType;
       SkynetDatabase.ModificationType attrModType;
@@ -376,7 +359,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       if (artifact.isVersionControlled()) {
          if (attribute.getPersistenceMemo() == null) {
             memo =
-                  createAttributeMemo(attribute.getManager().getDescriptor().getAttrTypeId(),
+                  createAttributeMemo(attribute.getManager().getAttributeType().getAttrTypeId(),
                         SkynetDatabase.getNextGammaId());
             attribute.setPersistenceMemo(memo);
             modType = ModType.Added;
@@ -396,7 +379,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       } else {
          if (attribute.getPersistenceMemo() == null) {
             memo =
-                  createAttributeMemo(attribute.getManager().getDescriptor().getAttrTypeId(),
+                  createAttributeMemo(attribute.getManager().getAttributeType().getAttrTypeId(),
                         SkynetDatabase.getNextGammaId());
             attribute.setPersistenceMemo(memo);
             attrModType = SkynetDatabase.ModificationType.NEW;
@@ -844,7 +827,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       for (DynamicAttributeManager attr : attributes)
          attr.enforceMinMaxConstraints();
 
-      artifact.setAttributes(attributes);
+      artifact.setAttributeManagers(attributes);
    }
 
    /**
@@ -983,7 +966,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          // collection is backed by the hashmap. This causes a lot of
          // restrictions of the collection
          // such as not being able to add, and that will not work.
-         artifact.setAttributes(new LinkedList<DynamicAttributeManager>(attributeMap.values()));
+         artifact.setAttributeManagers(new LinkedList<DynamicAttributeManager>(attributeMap.values()));
       }
    }
 

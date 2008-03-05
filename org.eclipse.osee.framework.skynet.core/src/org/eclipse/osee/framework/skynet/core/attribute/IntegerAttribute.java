@@ -10,44 +10,40 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Ryan D. Brooks
  */
-public class IntegerAttribute extends Attribute {
-   public static final String TYPE_NAME = "Integer";
+public class IntegerAttribute extends Attribute<Integer> {
 
-   //   private IntegerAttribute() {
-   //      super(new VarcharMediaResolver());
-   //   }
+   public IntegerAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType);
+      setRawStringVaule(defaultValue);
+   }
 
-   /**
-    * @param name
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
     */
-   public IntegerAttribute(String name) {
-      this(name, 0);
-   }
-
-   public IntegerAttribute(String name, int value) {
-      super(new VarcharMediaResolver(), name);
-      setStringData(Integer.toString(value, 10));
-   }
-
-   public void setInt(int value) {
-      if (getInt() != value) setStringData(Integer.toString(value, 10));
-   }
-
-   public int getInt() throws NumberFormatException {
-      return Integer.parseInt(getStringData());
-   }
-
    @Override
-   public String getTypeName() {
-      return TYPE_NAME;
+   public Integer getValue() throws NumberFormatException {
+      return Integer.valueOf(getRawStringVaule());
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
+    */
    @Override
-   public void setValidityXml(String validityXml) throws SAXException {
+   public void setValue(Integer value) {
+      setRawStringVaule(Integer.toString(value));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    */
+   @Override
+   public void setValueFromInputStream(InputStream value) throws IOException {
+      throw new UnsupportedOperationException();
    }
 }

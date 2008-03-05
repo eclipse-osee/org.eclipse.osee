@@ -16,10 +16,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
@@ -27,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.WholeDocumentArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -45,7 +43,7 @@ public class WholeDocumentRenderer extends FileRenderer {
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof WholeDocumentArtifact) {
+      if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
          return SUBTYPE_TYPE_MATCH;
       }
       return NO_MATCH;
@@ -72,26 +70,20 @@ public class WholeDocumentRenderer extends FileRenderer {
     */
    @Override
    public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
-      InputStream inputStream = null;
-
-      if (artifact instanceof WholeDocumentArtifact) {
-         WholeDocumentArtifact wholeDocumentArtifact = (WholeDocumentArtifact) artifact;
-         String content = wholeDocumentArtifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME);
-         if (content == null || content.matches("")) {
-            String wordLeader1 =
-                  "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>" + "<?mso-application progid='Word.Document'?>";
-            String wordLeader2 =
-                  "<w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'>";
-            String wordBody = "<w:body></w:body>";
-            String wordTrailer = "</w:wordDocument> ";
-            content = wordLeader1 + wordLeader2 + wordBody + wordTrailer;
-         }
-         String myGuid = artifact.getGuid();
-         content = WordUtil.addGUIDToDocument(myGuid, content);
-         inputStream = Streams.convertStringToInputStream(content, "UTF-8");
-
+      String content = artifact.getSoleXAttributeValue(WordAttribute.CONTENT_NAME);
+      if (content == null || content.matches("")) {
+         String wordLeader1 =
+               "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>" + "<?mso-application progid='Word.Document'?>";
+         String wordLeader2 =
+               "<w:wordDocument xmlns:w='http://schemas.microsoft.com/office/word/2003/wordml' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:sl='http://schemas.microsoft.com/schemaLibrary/2003/core' xmlns:aml='http://schemas.microsoft.com/aml/2001/core' xmlns:wx='http://schemas.microsoft.com/office/word/2003/auxHint' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:dt='uuid:C2F41010-65B3-11d1-A29F-00AA00C14882' xmlns:wsp='http://schemas.microsoft.com/office/word/2003/wordml/sp2' xmlns:ns0='http://www.w3.org/2001/XMLSchema' xmlns:ns1='http://eclipse.org/artifact.xsd' xmlns:st1='urn:schemas-microsoft-com:office:smarttags' w:macrosPresent='no' w:embeddedObjPresent='no' w:ocxPresent='no' xml:space='preserve'>";
+         String wordBody = "<w:body></w:body>";
+         String wordTrailer = "</w:wordDocument> ";
+         content = wordLeader1 + wordLeader2 + wordBody + wordTrailer;
       }
-      return inputStream;
+      String myGuid = artifact.getGuid();
+      content = WordUtil.addGUIDToDocument(myGuid, content);
+
+      return Streams.convertStringToInputStream(content, "UTF-8");
    }
 
    /* (non-Javadoc)
@@ -101,7 +93,7 @@ public class WholeDocumentRenderer extends FileRenderer {
    public Program getAssociatedProgram(Artifact artifact) {
       return wordApp;
    }
-   
+
    @Override
    public String generateHtml(Artifact artifact, IProgressMonitor monitor) {
       String html = null;
@@ -128,7 +120,7 @@ public class WholeDocumentRenderer extends FileRenderer {
       }
       return html;
    }
-   
+
    @Override
    public void compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor) throws Exception {
       if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(

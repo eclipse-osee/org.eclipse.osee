@@ -10,46 +10,38 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
  */
-public class EnumeratedAttribute extends Attribute {
+public class EnumeratedAttribute extends StringAttribute {
    private String[] choices;
    // When an enumerated attribute is required for an artifact, yet doesn't exist yet, it is created upon
    // init of the artifact and given the "Unspecified" value
    public static String UNSPECIFIED_VALUE = "Unspecified";
 
-   public EnumeratedAttribute(String name) {
-      super(new VarcharMediaResolver(), name);
-   }
+   public EnumeratedAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType, defaultValue);
 
-   @Override
-   public String getTypeName() {
-      return "Enumerated";
-   }
+      try {
+         Document document = Jaxp.readXmlDocument(attributeType.getValidityXml());
+         Element choicesElement = document.getDocumentElement();
+         NodeList enumerations = choicesElement.getElementsByTagName("Enum");
 
-   @SuppressWarnings("unchecked")
-   @Override
-   public void setValidityXml(String validityXml) throws SAXException, ParserConfigurationException, IOException {
-      Document document = Jaxp.readXmlDocument(validityXml);
-
-      Element choicesElement = document.getDocumentElement();
-      NodeList enumerations = choicesElement.getElementsByTagName("Enum");
-
-      choices = new String[enumerations.getLength()];
-      for (int i = 0; i < choices.length; i++) {
-         choices[i] = enumerations.item(i).getTextContent();
+         choices = new String[enumerations.getLength()];
+         for (int i = 0; i < choices.length; i++) {
+            choices[i] = enumerations.item(i).getTextContent();
+         }
+      } catch (Exception ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         choices = new String[] {ex.getLocalizedMessage()};
       }
-
-      setDirty();
    }
 
    public String[] getChoices() {

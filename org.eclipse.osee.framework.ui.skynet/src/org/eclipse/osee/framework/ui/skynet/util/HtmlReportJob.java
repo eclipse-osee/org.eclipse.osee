@@ -144,14 +144,14 @@ public class HtmlReportJob extends Job {
       sb.append(AHTML.beginMultiColumnTable(90));
       if (includeAttributes) {
          try {
-            for (DynamicAttributeManager dam : artifact.getAttributes()) {
-               if (onlyAttributeNames == null || onlyAttributeNames.contains(dam.getDescriptor().getName())) {
+            for (DynamicAttributeManager dam : artifact.getAttributeManagers()) {
+               if (onlyAttributeNames == null || onlyAttributeNames.contains(dam.getAttributeType().getName())) {
                   for (Attribute attr : dam.getAttributes()) {
-                     if (!dam.getDescriptor().getName().equals("Name") && !dam.getDescriptor().getName().equals(
+                     if (!dam.getAttributeType().getName().equals("Name") && !dam.getAttributeType().getName().equals(
                            WordAttribute.CONTENT_NAME)) {
-                        sb.append(AHTML.addRowMultiColumnTable(new String[] {dam.getDescriptor().getName(),
-                              attr.getVarchar()}));
-                     } else if (dam.getDescriptor().getName().equals(WordAttribute.CONTENT_NAME)) {
+                        sb.append(AHTML.addRowMultiColumnTable(new String[] {dam.getAttributeType().getName(),
+                              attr.getStringData()}));
+                     } else if (dam.getAttributeType().getName().equals(WordAttribute.CONTENT_NAME)) {
                         try {
                            ByteArrayInputStream wordMl =
                                  new ByteArrayInputStream(

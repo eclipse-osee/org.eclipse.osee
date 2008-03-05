@@ -92,6 +92,9 @@ public enum RelationSide implements IRelationEnumeration {
    Validation__Requirement(true, "Validation"),
    Validation__Validator(false, "Validation"),
 
+   Verification__Requirement(true, "Verification"),
+   Verification__Verifier(false, "Verification"),
+
    TestConfigurationRelation_TestScript(true, "Test Configuration Relation"),
    TestConfigurationRelation_TestConfiguration(false, "Test Configuration Relation"),
    RunByRelation_User(true, "Run By Relation"),

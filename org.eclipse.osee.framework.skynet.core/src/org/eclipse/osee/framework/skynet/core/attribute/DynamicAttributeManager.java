@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -22,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
 
@@ -34,7 +34,7 @@ public class DynamicAttributeManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(DynamicAttributeManager.class);
    private final DynamicAttributeDescriptor descriptor;
    private int remainingOccurrences;
-   private ArrayList<Attribute> attributes;
+   private ArrayList<Attribute<?>> attributes;
    private Collection<AttributeMemo> deletedAttributes;
    private boolean initialized;
    private boolean inDbInitialize;
@@ -58,57 +58,15 @@ public class DynamicAttributeManager {
       this.deletedAttributes = new LinkedList<AttributeMemo>();
    }
 
-   /**
-    * Set the contained attribute value. This is only appropriate for <code>UserDefinedAttributeType</code>'s with a
-    * max occurrence of 1 so that the assignment is not ambigous. If the attribute has not been created yet, then it
-    * will be created and then set to the supplied values.
-    * 
-    * @param value
-    * @throws IllegalStateException if any of the following conditions are true:
-    *            <ul>
-    *            <li>This object is in progress of being initialized from the database.</li>
-    *            <li>This object has not been initialized.</li>
-    *            <li>This object allows for more than one occurrence (the max occurrence value is not 1).</li>
-    *            </ul>
-    */
-   public void setValue(String value) {
-      Attribute attribute = getAttributeForSet();
-      attribute.setStringData(value);
-   }
-
-   public void loadValue(String value) {
-      Attribute attribute = getAttributeForSet();
-      attribute.setStringData(value, false);
-   }
-
-   public void swagValue(String value) {
-      Attribute attribute = getAttributeForSet();
-      attribute.swagValue(value);
-   }
-
-   public void setData(InputStream stream) {
-      Attribute attribute = getAttributeForSet();
-      attribute.setDat(stream);
-   }
-
-   private Attribute getAttributeForSet() {
+   protected Attribute getAttributeForSet() {
       if (inDbInitialize) throw new IllegalStateException(
             "This object is in progress of being initialized from the datastore");
       if (!initialized) throw new IllegalStateException("This object has not been initialized");
       if (descriptor.getMaxOccurrences() != 1) throw new IllegalStateException(
             "This object can not be set since it allows for more than one Attribute instance");
 
-      Attribute attribute;
-
-      // Acquire a new attribute if necessary (due to the prior exceptions, we know maxOccurrences
-      // == 1
-      if (hasRemaining()) {
-         attribute = getNewAttribute();
-      } else {
-         attribute = attributes.iterator().next();
-      }
-
-      return attribute;
+      // Acquire a new attribute if necessary (due to the prior exceptions, we know maxOccurrences == 1)
+      return hasRemaining() ? getNewAttribute() : attributes.iterator().next();
    }
 
    /**
@@ -123,19 +81,19 @@ public class DynamicAttributeManager {
     *            <li>There are no remaining available occurrences as the max occurrences has been met.</li>
     *            </ul>
     */
-   public Attribute getNewAttribute() {
+   public <T> Attribute<T> getNewAttribute() {
       if (inDbInitialize) throw new IllegalStateException(
             "This object is in progress of being initialized from the datastore");
       if (!initialized) throw new IllegalStateException("This object has not been initialized");
       if (remainingOccurrences <= 0) throw new IllegalStateException(
             "The maxOccurences values has already been met, operation can not be performed");
 
-      Attribute attribute = null;
+      Attribute<T> attribute = null;
 
       try {
          attribute = createAttribute();
       } catch (Exception ex) {
-         ex.printStackTrace();
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }
 
       return attribute;
@@ -183,20 +141,32 @@ public class DynamicAttributeManager {
    /**
     * @return Returns the descriptor.
     */
-   public DynamicAttributeDescriptor getDescriptor() {
+   public DynamicAttributeDescriptor getAttributeType() {
       return descriptor;
    }
 
-   // /**
-   // * @return Returns the baseAttributeClass.
-   // */
-   // public Class<? extends Attribute> getBaseAttributeClass() {
-   // return baseAttributeClass;
-   // }
+   /**
+    * Return a copy of our attributes list so they can't modify our list
+    */
+   @Deprecated
+   // use the generic version of this method
+   public <T> Collection<Attribute<T>> getAttributes() {
+      Collection<Attribute<T>> attributesCopy = new ArrayList<Attribute<T>>();
+      for (Attribute<? extends Object> attribute : attributes) {
+         attributesCopy.add((Attribute<T>) attribute);
+      }
+      return attributesCopy;
+   }
 
-   public Collection<Attribute> getAttributes() {
-      // Return a copy of our attributes list so they can't modify our list
-      return new ArrayList<Attribute>(attributes);
+   /**
+    * Return a copy of our attributes list so they can't modify our list
+    */
+   public <T> Collection<Attribute<T>> getAttributes(Class<Attribute<T>> clazz) {
+      Collection<Attribute<T>> attributesCopy = new ArrayList<Attribute<T>>();
+      for (Attribute<?> attribute : attributes) {
+         attributesCopy.add(clazz.cast(attribute));
+      }
+      return attributesCopy;
    }
 
    /**
@@ -226,7 +196,7 @@ public class DynamicAttributeManager {
    public Attribute getSoleAttribute() {
       // Return the single attribute
       if (attributes.size() > 1) throw new IllegalArgumentException(
-            "Attribute \"" + getDescriptor().getName() + "\" Must have exactly one instance.  It currently has " + attributes.size() + ".");
+            "Attribute \"" + getAttributeType().getName() + "\" Must have exactly one instance.  It currently has " + attributes.size() + ".");
 
       if (attributes.isEmpty()) {
          getNewAttribute();
@@ -363,8 +333,7 @@ public class DynamicAttributeManager {
                "Failed to create an attribute on the collection for injection of database data", ex);
       }
 
-      if (varchar != null) attribute.setVarchar(varchar);
-      if (stream != null) attribute.setBlobData(stream);
+      attribute.injectFromDb(stream, varchar);
 
       // It is fresh from the database, so mark it as not dirty
       attribute.getManager().setDirty(false);
@@ -378,7 +347,7 @@ public class DynamicAttributeManager {
     */
    public void setupForInitialization(boolean localInitialization) {
       inDbInitialize = !localInitialization;
-      attributes = new ArrayList<Attribute>(descriptor.getMinOccurrences());
+      attributes = new ArrayList<Attribute<? extends Object>>(descriptor.getMinOccurrences());
    }
 
    /**
@@ -393,7 +362,7 @@ public class DynamicAttributeManager {
          try {
             createAttribute();
          } catch (Exception ex) {
-            ex.printStackTrace();
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
          }
 
       occurences = attributes.size(); // this may have changed since createAttribute() may have
@@ -402,7 +371,7 @@ public class DynamicAttributeManager {
       if (remainingOccurrences < 0) {
 
          StringBuilder errorBuilder = new StringBuilder();
-         errorBuilder.append(getDescriptor().getName() + " setup with too many attributes from the database, acquired " + occurences + " expected no more than " + descriptor.getMaxOccurrences() + "; hrid " + parentArtifact.getHumanReadableId() + " guid " + parentArtifact.getGuid() + ".");
+         errorBuilder.append(getAttributeType().getName() + " setup with too many attributes from the database, acquired " + occurences + " expected no more than " + descriptor.getMaxOccurrences() + "; hrid " + parentArtifact.getHumanReadableId() + " guid " + parentArtifact.getGuid() + ".");
 
          Attribute removedAttribute;
          while (remainingOccurrences < 0) {
@@ -478,43 +447,15 @@ public class DynamicAttributeManager {
       return parentArtifact;
    }
 
-   /**
-    * @return String of comma delimited attribute values
-    */
-   public String getAttributesStr() {
-      return getAttributesStr(", ");
-   }
-
-   /**
-    * @param delimiter delimiter to use between attribute values
-    * @return String of attribute values delimited by delimiter
-    */
-   public String getAttributesStr(String delimiter) {
-      StringBuffer sb = new StringBuffer();
-      boolean firstTime = true;
-      for (Attribute attr : getAttributes()) {
-         if (firstTime)
-            firstTime = false;
-         else
-            sb.append(delimiter);
-         sb.append(attr.getStringData());
-      }
-      return sb.toString();
-   }
-
    public Object clone(Artifact artifact) throws CloneNotSupportedException {
-      DynamicAttributeManager attributeManager = getDescriptor().createAttributeManager(artifact, false);
+      DynamicAttributeManager attributeManager = getAttributeType().createAttributeManager(artifact, false);
       AttributeMemo memo;
       Attribute newAttribute;
 
       attributeManager.setupForInitialization(false);
 
       for (Attribute attribute : getAttributes()) {
-         boolean containsBlobData = attribute.getBlobData() == null;
-         newAttribute =
-               attributeManager.injectFromDb(
-                     containsBlobData ? null : new ByteArrayInputStream(attribute.getBlobData()),
-                     attribute.getStringData());
+         newAttribute = attributeManager.injectFromDb(attribute.getRawContentStream(), attribute.getRawStringVaule());
 
          memo = attribute.getPersistenceMemo();
 
@@ -534,7 +475,7 @@ public class DynamicAttributeManager {
 
          if (attribute.getPersistenceMemo() == null) {
             attribute.setPersistenceMemo(new AttributeMemo(attrChange.getAttributeId(),
-                  getDescriptor().getAttrTypeId(), attrChange.getGammaId()));
+                  getAttributeType().getAttrTypeId(), attrChange.getGammaId()));
             foundAttribute = attribute;
             break;
          }
@@ -547,7 +488,7 @@ public class DynamicAttributeManager {
       if (foundAttribute == null) {
          foundAttribute = getNewAttribute();
          foundAttribute.setPersistenceMemo(new AttributeMemo(attrChange.getAttributeId(),
-               getDescriptor().getAttrTypeId(), attrChange.getGammaId()));
+               getAttributeType().getAttrTypeId(), attrChange.getGammaId()));
       }
 
       return foundAttribute;

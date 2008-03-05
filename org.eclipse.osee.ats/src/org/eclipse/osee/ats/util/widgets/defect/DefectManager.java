@@ -53,7 +53,7 @@ public class DefectManager {
 
    public Set<DefectItem> getDefectItems() {
       Set<DefectItem> defectItems = new HashSet<DefectItem>();
-      String xml = artifact.getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME);
+      String xml = artifact.getSoleStringAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME);
       defectMatcher.reset(xml);
       while (defectMatcher.find()) {
          DefectItem item = new DefectItem(defectMatcher.group());
@@ -89,7 +89,7 @@ public class DefectManager {
          for (DefectItem item : defectItems)
             sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
          sb.append("</" + ATS_DEFECT_TAG + ">");
-         artifact.setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
+         artifact.setSoleStringAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
          if (persist) artifact.persistAttributes();
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, "Can't create ats review defect document", ex, true);

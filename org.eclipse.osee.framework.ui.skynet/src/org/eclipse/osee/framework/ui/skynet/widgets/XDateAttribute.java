@@ -31,7 +31,7 @@ public class XDateAttribute extends XDate {
 
    public void setAttribute(DateAttribute attribute) {
       this.attribute = attribute;
-      super.setDate(attribute.getDate());
+      super.setDate(attribute.getValue());
    }
 
    @Override

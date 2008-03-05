@@ -30,7 +30,7 @@ public class XDecisionOptions {
 
    public DecisionOption getDecisionOption(String stateName, boolean create) {
       String decisionOptions =
-            sma.getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
+            sma.getSoleStringAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
       for (String decsionOpt : decisionOptions.split("\n")) {
          DecisionOption state = new DecisionOption();
          state.setFromXml(decsionOpt);
@@ -41,7 +41,7 @@ public class XDecisionOptions {
    }
 
    public Set<DecisionOption> getDecisionOptions() {
-      String decString = sma.getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
+      String decString = sma.getSoleStringAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
       return getDecisionOptions(decString);
    }
 
@@ -63,7 +63,7 @@ public class XDecisionOptions {
    }
 
    public Result validateDecisionOptions() {
-      return validateDecisionOptions(sma.getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName()));
+      return validateDecisionOptions(sma.getSoleStringAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName()));
    }
 
    public static Result validateDecisionOptions(String decisionOptions) {
@@ -83,7 +83,7 @@ public class XDecisionOptions {
    }
 
    public void setDecisionOptions(String decisionOptions) throws IllegalStateException, SQLException {
-      sma.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
+      sma.setSoleStringAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
             toXml(getDecisionOptions(decisionOptions)));
    }
 

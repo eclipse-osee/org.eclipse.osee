@@ -58,7 +58,7 @@ public class ATSNote {
 
    public List<NoteItem> getNoteItems() {
       List<NoteItem> logItems = new ArrayList<NoteItem>();
-      String xml = artifact.getSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName());
+      String xml = artifact.getSoleStringAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName());
       if (!xml.equals("")) {
          try {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
@@ -96,7 +96,8 @@ public class ATSNote {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         artifact.setSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
+         artifact.setSoleStringAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(),
+               Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't create ats note document", ex, true);
       }
@@ -111,7 +112,15 @@ public class ATSNote {
    public String getTable(String state) {
       ArrayList<NoteItem> showNotes = new ArrayList<NoteItem>();
       List<NoteItem> noteItems = getNoteItems();
-      if (!artifact.isAttributeTypeValid(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName())) return "";
+      try {
+         if (!artifact.isAttributeTypeValid(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName())) {
+            return "";
+         }
+      } catch (SQLException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+         return "";
+      }
+
       for (NoteItem li : noteItems) {
          if ((state.equals("ALL")) || (state == null && li.getState().equals("")) || (state != null && li.getState().equals(
                state))) showNotes.add(li);

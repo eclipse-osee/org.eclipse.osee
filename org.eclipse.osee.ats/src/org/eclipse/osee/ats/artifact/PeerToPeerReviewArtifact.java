@@ -153,7 +153,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    public String getWorldViewDescription() {
-      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
    }
 
    public String getWorldViewCategory() {

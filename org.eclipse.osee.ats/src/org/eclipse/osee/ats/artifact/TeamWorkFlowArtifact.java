@@ -101,7 +101,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
 
    @Override
    public String getDescription() {
-      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
    }
 
    /*
@@ -164,19 +164,19 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public ChangeType getChangeType() {
-      return ChangeType.getChangeType(getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
+      return ChangeType.getChangeType(getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
    }
 
    public void setChangeType(ChangeType type) throws IllegalStateException, SQLException {
-      setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
+      setSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
    }
 
    public PriorityType getPriority() {
-      return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName()));
+      return PriorityType.getPriority(getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName()));
    }
 
    public void setPriority(PriorityType type) throws IllegalStateException, SQLException {
-      setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
+      setSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
    }
 
    /**
@@ -187,11 +187,11 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public void setTeamDefinition(TeamDefinitionArtifact tda) throws IllegalStateException, SQLException {
-      this.setSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid());
+      this.setSoleStringAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid());
    }
 
    public TeamDefinitionArtifact getTeamDefinition() throws SQLException {
-      String guid = this.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName());
+      String guid = this.getSoleStringAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName());
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
             "TeamWorkflow has no TeamDefinition associated.");
       return (TeamDefinitionArtifact) ArtifactPersistenceManager.getInstance().getArtifact(guid,
@@ -240,12 +240,12 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public ChangeType getWorldViewChangeType() {
-      return ChangeType.getChangeType(getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
+      return ChangeType.getChangeType(getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
    }
 
    public String getWorldViewPriority() {
       try {
-         return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
+         return PriorityType.getPriority(getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -441,7 +441,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    public String getWorldViewDescription() {
-      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
    }
 
    /**
@@ -495,7 +495,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             Collection<TaskArtifact> taskArts = smaMgr.getTaskMgr().getTaskArtifacts(DefaultTeamState.Implement.name());
             if (taskArts.size() == 0) return new Result("No tasks assigned for Implement state");
             for (TaskArtifact taskArt : taskArts) {
-               String value = taskArt.getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+               String value = taskArt.getSoleStringAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
                if (value == null || value.equals("")) return new Result("Task Estimated Hours not set.");
                try {
                   new Float(value).doubleValue();
@@ -571,7 +571,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
     */
    public double getWorldViewWeeklyBenefit() {
-      String value = getSoleAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName());
+      String value = getSoleStringAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName());
       if (value == null || value.equals("")) return 0;
       try {
          return new Float(value).doubleValue();

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.world.WorldView;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -62,9 +63,10 @@ public class AtsLib implements IAtsLib {
     * @param active state to validate against; Both will return all artifacts matching type
     * @param clazz type of artifacts to consider
     * @return
+    * @throws SQLException
     */
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> Set<A> getActiveSet(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) {
+   public static <A extends Artifact> Set<A> getActiveSet(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws SQLException {
       Set<A> results = new HashSet<A>();
       for (Artifact art : artifacts) {
          if ((art.getClass().equals(clazz)) && art.isAttributeTypeValid(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName())) {
@@ -72,10 +74,12 @@ public class AtsLib implements IAtsLib {
                results.add((A) art);
             else {
                // Ats config Artifact is Active unless otherwise specified
-               String activeStr = art.getSoleAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName());
-               if (active == Active.Active && (activeStr.equals("") || activeStr.equals("yes")))
+               boolean attributeActive = ((User) art).isActive();
+               if (active == Active.Active && attributeActive) {
                   results.add((A) art);
-               else if (active == Active.InActive && activeStr.equals("no")) results.add((A) art);
+               } else if (active == Active.InActive && !attributeActive) {
+                  results.add((A) art);
+               }
             }
          }
       }

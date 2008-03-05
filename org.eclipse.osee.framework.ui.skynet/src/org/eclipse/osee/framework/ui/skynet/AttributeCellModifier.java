@@ -14,13 +14,13 @@ import java.util.Date;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.BlobWordAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.DateValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.StringValue;
@@ -71,9 +71,9 @@ public class AttributeCellModifier implements ICellModifier {
     * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
     */
    public Object getValue(Object element, String property) {
-      Attribute attribute = (Attribute) element;
+      Attribute<?> attribute = (Attribute<?>) element;
       if (attribute instanceof StringAttribute || attribute instanceof IntegerAttribute || attribute instanceof FloatingPointAttribute) {
-         stringValue.setValue(attribute.getStringData());
+         stringValue.setValue(String.valueOf(attribute.getValue()));
          return stringValue;
       }
       if (attribute instanceof EnumeratedAttribute) {
@@ -82,16 +82,16 @@ public class AttributeCellModifier implements ICellModifier {
          return enumeratedValue;
       }
       if (attribute instanceof DateAttribute) {
-         dateValue.setValue(((DateAttribute) attribute).getDate());
+         dateValue.setValue(((DateAttribute) attribute).getValue());
          return dateValue;
       }
-      if (attribute instanceof BlobWordAttribute) {
-         stringValue.setValue(attribute.getStringData());
+      if (attribute instanceof WordAttribute) {
+         stringValue.setValue(((WordAttribute) attribute).getValue());
          return stringValue;
       }
-      if (attribute instanceof CompressedContentAttribute) {
+      if (attribute instanceof BinaryAttribute) {
          StringValue val = new StringValue();
-         val.setValue("Compressed Content");
+         val.setValue("Binary Content");
          return val;
       }
       throw new IllegalArgumentException("unexpected element type: " + element.getClass().getName());
@@ -108,13 +108,13 @@ public class AttributeCellModifier implements ICellModifier {
       if (element instanceof Item) {
          element = ((Item) element).getData();
       }
-      Attribute attribute = (Attribute) element;
+      Attribute<?> attribute = (Attribute<?>) element;
 
       if (attribute instanceof DateAttribute) {
          ((DateAttribute) attribute).setValue((Date) value);
       }
-      //Compressed attributes should not be changed.
-      else if (!(attribute instanceof CompressedContentAttribute)) {
+      //binary attributes should not be changed.
+      else if (!(attribute instanceof BinaryAttribute)) {
          attribute.setStringData(value.toString());
       }
       tableViewer.update(element, null);

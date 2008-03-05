@@ -20,17 +20,8 @@ public class ArtifactTypeSearchAttribute extends StringAttribute implements ISea
    /**
     * @param name
     */
-   public ArtifactTypeSearchAttribute(String name) {
-      super(name);
-   }
-
-   /**
-    * @param name
-    * @param value
-    */
-   public ArtifactTypeSearchAttribute(String name, String value) {
-      super(name);
-      setStringData(value);
+   public ArtifactTypeSearchAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType, defaultValue);
    }
 
    /**

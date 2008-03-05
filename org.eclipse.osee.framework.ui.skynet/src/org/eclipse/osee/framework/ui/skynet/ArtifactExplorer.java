@@ -747,7 +747,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       if (myTreeItemObject instanceof Artifact) {
          Artifact myArtifact = (Artifact) myTreeItemObject;
          try {
-            myArtifact.setSoleAttributeValue("Name", newLabel);
+            myArtifact.setSoleStringAttributeValue("Name", newLabel);
             myArtifact.persistAttributes();
          } catch (SQLException mySQLException) {
             mySQLException.printStackTrace();

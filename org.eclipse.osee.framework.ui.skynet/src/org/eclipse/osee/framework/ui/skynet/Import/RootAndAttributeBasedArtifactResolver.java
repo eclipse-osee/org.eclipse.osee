@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,7 +55,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
       }
 
       for (DynamicAttributeDescriptor descriptor : identifyingAttributeDescriptors) {
-         Collection<Attribute> attributes = artifact.getAttributeManager(descriptor.getName()).getAttributes();
+         Collection<Attribute<String>> attributes = artifact.getAttributeManager(descriptor).getAttributes();
          Collection<String> roughAttributes = roughAttributeMap.getValues(descriptor.getName());
 
          if (roughAttributes == null) {
@@ -63,11 +63,11 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
          }
 
          if (attributes.size() == roughAttributes.size()) {
-            for (Attribute attribute : attributes) {
+            for (Attribute<String> attribute : attributes) {
                boolean attributeEqual = false;
                Iterator<String> iter = roughAttributes.iterator();
 
-               String normalizedAttributeValue = normalizeAttributeValue(attribute.getStringData());
+               String normalizedAttributeValue = normalizeAttributeValue(attribute.getValue());
                while (iter.hasNext()) {
                   String otherAttribute = iter.next();
 
@@ -93,7 +93,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
       return value.trim().replaceAll("\\.$", "").toLowerCase();
    }
 
-   public Artifact resolve(RoughArtifact roughArtifact) throws SQLException, FileNotFoundException {
+   public Artifact resolve(RoughArtifact roughArtifact) throws SQLException, IllegalStateException, IOException {
       Set<Artifact> siblings = roughArtifact.getRoughParent().getAssociatedArtifact().getChildren();
       Collection<Artifact> candidates = new LinkedList<Artifact>();
 

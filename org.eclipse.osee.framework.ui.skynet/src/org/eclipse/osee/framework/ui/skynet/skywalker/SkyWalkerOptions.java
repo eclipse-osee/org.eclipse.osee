@@ -27,6 +27,7 @@ import org.eclipse.mylyn.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.mylyn.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.eclipse.mylyn.zest.layouts.algorithms.VerticalLayoutAlgorithm;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -84,8 +85,10 @@ public class SkyWalkerOptions {
       else {
          StringBuffer sb = new StringBuffer();
          for (DynamicAttributeDescriptor desc : getSelectedShowAttributeTypes()) {
-            if (artifact.isAttributeTypeValid(desc.getName()) && artifact.getAttributeManager(desc).getAttributes().size() > 0) sb.append("\n" + artifact.getAttributeManager(
-                  desc).getAttributesStr());
+            if (artifact.isAttributeTypeValid(desc.getName()) && artifact.getAttributeManager(desc).getAttributes().size() > 0) {
+               sb.append("\n");
+               sb.append(Collections.toString(", ", artifact.getAttributes(desc)));
+            }
          }
          return sb.toString();
       }

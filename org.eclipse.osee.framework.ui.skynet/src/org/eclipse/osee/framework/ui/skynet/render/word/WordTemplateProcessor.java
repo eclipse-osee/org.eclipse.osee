@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.collection.tree.Tree;
 import org.eclipse.osee.framework.jdk.core.collection.tree.TreeNode;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -112,9 +113,9 @@ public class WordTemplateProcessor {
    private String headingAttributeName;
    private List<AttributeElement> attributeElements;
    private boolean updateParagraphNumbers;
-   private Set<Artifact> publishedArtifacts;
    private boolean saveParagraphNumOnArtifact;
    private Set<String> ignoreAttributeExtensions;
+   private int previousTemplateCopyIndex;
 
    public WordTemplateProcessor() {
       this(null, null);
@@ -127,7 +128,6 @@ public class WordTemplateProcessor {
       this.attributeElements = new LinkedList<AttributeElement>();
       this.updateParagraphNumbers = false;
       this.saveParagraphNumOnArtifact = false;
-      this.publishedArtifacts = new HashSet<Artifact>();
       this.ignoreAttributeExtensions = new HashSet<String>();
 
       try {
@@ -197,7 +197,7 @@ public class WordTemplateProcessor {
    public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType) throws Exception {
       CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
-      int lastEndIndex = 0;
+      previousTemplateCopyIndex = 0;
 
       outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, variableMap);
       //modifications to the template must be done before the matcher
@@ -206,24 +206,30 @@ public class WordTemplateProcessor {
       Matcher matcher = headElementsPattern.matcher(template);
 
       while (matcher.find()) {
-         int tempLastEndIndex = matcher.end();
          String elementType = matcher.group(3);
          String elementValue = matcher.group(4);
 
          if (elementType.equals(ARTIFACT)) {
             extractOutliningOptions(elementValue);
 
-            //Write the part of the template between the elements
-            wordMl.addWordMl(template.substring(lastEndIndex, matcher.start()));
+            // write out the template up to the start of the artifact element (but don't change copyIndex becuase there are nested elements in the artifact element
+            wordMl.addWordMl(template.substring(previousTemplateCopyIndex, matcher.start()));
+            previousTemplateCopyIndex = matcher.end();
+
             processArtifactSet(elementValue, variableMap, wordMl, outlineType);
-            lastEndIndex = tempLastEndIndex;
+
          } else {
             throw new IllegalArgumentException("Invalid input: " + elementType);
          }
       }
       // Write out the last of the template
-      wordMl.addWordMl(template.substring(lastEndIndex));
+      wordMl.addWordMl(template.substring(previousTemplateCopyIndex));
       return charBak;
+   }
+
+   private void writeTemplateBetweenElements(WordMLProducer wordMl, String template, Matcher matcher) throws IOException {
+      wordMl.addWordMl(template.substring(previousTemplateCopyIndex, matcher.start()));
+      previousTemplateCopyIndex = matcher.end();
    }
 
    private String handleSettingParagraphNumbers(BlamVariableMap variableMap, String template, String outlineType, String nextParagraphNumber, WordMLProducer wordMl) throws CharacterCodingException {
@@ -244,7 +250,7 @@ public class WordTemplateProcessor {
    }
 
    @SuppressWarnings("unchecked")
-   protected String peekAtFirstArtifactToGetParagraphNumber(String template, String nextParagraphNumber, BlamVariableMap variableMap) {
+   protected String peekAtFirstArtifactToGetParagraphNumber(String template, String nextParagraphNumber, BlamVariableMap variableMap) throws IllegalStateException, SQLException {
       String startParagraphNumber = "1";
       Matcher matcher = headElementsPattern.matcher(template);
 
@@ -261,9 +267,10 @@ public class WordTemplateProcessor {
 
             if (!artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
-
-               if (!artifact.getSoleAttributeValue("Imported Paragraph Number").equals("")) {
-                  startParagraphNumber = artifact.getSoleAttributeValue("Imported Paragraph Number");
+               if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
+                  if (!artifact.getSoleStringAttributeValue("Imported Paragraph Number").equals("")) {
+                     startParagraphNumber = artifact.getSoleStringAttributeValue("Imported Paragraph Number");
+                  }
                }
             }
          }
@@ -475,18 +482,16 @@ public class WordTemplateProcessor {
 
    @SuppressWarnings("unchecked")
    private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType) throws IOException, SQLException {
-      publishedArtifacts.add(artifact);
       boolean performedOutLining = false;
 
       if (outlining) {
          performedOutLining = true;
-         String headingText = artifact.getSoleAttributeValue(headingAttributeName);
+         String headingText = artifact.getSoleStringAttributeValue(headingAttributeName);
          CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
          if (paragraphNumber != null && saveParagraphNumOnArtifact) {
-            artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
-
             try {
+               artifact.setSoleStringAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
                artifact.persistAttributes();
             } catch (SQLException ex) {
                logger.log(Level.SEVERE, ex.toString(), ex);
@@ -513,8 +518,9 @@ public class WordTemplateProcessor {
 
          if (attributeElement.getAttributeName().equals("*")) {
             try {
-               for (DynamicAttributeManager attributeManager : artifact.getAttributes()) {
-                  processAttribute(artifact, wordMl, attributeElement, attributeManager.getDescriptor().getName(), true);
+               for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
+                  processAttribute(artifact, wordMl, attributeElement, attributeManager.getAttributeType().getName(),
+                        true);
                }
             } catch (SQLException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -523,26 +529,15 @@ public class WordTemplateProcessor {
             processAttribute(artifact, wordMl, attributeElement, attributeName, false);
          }
       }
-      Attribute pageTypeAttr = null;
 
-      try {
-         pageTypeAttr = artifact.getAttributeManager("Page Type").getSoleAttribute();
-      } catch (IllegalStateException ex) {
-      }
-      wordMl.setPageLayout(pageTypeAttr);
+      wordMl.setPageLayout(artifact);
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeName, boolean allAttrs) throws IOException, SQLException {
+   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs) throws IOException, SQLException {
       String format = attributeElement.getFormat();
 
-      try {
-         artifact.getAttributeManager(attributeName);
-      } catch (IllegalStateException ex) {
-         return;
-      }
-
       // This is for SRS Publishing. Do not publish unspecified attributes
-      if (!allAttrs && (attributeName.equals("Partition") || attributeName.equals("Safety Criticality"))) {
+      if (!allAttrs && (attributeTypeName.equals("Partition") || attributeTypeName.equals("Safety Criticality"))) {
          for (Attribute partition : artifact.getAttributeManager("Partition").getAttributes()) {
             if (partition.getStringData().equals("Unspecified")) {
                return;
@@ -550,44 +545,52 @@ public class WordTemplateProcessor {
          }
       }
 
-      DynamicAttributeManager dynamicAttributeManager = artifact.getAttributeManager(attributeName);
-      Collection<Attribute> attributes = dynamicAttributeManager.getAttributes();
+      if (attributeTypeName.equals("TIS Traceability")) {
+         for (Artifact requirement : artifact.getArtifacts(RelationSide.Verification__Requirement)) {
+            wordMl.addParagraph(requirement.getSoleXAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
+         }
+         return;
+      }
+
+      DynamicAttributeManager dynamicAttributeManager = artifact.getAttributeManager(attributeTypeName);
+      Collection<Attribute<Object>> attributes = dynamicAttributeManager.getAttributes();
 
       if (!attributes.isEmpty()) {
-         Attribute attribute = attributes.iterator().next();
+         Attribute<Object> attribute = attributes.iterator().next();
+         DynamicAttributeDescriptor attributeType = attribute.getAttributeType();
 
          // check if the attribute descriptor name is in the ignore list.
-         if (ignoreAttributeExtensions.contains(attribute.getManager().getDescriptor().getName())) {
+         if (ignoreAttributeExtensions.contains(attributeType.getName())) {
             return;
          }
 
-         if (attributeName.equals(WordAttribute.CONTENT_NAME)) {
+         if (attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
             if (attributeElement.label.length() > 0) {
                wordMl.addParagraph(attributeElement.label);
             }
 
             if (true) {
-               DynamicAttributeDescriptor attributeDescriptor = attribute.getManager().getDescriptor();
-               writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeDescriptor.getName()),
-                     "ns0:guid=\"" + artifact.getGuid() + "\"",
-                     "ns0:attrId=\"" + attributeDescriptor.getAttrTypeId() + "\"", attribute.getStringData());
+               writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
+                     "ns0:guid=\"" + artifact.getGuid() + "\"", "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"",
+                     attribute.toString());
             } else {
-               wordMl.addWordMl(attribute.getStringData());
+               wordMl.addWordMl(attribute.toString());
             }
             wordMl.resetListValue();
          } else {
             wordMl.startParagraph();
             // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
             if (allAttrs) {
-               wordMl.addWordMl("<w:r><w:t> " + attributeName + ": </w:t></w:r>");
+               wordMl.addWordMl("<w:r><w:t> " + attributeTypeName + ": </w:t></w:r>");
             } else {
                wordMl.addWordMl(attributeElement.label);
             }
 
+            String valueList = Collections.toString(", ", artifact.getAttributes(attributeTypeName));
             if (attributeElement.format.contains(">x<")) {
-               wordMl.addWordMl(format.replace(">x<", ">" + dynamicAttributeManager.getAttributesStr() + "<"));
+               wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));
             } else {
-               wordMl.addTextInsideParagraph(dynamicAttributeManager.getAttributesStr());
+               wordMl.addTextInsideParagraph(valueList);
             }
             wordMl.endParagraph();
          }

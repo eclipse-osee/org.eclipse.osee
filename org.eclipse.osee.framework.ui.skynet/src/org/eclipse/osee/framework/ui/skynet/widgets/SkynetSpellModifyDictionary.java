@@ -59,10 +59,10 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
             "Add \"" + word + "\" to " + type + " Dictionary")) {
          try {
             Set<String> words = new HashSet<String>();
-            for (String str : art.getSoleAttributeValue(ATTRIBUTE_NAME).split(";"))
+            for (String str : art.getSoleStringAttributeValue(ATTRIBUTE_NAME).split(";"))
                words.add(str);
             words.add(word);
-            art.setSoleAttributeValue(ATTRIBUTE_NAME, Collections.toString(";", words));
+            art.setSoleStringAttributeValue(ATTRIBUTE_NAME, Collections.toString(";", words));
             art.persistAttributes();
             loadDictionary(true);
             return true;
@@ -90,13 +90,13 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       if (!force && dictionary != null) return;
       try {
          dictionary = new HashSet<String>();
-         for (String str : SkynetAuthentication.getInstance().getAuthenticatedUser().getSoleAttributeValue(
+         for (String str : SkynetAuthentication.getInstance().getAuthenticatedUser().getSoleStringAttributeValue(
                ATTRIBUTE_NAME).split(";")) {
             if (debug) System.out.println("Adding Local => \"" + str + "\"");
             if (str != null && !str.equals("")) dictionary.add(str);
          }
          if (GlobalPreferences.get() != null) {
-            for (String str : GlobalPreferences.get().getSoleAttributeValue(ATTRIBUTE_NAME).split(";")) {
+            for (String str : GlobalPreferences.get().getSoleStringAttributeValue(ATTRIBUTE_NAME).split(";")) {
                if (debug) System.out.println("Adding Global => \"" + str + "\"");
                if (str != null && !str.equals("")) dictionary.add(str);
             }

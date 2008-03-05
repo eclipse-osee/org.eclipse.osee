@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -31,8 +32,8 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
    private String tipText;
 
    // These arrays are going to be used for reflection
-   private static final Class<?>[] reflectionSignature = new Class<?>[] {String.class};
-   private final Object[] reflectionParams;
+   private static final Class<?>[] reflectionSignature =
+         new Class<?>[] {DynamicAttributeDescriptor.class, String.class};
 
    /**
     * Create a dynamic attribute descriptor. Descriptors can be acquired for application use from the
@@ -65,8 +66,6 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
       this.minOccurrences = minOccurrences;
       this.tipText = tipText;
       cache.cache(this);
-
-      this.reflectionParams = new Object[] {name};
    }
 
    public DynamicAttributeManager createAttributeManager(Artifact parentArtifact, boolean initialized) {
@@ -75,19 +74,17 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
 
    /**
     * Creates a new <code>Attribute</code> that is consistent with this descriptor.
+    * 
+    * @throws NoSuchMethodException
+    * @throws InvocationTargetException
+    * @throws IllegalAccessException
+    * @throws InstantiationException
+    * @throws SecurityException
+    * @throws IllegalArgumentException
     */
-   protected Attribute createAttribute() throws IllegalStateException {
-      try {
-         Attribute attribute =
-               getBaseAttributeClass().getConstructor(reflectionSignature).newInstance(reflectionParams);
-
-         if (defaultValue != null && !defaultValue.equals("null")) attribute.swagValue(defaultValue);
-         attribute.setValidityXml(validityXml);
-
-         return attribute;
-      } catch (Exception ex) {
-         throw new IllegalStateException(ex.getLocalizedMessage());
-      }
+   protected Attribute<?> createAttribute() throws IllegalStateException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+      Object[] reflectionParams = new Object[] {this, defaultValue};
+      return getBaseAttributeClass().getConstructor(reflectionSignature).newInstance(reflectionParams);
    }
 
    /**

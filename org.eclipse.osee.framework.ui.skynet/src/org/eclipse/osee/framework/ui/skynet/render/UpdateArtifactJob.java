@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -110,7 +109,7 @@ public class UpdateArtifactJob extends UpdateJob {
          if (artifact instanceof WordArtifact) {
             updateWordArtifact(myBranch);
          } else if (artifact instanceof NativeArtifact) {
-            updateNativeArtifact(artifact);
+            updateNativeArtifact((NativeArtifact) artifact);
          } else {
             throw new IllegalArgumentException("Artifact must be of type WordArtifact or NativeArtifact.");
          }
@@ -130,16 +129,14 @@ public class UpdateArtifactJob extends UpdateJob {
 
    }
 
-   private void updateNativeArtifact(Artifact artifact) throws IllegalStateException, FileNotFoundException, SQLException {
-      artifact.setAttribute(NativeArtifact.CONTENT_NAME, new FileInputStream(workingFile));
-
+   private void updateNativeArtifact(NativeArtifact artifact) throws IllegalStateException, SQLException, IOException {
+      artifact.setNativeContent(workingFile);
       artifact.persistAttributes();
       eventManager.kick(new VisitorEvent(artifact, this));
    }
 
-   private void updateWholeDocumentArtifact(Artifact artifact) throws IllegalStateException, FileNotFoundException, SQLException {
-      artifact.setAttribute(WordAttribute.CONTENT_NAME, new FileInputStream(workingFile));
-
+   private void updateWholeDocumentArtifact(Artifact artifact) throws IllegalStateException, SQLException, IOException {
+      artifact.setSoleAttributeFromStream(WordAttribute.CONTENT_NAME, new FileInputStream(workingFile));
       artifact.persistAttributes();
       eventManager.kick(new VisitorEvent(artifact, this));
    }
@@ -189,12 +186,12 @@ public class UpdateArtifactJob extends UpdateJob {
             Artifact artifact = persistenceManager.getArtifact(guid, getTxBranch());
 
             if (artifact != null) {
-               containsOleData = !artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME).equals("");
+               containsOleData = !artifact.getSoleStringAttributeValue(WordAttribute.OLE_DATA_NAME).equals("");
 
                if (oleDataElement == null && containsOleData) {
-                  artifact.setSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "");
+                  artifact.setSoleXAttributeValue(WordAttribute.OLE_DATA_NAME, "");
                } else if (oleDataElement != null && singleArtifact) {
-                  artifact.setAttribute(WordAttribute.OLE_DATA_NAME, new ByteArrayInputStream(
+                  artifact.setSoleXAttributeValue(WordAttribute.OLE_DATA_NAME, new ByteArrayInputStream(
                         WordRenderer.getFormattedContent(oleDataElement)));
                }
 
@@ -235,7 +232,7 @@ public class UpdateArtifactJob extends UpdateJob {
                   content = stringBuffer.toString();
                }
 
-               artifact.setSoleAttributeValue(WordAttribute.CONTENT_NAME, content);
+               artifact.setSoleStringAttributeValue(WordAttribute.CONTENT_NAME, content);
                if (artifact.isDirty()) {
                   artifact.persistAttributes();
                   changedArtifacts.add(artifact);

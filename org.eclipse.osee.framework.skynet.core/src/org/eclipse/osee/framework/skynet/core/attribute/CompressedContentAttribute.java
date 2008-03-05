@@ -13,50 +13,40 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.xml.sax.SAXException;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
-public class CompressedContentAttribute extends Attribute {
+public class CompressedContentAttribute extends BinaryAttribute<InputStream> {
 
-   public CompressedContentAttribute(String name) {
-      super(new BlobMediaResolver(), name);
+   public CompressedContentAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType);
    }
 
-   @Override
-   public String getTypeName() {
-      return "CompressedContent";
-   }
-
-   public void setInputStream(InputStream in) {
+   public void setValue(InputStream value) {
       try {
-         this.getResolver().setBlobData(new ByteArrayInputStream(Lib.compressFile(in)));
-         this.dirty = true;
+         setRawContent(Lib.compressFile(value, getAttributeType().getName()));
+
       } catch (IOException ex) {
-         ex.printStackTrace();
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 
-   @Override
-   public void setDat(InputStream data) {
-      setInputStream(data);
-   }
-
-   public InputStream getUncompressedStream() throws IOException {
-      byte[] bytes = this.getResolver().getBlobData();
-      return new ByteArrayInputStream(Lib.decompressBytes(bytes));
-   }
-
-   public byte[] getValue() {
+   public InputStream getValue() {
       try {
-         byte[] byteArray = this.getResolver().getBlobData();
-         return Lib.decompressBytes(byteArray);
+         return new ByteArrayInputStream(Lib.decompressBytes(getRawContentStream()));
+
       } catch (IOException ex) {
-         ex.printStackTrace();
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
-      return new byte[0];
+      return null;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    */
    @Override
-   public void setValidityXml(String validityXml) throws SAXException {
+   public void setValueFromInputStream(InputStream value) throws IOException {
+      setRawContent(Lib.compressFile(value, getAttributeType().getName()));
    }
 }

@@ -208,7 +208,7 @@ public class BranchManager {
     * @throws IllegalStateException
     */
    public void setParentBranchId(int branchId) throws IllegalStateException, SQLException {
-      smaMgr.getSma().setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
+      smaMgr.getSma().setSoleStringAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
             String.valueOf(branchId));
    }
 

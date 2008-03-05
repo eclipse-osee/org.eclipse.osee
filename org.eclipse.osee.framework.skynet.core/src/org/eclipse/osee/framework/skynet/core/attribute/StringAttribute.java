@@ -10,29 +10,39 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author Ryan D. Brooks
  */
-public class StringAttribute extends Attribute {
-   public static final String TYPE_NAME = "String";
-
-   public StringAttribute(String name) {
-      this(name, "");
+public class StringAttribute extends Attribute<String> {
+   public StringAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType);
+      setRawStringVaule(defaultValue);
    }
 
-   public StringAttribute(String name, String value) {
-      super(new VarcharWithOverflowProtectionMediaResolver(), name);
-      setStringData(value);
-   }
-
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
+    */
    @Override
-   public String getTypeName() {
-      return TYPE_NAME;
+   public String getValue() {
+      return getRawStringVaule();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
+    */
    @Override
-   public void setValidityXml(String validityXml) throws SAXException {
+   public void setValue(String value) {
+      setRawStringVaule(value);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    */
+   @Override
+   public void setValueFromInputStream(InputStream value) throws IOException {
+      throw new UnsupportedOperationException();
    }
 }

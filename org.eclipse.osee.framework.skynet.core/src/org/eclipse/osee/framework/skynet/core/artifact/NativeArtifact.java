@@ -15,17 +15,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * @author Ryan D. Brooks Artifact type used to indicate that this artifact is to be rendered by a passing its binary
- *         data to a native program for editing.
+ * Artifact type used to indicate that this artifact is to be rendered by a passing its binary data to a native program
+ * for editing.
+ * 
+ * @author Ryan D. Brooks
  */
 public class NativeArtifact extends Artifact {
    public static final String CONTENT_NAME = "Native Content";
@@ -43,7 +42,7 @@ public class NativeArtifact extends Artifact {
 
    @Override
    public Image getImage() {
-      Image image = plugin.getImageForProgram(getExtension());
+      Image image = plugin.getImageForProgram(getFileExtension());
       if (image == null) {
          image = plugin.getImage("laser_16_16.gif");
       }
@@ -52,62 +51,26 @@ public class NativeArtifact extends Artifact {
    }
 
    public String getFileName() {
-      return getDescriptiveName() + "." + getExtension();
+      return getDescriptiveName() + "." + getFileExtension();
    }
 
-   public String getExtension() {
-      return getSoleAttributeValue("Extension");
+   public String getFileExtension() {
+      return getSoleStringAttributeValue("Extension");
    }
 
    public InputStream getNativeContent() throws IOException, SQLException {
-      CompressedContentAttribute attribute =
-            (CompressedContentAttribute) getAttributeManager("Native Content").getSoleAttribute();
-      return attribute.getUncompressedStream();
+      return getCompressedContentAttribute().getValue();
    }
 
    public void setNativeContent(File importFile) throws IOException, SQLException {
-      DynamicAttributeManager attributeManager = getAttributeManager(CONTENT_NAME);
-      attributeManager.setData(new FileInputStream(importFile));
+      setNativeContent(new FileInputStream(importFile));
    }
 
    public void setNativeContent(InputStream inputStream) throws IOException, SQLException {
-      DynamicAttributeManager attributeManager = getAttributeManager(CONTENT_NAME);
-      attributeManager.setData(inputStream);
+      getCompressedContentAttribute().setValue(inputStream);
    }
 
-   /**
-    * Creates a new artifact and duplicates all of its attribute data.
-    */
-   @Override
-   public Artifact duplicate(Branch branch) {
-      NativeArtifact newArtifact = null;
-      try {
-         newArtifact = (NativeArtifact) getDescriptor().makeNewArtifact(branch);
-         duplicateAttributes(newArtifact);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (IOException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      }
-      return newArtifact;
+   private CompressedContentAttribute getCompressedContentAttribute() throws SQLException {
+      return (CompressedContentAttribute) getAttributeManager(CONTENT_NAME).getSoleAttribute();
    }
-
-   private Artifact duplicateAttributes(NativeArtifact artifact) throws IOException, IllegalStateException, SQLException {
-      if (artifact == null) throw new IllegalArgumentException("Artifact can not be null.");
-
-      for (DynamicAttributeManager attrManager : getAttributes()) {
-         for (Attribute attribute : attrManager.getAttributes()) {
-
-            if (attribute instanceof CompressedContentAttribute) {
-               CompressedContentAttribute contentAttribute = (CompressedContentAttribute) attribute;
-               artifact.setNativeContent(contentAttribute.getUncompressedStream());
-
-            } else {
-               artifact.setSoleAttributeValue(attribute.getName(), attribute.getStringData());
-            }
-         }
-      }
-      return artifact;
-   }
-
 }

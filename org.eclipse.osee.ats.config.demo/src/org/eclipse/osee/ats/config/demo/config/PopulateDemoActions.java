@@ -202,9 +202,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Make artifact changes
          for (Artifact art : getRobotSoftwareRequirements()) {
             OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Modifying artifact => " + art, false);
-            art.setSoleAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Navigation.name());
-            art.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.name(), "A");
-            art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Navigation.name());
+            art.setSoleStringAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Navigation.name());
+            art.setSoleStringAttributeValue(ProgramAttributes.Safety_Criticality.name(), "A");
+            art.setSoleStringAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Navigation.name());
 
             ArtifactTypeNameSearch srch =
                   new ArtifactTypeNameSearch("Component", "Navigation",
@@ -215,9 +215,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Make artifact changes
          for (Artifact art : getEventSoftwareRequirements()) {
             OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Modifying artifact => " + art, false);
-            art.setSoleAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Interface.name());
-            art.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.name(), "D");
-            art.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
+            art.setSoleStringAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Interface.name());
+            art.setSoleStringAttributeValue(ProgramAttributes.Safety_Criticality.name(), "D");
+            art.setSoleStringAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
 
             ArtifactTypeNameSearch srch =
                   new ArtifactTypeNameSearch("Component", "Robot API",

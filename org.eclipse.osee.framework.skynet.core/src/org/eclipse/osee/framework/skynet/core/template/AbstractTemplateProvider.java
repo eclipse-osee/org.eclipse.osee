@@ -40,16 +40,16 @@ public abstract class AbstractTemplateProvider implements ITemplateProvider {
    }
 
    @SuppressWarnings("unchecked")
-   public void addTemplate(String rendererId, Branch branch, String presentationType, TemplateLocator locationData) throws Exception {
+   public void addTemplate(String rendererId, Branch branch, String presentationType, TemplateLocator locationData) throws SQLException, IOException {
       Artifact document = getDocumentArtifact(rendererId, presentationType, branch);
       JavaObjectAttribute javaAttribute = getJavaObjectAttribute(document);
-      HashMap<String, String> templateMap = (HashMap<String, String>) javaAttribute.getObject();
+      HashMap<String, String> templateMap = (HashMap<String, String>) javaAttribute.getValue();
       if (templateMap == null) {
          templateMap = new HashMap<String, String>();
       }
       addTemplateToMap(templateMap, locationData);
 
-      javaAttribute.setObject(templateMap);
+      javaAttribute.setValue(templateMap);
       document.persistAttributes();
    }
 
@@ -63,12 +63,22 @@ public abstract class AbstractTemplateProvider implements ITemplateProvider {
       }
       HashMap<String, String> defaultMap = getDefaultTemplateMap();
       JavaObjectAttribute javaAttribute = getJavaObjectAttribute(document);
-      javaAttribute.setObject(defaultMap);
+      javaAttribute.setValue(defaultMap);
       document.persistAttributes();
    }
 
    protected abstract HashMap<String, String> getDefaultTemplateMap() throws Exception;
 
+   /**
+    * Get the template corresponding to the rendererId, presentationType pair (org.eclipse.osee.framework.ui.skynet.word
+    * EDIT) Start on the given branch and walk up the brach heirarchy and finally look on common
+    * 
+    * @param rendererId
+    * @param presentationType
+    * @param branch
+    * @return
+    * @throws SQLException
+    */
    protected Artifact getDocumentArtifact(String rendererId, String presentationType, Branch branch) throws SQLException {
       Artifact document = documentMap.get(branch, presentationType);
       if (document == null) {
@@ -98,7 +108,7 @@ public abstract class AbstractTemplateProvider implements ITemplateProvider {
       try {
          Artifact document = getDocumentArtifact(rendererId, presentationType, branch);
          JavaObjectAttribute javaAttribute = getJavaObjectAttribute(document);
-         HashMap<String, String> templateMap = (HashMap<String, String>) javaAttribute.getObject();
+         HashMap<String, String> templateMap = (HashMap<String, String>) javaAttribute.getValue();
 
          if (option != null) {
             template = templateMap.get(option);

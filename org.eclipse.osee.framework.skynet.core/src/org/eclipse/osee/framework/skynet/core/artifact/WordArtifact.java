@@ -18,6 +18,21 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
  */
 public class WordArtifact extends Artifact {
    public static final String ARTIFACT_NAME = "Word Artifact";
+   private boolean isWholeWordArtifact;
+
+   /**
+    * @return the isWholeWordArtifact
+    */
+   public boolean isWholeWordArtifact() {
+      return isWholeWordArtifact;
+   }
+
+   /**
+    * @param isWholeWordArtifact the isWholeWordArtifact to set
+    */
+   public void setWholeWordArtifact(boolean isWholeWordArtifact) {
+      this.isWholeWordArtifact = isWholeWordArtifact;
+   }
 
    /**
     * @param parentFactory
@@ -28,4 +43,5 @@ public class WordArtifact extends Artifact {
    public WordArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch tagId) throws SQLException {
       super(parentFactory, guid, humanReadableId, tagId);
    }
+
 }

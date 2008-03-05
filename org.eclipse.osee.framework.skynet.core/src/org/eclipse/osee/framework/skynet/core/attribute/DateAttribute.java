@@ -10,51 +10,36 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.xml.sax.SAXException;
 
 /**
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class DateAttribute extends Attribute {
-   public static final String TYPE_NAME = "Date";
-   public static String MMDDYY = "MM/dd/yyyy";
-   public static String MMDDYYHHMM = "MM/dd/yyyy hh:mm a";
-   public static String HHMM = "hh:mm";
+public class DateAttribute extends Attribute<Date> {
+   public static final SimpleDateFormat MMDDYY = new SimpleDateFormat("MM/dd/yyyy");
+   public static final SimpleDateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+   public static final SimpleDateFormat HHMM = new SimpleDateFormat("hh:mm");
 
    /**
-    * Create a date attribute with a given name, initialized to the current date and time.
+    * Create a date attribute with a given type, initialized to the current date and time.
     * 
-    * @param name The name of the attribute
+    * @param attributeType The type of the attribute
     */
-   public DateAttribute(IMediaResolver resolver, String name) {
-      this(resolver, name, new Date());
-   }
-
-   public DateAttribute(String name) {
-      this(new VarcharMediaResolver(), name, new Date());
-   }
-
-   /**
-    * Create a date attribute with a given name and value.
-    * 
-    * @param name The name of the attribute
-    * @param value The initial value of the attribute
-    */
-   public DateAttribute(IMediaResolver resolver, String name, Date value) {
-      super(resolver, name);
-      setValue(value);
+   // TODO: handle default String value
+   public DateAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+      super(attributeType);
    }
 
    public void setValue(Date value) {
-      setStringData(Long.toString(value.getTime()));
-      setDirty();
+      setRawStringVaule(Long.toString(value.getTime()));
    }
 
-   public Date getDate() {
-      return new Date(Long.parseLong(getStringData()));
+   public Date getValue() {
+      return new Date(Long.parseLong(getRawStringVaule()));
    }
 
    /**
@@ -63,16 +48,15 @@ public class DateAttribute extends Attribute {
     * @param pattern DateAttribute.MMDDYY, etc...
     * @return formated date
     */
-   public String getStringValue(String pattern) {
-      return (new SimpleDateFormat(pattern)).format(getDate());
+   public String getAsFormattedString(SimpleDateFormat dateFormat) {
+      return dateFormat.format(getValue());
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    */
    @Override
-   public String getTypeName() {
-      return TYPE_NAME;
-   }
-
-   @Override
-   public void setValidityXml(String validityXml) throws SAXException {
+   public void setValueFromInputStream(InputStream value) throws IOException {
+      throw new UnsupportedOperationException();
    }
 }

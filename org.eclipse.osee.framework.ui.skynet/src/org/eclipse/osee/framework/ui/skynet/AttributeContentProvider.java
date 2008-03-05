@@ -71,11 +71,11 @@ public class AttributeContentProvider implements IStructuredContentProvider {
    public Collection<DynamicAttributeManager> populateAttributeTypes(Artifact artifact) throws SQLException {
       Collection<DynamicAttributeManager> attrTypes = null;
       if (ignoreAttributes == null)
-         attrTypes = artifact.getAttributes();
+         attrTypes = artifact.getAttributeManagers();
       else {
          attrTypes = new ArrayList<DynamicAttributeManager>();
-         for (DynamicAttributeManager udat : artifact.getAttributes())
-            if (!ignoreAttributes.contains(udat.getDescriptor().getName())) attrTypes.add(udat);
+         for (DynamicAttributeManager udat : artifact.getAttributeManagers())
+            if (!ignoreAttributes.contains(udat.getAttributeType().getName())) attrTypes.add(udat);
       }
       return attrTypes;
    }
