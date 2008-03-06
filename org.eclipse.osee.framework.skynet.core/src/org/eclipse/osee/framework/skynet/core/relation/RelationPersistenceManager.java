@@ -107,7 +107,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       BeforeTarget, AfterTarget
    }
 
-   private IRelationLinkDescriptorCache relationLinkDescriptorCache;
+   private RelationLinkTypeCache relationLinkDescriptorCache;
 
    // This hash is keyed on the rel_link_id of the relation link, then transaction_id
    private DoubleKeyHashMap<Integer, TransactionId, IRelationLink> relationsCache;
@@ -116,7 +116,7 @@ public class RelationPersistenceManager implements PersistenceManager {
 
    private RelationPersistenceManager() {
       this.relationsCache = new DoubleKeyHashMap<Integer, TransactionId, IRelationLink>();
-      this.relationLinkDescriptorCache = new IRelationLinkDescriptorCache();
+      this.relationLinkDescriptorCache = new RelationLinkTypeCache();
    }
 
    /**

@@ -1,15 +1,20 @@
-/*
- * Created on Feb 6, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.osee.framework.skynet.core.transactionChange;
 
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -59,7 +64,8 @@ public class TransactionArtifactChange extends TransactionChange {
     */
    @Override
    public Image getImage() {
-      return artifactSubtypeDescriptor.getImage(getChangeType(), TransactionType.convertTransactionTypeToModificationType (getTransactionType()));
+      return artifactSubtypeDescriptor.getImage(getChangeType(),
+            TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
    }
 
    /**
@@ -87,20 +93,20 @@ public class TransactionArtifactChange extends TransactionChange {
    public Object getAdapter(Class adapter) {
       if (adapter == null)
          throw new IllegalArgumentException("adapter can not be null");
-	else
-		try {
-			if (adapter.isInstance(getArtifact())) {
-			     return getArtifact();
-			  }
+      else
+         try {
+            if (adapter.isInstance(getArtifact())) {
+               return getArtifact();
+            }
 
-			  else if (adapter.isInstance(this)) {
-			     return this;
-			  }
-		} catch (IllegalArgumentException ex) {
-			logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-		}
+            else if (adapter.isInstance(this)) {
+               return this;
+            }
+         } catch (IllegalArgumentException ex) {
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         } catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
       return null;
    }
 

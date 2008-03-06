@@ -1,8 +1,14 @@
-/*
- * Created on Feb 21, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.CONFLICTING;
@@ -11,10 +17,8 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.OU
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
-
 import java.io.InputStream;
 import java.sql.SQLException;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -29,52 +33,46 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
- *
  */
 public class AttributeConflict extends Conflict {
-    private static final SkynetActivator plugin = SkynetActivator.getInstance();
-    private static final String BASE_IMAGE_STRING = "molecule";
-    private static boolean imagesInitialized;
-	private String sourceValue;
-	private String destValue;
-	private InputStream sourceContent;
-	private InputStream destContent;
-	private int attrId;
-	private int attrTypeId;
-	private DynamicAttributeDescriptor dynamicAttributeDescriptor;
+   private static final SkynetActivator plugin = SkynetActivator.getInstance();
+   private static final String BASE_IMAGE_STRING = "molecule";
+   private static boolean imagesInitialized;
+   private String sourceValue;
+   private String destValue;
+   private InputStream sourceContent;
+   private InputStream destContent;
+   private int attrId;
+   private int attrTypeId;
+   private DynamicAttributeDescriptor dynamicAttributeDescriptor;
 
-/**
-	 * @param sourceGamma
-	 * @param destGamma
-	 * @param artId
-	 * @param toTransactionId
-	 * @param fromTransactionId
-	 * @param transactionType
-	 * @param changeType
-	 * @param sourceValue
-	 * @param destValue
-	 * @param sourceContent
-	 * @param destContent
-	 * @param image
-	 * @param attrId
-	 * @param attrTypeId
-	 */
-	public AttributeConflict(int sourceGamma, int destGamma, int artId,
-			TransactionId toTransactionId, TransactionId fromTransactionId,
-			TransactionType transactionType, ChangeType changeType,
-			String sourceValue, String destValue, InputStream sourceContent,
-			InputStream destContent, int attrId, int attrTypeId, Branch mergeBranch) {
-		super(sourceGamma, destGamma, artId, toTransactionId,
-				fromTransactionId, transactionType, changeType, mergeBranch);
-		this.sourceValue = sourceValue;
-		this.destValue = destValue;
-		this.sourceContent = sourceContent;
-		this.destContent = destContent;
-		this.attrId = attrId;
-		this.attrTypeId = attrTypeId;
-	}
+   /**
+    * @param sourceGamma
+    * @param destGamma
+    * @param artId
+    * @param toTransactionId
+    * @param fromTransactionId
+    * @param transactionType
+    * @param changeType
+    * @param sourceValue
+    * @param destValue
+    * @param sourceContent
+    * @param destContent
+    * @param image
+    * @param attrId
+    * @param attrTypeId
+    */
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, TransactionType transactionType, ChangeType changeType, String sourceValue, String destValue, InputStream sourceContent, InputStream destContent, int attrId, int attrTypeId, Branch mergeBranch) {
+      super(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, transactionType, changeType, mergeBranch);
+      this.sourceValue = sourceValue;
+      this.destValue = destValue;
+      this.sourceContent = sourceContent;
+      this.destContent = destContent;
+      this.attrId = attrId;
+      this.attrTypeId = attrTypeId;
+   }
 
-/**
+   /**
     * @return the dynamicAttributeDescriptor
     * @throws SQLException
     */
@@ -84,108 +82,107 @@ public class AttributeConflict extends Conflict {
       }
       return dynamicAttributeDescriptor;
    }
-	   
-	
-	 public Image getImage() {
-	      return getImage(getChangeType(), TransactionType.convertTransactionTypeToModificationType (getTransactionType()));
-	   }
 
-	   protected static Image getImage(ChangeType changeType, ModificationType modType) {
-	      checkImageRegistry();
-	      return plugin.getImage(BASE_IMAGE_STRING + changeType + modType);
-	   }
+   public Image getImage() {
+      return getImage(getChangeType(), TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
+   }
 
-	   private static void checkImageRegistry() {
-	      if (!imagesInitialized) {
-	         imagesInitialized = true;
+   protected static Image getImage(ChangeType changeType, ModificationType modType) {
+      checkImageRegistry();
+      return plugin.getImage(BASE_IMAGE_STRING + changeType + modType);
+   }
 
-	         ImageDescriptor outNew = SkynetActivator.getInstance().getImageDescriptor("out_new.gif");
-	         ImageDescriptor outChange = SkynetActivator.getInstance().getImageDescriptor("out_change.gif");
-	         ImageDescriptor outDeleted = SkynetActivator.getInstance().getImageDescriptor("out_delete.gif");
-	         ImageDescriptor incNew = SkynetActivator.getInstance().getImageDescriptor("inc_new.gif");
-	         ImageDescriptor incChange = SkynetActivator.getInstance().getImageDescriptor("inc_change.gif");
-	         ImageDescriptor incDeleted = SkynetActivator.getInstance().getImageDescriptor("inc_delete.gif");
-	         ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change.gif");
-	         ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete.gif");
-	         ImageDescriptor conNew = SkynetActivator.getInstance().getImageDescriptor("con_new.gif");
+   private static void checkImageRegistry() {
+      if (!imagesInitialized) {
+         imagesInitialized = true;
 
-	         Image baseImage = plugin.getImage(BASE_IMAGE_STRING + ".gif");
+         ImageDescriptor outNew = SkynetActivator.getInstance().getImageDescriptor("out_new.gif");
+         ImageDescriptor outChange = SkynetActivator.getInstance().getImageDescriptor("out_change.gif");
+         ImageDescriptor outDeleted = SkynetActivator.getInstance().getImageDescriptor("out_delete.gif");
+         ImageDescriptor incNew = SkynetActivator.getInstance().getImageDescriptor("inc_new.gif");
+         ImageDescriptor incChange = SkynetActivator.getInstance().getImageDescriptor("inc_change.gif");
+         ImageDescriptor incDeleted = SkynetActivator.getInstance().getImageDescriptor("inc_delete.gif");
+         ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change.gif");
+         ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete.gif");
+         ImageDescriptor conNew = SkynetActivator.getInstance().getImageDescriptor("con_new.gif");
 
-	         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + DELETE, new OverlayImage(baseImage, outDeleted));
-	         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + CHANGE, new OverlayImage(baseImage, outChange));
-	         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + NEW, new OverlayImage(baseImage, outNew));
-	         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + DELETE, new OverlayImage(baseImage, incDeleted));
-	         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + CHANGE, new OverlayImage(baseImage, incChange));
-	         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + NEW, new OverlayImage(baseImage, incNew));
-	         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + DELETE, new OverlayImage(baseImage, conDeleted));
-	         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + CHANGE, new OverlayImage(baseImage, conChange));
-	         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + NEW, new OverlayImage(baseImage, conNew));
-	      }
-	   }
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
-		return null;
-	}
+         Image baseImage = plugin.getImage(BASE_IMAGE_STRING + ".gif");
 
-	/**
-	 * @return the sourceValue
-	 */
-	public String getSourceValue() {
-		return sourceValue;
-	}
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + DELETE, new OverlayImage(baseImage, outDeleted));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + CHANGE, new OverlayImage(baseImage, outChange));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + NEW, new OverlayImage(baseImage, outNew));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + DELETE, new OverlayImage(baseImage, incDeleted));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + CHANGE, new OverlayImage(baseImage, incChange));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + NEW, new OverlayImage(baseImage, incNew));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + DELETE, new OverlayImage(baseImage, conDeleted));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + CHANGE, new OverlayImage(baseImage, conChange));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + NEW, new OverlayImage(baseImage, conNew));
+      }
+   }
 
-	/**
-	 * @return the destValue
-	 */
-	public String getDestValue() {
-		return destValue;
-	}
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+    */
+   @SuppressWarnings("unchecked")
+   public Object getAdapter(Class adapter) {
+      return null;
+   }
 
-	/**
-	 * @return the sourceContent
-	 */
-	public InputStream getSourceContent() {
-		return sourceContent;
-	}
+   /**
+    * @return the sourceValue
+    */
+   public String getSourceValue() {
+      return sourceValue;
+   }
 
-	/**
-	 * @return the destContent
-	 */
-	public InputStream getDestContent() {
-		return destContent;
-	}
+   /**
+    * @return the destValue
+    */
+   public String getDestValue() {
+      return destValue;
+   }
 
-	/**
-	 * @return the attrId
-	 */
-	public int getAttrId() {
-		return attrId;
-	}
+   /**
+    * @return the sourceContent
+    */
+   public InputStream getSourceContent() {
+      return sourceContent;
+   }
 
-	/**
-	 * @return the attrTypeId
-	 */
-	public int getAttrTypeId() {
-		return attrTypeId;
-	}
+   /**
+    * @return the destContent
+    */
+   public InputStream getDestContent() {
+      return destContent;
+   }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.ui.skynet.conflict.Conflict#getDestDisplayData()
-	 */
-	@Override
-	public String getDestDisplayData() {
-		return getSourceValue() != null? getSourceValue():"Stream data";
-	}
+   /**
+    * @return the attrId
+    */
+   public int getAttrId() {
+      return attrId;
+   }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.ui.skynet.conflict.Conflict#getSourceDisplayData()
-	 */
-	@Override
-	public String getSourceDisplayData() {
-		return getDestValue() != null? getDestValue():"Stream data";
-	}
+   /**
+    * @return the attrTypeId
+    */
+   public int getAttrTypeId() {
+      return attrTypeId;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.conflict.Conflict#getDestDisplayData()
+    */
+   @Override
+   public String getDestDisplayData() {
+      return getSourceValue() != null ? getSourceValue() : "Stream data";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.conflict.Conflict#getSourceDisplayData()
+    */
+   @Override
+   public String getSourceDisplayData() {
+      return getDestValue() != null ? getDestValue() : "Stream data";
+   }
 }

@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
  * @see org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor
  * @author Robert A. Fisher
  */
-public class IRelationLinkDescriptorCache {
+public class RelationLinkTypeCache {
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
    private final HashCollection<TransactionId, IRelationLinkDescriptor> allDescriptors;
    private final DoubleKeyHashMap<Integer, TransactionId, IRelationLinkDescriptor> idToDescriptors;
@@ -69,7 +69,7 @@ public class IRelationLinkDescriptorCache {
    /**
     * 
     */
-   protected IRelationLinkDescriptorCache() {
+   protected RelationLinkTypeCache() {
       this.allDescriptors = new HashCollection<TransactionId, IRelationLinkDescriptor>();
       this.idToDescriptors = new DoubleKeyHashMap<Integer, TransactionId, IRelationLinkDescriptor>();
       this.nameToDescriptors = new DoubleKeyHashMap<String, TransactionId, IRelationLinkDescriptor>();
