@@ -154,4 +154,12 @@
             templateName="Work Instruction">
       </Template>
    </extension>
+   <extension
+         id="BranchCommitRegressionTest"
+         name="BranchCommitRegressionTest"
+         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
+      <AutoRunTask
+            classname="org.eclipse.osee.define.health.BranchCommitRegressionTest">
+      </AutoRunTask>
+   </extension>
 </plugin>

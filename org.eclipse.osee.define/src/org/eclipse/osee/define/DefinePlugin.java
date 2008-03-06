@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.define;
 
+import java.util.logging.Logger;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 
 public class DefinePlugin extends OseeUiActivator {
    private static DefinePlugin pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.define";
+   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(DefinePlugin.class);
 
    public DefinePlugin() {
       super();
@@ -34,5 +37,12 @@ public class DefinePlugin extends OseeUiActivator {
     */
    public static DefinePlugin getInstance() {
       return pluginInstance;
+   }
+
+   /**
+    * @return the logger
+    */
+   public static Logger getLogger() {
+      return logger;
    }
 }
