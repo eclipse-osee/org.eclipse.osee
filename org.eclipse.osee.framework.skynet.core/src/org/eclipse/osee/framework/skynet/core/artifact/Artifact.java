@@ -501,7 +501,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return getAttributeManager(attributeType).getAttributes();
    }
 
-   private <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws IllegalStateException, SQLException {
+   // TODO: make this method private
+   public <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws IllegalStateException, SQLException {
       return getSoleAttribute(getAttributeManager(attributeTypeName));
    }
 

@@ -34,7 +34,6 @@ public class PurgeDuplicateTypeData extends AbstractBlam {
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       purgeDuplicateAttributeValidity();
-      if (true) return;
 
       for (ArtifactSubtypeDescriptor artifactType : new HashSet<ArtifactSubtypeDescriptor>(
             configurationManager.getArtifactSubtypeDescriptors())) {

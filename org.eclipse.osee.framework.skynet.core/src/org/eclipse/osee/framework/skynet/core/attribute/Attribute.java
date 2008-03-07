@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.CharacterCodingException;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
  * @author Ryan D. Brooks
  */
 public abstract class Attribute<T> implements PersistenceObject {
+   private static final int MAX_VARCHAR_LENGTH = 4000;
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private final DynamicAttributeDescriptor attributeType;
    private DynamicAttributeManager manager;
@@ -289,8 +291,16 @@ public abstract class Attribute<T> implements PersistenceObject {
       if (this.rawStringVaule != null && this.rawStringVaule.equals(rawStringVaule)) {
          return;
       }
-      this.rawStringVaule = rawStringVaule;
-      setDirty();
+      if (rawStringVaule.length() > MAX_VARCHAR_LENGTH) {
+         try {
+            setRawContent(rawStringVaule.getBytes("UTF-8"));
+         } catch (UnsupportedEncodingException ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
+         }
+      } else {
+         this.rawStringVaule = rawStringVaule;
+         setDirty();
+      }
    }
 
    /**
