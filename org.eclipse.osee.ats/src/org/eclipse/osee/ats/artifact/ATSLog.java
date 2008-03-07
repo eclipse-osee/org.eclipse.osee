@@ -67,8 +67,6 @@ public class ATSLog {
 
    public List<LogItem> getLogItems() {
       List<LogItem> logItems = new ArrayList<LogItem>();
-      //      System.err.println("ATSLog: Don't Check This In");
-      //      return logItems;
       String xml = artifact.getSoleStringAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName());
       if (!xml.equals("")) {
          try {
