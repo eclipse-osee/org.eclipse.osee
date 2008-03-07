@@ -553,22 +553,16 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    /**
-    * Get sole integer attribute value if it exists, else return null
+    * Get sole integer attribute value if it exists, else return 0
     * 
     * @param attributeName
     * @return
     * @throws IllegalStateException
     */
-   public Integer getSoleIntegerAttributeValue(String attributeTypeName) throws IllegalStateException {
-      return getSoleXAttributeValueHideException(attributeTypeName);
-   }
-
-   public Double getSoleDoubleAttributeValue(String attributeTypeName) throws IllegalStateException {
-      return getSoleXAttributeValueHideException(attributeTypeName);
-   }
-
-   public Date getSoleDateAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
-      return getSoleXAttributeValue(attributeTypeName);
+   public int getSoleIntegerAttributeValue(String attributeTypeName) throws IllegalStateException {
+      Integer value = getSoleXAttributeValueHideException(attributeTypeName);
+      if (value == null) return 0;
+      return value;
    }
 
    /**
@@ -578,7 +572,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public boolean getSoleBooleanAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
-      return getSoleXAttributeValue(attributeTypeName);
+      Boolean result = getSoleXAttributeValue(attributeTypeName);
+      if (result == null) return false;
+      return result;
    }
 
    public <T> T getSoleXAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
@@ -587,6 +583,14 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          return null;
       }
       return attribute.getValue();
+   }
+
+   public <T> T getSoleXAttributeValue(String attributeTypeName, Class<T> clazz) throws IllegalStateException, SQLException {
+      Attribute<T> attribute = getSoleAttribute(attributeTypeName);
+      if (attribute == null) {
+         return null;
+      }
+      return (T) attribute.getValue();
    }
 
    public <T> T getSoleXAttributeValueHideException(String attributeTypeName) throws IllegalStateException {
