@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
  * @author Ryan D. Brooks
@@ -27,7 +30,13 @@ public class StringAttribute extends Attribute<String> {
     */
    @Override
    public String getValue() {
-      return getRawStringVaule();
+      byte[] rawContent = getRawContent();
+      try {
+         return rawContent == null ? getRawStringVaule() : new String(rawContent, "UTF-8");
+      } catch (UnsupportedEncodingException ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
+         return null;
+      }
    }
 
    /* (non-Javadoc)
