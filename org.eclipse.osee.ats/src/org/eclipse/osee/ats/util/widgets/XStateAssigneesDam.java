@@ -40,6 +40,11 @@ public abstract class XStateAssigneesDam extends XTextDam {
       }
    }
 
+   @Override
+   public String getUdatStringValue() throws SQLException {
+      return "";
+   }
+
    public DynamicAttributeManager getDam() throws SQLException {
       return sma.getAttributeManager(attributeName);
    }

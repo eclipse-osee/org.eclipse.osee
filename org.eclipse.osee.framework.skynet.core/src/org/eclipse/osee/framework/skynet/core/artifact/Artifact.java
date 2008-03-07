@@ -484,7 +484,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     */
    public boolean isAttributeTypeValid(String attributeName) throws SQLException {
       Collection<DynamicAttributeDescriptor> attributeTypes =
-            configurationManager.getAttributeTypesFromArtifactType(artifactTypeName, branch);
+            configurationManager.getAttributeTypesFromArtifactType(getArtifactTypeName(), branch);
       for (DynamicAttributeDescriptor attributeType : attributeTypes) {
          if (attributeType.getName().equals(attributeName)) {
             return true;
