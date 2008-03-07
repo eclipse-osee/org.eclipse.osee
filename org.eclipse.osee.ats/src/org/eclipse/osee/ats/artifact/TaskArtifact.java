@@ -249,12 +249,12 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     */
    public Date getWorldViewEstimatedReleaseDate() throws Exception {
       if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewEstimatedReleaseDate();
-      return getSoleDateAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+      return getSoleXAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
 
    public Date getWorldViewReleaseDate() throws Exception {
       if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewReleaseDate();
-      return getSoleDateAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+      return getSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
 
    public VersionArtifact getTargetedForVersion() throws SQLException {

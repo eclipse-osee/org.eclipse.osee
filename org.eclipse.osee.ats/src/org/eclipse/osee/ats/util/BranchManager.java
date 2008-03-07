@@ -257,8 +257,7 @@ public class BranchManager {
       if (smaMgr.isTeamUsesVersions()) {
          VersionArtifact verArt = smaMgr.getTargetedForVersion();
          if (verArt != null) {
-            Integer branchId =
-                  verArt.getSoleIntegerAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+            Integer branchId = verArt.getSoleXAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
             if (branchId != null && branchId > 0) {
                parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
             }
@@ -268,7 +267,7 @@ public class BranchManager {
       // If not defined in version, check for parent branch from team definition
       if (parentBranch == null && (smaMgr.getSma() instanceof TeamWorkFlowArtifact)) {
          Integer branchId =
-               ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleIntegerAttributeValue(
+               ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleXAttributeValue(
                      ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
          if (branchId != null && branchId > 0) {
             parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);

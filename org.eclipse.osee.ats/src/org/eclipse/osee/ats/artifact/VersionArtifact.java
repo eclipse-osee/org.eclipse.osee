@@ -106,11 +106,11 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public Date getEstimatedReleaseDate() throws IllegalStateException, SQLException {
-      return getSoleDateAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+      return getSoleXAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
 
    public Date getReleaseDate() throws IllegalStateException, SQLException {
-      return getSoleDateAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+      return getSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
 
 }

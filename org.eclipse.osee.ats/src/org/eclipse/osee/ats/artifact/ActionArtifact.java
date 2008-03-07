@@ -297,7 +297,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public String getWorldViewPriority() {
       try {
-         return PriorityType.getPriority(getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
+         return PriorityType.getPriority(
+               getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -912,7 +913,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             ChangeType.getChangeType(fromAction.getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName())),
             priType, fromAction.getAttributesToStringCollection(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()),
             fromAction.getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName()),
-            fromAction.getSoleDateAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName()));
+            fromAction.getSoleXAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), Date.class));
    }
 
    /**

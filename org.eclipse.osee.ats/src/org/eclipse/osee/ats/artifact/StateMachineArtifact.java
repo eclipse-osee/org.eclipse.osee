@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.workflow.AtsWorkFlow;
 import org.eclipse.osee.ats.workflow.AtsWorkFlowFactory;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -589,9 +590,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
             }
             return hours;
          } else {
-            String value = getSoleStringAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
-            if (value == null || value.equals("")) return 0;
-            return new Float(value).doubleValue();
+            Double value = getSoleXAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+            if (value == null) return 0;
+            return value;
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, true);
@@ -626,15 +627,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    }
 
    public Result isWorldViewRemainHoursValid() {
-      String value = getSoleStringAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
-      if (value == null || value.equals("")) return new Result("Estimated Hours not set.");
       try {
-         new Float(value).doubleValue();
-      } catch (NumberFormatException ex) {
-         OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, true);
-         return new Result("Estimated Hours value is invalid double \"" + value + "\"");
+         Double value = getSoleXAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+         if (value == null) return new Result("Estimated Hours not set.");
+         return Result.TrueResult;
+      } catch (SQLException ex) {
+         return new Result("SQLException: " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
       }
-      return Result.TrueResult;
    }
 
    public Result isWorldViewManDaysNeededValid() {

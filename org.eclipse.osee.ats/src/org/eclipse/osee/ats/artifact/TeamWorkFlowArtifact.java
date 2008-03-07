@@ -116,11 +116,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
 
    @Override
    public int getWorldViewPercentRework() {
-      Integer rework = getSoleIntegerAttributeValue(ATSAttributes.PERCENT_REWORK_ATTRIBUTE.getStoreName());
-      if (rework == null)
-         return 0;
-      else
-         return rework;
+      return getSoleIntegerAttributeValue(ATSAttributes.PERCENT_REWORK_ATTRIBUTE.getStoreName());
    }
 
    @Override
@@ -245,7 +241,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
 
    public String getWorldViewPriority() {
       try {
-         return PriorityType.getPriority(getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
+         return PriorityType.getPriority(
+               getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -455,10 +452,10 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       if (vers.size() > 0) {
          date = vers.iterator().next().getEstimatedReleaseDate();
          if (date == null) {
-            date = getSoleDateAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+            date = getSoleXAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
          }
       } else
-         date = getSoleDateAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+         date = getSoleXAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
       return date;
    }
 
@@ -495,7 +492,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             Collection<TaskArtifact> taskArts = smaMgr.getTaskMgr().getTaskArtifacts(DefaultTeamState.Implement.name());
             if (taskArts.size() == 0) return new Result("No tasks assigned for Implement state");
             for (TaskArtifact taskArt : taskArts) {
-               String value = taskArt.getSoleStringAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+               String value =
+                     taskArt.getSoleStringAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
                if (value == null || value.equals("")) return new Result("Task Estimated Hours not set.");
                try {
                   new Float(value).doubleValue();
@@ -523,10 +521,10 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       if (vers.size() > 0) {
          date = vers.iterator().next().getReleaseDate();
          if (date == null) {
-            date = getSoleDateAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+            date = getSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
          }
       } else
-         date = getSoleDateAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+         date = getSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
       return date;
    }
 
@@ -562,7 +560,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
    public Date getWorldViewDeadlineDate() throws Exception {
-      return getSoleDateAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName());
+      return getSoleXAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName());
    }
 
    /*

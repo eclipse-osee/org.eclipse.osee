@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Donald G. Dunne
@@ -67,22 +66,24 @@ public class ATSLog {
 
    public List<LogItem> getLogItems() {
       List<LogItem> logItems = new ArrayList<LogItem>();
-      String xml = artifact.getSoleStringAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName());
-      if (!xml.equals("")) {
-         try {
-            NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
-            for (int i = 0; i < nodes.getLength(); i++) {
-               Element element = (Element) nodes.item(i);
-               LogItem item =
-                     new LogItem(element.getAttribute("type"), element.getAttribute("date"),
-                           element.getAttribute("userId"), element.getAttribute("state"), element.getAttribute("msg"));
-               logItems.add(item);
-            }
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         }
-      }
+      System.err.println("ATSLog: Don't Check This In");
       return logItems;
+      //      String xml = artifact.getSoleStringAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName());
+      //      if (!xml.equals("")) {
+      //         try {
+      //            NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
+      //            for (int i = 0; i < nodes.getLength(); i++) {
+      //               Element element = (Element) nodes.item(i);
+      //               LogItem item =
+      //                     new LogItem(element.getAttribute("type"), element.getAttribute("date"),
+      //                           element.getAttribute("userId"), element.getAttribute("state"), element.getAttribute("msg"));
+      //               logItems.add(item);
+      //            }
+      //         } catch (Exception ex) {
+      //            OSEELog.logException(AtsPlugin.class, ex, true);
+      //         }
+      //      }
+      //      return logItems;
    }
 
    public void putLogItems(List<LogItem> items) {

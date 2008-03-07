@@ -230,7 +230,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @throws SQLException
     */
    public double getManDayHrsFromItemAndChildren(TeamDefinitionArtifact teamDef) throws SQLException {
-      Double manDaysHrs = teamDef.getSoleDoubleAttributeValue(ATSAttributes.MAN_DAYS_NEEDED_ATTRIBUTE.getStoreName());
+      Double manDaysHrs = teamDef.getSoleXAttributeValue(ATSAttributes.MAN_DAYS_NEEDED_ATTRIBUTE.getStoreName());
       if (manDaysHrs != null && manDaysHrs != 0) return manDaysHrs;
       if (teamDef.getParent() != null && (teamDef.getParent() instanceof TeamDefinitionArtifact)) return teamDef.getManDayHrsFromItemAndChildren((TeamDefinitionArtifact) teamDef.getParent());
       return StateMachineArtifact.MAN_DAY_HOURS;
@@ -332,7 +332,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @throws SQLException
     */
    public Branch getTeamBranch() throws SQLException {
-      Integer branchId = getSoleIntegerAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+      Integer branchId = getSoleXAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
       if (branchId != null && branchId > 0) {
          return branchManager.getBranch(branchId);
       } else {
