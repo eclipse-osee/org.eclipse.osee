@@ -44,17 +44,19 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
       }
    }
 
-   public void appendOuputText(String additionalOutput) {
-      overviewPage.appendOuputText(additionalOutput);
+   public void appendOuputLine(final String additionalOutput) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         public void run() {
+            overviewPage.appendOuputLine(additionalOutput);
+         }
+      });
    }
 
-   private void setOutputText(final String output) {
+   public void setOuputText(final String text) {
       Displays.ensureInDisplayThread(new Runnable() {
-
          public void run() {
-            overviewPage.setOuputText(output);
+            overviewPage.setOuputText(text);
          }
-
       });
    }
 
@@ -91,11 +93,11 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
 
       if (blamEvent instanceof BlamStartedEvent) {
          BlamStartedEvent blamStartEvent = (BlamStartedEvent) blamEvent;
-         setOutputText("Starting workflow at " + blamStartEvent.getDate());
+         setOuputText("Starting workflow at " + blamStartEvent.getDate() + "\n");
 
       } else if (blamEvent instanceof BlamFinishedEvent) {
          BlamFinishedEvent blamFinishedEvent = (BlamFinishedEvent) blamEvent;
-         setOutputText("Workflow completed in " + (blamFinishedEvent.getDurationMillis() / 1000) + " secs");
+         appendOuputLine("Workflow completed in " + (blamFinishedEvent.getDurationMillis() / 1000) + " secs");
       }
    }
 

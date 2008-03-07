@@ -33,6 +33,9 @@ public class PurgeDuplicateTypeData extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      purgeDuplicateAttributeValidity();
+      if (true) return;
+
       for (ArtifactSubtypeDescriptor artifactType : new HashSet<ArtifactSubtypeDescriptor>(
             configurationManager.getArtifactSubtypeDescriptors())) {
          purgeArtifactTypeAndGammas(artifactType.getName());
@@ -42,6 +45,15 @@ public class PurgeDuplicateTypeData extends AbstractBlam {
             configurationManager.getDynamicAttributeDescriptors(null))) {
          purgeAttributeTypeAndGammas(attributeType.getName());
       }
+   }
+
+   private void purgeDuplicateAttributeValidity() throws SQLException {
+      int updateCount =
+            ConnectionHandler.runPreparedUpdateReturnCount("delete from osee_define_txs where gamma_id in (select vat1.gamma_id from osee_define_valid_attributes vat1 where vat1.gamma_id <> (SELECT min(gamma_id) FROM osee_define_valid_attributes vat2 where vat1.art_type_id = vat2.art_type_id and vat1.attr_type_id = vat2.attr_type_id group by vat2.art_type_id, vat2.attr_type_id))");
+      appendResultLine("number of txs rows deleted " + updateCount);
+      updateCount =
+            ConnectionHandler.runPreparedUpdateReturnCount("delete from osee_define_valid_attributes vat1 where vat1.gamma_id <> (SELECT min(gamma_id) FROM osee_define_valid_attributes vat2 where vat1.art_type_id = vat2.art_type_id and vat1.attr_type_id = vat2.attr_type_id group by vat2.art_type_id, vat2.attr_type_id)");
+      appendResultLine("number of osee_define_valid_attributes rows deleted " + updateCount);
    }
 
    private void purgeArtifactTypeAndGammas(String artifactType) throws SQLException {

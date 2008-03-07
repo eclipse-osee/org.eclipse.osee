@@ -12,10 +12,12 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
+import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class OseeInfoDbItem extends DbItem {
 
@@ -50,7 +52,7 @@ public class OseeInfoDbItem extends DbItem {
          DbUtil.close(chStmt);
          return b;
       } catch (SQLException ex) {
-         ex.printStackTrace();
+         OSEELog.logException(AdminPlugin.class, ex, true);
       }
       return false;
    }
@@ -70,7 +72,7 @@ public class OseeInfoDbItem extends DbItem {
             ConnectionHandler.runPreparedUpdate(query, SQL3DataType.VARCHAR, key, SQL3DataType.VARCHAR, value);
          }
       } catch (SQLException ex) {
-         ex.printStackTrace();
+         OSEELog.logException(AdminPlugin.class, ex, true);
       }
    }
 

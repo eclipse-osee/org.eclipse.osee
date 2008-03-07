@@ -73,11 +73,6 @@ public class BlamWorkflow extends Artifact {
       return blamWorkflow;
    }
 
-   @Override
-   public void onBirth() throws SQLException {
-      super.onBirth();
-   }
-
    public List<DynamicXWidgetLayoutData> getLayoutDatas() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
       if (layoutDatas.isEmpty()) {
          getOperations();

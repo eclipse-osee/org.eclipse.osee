@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
 
 /**
  * @author Ryan D. Brooks
@@ -29,4 +30,6 @@ public interface BlamOperation {
    public abstract String getDescriptionUsage();
 
    public abstract Branch wrapOperationForBranch(BlamVariableMap variableMap);
+
+   public abstract void setWorkflowEditor(WorkflowEditor workflow);
 }

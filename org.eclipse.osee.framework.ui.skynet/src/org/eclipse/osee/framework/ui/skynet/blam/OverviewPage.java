@@ -47,6 +47,7 @@ public class OverviewPage extends FormPage implements IActionable {
    private final WorkflowEditor editor;
    private Text outputText;
    private Section parameterSection;
+   private Section outputSection;
 
    public OverviewPage(WorkflowEditor editor) {
       super(editor, "overview", "Blam Workflow");
@@ -110,7 +111,7 @@ public class OverviewPage extends FormPage implements IActionable {
                blamVariableMap.setValue(widget.getLabel(), widget.getData());
             }
 
-            BlamJob blamJob = new BlamJob(editor.getBlamVariableMap(), editor.getWorkflow());
+            BlamJob blamJob = new BlamJob(editor);
             blamJob.addListener(editor);
             Jobs.startJob(blamJob);
          }
@@ -164,28 +165,29 @@ public class OverviewPage extends FormPage implements IActionable {
    }
 
    private void createOutputSection(Composite body) {
-      Section section = toolkit.createSection(body, Section.TWISTIE | Section.TITLE_BAR);
-      section.setText("Output");
-      section.setExpanded(true);
-      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      outputSection = toolkit.createSection(body, Section.TWISTIE | Section.TITLE_BAR);
+      outputSection.setText("Output");
+      outputSection.setExpanded(true);
+      outputSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      Composite outputContainer = toolkit.createClientContainer(section, 2);
+      Composite outputContainer = toolkit.createClientContainer(outputSection, 2);
 
-      outputText = toolkit.createText(outputContainer, "Workflow has not yet run", SWT.MULTI);
+      outputText = toolkit.createText(outputContainer, "Workflow has not yet run\n", SWT.MULTI);
       outputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
    }
 
    /**
     * @param line
     */
-   public void appendOuputText(String additionalOutput) {
-      outputText.append(additionalOutput);
+   public void appendOuputLine(String additionalOutput) {
+      outputText.append(additionalOutput + "\n");
+      outputText.redraw();
    }
 
    /**
     * @param line
     */
-   public void setOuputText(String output) {
-      outputText.setText(output);
+   public void setOuputText(String text) {
+      outputText.setText(text);
    }
 }

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.eclipse.core.resources.IFile;
@@ -32,11 +31,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.ui.plugin.OseePluginUiActivator;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * This class provides a front end to writing files to a common osee.data directory in the workspace. This dir is
@@ -47,20 +45,12 @@ import org.xml.sax.SAXException;
  * @author Donald G. Dunne
  */
 public class OseeData {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(OseeData.class);
-
    private static final IPath workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
-
    private static String oseeDataPathName = ".osee.data";
    private static final IPath oseeDataPath = workspacePath.append(oseeDataPathName);
-
    private static final File oseeDir = oseeDataPath.toFile();
-
    private static final String dataStoreName = "OseeDataStore";
-
    private static IProject project;
-
    private static Map<String, String> keyValue;
 
    static {
@@ -150,14 +140,8 @@ public class OseeData {
             String value = Jaxp.getChildText(pair, "Value");
             if (key != null && value != null && !key.equals("") && !value.equals("")) keyValue.put(key, value);
          }
-      } catch (ParserConfigurationException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (SAXException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (IOException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (CoreException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (Exception ex) {
+         OseePluginUiActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 

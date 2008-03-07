@@ -30,20 +30,14 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 public class BlamJob extends Job {
    private final BlamWorkflow workflow;
    private final BlamVariableMap variableMap;
+   private final WorkflowEditor editor;
    private final Collection<IBlamEventListener> listeners;
 
-   public BlamJob(BlamVariableMap variableMap, BlamWorkflow workflow) {
-      super(workflow.getDescriptiveName());
-
-      if (variableMap == null) {
-         throw new IllegalArgumentException("VariableMap can not be null");
-      }
-      if (workflow == null) {
-         throw new IllegalArgumentException("Workflow can not be null");
-      }
-
-      this.variableMap = variableMap;
-      this.workflow = workflow;
+   public BlamJob(WorkflowEditor editor) {
+      super(editor.getWorkflow().getDescriptiveName());
+      this.editor = editor;
+      this.variableMap = editor.getBlamVariableMap();
+      this.workflow = editor.getWorkflow();
       this.listeners = new LinkedList<IBlamEventListener>();
    }
 
@@ -62,6 +56,7 @@ public class BlamJob extends Job {
          for (BlamOperation operation : operations) {
             IProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
 
+            operation.setWorkflowEditor(editor);
             Branch branch = operation.wrapOperationForBranch(variableMap);
             if (branch == null) {
                operation.runOperation(variableMap, subMonitor);

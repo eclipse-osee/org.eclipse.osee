@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin;
 
+import java.util.logging.Logger;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
 public class OseePluginUiActivator extends OseeUiActivator {
+   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OseePluginUiActivator.class);
 
    // The plug-in ID
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.plugin";
@@ -56,4 +59,10 @@ public class OseePluginUiActivator extends OseeUiActivator {
       return plugin;
    }
 
+   /**
+    * @return the logger
+    */
+   public static Logger getLogger() {
+      return logger;
+   }
 }

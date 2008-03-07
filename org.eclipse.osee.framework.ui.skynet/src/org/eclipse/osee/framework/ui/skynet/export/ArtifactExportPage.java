@@ -11,6 +11,15 @@
 
 package org.eclipse.osee.framework.ui.skynet.export;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
@@ -40,6 +49,7 @@ public class ArtifactExportPage extends WizardDataTransferPage {
     */
    @Override
    public void handleEvent(Event event) {
+
    }
 
    /* (non-Javadoc)
@@ -49,4 +59,15 @@ public class ArtifactExportPage extends WizardDataTransferPage {
    public void createControl(Composite parent) {
    }
 
+   private void writeArtifactPreview(Artifact artifact) throws Exception {
+      IRenderer render = RendererManager.getInstance().getBestRenderer(PresentationType.EDIT, artifact);
+      if (render instanceof FileSystemRenderer) {
+         FileSystemRenderer fileSystemRenderer = (FileSystemRenderer) render;
+         Branch branch = artifact.getBranch();
+         IFolder baseFolder = fileSystemRenderer.getRenderFolder(branch, PresentationType.EDIT);
+         IFile iFile =
+               fileSystemRenderer.renderToFileSystem(new NullProgressMonitor(), baseFolder, artifact, branch, null,
+                     PresentationType.EDIT);
+      }
+   }
 }

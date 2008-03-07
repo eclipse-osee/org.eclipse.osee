@@ -13,11 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
+import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class AbstractBlam implements BlamOperation {
+   private WorkflowEditor workflowEditor;
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#wrapOperationForBranch()
@@ -43,5 +45,17 @@ public abstract class AbstractBlam implements BlamOperation {
 
    public String getClassSimpleName() {
       return getClass().getSimpleName();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#setOverpages(org.eclipse.osee.framework.ui.skynet.blam.OverviewPage)
+    */
+   @Override
+   public void setWorkflowEditor(WorkflowEditor workflowEditor) {
+      this.workflowEditor = workflowEditor;
+   }
+
+   public void appendResultLine(String output) {
+      workflowEditor.appendOuputLine(output);
    }
 }

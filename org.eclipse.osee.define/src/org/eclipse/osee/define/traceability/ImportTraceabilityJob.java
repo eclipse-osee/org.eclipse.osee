@@ -58,7 +58,7 @@ public class ImportTraceabilityJob extends Job {
    private static final Pattern filePattern = Pattern.compile(".*\\.(java|ada|ads|adb|c|h)");
    private static final Pattern embeddedVolumePattern = Pattern.compile("\\{\\d+ (.*)\\}[ .]*");
    private static final Pattern invalidTraceMarkPattern = Pattern.compile("(\\[[A-Za-z]|USES_).*");
-   private static final Pattern nonWordPattern = Pattern.compile("[^A-Z0-9]");
+   private static final Pattern nonWordPattern = Pattern.compile("[^A-Z_0-9]");
 
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private final File file;
