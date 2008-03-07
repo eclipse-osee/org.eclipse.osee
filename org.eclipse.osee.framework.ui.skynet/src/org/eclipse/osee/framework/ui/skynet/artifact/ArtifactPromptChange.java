@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -111,8 +112,10 @@ public class ArtifactPromptChange {
       // prompt that current release is (get from attribute); want to
       // change
       DateSelectionDialog diag =
-            new DateSelectionDialog("Select " + displayName, "Select " + displayName,
-                  artifacts.size() == 1 ? artifacts.iterator().next().getSoleDateAttributeValue(attributeName) : null);
+            new DateSelectionDialog(
+                  "Select " + displayName,
+                  "Select " + displayName,
+                  artifacts.size() == 1 ? artifacts.iterator().next().getSoleXAttributeValue(attributeName, Date.class) : null);
       if (diag.open() == 0) {
          for (Artifact artifact : artifacts) {
             if (diag.isNoneSelected())
