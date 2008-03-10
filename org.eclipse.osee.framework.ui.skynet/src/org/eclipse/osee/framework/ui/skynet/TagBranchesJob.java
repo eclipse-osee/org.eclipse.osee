@@ -31,13 +31,13 @@ public class TagBranchesJob extends Job {
    private Collection<Branch> branches;
 
    public TagBranchesJob(Collection<Branch> branches) {
-      super("Tag Brances");
+      super("Tag Branches");
       this.branches = branches;
    }
 
    @Override
    protected IStatus run(IProgressMonitor monitor) {
-      monitor.beginTask("Tag Brances", branches.size());
+      monitor.beginTask("Tag Branches", branches.size());
       for (Branch branch : branches) {
          try {
             Collection<Artifact> arts = branch.getArtifacts();
