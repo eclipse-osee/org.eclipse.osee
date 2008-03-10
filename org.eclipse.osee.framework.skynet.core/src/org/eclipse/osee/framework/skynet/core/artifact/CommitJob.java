@@ -43,77 +43,6 @@ import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
  */
 class CommitJob extends Job {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(CommitJob.class);
-//   private static final LocalAliasTable VERSION_ALIAS_1 = ARTIFACT_VERSION_TABLE.aliasAs("art_ver_1");
-//   private static final LocalAliasTable VERSION_ALIAS_2 = ARTIFACT_VERSION_TABLE.aliasAs("art_ver_2");
-//   private static final LocalAliasTable VERSION_ALIAS_3 = ARTIFACT_VERSION_TABLE.aliasAs("art_ver_3");
-//   private static final LocalAliasTable TX_ALIAS_1 = TRANSACTIONS_TABLE.aliasAs("tx_1");
-//   private static final LocalAliasTable TX_ALIAS_2 = TRANSACTIONS_TABLE.aliasAs("tx_2");
-//   private static final LocalAliasTable TX_ALIAS_3 = TRANSACTIONS_TABLE.aliasAs("tx_3");
-//   private static final LocalAliasTable TX_DETAILS_ALIAS_1 = TRANSACTION_DETAIL_TABLE.aliasAs("txd_1");
-//   private static final LocalAliasTable TX_DETAILS_ALIAS_2 = TRANSACTION_DETAIL_TABLE.aliasAs("txd_2");
-//   private static final LocalAliasTable TX_DETAILS_ALIAS_3 = TRANSACTION_DETAIL_TABLE.aliasAs("txd_3");
-//   private static final String BRANCH_COMMIT =
-//         "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) SELECT ?, " + TX_ALIAS_3.column("gamma_id") + ", ? FROM " + TX_ALIAS_3 + ", " + TX_DETAILS_ALIAS_3 + " WHERE " + TX_ALIAS_3.join(
-//               TX_DETAILS_ALIAS_3, "transaction_id") + " AND " + TX_DETAILS_ALIAS_3.column("branch_id") + "=? AND " + TX_DETAILS_ALIAS_3.column("transaction_id") + ">? AND NOT EXISTS(SELECT 'x' FROM " + Collections.toString(
-//               ",", VERSION_ALIAS_1, VERSION_ALIAS_2, VERSION_ALIAS_3, TX_ALIAS_1, TX_ALIAS_2, TX_DETAILS_ALIAS_1,
-//               TX_DETAILS_ALIAS_2) + " WHERE " + VERSION_ALIAS_3.join(TX_ALIAS_3, "gamma_id") + " AND " + VERSION_ALIAS_1.join(
-//               VERSION_ALIAS_3, "art_id") + " AND " + VERSION_ALIAS_1.join(TX_ALIAS_1, "gamma_id") + " AND " + TX_ALIAS_1.join(
-//               TX_DETAILS_ALIAS_1, "transaction_id") + " AND " + TX_DETAILS_ALIAS_1.join(TX_DETAILS_ALIAS_3,
-//               "branch_id") + " AND " + VERSION_ALIAS_2.join(VERSION_ALIAS_3, "art_id") + " AND " + VERSION_ALIAS_2.join(
-//               TX_ALIAS_2, "gamma_id") + " AND " + TX_ALIAS_2.join(TX_DETAILS_ALIAS_2, "transaction_id") + " AND " + TX_DETAILS_ALIAS_2.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_1.column("modification_id") + "=1 AND " + VERSION_ALIAS_2.column("modification_id") + "=3 AND " + TX_DETAILS_ALIAS_1.column("transaction_id") + ">?) AND NOT EXISTS(SELECT 'x' FROM " + Collections.toString(
-//               ",", VERSION_ALIAS_1, VERSION_ALIAS_2, ATTRIBUTE_VERSION_TABLE, TX_ALIAS_1, TX_ALIAS_2,
-//               TX_DETAILS_ALIAS_1, TX_DETAILS_ALIAS_2) + " WHERE " + ATTRIBUTE_VERSION_TABLE.join(TX_ALIAS_3,
-//               "gamma_id") + " AND " + VERSION_ALIAS_1.join(ATTRIBUTE_VERSION_TABLE, "art_id") + " AND " + VERSION_ALIAS_1.join(
-//               TX_ALIAS_1, "gamma_id") + " AND " + TX_ALIAS_1.join(TX_DETAILS_ALIAS_1, "transaction_id") + " AND " + TX_DETAILS_ALIAS_1.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_2.join(ATTRIBUTE_VERSION_TABLE, "art_id") + " AND " + VERSION_ALIAS_2.join(
-//               TX_ALIAS_2, "gamma_id") + " AND " + TX_ALIAS_2.join(TX_DETAILS_ALIAS_2, "transaction_id") + " AND " + TX_DETAILS_ALIAS_2.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_1.column("modification_id") + "=1 AND " + VERSION_ALIAS_2.column("modification_id") + "=3 AND " + TX_DETAILS_ALIAS_1.column("transaction_id") + ">?) AND NOT EXISTS(SELECT 'x' FROM " + Collections.toString(
-//               ",", VERSION_ALIAS_1, VERSION_ALIAS_2, RELATION_LINK_VERSION_TABLE, TX_ALIAS_1, TX_ALIAS_2,
-//               TX_DETAILS_ALIAS_1, TX_DETAILS_ALIAS_2) + " WHERE " + RELATION_LINK_VERSION_TABLE.join(TX_ALIAS_3,
-//               "gamma_id") + " AND " + VERSION_ALIAS_1.column("art_id") + "=" + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " AND " + VERSION_ALIAS_1.join(
-//               TX_ALIAS_1, "gamma_id") + " AND " + TX_ALIAS_1.join(TX_DETAILS_ALIAS_1, "transaction_id") + " AND " + TX_DETAILS_ALIAS_1.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_2.column("art_id") + "=" + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " AND " + VERSION_ALIAS_2.join(
-//               TX_ALIAS_2, "gamma_id") + " AND " + TX_ALIAS_2.join(TX_DETAILS_ALIAS_2, "transaction_id") + " AND " + TX_DETAILS_ALIAS_2.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_1.column("modification_id") + "=1 AND " + VERSION_ALIAS_2.column("modification_id") + "=3 AND " + TX_DETAILS_ALIAS_1.column("transaction_id") + ">?) AND NOT EXISTS(SELECT 'x' FROM " + Collections.toString(
-//               ",", VERSION_ALIAS_1, VERSION_ALIAS_2, RELATION_LINK_VERSION_TABLE, TX_ALIAS_1, TX_ALIAS_2,
-//               TX_DETAILS_ALIAS_1, TX_DETAILS_ALIAS_2) + " WHERE " + RELATION_LINK_VERSION_TABLE.join(TX_ALIAS_3,
-//               "gamma_id") + " AND " + VERSION_ALIAS_1.column("art_id") + "=" + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " AND " + VERSION_ALIAS_1.join(
-//               TX_ALIAS_1, "gamma_id") + " AND " + TX_ALIAS_1.join(TX_DETAILS_ALIAS_1, "transaction_id") + " AND " + TX_DETAILS_ALIAS_1.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_2.column("art_id") + "=" + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " AND " + VERSION_ALIAS_2.join(
-//               TX_ALIAS_2, "gamma_id") + " AND " + TX_ALIAS_2.join(TX_DETAILS_ALIAS_2, "transaction_id") + " AND " + TX_DETAILS_ALIAS_2.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_1.column("modification_id") + "=1 AND " + VERSION_ALIAS_2.column("modification_id") + "=3 AND " + TX_DETAILS_ALIAS_1.column("transaction_id") + ">?)";
-//   private static final String TRANSACTION_COMMIT =
-//         "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) SELECT ?, " + TX_ALIAS_3.column("gamma_id") + ", ? FROM " + TX_ALIAS_3 + ", " + TX_DETAILS_ALIAS_3 + " WHERE " + TX_ALIAS_3.join(
-//               TX_DETAILS_ALIAS_3, "transaction_id") + " AND " + TX_DETAILS_ALIAS_3.column("branch_id") + "=? AND " + TX_DETAILS_ALIAS_3.column("transaction_id") + "=? AND NOT EXISTS(SELECT 'x' FROM " + Collections.toString(
-//               ",", VERSION_ALIAS_1, VERSION_ALIAS_2, VERSION_ALIAS_3, TX_ALIAS_1, TX_ALIAS_2, TX_DETAILS_ALIAS_1,
-//               TX_DETAILS_ALIAS_2) + " WHERE " + VERSION_ALIAS_3.join(TX_ALIAS_3, "gamma_id") + " AND " + VERSION_ALIAS_1.join(
-//               VERSION_ALIAS_3, "art_id") + " AND " + VERSION_ALIAS_1.join(TX_ALIAS_1, "gamma_id") + " AND " + TX_ALIAS_1.join(
-//               TX_DETAILS_ALIAS_1, "transaction_id") + " AND " + TX_DETAILS_ALIAS_1.join(TX_DETAILS_ALIAS_3,
-//               "branch_id") + " AND " + VERSION_ALIAS_2.join(VERSION_ALIAS_3, "art_id") + " AND " + VERSION_ALIAS_2.join(
-//               TX_ALIAS_2, "gamma_id") + " AND " + TX_ALIAS_2.join(TX_DETAILS_ALIAS_2, "transaction_id") + " AND " + TX_DETAILS_ALIAS_2.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_1.column("modification_id") + "=1 AND " + VERSION_ALIAS_2.column("modification_id") + "=3 AND " + TX_DETAILS_ALIAS_1.column("transaction_id") + "=?) AND NOT EXISTS(SELECT 'x' FROM " + Collections.toString(
-//               ",", VERSION_ALIAS_1, VERSION_ALIAS_2, ATTRIBUTE_VERSION_TABLE, TX_ALIAS_1, TX_ALIAS_2,
-//               TX_DETAILS_ALIAS_1, TX_DETAILS_ALIAS_2) + " WHERE " + ATTRIBUTE_VERSION_TABLE.join(TX_ALIAS_3,
-//               "gamma_id") + " AND " + VERSION_ALIAS_1.join(ATTRIBUTE_VERSION_TABLE, "art_id") + " AND " + VERSION_ALIAS_1.join(
-//               TX_ALIAS_1, "gamma_id") + " AND " + TX_ALIAS_1.join(TX_DETAILS_ALIAS_1, "transaction_id") + " AND " + TX_DETAILS_ALIAS_1.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_2.join(ATTRIBUTE_VERSION_TABLE, "art_id") + " AND " + VERSION_ALIAS_2.join(
-//               TX_ALIAS_2, "gamma_id") + " AND " + TX_ALIAS_2.join(TX_DETAILS_ALIAS_2, "transaction_id") + " AND " + TX_DETAILS_ALIAS_2.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_1.column("modification_id") + "=1 AND " + VERSION_ALIAS_2.column("modification_id") + "=3 AND " + TX_DETAILS_ALIAS_1.column("transaction_id") + "=?) AND NOT EXISTS(SELECT 'x' FROM " + Collections.toString(
-//               ",", VERSION_ALIAS_1, VERSION_ALIAS_2, RELATION_LINK_VERSION_TABLE, TX_ALIAS_1, TX_ALIAS_2,
-//               TX_DETAILS_ALIAS_1, TX_DETAILS_ALIAS_2) + " WHERE " + RELATION_LINK_VERSION_TABLE.join(TX_ALIAS_3,
-//               "gamma_id") + " AND " + VERSION_ALIAS_1.column("art_id") + "=" + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " AND " + VERSION_ALIAS_1.join(
-//               TX_ALIAS_1, "gamma_id") + " AND " + TX_ALIAS_1.join(TX_DETAILS_ALIAS_1, "transaction_id") + " AND " + TX_DETAILS_ALIAS_1.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_2.column("art_id") + "=" + RELATION_LINK_VERSION_TABLE.column("a_art_id") + " AND " + VERSION_ALIAS_2.join(
-//               TX_ALIAS_2, "gamma_id") + " AND " + TX_ALIAS_2.join(TX_DETAILS_ALIAS_2, "transaction_id") + " AND " + TX_DETAILS_ALIAS_2.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_1.column("modification_id") + "=1 AND " + VERSION_ALIAS_2.column("modification_id") + "=3 AND " + TX_DETAILS_ALIAS_1.column("transaction_id") + "=?) AND NOT EXISTS(SELECT 'x' FROM " + Collections.toString(
-//               ",", VERSION_ALIAS_1, VERSION_ALIAS_2, RELATION_LINK_VERSION_TABLE, TX_ALIAS_1, TX_ALIAS_2,
-//               TX_DETAILS_ALIAS_1, TX_DETAILS_ALIAS_2) + " WHERE " + RELATION_LINK_VERSION_TABLE.join(TX_ALIAS_3,
-//               "gamma_id") + " AND " + VERSION_ALIAS_1.column("art_id") + "=" + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " AND " + VERSION_ALIAS_1.join(
-//               TX_ALIAS_1, "gamma_id") + " AND " + TX_ALIAS_1.join(TX_DETAILS_ALIAS_1, "transaction_id") + " AND " + TX_DETAILS_ALIAS_1.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_2.column("art_id") + "=" + RELATION_LINK_VERSION_TABLE.column("b_art_id") + " AND " + VERSION_ALIAS_2.join(
-//               TX_ALIAS_2, "gamma_id") + " AND " + TX_ALIAS_2.join(TX_DETAILS_ALIAS_2, "transaction_id") + " AND " + TX_DETAILS_ALIAS_2.join(
-//               TX_DETAILS_ALIAS_3, "branch_id") + " AND " + VERSION_ALIAS_1.column("modification_id") + "=1 AND " + VERSION_ALIAS_2.column("modification_id") + "=3 AND " + TX_DETAILS_ALIAS_1.column("transaction_id") + "=?)";
 
    private static final String DELETE_TO_BRANCH_TAG_DATA =
          "DELETE FROM osee_tag_art_map tam1 WHERE tam1.branch_id = ? AND EXISTS (SELECT 'x' FROM osee_tag_art_map tam2 WHERE tam1.art_id = tam2.art_id AND tam1.tag_id = tam2.tag_id AND branch_id = ?)";
@@ -202,9 +131,7 @@ class CommitJob extends Job {
             baseTransactionId = transactions.getKey(); // minimum transaction on the child branch
             accessControlManager.removeAllPermissionsFromBranch(fromBranch);
          } else {
-            //            newTransactionNumber = branchManager.addTransactionToDatabase(toBranch, fromTransactionId, userToBlame);
-            //            fromBranchId = fromTransactionId.getBranch().getBranchId();
-            //            sql = TRANSACTION_COMMIT;
+        	 //Commit transaction instead of a branch
          }
 
          monitor.worked(25);
