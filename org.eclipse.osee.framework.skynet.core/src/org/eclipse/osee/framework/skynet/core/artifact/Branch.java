@@ -17,12 +17,17 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.event.LocalRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
@@ -344,4 +349,11 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       }
       return null;
    }
+
+   public Collection<Artifact> getArtifacts() throws SQLException {
+      List<ISearchPrimitive> activeCriteria = new LinkedList<ISearchPrimitive>();
+      activeCriteria.add(new ArtifactTypeSearch("%", Operator.LIKE));
+      return ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, this);
+   }
+
 }
