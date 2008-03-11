@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -105,6 +106,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(WorldView.class);
    private SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
+   private Set<Artifact> worldArts = new HashSet<Artifact>(200);
+   private Set<Artifact> otherArts = new HashSet<Artifact>(200);
 
    /**
     * The constructor.
@@ -155,11 +158,27 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
           * @see java.lang.Runnable#run()
           */
          public void run() {
-            xViewer.set(arts);
+            worldArts.clear();
+            otherArts.clear();
+            for (Artifact art : arts) {
+               if (art instanceof IWorldViewArtifact)
+                  worldArts.add(art);
+               else
+                  otherArts.add(art);
+            }
+            xViewer.set(worldArts);
             if (arts.size() == 0)
                setTableTitle("No Results Found - " + name, true);
             else
                setTableTitle(name, false);
+            if (otherArts.size() > 0) {
+               if (MessageDialog.openConfirm(
+                     Display.getCurrent().getActiveShell(),
+                     "Open in Artifact Editor?",
+                     otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
+                  ArtifactEditor.editArtifacts(otherArts);
+               }
+            }
          }
       }, true);
    }

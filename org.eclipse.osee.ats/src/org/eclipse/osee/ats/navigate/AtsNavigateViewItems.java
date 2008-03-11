@@ -144,10 +144,10 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - InWork", null, ReviewState.InWork));
       new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("User's Reviews - All", null, ReviewState.All));
       if (AtsPlugin.isAtsAdmin()) {
-         new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch("User's All - Admin Only", null,
-               LoadView.WorldView));
-         new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch("User Actively Assigned - Admin Only",
-               null, LoadView.WorldView));
+         new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch("User's All Related Objects - Admin Only",
+               null, false, LoadView.WorldView));
+         new SearchNavigateItem(otherItems, new UserRelatedToAtsObjectSearch(
+               "User's All Active Related Objects - Admin Only", null, true, LoadView.WorldView));
       }
       items.add(otherItems);
 

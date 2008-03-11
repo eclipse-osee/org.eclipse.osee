@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSear
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 
 /**
  * Return all ATS Objects that a user is related to through logs, review roles, defects and etc.
@@ -33,12 +34,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
  */
 public class UserRelatedToAtsObjectSearch extends UserSearchItem {
 
-   public UserRelatedToAtsObjectSearch(String name, LoadView loadView) {
-      this(name, null, loadView);
-   }
+   private final boolean activeObjectsOnly;
 
-   public UserRelatedToAtsObjectSearch(String name, User user, LoadView loadView) {
+   public UserRelatedToAtsObjectSearch(String name, User user, boolean activeObjectsOnly, LoadView loadView) {
       super(name, user);
+      this.activeObjectsOnly = activeObjectsOnly;
       setLoadView(loadView);
    }
 
@@ -48,14 +48,16 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
             "<" + user.getUserId() + ">", Operator.CONTAINS));
-      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-            "<" + user.getUserId() + ">", Operator.CONTAINS));
+      if (!activeObjectsOnly) {
+         currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
+               "<" + user.getUserId() + ">", Operator.CONTAINS));
+         currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
+               "userId=\"" + user.getUserId() + "\"", Operator.CONTAINS));
+      }
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
             "userId>" + user.getUserId() + "</userId", Operator.CONTAINS));
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
             "user>" + user.getUserId() + "</user", Operator.CONTAINS));
-      currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
-            "userId=\"" + user.getUserId() + "\"", Operator.CONTAINS));
       FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
 
       List<ISearchPrimitive> smaArtifactTypeCriteria = new LinkedList<ISearchPrimitive>();
@@ -72,6 +74,12 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(smaCriteria, true,
                   BranchPersistenceManager.getInstance().getAtsBranch());
+
+      arts.addAll(user.getArtifacts(RelationSide.TeamLead_Team));
+      arts.addAll(user.getArtifacts(RelationSide.TeamMember_Team));
+      arts.addAll(user.getArtifacts(RelationSide.FavoriteUser_Artifact));
+      arts.addAll(user.getArtifacts(RelationSide.SubscribedUser_Artifact));
+
       if (isCancelled()) return EMPTY_SET;
       return arts;
    }
