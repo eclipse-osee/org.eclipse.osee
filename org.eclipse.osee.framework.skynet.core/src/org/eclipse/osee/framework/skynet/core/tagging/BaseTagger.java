@@ -57,14 +57,17 @@ public class BaseTagger extends Tagger {
       List<String> textString = new LinkedList<String>();
 
       for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
-         Collection<Attribute<String>> attributes = attributeManager.getAttributes();
-         for (Attribute<String> attribute : attributes) {
-            String attributeTypeName = attributeManager.getAttributeType().getName();
-            if (!ignoreAttributeNames.contains(attributeTypeName)) {
-               if (attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
-                  textString.add(WordUtil.textOnly(attribute.getValue()));
-               } else {
-                  textString.add(attribute.getValue());
+         String attributeTypeName = attributeManager.getAttributeType().getName();
+         if (!ignoreAttributeNames.contains(attributeTypeName)) {
+            Attribute<?> attribute = attributeManager.getSoleAttribute();
+            if (attribute != null) {
+               Object object = attribute.getValue();
+               if (object != null) {
+                  if (attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
+                     textString.add(WordUtil.textOnly(object.toString()));
+                  } else {
+                     textString.add(object.toString());
+                  }
                }
             }
          }
