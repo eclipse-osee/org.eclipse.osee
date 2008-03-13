@@ -252,7 +252,7 @@ public abstract class Attribute<T> implements PersistenceObject {
     * @return exact String from datastore
     */
    public String getRawStringValue() {
-      return rawStringValue;
+      return rawStringValue != null ? rawStringValue : "";
    }
 
    /**

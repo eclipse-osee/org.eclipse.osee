@@ -1157,7 +1157,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     */
    public void purgeArtifact(final Artifact artifact) throws SQLException {
       artifact.checkDeleted();
-
+      SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ModType.PrePurge, this));
       purgeArtifact(artifact.getArtId());
 
       System.out.println("number of children:" + artifact.getChildren().size());
