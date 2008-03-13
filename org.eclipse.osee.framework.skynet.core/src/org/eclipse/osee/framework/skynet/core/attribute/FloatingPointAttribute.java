@@ -20,7 +20,7 @@ public class FloatingPointAttribute extends Attribute<Double> {
 
    public FloatingPointAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);
-      setRawStringVaule(defaultValue);
+      setRawStringValue(defaultValue);
    }
 
    /* (non-Javadoc)
@@ -28,7 +28,7 @@ public class FloatingPointAttribute extends Attribute<Double> {
     */
    @Override
    public Double getValue() {
-      return Double.valueOf(getRawStringVaule());
+      return Double.valueOf(getRawStringValue());
    }
 
    /* (non-Javadoc)
@@ -36,7 +36,7 @@ public class FloatingPointAttribute extends Attribute<Double> {
     */
    @Override
    public void setValue(Double value) {
-      setRawStringVaule(String.valueOf(value));
+      setRawStringValue(String.valueOf(value));
    }
 
    /* (non-Javadoc)

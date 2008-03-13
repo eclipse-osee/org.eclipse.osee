@@ -44,7 +44,7 @@ public abstract class Attribute<T> implements PersistenceObject {
    private boolean deleted;
    protected boolean dirty;
 
-   private String rawStringVaule;
+   private String rawStringValue;
    private byte[] rawContent;
 
    protected Attribute(DynamicAttributeDescriptor attributeType) {
@@ -211,17 +211,17 @@ public abstract class Attribute<T> implements PersistenceObject {
          attributeCopy = artifact.getAttributeManager(attributeType).getAttributeForSet();
       }
       attributeCopy.setRawContent(rawContent);
-      attributeCopy.setRawStringVaule(rawStringVaule);
+      attributeCopy.setRawStringValue(rawStringValue);
    }
 
    @Deprecated
    public String getStringData() {
-      return getRawStringVaule();
+      return getRawStringValue();
    }
 
    @Deprecated
    public void setStringData(String rawStringVaule) {
-      setRawStringVaule(rawStringVaule);
+      setRawStringValue(rawStringVaule);
    }
 
    public abstract void setValue(T value);
@@ -251,8 +251,8 @@ public abstract class Attribute<T> implements PersistenceObject {
     * 
     * @return exact String from datastore
     */
-   public String getRawStringVaule() {
-      return rawStringVaule;
+   public String getRawStringValue() {
+      return rawStringValue;
    }
 
    /**
@@ -275,30 +275,30 @@ public abstract class Attribute<T> implements PersistenceObject {
    // probably not needed
    protected InputStream getRawValueAsStream() throws CharacterCodingException {
       if (rawContent == null) {
-         return new CharBackedInputStream(rawStringVaule);
+         return new CharBackedInputStream(rawStringValue);
       }
       return new ByteArrayInputStream(rawContent);
    }
 
    /**
-    * @param rawStringVaule the rawStringVaule to set
+    * @param rawStringValue the rawStringVaule to set
     */
-   protected void setRawStringVaule(String rawStringVaule) {
+   protected void setRawStringValue(String rawStringValue) {
       // the == is used to handle equality when both are null
-      if (this.rawStringVaule == rawStringVaule) {
+      if (this.rawStringValue == rawStringValue) {
          return;
       }
-      if (this.rawStringVaule != null && this.rawStringVaule.equals(rawStringVaule)) {
+      if (this.rawStringValue != null && this.rawStringValue.equals(rawStringValue)) {
          return;
       }
-      if (rawStringVaule.length() > MAX_VARCHAR_LENGTH) {
+      if (rawStringValue.length() > MAX_VARCHAR_LENGTH) {
          try {
-            setRawContent(rawStringVaule.getBytes("UTF-8"));
+            setRawContent(rawStringValue.getBytes("UTF-8"));
          } catch (UnsupportedEncodingException ex) {
             SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
          }
       } else {
-         this.rawStringVaule = rawStringVaule;
+         this.rawStringValue = rawStringValue;
          setDirty();
       }
    }
@@ -321,7 +321,7 @@ public abstract class Attribute<T> implements PersistenceObject {
    protected void injectFromDb(InputStream rawContent, String rawStringVaule) {
       try {
          this.rawContent = rawContent == null ? null : Lib.inputStreamToBytes(rawContent);
-         this.rawStringVaule = rawStringVaule;
+         this.rawStringValue = rawStringVaule;
       } catch (IOException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }

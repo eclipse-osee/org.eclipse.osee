@@ -21,15 +21,15 @@ public class BooleanAttribute extends Attribute<Boolean> {
 
    public BooleanAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);
-      setRawStringVaule(defaultValue);
+      setRawStringValue(defaultValue);
    }
 
    public Boolean getValue() {
-      return getRawStringVaule().equals(booleanChoices[0]);
+      return getRawStringValue().equals(booleanChoices[0]);
    }
 
    public void setValue(Boolean value) {
-      setRawStringVaule(value ? booleanChoices[0] : booleanChoices[1]);
+      setRawStringValue(value ? booleanChoices[0] : booleanChoices[1]);
    }
 
    /* (non-Javadoc)

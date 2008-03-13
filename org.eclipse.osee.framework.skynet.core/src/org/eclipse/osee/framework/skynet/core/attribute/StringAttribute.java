@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 public class StringAttribute extends Attribute<String> {
    public StringAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);
-      setRawStringVaule(defaultValue);
+      setRawStringValue(defaultValue);
    }
 
    /* (non-Javadoc)
@@ -32,7 +32,7 @@ public class StringAttribute extends Attribute<String> {
    public String getValue() {
       byte[] rawContent = getRawContent();
       try {
-         return rawContent == null ? getRawStringVaule() : new String(rawContent, "UTF-8");
+         return rawContent == null ? getRawStringValue() : new String(rawContent, "UTF-8");
       } catch (UnsupportedEncodingException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
          return null;
@@ -44,7 +44,7 @@ public class StringAttribute extends Attribute<String> {
     */
    @Override
    public void setValue(String value) {
-      setRawStringVaule(value);
+      setRawStringValue(value);
    }
 
    /* (non-Javadoc)

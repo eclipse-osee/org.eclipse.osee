@@ -350,7 +350,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    protected void addAttributeData(Attribute attribute, Artifact artifact, SkynetTransaction transaction, int artGamma) throws SQLException {
-      String value = attribute.getRawStringVaule();
+      String value = attribute.getRawStringValue();
       InputStream stream = attribute.getRawContentStream();
       AttributeMemo memo;
       ModType modType;

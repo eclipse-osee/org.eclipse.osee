@@ -455,7 +455,7 @@ public class DynamicAttributeManager {
       attributeManager.setupForInitialization(false);
 
       for (Attribute attribute : getAttributes()) {
-         newAttribute = attributeManager.injectFromDb(attribute.getRawContentStream(), attribute.getRawStringVaule());
+         newAttribute = attributeManager.injectFromDb(attribute.getRawContentStream(), attribute.getRawStringValue());
 
          memo = attribute.getPersistenceMemo();
 
@@ -501,5 +501,9 @@ public class DynamicAttributeManager {
     */
    public void purge(Attribute attribute) throws SQLException {
       parentArtifact.purgeAttribute(attribute);
+   }
+
+   public int size() {
+      return attributes.size();
    }
 }

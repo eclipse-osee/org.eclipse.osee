@@ -20,7 +20,7 @@ public class IntegerAttribute extends Attribute<Integer> {
 
    public IntegerAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);
-      setRawStringVaule(defaultValue);
+      setRawStringValue(defaultValue);
    }
 
    /* (non-Javadoc)
@@ -28,7 +28,7 @@ public class IntegerAttribute extends Attribute<Integer> {
     */
    @Override
    public Integer getValue() throws NumberFormatException {
-      return Integer.valueOf(getRawStringVaule());
+      return Integer.valueOf(getRawStringValue());
    }
 
    /* (non-Javadoc)
@@ -36,7 +36,7 @@ public class IntegerAttribute extends Attribute<Integer> {
     */
    @Override
    public void setValue(Integer value) {
-      setRawStringVaule(Integer.toString(value));
+      setRawStringValue(Integer.toString(value));
    }
 
    /* (non-Javadoc)

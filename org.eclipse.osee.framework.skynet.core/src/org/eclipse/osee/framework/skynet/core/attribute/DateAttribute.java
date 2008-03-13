@@ -35,11 +35,11 @@ public class DateAttribute extends Attribute<Date> {
    }
 
    public void setValue(Date value) {
-      setRawStringVaule(Long.toString(value.getTime()));
+      setRawStringValue(Long.toString(value.getTime()));
    }
 
    public Date getValue() {
-      return new Date(Long.parseLong(getRawStringVaule()));
+      return new Date(Long.parseLong(getRawStringValue()));
    }
 
    /**
