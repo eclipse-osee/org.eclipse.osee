@@ -75,8 +75,9 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          tda.relate(RelationSide.TeamMember_Member, user);
       }
 
-      if (usesVersions) tda.setSoleStringAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(),
-            "yes");
+      if (usesVersions) {
+         tda.setSoleBooleanAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
+      }
       tda.persist(true);
 
       Artifact parentTeamDefinition = parentTeamDef;
