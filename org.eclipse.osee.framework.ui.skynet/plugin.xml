@@ -567,15 +567,6 @@
 		<DatabaseTask classname="org.eclipse.osee.framework.ui.skynet.dbinit.AddCommonBranch">
          </DatabaseTask>
 	</extension>
-	<extension
-       point="org.eclipse.ui.preferencePages">
-    <page
-          category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
-          class="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
-          id="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
-          name="Http Server">
-    </page>
- </extension>
  <extension
        point="org.eclipse.osee.framework.skynet.core.TemplateProvider">
     <TemplateProvider
@@ -595,15 +586,6 @@
     <Operation
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateArtifactTypeImage">
     </Operation>
- </extension>
- <extension
-       point="org.eclipse.ui.preferencePages">
-    <page
-          category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
-          class="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
-          id="org.eclipse.osee.framework.ui.skynet.preferences.HttpServerPreferences"
-          name="Http Server">
-    </page>
  </extension>
 	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.ArtifactSearchView">
