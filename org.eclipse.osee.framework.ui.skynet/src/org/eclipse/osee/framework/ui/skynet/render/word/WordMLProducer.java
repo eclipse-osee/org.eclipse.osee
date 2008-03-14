@@ -233,7 +233,7 @@ public class WordMLProducer {
     * @throws SQLException
     * @throws IllegalStateException
     */
-   protected void setPageLayout(Artifact artifact) throws IOException, IllegalStateException, SQLException {
+   public void setPageLayout(Artifact artifact) throws IOException, IllegalStateException, SQLException {
       String pageTypeValue = artifact.getSoleXAttributeValue("Page Type");
       boolean landscape = (pageTypeValue != null && pageTypeValue.equals("Landscape"));
 
