@@ -785,7 +785,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       TransactionId minOverTransaction;
       TransactionId maxUnderTransaction;
       for (Artifact artifact : newAndModArts) {
-         artifactNameDescriptorCache.cache(artifact.getArtId(), artifact.getDescriptiveName(), artifact.getDescriptor());
+         artifactNameDescriptorCache.cache(artifact.getArtId(), artifact.getDescriptiveName(), artifact.getArtifactType());
 
          minOverTransaction = artIdToMinOver.get(artifact.getArtId());
          maxUnderTransaction = artIdToMaxUnder.get(artifact.getArtId());
@@ -884,7 +884,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             Artifact artifact = artifactManager.getArtifactFromId(artId, transactionId);
 
             if (artifactNameDescriptorCache != null) artifactNameDescriptorCache.cache(artId,
-                  artifact.getDescriptiveName(), artifact.getDescriptor());
+                  artifact.getDescriptiveName(), artifact.getArtifactType());
 
             return new ArtifactChange(OUTGOING, modType, artifact, baseParentTransactionId, headParentTransactionId,
                   fromTransactionId, fromTransactionId, toTransactionId, set.getInt("gamma_id"));

@@ -154,7 +154,7 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public Image getArtifactImage() throws IllegalArgumentException, SQLException {
-      return getArtifact().getDescriptor().getImage(getChangeType(),
+      return getArtifact().getArtifactType().getImage(getChangeType(),
             TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
    }
 

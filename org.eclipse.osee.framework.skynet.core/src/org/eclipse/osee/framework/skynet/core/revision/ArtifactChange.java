@@ -98,7 +98,7 @@ public class ArtifactChange extends RevisionChange {
     * @param fromTransactionId TODO
     */
    public ArtifactChange(ChangeType changeType, ModificationType modtype, Artifact artifact, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId baselineTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, int gammaId) {
-      this(changeType, modtype, artifact.getDescriptiveName(), artifact.getDescriptor(), artifact,
+      this(changeType, modtype, artifact.getDescriptiveName(), artifact.getArtifactType(), artifact,
             baseParentTransactionId, headParentTransactionId, baselineTransactionId, fromTransactionId,
             toTransactionId, artifact.getArtId(), gammaId, null);
    }

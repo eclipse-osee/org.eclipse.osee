@@ -484,7 +484,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     */
    public boolean isAttributeTypeValid(String attributeName) throws SQLException {
       Collection<DynamicAttributeDescriptor> attributeTypes =
-            configurationManager.getAttributeTypesFromArtifactType(getArtifactTypeName(), branch);
+            configurationManager.getAttributeTypesFromArtifactType(artifactTypeName, branch);
       for (DynamicAttributeDescriptor attributeType : attributeTypes) {
          if (attributeType.getName().equals(attributeName)) {
             return true;
@@ -497,12 +497,15 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return getAttributeManager(attributeTypeName).getAttributes();
    }
 
+   public Collection<DynamicAttributeDescriptor> getAttributeTypes() throws SQLException{
+      return configurationManager.getAttributeTypesFromArtifactType(artifactTypeName, branch);
+   }
+   
    public <T> Collection<Attribute<T>> getAttributes(DynamicAttributeDescriptor attributeType) throws SQLException {
       return getAttributeManager(attributeType).getAttributes();
    }
 
-   // TODO: make this method private
-   public <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws IllegalStateException, SQLException {
+   private <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws IllegalStateException, SQLException {
       return getSoleAttribute(getAttributeManager(attributeTypeName));
    }
 
@@ -559,11 +562,12 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @return
     * @throws IllegalStateException
     */
-   public int getSoleIntegerAttributeValue(String attributeTypeName) throws IllegalStateException {
+ public int getSoleIntegerAttributeValue(String attributeTypeName) throws IllegalStateException {
       Integer value = getSoleXAttributeValueHideException(attributeTypeName);
       if (value == null) return 0;
       return value;
    }
+
 
    /**
     * @param attributeName
@@ -1167,7 +1171,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    /**
     * @return Returns the descriptor.
     */
-   public ArtifactSubtypeDescriptor getDescriptor() {
+   public ArtifactSubtypeDescriptor getArtifactType() {
       return descriptor;
    }
 
@@ -1333,8 +1337,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       try {
          // Need another way to create artifacts
          clonedArtifact =
-               getFactory().getNewArtifact(getGuid(), getHumanReadableId(), getDescriptor().getName(), getBranch());
-         clonedArtifact.setDescriptor(getDescriptor());
+               getFactory().getNewArtifact(getGuid(), getHumanReadableId(), getArtifactType().getName(), getBranch());
+         clonedArtifact.setDescriptor(getArtifactType());
          clonedArtifact.setPersistenceMemo(new ArtifactPersistenceMemo(
                TransactionIdManager.getInstance().getEditableTransactionId(getBranch()), getArtId(),
                getPersistenceMemo().getGammaId()));
@@ -1503,7 +1507,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
             "Can't perform attribute initialization on artifacts with loaded attributes");
 
       Collection<DynamicAttributeDescriptor> attributeTypeDescriptors =
-            configurationManager.getAttributeTypesFromArtifactType(getDescriptor(), branch);
+            configurationManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
       Collection<DynamicAttributeManager> attributes =
             new ArrayList<DynamicAttributeManager>(attributeTypeDescriptors.size());
 

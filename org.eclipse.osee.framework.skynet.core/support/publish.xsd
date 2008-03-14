@@ -28,6 +28,9 @@
     			</simpleType>
     		</element>
     		<element name="Editable" type="EditableType"></element>
+    		<element name="ParagraphWrap" type="string" maxOccurs="1"
+    			minOccurs="0">
+    		</element>
     	</sequence>
     </complexType>
 

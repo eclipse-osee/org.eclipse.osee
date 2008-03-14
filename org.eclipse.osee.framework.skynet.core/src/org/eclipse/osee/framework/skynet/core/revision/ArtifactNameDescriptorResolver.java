@@ -43,6 +43,6 @@ public class ArtifactNameDescriptorResolver implements IArtifactNameDescriptorRe
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }
-      return new Pair<String, ArtifactSubtypeDescriptor>(artifact.getDescriptiveName(), artifact.getDescriptor());
+      return new Pair<String, ArtifactSubtypeDescriptor>(artifact.getDescriptiveName(), artifact.getArtifactType());
    }
 }

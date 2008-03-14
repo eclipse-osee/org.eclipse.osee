@@ -767,7 +767,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       DynamicAttributeManager attributeManager;
 
       Collection<DynamicAttributeDescriptor> attributeTypeDescriptors =
-            configurationPersistenceManager.getAttributeTypesFromArtifactType(artifact.getDescriptor(),
+            configurationPersistenceManager.getAttributeTypesFromArtifactType(artifact.getArtifactType(),
                   artifact.getBranch());
       for (DynamicAttributeDescriptor attributeType : attributeTypeDescriptors) {
          attributeManager = attributeType.createAttributeManager(artifact, false);
@@ -894,7 +894,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       for (Artifact artifact : artifacts) {
          for (DynamicAttributeDescriptor attributeType : configurationPersistenceManager.getAttributeTypesFromArtifactType(
-               artifact.getDescriptor(), artifact.getBranch())) {
+               artifact.getArtifactType(), artifact.getBranch())) {
             attributeManager = attributeType.createAttributeManager(artifact, false);
             attributeManager.setupForInitialization(false);
             typeHash.put(artifact.getArtId(), attributeType.getAttrTypeId(), attributeManager);
@@ -1157,7 +1157,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     */
    public void purgeArtifact(final Artifact artifact) throws SQLException {
       artifact.checkDeleted();
-      SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ModType.PrePurge, this));
+
       purgeArtifact(artifact.getArtId());
 
       System.out.println("number of children:" + artifact.getChildren().size());
