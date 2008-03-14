@@ -146,7 +146,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       if (page == mainPage && mainPage.getReuseArtifactRoot() != null) {
          try {
             ConfigurationPersistenceManager manager = ConfigurationPersistenceManager.getInstance();
-            ArtifactSubtypeDescriptor rootDescriptor = mainPage.getReuseArtifactRoot().getDescriptor();
+            ArtifactSubtypeDescriptor rootDescriptor = mainPage.getReuseArtifactRoot().getArtifactType();
             ArtifactSubtypeDescriptor importDescriptor = mainPage.getSelectedType();
 
             HashSet<DynamicAttributeDescriptor> rootAttributes =

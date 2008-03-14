@@ -27,7 +27,7 @@ public class ArtifactModel {
    }
 
    public ArtifactModel(Artifact artifact) {
-      this(true, artifact, artifact.getDescriptiveName(), artifact.getDescriptor(), "");
+      this(true, artifact, artifact.getDescriptiveName(), artifact.getArtifactType(), "");
    }
 
    private ArtifactModel(boolean artifactFound, Artifact artifact, String name, ArtifactSubtypeDescriptor descriptor, String rationale) {

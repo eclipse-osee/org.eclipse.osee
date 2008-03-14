@@ -45,8 +45,8 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
       if (part instanceof ArtifactEditor) {
          ArtifactEditor artifactEditor = (ArtifactEditor) part;
          Artifact artifact = artifactEditor.getEditorInput().getArtifact();
-         typeStatusItem.setText(artifact.getDescriptor().getName());
-         typeStatusItem.setImage(artifact.getDescriptor().getImage());
+         typeStatusItem.setText(artifact.getArtifactType().getName());
+         typeStatusItem.setImage(artifact.getArtifactType().getImage());
          showInExplorerAction.setArtifact(artifact);
 
          artifactEditor.getRelationsComposite().getTreeViewer().addSelectionChangedListener(

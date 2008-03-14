@@ -381,7 +381,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       boolean isRelatable = false;
 
       for (IRelationLinkDescriptor relationDescriptor : RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(
-            artifact.getDescriptor(), artifact.getBranch())) {
+            artifact.getArtifactType(), artifact.getBranch())) {
          MenuItem mItem = new MenuItem(newMenu, SWT.PUSH);
          mItem.setData(relationDescriptor);
          mItem.setText(relationDescriptor.getName());

@@ -46,7 +46,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          return RELATION_IMAGE;
       } else if (element instanceof IRelationLink && columnIndex == 0) {
          IRelationLink link = (IRelationLink) element;
-         return (link.getArtifactA() == artifact) ? link.getArtifactB().getDescriptor().getImage() : link.getArtifactA().getDescriptor().getImage();
+         return (link.getArtifactA() == artifact) ? link.getArtifactB().getArtifactType().getImage() : link.getArtifactA().getArtifactType().getImage();
       }
       return null;
    }
