@@ -1,0 +1,158 @@
+/*
+ * Created on Mar 6, 2008
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.framework.ui.skynet.render.word.template;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
+
+/**
+ * @author b1528444
+ */
+public class ArtifactProcessing implements ITemplateTask {
+
+   private List<ITemplateTask> innerTasks;
+   private boolean outlining;
+   private boolean recurseChildren;
+   private RelationSide outlineRelation;
+   private String headingAttributeName;
+   private String outlineNumber;
+   private String cleanedText;
+   private String artifactSetName;
+
+   private static final Matcher outlineElementsMatcher =
+         Pattern.compile("<((\\w+:)?(Outline))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher internalOutlineElementsMatcher =
+         Pattern.compile("<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+
+   /**
+    * @param innerTasks
+    * @param artifactSection
+    * @param elementType 
+    */
+   public ArtifactProcessing(List<ITemplateTask> innerTasks, String artifactSection, String elementType) {
+      this.innerTasks = innerTasks;
+      extractInformation(artifactSection, elementType);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#isTypeNameWildcard()
+    */
+   @Override
+   public boolean isTypeNameWildcard() {
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateTask#process(org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.util.List)
+    */
+   @Override
+   public void process(WordMLProducer wordMl, Artifact artifact, List<ITemplateAttributeHandler> handlers) throws SQLException, Exception {
+
+   }
+   private static final Matcher setNameMatcher =
+      Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   
+ 
+   
+   /**
+    * @return
+    */
+   public List<ITemplateTask> getTasks() {
+      return innerTasks;
+   }
+
+   private void extractInformation(String artifactElement, String type) {
+      if(type.equals("Artifact")){
+         setNameMatcher.reset(artifactElement);
+         setNameMatcher.find();
+         artifactSetName = WordUtil.textOnly(setNameMatcher
+               .group(2));
+         artifactElement = setNameMatcher.replaceAll("");
+      }
+      outlineElementsMatcher.reset(artifactElement);
+
+      if (outlineElementsMatcher.find()) {
+         internalOutlineElementsMatcher.reset(outlineElementsMatcher.group(4));
+         outlining = true;
+         recurseChildren = false;
+         outlineRelation = RelationSide.DEFAULT_HIERARCHICAL__CHILD;
+
+         while (internalOutlineElementsMatcher.find()) {
+            String elementType = internalOutlineElementsMatcher.group(3);
+            String value = WordUtil.textOnly(internalOutlineElementsMatcher.group(4));
+
+            if (elementType.equals("HeadingAttribute")) {
+               headingAttributeName = value;
+            } else if (elementType.equals("RecurseChildren")) {
+               recurseChildren = Boolean.parseBoolean(value);
+            } else if (elementType.equals("Number")) {
+               outlineNumber = value;
+            }
+         }
+      } else {
+         outlining = false;
+         recurseChildren = false;
+         outlineRelation = null;
+         headingAttributeName = null;
+      }
+      cleanedText = outlineElementsMatcher.replaceAll("");
+   }
+
+   /**
+    * @return the innerTasks
+    */
+   public List<ITemplateTask> getInnerTasks() {
+      return innerTasks;
+   }
+
+   /**
+    * @return the outlining
+    */
+   public boolean isOutlining() {
+      return outlining;
+   }
+
+   /**
+    * @return the recurseChildren
+    */
+   public boolean isRecurseChildren() {
+      return recurseChildren;
+   }
+
+   /**
+    * @return the outlineRelation
+    */
+   public RelationSide getOutlineRelation() {
+      return outlineRelation;
+   }
+
+   /**
+    * @return the headingAttributeName
+    */
+   public String getHeadingAttributeName() {
+      return headingAttributeName;
+   }
+
+   /**
+    * @return the outlineNumber
+    */
+   public String getOutlineNumber() {
+      return outlineNumber;
+   }
+
+   public String getText(){
+      return this.cleanedText;
+   }
+   
+}
