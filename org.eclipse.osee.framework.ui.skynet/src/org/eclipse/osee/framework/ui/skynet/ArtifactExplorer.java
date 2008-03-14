@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -168,10 +167,10 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    private MenuItem renameArtifactMenuItem;
    private NeedArtifactMenuListener needArtifactListener;
    private NeedProjectMenuListener needProjectListener;
-   private Tree myTree; 
-   private TreeEditor myTreeEditor; 
-   private Text myTextBeingRenamed; 
-   final Color myYellowColor = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW); 
+   private Tree myTree;
+   private TreeEditor myTreeEditor;
+   private Text myTextBeingRenamed;
+   final Color myYellowColor = Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW);
    private Action showArtIds;
    private Action showArtType;
    private Action newArtifactExplorer;
@@ -367,10 +366,10 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createAccessControlMenuItem(popupMenu);
       treeViewer.getTree().setMenu(popupMenu);
-      myTreeEditor = new TreeEditor(myTree); 
-      myTreeEditor.horizontalAlignment = SWT.LEFT; 
-      myTreeEditor.grabHorizontal = true; 
-      myTreeEditor.minimumWidth = 50; 
+      myTreeEditor = new TreeEditor(myTree);
+      myTreeEditor.horizontalAlignment = SWT.LEFT;
+      myTreeEditor.grabHorizontal = true;
+      myTreeEditor.minimumWidth = 50;
 
    }
 
@@ -527,7 +526,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    protected void createAttributesAction() {
       try {
          attributesAction = new ShowAttributeAction(treeViewer, SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
-         attributesAction.addToView(this, SkynetViews.loadAttrTypesFromPreferenceStore(
+         attributesAction.addToView(this);
+         attributesAction.setValidAttributeTypes(SkynetViews.loadAttrTypesFromPreferenceStore(
                SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF, branchManager.getDefaultBranch()));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
@@ -690,7 +690,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          }
       });
    }
-   
+
    private void handleRenameArtifactSelectionEvent(SelectionEvent mySelectionEvent) {
       // Clean up any previous editor control
       Control oldEditor = myTreeEditor.getEditor();

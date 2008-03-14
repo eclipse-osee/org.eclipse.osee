@@ -26,6 +26,7 @@ public class ShowAttributeAction extends Action {
    private AttributeCheckListDialog attributeDialog;
    private final StructuredViewer viewer;
    private String preferenceKey;
+   private ViewPart viewPart;
 
    public ShowAttributeAction(StructuredViewer viewer, String preferenceKey) {
       super("Show Attributes", SkynetGuiPlugin.getInstance().getImageDescriptor("filter.gif"));
@@ -46,13 +47,9 @@ public class ShowAttributeAction extends Action {
    }
 
    public void addToView(ViewPart viewPart) {
-      addToView(viewPart, null);
-   }
-
-   public void addToView(ViewPart viewPart, Collection<DynamicAttributeDescriptor> attrTypes) {
+      this.viewPart = viewPart;
       IMenuManager toolbarManager = viewPart.getViewSite().getActionBars().getMenuManager();
       toolbarManager.add(this);
-      attributeDialog = new AttributeCheckListDialog(viewPart.getSite().getShell(), attrTypes, preferenceKey);
    }
 
    public String getSelectedAttributeData(Artifact artifact) throws Exception {
@@ -65,5 +62,9 @@ public class ShowAttributeAction extends Action {
 
    public Collection<DynamicAttributeDescriptor> getSelectedAttributes() {
       return attributeDialog.getSelectedAttributes();
+   }
+
+   public void setValidAttributeTypes(Collection<DynamicAttributeDescriptor> attrTypes) {
+      attributeDialog = new AttributeCheckListDialog(viewPart.getSite().getShell(), attrTypes, preferenceKey);
    }
 }

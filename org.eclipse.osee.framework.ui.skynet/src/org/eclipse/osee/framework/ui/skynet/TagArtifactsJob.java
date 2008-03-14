@@ -16,13 +16,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
-import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuListener;
-import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu.GlobalMenuItem;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -32,34 +27,15 @@ public class TagArtifactsJob extends Job {
 
    private static final TagManager tagManager = TagManager.getInstance();
    private Collection<Artifact> artifacts;
-   private final GlobalMenu globalMenu;
-
-   public TagArtifactsJob(Collection<Artifact> artifacts, GlobalMenu globalMenu) {
-      super("Tag Artifacts");
-      this.artifacts = artifacts;
-      this.globalMenu = globalMenu;
-   }
 
    public TagArtifactsJob(Collection<Artifact> artifacts) {
-      this(artifacts, null);
+      super("Tag Artifacts");
+      this.artifacts = artifacts;
    }
 
    @Override
    protected IStatus run(IProgressMonitor monitor) {
       monitor.beginTask("Tag Artifacts", artifacts.size());
-      if (globalMenu != null) {
-         try {
-            for (GlobalMenuListener listener : globalMenu.getGlobalMenuListeners()) {
-               Result result = listener.actioning(GlobalMenuItem.TagArtifacts, artifacts);
-               if (result.isFalse()) {
-                  result.popup();
-                  return new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, Status.OK, result.getText(), null);
-               }
-            }
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         }
-      }
       for (Artifact artifact : artifacts) {
          monitor.subTask(artifact.getDescriptiveName());
          try {
@@ -74,16 +50,6 @@ public class TagArtifactsJob extends Job {
             return Status.CANCEL_STATUS;
          }
       }
-      if (globalMenu != null) {
-         try {
-            for (GlobalMenuListener listener : globalMenu.getGlobalMenuListeners()) {
-               listener.actioned(GlobalMenuItem.TagArtifacts, artifacts);
-            }
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         }
-      }
-
       monitor.done();
 
       return Status.OK_STATUS;

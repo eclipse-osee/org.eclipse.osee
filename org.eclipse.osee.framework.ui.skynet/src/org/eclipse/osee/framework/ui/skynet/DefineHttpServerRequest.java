@@ -93,7 +93,7 @@ public class DefineHttpServerRequest implements IHttpServerRequest {
                AHTML.simplePage(artifact.getDescriptiveName() + " has been opened in OSEE on branch " + branch + "<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
          httpResponse.getPrintStream().println(html);
       } catch (Exception ex) {
-         httpResponse.outputStandardError(400, "Exception handling request ");
+         httpResponse.outputStandardError(400, "Exception handling request", ex);
       }
    }
 

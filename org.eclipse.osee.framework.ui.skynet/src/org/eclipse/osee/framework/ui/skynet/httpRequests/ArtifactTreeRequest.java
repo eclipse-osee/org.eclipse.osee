@@ -93,7 +93,7 @@ public class ArtifactTreeRequest implements IHttpServerRequest {
          doc.setXmlStandalone(true);
          httpResponse.getPrintStream().println(Jaxp.xmlToString(doc, new OutputFormat(doc, "UTF-8", true)));
       } catch (Exception ex) {
-         httpResponse.outputStandardError(400, "Exception handling request");
+         httpResponse.outputStandardError(400, "Exception handling request", ex);
       }
    }
 

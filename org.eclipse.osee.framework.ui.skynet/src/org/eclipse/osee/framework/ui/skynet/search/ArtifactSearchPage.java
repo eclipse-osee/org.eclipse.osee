@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -194,11 +196,15 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       relationSideList.setLabelProvider(new SearchLabelProvider());
       relationSideList.setSorter(new SearchSorter());
 
-      for (IRelationLinkDescriptor linkDescriptor : RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(
-            branchManager.getDefaultBranch())) {
-         relationTypeList.add(linkDescriptor.getName());
-         relationTypeList.setData(linkDescriptor.getName(), linkDescriptor);
-      }
+      try {
+		for (IRelationLinkDescriptor linkDescriptor : RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(
+		        branchManager.getDefaultBranch())) {
+		     relationTypeList.add(linkDescriptor.getName());
+		     relationTypeList.setData(linkDescriptor.getName(), linkDescriptor);
+		  }
+		} catch (SQLException ex) {
+			OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+		}
 
       relationTypeList.getCombo().addSelectionListener(new SelectionAdapter() {
          @Override

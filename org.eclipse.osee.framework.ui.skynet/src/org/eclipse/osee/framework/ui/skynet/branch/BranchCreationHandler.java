@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -69,21 +70,22 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
       Object backingData = ((JobbedNode) selection.getFirstElement()).getBackingData();
 
       final TransactionId parentTransactionId;
-      if (backingData instanceof Branch) {
-         Branch branch = (Branch) backingData;
-         parentTransactionId = transactionIdManager.getEditableTransactionId(branch);
-      } else if (backingData instanceof TransactionData) {
-         try {
-            parentTransactionId = ((TransactionData) backingData).getTransactionId();
-         } catch (SQLException ex) {
-            OSEELog.logException(getClass(), ex, true);
-            return null;
-         }
-      } else {
-         throw new IllegalStateException(
-               "Backing data for the jobbed node in the branchview was not of the expected type");
+      try {
+	      if (backingData instanceof Branch) {
+	         Branch branch = (Branch) backingData;
+	         parentTransactionId = transactionIdManager.getEditableTransactionId(branch);
+	      } else if (backingData instanceof TransactionData) {
+	         
+	            parentTransactionId = ((TransactionData) backingData).getTransactionId();
+	         
+	      } else {
+	         throw new IllegalStateException(
+	               "Backing data for the jobbed node in the branchview was not of the expected type");
+	      }
+      } catch (SQLException ex) {
+          OSEELog.logException(getClass(), ex, true);
+          return null;
       }
-
       final EntryDialog dialog =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Branch", null, "Enter the name of the new Branch",
                   MessageDialog.INFORMATION, new String[] {"OK", "Cancel"}, 0);

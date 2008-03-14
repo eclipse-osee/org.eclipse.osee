@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Jeff C. Phillips
@@ -34,13 +38,14 @@ public class RelationTypeContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Branch) {
          ArrayList<Object> descriptors = new ArrayList<Object>();
-
-         for (IRelationLinkDescriptor descriptor : relationPersistenceManager.getIRelationLinkDescriptors((Branch) parentElement)) {
-            descriptors.add((Object) descriptor);
-         }
-
-         return descriptors.toArray();
-
+         try {
+			for (IRelationLinkDescriptor descriptor : relationPersistenceManager.getIRelationLinkDescriptors((Branch) parentElement)) {
+			    descriptors.add((Object) descriptor);
+			 }
+			 return descriptors.toArray();
+		} catch (SQLException ex) {
+			OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+		}
       }
       return null;
    }

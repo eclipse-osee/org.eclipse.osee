@@ -72,8 +72,8 @@ public class HttpImageRequest implements IHttpServerRequest {
          ArtifactSnapshotManager.getInstance().getImageSnapshot(namespace, key, imageKey,
                httpResponse.getOutputStream());
       } catch (Exception ex) {
-         httpResponse.outputStandardError(404, String.format("Error with image [%s::%s]. %s", namespace, key, imageKey,
-               ex.toString()));
+         httpResponse.outputStandardError(404, String.format("Error with image [%s::%s - %s].", namespace, key,
+               imageKey), ex);
       }
    }
 }

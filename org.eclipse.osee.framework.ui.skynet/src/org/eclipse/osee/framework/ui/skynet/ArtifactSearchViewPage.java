@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -308,6 +309,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    /**
     * @param menuManager
     * @param viewer
+ * @throws SQLException 
     */
    private void createReportHandler(MenuManager menuManager, TableViewer viewer) {
       MenuManager reportManager = new MenuManager("Run Reports");
@@ -501,10 +503,14 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    private void createRelationMatrixReportMenuItem(MenuManager menuManager, MenuManager reportManager) {
       MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
       RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
-      for (IRelationLinkDescriptor descriptor : relationManager.getIRelationLinkDescriptors(branchManager.getDefaultBranch())) {
-         final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
-         createReportJobCommand(menuManager, matrixManager, reportJob);
-      }
+      try {
+		for (IRelationLinkDescriptor descriptor : relationManager.getIRelationLinkDescriptors(branchManager.getDefaultBranch())) {
+		     final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
+		     createReportJobCommand(menuManager, matrixManager, reportJob);
+		  }
+	} catch (SQLException ex) {
+		OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+	}
       reportManager.add(matrixManager);
    }
 

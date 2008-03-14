@@ -380,6 +380,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       Menu newMenu = new Menu(parentMenu.getShell(), SWT.DROP_DOWN);
       boolean isRelatable = false;
 
+      try {
       for (IRelationLinkDescriptor relationDescriptor : RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(
             artifact.getArtifactType(), artifact.getBranch())) {
          MenuItem mItem = new MenuItem(newMenu, SWT.PUSH);
@@ -388,6 +389,9 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          mItem.addListener(SWT.Selection, new CreateNewRelationSelectedListener(parentMenu.getShell()));
 
          isRelatable = true;
+		  }
+	} catch (SQLException ex) {
+		OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
       if (isRelatable) {

@@ -116,7 +116,7 @@ public class ArtifactRequest implements IHttpServerRequest {
          }
       } catch (Exception ex) {
          logger.log(Level.WARNING, String.format("Get Artifact Error: [%s]", httpRequest.getParametersAsString()), ex);
-         httpResponse.outputStandardError(400, "Exception handling request");
+         httpResponse.outputStandardError(400, "Exception handling request", ex);
       }
    }
 
