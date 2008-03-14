@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -616,7 +617,7 @@ public class WordTemplateProcessor {
       return elementName;
    }
 
-   private static void writeXMLMetaDataWrapper(WordMLProducer wordMl, String name, String guid, String attributeId, String contentString) {
+   public static void writeXMLMetaDataWrapper(WordMLProducer wordMl, String name, String guid, String attributeId, String contentString) {
       try {
          wordMl.addWordMl("<ns0:" + name + " xmlns:ns0=\"" + WordRenderer.ARTIFACT_SCHEMA + "\" " + guid + " " + attributeId + ">");
          wordMl.addWordMl(contentString);
