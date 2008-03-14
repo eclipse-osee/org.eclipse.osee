@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.VALID_RELATIONS_TABLE;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -127,24 +129,27 @@ public class RelationLinkTypeCache {
 
    /**
     * @return Returns all of the descriptors.
+ * @throws SQLException 
     */
-   public Collection<IRelationLinkDescriptor> getAllDescriptors(Branch branch) {
+   public Collection<IRelationLinkDescriptor> getAllDescriptors(Branch branch) throws SQLException {
       TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
       return getAllDescriptors(transactionId);
    }
 
    /**
     * @return Returns the descriptor with a particular name, null if it does not exist.
+ * @throws SQLException 
     */
-   public IRelationLinkDescriptor getDescriptor(String name, Branch branch) {
+   public IRelationLinkDescriptor getDescriptor(String name, Branch branch) throws SQLException {
       TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
       return getDescriptor(name, transactionId);
    }
 
    /**
     * @return Returns the descriptor with a particular name, null if it does not exist.
+ * @throws SQLException 
     */
-   public IRelationLinkDescriptor getDescriptor(int id, Branch branch) {
+   public IRelationLinkDescriptor getDescriptor(int id, Branch branch) throws SQLException {
       TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
       return getDescriptor(id, transactionId);
    }
