@@ -11,24 +11,15 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.CONFLICTING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.INCOMING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.OUTGOING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
 import java.io.InputStream;
 import java.sql.SQLException;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.change.ChangeIcons;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
-import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
 import org.eclipse.swt.graphics.Image;
 
 /**
