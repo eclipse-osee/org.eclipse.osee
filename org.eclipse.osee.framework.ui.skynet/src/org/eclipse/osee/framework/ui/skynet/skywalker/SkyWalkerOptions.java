@@ -298,7 +298,7 @@ public class SkyWalkerOptions {
 
    public boolean isValidArtifactType(Artifact artifact) {
       if (!isFilterEnabled()) return true;
-      return getSelectedArtTypes().contains(artifact.getDescriptor());
+      return getSelectedArtTypes().contains(artifact.getArtifactType());
    }
 
    public boolean isValidRelationLinkGroup(RelationLinkGroup linkGroup) {
