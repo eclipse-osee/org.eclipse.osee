@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
@@ -65,7 +66,7 @@ public class LinkManager {
       return links;
    }
 
-   public Set<IRelationLink> getLinks(IRelationEnumeration side) {
+   public Set<IRelationLink> getLinks(IRelationEnumeration side) throws SQLException {
       return getGroup(side).getGroupSide();
    }
 
@@ -82,7 +83,7 @@ public class LinkManager {
       return ensureRelationGroupExists(descriptor, descriptor.isSideAName(sideName));
    }
 
-   public RelationLinkGroup ensureRelationGroupExists(IRelationEnumeration relationSide) {
+   public RelationLinkGroup ensureRelationGroupExists(IRelationEnumeration relationSide) throws SQLException {
       return ensureRelationGroupExists(relationSide.getDescriptor(getOwningArtifact().getBranch()),
             relationSide.isSideA());
    }
@@ -228,7 +229,7 @@ public class LinkManager {
       }
    }
 
-   public Artifact getSoleArtifact(RelationSide side) {
+   public Artifact getSoleArtifact(RelationSide side) throws SQLException {
       checkReleased();
       Collection<Artifact> artifacts = getArtifacts(side);
       int size = artifacts.size();
@@ -253,7 +254,7 @@ public class LinkManager {
       return "empty";
    }
 
-   public RelationLinkGroup getGroup(IRelationEnumeration side) {
+   public RelationLinkGroup getGroup(IRelationEnumeration side) throws SQLException {
       IRelationLinkDescriptor descriptor = side.getDescriptor(getOwningArtifact().getBranch());
       RelationLinkGroup toReturn = null;
       if (descriptor != null) {
@@ -305,10 +306,11 @@ public class LinkManager {
       else if (artifact == link.getArtifactB())
          return link.getArtifactA();
       else
-         throw new IllegalArgumentException("The link does not pertain to this link manager");
+         throw new IllegalArgumentException(
+               "The link " + link.getPersistenceMemo() + " does not pertain to this link manager for artifact " + artifact.getGuid() + ". Artifact a: " + (link.getArtifactA() == null ? null : link.getArtifactA().getGuid()) + " Artifact b: " + (link.getArtifactB() == null ? null : link.getArtifactB().getGuid()));
    }
 
-   public boolean hasArtifacts(IRelationEnumeration side) {
+   public boolean hasArtifacts(IRelationEnumeration side) throws SQLException {
       checkReleased();
       if (side == null) throw new IllegalArgumentException("side can not be null");
 
@@ -322,7 +324,7 @@ public class LinkManager {
       return false;
    }
 
-   public Set<Artifact> getArtifacts(IRelationEnumeration side) {
+   public Set<Artifact> getArtifacts(IRelationEnumeration side) throws SQLException {
       checkReleased();
       if (side == null) throw new IllegalArgumentException("side can not be null");
 

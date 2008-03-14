@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
@@ -399,8 +401,9 @@ public class RelationPersistenceManager implements PersistenceManager {
     * Get a listing of all the available descriptors.
     * 
     * @return A collection of all the available descriptors.
+ * @throws SQLException 
     */
-   public Collection<IRelationLinkDescriptor> getIRelationLinkDescriptors(Branch branch) {
+   public Collection<IRelationLinkDescriptor> getIRelationLinkDescriptors(Branch branch) throws SQLException {
       // The collection from the cache is backed by the map, so guard access to the internal data
       TreeSet<IRelationLinkDescriptor> sortedSet = new TreeSet<IRelationLinkDescriptor>();
       for (IRelationLinkDescriptor linkDescriptor : relationLinkDescriptorCache.getAllDescriptors(branch)) {
@@ -414,8 +417,9 @@ public class RelationPersistenceManager implements PersistenceManager {
     * Get a listing of all the available descriptors that are applicable to an Artifact Type.
     * 
     * @return A collection of all the available descriptors.
+ * @throws SQLException 
     */
-   public Collection<IRelationLinkDescriptor> getIRelationLinkDescriptors(ArtifactSubtypeDescriptor artifactDescriptor, Branch branch) {
+   public Collection<IRelationLinkDescriptor> getIRelationLinkDescriptors(ArtifactSubtypeDescriptor artifactDescriptor, Branch branch) throws SQLException {
       Collection<IRelationLinkDescriptor> linkDescriptors = new LinkedList<IRelationLinkDescriptor>();
       for (IRelationLinkDescriptor linkDescriptor : getIRelationLinkDescriptors(branch)) {
          if (linkDescriptor.canLinkType(artifactDescriptor.getArtTypeId())) {
@@ -432,8 +436,9 @@ public class RelationPersistenceManager implements PersistenceManager {
     * 
     * @param name The type name of the relation link.
     * @return The corresponding descriptor, null if one does not exist.
+ * @throws SQLException 
     */
-   public IRelationLinkDescriptor getIRelationLinkDescriptor(String name, Branch branch) {
+   public IRelationLinkDescriptor getIRelationLinkDescriptor(String name, Branch branch) throws SQLException {
       return relationLinkDescriptorCache.getDescriptor(name, branch);
    }
 

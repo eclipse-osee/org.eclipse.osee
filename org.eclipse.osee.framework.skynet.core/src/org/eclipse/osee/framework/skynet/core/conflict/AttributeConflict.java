@@ -35,9 +35,6 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public class AttributeConflict extends Conflict {
-   private static final SkynetActivator plugin = SkynetActivator.getInstance();
-   private static final String BASE_IMAGE_STRING = "molecule";
-   private static boolean imagesInitialized;
    private String sourceValue;
    private String destValue;
    private InputStream sourceContent;
@@ -84,40 +81,8 @@ public class AttributeConflict extends Conflict {
    }
 
    public Image getImage() {
-      return getImage(getChangeType(), TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
-   }
-
-   protected static Image getImage(ChangeType changeType, ModificationType modType) {
-      checkImageRegistry();
-      return plugin.getImage(BASE_IMAGE_STRING + changeType + modType);
-   }
-
-   private static void checkImageRegistry() {
-      if (!imagesInitialized) {
-         imagesInitialized = true;
-
-         ImageDescriptor outNew = SkynetActivator.getInstance().getImageDescriptor("out_new.gif");
-         ImageDescriptor outChange = SkynetActivator.getInstance().getImageDescriptor("out_change.gif");
-         ImageDescriptor outDeleted = SkynetActivator.getInstance().getImageDescriptor("out_delete.gif");
-         ImageDescriptor incNew = SkynetActivator.getInstance().getImageDescriptor("inc_new.gif");
-         ImageDescriptor incChange = SkynetActivator.getInstance().getImageDescriptor("inc_change.gif");
-         ImageDescriptor incDeleted = SkynetActivator.getInstance().getImageDescriptor("inc_delete.gif");
-         ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change.gif");
-         ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete.gif");
-         ImageDescriptor conNew = SkynetActivator.getInstance().getImageDescriptor("con_new.gif");
-
-         Image baseImage = plugin.getImage(BASE_IMAGE_STRING + ".gif");
-
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + DELETE, new OverlayImage(baseImage, outDeleted));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + CHANGE, new OverlayImage(baseImage, outChange));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + NEW, new OverlayImage(baseImage, outNew));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + DELETE, new OverlayImage(baseImage, incDeleted));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + CHANGE, new OverlayImage(baseImage, incChange));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + NEW, new OverlayImage(baseImage, incNew));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + DELETE, new OverlayImage(baseImage, conDeleted));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + CHANGE, new OverlayImage(baseImage, conChange));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + NEW, new OverlayImage(baseImage, conNew));
-      }
+      return ChangeIcons.getImage(getChangeType(),
+            TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
    }
 
    /* (non-Javadoc)

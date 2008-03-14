@@ -191,7 +191,7 @@ public class SkynetTypesImporter implements RowProcessor {
             Class.forName(basePackageName + "." + attrBaseType, true, Attribute.class.getClassLoader()).asSubclass(
                   Attribute.class);
 
-      configurationManager.makePersistent(baseAttributeClass, null, attributeName, defaultValue, validityXml,
+      configurationManager.makePersistent(baseAttributeClass, "", attributeName, defaultValue, validityXml,
             minOccurrence, maxOccurrence, tipText);
    }
 

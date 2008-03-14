@@ -43,7 +43,6 @@ public class HttpResourceRequest implements IHttpMethod {
 
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
       String urlRequest = httpRequest.getUrlRequest();
-      System.out.println("Http Resource Requested:" + urlRequest);
       URL url = findResource(urlRequest);
       if (url != null) {
          sendResource(url, httpResponse.getOutputStream());

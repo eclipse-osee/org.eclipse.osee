@@ -69,7 +69,7 @@ public class HttpRequestHandler implements Runnable {
          try {
             processRequest(httpRequest, httpResponse);
          } catch (Exception ex) {
-            httpResponse.outputStandardError(400, "Exception in processing Request " + ex.getLocalizedMessage());
+            httpResponse.outputStandardError(400, "Exception in processing Request ", ex);
          }
       } finally {
          // Close streams and socket.

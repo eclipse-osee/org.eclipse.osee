@@ -341,6 +341,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     * 
     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
     */
+   @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
 

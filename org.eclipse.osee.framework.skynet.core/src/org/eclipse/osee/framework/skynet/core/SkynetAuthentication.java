@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.jdk.core.util.OseeUser;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
 import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication;
 import org.eclipse.osee.framework.ui.plugin.security.UserCredentials.UserCredentialEnum;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -44,7 +46,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SkynetAuthentication implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetAuthentication.class);
-
+   private static final boolean createLoginUserIfNecessary = false;
    private OseeAuthentication oseeAuthentication;
    private ArtifactPersistenceManager artifactManager;
    private BranchPersistenceManager branchManager;
@@ -144,10 +146,16 @@ public class SkynetAuthentication implements PersistenceManager {
                         try {
                            currentUser = getUserByIdWithError(userId);
                         } catch (IllegalArgumentException ex1) {
-                           currentUser =
-                                 createUser(oseeAuthentication.getCredentials().getField(UserCredentialEnum.Name),
-                                       "spawnedBySkynet", userId, true);
-                           persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
+                           if (createLoginUserIfNecessary) {
+                              currentUser =
+                                    createUser(oseeAuthentication.getCredentials().getField(UserCredentialEnum.Name),
+                                          "spawnedBySkynet", userId, true);
+                              persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
+                           } else {
+                              AWorkbench.popup("Logged in as Guest",
+                                    "If you do not expect to be logged in as Guest, please report this immediately.");
+                              currentUser = getUser(UserEnum.Guest);
+                           }
                         }
                      }
                   }

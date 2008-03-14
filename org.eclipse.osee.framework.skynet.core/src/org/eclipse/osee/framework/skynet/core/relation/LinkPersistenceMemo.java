@@ -51,4 +51,12 @@ public class LinkPersistenceMemo implements PersistenceMemo {
    public void setGammaId(int gammaId) {
       this.gammaId = gammaId;
    }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   @Override
+   public String toString() {
+      return "LinkId:" + linkId + " GammaId: " + gammaId;
+   }
 }

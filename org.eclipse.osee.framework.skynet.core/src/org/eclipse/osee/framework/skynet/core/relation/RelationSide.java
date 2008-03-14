@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import java.sql.SQLException;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 public enum RelationSide implements IRelationEnumeration {
@@ -112,7 +114,7 @@ public enum RelationSide implements IRelationEnumeration {
       RelationPersistenceManager.sideHash.put(typeName, sideA, this);
    }
 
-   public static IRelationEnumeration getRelationSide(String relationType, String relationSide, Branch branch) {
+   public static IRelationEnumeration getRelationSide(String relationType, String relationSide, Branch branch) throws SQLException {
       IRelationLinkDescriptor desc = relationManager.getIRelationLinkDescriptor(relationType, branch);
       boolean isSideA = (desc.getSideAName().equals(relationSide));
       return RelationPersistenceManager.sideHash.get(relationType, isSideA);
@@ -125,7 +127,7 @@ public enum RelationSide implements IRelationEnumeration {
       return sideA;
    }
 
-   public String getSideName(Branch branch) {
+   public String getSideName(Branch branch) throws SQLException {
       if (isSideA())
          return getDescriptor(branch).getSideAName();
       else
@@ -139,7 +141,7 @@ public enum RelationSide implements IRelationEnumeration {
       return typeName;
    }
 
-   public IRelationLinkDescriptor getDescriptor(Branch branch) {
+   public IRelationLinkDescriptor getDescriptor(Branch branch) throws SQLException {
       return relationManager.getIRelationLinkDescriptor(typeName, branch);
    }
 

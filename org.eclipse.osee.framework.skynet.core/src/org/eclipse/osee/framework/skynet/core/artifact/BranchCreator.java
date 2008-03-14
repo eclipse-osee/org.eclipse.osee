@@ -179,9 +179,9 @@ public class BranchCreator implements PersistenceManager {
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                                                                                                                                                                                                                            * parent
-                                                                                                                                                                                                                                                                                                                            * transactoin_id
-                                                                                                                                                                                                                                                                                                                            */, Integer /* gamma_id */>(
+                                                                                                                                                                                                                                                                                                                                       * parent
+                                                                                                                                                                                                                                                                                                                                       * transactoin_id
+                                                                                                                                                                                                                                                                                                                                       */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -313,7 +313,7 @@ public class BranchCreator implements PersistenceManager {
                      TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER, artifactType.getArtTypeId(),
                      SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                      parentTransactionId.getBranch().getBranchId());
-         logger.log(Level.INFO, "inserted " + count + " " + artifactType.getName() + " artifacts");
+         if (count > 0) logger.log(Level.INFO, "inserted " + count + " " + artifactType.getName() + " artifacts");
       }
 
       int count =
@@ -321,7 +321,7 @@ public class BranchCreator implements PersistenceManager {
                   newTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
                   newTransactionNumber, SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(),
                   SQL3DataType.INTEGER, parentTransactionId.getBranch().getBranchId());
-      logger.log(Level.INFO, "inserted " + count + " attributes");
+      if (count > 0) logger.log(Level.INFO, "inserted " + count + " attributes");
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_LINK_GAMMAS, SQL3DataType.INTEGER,
@@ -329,7 +329,7 @@ public class BranchCreator implements PersistenceManager {
                   newTransactionNumber, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
                   parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                   parentTransactionId.getBranch().getBranchId());
-      logger.log(Level.INFO, "inserted " + count + " relations");
+      if (count > 0) logger.log(Level.INFO, "inserted " + count + " relations");
    }
 
    private void insertGamms(int newTransactionNumber, TransactionId parentTransactionId, Table table1, Table table2, String... columns) throws SQLException {

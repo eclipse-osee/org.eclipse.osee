@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
 import java.util.Date;
 import java.util.HashMap;
@@ -177,6 +179,14 @@ public class HttpResponse {
          outputStream.write(buf, 0, count);
       }
       inputStream.close();
+   }
+
+   public void outputStandardError(int errorCode, String message, Throwable ex) {
+      StringWriter sw = new StringWriter();
+      if (ex != null) {
+         ex.printStackTrace(new PrintWriter(sw));
+      }
+      outputStandardError(errorCode, message + sw.toString());
    }
 
    public void outputStandardError(int errorCode, String reason) {

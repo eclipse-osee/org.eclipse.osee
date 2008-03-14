@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -22,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
+
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -72,8 +74,9 @@ public class TransactionIdManager {
     * Returns the transaction corresponding to current head of the given branch
     * 
     * @param branch
+ * @throws SQLException 
     */
-   public TransactionId getEditableTransactionId(Branch branch) {
+   public TransactionId getEditableTransactionId(Branch branch) throws SQLException {
       TransactionId transactionId = editableTransactionCache.get(branch);
 
       if (transactionId == null) {
@@ -153,8 +156,9 @@ public class TransactionIdManager {
     * 
     * @param newTransactionNumber
     * @param branch
+ * @throws SQLException 
     */
-   public void resetEditableTransactionId(Integer newTransactionNumber, Branch branch) {
+   public void resetEditableTransactionId(Integer newTransactionNumber, Branch branch) throws SQLException {
       TransactionId oldEditabletransactionId = getEditableTransactionId(branch);
       oldEditabletransactionId.setHead(false);
       editableTransactionCache.remove(oldEditabletransactionId);
@@ -168,8 +172,9 @@ public class TransactionIdManager {
     * 
     * @param newTransactionNumber
     * @param branch
+ * @throws SQLException 
     */
-   public synchronized TransactionId updateEditableTransactionId(Integer newTransactionNumber, Branch branch) {
+   public synchronized TransactionId updateEditableTransactionId(Integer newTransactionNumber, Branch branch) throws SQLException {
       TransactionId transactionId = getEditableTransactionId(branch);
 
       if (transactionId == null) {
@@ -182,7 +187,7 @@ public class TransactionIdManager {
       return transactionId;
    }
 
-   private int getlatestTransactionForBranch(Branch branch) {
+   private int getlatestTransactionForBranch(Branch branch) throws SQLException {
       int transactionNumber = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -192,8 +197,6 @@ public class TransactionIdManager {
          } else {
             throw new IllegalArgumentException(NO_TRANSACTIONS_MESSAGE + branch);
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       } finally {
          DbUtil.close(chStmt);
       }
@@ -253,7 +256,7 @@ public class TransactionIdManager {
       return new TransactionSwitch(editableTransactionId, priorEditableTransactionId);
    }
 
-   private TransactionId updateEditableFromDb(Branch branch) {
+   private TransactionId updateEditableFromDb(Branch branch) throws SQLException {
       int transactionNumber = getlatestTransactionForBranch(branch);
       return updateEditableTransactionId(transactionNumber, branch);
    }

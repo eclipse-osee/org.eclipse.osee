@@ -10,16 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.CONFLICTING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.INCOMING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.OUTGOING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
 import java.io.InputStream;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
+import org.eclipse.osee.framework.skynet.core.change.ChangeIcons;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
 import org.eclipse.swt.graphics.Image;
@@ -29,9 +22,6 @@ import org.eclipse.swt.graphics.Image;
  */
 public class AttributeChange extends RevisionChange implements IAttributeChange {
    private static final long serialVersionUID = -8403712077455896863L;
-   private static final SkynetActivator plugin = SkynetActivator.getInstance();
-   private static final String BASE_IMAGE_STRING = "molecule";
-   private static boolean imagesInitialized;
 
    private int attrId;
    private String name;
@@ -109,40 +99,7 @@ public class AttributeChange extends RevisionChange implements IAttributeChange 
     */
    @Override
    public Image getImage() {
-      return getImage(getChangeType(), getModType());
-   }
-
-   protected static Image getImage(ChangeType changeType, ModificationType modType) {
-      checkImageRegistry();
-      return plugin.getImage(BASE_IMAGE_STRING + changeType + modType);
-   }
-
-   private static void checkImageRegistry() {
-      if (!imagesInitialized) {
-         imagesInitialized = true;
-
-         ImageDescriptor outNew = SkynetActivator.getInstance().getImageDescriptor("out_new.gif");
-         ImageDescriptor outChange = SkynetActivator.getInstance().getImageDescriptor("out_change.gif");
-         ImageDescriptor outDeleted = SkynetActivator.getInstance().getImageDescriptor("out_delete.gif");
-         ImageDescriptor incNew = SkynetActivator.getInstance().getImageDescriptor("inc_new.gif");
-         ImageDescriptor incChange = SkynetActivator.getInstance().getImageDescriptor("inc_change.gif");
-         ImageDescriptor incDeleted = SkynetActivator.getInstance().getImageDescriptor("inc_delete.gif");
-         ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change.gif");
-         ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete.gif");
-         ImageDescriptor conNew = SkynetActivator.getInstance().getImageDescriptor("con_new.gif");
-
-         Image baseImage = plugin.getImage(BASE_IMAGE_STRING + ".gif");
-
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + DELETE, new OverlayImage(baseImage, outDeleted));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + CHANGE, new OverlayImage(baseImage, outChange));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + NEW, new OverlayImage(baseImage, outNew));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + DELETE, new OverlayImage(baseImage, incDeleted));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + CHANGE, new OverlayImage(baseImage, incChange));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + NEW, new OverlayImage(baseImage, incNew));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + DELETE, new OverlayImage(baseImage, conDeleted));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + CHANGE, new OverlayImage(baseImage, conChange));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + NEW, new OverlayImage(baseImage, conNew));
-      }
+      return ChangeIcons.getImage(getChangeType(), getModType());
    }
 
    /**

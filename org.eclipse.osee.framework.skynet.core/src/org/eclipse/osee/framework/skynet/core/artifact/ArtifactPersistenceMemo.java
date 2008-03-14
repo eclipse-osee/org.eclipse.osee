@@ -70,4 +70,12 @@ public class ArtifactPersistenceMemo implements PersistenceMemo {
    public void setGammaId(int gamma) {
       this.gammaId = gamma;
    }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   @Override
+   public String toString() {
+      return "Art id: " + artId + " Gamma id: " + gammaId;
+   }
 }

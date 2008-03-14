@@ -187,7 +187,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             new ExtensionDefinedObjects<IAttributeSaveListener>(
                   "org.eclipse.osee.framework.skynet.core.AttributeSaveListener", "AttributeSaveListener", "classname");
       if (!plugin.isAutoTaggingEnabled()) {
-         System.err.println("tagging on all artifacts being skipped");
+         logger.log(Level.INFO, "Tagging on Artifacts is DISABLED");
       }
    }
 

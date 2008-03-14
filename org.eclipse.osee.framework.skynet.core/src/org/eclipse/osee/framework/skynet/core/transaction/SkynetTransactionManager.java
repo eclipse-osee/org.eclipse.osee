@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.ThreadKeyLocal;
@@ -195,7 +196,11 @@ public class SkynetTransactionManager {
                   transaction.kickEvents();
                }
             } else {
-               transactionIdManager.updateEditableTransactionId(revertTransactionNumber, branch);
+               try {
+				transactionIdManager.updateEditableTransactionId(revertTransactionNumber, branch);
+				} catch (SQLException ex) {
+					logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+				}
             }
             transactions.clear();
          }

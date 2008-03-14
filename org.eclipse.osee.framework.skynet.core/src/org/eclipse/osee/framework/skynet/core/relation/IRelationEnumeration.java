@@ -10,16 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import java.sql.SQLException;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 public interface IRelationEnumeration {
    boolean isSideA();
 
-   String getSideName(Branch branch);
+   String getSideName(Branch branch) throws SQLException;
 
    public String getTypeName();
 
-   public IRelationLinkDescriptor getDescriptor(Branch branch);
+   public IRelationLinkDescriptor getDescriptor(Branch branch) throws SQLException;
 
    public boolean isThisType(IRelationLink link);
 }
