@@ -29,9 +29,8 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class SkynetDefaultBranchContributionItem extends SkynetContributionItem {
    private static final String ID = "skynet.defaultBranch";
-   private static final SkynetGuiPlugin skynetGuiPlugin = SkynetGuiPlugin.getInstance();
    private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
-   private static final Image ENABLED = skynetGuiPlugin.getImage("branch.gif");
+   private static final Image ENABLED = SkynetGuiPlugin.getInstance().getImage("branch.gif");
    private static final Image DISABLED = ENABLED;
    private static final String ENABLED_TOOLTIP = "The default branch that Skynet is working from.";
    private static final String DISABLED_TOOLTIP = ENABLED_TOOLTIP;
