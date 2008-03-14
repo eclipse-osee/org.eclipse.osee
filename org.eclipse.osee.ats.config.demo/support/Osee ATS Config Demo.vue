@@ -280,7 +280,7 @@
     <child ID="436" label="SAW Code" x="-330.94748" y="0.9427185"
         width="151.1" height="31.349998" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Lead:Jason Baker%nl;Lead:Steven Joan%nl;AtsTeamUsesVersions%nl;StaticId:saw.code%nl;WorkflowId:demo_code_workflow</notes>
+        <notes>Lead:Joe Smith%nl;AtsTeamUsesVersions%nl;StaticId:saw.code%nl;WorkflowId:demo_code_workflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -291,7 +291,7 @@
     <child ID="437" label="SAW Requirements" x="-184.53745"
         y="43.577698" width="211.14" height="34.690002"
         strokeWidth="1.0" autoSized="true" xsi:type="node">
-        <notes>Lead:Bill Michael%nl;Lead:Terry Stevens%nl;AtsTeamUsesVersions%nl;StaticId:saw.requirements%nl;WorkflowId:demo_req_workflow</notes>
+        <notes>Lead:Joe Smith%nl;AtsTeamUsesVersions%nl;StaticId:saw.requirements%nl;WorkflowId:demo_req_workflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -301,7 +301,7 @@
     </child>
     <child ID="438" label="SAW Test" x="-53.537445" y="-46.42227"
         width="144.54" height="31.09" strokeWidth="1.0" autoSized="true" xsi:type="node">
-        <notes>Lead:Kay Jones%nl;Lead:Michael Baker%nl;AtsTeamUsesVersions%nl;StaticId:saw.test%nl;WorkflowId:demo_test_workflow</notes>
+        <notes>Lead:Kay Jones%nl;AtsTeamUsesVersions%nl;StaticId:saw.test%nl;WorkflowId:demo_test_workflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -372,7 +372,7 @@
     <child ID="447" label="SAW SW" x="-196.42252" y="143.6177"
         width="137.97998" height="30.830002" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Full Name:SAW Software%nl;Lead:Kay Jason%nl;Member:Maichael Johnson%nl;Member:Janice Jay%nl;Member:Steven Kohn%nl;WorkflowId:osee_ats_defaultTeam_workflow%nl;AtsTeamUsesVersions%nl;StaticId:saw.teamDefHoldingVersions</notes>
+        <notes>Full Name:SAW Software%nl;Lead:Kay Jason%nl;Member:Maichael Johnson%nl;%nl;Member:Steven Kohn%nl;WorkflowId:osee_ats_defaultTeam_workflow%nl;AtsTeamUsesVersions%nl;StaticId:saw.teamDefHoldingVersions</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -626,7 +626,7 @@
     <child ID="497" label="CIS Code" x="157.1625" y="-90.110245"
         width="151.1" height="31.349998" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Lead:Reed Michael%nl;Lead:John Kay%nl;Member:Jason Michael%nl;AtsTeamUsesVersions%nl;StaticId:cis.code%nl;WorkflowId:demo_code_workflow</notes>
+        <notes>Lead:Jason Michael%nl;Member:Jason Michael%nl;AtsTeamUsesVersions%nl;StaticId:cis.code%nl;WorkflowId:demo_code_workflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -637,7 +637,7 @@
     <child ID="498" label="CIS Requirements" x="229.57254"
         y="-46.475266" width="211.14" height="34.690002"
         strokeWidth="1.0" autoSized="true" xsi:type="node">
-        <notes>Lead:Bill Michael%nl;Lead:Terry Stevens%nl;WorkflowId:demo_req_workflow%nl;AtsTeamUsesVersions%nl;StaticId:cis.requirements</notes>
+        <notes>Lead:Joe Smith%nl;Lead:Joe Smith%nl;WorkflowId:demo_req_workflow%nl;AtsTeamUsesVersions%nl;StaticId:cis.requirements</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -647,7 +647,7 @@
     </child>
     <child ID="499" label="CIS Test" x="377.5725" y="2.524765"
         width="144.54" height="31.09" strokeWidth="1.0" autoSized="true" xsi:type="node">
-        <notes>Lead:Kay Jones%nl;Lead:Michael Baker%nl;AtsTeamUsesVersions%nl;StaticId:cis.test%nl;WorkflowId:demo_test_workflow</notes>
+        <notes>Lead:Kay Jones%nl;AtsTeamUsesVersions%nl;StaticId:cis.test%nl;WorkflowId:demo_test_workflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -694,7 +694,7 @@
     <child ID="503" label="CIS SW" x="332.14752" y="139.45474"
         width="137.97998" height="30.830002" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Full Name:CIS Software%nl;Lead:Kay Jason%nl;Member:Maichael Johnson%nl;Member:Janice Jay%nl;Member:Steven Kohn%nl;WorkflowId:osee_ats_defaultTeam_workflow%nl;AtsTeamUsesVersions%nl;StaticId:cis.teamDefHoldingVersions</notes>
+        <notes>Full Name:CIS Software%nl;Lead:Kay Jason%nl;Member:Maichael Johnson%nl;%nl;Member:Steven Kohn%nl;WorkflowId:osee_ats_defaultTeam_workflow%nl;AtsTeamUsesVersions%nl;StaticId:cis.teamDefHoldingVersions</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -893,7 +893,7 @@
     <child ID="523" label="SAW HW" x="-429.85248" y="91.45474"
         width="137.97998" height="30.830002" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Full Name:SAW Hardware%nl;Lead:Reed Michael%nl;Member:John Kay%nl;Member:Jason Michael%nl;AtsTeamUsesVersions%nl;WorkflowId:osee_ats_defaultTeam_workflow</notes>
+        <notes>Full Name:SAW Hardware%nl;Lead:Jason Michael%nl;Member:Jason Michael%nl;AtsTeamUsesVersions%nl;WorkflowId:osee_ats_defaultTeam_workflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -1434,7 +1434,7 @@
     <child ID="577" label="CIS SW Design" x="479.98022"
         y="-42.738968" width="191.45999" height="33.910004"
         strokeWidth="1.0" autoSized="true" xsi:type="node">
-        <notes>Lead:Kay Jones%nl;Lead:Michael Baker%nl;AtsTeamUsesVersions%nl;StaticId:cis.sw_design%nl;WorkflowId:demo_sw_design_workflow</notes>
+        <notes>Lead:Kay Jones%nl;AtsTeamUsesVersions%nl;StaticId:cis.sw_design%nl;WorkflowId:demo_sw_design_workflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -1445,7 +1445,7 @@
     <child ID="578" label="SAW SW Design" x="3.5202637"
         y="95.85103" width="191.45999" height="33.910004"
         strokeWidth="1.0" autoSized="true" xsi:type="node">
-        <notes>Lead:Kay Jones%nl;Lead:Michael Baker%nl;AtsTeamUsesVersions%nl;StaticId:saw.sw_design%nl;WorkflowId:demo_sw_design_workflow</notes>
+        <notes>Lead:Kay Jones%nl;AtsTeamUsesVersions%nl;StaticId:saw.sw_design%nl;WorkflowId:demo_sw_design_workflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>

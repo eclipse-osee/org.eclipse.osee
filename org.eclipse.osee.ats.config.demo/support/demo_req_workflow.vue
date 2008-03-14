@@ -1,12 +1,11 @@
 <!-- Do Not Remove: VUE mapping @version(1.1) jar:file:/C:/Program%20Files/vue/VUE.jar!/tufts/vue/resources/lw_mapping_1_1.xml -->
-<!-- Do Not Remove: Saved date Mon Aug 20 09:27:48 MST 2007 by b0727536 on platform Windows XP 5.1 in JVM 1.5.0_07-b03 -->
+<!-- Do Not Remove: Saved date Thu Mar 06 20:33:22 MST 2008 by b0727536 on platform Windows XP 5.1 in JVM 1.5.0_07-b03 -->
 <!-- Do Not Remove: Saving version @(#)VUE: built October 17 2006 at 0400 by vue on Linux 2.4.21-37.EL i386 JVM 1.5.0_06-b05 -->
 <?xml version="1.0" encoding="US-ASCII"?>
 <LW-MAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="none" ID="0"
-    label="apache_blk3_req_workflow(AAABER+9XJsA8O7WZU9eQQ) Mon Aug 20 09;27;28 MST 2007.xml"
-    x="105.31415" y="79.0" width="367.2859" height="376.0"
-    strokeWidth="0.0" autoSized="false">
+    label="demo_req_workflow.vue" x="105.31415" y="79.0"
+    width="367.2859" height="376.0" strokeWidth="0.0" autoSized="false">
     <fillColor>#ffffff</fillColor>
     <strokeColor>#404040</strokeColor>
     <font>SansSerif-plain-14</font>
@@ -71,7 +70,7 @@
     </child>
     <child ID="12" label="Implement" x="206.17499" y="350.5"
         width="104.2" height="29.0" strokeWidth="1.0" autoSized="false" xsi:type="node">
-        <notes>&lt;WorkPage pageId="apache.blk3.req.Implement" atsRequireStateHourSpentPrompt="true"&gt;%nl;%nl;&lt;XWidget displayName="Resolution Override" storageName="ats.Resolution Override" xwidgetType="XCheckBoxDam" horizontalLabel="true"/&gt;%nl;%nl;&lt;XWidget displayName="Resolution" storageName="ats.Resolution" xwidgetType="XTextDam" fill="Vertically"/&gt;%nl;%nl;&lt;XOrRequired xWidgets="ats.Resolution Override;ats.Resolution"/&gt;%nl;%nl;&lt;/WorkPage&gt;</notes>
+        <notes>&lt;WorkPage pageId="apache.blk3.req.Implement" atsRequireStateHourSpentPrompt="true" atsAllowCreateBranch="true" atsAllowCommitBranch="true"&gt;%nl;%nl;&lt;XWidget displayName="Resolution Override" storageName="ats.Resolution Override" xwidgetType="XCheckBoxDam" horizontalLabel="true"/&gt;%nl;%nl;&lt;XWidget displayName="Resolution" storageName="ats.Resolution" xwidgetType="XTextDam" fill="Vertically"/&gt;%nl;%nl;&lt;XOrRequired xWidgets="ats.Resolution Override;ats.Resolution"/&gt;%nl;%nl;&lt;/WorkPage&gt;</notes>
         <fillColor>#7f9cc6</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>

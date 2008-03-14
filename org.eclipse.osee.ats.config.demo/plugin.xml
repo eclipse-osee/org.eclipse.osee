@@ -2,6 +2,12 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
+         point="org.eclipse.osee.framework.plugin.core.OseeConfigFile">
+      <OseeConfig
+            file="support/oseeSiteConfig.xml">
+      </OseeConfig>
+   </extension>
+   <extension
          point="org.eclipse.osee.framework.database.AddDbInitChoice">
       <dbInitChoice
             classname="org.eclipse.osee.ats.config.demo.config.AddDbInitDemoChoice">
@@ -96,6 +102,14 @@
       <ExcelFile
             file="support/Demo_Program_Skynet_Types.xml">
       </ExcelFile>
+   </extension>
+   <extension
+         id="DemoAuthentication"
+         name="DemoAuthentication"
+         point="org.eclipse.osee.framework.ui.plugin.AuthenticationProvider">
+      <AuthenticationClass
+            classname="org.eclipse.osee.ats.config.demo.util.DemoAuthentication">
+      </AuthenticationClass>
    </extension>
 
 </plugin>

@@ -44,7 +44,9 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
          return DemoTestTeamWorkflowArtifact.ARTIFACT_NAME;
       else if (teamDef.getDescriptiveName().contains("Requirements"))
          return DemoReqTeamWorkflowArtifact.ARTIFACT_NAME;
-      else if (teamDef.getDescriptiveName().contains("Design")) return TeamWorkFlowArtifact.ARTIFACT_NAME;
+      else if (teamDef.getDescriptiveName().contains("SAW HW"))
+         return DemoReqTeamWorkflowArtifact.ARTIFACT_NAME;
+      else if (teamDef.getDescriptiveName().contains("Design") || teamDef.getDescriptiveName().contains("HW")) return TeamWorkFlowArtifact.ARTIFACT_NAME;
       throw new IllegalArgumentException("Unhandled teamDef => " + teamDef.getDescriptiveName());
    }
 

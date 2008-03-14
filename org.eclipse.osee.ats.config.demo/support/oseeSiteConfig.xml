@@ -1,0 +1,53 @@
+<OSEEConfig>
+<Developer/>
+	<Mode>Production</Mode>
+	<HttpServer address="http://osee.msc.az.boeing.com" port="8015" />
+	<ServiceLookup>
+		<Location>jini://sun800.msc.az.boeing.com</Location>
+		<Location>jini://sun801.msc.az.boeing.com</Location>
+		<Location>jini://sun402.msc.az.boeing.com</Location>
+		<Group>LBA_DEVELOPMENT</Group>	
+	</ServiceLookup>
+	<Logger>
+		<Name>com.sun.jini.thread.TaskManager</Name>
+		<Level>OFF</Level>
+	</Logger>
+	<Logger>
+		<Name>net.jini.discovery.LookupLocatorDiscovery</Name>
+		<Level>OFF</Level>
+	</Logger>
+	<Logger>
+		<Name>org.eclipse.osee.framework.plugin.core.server.ClassServer</Name>
+		<Level>OFF</Level>
+	</Logger>
+	<Logger>
+		<Name>com.sun.jini.reggie.RegistrarProxy</Name>
+		<Level>OFF</Level>
+	</Logger>
+
+	<DatabaseInfo id="postgresqlInfo">
+		<DatabaseHome key="#DBHOME#" />
+		<DatabaseName key="#DBNAME#" value="OSEE" />
+		<DatabaseType key="#TYPE#" value="postgresql" />
+		<Prefix key="#PREFIX#" value="jdbc:postgresql" />
+		<UserName key="#USERNAME#" value="osee" />
+		<Password key="#PASSWORD#" value="osee" />
+		<Host key="#HOST#" value="@AvailableDbServices.hostAddress" />
+		<Port key="#PORT#" value="@AvailableDbServices.port" />
+	</DatabaseInfo>
+
+	<ConnectionDescription id="postgresql">
+		<Driver>org.postgresql.Driver</Driver>
+		<Url>#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#</Url>		
+	</ConnectionDescription>
+
+	<AvailableDbServices>
+		<Server id="postgresqlLocalhost" dbInfo="postgresqlInfo"
+			hostAddress="localhost" port="5432"
+			connectsWith="postgresql" />
+	</AvailableDbServices>
+
+	<!-- This is here temporarily until we figure out how to tell the clients what to use -->
+	<!-- Need to specify which authentication provider to use -->
+	<AuthenticationProvider id="org.eclipse.osee.ats.config.demo.DemoAuthentication"/>
+</OSEEConfig>

@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.ats.config.ImportWorkflowAction;
 import org.eclipse.osee.ats.config.LoadAIsAndTeamsAction;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
@@ -49,6 +50,8 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
       // Creates Actionable Items and Teams
       // Teams are related to workflow by id specified in team object in VUE diagram
       (new LoadAIsAndTeamsAction(false, OseeAtsConfigDemoPlugin.PLUGIN_ID)).run();
+      // Link review and task workflows
+      AtsDatabaseConfig.linkHeadTeamDefinitionWithReviewsAndTaskWorkflowDiagrams();
       // Create initial version artifacts for Widget teams
       createVersionArtifacts();
       // Create SAW_Bld_1 branch
@@ -105,25 +108,13 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
             ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch, true);
       programRoot.addChild(sawProduct);
 
-      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
-      systemReq = descriptor.makeNewArtifact(programBranch);
-      systemReq.setDescriptiveName("System Requirements");
-      programRoot.addChild(systemReq);
-
-      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
-      Artifact subsystem = descriptor.makeNewArtifact(programBranch);
-      subsystem.setDescriptiveName("Subsystem Requirements");
-      programRoot.addChild(subsystem);
-
-      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
-      Artifact software = descriptor.makeNewArtifact(programBranch);
-      software.setDescriptiveName("Software Requirements");
-      programRoot.addChild(software);
-
-      descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
-      Artifact hardware = descriptor.makeNewArtifact(programBranch);
-      hardware.setDescriptiveName("Hardware Requirements");
-      programRoot.addChild(hardware);
+      for (String name : new String[] {"System Requirements", "Subsystem Requirements", "Software Requirements",
+            "Hardware Requirements", "Verification Tests", "Validation Tests", "Integration Tests"}) {
+         descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
+         systemReq = descriptor.makeNewArtifact(programBranch);
+         systemReq.setDescriptiveName(name);
+         programRoot.addChild(systemReq);
+      }
 
       programRoot.persist(true);
 

@@ -26,3 +26,29 @@ To create sample Actions written against XYZ configured items:
 This will create approx 38 sample Actions transitioned to different states and assigned
 to fictitious users.
 
+-----------------
+
+OSEE Demo Installer
+
+This installer will install the open source PostgreSQL (http://www.postgresql.org/) database, a demo version of the database and a copy of OSEE.  If you already have PostgreSQL or OSEE installed, it will un-install and re-install fresh.
+
+- Ensure you have Java 1.5.0 installed (http://java.sun.com/j2se/1.5.0/)
+- Download the installer zip to your harddrive
+- Double-click to open and then double-click the self-extracting jar
+- After un-packed, an OSEE Installer window will appear.  
+- Accept the installation directory or choose your own
+- If you already have PostGreSQL installed, it will be removed (NOTE: Windows will sometimes hang on the PostGreSQL un-install, simply kill and restart the installer and you should be ok
+- After a successful installation, you should have an OSEE icon on your desktop
+
+OSEE Demo Quickstart
+
+- During launch OSEE, you will want to sign in with the name "Terry Stevens" or "Jason Baker" and with "osee" entered in the password and domain.  This will run your instance of OSEE as that person.
+
+- After launch of OSEE, you will be in the Resource perspective
+- Select Open Perspective and select Define
+- The Artifact Explorer shows the requirements that have been imported and stored
+
+- Select Open Perspective and select ATS
+- Select "My World" in the ATS Navigator.  This shows all of the Actions (Change Requests) that are assigned to you
+
+A more detailed description of the Demo will be provided at http://www.eclipse.org/osee/
