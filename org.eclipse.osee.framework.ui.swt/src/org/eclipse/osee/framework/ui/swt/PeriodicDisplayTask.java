@@ -66,8 +66,10 @@ public abstract class PeriodicDisplayTask {
     * already in execution. This PeriodicDisplayTask can be started again.
     */
    final public synchronized void stop() {
-      display.timerExec(-1, task);
-      task = null;
+	   if (task != null) {
+		   display.timerExec(-1, task);
+		   task = null;
+	   }
    }
 
    /**
@@ -76,6 +78,9 @@ public abstract class PeriodicDisplayTask {
     * stopped then calling this method has no effect
     */
    final protected void schedule() {
+	   if (task == null) {
+		   throw new IllegalStateException("This task has not been started yet");
+	   }
       if (!display.isDisposed()) {
          display.timerExec(period, task);
       }
