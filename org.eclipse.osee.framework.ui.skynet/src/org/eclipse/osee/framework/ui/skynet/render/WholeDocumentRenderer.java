@@ -62,7 +62,7 @@ public class WholeDocumentRenderer extends FileRenderer {
     */
    @Override
    public InputStream getRenderInputStream(IProgressMonitor monitor, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception {
-      return null;
+      throw new UnsupportedOperationException();
    }
 
    /* (non-Javadoc)

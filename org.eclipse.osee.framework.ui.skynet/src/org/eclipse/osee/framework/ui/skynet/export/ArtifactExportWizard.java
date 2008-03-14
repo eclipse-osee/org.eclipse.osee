@@ -11,8 +11,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.export;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -30,7 +34,13 @@ public class ArtifactExportWizard extends Wizard implements IExportWizard {
     */
    @Override
    public boolean performFinish() {
-      return false;
+      try {
+         Jobs.startJob(new ArtifactExportJob(mainPage.getExportPath(), mainPage.getExportArtifacts()));
+      } catch (Exception ex) {
+         ErrorDialog.openError(getShell(), "Define Export Error", ex.getLocalizedMessage(), new Status(IStatus.ERROR,
+               "org.eclipse.osee.framework.jdk.core", IStatus.ERROR, ex.getLocalizedMessage(), ex));
+      }
+      return true;
    }
 
    /* (non-Javadoc)
@@ -38,6 +48,7 @@ public class ArtifactExportWizard extends Wizard implements IExportWizard {
     */
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
+      mainPage = new ArtifactExportPage(selection);
    }
 
    /* (non-Javadoc)
@@ -45,8 +56,6 @@ public class ArtifactExportWizard extends Wizard implements IExportWizard {
     */
    @Override
    public void addPages() {
-      mainPage = new ArtifactExportPage();
       addPage(mainPage);
    }
-
 }
