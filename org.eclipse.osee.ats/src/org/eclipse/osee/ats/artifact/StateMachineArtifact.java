@@ -226,7 +226,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
       } catch (SQLException ex) {
          // Do nothing
       }
-      return super.getDescriptor().getImage(subscribed, favorite, getMainAnnotationType(), metricsFromTasks);
+      return super.getArtifactType().getImage(subscribed, favorite, getMainAnnotationType(), metricsFromTasks);
    }
 
    public boolean isDefaultShowAllTasks() {
