@@ -37,9 +37,9 @@ public class OseeCodeVersion {
    public String get() {
       if (oseeVersion == null) {
          try {
-            if (PluginCoreActivator.getInstance().getBundle().getEntry("/OseeCodeVersion.txt") != null) {
+            if (PluginCoreActivator.getInstance().getBundle().getEntry("support/OseeCodeVersion.txt") != null) {
                InputStream is =
-                     PluginCoreActivator.getInstance().getBundle().getEntry("/OseeCodeVersion.txt").openStream();
+                     PluginCoreActivator.getInstance().getBundle().getEntry("support/OseeCodeVersion.txt").openStream();
                if (is != null) {
                   oseeVersion = Lib.inputStreamToString(is);
                   oseeVersion = oseeVersion.replace("0=", "");
