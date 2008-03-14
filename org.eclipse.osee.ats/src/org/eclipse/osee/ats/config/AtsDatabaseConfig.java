@@ -35,26 +35,26 @@ public class AtsDatabaseConfig extends DbInitializationTask {
       linkHeadTeamDefinitionWithReviewsAndTaskWorkflowDiagrams();
    }
 
-   private void linkHeadTeamDefinitionWithReviewsAndTaskWorkflowDiagrams() throws SQLException {
+   public static void linkHeadTeamDefinitionWithReviewsAndTaskWorkflowDiagrams() throws SQLException {
       TeamDefinitionArtifact teamDef = TeamDefinitionArtifact.getHeadTeamDefinition();
 
       // Relate task workflow
       Artifact taskWorkflow =
             (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.DEFAULT_TASK_WORKFLOW,
                   BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
-      teamDef.relate(RelationSide.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram, taskWorkflow);
+      teamDef.relate(RelationSide.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram, taskWorkflow, true);
 
       // Relate peer to Peer review
       Artifact peerWorkflow =
             (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.PEERTOPEER_REVIEW_WORKFLOW,
                   BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
-      teamDef.relate(RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram, peerWorkflow);
+      teamDef.relate(RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram, peerWorkflow, true);
 
       // Relate peer to Peer review
       Artifact decisionWorkflow =
             (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.DECISION_REVIEW_WORKFLOW,
                   BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
-      teamDef.relate(RelationSide.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram, decisionWorkflow);
+      teamDef.relate(RelationSide.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram, decisionWorkflow, true);
 
       teamDef.persist(true);
    }

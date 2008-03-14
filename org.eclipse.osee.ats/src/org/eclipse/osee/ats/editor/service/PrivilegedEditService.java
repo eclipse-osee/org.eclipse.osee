@@ -82,9 +82,9 @@ public class PrivilegedEditService extends WorkPageService {
                      String buttons[];
                      boolean iAmPrivileged = users.contains(SkynetAuthentication.getInstance().getAuthenticatedUser());
                      if (iAmPrivileged)
-                        buttons = new String[] {"OK", "Override and Edit", "Override and Edit All", "Cancel"};
+                        buttons = new String[] {"Override and Edit", "Cancel"};
                      else
-                        buttons = new String[] {"OK", "Cancel"};
+                        buttons = new String[] {"Cancel"};
                      MessageDialog ed =
                            new MessageDialog(
                                  Display.getCurrent().getActiveShell(),
@@ -93,12 +93,8 @@ public class PrivilegedEditService extends WorkPageService {
                                  "The following users have the ability to edit this " + smaMgr.getSma().getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),
                                  MessageDialog.QUESTION, buttons, 0);
                      int result = ed.open();
-                     if (iAmPrivileged) {
-                        if (result == 1)
-                           smaMgr.getEditor().setPriviledgedEditMode(SMAEditor.PriviledgedEditMode.CurrentState);
-                        else if (result == 2) smaMgr.getEditor().setPriviledgedEditMode(
-                              SMAEditor.PriviledgedEditMode.Global);
-                     }
+                     if (iAmPrivileged && result == 0) smaMgr.getEditor().setPriviledgedEditMode(
+                           SMAEditor.PriviledgedEditMode.Global);
                   }
 
                } catch (SQLException ex) {

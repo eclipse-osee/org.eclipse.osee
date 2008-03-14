@@ -50,7 +50,7 @@ public class NewActionPage2 extends WizardPage {
    @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
-      if (wizard.getInitialDescription() != null) ((XText) getXWidget("Description")).set(wizard.getInitialDescription());
+      if (wizard.getInitialDescription() != null && ((XText) getXWidget("Description")).get().equals("")) ((XText) getXWidget("Description")).set(wizard.getInitialDescription());
       if (wizard.isTTAction()) handlePopulateWithDebugInfo();
       wizard.createPage3IfNecessary();
       ((XText) getXWidget("Description")).getStyledText().setFocus();

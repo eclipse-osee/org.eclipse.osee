@@ -53,7 +53,7 @@ public class AtsBranchAccessHandler implements IEventReceiver {
             }
          }
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
+         // Do nothing
       }
    }
 
