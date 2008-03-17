@@ -210,7 +210,7 @@ public class BranchPersistenceManager implements PersistenceManager {
       return getBranches();
    }
 
-   public Branch getBranch(String branchName) throws SQLException {
+   public Branch getBranch(String branchName) throws IllegalArgumentException, SQLException {
       ensurePopulatedCache(false);
       for (Branch branch : branchCache.values()) {
          if (branch.getBranchName().equals(branchName)) {
