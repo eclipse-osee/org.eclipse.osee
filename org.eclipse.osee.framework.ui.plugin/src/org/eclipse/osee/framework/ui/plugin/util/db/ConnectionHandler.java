@@ -330,6 +330,33 @@ public final class ConnectionHandler {
       return runPreparedQuery(fetchSize, false, query, data);
    }
 
+   // This method is only for connections external to the OSEE default connection
+   public static ConnectionHandlerStatement runPreparedQuery(Connection connection, int fetchSize, String query, Object... data) throws SQLException {
+      printSql(query);
+      QueryRecord record = new QueryRecord(query, data);
+      PreparedStatement preparedStatement = null;
+
+      try {
+         preparedStatement = connection.prepareStatement(query);
+         preparedStatement.setFetchSize(fetchSize);
+         populateValuesForPreparedStatement(preparedStatement, data);
+         new StatementCloseWatcher(preparedStatement, ONE_MINUTE).start();
+
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         record.markStart();
+         chStmt.setRset(preparedStatement.executeQuery());
+         record.markEnd();
+         chStmt.setStatement(preparedStatement);
+         return chStmt;
+      } catch (SQLException ex) {
+         record.setSqlException(ex);
+         if (preparedStatement != null) {
+            preparedStatement.close();
+         }
+         throw ex;
+      }
+   }
+
    public static ConnectionHandlerStatement runPreparedQuery(int fetchSize, boolean overrideTranaction, String query, Object... data) throws SQLException {
       printSql(query);
       QueryRecord record = new QueryRecord(query, data);
