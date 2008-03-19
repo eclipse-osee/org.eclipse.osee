@@ -484,7 +484,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     */
    public boolean isAttributeTypeValid(String attributeName) throws SQLException {
       Collection<DynamicAttributeDescriptor> attributeTypes =
-            configurationManager.getAttributeTypesFromArtifactType(artifactTypeName, branch);
+            configurationManager.getAttributeTypesFromArtifactType(getArtifactTypeName(), branch);
       for (DynamicAttributeDescriptor attributeType : attributeTypes) {
          if (attributeType.getName().equals(attributeName)) {
             return true;
@@ -497,10 +497,10 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return getAttributeManager(attributeTypeName).getAttributes();
    }
 
-   public Collection<DynamicAttributeDescriptor> getAttributeTypes() throws SQLException{
-      return configurationManager.getAttributeTypesFromArtifactType(artifactTypeName, branch);
+   public Collection<DynamicAttributeDescriptor> getAttributeTypes() throws SQLException {
+      return configurationManager.getAttributeTypesFromArtifactType(getArtifactTypeName(), branch);
    }
-   
+
    public <T> Collection<Attribute<T>> getAttributes(DynamicAttributeDescriptor attributeType) throws SQLException {
       return getAttributeManager(attributeType).getAttributes();
    }
@@ -562,12 +562,11 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @return
     * @throws IllegalStateException
     */
- public int getSoleIntegerAttributeValue(String attributeTypeName) throws IllegalStateException {
+   public int getSoleIntegerAttributeValue(String attributeTypeName) throws IllegalStateException {
       Integer value = getSoleXAttributeValueHideException(attributeTypeName);
       if (value == null) return 0;
       return value;
    }
-
 
    /**
     * @param attributeName
