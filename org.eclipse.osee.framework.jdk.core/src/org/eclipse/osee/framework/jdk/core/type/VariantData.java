@@ -77,12 +77,15 @@ public class VariantData implements IVariantData {
       if (setting == null) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
-
       return new Long(setting).longValue();
    }
 
-   public Date getDate(String key) throws Exception {
-      return new Date(getLong(key));
+   public Date getDate(String key) throws IllegalArgumentException {
+      String setting = (String) storageData.get(key);
+      if (setting == null) {
+         throw new IllegalArgumentException(String.format(EXCEPTION_MESSAGE, key));
+      }
+      return new Date(new Long(setting).longValue());
    }
 
    public String getStreamAsString(String key) throws Exception {
@@ -132,11 +135,9 @@ public class VariantData implements IVariantData {
    }
 
    public void put(String key, Date date) {
-      long longDate = -1;
       if (date != null) {
-         longDate = date.getTime();
+         put(key, date.getTime());
       }
-      put(key, String.valueOf(longDate));
    }
 
    public void put(String key, String value) {
@@ -156,6 +157,17 @@ public class VariantData implements IVariantData {
    public String toString() {
       StringBuilder builder = new StringBuilder();
       builder.append(storageData.toString().replaceAll(",", ",\n"));
+      builder.append(storageArrays.toString().replaceAll(",", ",\n"));
+      for (String key : byteArrayData.keySet()) {
+         builder.append(key);
+         builder.append("=");
+         try {
+            builder.append(getStreamAsString(key));
+         } catch (Exception ex) {
+            builder.append("!!Error!!");
+         }
+         builder.append(",\n");
+      }
       return builder.toString();
    }
 }

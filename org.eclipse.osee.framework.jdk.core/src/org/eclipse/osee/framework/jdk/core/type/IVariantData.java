@@ -27,7 +27,7 @@ public interface IVariantData {
 
    public long getLong(String key) throws NumberFormatException;
 
-   public Date getDate(String key) throws Exception;
+   public Date getDate(String key) throws IllegalArgumentException;
 
    public String getStreamAsString(String key) throws Exception;
 
