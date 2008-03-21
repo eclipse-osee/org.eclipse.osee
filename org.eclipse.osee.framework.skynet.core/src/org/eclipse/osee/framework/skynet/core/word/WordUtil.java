@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -171,7 +172,11 @@ public class WordUtil {
 
    public static String textOnly(String string) {
       string = paragraphPattern.matcher(Xml.unescape(string)).replaceAll(" ");
-      return tagKiller.matcher(string).replaceAll("");
+      string = tagKiller.matcher(string).replaceAll("");
+      if (Strings.isValid(string) != false) {
+         string = string.trim();
+      }
+      return string;
    }
 
    public static boolean isHeadingStyle(String paragraphStyle) {
