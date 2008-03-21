@@ -62,10 +62,13 @@ public class ArtifactSnapshotFactory {
     * @throws UnsupportedEncodingException
     */
    public ArtifactSnapshot createSnapshot(Artifact artifact) throws UnsupportedEncodingException {
+      long start = System.currentTimeMillis();
       Pair<String, String> key = keyGenerator.getKeyPair(artifact);
       ArtifactSnapshot snapshotData = new ArtifactSnapshot(key.getKey(), key.getValue(), artifact);
       snapshotData.setRenderedData(getRenderedArtifactData(artifact));
       processImageLinks(snapshotData);
+      logger.log(Level.INFO, String.format("Artifact Snapshot Render Time: [%s] - for artifact: [%s, %s]",
+            System.currentTimeMillis() - start, artifact.getGuid(), artifact.getPersistenceMemo().getGammaId()));
       return snapshotData;
    }
 
