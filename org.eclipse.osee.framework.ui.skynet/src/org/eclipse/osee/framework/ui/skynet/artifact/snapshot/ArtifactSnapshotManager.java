@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.Platform;
@@ -46,12 +48,14 @@ public class ArtifactSnapshotManager {
    private ArtifactSnapshotFactory snapshotFactory;
    private KeyGenerator keyGenerator;
    private Map<String, ArtifactSnapshot> snapshotLocalCache;
+   private ExecutorService executorService;
 
    private ArtifactSnapshotManager() {
       this.snapshotLocalCache = Collections.synchronizedMap(new HashMap<String, ArtifactSnapshot>());
       this.snapshotFactory = ArtifactSnapshotFactory.getInstance();
       this.keyGenerator = snapshotFactory.getKeyGenerator();
       this.snapshotRemoteRepository = SnapshotPersistenceManager.getInstance();
+      this.executorService = Executors.newSingleThreadExecutor();
    }
 
    public static ArtifactSnapshotManager getInstance() {
@@ -71,14 +75,16 @@ public class ArtifactSnapshotManager {
     */
    public String getDataSnapshot(Artifact artifact, boolean forceUpdate) throws Exception {
       checkArtifact(artifact);
+      ArtifactSnapshot snapshot = null;
       if (forceUpdate == true) {
          try {
-            doSave(artifact);
+            snapshot = doSave(artifact);
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
          }
+      } else {
+         snapshot = getSnapshotForRenderRetrieval(artifact);
       }
-      ArtifactSnapshot snapshot = getSnapshotForRenderRetrieval(artifact);
       return snapshotFactory.toAbsoluteUrls(snapshot.getRenderedData());
    }
 
@@ -124,38 +130,28 @@ public class ArtifactSnapshotManager {
    }
 
    /**
-    * Determine whether a delete in the remote storage is needed.
-    * 
-    * @param snapshot to store
-    * @return <b>true</b> if deletion is needed, otherwise <b>false</b>
-    * @throws SQLException
-    */
-   private boolean isDeleteRequired(ArtifactSnapshot snapshot) throws SQLException {
-      boolean oneOrMoreExists = snapshotRemoteRepository.getKeys(snapshot.getNamespace()).size() > 0;
-      boolean snapshotIsNotOneOfThem =
-            snapshotRemoteRepository.getSnapshot(snapshot.getNamespace(), snapshot.getKey()) == null;
-      return oneOrMoreExists && snapshotIsNotOneOfThem;
-   }
-
-   /**
     * Create artifact snapshot and stores data into the snapshot remote repository
     * 
     * @param artifact to store into snapshot repository
     * @throws SQLException
     */
-   private void doSave(Artifact artifact) throws Exception {
+   private ArtifactSnapshot doSave(Artifact artifact) throws Exception {
       checkArtifact(artifact);
+      ArtifactSnapshot snapshot = null;
       if (isSavingAllowed() != false) {
-         ArtifactSnapshot snapshot = snapshotFactory.createSnapshot(artifact);
+         snapshot = snapshotFactory.createSnapshot(artifact);
          if (snapshot.isDataValid() != false) {
-            if (true == isDeleteRequired(snapshot)) {
-               snapshotRemoteRepository.deleteAll(snapshot.getNamespace());
-            }
-            snapshotRemoteRepository.persistSnapshot(snapshot.getNamespace(), PREVIEW_DATA, snapshot);
+            executorService.execute(new PersistSnapshot(snapshot));
          }
       }
+      return snapshot;
    }
 
+   /**
+    * Determines whether saving to remote repository is allowed
+    * 
+    * @return <b>true</b> if saving to remote repository is allowed
+    */
    private boolean isSavingAllowed() {
       // TODO Windows dependency needs to be removed once wordML transforms are independent of
       // windows and native transform.
@@ -178,8 +174,7 @@ public class ArtifactSnapshotManager {
       }
       if (currentSnapshot == null || currentSnapshot.isStaleComparedTo(artifact) == true) {
          try {
-            doSave(artifact);
-            currentSnapshot = getSnapshotFromRemoteStorage(snapshotKey);
+            currentSnapshot = doSave(artifact);
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
          }
@@ -271,4 +266,41 @@ public class ArtifactSnapshotManager {
       }
       return data;
    }
+
+   private class PersistSnapshot implements Runnable {
+      private final ArtifactSnapshot snapshot;
+
+      public PersistSnapshot(final ArtifactSnapshot snapshot) {
+         this.snapshot = snapshot;
+      }
+
+      public void run() {
+         long start = System.currentTimeMillis();
+         try {
+            if (true == isDeleteRequired(snapshot)) {
+               snapshotRemoteRepository.deleteAll(snapshot.getNamespace());
+            }
+         } catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
+         }
+         snapshotRemoteRepository.persistSnapshot(snapshot.getNamespace(), PREVIEW_DATA, snapshot);
+         logger.log(Level.INFO, String.format("Artifact Snapshot Commit to DB Time: [%s] ms.",
+               System.currentTimeMillis() - start));
+      }
+
+      /**
+       * Determine whether a delete in the remote storage is needed.
+       * 
+       * @param snapshot to store
+       * @return <b>true</b> if deletion is needed, otherwise <b>false</b>
+       * @throws SQLException
+       */
+      private boolean isDeleteRequired(ArtifactSnapshot snapshot) throws SQLException {
+         boolean oneOrMoreExists = snapshotRemoteRepository.getKeys(snapshot.getNamespace()).size() > 0;
+         boolean snapshotIsNotOneOfThem =
+               snapshotRemoteRepository.getSnapshot(snapshot.getNamespace(), snapshot.getKey()) == null;
+         return oneOrMoreExists && snapshotIsNotOneOfThem;
+      }
+   }
+
 }

@@ -102,6 +102,7 @@ public class ArtifactRequest implements IHttpServerRequest {
     */
    public void processRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
       boolean updateCache = Boolean.parseBoolean(httpRequest.getParameter(FORCE_KEY));
+      long start = System.currentTimeMillis();
       try {
          final Artifact artifact = getRequestedArtifact(httpRequest);
          final FormatEnums requesttedFormat = getFormatType(httpRequest);
@@ -118,6 +119,8 @@ public class ArtifactRequest implements IHttpServerRequest {
          logger.log(Level.WARNING, String.format("Get Artifact Error: [%s]", httpRequest.getParametersAsString()), ex);
          httpResponse.outputStandardError(400, "Exception handling request", ex);
       }
+      logger.log(Level.INFO, String.format("Time to serve Artifact Request: [%s] ms.",
+            System.currentTimeMillis() - start));
    }
 
    private Artifact getRequestedArtifact(HttpRequest httpRequest) throws Exception {
