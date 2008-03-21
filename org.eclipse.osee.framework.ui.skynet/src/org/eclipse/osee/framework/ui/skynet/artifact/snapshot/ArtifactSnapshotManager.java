@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SnapshotPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotFactory.KeyGenerator;
 import org.osgi.framework.Bundle;
@@ -172,6 +173,9 @@ public class ArtifactSnapshotManager {
    private ArtifactSnapshot getRemoteSnapshotAndUpdateIfNeeded(Artifact artifact) throws UnsupportedEncodingException {
       Pair<String, String> snapshotKey = keyGenerator.getKeyPair(artifact);
       ArtifactSnapshot currentSnapshot = getSnapshotFromRemoteStorage(snapshotKey);
+      if (currentSnapshot == null) {
+         currentSnapshot = getRemoteSnapshotFromParentBranch(artifact);
+      }
       if (currentSnapshot == null || currentSnapshot.isStaleComparedTo(artifact) == true) {
          try {
             doSave(artifact);
@@ -181,6 +185,26 @@ public class ArtifactSnapshotManager {
          }
       }
       return currentSnapshot;
+   }
+
+   /**
+    * Get the Artifact Snapshot from the remote repository using the artifact's parent branch id
+    * 
+    * @param artifact Identifying the snapshot to get
+    * @return The artifact snapshot
+    */
+   private ArtifactSnapshot getRemoteSnapshotFromParentBranch(Artifact artifact) {
+      ArtifactSnapshot toReturn = null;
+      try {
+         Branch parentBranch = artifact.getBranch().getParentBranch();
+         if (parentBranch != null) {
+            Pair<String, String> parentKey = keyGenerator.getKeyPair(artifact, parentBranch);
+            toReturn = getSnapshotFromRemoteStorage(parentKey);
+         }
+      } catch (Exception ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
+      return toReturn;
    }
 
    /**

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpImageProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.HttpImageRequest;
@@ -176,6 +177,20 @@ public class ArtifactSnapshotFactory {
    protected final class KeyGenerator {
 
       /**
+       * Creates namespace/key pair object from an artifact and branch;
+       * 
+       * @param artifact source
+       * @param branch source
+       * @return key pair
+       * @throws UnsupportedEncodingException
+       */
+      public Pair<String, String> getKeyPair(Artifact artifact, Branch branch) throws UnsupportedEncodingException {
+         String namespace = getNamespace(artifact, branch);
+         String key = "GAMMA" + artifact.getPersistenceMemo().getGammaId();
+         return new Pair<String, String>(namespace, encode(key));
+      }
+
+      /**
        * Creates namespace/key pair object from an artifact
        * 
        * @param artifact source
@@ -183,23 +198,22 @@ public class ArtifactSnapshotFactory {
        * @throws UnsupportedEncodingException
        */
       public Pair<String, String> getKeyPair(Artifact artifact) throws UnsupportedEncodingException {
-         String namespace = getNamespace(artifact);
-         String key = "GAMMA" + artifact.getPersistenceMemo().getGammaId();
-         return new Pair<String, String>(namespace, encode(key));
+         return getKeyPair(artifact, artifact.getBranch());
       }
 
       /**
        * Generates a namespace key for an artifact
        * 
        * @param artifact artifact to use when generating the namespace
+       * @param branch branch to use when generating the namespace
        * @return namespace
        * @throws UnsupportedEncodingException
        */
-      private String getNamespace(Artifact artifact) throws UnsupportedEncodingException {
+      private String getNamespace(Artifact artifact, Branch branch) throws UnsupportedEncodingException {
          StringBuffer namespace = new StringBuffer();
          namespace.append(artifact.getGuid());
          namespace.append("BRANCH");
-         namespace.append(artifact.getBranch().getBranchId());
+         namespace.append(branch.getBranchId());
          return encode(namespace.toString());
       }
 
