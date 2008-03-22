@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -181,11 +179,6 @@ public class XCheckBox extends XWidget {
     */
    @Override
    public Object getData() {
-      Collection<Object> data = new LinkedList<Object>();
-
-      if (isSelected()) {
-         data.add(checkButton.getText());
-      }
-      return data;
+      return Boolean.valueOf(isSelected());
    }
 }
