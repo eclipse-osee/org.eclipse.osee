@@ -716,34 +716,34 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage
 		});
 	}
 
-	private void addRelationMatrixReportMenuItem(MenuManager menuManager,
-			MenuManager reportManager) {
-		MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
-		RelationPersistenceManager relationManager = RelationPersistenceManager
-				.getInstance();
-		for (IRelationLinkDescriptor descriptor : relationManager
-				.getIRelationLinkDescriptors(branchManager.getDefaultBranch())) {
-			final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
-			addReportJobCommand(menuManager, matrixManager, reportJob);
-		}
-		reportManager.add(matrixManager);
-	}
+	private void addRelationMatrixReportMenuItem(MenuManager menuManager, MenuManager reportManager) {
+      MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
+      RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
+      try {
+         for (IRelationLinkDescriptor descriptor : relationManager.getIRelationLinkDescriptors(branchManager.getDefaultBranch())) {
+            final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
+            addReportJobCommand(menuManager, matrixManager, reportJob);
+         }
+      } catch (SQLException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
+      reportManager.add(matrixManager);
+   }
 
-	private void createRelationMatrixReportMenuItem(MenuManager menuManager,
-			MenuManager reportManager) {
-		MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
-		RelationPersistenceManager relationManager = RelationPersistenceManager
-				.getInstance();
-		for (IRelationLinkDescriptor descriptor : relationManager
-				.getIRelationLinkDescriptors(branchManager.getDefaultBranch())) {
-			final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
-			createReportJobCommand(menuManager, matrixManager, reportJob);
-		  }
-	} catch (SQLException ex) {
-		OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-		}
-		reportManager.add(matrixManager);
-	}
+	private void createRelationMatrixReportMenuItem(MenuManager menuManager, MenuManager reportManager) {
+      MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
+      try {
+
+         RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
+         for (IRelationLinkDescriptor descriptor : relationManager.getIRelationLinkDescriptors(branchManager.getDefaultBranch())) {
+            final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
+            createReportJobCommand(menuManager, matrixManager, reportJob);
+         }
+      } catch (SQLException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
+      reportManager.add(matrixManager);
+   }
 
 	private String addExportHandler(MenuManager menuManager,
 			final TableViewer viewer) {
