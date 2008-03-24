@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -26,7 +27,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Jeff C. Phillips
  */
-public class EditArtifactHandler extends AbstractSelectionChangedHandler {
+public class EditArtifactHandler extends AbstractHandler {
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final RendererManager rendererManager = RendererManager.getInstance();
    private List<Artifact> artifacts;

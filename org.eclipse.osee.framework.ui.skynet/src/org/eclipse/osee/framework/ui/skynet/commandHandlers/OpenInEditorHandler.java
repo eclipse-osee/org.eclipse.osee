@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
+
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -25,7 +27,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Jeff C. Phillips
  */
-public class OpenInEditorHandler extends AbstractSelectionChangedHandler {
+public class OpenInEditorHandler extends AbstractHandler {
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private List<Artifact> artifacts;
 

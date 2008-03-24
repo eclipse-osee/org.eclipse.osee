@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -33,11 +34,10 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
-
 /**
  * @author Paul K. Waldfogel
  */
-public class CompressWordAttributesHandler extends AbstractSelectionChangedHandler {
+public class CompressWordAttributesHandler extends AbstractHandler {
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
    private List<Artifact> artifacts;
 

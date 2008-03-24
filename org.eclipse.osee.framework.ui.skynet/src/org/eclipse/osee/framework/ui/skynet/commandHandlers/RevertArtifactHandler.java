@@ -16,9 +16,12 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -51,7 +54,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Paul K. Waldfogel
  * @author Jeff C. Phillips
  */
-public class RevertArtifactHandler extends AbstractSelectionChangedHandler {
+public class RevertArtifactHandler extends AbstractHandler {
    private static final RevisionManager myRevisionManager = RevisionManager.getInstance();
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
    private ArtifactChange artifactChange;

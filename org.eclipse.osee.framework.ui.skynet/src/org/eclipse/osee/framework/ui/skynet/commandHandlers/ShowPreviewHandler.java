@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -25,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 /**
  * @author Paul K. Waldfogel
  */
-public class ShowPreviewHandler extends AbstractSelectionChangedHandler {
+public class ShowPreviewHandler extends AbstractHandler {
    public ShowPreviewHandler() {
    }
 

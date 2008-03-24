@@ -12,10 +12,13 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
@@ -35,7 +38,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Paul K. Waldfogel
  */
-public class ViewWordChangeReportHandler extends AbstractSelectionChangedHandler {
+public class ViewWordChangeReportHandler extends AbstractHandler {
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";

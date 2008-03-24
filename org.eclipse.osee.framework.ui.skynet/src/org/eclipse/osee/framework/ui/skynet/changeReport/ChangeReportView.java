@@ -19,6 +19,7 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -236,31 +238,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
     */
    private void defineMenusNewerWay() {
       MenuManager menuManager = new MenuManager();
+	  menuManager.setRemoveAllWhenShown(true);
       changeTable.getTree().setMenu(menuManager.createContextMenu(changeTable.getTree()));
-      // createCommitIntoCommand(menuManager);
       menuManager.add(new Separator("Top"));
-      // createDiffMenuItem(menuManager);
-      // createDiffConflictsMenuItem(menuManager);
-      // createParentDiffMenuItem(menuManager);
-      // menuManager.add(new Separator("BeyondParentDiff"));
-      // createViewFinalVersionMenuItem(menuManager);
-      // createPreviewMenuItem(menuManager);
-      // menuManager.add(new Separator("BeyondPreview"));
-      // createShowResourceHistoryMenuItem(menuManager);
-      // menuManager.add(new Separator("BeyondCreateHistory"));
-      // createShowInExplorerMenuItem(menuManager);
-      // menuManager.add(new Separator("BeyondShowInExplorer"));
-      // createRevertMenuItem(menuManager);
-      // menuManager.add(new Separator("BeyondRevertArtifact"));
-      // createWordChangeReportMenuItem(menuManager);
-      // createChangeReportMenuItem(menuManager);
-      // menuManager.add(new Separator("BeyondChangeReport"));
-      // createCopyMenuItem(menuManager);
-      // menuManager.add(new Separator("BeyondCopy"));
-      // createCompressWordMenuItem(menuManager);
-      // createDeleteArtifactsMenuItem(menuManager);
-      // createPurgeArtifactsMenuItem(menuManager);
-      // createTagArtifactsMenuItem(menuManager);
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
       getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView", menuManager,
@@ -300,78 +280,6 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
       new GlobalMenu(popupMenu, globalMenuHelper);
       changeTree.setMenu(popupMenu);
    }
-
-   //   @Override
-   //   public void createPartControl(Composite parent) {
-   //      GridData gridData = new GridData();
-   //      gridData.verticalAlignment = GridData.FILL;
-   //      gridData.horizontalAlignment = GridData.FILL;
-   //      gridData.grabExcessVerticalSpace = true;
-   //      gridData.grabExcessHorizontalSpace = true;
-   //
-   //      parent.setLayoutData(gridData);
-   //
-   //      changeTable = new TreeViewer(parent, SWT.FULL_SELECTION | SWT.MULTI);
-   //      changeTable.setContentProvider(new BranchContentProvider());
-   //
-   //      try {
-   //         attributesAction = new ShowAttributeAction(changeTable, SkynetGuiPlugin.CHANGE_REPORT_ATTRIBUTES_PREF);
-   //         attributesAction.addToView(this,
-   //               SkynetViews.loadAttrTypesFromPreferenceStore(SkynetGuiPlugin.CHANGE_REPORT_ATTRIBUTES_PREF));
-   //
-   //      } catch (SQLException ex) {
-   //         OSEELog.logException(getClass(), ex, false);
-   //      }
-   //
-   //      changeTable.setLabelProvider(new BranchLabelProvider(attributesAction));
-   //      changeTable.setSorter(new LabelSorter());
-   //
-   //      createColumns();
-   //      changeTable.addDoubleClickListener(new ChangeRepolrt2ClickListener());
-   //      changeTable.getTree().addKeyListener(new keySelectedListener());
-   //      changeTable.addSelectionChangedListener(new SelectionCountChangeListener(getViewSite()));
-   //
-   //      Menu popupMenu = new Menu(parent);
-   //      popupMenu.addMenuListener(new MenuEnablingListener());
-   //
-   //      createDiffMenuItem(popupMenu);
-   //      createDiffConflictsMenuItem(popupMenu);
-   //      createParentDiffMenuItem(popupMenu);
-   //
-   //      new MenuItem(popupMenu, SWT.SEPARATOR);
-   //      createViewFinalVersionMenuItem(popupMenu);
-   //      ArtifactPreviewMenu.createPreviewMenuItem(popupMenu, changeTable);
-   //
-   //      new MenuItem(popupMenu, SWT.SEPARATOR);
-   //      createHistoryMenuItem(popupMenu);
-   //      createShowInExplorerMenuItem(popupMenu);
-   //      new MenuItem(popupMenu, SWT.SEPARATOR);
-   //      createRevertMenuItem(popupMenu);
-   //      new MenuItem(popupMenu, SWT.SEPARATOR);
-   //      createWordChangeReportMenuItem(popupMenu);
-   //      createChangeReport(popupMenu);
-   //      new MenuItem(popupMenu, SWT.SEPARATOR);
-   //      createCopyMenu(popupMenu);
-   //      new MenuItem(popupMenu, SWT.SEPARATOR);
-   //      createCompressWordMenu(popupMenu);
-   //      new GlobalMenu(popupMenu, globalMenuHelper);
-   //
-   //      Tree changeTree = changeTable.getTree();
-   //      changeTree.setMenu(popupMenu);
-   //
-   //      new ChangeReportDragAndDrop(changeTree, VIEW_ID);
-   //
-   //      createActions();
-   //
-   //      SkynetDefaultBranchContributionItem.addTo(this, false);
-   //      SkynetContributionItem.addTo(this, true);
-   //
-   //      setHelpContexts();
-   //
-   //      if (priorInput != null) {
-   //         explore(priorInput);
-   //      }
-   //   }
 
    IGlobalMenuHelper globalMenuHelper = new IGlobalMenuHelper() {
 
@@ -702,7 +610,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                      (RevisionHistoryView) page.showView(
                            RevisionHistoryView.VIEW_ID,
                            selectedArtifact != null ? selectedArtifact.getGuid() : Integer.toString(selectedItem.getArtId()),
-                           IWorkbenchPage.VIEW_ACTIVATE);
+                           IWorkbenchPage.VIEW_VISIBLE);
                revisionHistoryView.explore(selectedArtifact);
             } catch (Exception ex) {
                OSEELog.logException(getClass(), ex, true);
@@ -1011,16 +919,17 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          }
       });
    }
-
-   public void refreshContentDescription() {
-      int baseNum = this.baseTransactionId.getTransactionNumber();
-      int toNum = this.toTransactionId.getTransactionNumber();
-      if (this.baseParentTransactionId == null) {
-         setContentDescription("Changes on " + this.baseTransactionId.getBranch().getBranchName() + " from transaction " + baseNum + " to transaction " + toNum + " at " + new Date());
-      } else {
-         setContentDescription("Changes on " + this.baseTransactionId.getBranch().getBranchName() + " from transaction " + baseNum + " to transaction " + toNum + " against " + baseParentTransactionId.getBranch() + ":" + baseParentTransactionId.getTransactionNumber() + " at " + new Date());
-      }
+   
+  public void refreshContentDescription() { 
+       int baseNum = this.baseTransactionId.getTransactionNumber(); 
+       int toNum = this.toTransactionId.getTransactionNumber(); 
+       if (this.baseParentTransactionId == null) { 
+          setContentDescription("Changes on " + this.baseTransactionId.getBranch().getBranchName() + " from transaction " + baseNum + " to transaction " + toNum + " at " + new Date()); 
+       } else { 
+          setContentDescription("Changes on " + this.baseTransactionId.getBranch().getBranchName() + " from transaction " + baseNum + " to transaction " + toNum + " against " + baseParentTransactionId.getBranch() + ":" + baseParentTransactionId.getTransactionNumber() + " at " + new Date()); 
    }
+    } 
+
 
    /**
     * Explores the changes on the branch.

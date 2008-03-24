@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
+
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -26,7 +28,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Paul K. Waldfogel
  * @author Jeff C. Phillips
  */
-public class TagArtifactsHandler extends AbstractSelectionChangedHandler {
+public class TagArtifactsHandler extends AbstractHandler {
    private List<Artifact> artifacts;
 
    @Override

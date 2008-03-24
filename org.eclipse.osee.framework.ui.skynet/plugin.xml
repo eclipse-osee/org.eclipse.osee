@@ -143,42 +143,170 @@
            </with>
         </or>
      </activeWhen>
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewerReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.viewerReport.command">
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactNoRecurseHandler" commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PreviewArtifactWithRecurseCommand" commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.EditArtifactHandler" commandId="org.eclipse.osee.framework.ui.skynet.edit.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenInEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.openInEdit.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenMassArtifactEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenSkywalkerEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactsInAtsWorldHandler" commandId="org.eclipse.osee.framework.ui.skynet.openArtifactsInAtsWorld.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewWordChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.CompressWordAttributesHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ShowArtifactInResourceHandler" commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.WordChangesToParentHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesToParent.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.WordChangesBetweenCurrentAndParentHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesBetweenCurrentAndParent.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.WordChangesMadeToHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevertArtifactHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.TagArtifactsHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.tagArtifacts.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
       </handler>
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevealInArtifactExplorer"
         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
   </handler>
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewerReportHandler"
@@ -203,10 +331,26 @@
            </with>
         </or>
      </activeWhen>
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
   </handler>
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PurgeArtifactHandler"
         commandId="org.eclipse.osee.framework.ui.skynet.purge.command">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
   </handler>
 	</extension>
 	<extension name="The menus for the Branch View." point="org.eclipse.ui.menus">
@@ -282,7 +426,7 @@
    </command>
 		</menuContribution>
 	</extension>
-	<extension point="org.eclipse.ui.commandImages">ge>
+	<extension point="org.eclipse.ui.commandImages">
 		<image commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command" icon="images/preview_artifact.gif">
          </image>
 		<image commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command" icon="images/preview_artifact.gif">
@@ -567,7 +711,7 @@
 		<DatabaseTask classname="org.eclipse.osee.framework.ui.skynet.dbinit.AddCommonBranch">
          </DatabaseTask>
 	</extension>
- <extension
+	<extension
        point="org.eclipse.osee.framework.skynet.core.TemplateProvider">
     <TemplateProvider
           classname="org.eclipse.osee.framework.ui.skynet.render.WordTemplateProvider">

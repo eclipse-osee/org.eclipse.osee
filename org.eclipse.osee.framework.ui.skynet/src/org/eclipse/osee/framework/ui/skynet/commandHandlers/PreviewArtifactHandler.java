@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
+import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -19,25 +22,31 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Jeff C. Phillips
  */
-public abstract class PreviewArtifactHandler extends AbstractSelectionChangedHandler {
+public abstract class PreviewArtifactHandler extends AbstractHandler
+{
    private static final RendererManager rendererManager = RendererManager.getInstance();
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private List<Artifact> artifacts;
-
+   private List<Conflict> conflicts;
    /**
  * 
  */
 public PreviewArtifactHandler() {
 	super();
+	artifacts = new LinkedList<Artifact>();
 }
+
 
 /*
     * (non-Javadoc)
@@ -56,6 +65,7 @@ public PreviewArtifactHandler() {
 
    @Override
    public boolean isEnabled() {
+
       if (PlatformUI.getWorkbench().isClosing()) {
          return false;
       }
@@ -69,10 +79,23 @@ public PreviewArtifactHandler() {
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-
+         conflicts = Handlers.getConflictsFromStructuredSelection(structuredSelection);
+         if (!conflicts.isEmpty()){
+        	 artifacts.clear();
+        	 for (Conflict con : conflicts){
+        		 try{
+        			 artifacts.add(con.getArtifact());
+        		 }catch (SQLException ex){
+        			 OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+        		 }
+        	 }
+         } else {
+        	 artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+         }
+         
          isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
       }
+
       return isEnabled;
    }
 }
