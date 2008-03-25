@@ -1148,6 +1148,28 @@ public final class Lib {
       return changeSet.applyChangesToSelf().toString();
    }
 
+   /**
+    * This method takes in any name separated by underscores and converts it into a java standard variable name.
+    * 
+    * @param name
+    * @return
+    */
+   public static final String convertToJavaVariableName(String name) {
+      name = name.toLowerCase();
+      StringBuffer sb = new StringBuffer();
+      char[] chars = name.toCharArray();
+      for (int i = 0; i < chars.length; i++) {
+         if (chars[i] == '_') {
+            if (chars.length > i + 1 && chars[i + 1] != '_') {
+               sb.append(Character.toUpperCase(chars[i + 1]));
+               i++;
+            }
+         } else
+            sb.append(chars[i]);
+      }
+      return sb.toString();
+   }
+
    public static URL getJarFileURL(File directory, String title, String version) throws IOException {
       if (!directory.isDirectory()) {
          throw new IllegalArgumentException(directory.getPath() + " is not a valid directory.");
