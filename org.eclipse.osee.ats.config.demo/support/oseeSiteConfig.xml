@@ -44,7 +44,7 @@
 	<AvailableDbServices>
 		<Server id="postgresqlLocalhost" dbInfo="postgresqlInfo"
 			hostAddress="localhost" port="5432"
-			connectsWith="postgresql" />
+			connectsWith="postgresql" isDefault="true"/>
 	</AvailableDbServices>
 
 	<!-- This is here temporarily until we figure out how to tell the clients what to use -->
