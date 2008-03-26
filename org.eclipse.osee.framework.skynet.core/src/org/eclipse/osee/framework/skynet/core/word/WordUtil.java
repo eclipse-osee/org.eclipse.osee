@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.word;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -230,5 +232,22 @@ public class WordUtil {
          guid = splitsBeforeAndAfter[1];
       }
       return guid;
+   }
+   
+   private static final Matcher spellCheck = Pattern.compile("<w:proofErr w:type=\"spell(End|Start)\"/>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   public final static String stripSpellCheck(String content){
+	   spellCheck.reset(content);
+	   return spellCheck.replaceAll("");
+   }
+   
+   public static void main(String[] args){
+	   String match = "do something <w:proofErr w:type=\"spellEnd\"/> some more stuff <w:proofErr w:type=\"spellStart\"/> now some more stuff";
+	   
+	   String result = WordUtil.stripSpellCheck(match);
+	   
+	   if("do something  some more stuff  now some more stuff".equals(result)){
+		   System.out.println("success");
+	   }
+	   
    }
 }
