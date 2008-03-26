@@ -15,9 +15,6 @@ import java.util.Iterator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.mylyn.zest.core.viewers.GraphViewer;
-import org.eclipse.mylyn.zest.core.widgets.ZestStyles;
-import org.eclipse.mylyn.zest.layouts.algorithms.RadialLayoutAlgorithm;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -27,6 +24,9 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.zest.core.viewers.GraphViewer;
+import org.eclipse.zest.core.widgets.ZestStyles;
+import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
 
 /**
  * @author Robert A. Fisher
@@ -45,8 +45,8 @@ public class SkyWalkerView extends ViewPart implements IActionable {
 
       viewer.setContentProvider(new ArtifactGraphContentProvider(1));
       viewer.setLabelProvider(new ArtifactGraphLabelProvider());
-      viewer.setConnectionStyle(ZestStyles.CONNECTIONS_STRAIGHT);
-      viewer.setNodeStyle(ZestStyles.NODES_HIGHLIGHT_ADJACENT | ZestStyles.NODES_NO_LAYOUT_RESIZE);
+      viewer.setConnectionStyle(ZestStyles.CONNECTIONS_SOLID);
+      viewer.setNodeStyle(ZestStyles.NODES_NO_LAYOUT_RESIZE);
       RadialLayoutAlgorithm layout = new RadialLayoutAlgorithm();
       layout.setRangeToLayout((-90 * Math.PI) / 360, (90 * Math.PI) / 360);
       viewer.setLayoutAlgorithm(layout);

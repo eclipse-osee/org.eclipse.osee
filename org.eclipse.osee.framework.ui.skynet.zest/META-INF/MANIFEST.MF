@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.skynet,
- org.eclipse.mylyn.zest.core,
- org.eclipse.mylyn.zest.layouts,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.zest.core,
+ org.eclipse.zest.layouts
 Bundle-Vendor: Eclipse.org

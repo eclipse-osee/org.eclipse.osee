@@ -17,12 +17,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.mylyn.zest.core.viewers.EntityConnectionData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 /**
  * @author Robert A. Fisher
