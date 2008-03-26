@@ -162,11 +162,12 @@ public class WordTemplateProcessor {
    private InputStream applyTemplate(BlamVariableMap variableMap, String template, IFolder folder, String nextParagraphNumber, String outlineType) throws Exception {
       CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
+      
+      template = handleSettingParagraphNumbers(variableMap, template, outlineType, nextParagraphNumber, wordMl);
+      template = WordUtil.stripSpellCheck(template);
+      
       Matcher matcher = headElementsPattern.matcher(template);
       int lastEndIndex = 0;
-
-      handleSettingParagraphNumbers(variableMap, template, outlineType, nextParagraphNumber, wordMl);
-
       while (matcher.find()) {
          // Write the part of the template between the elements
          wordMl.addWordMl(template.substring(lastEndIndex, matcher.start()));
@@ -203,6 +204,7 @@ public class WordTemplateProcessor {
       outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, null, variableMap);
       //modifications to the template must be done before the matcher
       template = wordMl.setHeadingNumbers(outlineNumber, template);
+      template = WordUtil.stripSpellCheck(template);
 
       Matcher matcher = headElementsPattern.matcher(template);
 
@@ -247,7 +249,7 @@ public class WordTemplateProcessor {
       if (nextParagraphNumber != null && !appendixOutlineType) {
          wordMl.setNextParagraphNumberTo(nextParagraphNumber);
       }
-      return nextParagraphNumber;
+      return template;
    }
 
    @SuppressWarnings("unchecked")
@@ -569,13 +571,14 @@ public class WordTemplateProcessor {
             if (attributeElement.label.length() > 0) {
                wordMl.addParagraph(attributeElement.label);
             }
-
+            String wordContent = WordUtil.stripSpellCheck(attribute.getStringData());
             if (true) {
-               writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
-                     "ns0:guid=\"" + artifact.getGuid() + "\"", "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"",
-                     attribute.toString());
+               DynamicAttributeDescriptor attributeDescriptor = attribute.getManager().getAttributeType();
+               writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeDescriptor.getName()),
+                     "ns0:guid=\"" + artifact.getGuid() + "\"",
+                     "ns0:attrId=\"" + attributeDescriptor.getAttrTypeId() + "\"", wordContent);
             } else {
-               wordMl.addWordMl(attribute.toString());
+               wordMl.addWordMl(wordContent);
             }
             wordMl.resetListValue();
          } else {

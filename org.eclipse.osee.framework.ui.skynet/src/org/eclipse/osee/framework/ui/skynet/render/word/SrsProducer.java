@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render.word;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -48,7 +49,7 @@ public class SrsProducer implements IWordMlProducer {
    private void process(Artifact parent, ArrayList<Artifact> artifacts, String name) throws IllegalStateException, IOException, SQLException {
       try {
          Artifact child = parent.getChild(name);
-         artifacts.addAll(child.getDescendants());
+         artifacts.add(child);
 
       } catch (IllegalArgumentException ex) {
          //We expect there to be times where the child does not exists and will throw an exception.
