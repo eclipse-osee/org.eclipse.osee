@@ -51,7 +51,6 @@
       <import plugin="org.eclipse.osee.framework.database"/>
       <import plugin="org.eclipse.osee.framework.svn"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="quartz.timer"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.draw2d"/>
