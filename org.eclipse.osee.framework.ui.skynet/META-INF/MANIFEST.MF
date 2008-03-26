@@ -25,7 +25,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.nebula.widgets,
  org.eclipse.osee.framework.svn,
  org.eclipse.debug.ui,
- quartz.timer,
  org.eclipse.osee.framework.messaging.event.skynet,
  org.eclipse.core.expressions
 Eclipse-LazyStart: true
