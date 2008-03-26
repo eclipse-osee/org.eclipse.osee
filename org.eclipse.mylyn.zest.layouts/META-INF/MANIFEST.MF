@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.0
+Created-By: 1.6.0_01-b06 (Sun Microsystems Inc.)
+Bundle-ManifestVersion: 2
+Bundle-Name: Chisel Layout Package
+Bundle-SymbolicName: org.eclipse.mylyn.zest.layouts
+Bundle-Version: 0.5.1.qualifier
+Bundle-Vendor: Chisel, University of Victoria
+Export-Package: org.eclipse.mylyn.zest.layouts,org.eclipse.mylyn.zest.
+ layouts.algorithms,org.eclipse.mylyn.zest.layouts.algorithms.internal
+ ,org.eclipse.mylyn.zest.layouts.constraints,org.eclipse.mylyn.zest.la
+ youts.dataStructures,org.eclipse.mylyn.zest.layouts.exampleStructures
+ ,org.eclipse.mylyn.zest.layouts.exampleUses,org.eclipse.mylyn.zest.la
+ youts.progress
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.jface
+
