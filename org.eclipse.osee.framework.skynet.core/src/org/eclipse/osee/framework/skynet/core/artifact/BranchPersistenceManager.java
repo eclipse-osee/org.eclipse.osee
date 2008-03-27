@@ -20,6 +20,7 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -35,6 +36,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -44,6 +46,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
@@ -84,7 +87,7 @@ public class BranchPersistenceManager implements PersistenceManager {
 
    private static final String READ_BRANCH_TABLE =
          "SELECT * FROM " + BRANCH_TABLE + " t1, " + TRANSACTION_DETAIL_TABLE + " t2 WHERE t1.branch_id = t2.branch_id and t2.transaction_id = (SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "= t1.branch_id)";
-
+   private static final String READ_MERGE_BRANCHES = "select * from osee_define_branch b1, osee_define_merge m2 where b1.branch_id = m2.merge_branch_id";
    private static final String CHANGED_RELATIONS =
          "SELECT t1.gamma_id, t2.rel_link_id, t2.a_art_id, t2.b_art_id, t2.modification_id, t2.rel_link_type_id, t2.a_order_value, t2.b_order_value, t2.rationale FROM (SELECT tx1.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx1, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td1 WHERE tx1.transaction_id = td1.transaction_id AND td1.branch_id = ? AND tx1.gamma_id NOT IN (SELECT tx2.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td2 WHERE tx2.transaction_id = td2.transaction_id AND td2.branch_id = ?)) t1 INNER JOIN " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2 ON (t1.gamma_id=t2.gamma_id)";
    private static final String CHANGED_ARTIFACTS =
@@ -126,6 +129,8 @@ public class BranchPersistenceManager implements PersistenceManager {
 
    // This hash is keyed on the branchId
    private TreeMap<Integer, Branch> branchCache;
+   //This hash is keyed in the source branch id and destination branch id
+   private DoubleKeyHashMap<Integer, Integer, Branch> mergeBranchCache;
    private Map<Integer, Branch> transactionIdBranchCache;
    private Map<String, Branch> keynameBranchMap;
 
@@ -134,6 +139,7 @@ public class BranchPersistenceManager implements PersistenceManager {
    private BranchPersistenceManager() {
       this.branchCache = new TreeMap<Integer, Branch>();
       this.transactionIdBranchCache = new HashMap<Integer, Branch>();
+      this.mergeBranchCache = new DoubleKeyHashMap<Integer, Integer, Branch>();
       this.keynameBranchMap = null;
    }
 
@@ -299,9 +305,56 @@ public class BranchPersistenceManager implements PersistenceManager {
             rSet.getInt("parent_branch_id"), false, rSet.getInt("author"), rSet.getTimestamp("time"),
             rSet.getString(TXD_COMMENT), associatedArtifactId);
    }
+   
+   public Branch getMergeBranch(Integer sourceBranchId, Integer destBranchId)throws Exception{
+	   if(sourceBranchId < 1 || destBranchId < 1){
+		   throw new IllegalAccessException("Branch ids are invalid source branch id:" + sourceBranchId + " destination branch id:" + destBranchId);
+	   }
+	   
+	   if(!mergeBranchCache.containsKey(sourceBranchId, destBranchId)){
+		   ensureMergePopulatedCache(true);
+	   }
+	   
+	   Branch mergeBranch = mergeBranchCache.get(sourceBranchId, destBranchId);
+	   return mergeBranch;
+   }
+   
+   private synchronized void ensureMergePopulatedCache(boolean forceRead)
+			throws SQLException {
+		if (forceRead || mergeBranchCache.isEmpty()) {
+			ConnectionHandlerStatement chStmt = null;
+			try {
+				chStmt = ConnectionHandler.runPreparedQuery(500,
+						READ_MERGE_BRANCHES);
+				ResultSet rSet = chStmt.getRset();
+				while (chStmt.next()) {
+					int sourceBranchId = rSet.getInt("source_branch_id");
+					int destBranchId = rSet.getInt("dest_branch_id");
+					boolean isArchived = rSet.getInt("archived") == 1;
+
+					Branch branch = mergeBranchCache.get(sourceBranchId,
+							destBranchId);
+
+					if (isArchived) {
+						if (branch != null) {
+							mergeBranchCache.remove(sourceBranchId,
+									destBranchId);
+						}
+					} else {
+						if (branch == null) {
+							branch = initializeBranchObject(rSet);
+						}
+					}
+				}
+			} finally {
+				DbUtil.close(chStmt);
+			}
+		}
+	}
 
    public Branch getBranch(Integer branchId) throws SQLException {
-      // Always exception for invalid id's, they won't ever be found in the database or cache.
+      // Always exception for invalid id's, they won't ever be found in the
+		// database or cache.
       if (branchId < 1) throw new IllegalArgumentException("Branch Id " + branchId + " is invalid");
 
       // If someone else made a branch on another machine, we may not know about it
