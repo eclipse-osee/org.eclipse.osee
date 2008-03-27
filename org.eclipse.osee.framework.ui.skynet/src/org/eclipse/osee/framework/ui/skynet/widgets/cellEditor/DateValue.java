@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.cellEditor;
 
 import java.util.Date;
-import org.eclipse.nebula.widgets.datechooser.DateChooserCombo;
+import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -34,8 +34,8 @@ public class DateValue extends UniversalCellEditorValue {
     */
    @Override
    public Control prepareControl(UniversalCellEditor universalEditor) {
-      DateChooserCombo datePicker = universalEditor.getDateControl();
-      datePicker.setValue(date);
+      CalendarCombo datePicker = universalEditor.getDateControl();
+      datePicker.setDate(date);
       return datePicker;
    }
 

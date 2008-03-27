@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.world.WorldView;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -74,7 +73,8 @@ public class AtsLib implements IAtsLib {
                results.add((A) art);
             else {
                // Ats config Artifact is Active unless otherwise specified
-               boolean attributeActive = ((User) art).isActive();
+               boolean attributeActive =
+                     ((A) art).getSoleBooleanAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName());
                if (active == Active.Active && attributeActive) {
                   results.add((A) art);
                } else if (active == Active.InActive && !attributeActive) {

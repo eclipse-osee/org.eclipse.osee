@@ -11,12 +11,12 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
+import java.util.Calendar;
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.nebula.widgets.datechooser.DateChooser;
+import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
+import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -55,25 +55,19 @@ public class DateSelectionDialog extends MessageDialog {
 
       (new Label(filterComp, SWT.None)).setText(dialogMessage);
 
-      final DateChooser dp = new DateChooser(filterComp, SWT.SINGLE | SWT.FLAT);
-      dp.setFooterVisible(true);
-      dp.addClearListener(new DateChooser.ClearListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.nebula.widgets.datechooser.DateChooser.ClearListener#handleClearEvent()
+      final CalendarCombo dp = new CalendarCombo(filterComp, SWT.SINGLE | SWT.FLAT);
+      if (selectedDate != null) dp.setDate(selectedDate);
+      dp.addCalendarListener(new CalendarListenerAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.nebula.widgets.calendarcombo.ICalendarListener#dateChanged(java.util.Calendar)
           */
-         public void handleClearEvent() {
-            noneSelected = true;
-         }
-      });
-      if (selectedDate != null) dp.setSelectedDate(selectedDate);
-      dp.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            super.widgetSelected(e);
-            noneSelected = false;
-            selectedDate = dp.getSelectedDate();
+         public void dateChanged(Calendar date) {
+            if (date == null) {
+               noneSelected = true;
+            } else {
+               noneSelected = false;
+               selectedDate = dp.getDate().getTime();
+            }
          }
       });
 

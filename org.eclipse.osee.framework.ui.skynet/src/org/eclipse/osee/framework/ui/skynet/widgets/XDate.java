@@ -16,11 +16,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.nebula.widgets.datechooser.DateChooserCombo;
-import org.eclipse.nebula.widgets.formattedtext.DateFormatter;
+import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
+import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -32,7 +31,7 @@ import org.eclipse.swt.widgets.Label;
  */
 public class XDate extends XWidget {
 
-   private DateChooserCombo dateCombo;
+   private CalendarCombo dateCombo;
    private Composite parent;
    private Date date;
    public static String MMDDYY = "MM/dd/yyyy";
@@ -94,7 +93,6 @@ public class XDate extends XWidget {
     */
    public void setFormat(String format) {
       defaultFormat = format;
-      if (dateCombo != null) dateCombo.setFormatter(new DateFormatter(defaultFormat));
    }
 
    public void clearData() {
@@ -131,16 +129,22 @@ public class XDate extends XWidget {
 
       labelWidget = new Label(parent, SWT.NONE);
       labelWidget.setText(label + ": ");
-      dateCombo = new DateChooserCombo(parent, SWT.BORDER);
-      dateCombo.setFooterVisible(true);
-      dateCombo.setFormatter(new DateFormatter("MM/dd/yyyy"));
+      dateCombo = new CalendarCombo(parent, SWT.BORDER);
       dateCombo.setEnabled(true);
       GridData gd = new GridData();
       gd.widthHint = 100;
-      if (date != null) dateCombo.setValue(date);
-      dateCombo.addModifyListener(new ModifyListener() {
-         public void modifyText(ModifyEvent e) {
-            date = dateCombo.getValue();
+      if (date != null) dateCombo.setDate(date);
+      dateCombo.addCalendarListener(new CalendarListenerAdapter() {
+         /* (non-Javadoc)
+          * @see org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter#dateChanged(java.util.Calendar)
+          */
+         @Override
+         public void dateChanged(Calendar newDate) {
+            super.dateChanged(newDate);
+            if (newDate == null)
+               date = null;
+            else
+               date = newDate.getTime();
             setLabelError();
             notifyXModifiedListeners();
             dateCombo.getParent().layout();
@@ -201,9 +205,9 @@ public class XDate extends XWidget {
       this.date = date;
       if (dateCombo != null && !dateCombo.isDisposed()) {
          if (dateCombo != null)
-            dateCombo.setValue(date);
+            dateCombo.setDate(date);
          else
-            dateCombo.setValue(null);
+            dateCombo.setDate((Date) null);
       }
    }
 

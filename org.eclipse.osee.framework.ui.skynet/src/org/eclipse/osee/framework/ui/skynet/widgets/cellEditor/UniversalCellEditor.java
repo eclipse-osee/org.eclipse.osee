@@ -11,8 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.cellEditor;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.nebula.widgets.datechooser.DateChooserCombo;
-import org.eclipse.nebula.widgets.formattedtext.DateFormatter;
+import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -25,8 +24,7 @@ import org.eclipse.swt.widgets.Text;
 public class UniversalCellEditor extends CellEditor {
    private Combo comboBox;
    private Text textBox;
-   private DateChooserCombo datePicker;
-   private static final DateFormatter plainDate = new DateFormatter("MM/dd/yyyy");
+   private CalendarCombo datePicker;
    private Control control;
    private boolean personCombo = false;
 
@@ -45,8 +43,7 @@ public class UniversalCellEditor extends CellEditor {
       super(parent, style);
       this.comboBox = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
       this.textBox = new Text(parent, SWT.SINGLE);
-      this.datePicker = new DateChooserCombo(parent, SWT.BORDER);
-      datePicker.setFormatter(plainDate);
+      this.datePicker = new CalendarCombo(parent, SWT.BORDER);
 
       setValueValid(true);
    }
@@ -64,7 +61,7 @@ public class UniversalCellEditor extends CellEditor {
       return comboBox;
    }
 
-   public DateChooserCombo getDateControl() {
+   public CalendarCombo getDateControl() {
       return datePicker;
    }
 
@@ -136,8 +133,8 @@ public class UniversalCellEditor extends CellEditor {
       if (control instanceof Text) {
          return textBox.getText();
       }
-      if (control instanceof DateChooserCombo) {
-         return datePicker.getValue();
+      if (control instanceof CalendarCombo) {
+         return datePicker.getDate();
       }
       throw new IllegalArgumentException("Control was of an unexpected type: " + control.getClass().getName());
    }

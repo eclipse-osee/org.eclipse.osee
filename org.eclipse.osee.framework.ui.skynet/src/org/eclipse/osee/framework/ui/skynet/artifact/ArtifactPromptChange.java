@@ -121,7 +121,7 @@ public class ArtifactPromptChange {
             if (diag.isNoneSelected())
                artifact.clearSoleAttributeValue(attributeName);
             else
-               artifact.setSoleStringAttributeValue(attributeName, diag.getSelectedDate().getTime() + "");
+               artifact.setSoleDateAttributeValue(attributeName, diag.getSelectedDate());
             if (persist) artifact.persistAttributes();
          }
       }
