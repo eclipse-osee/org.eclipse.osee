@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Boeing (BOEING SHARED SERVICES GROUP) -->
 <?eclipse version="3.0"?>
 <plugin
 >
@@ -11,6 +12,7 @@
 	<extension-point id="OseeDictionary" name="OseeDictionary" schema="schema/OseeDictionary.exsd"/>
 	<extension-point id="XWidgetProvider" name="XWidgetProvider" schema="schema/XWidgetProvider.exsd"/>
 	<extension-point id="IgnorePublishAttribute" name="IgnorePublishAttribute" schema="schema/IgnorePublishAttribute.exsd"/>
+	<extension-point id="TemplateProvider" name="TemplateProvider" schema="schema/TemplateProvider.exsd"/>
  <extension
        point="org.eclipse.ui.commands">
     <command
@@ -711,9 +713,9 @@
          </DatabaseTask>
 	</extension>
 	<extension
-       point="org.eclipse.osee.framework.skynet.core.TemplateProvider">
+       point="org.eclipse.osee.framework.ui.skynet.TemplateProvider">
     <TemplateProvider
-          classname="org.eclipse.osee.framework.ui.skynet.render.WordTemplateProvider">
+          classname="org.eclipse.osee.framework.ui.skynet.templates.SimpleTemplateProvider">
     </TemplateProvider>
  </extension>
  <extension
