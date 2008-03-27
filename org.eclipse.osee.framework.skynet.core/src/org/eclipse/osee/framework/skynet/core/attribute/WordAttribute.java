@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -75,7 +76,11 @@ public class WordAttribute extends StringAttribute {
    public void setValue(String value) {
       try {
          value = WordUtil.removeWordMarkupSmartTags(value);
-         setRawContent(Lib.compressFile(new ByteArrayInputStream(value.getBytes("UTF-8")), getAttributeType().getName()));
+         if(false){
+        	 setRawContent(Lib.compressFile(new ByteArrayInputStream(value.getBytes("UTF-8")), getAttributeType().getName()));
+         } else {
+        	 setRawContent(value.getBytes("UTF-8"));
+         }
       } catch (IOException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
@@ -86,6 +91,10 @@ public class WordAttribute extends StringAttribute {
     */
    @Override
    public void setValueFromInputStream(InputStream value) throws IOException {
-      setRawContent(Lib.compressFile(value, getAttributeType().getName()));
+      if(false){
+    	  setRawContent(Lib.compressFile(value, getAttributeType().getName()));
+      } else {
+    	  setRawContent(Lib.inputStreamToBytes(value));
+      }
    }
 }

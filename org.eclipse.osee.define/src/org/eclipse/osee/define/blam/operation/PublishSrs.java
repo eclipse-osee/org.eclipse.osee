@@ -23,6 +23,9 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 
 /**
  * @author Robert A. Fisher
+ * 
+ * We need to create an SRSRenderer that provides the correct templates.  Then we'll use it instead of the WordTemplate processer like we do currently.
+ * 
  */
 public class PublishSrs extends AbstractBlam {
 
