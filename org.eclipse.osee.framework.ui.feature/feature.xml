@@ -133,12 +133,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.nebula.widgets"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="external.osee.xslt.transform.engine"
          download-size="0"
          install-size="0"
@@ -156,5 +150,12 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.nebula.widgets.calendarcombo"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
