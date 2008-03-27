@@ -24,8 +24,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.messaging.event.skynet,
  org.eclipse.core.expressions,
  org.eclipse.zest.core,
- org.eclipse.zest.layouts,
- org.eclipse.nebula.widgets.calendarcombo
+ org.eclipse.zest.layouts
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.Import,
@@ -81,3 +80,4 @@ Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet
 Bundle-Vendor: Eclipse.org
 Bundle-ClassPath: skynet.jar
+Import-Package: org.eclipse.nebula.widgets.calendarcombo

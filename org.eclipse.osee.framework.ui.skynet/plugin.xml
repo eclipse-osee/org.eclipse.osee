@@ -604,9 +604,6 @@
 	<extension id="DeleteTransaction" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteTransaction"/>
 	</extension>
-	<extension id="UpdateTemplates" name="Update Templates" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateTemplates"/>
-	</extension>
 	<extension id="FindInvalidUTF8Chars" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindInvalidUTF8Chars"/>
 	</extension>
@@ -615,9 +612,6 @@
        name="Delete Extraneous Unspecified Attributes"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteExtraneousUnspecifiedAttributes"/>
-	</extension>
-	<extension id="AddTemplate" name="Add Word Template" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.AddTemplate"/>
 	</extension>
 	<extension id="InPlaceSmartTagRemover" name="In-Place Smart Tag Remover" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.InPlaceSmartTagRemover"/>
