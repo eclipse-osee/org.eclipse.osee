@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import org.eclipse.osee.framework.skynet.core.template.TemplateInitializer;
 
 /**
  * @author Roberto E. Escobar
@@ -30,6 +29,6 @@ class RootBranchInitializer {
       UniversalGroup.createTopUniversalGroupArtifact(branch);
 
       // Add default Word templates needed
-      TemplateInitializer.addFunctionality(branch);
+//      TemplateInitializer.addFunctionality(branch);
    }
 }

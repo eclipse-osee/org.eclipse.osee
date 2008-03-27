@@ -18,7 +18,6 @@
    <extension-point id="WebPage" name="WebPage" schema="schema/WebPage.exsd"/>
    <extension-point id="AttributeSaveListener" name="AttributeSaveListener" schema="schema/AttributeSaveListener.exsd"/>
    <extension-point id="AutoRunTask" name="AutoRunTask" schema="schema/AutoRunTask.exsd"/>
-   <extension-point id="TemplateProvider" name="TemplateProvider" schema="schema/TemplateProvider.exsd"/>
    <extension-point id="ArtifactCheck" name="ArtifactCheck" schema="schema/ArtifactCheck.exsd"/>
    
       <extension
