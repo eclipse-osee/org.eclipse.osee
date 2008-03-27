@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 
@@ -22,7 +23,7 @@ public class WordArtifactFactory extends ArtifactFactory<WordArtifact> {
    private static WordArtifactFactory factory = null;
    private static String[] WholeArtifactMatches =
          new String[] {"Checklist (WordML)", "Guideline", "How To", "Roadmap", "Template (WordML)",
-               "Test Procedure WML", "Work Instruction", "Work Sheet (WordML)"};
+               "Test Procedure WML", "Work Instruction", "Work Sheet (WordML)", "Renderer Template"};
 
    private WordArtifactFactory(int factoryId) {
       super(factoryId);
