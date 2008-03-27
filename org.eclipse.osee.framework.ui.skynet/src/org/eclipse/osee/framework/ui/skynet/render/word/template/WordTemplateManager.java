@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -98,12 +99,10 @@ private static final Matcher nameMatcher =
 	private List<ITemplateTask> tasks = new ArrayList<ITemplateTask>();
 	private final StringBuilder sb = new StringBuilder();
 	private final List<ITemplateAttributeHandler> attributeHandlers;
-   private String outlineType;
 	
-	public WordTemplateManager(String template, List<ITemplateAttributeHandler> attributeHandlers, String outlineType) {
+	public WordTemplateManager(String template, List<ITemplateAttributeHandler> attributeHandlers) {
 //		this.template = sanatize(template);
 	   this.template = template;
-	   this.outlineType = outlineType;
 		this.attributeHandlers = attributeHandlers;
 		this.artifactSetName = getArtifactSetName();
 //		preProcessTemplatePositions();
@@ -129,9 +128,7 @@ private static final Matcher nameMatcher =
 	}
 
 	private void preProcessTemplateInsideArtifactTag(String text, List<ITemplateTask> innerTasks){
-	   System.out.println(text.length());
 	   String newtext = text;//trimUnwantedText(text);
-	   System.out.println(text.length());
 	   attributeElementsMatcher.reset(newtext);
       int last = 0;
       while (attributeElementsMatcher.find()) {
@@ -252,7 +249,7 @@ private static final Matcher nameMatcher =
                      performedOutLining = true;
                      
                      String headingText = artifact.getSoleStringAttributeValue(artifactProcessingTask.getHeadingAttributeName());
-                     CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+                     CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, null);
                   }
 
                   List<ITemplateTask> actualTasks = preProcessTemplateTasks(artifactAttributeTasks, artifact);   

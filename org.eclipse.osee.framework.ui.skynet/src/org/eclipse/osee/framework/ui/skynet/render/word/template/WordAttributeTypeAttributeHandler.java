@@ -8,7 +8,9 @@ package org.eclipse.osee.framework.ui.skynet.render.word.template;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
@@ -24,8 +26,8 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
 
    private final Set<String> ignoreAttributeExtensions;
 
-   public WordAttributeTypeAttributeHandler(Set<String> ignoreAttributeExtensions) {
-      this.ignoreAttributeExtensions = ignoreAttributeExtensions;
+   public WordAttributeTypeAttributeHandler() {
+      this.ignoreAttributeExtensions = new HashSet<String>();
    }
 
    /* (non-Javadoc)
@@ -49,10 +51,14 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
             wordMl.addParagraph(templateAttribute.getLabel());
          }
 
+         if(false){
          WordTemplateProcessor.writeXMLMetaDataWrapper(wordMl,
                   WordTemplateProcessor.elementNameFor(attributeType.getName()),
                   "ns0:guid=\"" + artifact.getGuid() + "\"", "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"",
                   attribute.toString());
+         } else {
+        	 wordMl.addWordMl(attribute.toString());
+         }
          wordMl.resetListValue();
       }
    }

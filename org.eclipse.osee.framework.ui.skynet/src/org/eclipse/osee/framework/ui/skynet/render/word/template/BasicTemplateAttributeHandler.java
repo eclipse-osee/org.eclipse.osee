@@ -8,7 +8,9 @@ package org.eclipse.osee.framework.ui.skynet.render.word.template;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -23,8 +25,8 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
 
    private final Set<String> ignoreAttributeExtensions;
 
-   public BasicTemplateAttributeHandler(Set<String> ignoreAttributeExtensions) {
-      this.ignoreAttributeExtensions = ignoreAttributeExtensions;
+   public BasicTemplateAttributeHandler() {
+      this.ignoreAttributeExtensions = new HashSet<String>();
    }
 
    /*

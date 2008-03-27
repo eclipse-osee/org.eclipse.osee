@@ -442,7 +442,7 @@ public class WordRenderer extends FileRenderer {
       return templateProcessor.applyTemplate(variableMap, template, null, renderInEditMode);
    }
 
-   private String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {
+   protected String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {
       return TemplateManager.getInstance().getTemplate(this, artifact, presentationType.name(), option);
    }
 }
