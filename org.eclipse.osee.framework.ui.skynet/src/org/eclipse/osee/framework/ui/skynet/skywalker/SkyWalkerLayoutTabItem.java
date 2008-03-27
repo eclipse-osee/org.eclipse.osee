@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.mylyn.zest.layouts.algorithms.AbstractLayoutAlgorithm;
 import org.eclipse.osee.framework.ui.skynet.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions.LinkName;
@@ -34,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.zest.layouts.algorithms.AbstractLayoutAlgorithm;
 
 /**
  * @author Donald G. Dunne

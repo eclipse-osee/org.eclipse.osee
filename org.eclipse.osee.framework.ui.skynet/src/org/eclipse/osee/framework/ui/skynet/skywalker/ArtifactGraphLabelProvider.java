@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.mylyn.zest.core.viewers.EntityConnectionData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
@@ -24,6 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions.LinkName;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 /**
  * @author Robert A. Fisher

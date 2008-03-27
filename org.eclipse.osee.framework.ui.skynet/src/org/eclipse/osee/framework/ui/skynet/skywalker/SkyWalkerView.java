@@ -21,10 +21,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.mylyn.zest.core.viewers.GraphViewer;
-import org.eclipse.mylyn.zest.core.widgets.GraphItem;
-import org.eclipse.mylyn.zest.core.widgets.GraphNode;
-import org.eclipse.mylyn.zest.core.widgets.ZestStyles;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -50,6 +46,10 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.zest.core.viewers.GraphViewer;
+import org.eclipse.zest.core.widgets.GraphItem;
+import org.eclipse.zest.core.widgets.GraphNode;
+import org.eclipse.zest.core.widgets.ZestStyles;
 
 /**
  * @author Robert A. Fisher
@@ -86,8 +86,8 @@ public class SkyWalkerView extends ViewPart {
       viewer = new GraphViewer(viewerComp, ZestStyles.NONE);
       viewer.setContentProvider(new ArtifactGraphContentProvider(options));
       viewer.setLabelProvider(new ArtifactGraphLabelProvider(options));
-      viewer.setConnectionStyle(ZestStyles.CONNECTIONS_STRAIGHT);
-      viewer.setNodeStyle(ZestStyles.NODES_HIGHLIGHT_ADJACENT | ZestStyles.NODES_NO_LAYOUT_RESIZE);
+      viewer.setConnectionStyle(ZestStyles.CONNECTIONS_SOLID);
+      viewer.setNodeStyle(ZestStyles.NODES_NO_LAYOUT_RESIZE);
       viewer.addDoubleClickListener(new IDoubleClickListener() {
 
          public void doubleClick(DoubleClickEvent event) {

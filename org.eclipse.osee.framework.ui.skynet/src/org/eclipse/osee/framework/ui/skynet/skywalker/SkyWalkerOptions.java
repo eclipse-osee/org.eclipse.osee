@@ -19,13 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-import org.eclipse.mylyn.zest.layouts.LayoutStyles;
-import org.eclipse.mylyn.zest.layouts.algorithms.AbstractLayoutAlgorithm;
-import org.eclipse.mylyn.zest.layouts.algorithms.GridLayoutAlgorithm;
-import org.eclipse.mylyn.zest.layouts.algorithms.RadialLayoutAlgorithm;
-import org.eclipse.mylyn.zest.layouts.algorithms.SpringLayoutAlgorithm;
-import org.eclipse.mylyn.zest.layouts.algorithms.TreeLayoutAlgorithm;
-import org.eclipse.mylyn.zest.layouts.algorithms.VerticalLayoutAlgorithm;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,6 +35,13 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
 import org.eclipse.osee.framework.ui.skynet.skywalker.RelTypeContentProvider.RelationLinkDescriptorSide;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.zest.layouts.LayoutStyles;
+import org.eclipse.zest.layouts.algorithms.AbstractLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.GridLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.VerticalLayoutAlgorithm;
 
 /**
  * @author Donald G. Dunne

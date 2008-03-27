@@ -20,11 +20,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.mylyn.zest.core.viewers.IGraphEntityContentProvider;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
+import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
  * @author Robert A. Fisher
