@@ -23,9 +23,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -44,8 +46,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.template.SimpleTemplateProvider;
-import org.eclipse.osee.framework.skynet.core.template.TemplateLocator;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -55,8 +55,10 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
+import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.swt.program.Program;
 import org.w3c.dom.Element;
+
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
@@ -86,13 +88,11 @@ public class WordRenderer extends FileRenderer {
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
    private final WordTemplateProcessor templateProcessor;
-   private final WordTemplateProvider templateProvider;
-   private final SimpleTemplateProvider simpleTemplateProvider;
+// . private final ITemplateProvider templateProvider;
 
    public WordRenderer() throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
       this.templateProcessor = new WordTemplateProcessor();
-      this.templateProvider = WordTemplateProvider.getInstance();
-      this.simpleTemplateProvider = new SimpleTemplateProvider();
+//      this.templateProvider =  new SimpleTemplateProvider();
    }
 
    /**
@@ -411,11 +411,11 @@ public class WordRenderer extends FileRenderer {
 
       if (artifacts.isEmpty()) {
          //  Still need to get a default template with a null artifact list
-         template = getTemplate(branchManager.getCommonBranch(), null, presentationType, option);
+         template = getTemplate(null, presentationType, option);
       } else {
          boolean isSingleEdit = artifacts.size() == 1;
          Artifact firstArtifact = artifacts.iterator().next();
-         template = getTemplate(firstArtifact.getBranch(), firstArtifact, presentationType, option);
+         template = getTemplate(firstArtifact, presentationType, option);
 
          if (isSingleEdit) {
             if (!firstArtifact.getSoleStringAttributeValue(WordAttribute.OLE_DATA_NAME).equals("")) {
@@ -441,19 +441,16 @@ public class WordRenderer extends FileRenderer {
       return templateProcessor.applyTemplate(variableMap, template, null);
    }
 
-   public void addTemplate(PresentationType presentationType, String bundleName, String templateName, String templatePath, Branch branch) throws Exception {
-      TemplateLocator templateLocation = new TemplateLocator(bundleName, templateName, templatePath);
-      templateProvider.addTemplate(getId(), branch, presentationType.name(), templateLocation);
-   }
+//   public void addTemplate(PresentationType presentationType, String bundleName, String templateName, String templatePath, Branch branch) throws Exception {
+//      TemplateLocator templateLocation = new TemplateLocator(bundleName, templateName, templatePath);
+//      templateProvider.addTemplate(getId(), branch, presentationType.name(), templateLocation);
+//   }
 
-   public void setDefaultTemplates(Artifact document, PresentationType presentationType, Branch branch) throws Exception {
-      templateProvider.setDefaultTemplates(getId(), document, presentationType.name(), branch);
-   }
+//   public void setDefaultTemplates(Artifact document, PresentationType presentationType, Branch branch) throws Exception {
+//      templateProvider.setDefaultTemplates(this, document, presentationType.name(), branch);
+//   }
 
-   private String getTemplate(Branch branch, Artifact artifact, PresentationType presentationType, String option) throws Exception {
-      if (artifact.getArtifactTypeName().equals("Test Information Sheet")) {
-         return simpleTemplateProvider.getTemplate(getId(), branch, artifact, presentationType.name(), option);
-      }
-      return templateProvider.getTemplate(getId(), branch, artifact, presentationType.name(), option);
+   private String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {
+      return TemplateManager.getInstance().getTemplate(this, artifact, presentationType.name(), option);
    }
 }

@@ -518,7 +518,7 @@ public class WordTemplateProcessor {
    private void processAttributes(Artifact artifact, WordMLProducer wordMl) throws IOException, SQLException {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
-
+         
          if (attributeElement.getAttributeName().equals("*")) {
             try {
                for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
@@ -529,7 +529,9 @@ public class WordTemplateProcessor {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          } else {
-            processAttribute(artifact, wordMl, attributeElement, attributeName, false);
+        	 if(artifact.isAttributeTypeValid(attributeName)){
+        		 processAttribute(artifact, wordMl, attributeElement, attributeName, false);
+        	 } 
          }
       }
 
@@ -541,11 +543,13 @@ public class WordTemplateProcessor {
 
       // This is for SRS Publishing. Do not publish unspecified attributes
       if (!allAttrs && (attributeTypeName.equals("Partition") || attributeTypeName.equals("Safety Criticality"))) {
-         for (Attribute partition : artifact.getAttributeManager("Partition").getAttributes()) {
-            if (partition.getStringData().equals("Unspecified")) {
-               return;
-            }
-         }
+    	 if(artifact.isAttributeTypeValid("Partition")){
+    		 for (Attribute partition : artifact.getAttributeManager("Partition").getAttributes()) {
+    			 if (partition.getStringData().equals("Unspecified")) {
+    				 return;
+    			}
+    		 }
+    	 }
       }
 
       if (attributeTypeName.equals("TIS Traceability")) {
@@ -571,15 +575,21 @@ public class WordTemplateProcessor {
             if (attributeElement.label.length() > 0) {
                wordMl.addParagraph(attributeElement.label);
             }
-            String wordContent = WordUtil.stripSpellCheck(attribute.getStringData());
-            if (true) {
-               DynamicAttributeDescriptor attributeDescriptor = attribute.getManager().getAttributeType();
-               writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeDescriptor.getName()),
-                     "ns0:guid=\"" + artifact.getGuid() + "\"",
-                     "ns0:attrId=\"" + attributeDescriptor.getAttrTypeId() + "\"", wordContent);
+            Object val = attribute.getValue();
+            if(val != null){
+            	 String wordContent = WordUtil.stripSpellCheck(attribute.getValue().toString());//TODO what is the best way to get at unknown attribute types? (because this isn't it)
+                 if (true) {
+                    DynamicAttributeDescriptor attributeDescriptor = attribute.getManager().getAttributeType();
+                    writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeDescriptor.getName()),
+                          "ns0:guid=\"" + artifact.getGuid() + "\"",
+                          "ns0:attrId=\"" + attributeDescriptor.getAttrTypeId() + "\"", wordContent);
+                 } else {
+                    wordMl.addWordMl(wordContent);
+                 }
             } else {
-               wordMl.addWordMl(wordContent);
+            	System.out.println(artifact.getArtifactType().getName() + " : " + artifact.getSoleXAttributeValue("Name") + " : " +attribute.getAttributeType().getName() +" == null");
             }
+           
             wordMl.resetListValue();
          } else {
             wordMl.startParagraph();

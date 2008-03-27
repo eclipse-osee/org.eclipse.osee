@@ -13,13 +13,14 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.template.AbstractTemplateProvider;
-import org.eclipse.osee.framework.skynet.core.template.TemplateLocator;
+import org.eclipse.osee.framework.ui.skynet.templates.AbstractTemplateProvider;
+import org.eclipse.osee.framework.ui.skynet.templates.TemplateLocator;
 
 /**
  * @author Roberto E. Escobar
@@ -88,4 +89,22 @@ public class WordTemplateProvider extends AbstractTemplateProvider {
          setDefaultTemplates(wordRendererId, document, presentationType.name(), parentFolder.getBranch());
       }
    }
+
+/* (non-Javadoc)
+ * @see org.eclipse.osee.framework.ui.skynet.template.ITemplateProvider#getApplicabilityRating(org.eclipse.osee.framework.ui.skynet.render.IRenderer, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
+ */
+@Override
+public int getApplicabilityRating(IRenderer renderer, Artifact artifact,
+		String presentationType, String option) {
+	return 0;
+}
+
+/* (non-Javadoc)
+ * @see org.eclipse.osee.framework.ui.skynet.template.ITemplateProvider#getTemplate(org.eclipse.osee.framework.ui.skynet.render.IRenderer, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
+ */
+@Override
+public String getTemplate(IRenderer rendererId, Artifact artifact,
+		String presentationType, String option) throws Exception {
+	return null;
+}
 }
