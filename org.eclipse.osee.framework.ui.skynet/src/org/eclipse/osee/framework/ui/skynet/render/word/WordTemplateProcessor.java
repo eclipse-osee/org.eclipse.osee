@@ -48,10 +48,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Robert A. Fisher
@@ -117,6 +115,7 @@ public class WordTemplateProcessor {
    private boolean saveParagraphNumOnArtifact;
    private Set<String> ignoreAttributeExtensions;
    private int previousTemplateCopyIndex;
+   private boolean isEditMode = true;
 
    public WordTemplateProcessor() {
       this(null, null);
@@ -129,6 +128,7 @@ public class WordTemplateProcessor {
       this.attributeElements = new LinkedList<AttributeElement>();
       this.updateParagraphNumbers = false;
       this.saveParagraphNumOnArtifact = false;
+      this.isEditMode = false;
       this.ignoreAttributeExtensions = new HashSet<String>();
 
       try {
@@ -145,6 +145,7 @@ public class WordTemplateProcessor {
     * @throws IOException
     */
    public void applyTemplate(IFolder folder, BlamVariableMap variableMap) throws Exception {
+	  isEditMode = false;
       String fileName = variableMap.getString("MasterFileName");
       if (fileName == null) {
          fileName = "new file " + (new Date().toString().replaceAll(":", ";"));
@@ -196,8 +197,9 @@ public class WordTemplateProcessor {
     * 
     * @throws Exception
     */
-   public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType) throws Exception {
-      CharBackedInputStream charBak = new CharBackedInputStream();
+   public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType, boolean isEditMode) throws Exception {
+	  this.isEditMode = isEditMode;
+	  CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
       previousTemplateCopyIndex = 0;
 
@@ -520,14 +522,10 @@ public class WordTemplateProcessor {
          String attributeName = attributeElement.getAttributeName();
          
          if (attributeElement.getAttributeName().equals("*")) {
-            try {
                for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
                   processAttribute(artifact, wordMl, attributeElement, attributeManager.getAttributeType().getName(),
                         true);
                }
-            } catch (SQLException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-            }
          } else {
         	 if(artifact.isAttributeTypeValid(attributeName)){
         		 processAttribute(artifact, wordMl, attributeElement, attributeName, false);
@@ -577,8 +575,8 @@ public class WordTemplateProcessor {
             }
             Object val = attribute.getValue();
             if(val != null){
-            	 String wordContent = WordUtil.stripSpellCheck(attribute.getValue().toString());//TODO what is the best way to get at unknown attribute types? (because this isn't it)
-                 if (true) {
+            	 String wordContent = WordUtil.stripSpellCheck(attribute.toString());//TODO what is the best way to get at unknown attribute types? (because this isn't it)
+                 if (isEditMode ) {
                     DynamicAttributeDescriptor attributeDescriptor = attribute.getManager().getAttributeType();
                     writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeDescriptor.getName()),
                           "ns0:guid=\"" + artifact.getGuid() + "\"",

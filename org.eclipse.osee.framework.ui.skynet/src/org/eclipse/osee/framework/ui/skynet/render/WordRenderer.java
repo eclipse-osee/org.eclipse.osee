@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
@@ -81,18 +80,15 @@ public class WordRenderer extends FileRenderer {
    private static final QName fo = new QName("ns0", "unused_localname", ARTIFACT_SCHEMA);
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(WordRenderer.class);
 
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final Pattern pattern =
          Pattern.compile("<v:imagedata[^>]*src=\"wordml://(\\d+\\.\\w+)\"[^>]*>",
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
    private final WordTemplateProcessor templateProcessor;
-// . private final ITemplateProvider templateProvider;
 
    public WordRenderer() throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
       this.templateProcessor = new WordTemplateProcessor();
-//      this.templateProvider =  new SimpleTemplateProvider();
    }
 
    /**
@@ -438,17 +434,13 @@ public class WordRenderer extends FileRenderer {
       }
 
       variableMap.setValue(DEFAULT_SET_NAME, artifacts);
-      return templateProcessor.applyTemplate(variableMap, template, null);
+      
+      boolean renderInEditMode = false;
+      if(PresentationType.EDIT == presentationType){
+    	  renderInEditMode = true;
+      }
+      return templateProcessor.applyTemplate(variableMap, template, null, renderInEditMode);
    }
-
-//   public void addTemplate(PresentationType presentationType, String bundleName, String templateName, String templatePath, Branch branch) throws Exception {
-//      TemplateLocator templateLocation = new TemplateLocator(bundleName, templateName, templatePath);
-//      templateProvider.addTemplate(getId(), branch, presentationType.name(), templateLocation);
-//   }
-
-//   public void setDefaultTemplates(Artifact document, PresentationType presentationType, Branch branch) throws Exception {
-//      templateProvider.setDefaultTemplates(this, document, presentationType.name(), branch);
-//   }
 
    private String getTemplate(Artifact artifact, PresentationType presentationType, String option) throws Exception {
       return TemplateManager.getInstance().getTemplate(this, artifact, presentationType.name(), option);

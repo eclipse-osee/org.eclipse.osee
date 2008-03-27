@@ -44,35 +44,39 @@ public class SimpleTemplateProvider implements ITemplateProvider {
     * @see org.eclipse.osee.framework.skynet.core.template.ITemplateProvider#getTemplate(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
     */
    @Override
-   public String getTemplate(IRenderer rendererId, Artifact artifact, String presentationType, String option) throws Exception {
+   public String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws Exception {
 	  
-	   List<String> possibleTemplateNames = getPossibleTemplateNamesStartingWithTheMostSpecialized(rendererId, artifact, presentationType, option);
+	   List<String> possibleTemplateNames = getPossibleTemplateNamesOrderedBySpecialization(renderer, artifact, presentationType, option);
 	   
 	   for(String name:possibleTemplateNames){
-		   Artifact template =
-               artifactManager.getArtifactFromTypeName("Template (WordML)", name,
-                     branchManager.getCommonBranch(), false);
-		   if(template != null){
+		   Artifact template = templateMap.get(name);
+		   if(template == null && !templateMap.containsKey(name)){//we check the key so that we do not hit the DB a second time, in the case where the template can not be found
+			   template =
+	               artifactManager.getArtifactFromTypeName("Template (WordML)", name,
+	                     branchManager.getCommonBranch(), false);
 			   templateMap.put(name, template);
+			   
+		   }  
+		   if(template != null){
 			   return template.getSoleXAttributeValue(WordAttribute.CONTENT_NAME);
 		   }
 	   }
-	   throw new IllegalStateException(String.format("Unable to find a valid tempalte for [%s, %s, %s, %s].", rendererId.toString(), artifact.toString(), presentationType, option));
+	   throw new IllegalStateException(String.format("Unable to find a valid tempalte for [%s, %s, %s, %s].", renderer.toString(), artifact.toString(), presentationType, option));
    }
    
-   private List<String> getPossibleTemplateNamesStartingWithTheMostSpecialized(IRenderer rendererId, Artifact artifact, String presentationType, String option){
-	   if(rendererId == null || presentationType == null){
+   private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, String presentationType, String option){
+	   if(renderer == null || presentationType == null){
 		   throw new IllegalArgumentException(String.format(
-	               "Invalid renderer[%s] or presentationType[%s]", rendererId.toString(), presentationType.toString()));
+	               "Invalid renderer[%s] or presentationType[%s]", renderer.toString(), presentationType.toString()));
 	   }
 	   List<String> list = new ArrayList<String>();
 	   if(artifact != null && option != null){
-		  list.add(rendererId.getId() + " " + artifact.getArtifactTypeName() + " " + presentationType + " " + option);
+		  list.add(renderer.getId() + " " + artifact.getArtifactTypeName() + " " + presentationType + " " + option);
 	   }
 	   if(option != null){
-		  list.add(rendererId.getId() + " " + presentationType + " " + option);
+		  list.add(renderer.getId() + " " + presentationType + " " + option);
 	   }
-	   list.add(rendererId.getId() + " " + presentationType);
+	   list.add(renderer.getId() + " " + presentationType);
 	   return list;
    }
 

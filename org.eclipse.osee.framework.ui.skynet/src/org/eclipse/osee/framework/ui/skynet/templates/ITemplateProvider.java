@@ -23,7 +23,7 @@ public interface ITemplateProvider {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 	   
-   public String getTemplate(IRenderer rendererId, Artifact artifact, String presentationType, String option) throws Exception;
+   public String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws Exception;
    
    public abstract int getApplicabilityRating(IRenderer renderer, Artifact artifact, String presentationType, String option);
 
