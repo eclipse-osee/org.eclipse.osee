@@ -12,14 +12,11 @@ package org.eclipse.osee.define.traceability;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.CharBuffer;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.regex.Matcher;
+import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -30,13 +27,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -49,59 +46,31 @@ import org.eclipse.swt.program.Program;
  * @author Ryan D. Brooks
  */
 public class ImportTraceabilityJob extends Job {
-   private static final Pattern ofpReqTraceP = Pattern.compile("\\^SRS\\s*([^;\n\r]+);");
-   private final Matcher ofpReqTraceMatcher;
-   private static final Pattern scriptReqTraceP =
-         Pattern.compile("addTraceability\\s*\\(\\\"(?:SubDD|SRS|CSID)?\\s*([^\\\"]+)\\\"");
-   private final Matcher scriptReqTraceMatcher;
-   private static final Pattern structuredReqNameP = Pattern.compile("\\[?(\\{[^\\}]+\\})(.*)");
    private static final Pattern filePattern = Pattern.compile(".*\\.(java|ada|ads|adb|c|h)");
-   private static final Pattern embeddedVolumePattern = Pattern.compile("\\{\\d+ (.*)\\}[ .]*");
-   private static final Pattern invalidTraceMarkPattern = Pattern.compile("(\\[[A-Za-z]|USES_).*");
-   private static final Pattern nonWordPattern = Pattern.compile("[^A-Z_0-9]");
+   private static final TraceabilityExtractor traceExtractor = TraceabilityExtractor.getInstance();
 
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private final File file;
-   private final Branch branch;
+   private final RequirementData requirementData;
    private final ArrayList<String> noTraceabilityFiles;
-   private final HashMap<String, Artifact> softwareReqs;
-   private final HashMap<String, Artifact> indirectReqs;
    private final CountingMap<Artifact> reqsTraceCounts;
    private final HashCollection<Artifact, String> requirementToCodeUnitsMap;
    private final HashSet<String> codeUnits;
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
    private int pathPrefixLength;
-   private Collection<Artifact> softwareReqList;
-   private Collection<Artifact> indirectSoftwareReqList;
    private boolean writeOutResults;
 
    public ImportTraceabilityJob(File file, Branch branch, boolean writeOutResults) throws IllegalArgumentException, CoreException, SQLException, IOException {
       super("Importing Traceability");
       this.file = file;
-      this.branch = branch;
+      this.requirementData = new RequirementData(branch);
       noTraceabilityFiles = new ArrayList<String>(200);
-      softwareReqs = new HashMap<String, Artifact>(3500);
-      indirectReqs = new HashMap<String, Artifact>(700);
       reqsTraceCounts = new CountingMap<Artifact>();
       codeUnits = new HashSet<String>();
       requirementToCodeUnitsMap = new HashCollection<Artifact, String>(false, LinkedList.class);
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
-      ofpReqTraceMatcher = ofpReqTraceP.matcher("");
-      scriptReqTraceMatcher = scriptReqTraceP.matcher("");
       this.writeOutResults = writeOutResults;
-   }
-
-   private void getReqs(String artifactTypeName, Collection<Artifact> requirementsList, HashMap<String, Artifact> artifactMap, IProgressMonitor monitor) throws SQLException {
-      monitor.subTask("Aquiring " + artifactTypeName + "s"); // bulk load for performance reasons
-      if (requirementsList == null) {
-         requirementsList = artifactManager.getArtifactsFromSubtypeName(artifactTypeName, branch);
-      }
-
-      for (Artifact artifact : requirementsList) {
-         artifactMap.put(getCanonicalReqName(artifact.getDescriptiveName()), artifact);
-      }
    }
 
    /*
@@ -109,65 +78,58 @@ public class ImportTraceabilityJob extends Job {
     * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
     */
    public IStatus run(IProgressMonitor monitor) {
+      IStatus toReturn = Status.CANCEL_STATUS;
       try {
          monitor.beginTask("Importing From " + file.getName(), 100);
          monitor.worked(1);
 
-         getReqs("Software Requirement", softwareReqList, softwareReqs, monitor);
-         monitor.worked(30);
+         requirementData.initialize(monitor);
 
-         getReqs("Indirect Software Requirement", indirectSoftwareReqList, indirectReqs, monitor);
-         monitor.worked(7);
-
-         if (writeOutResults) {
-            excelWriter.startSheet("srs <--> code units", 6);
-            excelWriter.writeRow("Req in DB", "Code Unit", "Requirement Name", "Requirement Trace Mark in Code");
-         }
-
-         if (file.isFile()) {
-            for (String path : Lib.readListFromFile(file, true)) {
-               monitor.subTask(path);
-               handleDirectory(new File(path));
+         if (monitor.isCanceled() != true) {
+            if (writeOutResults) {
+               excelWriter.startSheet("srs <--> code units", 6);
+               excelWriter.writeRow("Req in DB", "Code Unit", "Requirement Name", "Requirement Trace Mark in Code");
             }
-         } else if (file.isDirectory()) {
-            handleDirectory(file);
-         } else {
-            throw new IllegalStateException("unexpected file system type");
+
+            if (file.isFile()) {
+               for (String path : Lib.readListFromFile(file, true)) {
+                  monitor.subTask(path);
+                  handleDirectory(new File(path));
+                  if (monitor.isCanceled() == true) {
+                     break;
+                  }
+               }
+            } else if (file.isDirectory()) {
+               handleDirectory(file);
+            } else {
+               throw new IllegalStateException("unexpected file system type");
+            }
+
+            if (writeOutResults && monitor.isCanceled() != true) {
+               excelWriter.endSheet();
+
+               writeNoTraceFilesSheet();
+               writeTraceCountsSheet();
+
+               excelWriter.endWorkbook();
+               IFile iFile = OseeData.getIFile("CodeUnit_To_SRS_Trace.xml");
+               AIFile.writeToFile(iFile, charBak);
+               Program.launch(iFile.getLocation().toOSString());
+            }
+
+            if (monitor.isCanceled() != true) {
+               toReturn = Status.OK_STATUS;
+            }
          }
-
-         if (writeOutResults) {
-            excelWriter.endSheet();
-
-            writeNoTraceFilesSheet();
-            writeTraceCountsSheet();
-
-            excelWriter.endWorkbook();
-            IFile iFile = OseeData.getIFile("CodeUnit_To_SRS_Trace.xml");
-            AIFile.writeToFile(iFile, charBak);
-            Program.launch(iFile.getLocation().toOSString());
-         }
-
-         monitor.done();
-         return Status.OK_STATUS;
       } catch (Exception ex) {
-         return new Status(Status.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+         toReturn = new Status(Status.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
+      } finally {
+         monitor.done();
       }
+      return toReturn;
    }
 
-   private String getCanonicalReqName(String reqReference) {
-      String canonicalReqReference = reqReference.toUpperCase();
-
-      Matcher embeddedVolumeMatcher = embeddedVolumePattern.matcher(canonicalReqReference);
-      if (embeddedVolumeMatcher.find()) {
-         canonicalReqReference = embeddedVolumeMatcher.group(1);
-      }
-
-      canonicalReqReference = nonWordPattern.matcher(canonicalReqReference).replaceAll("");
-
-      return canonicalReqReference;
-   }
-
-   private void handleDirectory(File directory) throws IOException, SQLException {
+   private void handleDirectory(File directory) throws Exception {
       if (directory == null || directory.getParentFile() == null) {
          OSEELog.logWarning(DefinePlugin.class, "The path " + directory + " is invalid.", true);
          return;
@@ -176,28 +138,19 @@ public class ImportTraceabilityJob extends Job {
       pathPrefixLength = directory.getParentFile().getAbsolutePath().length();
 
       for (File sourceFile : Lib.recursivelyListFiles(directory, filePattern)) {
-         CharBuffer buf = Lib.fileToCharBuffer(sourceFile);
-         Matcher reqTraceMatcher = getReqTraceMatcher(sourceFile);
-         reqTraceMatcher.reset(buf);
+         List<String> traceMarks = traceExtractor.getTraceMarksFromFile(sourceFile);
 
          int matchCount = 0;
          String relativePath = sourceFile.getPath().substring(pathPrefixLength);
          codeUnits.add(relativePath);
-         while (reqTraceMatcher.find()) {
-            handelReqTrace(relativePath, reqTraceMatcher.group(1));
+         for (String traceMark : traceMarks) {
+            handelReqTrace(relativePath, traceMark);
             matchCount++;
          }
          if (matchCount == 0) {
             noTraceabilityFiles.add(relativePath);
          }
       }
-   }
-
-   private Matcher getReqTraceMatcher(File sourceFile) {
-      if (sourceFile.getName().endsWith("java")) {
-         return scriptReqTraceMatcher;
-      }
-      return ofpReqTraceMatcher;
    }
 
    private void writeNoTraceFilesSheet() throws IOException {
@@ -213,7 +166,7 @@ public class ImportTraceabilityJob extends Job {
       excelWriter.writeRow("SRS Requirement from Database", "Trace Count", "Partitions");
       excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)");
 
-      for (Artifact artifact : softwareReqs.values()) {
+      for (Artifact artifact : requirementData.getDirectSwRequirements()) {
          excelWriter.writeRow(artifact.getDescriptiveName(), String.valueOf(reqsTraceCounts.get(artifact)),
                Collections.toString(",", artifact.getAttributesToStringCollection("Partition")));
       }
@@ -225,15 +178,14 @@ public class ImportTraceabilityJob extends Job {
       String foundStr;
       Artifact reqArtifact = null;
 
-      Matcher invalidTraceMarkMatcher = invalidTraceMarkPattern.matcher(traceMark);
-      if (invalidTraceMarkMatcher.matches()) {
+      if (traceExtractor.isValidTraceMark(traceMark) != true) {
          foundStr = "invalid trace mark";
       } else {
-         reqArtifact = getRequirementArtifact(traceMark);
+         reqArtifact = requirementData.getRequirementFromTraceMark(traceMark);
          if (reqArtifact == null) {
-            Matcher structuredReqNameMatcher = structuredReqNameP.matcher(traceMark);
-            if (structuredReqNameMatcher.matches()) {
-               reqArtifact = getRequirementArtifact(structuredReqNameMatcher.group(1));
+            Pair<String, String> structuredRequirement = traceExtractor.getStructuredRequirement(traceMark);
+            if (structuredRequirement != null) {
+               reqArtifact = requirementData.getRequirementFromTraceMark(structuredRequirement.getKey());
 
                if (reqArtifact == null) {
                   foundStr = "no match in DB";
@@ -242,7 +194,7 @@ public class ImportTraceabilityJob extends Job {
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
                   String textContent =
                         WordUtil.textOnly(reqArtifact.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME)).toUpperCase();
-                  if (textContent.contains(getCanonicalReqName(structuredReqNameMatcher.group(2)))) {
+                  if (textContent.contains(traceExtractor.getCanonicalRequirementName(structuredRequirement.getValue()))) {
                      foundStr = "req body match";
                   } else {
                      foundStr = "paritial match";
@@ -267,15 +219,6 @@ public class ImportTraceabilityJob extends Job {
       }
    }
 
-   private Artifact getRequirementArtifact(String traceMark) {
-      String canonicalTraceMark = getCanonicalReqName(traceMark);
-      Artifact reqArtifact = softwareReqs.get(canonicalTraceMark);
-      if (reqArtifact == null) {
-         reqArtifact = indirectReqs.get(canonicalTraceMark);
-      }
-      return reqArtifact;
-   }
-
    private String fullMatch(Artifact reqArtifact) {
       reqsTraceCounts.put(reqArtifact);
       return "full match";
@@ -293,10 +236,11 @@ public class ImportTraceabilityJob extends Job {
    }
 
    /**
-    * @param softwareReqList the softwareReqList to set
+    * Get all direct and indirect software requirements
+    * 
+    * @return requirement data
     */
-   public void setSoftwareReqLists(Collection<Artifact> softwareReqList, Collection<Artifact> indirectSoftwareReqList) {
-      this.softwareReqList = softwareReqList;
-      this.indirectSoftwareReqList = indirectSoftwareReqList;
+   public RequirementData getRequirementData() {
+      return requirementData;
    }
 }
