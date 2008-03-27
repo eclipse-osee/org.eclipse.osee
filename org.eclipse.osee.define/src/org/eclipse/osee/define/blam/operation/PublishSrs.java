@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
-import java.io.FileInputStream;
-import java.util.LinkedList;
-
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.jdk.core.util.io.Streams;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
@@ -27,11 +27,14 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 public class PublishSrs extends AbstractBlam {
 
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      String masterTemplate =
-            new String(Streams.getByteArray(new FileInputStream(variableMap.getString("Master Template"))), "UTF-8");
-      String slaveTemplate =
-            new String(Streams.getByteArray(new FileInputStream(variableMap.getString("Slave Template"))), "UTF-8");
-      boolean updateParagraphNumber = !variableMap.getValue((new LinkedList<Object>()).getClass(), "Update Paragraph Numbers").isEmpty();
+	   
+	  Artifact srsMasterTemplate = ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Template (WordML)", "srsMasterTemplate", BranchPersistenceManager.getInstance().getCommonBranch());
+	  String masterTemplate = srsMasterTemplate.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME);
+	  
+	  Artifact srsSlaveTemplate = ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Template (WordML)", "srsSlaveTemplate", BranchPersistenceManager.getInstance().getCommonBranch());
+	  String slaveTemplate = srsSlaveTemplate.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME);
+	  
+      boolean updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers");
       WordTemplateProcessor processor = new WordTemplateProcessor(masterTemplate, slaveTemplate);
       processor.setSaveParagraphNumOnArtifact(updateParagraphNumber);
       variableMap.setValue("MasterFileName", "SRS");
@@ -43,6 +46,6 @@ public class PublishSrs extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"Master Template\" /><XWidget xwidgetType=\"XText\" displayName=\"Slave Template\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /></xWidgets>";
    }
 }
