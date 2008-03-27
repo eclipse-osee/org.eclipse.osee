@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__CHILD;
 import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__PARENT;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -723,6 +725,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
    public String getDescriptiveName() {
       try {
+    	 if(!isAttributeTypeValid("Name")){
+    		 throw new IllegalStateException(String.format("Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.", getArtifactTypeName(), getGuid()));
+    	 }
          Attribute<String> attribute = getSoleAttribute("Name");
          if (attribute == null) {
             return UNNAMED;
@@ -731,7 +736,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          }
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-         return "<error>";
+         return ex.getLocalizedMessage();
       }
    }
 
