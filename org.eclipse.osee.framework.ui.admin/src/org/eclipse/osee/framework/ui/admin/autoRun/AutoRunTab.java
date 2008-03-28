@@ -153,7 +153,7 @@ public class AutoRunTab {
       }
       emailResultsRadio.refresh();
 
-      xAutoRunViewer.getXViewer().refresh();
+      if (xAutoRunViewer != null) xAutoRunViewer.getXViewer().refresh();
    }
 
    private boolean isUserAllowedToOperate(User user) {
