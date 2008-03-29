@@ -75,12 +75,6 @@
          <Operation className="org.eclipse.osee.define.blam.operation.PublishPids"/>
       </extension>
       <extension
-            id="PublishSoftwareTestPlan"
-            name="Publish Software Test Plan"
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation className="org.eclipse.osee.define.blam.operation.PublishSoftwareTestPlan"/>
-      </extension>
-      <extension
             id="ChangeArtifactType"
             point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
          <Operation className="org.eclipse.osee.define.blam.operation.ChangeArtifactType"/>

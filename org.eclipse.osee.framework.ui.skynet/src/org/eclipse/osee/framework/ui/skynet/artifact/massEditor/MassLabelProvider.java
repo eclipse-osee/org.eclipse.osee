@@ -43,15 +43,16 @@ public class MassLabelProvider implements ITableLabelProvider {
       if (columnIndex > (getTreeViewer().getTree().getColumns().length - 1)) {
          return "";
       }
-      TreeColumn treeCol = getTreeViewer().getTree().getColumns()[columnIndex];
-      String colName = treeCol.getText();
-      if (colName.equals(Extra_Columns.HRID.name()))
-         return artifact.getHumanReadableId();
-      else if (colName.equals(Extra_Columns.GUID.name()))
-         return artifact.getGuid();
-      else if (colName.equals(Extra_Columns.Artifact_Type.name())) return artifact.getArtifactTypeName();
 
       try {
+         TreeColumn treeCol = getTreeViewer().getTree().getColumns()[columnIndex];
+         String colName = treeCol.getText();
+         if (colName.equals(Extra_Columns.HRID.name()))
+            return artifact.getHumanReadableId();
+         else if (colName.equals(Extra_Columns.GUID.name()))
+            return artifact.getGuid();
+         else if (colName.equals(Extra_Columns.Artifact_Type.name())) return artifact.getArtifactTypeName();
+
          if (!artifact.isAttributeTypeValid(colName)) {
             return "";
          }

@@ -67,12 +67,12 @@ public abstract class WorkPageService {
          if (smaMgr.isHistoricalVersion())
             AWorkbench.popup(
                   "Historical Error",
-                  "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeName() + ":\n\n" + smaMgr.getSma());
+                  "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeNameSuppressException() + ":\n\n" + smaMgr.getSma());
 
          else
             AWorkbench.popup(
                   "Authentication Error",
-                  "You do not have permissions to edit " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
+                  "You do not have permissions to edit " + smaMgr.getSma().getArtifactTypeNameSuppressException() + ":" + smaMgr.getSma());
       };
 
       public void linkEntered(org.eclipse.ui.forms.events.HyperlinkEvent e) {

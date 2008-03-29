@@ -42,10 +42,12 @@ public class LabelSorter extends ViewerSorter {
       if (e1 instanceof Artifact) art1 = (Artifact) e1;
       if (e2 instanceof Artifact) art2 = (Artifact) e2;
 
-      boolean e1IsHeading = (art1 != null && art1.getArtifactTypeName().equals("Heading"));
-      boolean e2IsHeading = (art2 != null && art2.getArtifactTypeName().equals("Heading"));
-      boolean e1IsNarrative = (art1 != null && !e1IsHeading && art1.getArtifactTypeName().equals("Narrative"));
-      boolean e2IsNarrative = (art2 != null && !e2IsHeading && art2.getArtifactTypeName().equals("Narrative"));
+      boolean e1IsHeading = (art1 != null && art1.getArtifactTypeNameSuppressException().equals("Heading"));
+      boolean e2IsHeading = (art2 != null && art2.getArtifactTypeNameSuppressException().equals("Heading"));
+      boolean e1IsNarrative =
+            (art1 != null && !e1IsHeading && art1.getArtifactTypeNameSuppressException().equals("Narrative"));
+      boolean e2IsNarrative =
+            (art2 != null && !e2IsHeading && art2.getArtifactTypeNameSuppressException().equals("Narrative"));
 
       if (e1IsHeading ^ e2IsHeading) return (e1IsHeading ? -1 : 1);
 

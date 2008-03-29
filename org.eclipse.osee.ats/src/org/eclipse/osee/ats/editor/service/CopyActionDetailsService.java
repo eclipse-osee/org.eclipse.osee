@@ -32,7 +32,7 @@ public class CopyActionDetailsService extends WorkPageService {
    private void performCopy() {
       if (clipboard == null) this.clipboard = new Clipboard(null);
       clipboard.setContents(
-            new Object[] {"\"" + smaMgr.getSma().getArtifactTypeName() + "\" - " + smaMgr.getSma().getHumanReadableId() + " - \"" + smaMgr.getSma().getDescriptiveName() + "\""},
+            new Object[] {"\"" + smaMgr.getSma().getArtifactTypeNameSuppressException() + "\" - " + smaMgr.getSma().getHumanReadableId() + " - \"" + smaMgr.getSma().getDescriptiveName() + "\""},
             new Transfer[] {TextTransfer.getInstance()});
    }
 
@@ -56,7 +56,7 @@ public class CopyActionDetailsService extends WorkPageService {
     */
    @Override
    public String getName() {
-      return "Copy " + smaMgr.getSma().getArtifactTypeName() + " details to clipboard";
+      return "Copy " + smaMgr.getSma().getArtifactTypeNameSuppressException() + " details to clipboard";
    }
 
 }

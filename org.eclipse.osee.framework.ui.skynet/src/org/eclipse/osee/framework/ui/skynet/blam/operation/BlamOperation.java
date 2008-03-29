@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
 public interface BlamOperation {
    public static final String emptyXWidgetsXml = "<xWidgets/>";
    public static final String branchXWidgetXml =
-         "<xWidgets><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /></xWidgets>";
+         "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
 
    public abstract void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception;
 

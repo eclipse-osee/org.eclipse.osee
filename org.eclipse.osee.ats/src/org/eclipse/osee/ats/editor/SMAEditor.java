@@ -90,10 +90,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       if (smaMgr.isHistoricalVersion()) {
          AWorkbench.popup(
                "Historical Error",
-               "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeName() + ":\n\n" + smaMgr.getSma());
+               "You can not change a historical version of " + smaMgr.getSma().getArtifactTypeNameSuppressException() + ":\n\n" + smaMgr.getSma());
       } else if (!smaMgr.isAccessControlWrite()) {
-         AWorkbench.popup("Authentication Error",
-               "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
+         AWorkbench.popup(
+               "Authentication Error",
+               "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeNameSuppressException() + ":" + smaMgr.getSma());
       } else {
          smaMgr.getSma().saveSMA();
          workFlowTab.refresh();
@@ -165,7 +166,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    public String toString() {
-      return "SMAEditor " + smaMgr.getSma().getHumanReadableId() + " - " + smaMgr.getSma().getArtifactTypeName() + " - " + smaMgr.getSma().getDescriptiveName();
+      return "SMAEditor " + smaMgr.getSma().getHumanReadableId() + " - " + smaMgr.getSma().getArtifactTypeNameSuppressException() + " - " + smaMgr.getSma().getDescriptiveName();
    }
 
    @Override

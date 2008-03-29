@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -39,66 +38,69 @@ public class SimpleTemplateProvider implements ITemplateProvider {
       templateMap = new HashMap<String, Artifact>();
    }
 
-
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.template.ITemplateProvider#getTemplate(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
     */
    @Override
    public String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws Exception {
-	  
-	   List<String> possibleTemplateNames = getPossibleTemplateNamesOrderedBySpecialization(renderer, artifact, presentationType, option);
-	   
-	   for(String name:possibleTemplateNames){
-		   Artifact template = templateMap.get(name);
-		   if(template == null && !templateMap.containsKey(name)){//we check the key so that we do not hit the DB a second time, in the case where the template can not be found
-			   template =
-	               artifactManager.getArtifactFromTypeName("Template (WordML)", name,
-	                     branchManager.getCommonBranch(), false);
-			   templateMap.put(name, template);
-			   
-		   }  
-		   if(template != null){
-			   return template.getSoleXAttributeValue(WordAttribute.CONTENT_NAME);
-		   }
-	   }
-	   throw new IllegalStateException(String.format("Unable to find a valid tempalte for [%s, %s, %s, %s].", renderer.toString(), artifact.toString(), presentationType, option));
-   }
-   
-   private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, String presentationType, String option){
-	   if(renderer == null || presentationType == null){
-		   throw new IllegalArgumentException(String.format(
-	               "Invalid renderer[%s] or presentationType[%s]", renderer.toString(), presentationType.toString()));
-	   }
-	   List<String> list = new ArrayList<String>();
-	   if(artifact != null && option != null){
-		  list.add(renderer.getId() + " " + artifact.getArtifactTypeName() + " " + presentationType + " " + option);
-	   }
-	   if(option != null){
-		  list.add(renderer.getId() + " " + presentationType + " " + option);
-	   }
-	   list.add(renderer.getId() + " " + presentationType);
-	   return list;
+
+      List<String> possibleTemplateNames =
+            getPossibleTemplateNamesOrderedBySpecialization(renderer, artifact, presentationType, option);
+
+      for (String name : possibleTemplateNames) {
+         Artifact template = templateMap.get(name);
+         if (template == null && !templateMap.containsKey(name)) {//we check the key so that we do not hit the DB a second time, in the case where the template can not be found
+            template =
+                  artifactManager.getArtifactFromTypeName("Template (WordML)", name, branchManager.getCommonBranch(),
+                        false);
+            templateMap.put(name, template);
+
+         }
+         if (template != null) {
+            return template.getSoleXAttributeValue(WordAttribute.CONTENT_NAME);
+         }
+      }
+      throw new IllegalStateException(String.format("Unable to find a valid tempalte for [%s, %s, %s, %s].",
+            renderer.toString(), artifact.toString(), presentationType, option));
    }
 
-/* (non-Javadoc)
- * @see org.eclipse.osee.framework.skynet.core.template.ITemplateProvider#getApplicabilityRating(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
- */
-@Override
-public int getApplicabilityRating(IRenderer rendererId, Artifact artifact,
-		String presentationType, String option) {
-	return ITemplateProvider.DEFAULT_MATCH;
-}
+   private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, String presentationType, String option) {
+      if (renderer == null || presentationType == null) {
+         throw new IllegalArgumentException(String.format("Invalid renderer[%s] or presentationType[%s]",
+               renderer.toString(), presentationType.toString()));
+      }
+      List<String> list = new ArrayList<String>();
+      if (artifact != null && option != null) {
+         list.add(renderer.getId() + " " + artifact.getArtifactTypeNameSuppressException() + " " + presentationType + " " + option);
+      }
+      if (option != null) {
+         list.add(renderer.getId() + " " + presentationType + " " + option);
+      }
+      list.add(renderer.getId() + " " + presentationType);
+      return list;
+   }
 
-public void somefunctionToBeUsedbyDBinit() throws SQLException, IllegalStateException, IOException{
-	 Artifact templateFolder = ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Folder", "Document Templates", BranchPersistenceManager.getInstance().getCommonBranch(), true);
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.template.ITemplateProvider#getApplicabilityRating(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
+    */
+   @Override
+   public int getApplicabilityRating(IRenderer rendererId, Artifact artifact, String presentationType, String option) {
+      return ITemplateProvider.DEFAULT_MATCH;
+   }
 
-     ArtifactSubtypeDescriptor descriptor = ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Template (WordML)");
-     Artifact template = descriptor.makeNewArtifact(templateFolder.getBranch());
-     String name = null;
-	template.setDescriptiveName(name);
-     InputStream stream = null;
-	template.setSoleAttributeFromStream(WordAttribute.CONTENT_NAME, stream);
-     templateFolder.addChild(template);
-}
+   public void somefunctionToBeUsedbyDBinit() throws SQLException, IllegalStateException, IOException {
+      Artifact templateFolder =
+            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Folder", "Document Templates",
+                  BranchPersistenceManager.getInstance().getCommonBranch(), true);
+
+      ArtifactSubtypeDescriptor descriptor =
+            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Template (WordML)");
+      Artifact template = descriptor.makeNewArtifact(templateFolder.getBranch());
+      String name = null;
+      template.setDescriptiveName(name);
+      InputStream stream = null;
+      template.setSoleAttributeFromStream(WordAttribute.CONTENT_NAME, stream);
+      templateFolder.addChild(template);
+   }
 
 }

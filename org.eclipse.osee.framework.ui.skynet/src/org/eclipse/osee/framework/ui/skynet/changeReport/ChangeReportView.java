@@ -19,7 +19,6 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +27,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -238,7 +236,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
     */
    private void defineMenusNewerWay() {
       MenuManager menuManager = new MenuManager();
-	  menuManager.setRemoveAllWhenShown(true);
+      menuManager.setRemoveAllWhenShown(true);
       changeTable.getTree().setMenu(menuManager.createContextMenu(changeTable.getTree()));
       menuManager.add(new Separator("Top"));
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -508,9 +506,6 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                   OSEELog.logException(getClass(), e1, true);
                }
             }
-            // This is a HACK ... I needed a way to ask the renderManager
-            // for the wordRender. There
-            // should exist such a method on the manager
             WordRenderer renderer =
                   (WordRenderer) RendererManager.getInstance().getRendererById(
                         "org.eclipse.osee.framework.ui.skynet.word");
@@ -919,17 +914,16 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          }
       });
    }
-   
-  public void refreshContentDescription() { 
-       int baseNum = this.baseTransactionId.getTransactionNumber(); 
-       int toNum = this.toTransactionId.getTransactionNumber(); 
-       if (this.baseParentTransactionId == null) { 
-          setContentDescription("Changes on " + this.baseTransactionId.getBranch().getBranchName() + " from transaction " + baseNum + " to transaction " + toNum + " at " + new Date()); 
-       } else { 
-          setContentDescription("Changes on " + this.baseTransactionId.getBranch().getBranchName() + " from transaction " + baseNum + " to transaction " + toNum + " against " + baseParentTransactionId.getBranch() + ":" + baseParentTransactionId.getTransactionNumber() + " at " + new Date()); 
-   }
-    } 
 
+   public void refreshContentDescription() {
+      int baseNum = this.baseTransactionId.getTransactionNumber();
+      int toNum = this.toTransactionId.getTransactionNumber();
+      if (this.baseParentTransactionId == null) {
+         setContentDescription("Changes on " + this.baseTransactionId.getBranch().getBranchName() + " from transaction " + baseNum + " to transaction " + toNum + " at " + new Date());
+      } else {
+         setContentDescription("Changes on " + this.baseTransactionId.getBranch().getBranchName() + " from transaction " + baseNum + " to transaction " + toNum + " against " + baseParentTransactionId.getBranch() + ":" + baseParentTransactionId.getTransactionNumber() + " at " + new Date());
+      }
+   }
 
    /**
     * Explores the changes on the branch.

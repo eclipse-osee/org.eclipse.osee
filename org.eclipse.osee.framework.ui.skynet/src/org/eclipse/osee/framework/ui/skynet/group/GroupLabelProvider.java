@@ -31,7 +31,7 @@ public class GroupLabelProvider extends LabelProvider {
    public Image getImage(Object element) {
       if (element instanceof GroupExplorerItem) {
          GroupExplorerItem item = (GroupExplorerItem) element;
-         String typename = item.getArtifact().getArtifactTypeName();
+         String typename = item.getArtifact().getArtifactTypeNameSuppressException();
          if (typename.equals("Heading"))
             return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
          else if (typename.equals("Narrative"))

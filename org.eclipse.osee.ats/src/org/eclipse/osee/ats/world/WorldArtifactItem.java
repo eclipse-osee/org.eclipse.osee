@@ -204,6 +204,6 @@ public class WorldArtifactItem implements IEventReceiver {
    }
 
    public String toString() {
-      return getArtifact().getArtifactTypeName() + " - \"" + artifact + "\"";
+      return getArtifact().getArtifactTypeNameSuppressException() + " - \"" + artifact + "\"";
    }
 }

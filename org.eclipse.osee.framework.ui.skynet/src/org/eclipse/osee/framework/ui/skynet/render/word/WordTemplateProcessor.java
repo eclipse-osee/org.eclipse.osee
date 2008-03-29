@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -115,13 +114,13 @@ public class WordTemplateProcessor {
    private boolean saveParagraphNumOnArtifact;
    private Set<String> ignoreAttributeExtensions;
    private int previousTemplateCopyIndex;
-   private boolean isEditMode = true;
+   private boolean isEditMode;
 
-   public WordTemplateProcessor() {
+   public WordTemplateProcessor() throws CoreException {
       this(null, null);
    }
 
-   public WordTemplateProcessor(String masterTemplate, String slaveTemplate) {
+   public WordTemplateProcessor(String masterTemplate, String slaveTemplate) throws CoreException {
       super();
       this.masterTemplate = masterTemplate;
       this.slaveTemplate = slaveTemplate;
@@ -131,11 +130,7 @@ public class WordTemplateProcessor {
       this.isEditMode = false;
       this.ignoreAttributeExtensions = new HashSet<String>();
 
-      try {
-         loadIgnoreAttributeExtensions();
-      } catch (CoreException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      }
+      loadIgnoreAttributeExtensions();
    }
 
    /**
@@ -145,7 +140,7 @@ public class WordTemplateProcessor {
     * @throws IOException
     */
    public void applyTemplate(IFolder folder, BlamVariableMap variableMap) throws Exception {
-	  isEditMode = false;
+      isEditMode = false;
       String fileName = variableMap.getString("MasterFileName");
       if (fileName == null) {
          fileName = "new file " + (new Date().toString().replaceAll(":", ";"));
@@ -163,10 +158,10 @@ public class WordTemplateProcessor {
    private InputStream applyTemplate(BlamVariableMap variableMap, String template, IFolder folder, String nextParagraphNumber, String outlineType) throws Exception {
       CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
-      
+
       template = handleSettingParagraphNumbers(variableMap, template, outlineType, nextParagraphNumber, wordMl);
       template = WordUtil.stripSpellCheck(template);
-      
+
       Matcher matcher = headElementsPattern.matcher(template);
       int lastEndIndex = 0;
       while (matcher.find()) {
@@ -198,8 +193,8 @@ public class WordTemplateProcessor {
     * @throws Exception
     */
    public InputStream applyTemplate(BlamVariableMap variableMap, String template, String outlineType, boolean isEditMode) throws Exception {
-	  this.isEditMode = isEditMode;
-	  CharBackedInputStream charBak = new CharBackedInputStream();
+      this.isEditMode = isEditMode;
+      CharBackedInputStream charBak = new CharBackedInputStream();
       WordMLProducer wordMl = new WordMLProducer(charBak);
       previousTemplateCopyIndex = 0;
 
@@ -495,11 +490,9 @@ public class WordTemplateProcessor {
          CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
          if (paragraphNumber != null && saveParagraphNumOnArtifact) {
-            try {
+            if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
                artifact.setSoleStringAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
                artifact.persistAttributes();
-            } catch (SQLException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
             }
          }
       }
@@ -520,16 +513,15 @@ public class WordTemplateProcessor {
    private void processAttributes(Artifact artifact, WordMLProducer wordMl) throws IOException, SQLException {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
-         
+
          if (attributeElement.getAttributeName().equals("*")) {
-               for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
-                  processAttribute(artifact, wordMl, attributeElement, attributeManager.getAttributeType().getName(),
-                        true);
-               }
+            for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
+               processAttribute(artifact, wordMl, attributeElement, attributeManager.getAttributeType().getName(), true);
+            }
          } else {
-        	 if(artifact.isAttributeTypeValid(attributeName)){
-        		 processAttribute(artifact, wordMl, attributeElement, attributeName, false);
-        	 } 
+            if (artifact.isAttributeTypeValid(attributeName)) {
+               processAttribute(artifact, wordMl, attributeElement, attributeName, false);
+            }
          }
       }
 
@@ -541,13 +533,13 @@ public class WordTemplateProcessor {
 
       // This is for SRS Publishing. Do not publish unspecified attributes
       if (!allAttrs && (attributeTypeName.equals("Partition") || attributeTypeName.equals("Safety Criticality"))) {
-    	 if(artifact.isAttributeTypeValid("Partition")){
-    		 for (Attribute partition : artifact.getAttributeManager("Partition").getAttributes()) {
-    			 if (partition.getStringData().equals("Unspecified")) {
-    				 return;
-    			}
-    		 }
-    	 }
+         if (artifact.isAttributeTypeValid("Partition")) {
+            for (Attribute partition : artifact.getAttributeManager("Partition").getAttributes()) {
+               if (partition.getStringData().equals("Unspecified")) {
+                  return;
+               }
+            }
+         }
       }
 
       if (attributeTypeName.equals("TIS Traceability")) {
@@ -574,20 +566,20 @@ public class WordTemplateProcessor {
                wordMl.addParagraph(attributeElement.label);
             }
             Object val = attribute.getValue();
-            if(val != null){
-            	 String wordContent = WordUtil.stripSpellCheck(attribute.toString());//TODO what is the best way to get at unknown attribute types? (because this isn't it)
-                 if (isEditMode ) {
-                    DynamicAttributeDescriptor attributeDescriptor = attribute.getManager().getAttributeType();
-                    writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeDescriptor.getName()),
-                          "ns0:guid=\"" + artifact.getGuid() + "\"",
-                          "ns0:attrId=\"" + attributeDescriptor.getAttrTypeId() + "\"", wordContent);
-                 } else {
-                    wordMl.addWordMl(wordContent);
-                 }
+            if (val != null) {
+               String wordContent = WordUtil.stripSpellCheck(attribute.toString());//TODO what is the best way to get at unknown attribute types? (because this isn't it)
+               if (isEditMode) {
+                  DynamicAttributeDescriptor attributeDescriptor = attribute.getManager().getAttributeType();
+                  writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeDescriptor.getName()),
+                        "ns0:guid=\"" + artifact.getGuid() + "\"",
+                        "ns0:attrId=\"" + attributeDescriptor.getAttrTypeId() + "\"", wordContent);
+               } else {
+                  wordMl.addWordMl(wordContent);
+               }
             } else {
-            	System.out.println(artifact.getArtifactType().getName() + " : " + artifact.getSoleXAttributeValue("Name") + " : " +attribute.getAttributeType().getName() +" == null");
+               System.out.println(artifact.getArtifactType().getName() + " : " + artifact.getSoleXAttributeValue("Name") + " : " + attribute.getAttributeType().getName() + " == null");
             }
-           
+
             wordMl.resetListValue();
          } else {
             wordMl.startParagraph();

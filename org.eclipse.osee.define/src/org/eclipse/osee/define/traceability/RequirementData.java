@@ -51,14 +51,15 @@ public class RequirementData {
 
    public void initialize(IProgressMonitor monitor) throws Exception {
       reset();
-      monitor.subTask(String.format("Loading Software Requirements from: [%s]", getBranch().getBranchName()));
+      monitor.subTask(String.format("Loading Software Requirements from: [%s]", getBranch().getBranchShortestName()));
 
       directSwRequirements.addAll(artifactManager.getArtifactsFromSubtypeName("Software Requirement", getBranch()));
       populateTraceMap(monitor, directSwRequirements, directMap);
       monitor.worked(30);
 
       if (monitor.isCanceled() != true) {
-         monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]", getBranch().getBranchName()));
+         monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
+               getBranch().getBranchShortestName()));
          inDirectSwRequirements.addAll(artifactManager.getArtifactsFromSubtypeName("Indirect Software Requirement",
                getBranch()));
          populateTraceMap(monitor, inDirectSwRequirements, indirectMap);

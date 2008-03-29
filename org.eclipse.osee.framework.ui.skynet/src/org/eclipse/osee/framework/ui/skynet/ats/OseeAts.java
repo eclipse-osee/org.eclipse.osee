@@ -198,7 +198,7 @@ public class OseeAts {
             AWorkbench.popup("ERROR", ex.getLocalizedMessage());
          }
       } else {
-         AWorkbench.popup("ERROR", "Trying to open " + art.getArtifactTypeName() + " with SMAEditor");
+         AWorkbench.popup("ERROR", "Trying to open " + art.getArtifactTypeNameSuppressException() + " with SMAEditor");
       }
    }
 

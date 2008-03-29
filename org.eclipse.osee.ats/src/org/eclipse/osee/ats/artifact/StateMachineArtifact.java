@@ -111,7 +111,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    public abstract boolean isMetricsFromTasks() throws SQLException;
 
    public String getArtifactSuperTypeName() {
-      return getArtifactTypeName();
+      return getArtifactTypeNameSuppressException();
    }
 
    /*
@@ -476,7 +476,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    }
 
    public String getWorldViewType() {
-      return getArtifactTypeName();
+      return getArtifactTypeNameSuppressException();
    }
 
    public String getWorldViewTitle() {

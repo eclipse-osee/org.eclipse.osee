@@ -26,7 +26,7 @@ public class ArtifactEmailWizard extends EmailWizard {
       super();
       setInitialAddress(toAddress);
       setHtmlMessage(sma.getPreviewHtml(PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE));
-      setSubject(" Regarding " + sma.getArtifactTypeName() + " - " + sma.getDescriptiveName());
+      setSubject(" Regarding " + sma.getArtifactTypeNameSuppressException() + " - " + sma.getDescriptiveName());
       setEmailableGroups(getEmailableGroups(sma));
    }
 

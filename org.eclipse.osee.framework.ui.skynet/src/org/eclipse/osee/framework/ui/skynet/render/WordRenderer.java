@@ -23,11 +23,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -57,7 +55,6 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.swt.program.Program;
 import org.w3c.dom.Element;
-
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
@@ -87,7 +84,7 @@ public class WordRenderer extends FileRenderer {
    private static final Program wordApp = Program.findProgram("doc");
    private final WordTemplateProcessor templateProcessor;
 
-   public WordRenderer() throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
+   public WordRenderer() throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError, CoreException {
       this.templateProcessor = new WordTemplateProcessor();
    }
 
@@ -434,10 +431,10 @@ public class WordRenderer extends FileRenderer {
       }
 
       variableMap.setValue(DEFAULT_SET_NAME, artifacts);
-      
+
       boolean renderInEditMode = false;
-      if(PresentationType.EDIT == presentationType){
-    	  renderInEditMode = true;
+      if (PresentationType.EDIT == presentationType) {
+         renderInEditMode = true;
       }
       return templateProcessor.applyTemplate(variableMap, template, null, renderInEditMode);
    }

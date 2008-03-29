@@ -38,7 +38,8 @@ public class SMAWorkFlowLogSection extends SMAWorkFlowSection {
     * @param smaMgr
     */
    public SMAWorkFlowLogSection(Composite parent, XFormToolkit toolkit, int style, SMAManager smaMgr) {
-      super(parent, toolkit, style, new AtsLogWorkPage(smaMgr.getSma().getArtifactTypeName() + " History"), smaMgr);
+      super(parent, toolkit, style, new AtsLogWorkPage(
+            smaMgr.getSma().getArtifactTypeNameSuppressException() + " History"), smaMgr);
    }
 
    @Override

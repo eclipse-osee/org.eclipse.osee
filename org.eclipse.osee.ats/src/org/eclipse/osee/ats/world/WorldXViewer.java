@@ -482,7 +482,7 @@ public class WorldXViewer extends XViewer {
 
       mm.insertBefore(MENU_GROUP_PRE, emailAction);
       emailAction.setEnabled(getSelectedArtifacts().size() == 1);
-      emailAction.setText("Email " + ((getSelectedArtifacts().size() == 1) ? getSelectedArtifacts().iterator().next().getArtifactTypeName() : ""));
+      emailAction.setText("Email " + ((getSelectedArtifacts().size() == 1) ? getSelectedArtifacts().iterator().next().getArtifactTypeNameSuppressException() : ""));
 
       mm.insertBefore(MENU_GROUP_PRE, resetActionArtifactAction);
       resetActionArtifactAction.setEnabled(getSelectedActionArtifacts().size() > 0);

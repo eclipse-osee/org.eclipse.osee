@@ -62,10 +62,11 @@ public class ArtifactLabelProvider extends LabelProvider {
             if (artifactExplorer.showArtIds()) {
                name += " (" + artifact.getArtId() + ") ";
             }
-            if (artifactExplorer.showArtType()) {
-               name += " <" + artifact.getArtifactTypeName() + "> ";
-            }
             try {
+               if (artifactExplorer.showArtType()) {
+                  name += " <" + artifact.getArtifactTypeName() + "> ";
+               }
+
                name += artifactExplorer.getSelectedAttributeData(artifact);
             } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, false);

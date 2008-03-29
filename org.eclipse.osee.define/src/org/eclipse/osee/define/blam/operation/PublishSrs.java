@@ -22,21 +22,26 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 
 /**
+ * We need to create an SRSRenderer that provides the correct templates. Then we'll use it instead of the WordTemplate
+ * processor like we do currently.
+ * 
  * @author Robert A. Fisher
- * 
- * We need to create an SRSRenderer that provides the correct templates.  Then we'll use it instead of the WordTemplate processer like we do currently.
- * 
  */
+
 public class PublishSrs extends AbstractBlam {
 
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-	   
-	  Artifact srsMasterTemplate = ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Template (WordML)", "srsMasterTemplate", BranchPersistenceManager.getInstance().getCommonBranch());
-	  String masterTemplate = srsMasterTemplate.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME);
-	  
-	  Artifact srsSlaveTemplate = ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Template (WordML)", "srsSlaveTemplate", BranchPersistenceManager.getInstance().getCommonBranch());
-	  String slaveTemplate = srsSlaveTemplate.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME);
-	  
+
+      Artifact srsMasterTemplate =
+            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Template (WordML)", "srsMasterTemplate",
+                  BranchPersistenceManager.getInstance().getCommonBranch());
+      String masterTemplate = srsMasterTemplate.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME);
+
+      Artifact srsSlaveTemplate =
+            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Template (WordML)", "srsSlaveTemplate",
+                  BranchPersistenceManager.getInstance().getCommonBranch());
+      String slaveTemplate = srsSlaveTemplate.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME);
+
       boolean updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers");
       WordTemplateProcessor processor = new WordTemplateProcessor(masterTemplate, slaveTemplate);
       processor.setSaveParagraphNumOnArtifact(updateParagraphNumber);
@@ -49,6 +54,6 @@ public class PublishSrs extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Branch\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    }
 }

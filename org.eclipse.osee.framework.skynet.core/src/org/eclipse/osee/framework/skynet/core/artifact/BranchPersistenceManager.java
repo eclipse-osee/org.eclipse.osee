@@ -11,16 +11,11 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.BRANCH_DEFINITIONS;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.BRANCH_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -36,14 +31,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
@@ -76,18 +67,15 @@ import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.util.db.Query;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
 import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 
 public class BranchPersistenceManager implements PersistenceManager {
    static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
 
-   private static final LocalAliasTable TX_ALIAS_1 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx1");
-   private static final LocalAliasTable TX_ALIAS_2 = new LocalAliasTable(TRANSACTIONS_TABLE, "tx2");
-
    private static final String READ_BRANCH_TABLE =
          "SELECT * FROM " + BRANCH_TABLE + " t1, " + TRANSACTION_DETAIL_TABLE + " t2 WHERE t1.branch_id = t2.branch_id and t2.transaction_id = (SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "= t1.branch_id)";
-   private static final String READ_MERGE_BRANCHES = "select * from osee_define_branch b1, osee_define_merge m2 where b1.branch_id = m2.merge_branch_id";
+   private static final String READ_MERGE_BRANCHES =
+         "select * from osee_define_branch b1, osee_define_merge m2 where b1.branch_id = m2.merge_branch_id";
    private static final String CHANGED_RELATIONS =
          "SELECT t1.gamma_id, t2.rel_link_id, t2.a_art_id, t2.b_art_id, t2.modification_id, t2.rel_link_type_id, t2.a_order_value, t2.b_order_value, t2.rationale FROM (SELECT tx1.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx1, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td1 WHERE tx1.transaction_id = td1.transaction_id AND td1.branch_id = ? AND tx1.gamma_id NOT IN (SELECT tx2.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td2 WHERE tx2.transaction_id = td2.transaction_id AND td2.branch_id = ?)) t1 INNER JOIN " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2 ON (t1.gamma_id=t2.gamma_id)";
    private static final String CHANGED_ARTIFACTS =
@@ -98,16 +86,6 @@ public class BranchPersistenceManager implements PersistenceManager {
 
    private static final String UPDATE_TRANSACTION_BRANCH =
          "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
-   private static final String SELECT_GAMMAS_FROM_TRANSACTION =
-         "SELECT " + TX_ALIAS_1.column("gamma_id") + " FROM " + TX_ALIAS_1 + " WHERE " + TX_ALIAS_1.column("transaction_id") + "=?" + " AND NOT EXISTS (SELECT 'x' FROM " + TX_ALIAS_2 + " WHERE " + TX_ALIAS_2.column("gamma_id") + "=" + TX_ALIAS_1.column("gamma_id") + " AND " + TX_ALIAS_2.column("transaction_id") + "<>" + TX_ALIAS_1.column("transaction_id") + ")";
-   private static final String DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS =
-         "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id = ?";
-   private static final String DELETE_GAMMA_FROM_ARTIFACT_VERSION =
-         "DELETE FROM " + ARTIFACT_VERSION_TABLE + " WHERE gamma_id = ?";
-   private static final String DELETE_GAMMA_FROM_RELATION_TABLE =
-         "DELETE FROM " + RELATION_LINK_VERSION_TABLE + " WHERE gamma_id = ?";
-   private static final String DELETE_GAMMA_FROM_ATTRIBUTE =
-         "DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE gamma_id = ?";
 
    private static final String SELECT_BRANCH_FOR_TRANSACTION =
          "SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id = ?";
@@ -305,56 +283,53 @@ public class BranchPersistenceManager implements PersistenceManager {
             rSet.getInt("parent_branch_id"), false, rSet.getInt("author"), rSet.getTimestamp("time"),
             rSet.getString(TXD_COMMENT), associatedArtifactId);
    }
-   
-   public Branch getMergeBranch(Integer sourceBranchId, Integer destBranchId)throws Exception{
-	   if(sourceBranchId < 1 || destBranchId < 1){
-		   throw new IllegalAccessException("Branch ids are invalid source branch id:" + sourceBranchId + " destination branch id:" + destBranchId);
-	   }
-	   
-	   if(!mergeBranchCache.containsKey(sourceBranchId, destBranchId)){
-		   ensureMergePopulatedCache(true);
-	   }
-	   
-	   Branch mergeBranch = mergeBranchCache.get(sourceBranchId, destBranchId);
-	   return mergeBranch;
+
+   public Branch getMergeBranch(Integer sourceBranchId, Integer destBranchId) throws Exception {
+      if (sourceBranchId < 1 || destBranchId < 1) {
+         throw new IllegalAccessException(
+               "Branch ids are invalid source branch id:" + sourceBranchId + " destination branch id:" + destBranchId);
+      }
+
+      if (!mergeBranchCache.containsKey(sourceBranchId, destBranchId)) {
+         ensureMergePopulatedCache(true);
+      }
+
+      Branch mergeBranch = mergeBranchCache.get(sourceBranchId, destBranchId);
+      return mergeBranch;
    }
-   
-   private synchronized void ensureMergePopulatedCache(boolean forceRead)
-			throws SQLException {
-		if (forceRead || mergeBranchCache.isEmpty()) {
-			ConnectionHandlerStatement chStmt = null;
-			try {
-				chStmt = ConnectionHandler.runPreparedQuery(500,
-						READ_MERGE_BRANCHES);
-				ResultSet rSet = chStmt.getRset();
-				while (chStmt.next()) {
-					int sourceBranchId = rSet.getInt("source_branch_id");
-					int destBranchId = rSet.getInt("dest_branch_id");
-					boolean isArchived = rSet.getInt("archived") == 1;
 
-					Branch branch = mergeBranchCache.get(sourceBranchId,
-							destBranchId);
+   private synchronized void ensureMergePopulatedCache(boolean forceRead) throws SQLException {
+      if (forceRead || mergeBranchCache.isEmpty()) {
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            chStmt = ConnectionHandler.runPreparedQuery(500, READ_MERGE_BRANCHES);
+            ResultSet rSet = chStmt.getRset();
+            while (chStmt.next()) {
+               int sourceBranchId = rSet.getInt("source_branch_id");
+               int destBranchId = rSet.getInt("dest_branch_id");
+               boolean isArchived = rSet.getInt("archived") == 1;
 
-					if (isArchived) {
-						if (branch != null) {
-							mergeBranchCache.remove(sourceBranchId,
-									destBranchId);
-						}
-					} else {
-						if (branch == null) {
-							branch = initializeBranchObject(rSet);
-						}
-					}
-				}
-			} finally {
-				DbUtil.close(chStmt);
-			}
-		}
-	}
+               Branch branch = mergeBranchCache.get(sourceBranchId, destBranchId);
+
+               if (isArchived) {
+                  if (branch != null) {
+                     mergeBranchCache.remove(sourceBranchId, destBranchId);
+                  }
+               } else {
+                  if (branch == null) {
+                     branch = initializeBranchObject(rSet);
+                  }
+               }
+            }
+         } finally {
+            DbUtil.close(chStmt);
+         }
+      }
+   }
 
    public Branch getBranch(Integer branchId) throws SQLException {
       // Always exception for invalid id's, they won't ever be found in the
-		// database or cache.
+      // database or cache.
       if (branchId < 1) throw new IllegalArgumentException("Branch Id " + branchId + " is invalid");
 
       // If someone else made a branch on another machine, we may not know about it
@@ -800,43 +775,12 @@ public class BranchPersistenceManager implements PersistenceManager {
    }
 
    /**
-    * Removes the transaction and everything associated with it from the database.
+    * Permanently removes this transaction and any of its backing data that is not referenced by any other transactions.
     * 
     * @param transactionIdNumber
     */
    public void deleteTransaction(final int transactionIdNumber) {
-      Job job = new Job("Delete transaction: " + transactionIdNumber) {
-
-         @Override
-         protected IStatus run(IProgressMonitor monitor) {
-            ConnectionHandlerStatement chStmt = null;
-
-            try {
-               chStmt =
-                     ConnectionHandler.runPreparedQuery(SELECT_GAMMAS_FROM_TRANSACTION, SQL3DataType.INTEGER,
-                           transactionIdNumber);
-
-               int gammaId;
-
-               while (chStmt.next()) {
-                  gammaId = chStmt.getRset().getInt("gamma_id");
-
-                  ConnectionHandler.runPreparedUpdate(DELETE_GAMMA_FROM_RELATION_TABLE, SQL3DataType.INTEGER, gammaId);
-                  ConnectionHandler.runPreparedUpdate(DELETE_GAMMA_FROM_ARTIFACT_VERSION, SQL3DataType.INTEGER, gammaId);
-                  ConnectionHandler.runPreparedUpdate(DELETE_GAMMA_FROM_ATTRIBUTE, SQL3DataType.INTEGER, gammaId);
-               }
-               ConnectionHandler.runPreparedUpdate(DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS, SQL3DataType.INTEGER,
-                     transactionIdNumber);
-            } catch (SQLException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
-            } finally {
-               DbUtil.close(chStmt);
-            }
-            return Status.OK_STATUS;
-         }
-      };
-      job.setUser(true);
-      job.schedule();
+      Jobs.startJob(new DeleteTransactionJob(transactionIdNumber));
    }
 
    /**
