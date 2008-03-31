@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__CHILD;
 import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__PARENT;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -162,16 +164,16 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       }
 
       try {
-         if (getArtifactTypeName().equals("Version")) {
+      if (getArtifactTypeName().equals("Version")) {
             boolean next = getSoleBooleanAttributeValue("ats.Next Version");
             boolean released = getSoleBooleanAttributeValue("ats.Released");
             return descriptor.getImage(next, released);
          }
-      } catch (IllegalStateException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
+         } catch (IllegalStateException ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         } catch (SQLException ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
       return descriptor.getAnnotationImage(getMainAnnotationType());
    }
 
@@ -301,8 +303,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public String getArtifactTypeName() throws SQLException {
       checkDeleted();
       if (artifactTypeName == null) {
-         int id = getArtTypeId();
-         artifactTypeName = artifactManager.getArtifactTypeName(id);
+            int id = getArtTypeId();
+            artifactTypeName = artifactManager.getArtifactTypeName(id);
       }
       return artifactTypeName;
    }
@@ -310,10 +312,10 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public String getArtifactTypeNameSuppressException() {
       try {
          return getArtifactTypeName();
-      } catch (SQLException ex) {
+         } catch (SQLException ex) {
          return ex.getLocalizedMessage();
       }
-   }
+         }
 
    public boolean isOfType(String artifactType) throws SQLException {
       if (artifactType.equals("Abstract Software Requirement") && (getArtifactTypeName().equals(
@@ -1600,16 +1602,17 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       }
 
       int diff;
-      try {
-         diff = getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
-      } catch (Exception ex) {
-         diff = 0;
+      if (otherArtifact.equals(this)) {
+    	  diff = 0;
       }
+      else {
+          try {
+              diff = getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
+           } catch (Exception ex) {
+              diff = 0;
+           }
+       }
 
-      if (diff == 0) {
-         // include art_id when the artifact names are equal in case the artifacts are different artifacts
-         return guid.hashCode() - otherArtifact.getGuid().hashCode();
-      }
       return diff;
    }
 
@@ -1627,7 +1630,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof Artifact) {
-         return compareTo((Artifact) obj) == 0;
+         return guid.hashCode() == ((Artifact) obj).getGuid().hashCode();
       }
       return false;
    }
