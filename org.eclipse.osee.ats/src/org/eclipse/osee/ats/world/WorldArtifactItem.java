@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -160,6 +161,9 @@ public class WorldArtifactItem implements IEventReceiver {
          if (ed.isRemoved()) {
             xViewer.remove(wai);
          } else if (ed.getAvie() != null && ed.getAvie().getOldVersion().equals(artifact)) {
+             System.err.println(String.format("WorldArtifactItem VERSION INC switching %d to %d for artifact %s",
+            		 artifact.getArtId(), ed.getAvie().getNewVersion().getArtId(),
+            		 artifact.getDescriptiveName()));
             setArtifact((Artifact) ed.getAvie().getNewVersion());
             xViewer.update(wai, null);
          } else if (ed.isModified() || ed.isRelChange()) {
