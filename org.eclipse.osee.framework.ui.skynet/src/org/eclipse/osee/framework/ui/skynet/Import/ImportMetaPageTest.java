@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
+import junit.framework.TestCase;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import junit.framework.TestCase;
 
 /**
  * @author Robert A. Fisher

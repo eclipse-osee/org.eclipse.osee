@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 
 public class ExtractTestRelations {
@@ -87,7 +88,8 @@ public class ExtractTestRelations {
    private void addRelationToDatabaseIfNotAlreadyThere(IFile testArtifactFile, String reqArtifactName) throws SQLException {
 
       // Make sure that the runtime relation type is available
-      Artifact reqArtifact = artifactManager.getArtifactFromTypeName("Software Requirement", reqArtifactName, branch);
+      Artifact reqArtifact =
+            artifactManager.getArtifactFromTypeName(Requirements.SOFTWARE_REQUIREMENT, reqArtifactName, branch);
 
       // Make sure we have the reqArtifact
       if (reqArtifact == null) {
@@ -119,11 +121,11 @@ public class ExtractTestRelations {
 
    private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws SQLException {
       Artifact testArtifact =
-            artifactManager.getArtifactFromTypeName("Test Script", testArtifactFile.getName(), branch);
+            artifactManager.getArtifactFromTypeName(Requirements.TEST_SCRIPT, testArtifactFile.getName(), branch);
 
       if (testArtifact == null) {
          testArtifact =
-               configurationPersistenceManager.getArtifactSubtypeDescriptor("Test Script").makeNewArtifact(branch);
+               configurationPersistenceManager.getArtifactSubtypeDescriptor(Requirements.TEST_SCRIPT).makeNewArtifact(branch);
          testArtifact.setSoleStringAttributeValue("Name", testArtifactFile.getName());
          testArtifact.setSoleStringAttributeValue("Content URL", testArtifactFile.getFullPath().toString());
          testArtifact.persistAttributes();

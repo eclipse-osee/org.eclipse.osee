@@ -60,6 +60,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 
@@ -315,8 +316,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    public boolean isOfType(String artifactType) throws SQLException {
-      if (artifactType.equals("Abstract Software Requirement") && (getArtifactTypeName().equals("Software Requirement") || getArtifactTypeName().equals(
-            "Indirect Software Requirement"))) {
+      if (artifactType.equals("Abstract Software Requirement") && (getArtifactTypeName().equals(
+            Requirements.SOFTWARE_REQUIREMENT) || getArtifactTypeName().equals(
+            Requirements.INDIRECT_SOFTWARE_REQUIREMENT))) {
          return true;
       }
       return getArtifactTypeName().equals(artifactType);

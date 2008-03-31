@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;

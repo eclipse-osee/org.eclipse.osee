@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 
 /**
  * @author Roberto E. Escobar
@@ -53,15 +54,16 @@ public class RequirementData {
       reset();
       monitor.subTask(String.format("Loading Software Requirements from: [%s]", getBranch().getBranchShortestName()));
 
-      directSwRequirements.addAll(artifactManager.getArtifactsFromSubtypeName("Software Requirement", getBranch()));
+      directSwRequirements.addAll(artifactManager.getArtifactsFromSubtypeName(Requirements.SOFTWARE_REQUIREMENT,
+            getBranch()));
       populateTraceMap(monitor, directSwRequirements, directMap);
       monitor.worked(30);
 
       if (monitor.isCanceled() != true) {
          monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
                getBranch().getBranchShortestName()));
-         inDirectSwRequirements.addAll(artifactManager.getArtifactsFromSubtypeName("Indirect Software Requirement",
-               getBranch()));
+         inDirectSwRequirements.addAll(artifactManager.getArtifactsFromSubtypeName(
+               Requirements.INDIRECT_SOFTWARE_REQUIREMENT, getBranch()));
          populateTraceMap(monitor, inDirectSwRequirements, indirectMap);
          monitor.worked(7);
 

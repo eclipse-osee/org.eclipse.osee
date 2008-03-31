@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -70,7 +71,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
@@ -999,7 +999,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage
 								protected void handleTxWork() throws Exception {
 									for (Artifact art : arts) {
 										DynamicAttributeManager dam = art
-												.getAttributeManager("Partition");
+												.getAttributeManager(Requirements.PARTITION);
 										for (String partition : partitions) {
 											boolean found = false;
 											for (Attribute attr : dam

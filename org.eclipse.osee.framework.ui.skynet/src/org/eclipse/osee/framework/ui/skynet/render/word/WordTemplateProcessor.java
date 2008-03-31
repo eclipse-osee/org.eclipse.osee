@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -532,9 +533,9 @@ public class WordTemplateProcessor {
       String format = attributeElement.getFormat();
 
       // This is for SRS Publishing. Do not publish unspecified attributes
-      if (!allAttrs && (attributeTypeName.equals("Partition") || attributeTypeName.equals("Safety Criticality"))) {
-         if (artifact.isAttributeTypeValid("Partition")) {
-            for (Attribute partition : artifact.getAttributeManager("Partition").getAttributes()) {
+      if (!allAttrs && (attributeTypeName.equals(Requirements.PARTITION) || attributeTypeName.equals("Safety Criticality"))) {
+         if (artifact.isAttributeTypeValid(Requirements.PARTITION)) {
+            for (Attribute partition : artifact.getAttributeManager(Requirements.PARTITION).getAttributes()) {
                if (partition.getStringData().equals("Unspecified")) {
                   return;
                }

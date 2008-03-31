@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**
@@ -35,8 +36,8 @@ public class SRSSpecialPublishingAttributeHandler implements ITemplateAttributeH
 	@Override
 	public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws SQLException{
 		 // This is for SRS Publishing. Do not publish unspecified attributes
-	      if ((attribute.getName().equals("Partition") || attribute.getName().equals("Safety Criticality"))) {
-	         for (Attribute partition : artifact.getAttributeManager("Partition").getAttributes()) {
+	      if ((attribute.getName().equals(Requirements.PARTITION) || attribute.getName().equals("Safety Criticality"))) {
+	         for (Attribute partition : artifact.getAttributeManager(Requirements.PARTITION).getAttributes()) {
 	            if (partition.getStringData().equals("Unspecified")) {
 	               return true;
 	            }

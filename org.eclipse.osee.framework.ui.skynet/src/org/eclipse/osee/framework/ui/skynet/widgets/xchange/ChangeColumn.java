@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.swt.SWT;

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.sql.SQLException;
-
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;

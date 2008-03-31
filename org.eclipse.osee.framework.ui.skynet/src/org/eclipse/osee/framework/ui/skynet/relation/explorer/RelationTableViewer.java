@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -70,7 +71,7 @@ public class RelationTableViewer {
          fullDescriptorList =
                new ArrayList<ArtifactSubtypeDescriptor>(
                      configurationManger.getValidArtifactTypes(BranchPersistenceManager.getInstance().getDefaultBranch()));
-         defaultArtifactType = configurationManger.getArtifactSubtypeDescriptor("Test Script");
+         defaultArtifactType = configurationManger.getArtifactSubtypeDescriptor(Requirements.TEST_SCRIPT);
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

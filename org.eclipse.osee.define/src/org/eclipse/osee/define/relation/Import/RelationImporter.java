@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -70,7 +71,7 @@ public class RelationImporter implements RowProcessor {
       try {
          monitor.worked(1);
          List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch("System Requirement", EQUAL));
+         criteria.add(new ArtifactTypeSearch(Requirements.SUBSYSTEM_REQUIREMENT, EQUAL));
          criteria.add(new AttributeValueSearch("Imported Paragraph Number", row[1], EQUAL));
          Collection<Artifact> artifacts = artifactManager.getArtifacts(criteria, true, branch);
 
@@ -128,7 +129,7 @@ public class RelationImporter implements RowProcessor {
       for (int i = 0; i < columnArtifacts.length; i++) {
          monitor.worked(1);
          try {
-            criteria.add(new ArtifactTypeSearch("Component", EQUAL));
+            criteria.add(new ArtifactTypeSearch(Requirements.COMPONENT, EQUAL));
             criteria.add(new AttributeValueSearch("Name", row[i + leadingColumnCount], EQUAL));
             Collection<Artifact> artifacts = artifactManager.getArtifacts(criteria, true, branch);
             criteria.clear();

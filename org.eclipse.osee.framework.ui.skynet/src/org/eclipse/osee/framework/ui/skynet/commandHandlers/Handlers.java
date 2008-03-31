@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;

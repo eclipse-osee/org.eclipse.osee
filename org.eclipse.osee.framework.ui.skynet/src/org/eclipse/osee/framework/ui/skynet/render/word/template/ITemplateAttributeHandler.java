@@ -7,7 +7,6 @@ package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.io.IOException;
 import java.sql.SQLException;
-
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 

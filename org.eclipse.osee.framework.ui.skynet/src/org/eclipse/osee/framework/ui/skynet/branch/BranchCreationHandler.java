@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
-
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
@@ -71,20 +71,20 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
 
       final TransactionId parentTransactionId;
       try {
-	      if (backingData instanceof Branch) {
-	         Branch branch = (Branch) backingData;
-	         parentTransactionId = transactionIdManager.getEditableTransactionId(branch);
-	      } else if (backingData instanceof TransactionData) {
-	         
-	            parentTransactionId = ((TransactionData) backingData).getTransactionId();
-	         
-	      } else {
-	         throw new IllegalStateException(
-	               "Backing data for the jobbed node in the branchview was not of the expected type");
-	      }
+         if (backingData instanceof Branch) {
+            Branch branch = (Branch) backingData;
+            parentTransactionId = transactionIdManager.getEditableTransactionId(branch);
+         } else if (backingData instanceof TransactionData) {
+
+            parentTransactionId = ((TransactionData) backingData).getTransactionId();
+
+         } else {
+            throw new IllegalStateException(
+                  "Backing data for the jobbed node in the branchview was not of the expected type");
+         }
       } catch (SQLException ex) {
-          OSEELog.logException(getClass(), ex, true);
-          return null;
+         OSEELog.logException(getClass(), ex, true);
+         return null;
       }
       final EntryDialog dialog =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Branch", null, "Enter the name of the new Branch",
@@ -108,10 +108,10 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
                   // Compress all but software requirements
                   Set<String> compressTypes = new HashSet<String>();
                   compressTypes.addAll(allArtifactTypes);
-                  compressTypes.remove("Software Requirement");
+                  compressTypes.remove(Requirements.SOFTWARE_REQUIREMENT);
 
                   // Preserve software reqts
-                  String[] preserveTypes = new String[] {"Software Requirement"};
+                  String[] preserveTypes = new String[] {Requirements.SOFTWARE_REQUIREMENT};
                   branchManager.createBranchWithFiltering(parentTransactionId, null, dialog.getEntry(), null,
                         compressTypes.toArray(new String[compressTypes.size()]), preserveTypes);
                } else {

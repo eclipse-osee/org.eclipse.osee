@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
@@ -94,7 +95,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                   "Hydraulics", "Navigation", "Backup", "Accuracy", "Propulsion", "Unknown"};
 
       Branch programBranch = branchManager.getKeyedBranch(branchName);
-      ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor("Component");
+      ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor(Requirements.COMPONENT);
       Artifact sawProduct = descriptor.makeNewArtifact(programBranch);
       sawProduct.setDescriptiveName("SAW Product Decomposition");
 
@@ -108,8 +109,9 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
             ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch, true);
       programRoot.addChild(sawProduct);
 
-      for (String name : new String[] {"System Requirements", "Subsystem Requirements", "Software Requirements",
-            "Hardware Requirements", "Verification Tests", "Validation Tests", "Integration Tests"}) {
+      for (String name : new String[] {Requirements.SYSTEM_REQUIREMENTS, Requirements.SUBSYSTEM_REQUIREMENTS,
+            Requirements.SOFTWARE_REQUIREMENTS, "Hardware Requirements", "Verification Tests", "Validation Tests",
+            "Integration Tests"}) {
          descriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
          systemReq = descriptor.makeNewArtifact(programBranch);
          systemReq.setDescriptiveName(name);

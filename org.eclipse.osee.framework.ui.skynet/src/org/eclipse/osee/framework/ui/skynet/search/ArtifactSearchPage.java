@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ComboViewer;

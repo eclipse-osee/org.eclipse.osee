@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.templates;
 
 import java.util.List;
-
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;

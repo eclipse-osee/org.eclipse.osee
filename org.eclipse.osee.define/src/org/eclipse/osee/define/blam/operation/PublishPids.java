@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -34,10 +35,10 @@ public class PublishPids extends AbstractBlam {
       ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
       RendererManager rendererManager = RendererManager.getInstance();
       Artifact root = artifactManager.getDefaultHierarchyRootArtifact(branch);
-      Artifact subsysTopFolder = root.getChild("Subsystem Requirements");
+      Artifact subsysTopFolder = root.getChild(Requirements.SUBSYSTEM_REQUIREMENT);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
-      artifactManager.getArtifactsFromSubtypeName("Subsystem Requirement", branch);
+      artifactManager.getArtifactsFromSubtypeName(Requirements.SUBSYSTEM_REQUIREMENT, branch);
 
       for (Artifact subsystem : subsysTopFolder.getChildren()) {
          if (monitor.isCanceled()) {

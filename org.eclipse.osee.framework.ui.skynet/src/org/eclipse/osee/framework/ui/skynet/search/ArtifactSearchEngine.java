@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.text.MessageFormat;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.search.ui.IArtifactSearchResultCollector;
 import org.eclipse.search.ui.NewSearchUI;

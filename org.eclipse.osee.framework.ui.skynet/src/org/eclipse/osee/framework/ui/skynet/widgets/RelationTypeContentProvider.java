@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;

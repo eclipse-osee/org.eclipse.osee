@@ -161,7 +161,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       @Override
       protected void handleTxWork() throws Exception {
          try {
-            Collection<Artifact> systemArts = getArtTypeRequirements(Requirements.SYSTEM_REQUREMENT, "Robot");
+            Collection<Artifact> systemArts = getArtTypeRequirements(Requirements.SYSTEM_REQUIREMENT, "Robot");
 
             Collection<Artifact> component = getArtTypeRequirements(Requirements.COMPONENT, "API");
             component.addAll(getArtTypeRequirements(Requirements.COMPONENT, "Hardware"));
@@ -271,8 +271,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
          try {
             importRequirements(SawBuilds.SAW_Bld_1.name(), Requirements.SOFTWARE_REQUIREMENT + "s",
                   Requirements.SOFTWARE_REQUIREMENT, "support/SAW-SoftwareRequirements.xml");
-            importRequirements(SawBuilds.SAW_Bld_1.name(), Requirements.SYSTEM_REQUREMENT + "s",
-                  Requirements.SYSTEM_REQUREMENT, "support/SAW-SystemRequirements.xml");
+            importRequirements(SawBuilds.SAW_Bld_1.name(), Requirements.SYSTEM_REQUIREMENT + "s",
+                  Requirements.SYSTEM_REQUIREMENT, "support/SAW-SystemRequirements.xml");
             importRequirements(SawBuilds.SAW_Bld_1.name(), Requirements.SUBSYSTEM_REQUIREMENT + "s",
                   Requirements.SUBSYSTEM_REQUIREMENT, "support/SAW-SubsystemRequirements.xml");
          } catch (Exception ex) {

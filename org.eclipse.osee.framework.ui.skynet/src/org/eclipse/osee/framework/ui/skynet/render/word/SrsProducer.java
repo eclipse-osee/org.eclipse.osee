@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.render.word;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -31,7 +31,7 @@ public class SrsProducer implements IWordMlProducer {
       String name = variableMap.getString("Name");
       Branch branch = variableMap.getBranch("Branch");
       Artifact root = artifactManager.getDefaultHierarchyRootArtifact(branch);
-      Artifact softwareRequirement = root.getChild("Software Requirements");
+      Artifact softwareRequirement = root.getChild(Requirements.SOFTWARE_REQUIREMENTS);
       Artifact crewInterface = softwareRequirement.getChild("Crew Interface");
       Artifact subsystemManagement = softwareRequirement.getChild("Subsystem Management");
       Artifact appendices = softwareRequirement.getChild("SRS Appendices");
