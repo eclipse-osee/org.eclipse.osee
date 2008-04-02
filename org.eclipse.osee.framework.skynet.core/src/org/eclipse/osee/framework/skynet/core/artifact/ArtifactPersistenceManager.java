@@ -1244,9 +1244,10 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                if (newTransactionId.getTransactionNumber() != notEditableTransactionId.getTransactionNumber()) {
                   oldArtifact.getPersistenceMemo().setTransactionId(notEditableTransactionId);
                   factory.cache(oldArtifact);
-               } else {
-                  oldArtifact.getPersistenceMemo().setTransactionId(null);
-               }
+               } 
+//               else {
+//                  oldArtifact.getPersistenceMemo().setTransactionId(null);
+//               }
 //            }
 
             if (event instanceof NetworkArtifactModifiedEvent) {
