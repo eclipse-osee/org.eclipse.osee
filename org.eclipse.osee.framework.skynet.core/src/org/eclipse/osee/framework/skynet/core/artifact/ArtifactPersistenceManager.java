@@ -1239,7 +1239,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 //               System.err.println(message);
 //               logger.log(Level.SEVERE, message);
 //            } else {
-               factory.deCache(oldArtifact);
+//               factory.deCache(oldArtifact);
 
                if (newTransactionId.getTransactionNumber() != notEditableTransactionId.getTransactionNumber()) {
                   oldArtifact.getPersistenceMemo().setTransactionId(notEditableTransactionId);
