@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="jini2_1/lib/browser.jar"/>
+	<classpathentry exported="true" kind="lib" path="jini2_1/lib/browser.jar" sourcepath="jini2_1/source.zip"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/checkconfigurationfile.jar"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/checkser.jar"/>
 	<classpathentry exported="true" kind="lib" path="jini2_1/lib/classdep.jar"/>
