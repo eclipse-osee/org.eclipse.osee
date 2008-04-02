@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -31,16 +30,15 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.DynamicRelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.artifact.RelationGroupDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -81,7 +79,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Ryan D. Brooks
  */
 public class RelationsComposite extends Composite implements IEventReceiver {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationsComposite.class);
    private TreeViewer treeViewer;
    private Tree tree;
    private NeedSelectedArtifactListener needSelectedArtifactListener;
@@ -290,7 +287,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       public void handleEvent(Event event) {
          try {
             boolean isNewRelationCreated = false;
-            IRelationLinkDescriptor selectedDescriptor = (IRelationLinkDescriptor) ((MenuItem) event.widget).getData();
+            IRelationType selectedDescriptor = (IRelationType) ((MenuItem) event.widget).getData();
 
             boolean canBeOnSideA = canBeOnSide(selectedDescriptor, true);
             boolean canBeOnSideB = canBeOnSide(selectedDescriptor, false);
@@ -321,7 +318,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       }
    }
 
-   private boolean canBeOnSide(IRelationLinkDescriptor descriptor, boolean sideA) throws SQLException {
+   private boolean canBeOnSide(IRelationType descriptor, boolean sideA) throws SQLException {
       int sideMax = descriptor.getRestrictionSizeFor(artifact.getArtTypeId(), sideA);
       RelationLinkGroup otherSideGroup = artifact.getLinkManager().getSideGroup(descriptor, !sideA);
 
@@ -381,17 +378,17 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       boolean isRelatable = false;
 
       try {
-      for (IRelationLinkDescriptor relationDescriptor : RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(
-            artifact.getArtifactType(), artifact.getBranch())) {
-         MenuItem mItem = new MenuItem(newMenu, SWT.PUSH);
-         mItem.setData(relationDescriptor);
-         mItem.setText(relationDescriptor.getName());
-         mItem.addListener(SWT.Selection, new CreateNewRelationSelectedListener(parentMenu.getShell()));
+         for (IRelationType relationDescriptor : RelationTypeManager.getInstance().getValidTypes(
+               artifact.getArtifactType(), artifact.getBranch())) {
+            MenuItem mItem = new MenuItem(newMenu, SWT.PUSH);
+            mItem.setData(relationDescriptor);
+            mItem.setText(relationDescriptor.getTypeName());
+            mItem.addListener(SWT.Selection, new CreateNewRelationSelectedListener(parentMenu.getShell()));
 
-         isRelatable = true;
-		  }
-	} catch (SQLException ex) {
-		OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            isRelatable = true;
+         }
+      } catch (SQLException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
 
       if (isRelatable) {
@@ -413,11 +410,11 @@ public class RelationsComposite extends Composite implements IEventReceiver {
                boolean canBeOnSideB;
 
                for (MenuItem item : items) {
-                  IRelationLinkDescriptor descriptor = (IRelationLinkDescriptor) item.getData();
+                  IRelationType descriptor = (IRelationType) item.getData();
                   canBeOnSideA = canBeOnSide(descriptor, true);
                   canBeOnSideB = canBeOnSide(descriptor, false);
 
-                  String title = descriptor.getName();
+                  String title = descriptor.getTypeName();
                   if (canBeOnSideA && canBeOnSideB)
                      title += "...";
                   else if (canBeOnSideA)
@@ -604,8 +601,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
             ((IRelationLink) object).delete();
          }
 
-         else if (object instanceof IRelationLinkDescriptor) {
-            IRelationLinkDescriptor descriptor = (IRelationLinkDescriptor) object;
+         else if (object instanceof IRelationType) {
+            IRelationType descriptor = (IRelationType) object;
             artifact.getLinkManager().deleteGroups(descriptor);
          }
 
@@ -723,7 +720,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
                IRelationLink dropTarget = (IRelationLink) obj;
 
                // the links must be in the same group
-               if ((targetLink.getLinkDescriptor().getName() + targetLink.getSideNameForOtherArtifact(artifact)).equals(dropTarget.getLinkDescriptor().getName() + dropTarget.getSideNameForOtherArtifact(artifact))) {
+               if ((targetLink.getLinkDescriptor().getTypeName() + targetLink.getSideNameForOtherArtifact(artifact)).equals(dropTarget.getLinkDescriptor().getTypeName() + dropTarget.getSideNameForOtherArtifact(artifact))) {
                   if (isFeedbackAfter) {
                      event.feedback = DND.FEEDBACK_INSERT_AFTER;
                   } else {
@@ -758,13 +755,13 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          TreeItem selected = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
          Object object = selected.getData();
 
-         if (object instanceof IRelationLink) {
-            IRelationLink targetLink = (IRelationLink) object;
-            Artifact transferredArtifact = ((ArtifactData) event.data).getArtifacts()[0];
-            IRelationLink dropLink = artifactToLinkMap.remove(transferredArtifact.getArtId());
-            RelationLinkGroup group;
+         try {
+            if (object instanceof IRelationLink) {
+               IRelationLink targetLink = (IRelationLink) object;
+               Artifact transferredArtifact = ((ArtifactData) event.data).getArtifacts()[0];
+               IRelationLink dropLink = artifactToLinkMap.remove(transferredArtifact.getArtId());
+               RelationLinkGroup group;
 
-            try {
                group =
                      artifact.getLinkManager().getSideGroup(dropLink.getLinkDescriptor(),
                            transferredArtifact.equals(dropLink.getArtifactA()));
@@ -772,16 +769,16 @@ public class RelationsComposite extends Composite implements IEventReceiver {
                group.moveLink(targetLink, dropLink, !isFeedbackAfter);
                treeViewer.refresh();
                editor.onDirtied();
-            } catch (SQLException ex) {
-               logger.log(Level.SEVERE, ex.toString(), true);
-            }
-         } else {
-            RelationLinkGroup group = (RelationLinkGroup) selected.getData();
-            RelationExplorerWindow window = new RelationExplorerWindow(treeViewer, group);
+            } else {
+               RelationLinkGroup group = (RelationLinkGroup) selected.getData();
+               RelationExplorerWindow window = new RelationExplorerWindow(treeViewer, group);
 
-            ArtifactDragDropSupport.performDragDrop(event, window,
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-            window.createArtifactInformationBox(null);
+               ArtifactDragDropSupport.performDragDrop(event, window,
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+               window.createArtifactInformationBox(null);
+            }
+         } catch (SQLException ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
 
          isFeedbackAfter = false;

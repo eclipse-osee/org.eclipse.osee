@@ -80,7 +80,7 @@ public class FullPortableExport {
       }
 
       for (IRelationLink link : links) {
-         row[0] = link.getLinkDescriptor().getName();
+         row[0] = link.getLinkDescriptor().getTypeName();
          row[1] = link.getArtifactA().getGuid();
          row[2] = link.getArtifactB().getGuid();
          row[3] = String.valueOf(link.getAOrder());

@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.swt.graphics.Image;
 
@@ -42,7 +42,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
     */
    public Image getColumnImage(Object element, int columnIndex) {
-      if (element instanceof IRelationLinkDescriptor && columnIndex == 0) {
+      if (element instanceof IRelationType && columnIndex == 0) {
          return RELATION_IMAGE;
       } else if (element instanceof IRelationLink && columnIndex == 0) {
          IRelationLink link = (IRelationLink) element;
@@ -59,8 +59,8 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    public String getColumnText(Object element, int columnIndex) {
       if (element instanceof RelationLinkGroup) {
          if (columnIndex == 0) return ((RelationLinkGroup) element).getSideName();
-      } else if (element instanceof IRelationLinkDescriptor) {
-         if (columnIndex == 0) return ((IRelationLinkDescriptor) element).getName();
+      } else if (element instanceof IRelationType) {
+         if (columnIndex == 0) return ((IRelationType) element).getTypeName();
       } else if (element instanceof IRelationLink) {
          IRelationLink link = (IRelationLink) element;
          if (columnIndex == 0)
@@ -109,7 +109,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    }
 
    public Image getImage(Object element) {
-      if (element instanceof IRelationLinkDescriptor) {
+      if (element instanceof IRelationType) {
          return RELATION_IMAGE;
       }
       return null;

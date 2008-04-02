@@ -207,7 +207,7 @@ public class OriginalArtifactSearch {
          return new ArtifactTypeIdSearch(((ArtifactTypeNode) treeObject).getSubTypeDescriptor().getArtTypeId(), EQUAL);
       } else if (treeObject instanceof RelationTypeNode) {
          return new RelationTypeIdSearch(
-               ((RelationTypeNode) treeObject).getRelationLinkDescriptor().getPersistenceMemo().getLinkTypeId(), EQUAL);
+               ((RelationTypeNode) treeObject).getRelationLinkDescriptor().getRelationTypeId(), EQUAL);
       }
       return null;
    }

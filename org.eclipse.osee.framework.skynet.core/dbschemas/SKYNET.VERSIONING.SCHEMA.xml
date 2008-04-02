@@ -241,13 +241,16 @@
 	</Table>
 
 	<Table name="OSEE_DEFINE_VALID_RELATIONS" schema="OSEE">
-		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="SIDE_A_MAX" defaultValue="not null" type="INTEGER" />
 		<Column id="SIDE_B_MAX" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_VALID_REL_AT_RT_G_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, REL_LINK_TYPE_ID, GAMMA_ID" />
 		<Constraint schema="OSEE" id="ODVR__GAMMA_ID_UN" type="UNIQUE" appliesTo="GAMMA_ID" />
+		<Constraint schema="OSEE" id="BRANCH_ID_FK4" type="FOREIGN KEY" appliesTo="BRANCH_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
 	</Table>
 	
 	<Table name="OSEE_SNAPSHOT" schema="OSEE">
@@ -277,6 +280,17 @@
 		<Index id="OSEE_BRANCH_A_IDX">
 			<AppliesTo id="ARCHIVED" />
 		</Index>
+	</Table>
+
+	<Table name="OSEE_BRANCH_ANCESTRY" schema="OSEE">
+		<Column id="ANCESTOR_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="DESCENDENT_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="BRANCH_ID_FK2" type="FOREIGN KEY" appliesTo="ANCESTOR_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="BRANCH_ID_FK3" type="FOREIGN KEY" appliesTo="DESCENDENT_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
 	</Table>
 	
 	<Table name="OSEE_DEFINE_TXS" schema="OSEE">
@@ -310,7 +324,7 @@
 	   <Column id="AUTHOR" defaultValue="not null" type="INTEGER"/>
 		<Column id="COMMIT_ART_ID" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_TX_DETAILS_TX_PK" type="PRIMARY KEY" appliesTo="TRANSACTION_ID" />
-		<Constraint schema="OSEE" id="BRANCH_ID_FK" type="FOREIGN KEY" appliesTo="BRANCH_ID" deferrable="true">
+		<Constraint schema="OSEE" id="BRANCH_ID_FK1" type="FOREIGN KEY" appliesTo="BRANCH_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
 		</Constraint>
 		<Index id="OSEE_TX_DETAILS_B_TX_IDX" type="UNIQUE">

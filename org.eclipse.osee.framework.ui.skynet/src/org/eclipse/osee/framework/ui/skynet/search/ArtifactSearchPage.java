@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
@@ -196,21 +196,21 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       relationSideList.setSorter(new SearchSorter());
 
       try {
-		for (IRelationLinkDescriptor linkDescriptor : RelationPersistenceManager.getInstance().getIRelationLinkDescriptors(
-		        branchManager.getDefaultBranch())) {
-		     relationTypeList.add(linkDescriptor.getName());
-		     relationTypeList.setData(linkDescriptor.getName(), linkDescriptor);
-		  }
-		} catch (SQLException ex) {
-			OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-		}
+         for (IRelationType linkDescriptor : RelationTypeManager.getInstance().getValidTypes(
+               branchManager.getDefaultBranch())) {
+            relationTypeList.add(linkDescriptor.getTypeName());
+            relationTypeList.setData(linkDescriptor.getTypeName(), linkDescriptor);
+         }
+      } catch (SQLException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
 
       relationTypeList.getCombo().addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             relationSideList.getCombo().removeAll();
-            IRelationLinkDescriptor linkDescriptor =
-                  (IRelationLinkDescriptor) relationTypeList.getData(relationTypeList.getCombo().getText());
+            IRelationType linkDescriptor =
+                  (IRelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
             relationSideList.add(linkDescriptor.getSideAName());
             relationSideList.add(linkDescriptor.getSideBName());
             relationSideList.getCombo().select(0);
@@ -221,8 +221,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       if (relationTypeList.getCombo().getItemCount() > 0) { // ensure we don't get a null pointer
          // exception when there are no relation types in the db
          relationTypeList.getCombo().select(0);
-         IRelationLinkDescriptor linkDescriptor =
-               (IRelationLinkDescriptor) relationTypeList.getData(relationTypeList.getCombo().getText());
+         IRelationType linkDescriptor = (IRelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
          relationSideList.add(linkDescriptor.getSideAName());
          relationSideList.add(linkDescriptor.getSideBName());
          relationSideList.getCombo().select(0);

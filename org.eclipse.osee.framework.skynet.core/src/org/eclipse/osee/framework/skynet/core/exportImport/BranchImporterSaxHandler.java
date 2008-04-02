@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -315,13 +315,13 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
                SQL3DataType.VARCHAR, guid);
       }
 
-      IRelationLinkDescriptor linkType = relationManager.getIRelationLinkDescriptor(type, curBranch.peek());
+      IRelationType linkType = relationManager.getIRelationLinkDescriptor(type);
       if (linkType == null) {
          logger.log(Level.WARNING, "The link type " + type + " was not found for link " + guid);
          return;
       }
 
-      int relLinkTypeId = linkType.getPersistenceMemo().getLinkTypeId();
+      int relLinkTypeId = linkType.getRelationTypeId();
 
       Integer aArtId = artifactGuidCache.getId(aguid);
       if (aArtId == null) {

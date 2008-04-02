@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -32,13 +32,13 @@ import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 public class RelationMatrixExportJob extends ReportJob {
    private final HashMap<Artifact, String[]> matrix;
    private final String relationTypeName;
-   private IRelationLinkDescriptor relationType;
+   private IRelationType relationType;
    private int columnCount;
    private String[] header;
 
-   public RelationMatrixExportJob(IRelationLinkDescriptor relationType) {
-      super(relationType.getName() + " Report");
-      this.relationTypeName = relationType.getName();
+   public RelationMatrixExportJob(IRelationType relationType) {
+      super(relationType.getTypeName() + " Report");
+      this.relationTypeName = relationType.getTypeName();
       matrix = new HashMap<Artifact, String[]>();
       this.relationType = relationType;
    }

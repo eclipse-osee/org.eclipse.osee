@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
  */
 public class DeleteTransactionJob extends Job {
    private static final String SELECT_GAMMAS_FROM_TRANSACTION =
-         "SELECT txd1.gamma_id FROM osee_define_tx_details txd1 WHERE txd1.transaction_id = ? AND NOT EXISTS (SELECT 'x' FROM osee_define_tx_details txd2 WHERE txd1.gamma_id = txd2.gamma_id AND txd1.transaction_id <> txd2.transaction_id)";
+         "SELECT txs1.gamma_id FROM osee_define_txs txs1 WHERE txs1.transaction_id = ? AND NOT EXISTS (SELECT 'x' FROM osee_define_txs txs2 WHERE txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id <> txs2.transaction_id)";
    private static final String DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS =
          "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id = ?";
    private static final String DELETE_GAMMA_FROM_ARTIFACT_VERSION =

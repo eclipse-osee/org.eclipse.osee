@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -197,20 +198,21 @@ public class SkynetTypesImporter implements RowProcessor {
 
    /**
     * @param row
+    * @throws SQLException
     */
-   private void addRelationType(String[] row) {
+   private void addRelationType(String[] row) throws SQLException {
       if (debugRows) System.out.println("   addRelationType => " + row[0] + "," + row[1]);
       String relationTypeName = row[0];
       String sideAName = row[1];
-      String A2BPhrase = row[2];
+      String abPhrasing = row[2];
       String sideBName = row[3];
-      String B2APhrase = row[4];
+      String baPhrasing = row[4];
       String shortName = row[5];
       generateRelationSideEnum(relationTypeName, sideAName, sideBName);
       generateNormalRelationSideEnum(relationTypeName, sideAName, sideBName);
 
-      configurationManager.persistRelationLinkType(relationTypeName, sideAName, sideBName, A2BPhrase, B2APhrase,
-            shortName, branch);
+      RelationTypeManager.getInstance().createRelationType("", relationTypeName, sideAName, sideBName, abPhrasing,
+            baPhrasing, shortName);
    }
 
    private void generateRelationSideEnum(String relationTypeName, String sideAName, String sideBName) {

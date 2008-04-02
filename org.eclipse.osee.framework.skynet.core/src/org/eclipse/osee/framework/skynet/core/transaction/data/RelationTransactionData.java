@@ -54,7 +54,7 @@ public class RelationTransactionData implements ITransactionData {
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getPersistenceMemo().getLinkId());
       dataItems.add(SQL3DataType.INTEGER);
-      dataItems.add(link.getLinkDescriptor().getPersistenceMemo().getLinkTypeId());
+      dataItems.add(link.getLinkDescriptor().getRelationTypeId());
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getArtifactA().getArtId());
       dataItems.add(SQL3DataType.INTEGER);

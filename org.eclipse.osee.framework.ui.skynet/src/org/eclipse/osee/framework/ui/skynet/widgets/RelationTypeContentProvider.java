@@ -12,13 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -26,9 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Jeff C. Phillips
  */
 public class RelationTypeContentProvider implements ITreeContentProvider {
-   protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationTypeContentProvider.class);
-   private static final RelationPersistenceManager relationPersistenceManager =
-         RelationPersistenceManager.getInstance();
+   private static final RelationTypeManager relationTypeManager = RelationTypeManager.getInstance();
 
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
@@ -38,13 +34,13 @@ public class RelationTypeContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Branch) {
          ArrayList<Object> descriptors = new ArrayList<Object>();
          try {
-			for (IRelationLinkDescriptor descriptor : relationPersistenceManager.getIRelationLinkDescriptors((Branch) parentElement)) {
-			    descriptors.add((Object) descriptor);
-			 }
-			 return descriptors.toArray();
-		} catch (SQLException ex) {
-			OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-		}
+            for (IRelationType descriptor : relationTypeManager.getValidTypes((Branch) parentElement)) {
+               descriptors.add((Object) descriptor);
+            }
+            return descriptors.toArray();
+         } catch (SQLException ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
       }
       return null;
    }

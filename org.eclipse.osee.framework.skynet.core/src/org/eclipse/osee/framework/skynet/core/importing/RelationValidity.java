@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 
 /**
@@ -45,11 +45,11 @@ public class RelationValidity {
 
    private class ValidityConstraint {
       private final ArtifactSubtypeDescriptor artifactType;
-      private final IRelationLinkDescriptor linkDescriptor;
+      private final IRelationType linkDescriptor;
       private final int sideAmax;
       private final int sideBmax;
 
-      public ValidityConstraint(ArtifactSubtypeDescriptor artifactType, IRelationLinkDescriptor linkDescriptor, int sideAmax, int sideBmax) {
+      public ValidityConstraint(ArtifactSubtypeDescriptor artifactType, IRelationType linkDescriptor, int sideAmax, int sideBmax) {
          this.artifactType = artifactType;
          this.linkDescriptor = linkDescriptor;
          this.sideAmax = sideAmax;
@@ -96,8 +96,8 @@ public class RelationValidity {
             try {
                ArtifactSubtypeDescriptor artifactType =
                      configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName);
-               IRelationLinkDescriptor linkDescriptor =
-                     relationManager.getIRelationLinkDescriptor(row.relationTypeName, branch);
+               IRelationType linkDescriptor =
+                     relationManager.getIRelationLinkDescriptor(row.relationTypeName);
                if (linkDescriptor == null) {
                   logger.log(Level.SEVERE, "IRelationLinkDescriptor == null ( " + row.relationTypeName + " )");
                   continue;

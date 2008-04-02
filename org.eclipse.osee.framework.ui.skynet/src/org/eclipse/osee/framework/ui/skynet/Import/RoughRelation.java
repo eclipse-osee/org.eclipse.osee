@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 
 /**
@@ -48,7 +48,7 @@ public class RoughRelation {
 
    public void makeReal(Branch branch, IProgressMonitor monitor) {
       try {
-         IRelationLinkDescriptor descriptor = relManager.getIRelationLinkDescriptor(relTypeName, branch);
+         IRelationType descriptor = relManager.getIRelationLinkDescriptor(relTypeName);
          Artifact aArt = artManager.getArtifact(aGuid, branch);
          Artifact bArt = artManager.getArtifact(bGuid, branch);
 
@@ -56,7 +56,7 @@ public class RoughRelation {
                bArt)) {
             logger.log(
                   Level.INFO,
-                  "Relation Already Exists : " + aArt.getHumanReadableId() + " - " + aArt.toString() + " => " + descriptor.getName() + " => " + bArt.getHumanReadableId() + " - " + bArt.toString());
+                  "Relation Already Exists : " + aArt.getHumanReadableId() + " - " + aArt.toString() + " => " + descriptor.getTypeName() + " => " + bArt.getHumanReadableId() + " - " + bArt.toString());
          }
 
          if (aArt == null || bArt == null) {

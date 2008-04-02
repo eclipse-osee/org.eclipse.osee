@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
@@ -78,8 +78,8 @@ public class RelationContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
 
       try {
-         if (parentElement instanceof IRelationLinkDescriptor) {
-            IRelationLinkDescriptor descriptor = (IRelationLinkDescriptor) parentElement;
+         if (parentElement instanceof IRelationType) {
+            IRelationType descriptor = (IRelationType) parentElement;
             Artifact parent = (Artifact) viewer.getInput();
             LinkManager linkManager = parent.getLinkManager();
 

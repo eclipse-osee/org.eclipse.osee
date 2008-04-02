@@ -42,14 +42,14 @@ public class RemoteLinkEventFactory {
             link.getRationale(),
             link.getAOrder(),
             link.getBOrder(),
-            link.getLinkDescriptor().getPersistenceMemo().getLinkTypeId(),
+            link.getLinkDescriptor().getRelationTypeId(),
             aArtifact.getFactory().getClass().getCanonicalName(),
             bArtifact.getFactory().getClass().getCanonicalName(),
             aArtifact.getGuid(),
             bArtifact.getGuid(),
             aArtifact.getHumanReadableId(),
             bArtifact.getHumanReadableId(),
-            link.getLinkDescriptor().getName(),
+            link.getLinkDescriptor().getTypeName(),
             SkynetAuthentication.getInstance().getAuthenticatedUser().getPersistenceMemo() != null ? SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId() : -1);
 
    }

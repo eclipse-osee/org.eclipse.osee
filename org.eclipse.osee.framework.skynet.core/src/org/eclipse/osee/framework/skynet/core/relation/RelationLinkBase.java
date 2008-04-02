@@ -34,13 +34,13 @@ public abstract class RelationLinkBase implements IRelationLink {
    private int bOrder;
    private String rationale;
    private LinkPersistenceMemo memo;
-   private IRelationLinkDescriptor descriptor;
+   private IRelationType descriptor;
    private static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
    protected boolean dirty;
 
-   protected RelationLinkBase(IRelationLinkDescriptor descriptor) {
+   protected RelationLinkBase(IRelationType descriptor) {
       if (descriptor == null) throw new IllegalArgumentException("descriptor can not be null");
 
       this.descriptor = descriptor;
@@ -49,16 +49,12 @@ public abstract class RelationLinkBase implements IRelationLink {
       this.rationale = "";
    }
 
-   protected RelationLinkBase(Artifact artA, Artifact artB, IRelationLinkDescriptor descriptor, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder) {
-      if (descriptor == null) throw new IllegalArgumentException("descriptor can not be null");
-      if (artA != null && artA.getBranch() != descriptor.getTransactionId().getBranch()) throw new IllegalArgumentException(
-            "artA must be on the same branch as the descriptor");
-      if (artB != null && artB.getBranch() != descriptor.getTransactionId().getBranch()) throw new IllegalArgumentException(
-            "artB must be on the same branch as the descriptor");
+   protected RelationLinkBase(Artifact artA, Artifact artB, IRelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder) {
+      if (relationType == null) throw new IllegalArgumentException("descriptor can not be null");
 
       this.artA = artA;
       this.artB = artB;
-      this.descriptor = descriptor;
+      this.descriptor = relationType;
       this.memo = memo;
       this.rationale = rationale;
       this.aOrder = aOrder;
@@ -102,7 +98,7 @@ public abstract class RelationLinkBase implements IRelationLink {
    }
 
    private void kickDeleteLinkEvent() {
-      eventManager.kick(new CacheRelationModifiedEvent(this, getLinkDescriptor().getName(), getASideName(),
+      eventManager.kick(new CacheRelationModifiedEvent(this, getLinkDescriptor().getTypeName(), getASideName(),
             ModType.Deleted.name(), this, getBranch()));
    }
 
@@ -129,7 +125,7 @@ public abstract class RelationLinkBase implements IRelationLink {
          return artB;
       } else {
          throw new IllegalArgumentException(
-               "sideName '" + sideName + "' does not match '" + descriptor.getSideAName() + "' or '" + descriptor.getSideBName() + "' for link type " + descriptor.getName());
+               "sideName '" + sideName + "' does not match '" + descriptor.getSideAName() + "' or '" + descriptor.getSideBName() + "' for link type " + descriptor.getTypeName());
       }
    }
 
@@ -157,11 +153,12 @@ public abstract class RelationLinkBase implements IRelationLink {
    public void setArtifactA(Artifact artA, boolean remoteEvent) {
       checkDeleted();
 
-      if (artA == null) throw new IllegalArgumentException("artA can not be null.");
-      if (this.artA != null && this.artA.getArtId() != artA.getArtId() && !remoteEvent) throw new IllegalStateException(
-            "Artifact A has already been set.");
-      if (artA.getBranch() != descriptor.getTransactionId().getBranch()) throw new IllegalArgumentException(
-            "artA must be on the same branch as the link");
+      if (artA == null) {
+         throw new IllegalArgumentException("artA can not be null.");
+      }
+      if (this.artA != null && this.artA.getArtId() != artA.getArtId() && !remoteEvent) {
+         throw new IllegalStateException("Artifact A has already been set.");
+      }
 
       this.artA = artA;
    }
@@ -173,11 +170,12 @@ public abstract class RelationLinkBase implements IRelationLink {
    public void setArtifactB(Artifact artB, boolean remoteEvent) {
       checkDeleted();
 
-      if (artB == null) throw new IllegalArgumentException("artB can not be null.");
-      if (this.artB != null && this.artB.getArtId() != artB.getArtId() && !remoteEvent) throw new IllegalStateException(
-            "Artifact B has already been set.");
-      if (artB.getBranch() != descriptor.getTransactionId().getBranch()) throw new IllegalArgumentException(
-            "artB must be on the same branch as the link");
+      if (artB == null) {
+         throw new IllegalArgumentException("artB can not be null.");
+      }
+      if (this.artB != null && this.artB.getArtId() != artB.getArtId() && !remoteEvent) {
+         throw new IllegalStateException("Artifact B has already been set.");
+      }
 
       this.artB = artB;
    }
@@ -283,12 +281,12 @@ public abstract class RelationLinkBase implements IRelationLink {
       dirty = true;
 
       if (notify) {
-         eventManager.kick(new CacheRelationModifiedEvent(this, getLinkDescriptor().getName(), getASideName(),
+         eventManager.kick(new CacheRelationModifiedEvent(this, getLinkDescriptor().getTypeName(), getASideName(),
                ModType.RationaleMod.name(), this, getBranch()));
       }
    }
 
-   public IRelationLinkDescriptor getLinkDescriptor() {
+   public IRelationType getLinkDescriptor() {
       return descriptor;
    }
 
@@ -377,7 +375,7 @@ public abstract class RelationLinkBase implements IRelationLink {
 
    public String getName() {
       checkDeleted();
-      return descriptor.getName();
+      return descriptor.getTypeName();
    }
 
    /**
@@ -395,7 +393,7 @@ public abstract class RelationLinkBase implements IRelationLink {
    }
 
    public String toString() {
-      return String.format("%s: %s(%s)<-->%s(%s)", descriptor.getName(), artA.getDescriptiveName(),
+      return String.format("%s: %s(%s)<-->%s(%s)", descriptor.getTypeName(), artA.getDescriptiveName(),
             Float.toString(aOrder), artB.getDescriptiveName(), Float.toString(bOrder));
    }
 }

@@ -10,13 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import org.eclipse.osee.framework.jdk.core.util.PersistenceObject;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
-public interface IRelationLinkDescriptor extends PersistenceObject, Comparable<IRelationLinkDescriptor> {
-
-   public IRelationLink makeNewLink();
+public interface IRelationType extends Comparable<IRelationType> {
 
    /**
     * @return Returns the aToBPhrasing.
@@ -31,7 +26,12 @@ public interface IRelationLinkDescriptor extends PersistenceObject, Comparable<I
    /**
     * @return Returns the name.
     */
-   public String getName();
+   public String getTypeName();
+
+   /**
+    * @return the namespace
+    */
+   public String getNamespace();
 
    public String getSideName(boolean sideA);
 
@@ -52,15 +52,11 @@ public interface IRelationLinkDescriptor extends PersistenceObject, Comparable<I
 
    public boolean isSideAName(String sideName);
 
-   public LinkDescriptorPersistenceMemo getPersistenceMemo();
+   public int getRelationTypeId();
 
    public void setLinkSideRestriction(int artTypeId, LinkSideRestriction linkSideRestriction);
 
    public boolean canLinkType(int id);
 
    public int getRestrictionSizeFor(int id, boolean sideA);
-
-   public void ensureSideWillSupportArtifact(boolean sideA, Artifact artifact, int artifactCount);
-
-   public TransactionId getTransactionId();
 }

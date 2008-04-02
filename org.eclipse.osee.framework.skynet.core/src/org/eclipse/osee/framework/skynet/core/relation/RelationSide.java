@@ -115,7 +115,7 @@ public enum RelationSide implements IRelationEnumeration {
    }
 
    public static IRelationEnumeration getRelationSide(String relationType, String relationSide, Branch branch) throws SQLException {
-      IRelationLinkDescriptor desc = relationManager.getIRelationLinkDescriptor(relationType, branch);
+      IRelationType desc = relationManager.getIRelationLinkDescriptor(relationType);
       boolean isSideA = (desc.getSideAName().equals(relationSide));
       return RelationPersistenceManager.sideHash.get(relationType, isSideA);
    }
@@ -129,9 +129,9 @@ public enum RelationSide implements IRelationEnumeration {
 
    public String getSideName(Branch branch) throws SQLException {
       if (isSideA())
-         return getDescriptor(branch).getSideAName();
+         return getRelationType().getSideAName();
       else
-         return getDescriptor(branch).getSideBName();
+         return getRelationType().getSideBName();
    }
 
    /**
@@ -141,11 +141,11 @@ public enum RelationSide implements IRelationEnumeration {
       return typeName;
    }
 
-   public IRelationLinkDescriptor getDescriptor(Branch branch) throws SQLException {
-      return relationManager.getIRelationLinkDescriptor(typeName, branch);
+   public IRelationType getRelationType() throws SQLException {
+      return relationManager.getIRelationLinkDescriptor(typeName);
    }
 
    public boolean isThisType(IRelationLink link) {
-      return link.getLinkDescriptor().getName().equals(typeName);
+      return link.getLinkDescriptor().getTypeName().equals(typeName);
    }
 }

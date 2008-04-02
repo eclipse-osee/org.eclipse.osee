@@ -38,14 +38,14 @@ public class RelationLinkGroup {
    private static final int TAIL_ADD_GAP = (int) Math.pow(2, 22);
 
    private LinkManager linkManager;
-   private IRelationLinkDescriptor descriptor;
+   private IRelationType descriptor;
    private boolean sideA;
    private TreeSet<IRelationLink> groupSide;
    private SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final RelationPersistenceManager relationPersistenceManager =
          RelationPersistenceManager.getInstance();
 
-   protected RelationLinkGroup(LinkManager linkManager, IRelationLinkDescriptor descriptor, boolean sideA) {
+   protected RelationLinkGroup(LinkManager linkManager, IRelationType descriptor, boolean sideA) {
       super();
 
       if (linkManager == null) throw new IllegalArgumentException("linkManager can not be null");
@@ -149,7 +149,7 @@ public class RelationLinkGroup {
       if (persist)
          link.persist();
       else
-         eventManager.kick(new CacheRelationModifiedEvent(link, link.getLinkDescriptor().getName(),
+         eventManager.kick(new CacheRelationModifiedEvent(link, link.getLinkDescriptor().getTypeName(),
                link.getASideName(), ModType.Added.name(), this, link.getBranch()));
 
       return true;
@@ -170,7 +170,7 @@ public class RelationLinkGroup {
          if (artifact == ((sideA) ? link.getArtifactA() : link.getArtifactB())) {
             link.delete();
             // TODO the link.delete() call is kicking this event also ...
-            eventManager.kick(new CacheRelationModifiedEvent(link, link.getLinkDescriptor().getName(),
+            eventManager.kick(new CacheRelationModifiedEvent(link, link.getLinkDescriptor().getTypeName(),
                   link.getASideName(), ModType.Deleted.name(), this, link.getBranch()));
             return true;
          }
@@ -196,7 +196,7 @@ public class RelationLinkGroup {
    }
 
    public String toString() {
-      return String.format("%s side of %s for %s", getSideName(), descriptor.getName(), linkManager.getOwningArtifact());
+      return String.format("%s side of %s for %s", getSideName(), descriptor.getTypeName(), linkManager.getOwningArtifact());
    }
 
    /**
@@ -265,7 +265,7 @@ public class RelationLinkGroup {
       return artifacts;
    }
 
-   public IRelationLinkDescriptor getDescriptor() {
+   public IRelationType getDescriptor() {
       return descriptor;
    }
 

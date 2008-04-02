@@ -13,13 +13,14 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
@@ -32,11 +33,11 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ArtifactDragDropSupport {
 
-   public static void performDragDrop(DropTargetEvent e, RelationExplorerWindow window, Shell shell) {
+   public static void performDragDrop(DropTargetEvent e, RelationExplorerWindow window, Shell shell) throws SQLException {
       performDragDrop(e, null, window, shell);
    }
 
-   public static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell) {
+   public static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell) throws SQLException {
 
       if (ArtifactTransfer.getInstance().isSupportedType(e.currentDataType)) {
 
@@ -54,17 +55,17 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void ensureLinkValidity(RelationLinkGroup group, Artifact artifact) {
+   private static void ensureLinkValidity(RelationLinkGroup group, Artifact artifact) throws SQLException {
       boolean sideA = group.isSideA();
-      IRelationLinkDescriptor linkDescriptor = group.getDescriptor();
+      IRelationType linkDescriptor = group.getDescriptor();
       LinkManager linkManager = group.getLinkManager();
       linkManager.ensureLinkValidity(linkDescriptor, sideA, artifact);
    }
 
-   private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) {
+   private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) throws SQLException {
       RelationLinkGroup group = window.getRelationGroup();
       boolean sideA = group.isSideA();
-      IRelationLinkDescriptor linkDescriptor = group.getDescriptor();
+      IRelationType linkDescriptor = group.getDescriptor();
       LinkManager linkManager = group.getLinkManager();
 
       try {
@@ -83,7 +84,7 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void addFiles(String[] fileNames, RelationExplorerWindow window, Shell shell) {
+   private static void addFiles(String[] fileNames, RelationExplorerWindow window, Shell shell) throws SQLException {
       RelationLinkGroup group = window.getRelationGroup();
       IFile iFile;
       Artifact artifact;
@@ -124,7 +125,7 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void addURL(String url, RelationExplorerWindow window, Shell shell) {
+   private static void addURL(String url, RelationExplorerWindow window, Shell shell) throws SQLException {
       RelationLinkGroup group = window.getRelationGroup();
       Artifact artifact;
       String location;

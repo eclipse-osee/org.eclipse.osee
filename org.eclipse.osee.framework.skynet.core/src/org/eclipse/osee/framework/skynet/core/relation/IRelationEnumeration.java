@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
-
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 public interface IRelationEnumeration {
@@ -21,7 +20,7 @@ public interface IRelationEnumeration {
 
    public String getTypeName();
 
-   public IRelationLinkDescriptor getDescriptor(Branch branch) throws SQLException;
+   public IRelationType getRelationType() throws SQLException;
 
    public boolean isThisType(IRelationLink link);
 }

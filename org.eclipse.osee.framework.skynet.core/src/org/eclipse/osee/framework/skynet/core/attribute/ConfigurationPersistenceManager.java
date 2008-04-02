@@ -16,7 +16,6 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTR_BASE_TYPE_ID_SEQ;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTR_TYPE_ID_SEQ;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_TYPE_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.REL_LINK_TYPE_ID_SEQ;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -43,15 +42,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeValidityCache
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.relation.DynamicRelationLinkDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.LinkDescriptorPersistenceMemo;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkSideRestriction;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.transaction.data.RelationLinkTypeTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.data.RelationLinkValidityTransactionData;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
@@ -156,71 +151,6 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       }
 
       return attrBaseTypeId;
-   }
-
-   /**
-    * Persist a relation link type. If the <code>linkTypeName</code> is already in the database then then nothing is
-    * done.
-    * 
-    * @param linkTypeName The type name of the relation link to define.
-    * @param sideAName The name for the 'a' side of the relation.
-    * @param sideBName The name for the 'b' side of the relation.
-    * @param abPhrasing The phrasing appropriate from the 'a' side to the 'b' side.
-    * @param baPhrasing The phrasing appropriate from the 'b' side to the 'a' side.
-    * @param shortName An abbreviated name to display for the link type.
-    */
-   public void persistRelationLinkType(String linkTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, Branch branch) {
-      if (linkTypeName == null || linkTypeName.equals("")) throw new IllegalArgumentException(
-            "The relationName can not be null or empty");
-      if (sideAName == null || sideAName.equals("")) throw new IllegalArgumentException(
-            "The sideAName can not be null or empty");
-      if (sideBName == null || sideBName.equals("")) throw new IllegalArgumentException(
-            "The sideBName can not be null or empty");
-      if (abPhrasing == null || abPhrasing.equals("")) throw new IllegalArgumentException(
-            "The abPhrasing can not be null or empty");
-      if (baPhrasing == null || baPhrasing.equals("")) throw new IllegalArgumentException(
-            "The baPhrasing can not be null or empty");
-      if (shortName == null || shortName.equals("")) throw new IllegalArgumentException(
-            "The shortName can not be null or empty");
-
-      checkTransaction();
-
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_REL_LINK_TYPE, SQL3DataType.VARCHAR, linkTypeName);
-         if (chStmt.next()) {
-            IRelationLinkDescriptor descriptor =
-                  relationPersistenceManager.getIRelationLinkDescriptor(linkTypeName, branch);
-
-            if (descriptor == null) {
-               transaction.addToTransactionTableBatch(chStmt.getRset().getInt("gamma_id"));
-               TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
-               IRelationLinkDescriptor newDescriptor =
-                     new DynamicRelationLinkDescriptor(linkTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
-                           shortName, transactionId);
-               newDescriptor.setPersistenceMemo(new LinkDescriptorPersistenceMemo(chStmt.getRset().getInt(
-                     "rel_link_type_id")));
-               relationPersistenceManager.cacheDescriptor(newDescriptor);
-            }
-         } else {
-            // Since the relation isn't available, add the information to the database
-            int relLinkTypeId =
-                  insertRelationInfo(linkTypeName, sideAName, sideBName, abPhrasing, baPhrasing, shortName);
-
-            TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
-
-            IRelationLinkDescriptor descriptor =
-                  new DynamicRelationLinkDescriptor(linkTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
-                        shortName, transactionId);
-            descriptor.setPersistenceMemo(new LinkDescriptorPersistenceMemo(relLinkTypeId));
-            relationPersistenceManager.cacheDescriptor(descriptor);
-         }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, "Error encountered while persisting relation link type", ex);
-         throw new RuntimeException(ex);
-      } finally {
-         DbUtil.close(chStmt);
-      }
    }
 
    public void makeSubtypePersistent(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws SQLException {
@@ -382,18 +312,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return names;
    }
 
-   public int insertRelationInfo(String linkTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName) throws SQLException {
-
-      int relLinkTypeId = Query.getNextSeqVal(null, REL_LINK_TYPE_ID_SEQ);
-      int gammaId = SkynetDatabase.getNextGammaId();
-
-      transaction.addTransactionDataItem(new RelationLinkTypeTransactionData(relLinkTypeId, linkTypeName, sideAName,
-            sideBName, abPhrasing, baPhrasing, shortName, gammaId, transaction.getTransactionNumber()));
-
-      return relLinkTypeId;
-   }
-
-   public void persistRelationLinkValidity(ArtifactSubtypeDescriptor artDescriptor, IRelationLinkDescriptor linkDescriptor, int sideAMax, int sideBMax) {
+   public void persistRelationLinkValidity(ArtifactSubtypeDescriptor artDescriptor, IRelationType linkDescriptor, int sideAMax, int sideBMax) {
 
       checkTransaction();
 
@@ -403,7 +322,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       if (sideBMax < 0) throw new IllegalArgumentException("The sideBMax can no be negative");
 
       int artTypeId = artDescriptor.getArtTypeId();
-      int relLinkTypeId = linkDescriptor.getPersistenceMemo().getLinkTypeId();
+      int relLinkTypeId = linkDescriptor.getRelationTypeId();
 
       try {
          // If this validity is already the current case, then ignore

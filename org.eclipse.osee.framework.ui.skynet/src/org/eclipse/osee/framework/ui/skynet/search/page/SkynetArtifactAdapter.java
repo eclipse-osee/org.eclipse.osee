@@ -20,12 +20,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.DynamicRelationLinkDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.LinkDescriptorPersistenceMemo;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.sql.SkynetRevisionControl;
 import org.eclipse.osee.framework.skynet.core.sql.SkynetSql;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
@@ -77,33 +75,17 @@ public class SkynetArtifactAdapter {
       return map;
    }
 
-   private Collection<IRelationLinkDescriptor> getIRelationLinkDescriptorsFromArtifactTypeId(int artTypeid, int branchId, final int revision) throws SQLException {
-      Collection<IRelationLinkDescriptor> relationsTypes = new LinkedList<IRelationLinkDescriptor>();
+   private Collection<IRelationType> getIRelationLinkDescriptorsFromArtifactTypeId(int artTypeid, int branchId, final int revision) throws SQLException {
+      Collection<IRelationType> relationsTypes = new LinkedList<IRelationType>();
       String sql =
             skynetSql.getMetaDataSql().getRelationTypeBy("art_type_id", Integer.toString(artTypeid), branchId, revision);
       try {
-         Query.acquireCollection(relationsTypes, sql, new RsetProcessor<IRelationLinkDescriptor>() {
-            public IRelationLinkDescriptor process(ResultSet set) throws SQLException {
-               IRelationLinkDescriptor descriptor = null;
-               try {
-
-                  TransactionId transactionId =
-                        transactionIdManager.getEditableTransactionId(branchManager.getDefaultBranch());
-
-                  descriptor =
-                        new DynamicRelationLinkDescriptor(set.getString("type_name"), set.getString("a_name"),
-                              set.getString("b_name"), set.getString("ab_phrasing"), set.getString("ba_phrasing"),
-                              set.getString("short_name"), transactionId);
-                  descriptor.setPersistenceMemo(new LinkDescriptorPersistenceMemo(set.getInt("rel_link_type_id")));
-
-               } catch (Exception ex) {
-                  ex.printStackTrace();
-               }
-
-               return descriptor;
+         Query.acquireCollection(relationsTypes, sql, new RsetProcessor<IRelationType>() {
+            public IRelationType process(ResultSet set) throws SQLException {
+               return RelationTypeManager.getInstance().getType(set.getInt("rel_link_type_id"));
             }
 
-            public boolean validate(IRelationLinkDescriptor item) {
+            public boolean validate(IRelationType item) {
                return item != null;
             }
          });
@@ -128,7 +110,7 @@ public class SkynetArtifactAdapter {
    public ArtifactTypeNode createArtifactTypeNode(ArtifactSubtypeDescriptor artifactType, String parentRelationName, int branchId, int revision) {
       ArtifactTypeNode artifactTypeNode = new ArtifactTypeNode(artifactType);
       Collection<DynamicAttributeDescriptor> attributeTypes = null;
-      Collection<IRelationLinkDescriptor> relationsTypes = null;
+      Collection<IRelationType> relationsTypes = null;
       int artTypeid = artifactType.getArtTypeId();
       if (parentRelationName == null) {
          parentRelationName = "";
@@ -144,21 +126,19 @@ public class SkynetArtifactAdapter {
       for (DynamicAttributeDescriptor descriptor : attributeTypes) {
          artifactTypeNode.addChild(new AttributeTypeNode(descriptor));
       }
-      for (IRelationLinkDescriptor relationType : relationsTypes) {
-         if (!relationType.getName().equals(parentRelationName)) {
+      for (IRelationType relationType : relationsTypes) {
+         if (!relationType.getTypeName().equals(parentRelationName)) {
             artifactTypeNode.addChild(new RelationTypeNode(relationType, artifactTypeNode, branchId, revision));
          }
       }
       return artifactTypeNode;
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getValidArtifactTypesForRelationLink(IRelationLinkDescriptor relationLinkDescriptor, int branchId, int revision) {
+   public Collection<ArtifactSubtypeDescriptor> getValidArtifactTypesForRelationLink(IRelationType relationLinkDescriptor, int branchId, int revision) {
       Collection<ArtifactSubtypeDescriptor> descriptors = null;
       try {
-         if (relationLinkDescriptor != null && relationLinkDescriptor.getPersistenceMemo() != null) {
-            int relationLinkId = relationLinkDescriptor.getPersistenceMemo().getLinkTypeId();
-            descriptors = getArtifactTypeDescriptorsFromRelationLinkId(relationLinkId, branchId, revision);
-         }
+         int relationLinkId = relationLinkDescriptor.getRelationTypeId();
+         descriptors = getArtifactTypeDescriptorsFromRelationLinkId(relationLinkId, branchId, revision);
       } catch (SQLException ex) {
          ex.printStackTrace();
       }

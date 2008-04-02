@@ -15,18 +15,16 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
@@ -41,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -98,6 +95,7 @@ public class RelationPersistenceManager implements PersistenceManager {
    private TransactionIdManager transactionIdManager;
    private ArtifactPersistenceManager artifactManager;
    private ConfigurationPersistenceManager configurationManager;
+   private static final RelationTypeManager relationTypeManger = RelationTypeManager.getInstance();
 
    // This must be declared here cause it can't be declared in enum RelationSide
    public static DoubleKeyHashMap<String, Boolean, IRelationEnumeration> sideHash =
@@ -109,16 +107,13 @@ public class RelationPersistenceManager implements PersistenceManager {
       BeforeTarget, AfterTarget
    }
 
-   private RelationLinkTypeCache relationLinkDescriptorCache;
-
    // This hash is keyed on the rel_link_id of the relation link, then transaction_id
-   private DoubleKeyHashMap<Integer, TransactionId, IRelationLink> relationsCache;
+   private HashMap<Integer, IRelationLink> relationsCache;
 
    private static final RelationPersistenceManager instance = new RelationPersistenceManager();
 
    private RelationPersistenceManager() {
-      this.relationsCache = new DoubleKeyHashMap<Integer, TransactionId, IRelationLink>();
-      this.relationLinkDescriptorCache = new RelationLinkTypeCache();
+      this.relationsCache = new HashMap<Integer, IRelationLink>();
    }
 
    /**
@@ -221,7 +216,7 @@ public class RelationPersistenceManager implements PersistenceManager {
             transaction.getTransactionNumber(), modId));
 
       transaction.addLocalEvent(new TransactionRelationModifiedEvent(relationLink, aArtifact.getBranch(),
-            relationLink.getLinkDescriptor().getName(), relationLink.getASideName(), modType, this));
+            relationLink.getLinkDescriptor().getTypeName(), relationLink.getASideName(), modType, this));
    }
 
    /**
@@ -271,7 +266,7 @@ public class RelationPersistenceManager implements PersistenceManager {
             SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 
       transaction.addLocalEvent(new TransactionRelationModifiedEvent(relationLink, aArtifact.getBranch(),
-            relationLink.getLinkDescriptor().getName(), relationLink.getASideName(), ModType.Deleted, this));
+            relationLink.getLinkDescriptor().getTypeName(), relationLink.getASideName(), ModType.Deleted, this));
    }
 
    /**
@@ -347,7 +342,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 
                   transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, aArtifact.getBranch(),
-                        link.getLinkDescriptor().getName(), link.getASideName(), ModType.Changed, this));
+                        link.getLinkDescriptor().getTypeName(), link.getASideName(), ModType.Changed, this));
 
                }
 
@@ -393,79 +388,16 @@ public class RelationPersistenceManager implements PersistenceManager {
       );
    }
 
-   public void cacheDescriptor(IRelationLinkDescriptor descriptor) {
-      relationLinkDescriptorCache.cache(descriptor);
-   }
-
-   /**
-    * Get a listing of all the available descriptors.
-    * 
-    * @return A collection of all the available descriptors.
- * @throws SQLException 
-    */
-   public Collection<IRelationLinkDescriptor> getIRelationLinkDescriptors(Branch branch) throws SQLException {
-      // The collection from the cache is backed by the map, so guard access to the internal data
-      TreeSet<IRelationLinkDescriptor> sortedSet = new TreeSet<IRelationLinkDescriptor>();
-      for (IRelationLinkDescriptor linkDescriptor : relationLinkDescriptorCache.getAllDescriptors(branch)) {
-         sortedSet.add(linkDescriptor);
-      }
-
-      return sortedSet;
-   }
-
-   /**
-    * Get a listing of all the available descriptors that are applicable to an Artifact Type.
-    * 
-    * @return A collection of all the available descriptors.
- * @throws SQLException 
-    */
-   public Collection<IRelationLinkDescriptor> getIRelationLinkDescriptors(ArtifactSubtypeDescriptor artifactDescriptor, Branch branch) throws SQLException {
-      Collection<IRelationLinkDescriptor> linkDescriptors = new LinkedList<IRelationLinkDescriptor>();
-      for (IRelationLinkDescriptor linkDescriptor : getIRelationLinkDescriptors(branch)) {
-         if (linkDescriptor.canLinkType(artifactDescriptor.getArtTypeId())) {
-            linkDescriptors.add(linkDescriptor);
-         }
-      }
-
-      return linkDescriptors;
-   }
-
    /**
     * Get a particular link descriptor by its type name. If no such descriptor exists then a null reference will be
     * returned.
-    * 
     * @param name The type name of the relation link.
-    * @return The corresponding descriptor, null if one does not exist.
- * @throws SQLException 
-    */
-   public IRelationLinkDescriptor getIRelationLinkDescriptor(String name, Branch branch) throws SQLException {
-      return relationLinkDescriptorCache.getDescriptor(name, branch);
-   }
-
-   /**
-    * Get a listing of all the available descriptors.
     * 
-    * @return A collection of all the available descriptors.
-    */
-   public Collection<IRelationLinkDescriptor> getIRelationLinkDescriptors(TransactionId transactionId) {
-      // The collection from the cache is backed by the map, so guard access to the internal data
-      TreeSet<IRelationLinkDescriptor> sortedSet = new TreeSet<IRelationLinkDescriptor>();
-      for (IRelationLinkDescriptor linkDescriptor : relationLinkDescriptorCache.getAllDescriptors(transactionId)) {
-         sortedSet.add(linkDescriptor);
-      }
-
-      return sortedSet;
-   }
-
-   /**
-    * Get a particular link descriptor by its type name. If no such descriptor exists then a null reference will be
-    * returned.
-    * 
-    * @param name The type name of the relation link.
     * @return The corresponding descriptor, null if one does not exist.
+    * @throws SQLException
     */
-   public IRelationLinkDescriptor getIRelationLinkDescriptor(String name, TransactionId transactionId) {
-      return relationLinkDescriptorCache.getDescriptor(name, transactionId);
+   public IRelationType getIRelationLinkDescriptor(String typeName) throws SQLException {
+      return RelationTypeManager.getInstance().getType(typeName);
    }
 
    /**
@@ -488,7 +420,7 @@ public class RelationPersistenceManager implements PersistenceManager {
 
       public IRelationLink process(ResultSet set) throws SQLException {
          IRelationLink link = null;
-         IRelationLinkDescriptor descriptor = null;
+         IRelationType relationType = null;
          String rationale = set.getString("rationale");
          int relId = set.getInt("rel_link_id");
          int aArtId = set.getInt("a_art_id");
@@ -497,8 +429,8 @@ public class RelationPersistenceManager implements PersistenceManager {
          int bOrderValue = set.getInt("b_order_value");
          int gammaId = set.getInt("gamma_id");
 
-         descriptor = relationLinkDescriptorCache.getDescriptor(set.getString("type_name"), transactionId);
-         link = relationsCache.get(relId, transactionId);
+         relationType = relationTypeManger.getType(set.getString("type_name"));
+         link = relationsCache.get(relId);
 
          if (link != null) {
 
@@ -524,11 +456,11 @@ public class RelationPersistenceManager implements PersistenceManager {
             }
 
             link =
-                  new DynamicRelationLink(artA, artB, descriptor, new LinkPersistenceMemo(relId, gammaId),
+                  new DynamicRelationLink(artA, artB, relationType, new LinkPersistenceMemo(relId, gammaId),
                         (rationale != null && !rationale.equals("null")) ? rationale : "", aOrderValue, bOrderValue,
                         false);
 
-            relationsCache.put(relId, transactionId, link);
+            relationsCache.put(relId, link);
 
             if (link.getArtifactA().isLinkManagerLoaded()) link.getArtifactA().getLinkManager().addLink(link);
 
@@ -545,7 +477,7 @@ public class RelationPersistenceManager implements PersistenceManager {
    }
 
    public void cache(IRelationLink link) {
-      relationsCache.put(link.getPersistenceMemo().getLinkId(), link.getLinkDescriptor().getTransactionId(), link);
+      relationsCache.put(link.getPersistenceMemo().getLinkId(), link);
    }
 
    /**
@@ -553,7 +485,7 @@ public class RelationPersistenceManager implements PersistenceManager {
     * 
     * @param event
     */
-   public void updateRelationCache(ISkynetRelationLinkEvent event, Collection<Event> localEvents, TransactionId newTransactionId, TransactionId notEditableTransactionId) {
+   public void updateRelationCache(ISkynetRelationLinkEvent event, Collection<Event> localEvents) {
       try {
          Integer relId = event.getRelId();
          Integer gammaId = event.getGammaId();
@@ -561,8 +493,8 @@ public class RelationPersistenceManager implements PersistenceManager {
          int artAId = event.getArtAId();
          int artBId = event.getArtBId();
 
-         if (relationsCache.containsKey(relId, newTransactionId)) {
-            IRelationLink link = relationsCache.get(relId, newTransactionId);
+         if (relationsCache.containsKey(relId)) {
+            IRelationLink link = relationsCache.get(relId);
 
             if (event instanceof NetworkRelationLinkModifiedEvent) {
 
@@ -581,7 +513,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                   link.setNotDirty();
 
                   localEvents.add(new TransactionRelationModifiedEvent(link, branch,
-                        link.getLinkDescriptor().getName(), link.getASideName(), ModType.Changed, this));
+                        link.getLinkDescriptor().getTypeName(), link.getASideName(), ModType.Changed, this));
                }
             } else if (event instanceof NetworkRelationLinkDeletedEvent) {
                Artifact aArt = link.getArtifactA();
@@ -591,8 +523,8 @@ public class RelationPersistenceManager implements PersistenceManager {
 
                if (bArt.isLinkManagerLoaded()) bArt.getLinkManager().removeLink(link);
 
-               localEvents.add(new TransactionRelationModifiedEvent(link, branch, link.getLinkDescriptor().getName(),
-                     link.getASideName(), ModType.Deleted, this));
+               localEvents.add(new TransactionRelationModifiedEvent(link, branch,
+                     link.getLinkDescriptor().getTypeName(), link.getASideName(), ModType.Deleted, this));
             }
          } else if (event instanceof NetworkNewRelationLinkEvent) {
             NetworkNewRelationLinkEvent newRelationEvent = (NetworkNewRelationLinkEvent) event;
@@ -610,8 +542,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                   Artifact artB =
                         artifactManager.getArtifactFromId(artBId, transactionIdManager.getEditableTransactionId(branch));
 
-                  IRelationLinkDescriptor descriptor =
-                        relationLinkDescriptorCache.getDescriptor(newRelationEvent.getRelTypeId(), branch);
+                  IRelationType relationType = relationTypeManger.getType(newRelationEvent.getRelTypeId());
 
                   LinkPersistenceMemo memo = new LinkPersistenceMemo(relId, gammaId);
                   String rationale = newRelationEvent.getRationale();
@@ -619,16 +550,16 @@ public class RelationPersistenceManager implements PersistenceManager {
                   int bOrder = newRelationEvent.getBOrder();
 
                   DynamicRelationLink link =
-                        new DynamicRelationLink(artA, artB, descriptor, memo, rationale, aOrder, bOrder, false);
+                        new DynamicRelationLink(artA, artB, relationType, memo, rationale, aOrder, bOrder, false);
 
                   if (artA.isLinkManagerLoaded()) artA.getLinkManager().addLink(link);
                   if (artB.isLinkManagerLoaded()) artB.getLinkManager().addLink(link);
 
-                  relationsCache.put(relId, newTransactionId, link);
+                  relationsCache.put(relId, link);
                   link.setNotDirty();
 
                   localEvents.add(new TransactionRelationModifiedEvent(link, branch,
-                        link.getLinkDescriptor().getName(), link.getASideName(), ModType.Added, this));
+                        link.getLinkDescriptor().getTypeName(), link.getASideName(), ModType.Added, this));
                }
             } catch (Exception e) {
                logger.log(Level.SEVERE, e.toString(), e);

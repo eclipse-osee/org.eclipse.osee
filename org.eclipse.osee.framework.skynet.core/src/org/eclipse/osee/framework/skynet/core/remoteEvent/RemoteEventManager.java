@@ -93,7 +93,8 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
    private RemoteEventManager() {
       super();
 
-      DbDetailData dbData = ConfigUtil.getConfigFactory().getOseeConfig().getDefaultDatabaseService().getDatabaseDetails();
+      DbDetailData dbData =
+            ConfigUtil.getConfigFactory().getOseeConfig().getDefaultDatabaseService().getDatabaseDetails();
       String dbName = dbData.getFieldValue(DbDetailData.ConfigField.DatabaseName);
       String userName = dbData.getFieldValue(DbDetailData.ConfigField.UserName);
 
@@ -355,8 +356,7 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
                      checkTransactionIds(skynetRelationLinkEvent);
 
                      if (skynetRelationLinkEvent != null) {
-                        relationPersistenceManager.updateRelationCache(skynetRelationLinkEvent, localEvents,
-                              editableTransactionId, priorEditableTransactionId);
+                        relationPersistenceManager.updateRelationCache(skynetRelationLinkEvent, localEvents);
                      }
                   } else {
                      logger.log(Level.INFO, "Unexpected ISkynetEvent " + event.getClass().getName());

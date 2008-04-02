@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -42,7 +42,7 @@ public class RelationGroupDialog extends MessageDialog {
    private Image image = null;
    private Label errorLabel;
    private Composite composite;
-   private IRelationLinkDescriptor descriptor;
+   private IRelationType descriptor;
    private Artifact artifact;
    private String sideName;
 
@@ -71,7 +71,7 @@ public class RelationGroupDialog extends MessageDialog {
     * @param descriptor -
     * @param artifact -
     */
-   public RelationGroupDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, IRelationLinkDescriptor descriptor, Artifact artifact) {
+   public RelationGroupDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, IRelationType descriptor, Artifact artifact) {
       super(parentShell, dialogMessage, dialogTitleImage, dialogMessage, MessageDialog.INFORMATION, new String[] {"OK",
             "Cancel"}, 0);
       this.title = dialogTitle;

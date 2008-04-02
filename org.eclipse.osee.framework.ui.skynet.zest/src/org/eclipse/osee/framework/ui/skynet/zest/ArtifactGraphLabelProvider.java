@@ -57,7 +57,7 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
 
                Collection<String> linkNames = new ArrayList<String>(links.size());
                for (IRelationLink link : links) {
-                  linkNames.add(link.getLinkDescriptor().getName());
+                  linkNames.add(link.getLinkDescriptor().getTypeName());
                }
                return Collections.toString("\n", linkNames);
             } catch (SQLException ex) {

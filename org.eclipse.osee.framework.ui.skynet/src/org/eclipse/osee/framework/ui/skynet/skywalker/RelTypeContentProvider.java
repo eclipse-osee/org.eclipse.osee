@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.skywalker;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 
 /**
  * @author Donald G. Dunne
@@ -36,24 +36,24 @@ public class RelTypeContentProvider implements ITreeContentProvider {
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) return ((Collection) parentElement).toArray();
-      if (parentElement instanceof IRelationLinkDescriptor) {
-         return new Object[] {new RelationLinkDescriptorSide((IRelationLinkDescriptor) parentElement, true),
-               new RelationLinkDescriptorSide((IRelationLinkDescriptor) parentElement, false)};
+      if (parentElement instanceof IRelationType) {
+         return new Object[] {new RelationLinkDescriptorSide((IRelationType) parentElement, true),
+               new RelationLinkDescriptorSide((IRelationType) parentElement, false)};
       }
       return new Object[] {};
    }
 
    public static class RelationLinkDescriptorSide {
-      private final IRelationLinkDescriptor desc;
+      private final IRelationType desc;
       private final Boolean sideA;
 
-      public RelationLinkDescriptorSide(IRelationLinkDescriptor desc, boolean sideA) {
+      public RelationLinkDescriptorSide(IRelationType desc, boolean sideA) {
          this.desc = desc;
          this.sideA = sideA;
       }
 
       public String toString() {
-         return (sideA ? desc.getSideAName() : desc.getSideBName()) + " - " + desc.getName();
+         return (sideA ? desc.getSideAName() : desc.getSideBName()) + " - " + desc.getTypeName();
       }
 
       /**
@@ -89,7 +89,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
       /**
        * @return the desc
        */
-      public IRelationLinkDescriptor getDesc() {
+      public IRelationType getDesc() {
          return desc;
       }
 
@@ -110,7 +110,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
     * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
     */
    public boolean hasChildren(Object element) {
-      return (element instanceof IRelationLinkDescriptor);
+      return (element instanceof IRelationType);
    }
 
    /*

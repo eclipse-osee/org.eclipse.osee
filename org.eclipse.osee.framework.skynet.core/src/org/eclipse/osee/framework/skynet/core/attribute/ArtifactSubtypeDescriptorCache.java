@@ -33,15 +33,15 @@ public class ArtifactSubtypeDescriptorCache {
          "SELECT * FROM osee_define_artifact_type aty1, osee_define_factory fac2 WHERE aty1.factory_id = fac2.factory_id ORDER BY aty1.namespace, aty1.name";
 
    private final HashMap<String, ArtifactSubtypeDescriptor> nameToTypeMap;
-   private final HashMap<Integer, ArtifactSubtypeDescriptor> idToartifactTypeMap;
+   private final HashMap<Integer, ArtifactSubtypeDescriptor> idToTypeMap;
 
    protected ArtifactSubtypeDescriptorCache() {
       this.nameToTypeMap = new HashMap<String, ArtifactSubtypeDescriptor>();
-      this.idToartifactTypeMap = new HashMap<Integer, ArtifactSubtypeDescriptor>();
+      this.idToTypeMap = new HashMap<Integer, ArtifactSubtypeDescriptor>();
    }
 
    private synchronized void ensurePopulated() throws SQLException {
-      if (idToartifactTypeMap.size() == 0) {
+      if (idToTypeMap.size() == 0) {
          populateCache();
       }
    }
@@ -77,7 +77,7 @@ public class ArtifactSubtypeDescriptorCache {
    // should use ArtifactTypeValidityCache
    public Collection<ArtifactSubtypeDescriptor> getAllDescriptors() throws SQLException {
       ensurePopulated();
-      return idToartifactTypeMap.values();
+      return idToTypeMap.values();
    }
 
    public boolean descriptorExists(String namespace, String name) throws SQLException {
@@ -115,7 +115,7 @@ public class ArtifactSubtypeDescriptorCache {
    public ArtifactSubtypeDescriptor getDescriptor(int artTypeId) throws SQLException {
       ensurePopulated();
 
-      ArtifactSubtypeDescriptor artifactType = idToartifactTypeMap.get(artTypeId);
+      ArtifactSubtypeDescriptor artifactType = idToTypeMap.get(artTypeId);
 
       if (artifactType == null) {
          throw new IllegalArgumentException("Atrifact type: " + artTypeId + " is not available.");
@@ -131,6 +131,6 @@ public class ArtifactSubtypeDescriptorCache {
     */
    public void cache(ArtifactSubtypeDescriptor descriptor) {
       nameToTypeMap.put(descriptor.getNamespace() + descriptor.getName(), descriptor);
-      idToartifactTypeMap.put(descriptor.getArtTypeId(), descriptor);
+      idToTypeMap.put(descriptor.getArtTypeId(), descriptor);
    }
 }

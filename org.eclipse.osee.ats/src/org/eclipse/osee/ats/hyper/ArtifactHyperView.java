@@ -122,12 +122,12 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
          // System.out.println("Artifact "+currentArtifact.getArtifactTypeNameShort());
          int x = 0;
          for (RelationLinkGroup grp : currentArtifact.getLinkManager().getGroups()) {
-            debug.report("relation " + grp.getDescriptor().getName());
+            debug.report("relation " + grp.getDescriptor().getTypeName());
 
             for (IRelationLink link : grp.getGroupSide()) {
                // Don't process link if onlyShowRel is populated and doesn't contain link name
                if (onlyShowRelations.size() > 0) {
-                  if (!onlyShowRelations.contains(link.getLinkDescriptor().getName())) continue;
+                  if (!onlyShowRelations.contains(link.getLinkDescriptor().getTypeName())) continue;
                   x++;
                   if (x == 4) x = 0;
                }
@@ -142,7 +142,7 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
                }
                if (!otherArt.isDeleted()) {
                   ArtifactHyperItem ahi = new ArtifactHyperItem(otherArt);
-                  String tip = grp.getDescriptor().getName();
+                  String tip = grp.getDescriptor().getTypeName();
                   if (!link.getRationale().equals("")) tip += "(" + link.getRationale() + ")";
                   ahi.setRelationToolTip(tip);
                   String label =

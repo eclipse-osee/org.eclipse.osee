@@ -21,11 +21,11 @@ public class DynamicRelationLink extends RelationLinkBase {
    /**
     * @param descriptor
     */
-   protected DynamicRelationLink(IRelationLinkDescriptor descriptor) {
+   protected DynamicRelationLink(IRelationType descriptor) {
       super(descriptor);
    }
 
-   protected DynamicRelationLink(Artifact artA, Artifact artB, IRelationLinkDescriptor descriptor, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
+   protected DynamicRelationLink(Artifact artA, Artifact artB, IRelationType descriptor, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
       super(artA, artB, descriptor, memo, rationale, aOrder, bOrder);
 
       this.dirty = dirty;

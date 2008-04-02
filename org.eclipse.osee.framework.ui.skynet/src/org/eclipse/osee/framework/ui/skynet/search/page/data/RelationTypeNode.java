@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.jdk.core.type.TreeParent;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.ui.skynet.search.page.SkynetArtifactAdapter;
 
 /**
@@ -22,14 +22,14 @@ import org.eclipse.osee.framework.ui.skynet.search.page.SkynetArtifactAdapter;
  */
 public class RelationTypeNode extends TreeParent implements Comparable<RelationTypeNode> {
 
-   private IRelationLinkDescriptor relationLinkDescriptor;
+   private IRelationType relationLinkDescriptor;
    private ArtifactTypeNode parentArtifactTypeNode;
    private Collection<ArtifactTypeNode> childArtifactTypeNodes;
    int branchId;
    int revision;
 
-   public RelationTypeNode(IRelationLinkDescriptor relationLinkDescriptor, ArtifactTypeNode parentArtifactTypeNode, int branchId, int revision) {
-      super(relationLinkDescriptor.getName());
+   public RelationTypeNode(IRelationType relationLinkDescriptor, ArtifactTypeNode parentArtifactTypeNode, int branchId, int revision) {
+      super(relationLinkDescriptor.getTypeName());
       this.relationLinkDescriptor = relationLinkDescriptor;
       this.parentArtifactTypeNode = parentArtifactTypeNode;
       this.childArtifactTypeNodes = new TreeSet<ArtifactTypeNode>();
@@ -88,7 +88,7 @@ public class RelationTypeNode extends TreeParent implements Comparable<RelationT
       return parentArtifactTypeNode;
    }
 
-   public IRelationLinkDescriptor getRelationLinkDescriptor() {
+   public IRelationType getRelationLinkDescriptor() {
       return relationLinkDescriptor;
    }
 
