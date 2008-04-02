@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.ui.editors,
- org.eclipse.zest.layouts
+ org.eclipse.zest.layouts,
+ lba.framework.ui.skynet
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.actions,

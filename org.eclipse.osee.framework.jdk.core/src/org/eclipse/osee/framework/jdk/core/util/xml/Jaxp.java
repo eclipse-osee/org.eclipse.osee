@@ -384,6 +384,36 @@ public class Jaxp {
       return document;
    }
 
+   public static Document readXmlDocumentNamespaceAware(InputStream is) throws ParserConfigurationException, SAXException, IOException {
+      factory.setNamespaceAware(true);
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      return builder.parse(is);
+   }
+
+   public static Document readXmlDocumentNamespaceAware(String xmlString) throws ParserConfigurationException, SAXException, IOException {
+      factory.setNamespaceAware(true);
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      CharBackedInputStream charBak = new CharBackedInputStream();
+      charBak.addBackingSource(xmlString);
+      Document document = builder.parse(charBak);
+      return document;
+   }
+
+   public static Document readXmlDocumentNamespaceAware(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
+      factory.setNamespaceAware(true);
+      DocumentBuilder builder = factory.newDocumentBuilder();
+
+      Document document = builder.parse(xmlFile);
+      return document;
+   }
+
+   public static Document readXmlDocumentFromResourceNamespaceAware(Class<?> base, String name) throws ParserConfigurationException, SAXException, IOException {
+      factory.setNamespaceAware(true);
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document document = builder.parse(base.getResourceAsStream(name));
+      return document;
+   }
+
    /**
     * Adds the XSL style sheet processing instruction to the document.
     * 
