@@ -1233,6 +1233,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             Branch branch = branchManager.getBranch(branchId);
             Artifact oldArtifact = getArtifactFromId(artId, branch);
             // this forces the links to load
+            oldArtifact.isDirty(true);
 //            if (oldArtifact.isDirty(true)) {
 //               String message = "Artifact Conflict...this must be handled";
 //               System.err.println(message);
