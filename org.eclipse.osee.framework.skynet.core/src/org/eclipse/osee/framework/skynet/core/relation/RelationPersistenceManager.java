@@ -658,7 +658,7 @@ public class RelationPersistenceManager implements PersistenceManager {
             }
             newArtifact.createOrGetEmptyLinkManager().addLink(link);
          }
-         // oldArtifact.clearLinkManager();
+          oldArtifact.clearLinkManager();
       }
    }
 
