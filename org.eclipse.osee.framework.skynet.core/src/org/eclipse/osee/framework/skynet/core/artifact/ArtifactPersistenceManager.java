@@ -20,6 +20,7 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
+
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -1231,11 +1233,11 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             Branch branch = branchManager.getBranch(branchId);
             Artifact oldArtifact = getArtifactFromId(artId, branch);
             // this forces the links to load
-            if (oldArtifact.isDirty(true)) {
-               String message = "Artifact Conflict...this must be handled";
-               System.err.println(message);
-               logger.log(Level.SEVERE, message);
-            } else {
+//            if (oldArtifact.isDirty(true)) {
+//               String message = "Artifact Conflict...this must be handled";
+//               System.err.println(message);
+//               logger.log(Level.SEVERE, message);
+//            } else {
                factory.deCache(oldArtifact);
 
                if (newTransactionId.getTransactionNumber() != notEditableTransactionId.getTransactionNumber()) {
@@ -1244,7 +1246,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                } else {
                   oldArtifact.getPersistenceMemo().setTransactionId(null);
                }
-            }
+//            }
 
             if (event instanceof NetworkArtifactModifiedEvent) {
                // only if links are loaded
