@@ -33,12 +33,12 @@ public class PublishSrs extends AbstractBlam {
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
       Artifact srsMasterTemplate =
-            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Template (WordML)", "srsMasterTemplate",
+            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Renderer Template", "srsMasterTemplate",
                   BranchPersistenceManager.getInstance().getCommonBranch());
       String masterTemplate = srsMasterTemplate.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME);
 
       Artifact srsSlaveTemplate =
-            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Template (WordML)", "srsSlaveTemplate",
+            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Renderer Template", "srsSlaveTemplate",
                   BranchPersistenceManager.getInstance().getCommonBranch());
       String slaveTemplate = srsSlaveTemplate.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME);
 
