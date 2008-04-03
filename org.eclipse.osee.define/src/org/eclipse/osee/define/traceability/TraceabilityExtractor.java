@@ -88,16 +88,18 @@ public class TraceabilityExtractor {
    }
 
    public String getCanonicalRequirementName(String requirementMark) {
-      String canonicalReqReference = requirementMark.toUpperCase();
+      String canonicalReqReference = requirementMark;
+      if (Strings.isValid(requirementMark) != false) {
+         canonicalReqReference = requirementMark.toUpperCase();
 
-      embeddedVolumeMatcher.reset(canonicalReqReference);
-      if (embeddedVolumeMatcher.find()) {
-         canonicalReqReference = embeddedVolumeMatcher.group(1);
+         embeddedVolumeMatcher.reset(canonicalReqReference);
+         if (embeddedVolumeMatcher.find()) {
+            canonicalReqReference = embeddedVolumeMatcher.group(1);
+         }
+
+         nonWordMatcher.reset(canonicalReqReference);
+         canonicalReqReference = nonWordMatcher.replaceAll("");
       }
-
-      nonWordMatcher.reset(canonicalReqReference);
-      canonicalReqReference = nonWordMatcher.replaceAll("");
-
       return canonicalReqReference;
    }
 
