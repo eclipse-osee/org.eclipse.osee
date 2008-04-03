@@ -48,16 +48,19 @@ public class RelationValidity {
       private final IRelationType linkDescriptor;
       private final int sideAmax;
       private final int sideBmax;
+      private final Branch branch;
 
-      public ValidityConstraint(ArtifactSubtypeDescriptor artifactType, IRelationType linkDescriptor, int sideAmax, int sideBmax) {
+      public ValidityConstraint(Branch branch, ArtifactSubtypeDescriptor artifactType, IRelationType linkDescriptor, int sideAmax, int sideBmax) {
          this.artifactType = artifactType;
          this.linkDescriptor = linkDescriptor;
          this.sideAmax = sideAmax;
          this.sideBmax = sideBmax;
+         this.branch = branch;
       }
 
       public void persist() {
-         configurationPersistenceManager.persistRelationLinkValidity(artifactType, linkDescriptor, sideAmax, sideBmax);
+         configurationPersistenceManager.persistRelationLinkValidity(branch, artifactType, linkDescriptor, sideAmax,
+               sideBmax);
       }
 
       /* (non-Javadoc)
@@ -96,13 +99,12 @@ public class RelationValidity {
             try {
                ArtifactSubtypeDescriptor artifactType =
                      configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName);
-               IRelationType linkDescriptor =
-                     relationManager.getIRelationLinkDescriptor(row.relationTypeName);
+               IRelationType linkDescriptor = relationManager.getIRelationLinkDescriptor(row.relationTypeName);
                if (linkDescriptor == null) {
                   logger.log(Level.SEVERE, "IRelationLinkDescriptor == null ( " + row.relationTypeName + " )");
                   continue;
                }
-               validitySet.add(new ValidityConstraint(artifactType, linkDescriptor, row.sideAmax, row.sideBmax));
+               validitySet.add(new ValidityConstraint(branch, artifactType, linkDescriptor, row.sideAmax, row.sideBmax));
             } catch (IllegalArgumentException ex) {
                logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }

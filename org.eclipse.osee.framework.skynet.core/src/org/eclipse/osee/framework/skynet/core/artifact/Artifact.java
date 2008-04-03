@@ -445,12 +445,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
    public void setAttribute(SkynetAttributeChange attrChange) throws SQLException {
       DynamicAttributeManager userAttr = getAttributeManager(attrChange.getName());
-      try {
-         userAttr.getAttribute(attrChange).setStringData(attrChange.getValue());
-      } catch (Exception ex) {
-         throw new IllegalStateException(
-               "The attribute " + attrChange.getName() + " can't be set on " + getDescriptiveName(), ex);
-      }
+      userAttr.getAttribute(attrChange).setStringData(attrChange.getValue());
    }
 
    /**
@@ -718,6 +713,12 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
                if (attr.getStringData().equals(stored)) attr.delete();
          }
       }
+   }
+
+   public <T> void addAttribute(String attributeTypeName, T value) throws SQLException {
+      DynamicAttributeManager attributeManager = getAttributeManager(attributeTypeName);
+      Attribute attribute = attributeManager.getNewAttribute();
+      attribute.setValue(value);
    }
 
    /**

@@ -44,10 +44,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCa
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkSideRestriction;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.transaction.data.RelationLinkValidityTransactionData;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
@@ -77,9 +75,9 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    private final DynamicAttributeDescriptorCache cacheDynamicAttributeDescriptors;
    private final AttributeTypeValidityCache cacheAttributeTypeValidity;
    private final ArtifactTypeValidityCache artifactTypeValidityCache;
-   private RelationPersistenceManager relationPersistenceManager;
+   //   private RelationPersistenceManager relationPersistenceManager;
    private ArtifactFactoryCache artifactFactoryCache;
-   private TransactionIdManager transactionIdManager;
+   //   private TransactionIdManager transactionIdManager;
    private SkynetTransaction transaction;
    private HashMap<String, Pair<String, String>> imageMap;
    private static Pair<String, String> defaultIconLocation =
@@ -106,9 +104,9 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
     */
    public void onManagerWebInit() throws Exception {
-      relationPersistenceManager = RelationPersistenceManager.getInstance();
+      //      relationPersistenceManager = RelationPersistenceManager.getInstance();
       artifactFactoryCache = ArtifactFactoryCache.getInstance();
-      transactionIdManager = TransactionIdManager.getInstance();
+      //      transactionIdManager = TransactionIdManager.getInstance();
    }
 
    public void makePersistent(Class<? extends Attribute> baseAttributeClass, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
@@ -312,7 +310,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return names;
    }
 
-   public void persistRelationLinkValidity(ArtifactSubtypeDescriptor artDescriptor, IRelationType linkDescriptor, int sideAMax, int sideBMax) {
+   public void persistRelationLinkValidity(Branch branch, ArtifactSubtypeDescriptor artDescriptor, IRelationType linkDescriptor, int sideAMax, int sideBMax) {
 
       checkTransaction();
 
@@ -325,14 +323,8 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       int relLinkTypeId = linkDescriptor.getRelationTypeId();
 
       try {
-         // If this validity is already the current case, then ignore
-         if (linkDescriptor.canLinkType(artTypeId) && linkDescriptor.getRestrictionSizeFor(artTypeId, true) == sideAMax && linkDescriptor.getRestrictionSizeFor(
-               artTypeId, false) == sideBMax) return;
-
-         int gammaId = SkynetDatabase.getNextGammaId();
-
-         transaction.addTransactionDataItem(new RelationLinkValidityTransactionData(artTypeId, relLinkTypeId, sideAMax,
-               sideBMax, gammaId, transaction.getTransactionNumber()));
+         RelationTypeManager.getInstance().createRelationLinkValidity(branch, artTypeId, relLinkTypeId, sideAMax,
+               sideBMax);
 
          linkDescriptor.setLinkSideRestriction(artDescriptor.getArtTypeId(),
                new LinkSideRestriction(sideAMax, sideBMax));
