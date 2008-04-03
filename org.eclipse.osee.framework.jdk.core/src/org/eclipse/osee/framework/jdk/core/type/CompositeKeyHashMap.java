@@ -94,7 +94,12 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    }
 
    public Value get(Object key) {
-      return map.get(key);
+      if (new CompositeKey<KeyOne, KeyTwo>(null, null).getClass().isInstance(key)) {
+         return map.get(key);
+      } else {
+         throw new IllegalArgumentException(String.format("Expected Type [CompositeKey], got type [%s].",
+               key.getClass().getName()));
+      }
    }
 
    public Value get(KeyOne a, KeyTwo b) {
