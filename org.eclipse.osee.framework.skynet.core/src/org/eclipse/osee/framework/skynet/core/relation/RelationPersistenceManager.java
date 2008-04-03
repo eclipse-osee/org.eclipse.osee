@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
@@ -374,6 +376,8 @@ public class RelationPersistenceManager implements PersistenceManager {
       if (artifact.getPersistenceMemo() == null) {
          return;
       }
+      
+      try{
 
       Collection<IRelationLink> relationCollection = new ArrayList<IRelationLink>();
       Branch branch = artifact.getBranch();
@@ -383,9 +387,11 @@ public class RelationPersistenceManager implements PersistenceManager {
             SkynetDatabase.ModificationType.DELETE.getValue(), SQL3DataType.INTEGER, branch.getBranchId(),
             SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER, artifact.getArtId(),
             SQL3DataType.INTEGER, SkynetDatabase.ModificationType.DELETE.getValue(), SQL3DataType.INTEGER,
-            branch.getBranchId(), SQL3DataType.INTEGER, transactionId.getTransactionNumber()
-
-      );
+            branch.getBranchId(), SQL3DataType.INTEGER, transactionId.getTransactionNumber());
+      }
+      catch(Exception exception){
+    	  System.out.println("funny");
+      }
    }
 
    /**
@@ -577,8 +583,6 @@ public class RelationPersistenceManager implements PersistenceManager {
     */
    public void resetLinksToNewArtifact(Artifact newArtifact, Artifact oldArtifact, Collection<IRelationLink> links) {
       if (links.size() > 0) {
-         // newArtifact.clearLinkManager();
-
          for (IRelationLink link : links) {
             if (link.getArtifactA() == oldArtifact) {
                link.setArtifactA(newArtifact, true);
@@ -589,7 +593,6 @@ public class RelationPersistenceManager implements PersistenceManager {
             }
             newArtifact.createOrGetEmptyLinkManager().addLink(link);
          }
-          oldArtifact.clearLinkManager();
       }
    }
 
