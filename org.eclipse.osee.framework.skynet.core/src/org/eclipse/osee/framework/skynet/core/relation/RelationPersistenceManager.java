@@ -218,7 +218,7 @@ public class RelationPersistenceManager implements PersistenceManager {
             transaction.getTransactionNumber(), modId));
 
       transaction.addLocalEvent(new TransactionRelationModifiedEvent(relationLink, aArtifact.getBranch(),
-            relationLink.getLinkDescriptor().getTypeName(), relationLink.getASideName(), modType, this));
+            relationLink.getRelationType().getTypeName(), relationLink.getASideName(), modType, this));
    }
 
    /**
@@ -268,7 +268,7 @@ public class RelationPersistenceManager implements PersistenceManager {
             SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 
       transaction.addLocalEvent(new TransactionRelationModifiedEvent(relationLink, aArtifact.getBranch(),
-            relationLink.getLinkDescriptor().getTypeName(), relationLink.getASideName(), ModType.Deleted, this));
+            relationLink.getRelationType().getTypeName(), relationLink.getASideName(), ModType.Deleted, this));
    }
 
    /**
@@ -344,7 +344,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 
                   transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, aArtifact.getBranch(),
-                        link.getLinkDescriptor().getTypeName(), link.getASideName(), ModType.Changed, this));
+                        link.getRelationType().getTypeName(), link.getASideName(), ModType.Changed, this));
 
                }
 
@@ -519,7 +519,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                   link.setNotDirty();
 
                   localEvents.add(new TransactionRelationModifiedEvent(link, branch,
-                        link.getLinkDescriptor().getTypeName(), link.getASideName(), ModType.Changed, this));
+                        link.getRelationType().getTypeName(), link.getASideName(), ModType.Changed, this));
                }
             } else if (event instanceof NetworkRelationLinkDeletedEvent) {
                Artifact aArt = link.getArtifactA();
@@ -530,7 +530,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                if (bArt.isLinkManagerLoaded()) bArt.getLinkManager().removeLink(link);
 
                localEvents.add(new TransactionRelationModifiedEvent(link, branch,
-                     link.getLinkDescriptor().getTypeName(), link.getASideName(), ModType.Deleted, this));
+                     link.getRelationType().getTypeName(), link.getASideName(), ModType.Deleted, this));
             }
          } else if (event instanceof NetworkNewRelationLinkEvent) {
             NetworkNewRelationLinkEvent newRelationEvent = (NetworkNewRelationLinkEvent) event;
@@ -565,7 +565,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                   link.setNotDirty();
 
                   localEvents.add(new TransactionRelationModifiedEvent(link, branch,
-                        link.getLinkDescriptor().getTypeName(), link.getASideName(), ModType.Added, this));
+                        link.getRelationType().getTypeName(), link.getASideName(), ModType.Added, this));
                }
             } catch (Exception e) {
                logger.log(Level.SEVERE, e.toString(), e);

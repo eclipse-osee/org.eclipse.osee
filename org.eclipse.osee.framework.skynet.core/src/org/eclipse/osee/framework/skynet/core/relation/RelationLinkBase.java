@@ -98,7 +98,7 @@ public abstract class RelationLinkBase implements IRelationLink {
    }
 
    private void kickDeleteLinkEvent() {
-      eventManager.kick(new CacheRelationModifiedEvent(this, getLinkDescriptor().getTypeName(), getASideName(),
+      eventManager.kick(new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
             ModType.Deleted.name(), this, getBranch()));
    }
 
@@ -281,12 +281,12 @@ public abstract class RelationLinkBase implements IRelationLink {
       dirty = true;
 
       if (notify) {
-         eventManager.kick(new CacheRelationModifiedEvent(this, getLinkDescriptor().getTypeName(), getASideName(),
+         eventManager.kick(new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
                ModType.RationaleMod.name(), this, getBranch()));
       }
    }
 
-   public IRelationType getLinkDescriptor() {
+   public IRelationType getRelationType() {
       return descriptor;
    }
 

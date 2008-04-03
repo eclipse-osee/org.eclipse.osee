@@ -146,6 +146,6 @@ public enum RelationSide implements IRelationEnumeration {
    }
 
    public boolean isThisType(IRelationLink link) {
-      return link.getLinkDescriptor().getTypeName().equals(typeName);
+      return link.getRelationType().getTypeName().equals(typeName);
    }
 }

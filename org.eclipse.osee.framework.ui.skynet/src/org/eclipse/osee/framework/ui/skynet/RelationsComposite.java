@@ -318,9 +318,10 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       }
    }
 
-   private boolean canBeOnSide(IRelationType descriptor, boolean sideA) throws SQLException {
-      int sideMax = descriptor.getRestrictionSizeFor(artifact.getArtTypeId(), sideA);
-      RelationLinkGroup otherSideGroup = artifact.getLinkManager().getSideGroup(descriptor, !sideA);
+   private boolean canBeOnSide(IRelationType relationType, boolean sideA) throws SQLException {
+      int sideMax =
+            RelationTypeManager.getInstance().getRelationSideMax(relationType, artifact.getArtifactType(), sideA);
+      RelationLinkGroup otherSideGroup = artifact.getLinkManager().getSideGroup(relationType, !sideA);
 
       return sideMax > 0 && otherSideGroup == null;
    }
@@ -720,7 +721,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
                IRelationLink dropTarget = (IRelationLink) obj;
 
                // the links must be in the same group
-               if ((targetLink.getLinkDescriptor().getTypeName() + targetLink.getSideNameForOtherArtifact(artifact)).equals(dropTarget.getLinkDescriptor().getTypeName() + dropTarget.getSideNameForOtherArtifact(artifact))) {
+               if ((targetLink.getRelationType().getTypeName() + targetLink.getSideNameForOtherArtifact(artifact)).equals(dropTarget.getRelationType().getTypeName() + dropTarget.getSideNameForOtherArtifact(artifact))) {
                   if (isFeedbackAfter) {
                      event.feedback = DND.FEEDBACK_INSERT_AFTER;
                   } else {
@@ -763,7 +764,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
                RelationLinkGroup group;
 
                group =
-                     artifact.getLinkManager().getSideGroup(dropLink.getLinkDescriptor(),
+                     artifact.getLinkManager().getSideGroup(dropLink.getRelationType(),
                            transferredArtifact.equals(dropLink.getArtifactA()));
 
                group.moveLink(targetLink, dropLink, !isFeedbackAfter);

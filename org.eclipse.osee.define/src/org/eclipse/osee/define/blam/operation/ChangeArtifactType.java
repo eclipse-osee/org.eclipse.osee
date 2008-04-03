@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkBase;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -44,12 +45,12 @@ public class ChangeArtifactType extends AbstractBlam {
          ConfigurationPersistenceManager.getInstance();
    private static final RelationPersistenceManager relationPersistenceManager =
          RelationPersistenceManager.getInstance();
-   private List<Attribute> attributesToPurge;
+   private List<Attribute<?>> attributesToPurge;
    private List<RelationLinkBase> linksToPurge;
 
    @SuppressWarnings("unchecked")
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      processChange(variableMap.getArtifacts("artifact"), variableMap.getArtifactSubtypeDescriptor("descriptor"));
+      processChange(variableMap.getArtifacts("artifact"), variableMap.getArtifactSubtypeDescriptor("New Artifact Type"));
    }
 
    /**
@@ -85,7 +86,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @throws SQLException
     */
    private void processAttributes(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws SQLException {
-      attributesToPurge = new LinkedList<Attribute>();
+      attributesToPurge = new LinkedList<Attribute<?>>();
 
       Collection<DynamicAttributeDescriptor> descriptorAttrTypes =
             configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor, artifact.getBranch());
@@ -102,18 +103,22 @@ public class ChangeArtifactType extends AbstractBlam {
     * and the links that will need to be pruged.
     * 
     * @param artifact
-    * @param descriptor
+    * @param artifactType
     * @throws SQLException
     */
-   private void processRelations(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws SQLException {
+   private void processRelations(Artifact artifact, ArtifactSubtypeDescriptor artifactType) throws SQLException {
       linksToPurge = new LinkedList<RelationLinkBase>();
 
       for (IRelationLink link : artifact.getLinkManager().getLinks()) {
 
          if (link instanceof RelationLinkBase) {
             RelationLinkBase linkBase = (RelationLinkBase) link;
-            if (linkBase.getLinkDescriptor().getRestrictionSizeFor(descriptor.getArtTypeId(),
-                  linkBase.getArtifactA().equals(artifact)) == 0) {
+
+            int sideMax =
+                  RelationTypeManager.getInstance().getRelationSideMax(linkBase.getRelationType(), artifactType,
+                        linkBase.getArtifactA().equals(artifact));
+
+            if (sideMax == 0) {
                linksToPurge.add(linkBase);
             }
          }
@@ -191,6 +196,6 @@ public class ChangeArtifactType extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"descriptor\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifact\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
    }
 }

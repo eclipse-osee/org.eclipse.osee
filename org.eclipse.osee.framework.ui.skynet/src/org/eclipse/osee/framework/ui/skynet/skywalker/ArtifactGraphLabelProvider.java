@@ -82,9 +82,9 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
                         linkNames.add(source + " (" + link.getSidePhrasingFor(source) + ") " + dest);
                      }
                   } else if (options.getLinkName() == LinkName.Link_Name)
-                     linkNames.add(link.getLinkDescriptor().getTypeName());
+                     linkNames.add(link.getRelationType().getTypeName());
                   else if (options.getLinkName() == LinkName.Full_Link_Name)
-                     linkNames.add(link.getLinkDescriptor().toString());
+                     linkNames.add(link.getRelationType().toString());
                   else if (options.getLinkName() == LinkName.Other_Side_Name) {
                      if (link.getArtifactA().equals(source)) {
                         linkNames.add(source + " (" + link.getSideNameFor(source) + ")" + " <--> " + dest + " (" + link.getSideNameFor(dest) + ")");

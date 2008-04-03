@@ -72,7 +72,7 @@ public class LinkManager {
 
    public void fixOrderingOf(IRelationLink link, boolean sideA) {
       checkReleased();
-      (!sideA ? sideALinks : sideBLinks).get(link.getLinkDescriptor()).fixOrder();
+      (!sideA ? sideALinks : sideBLinks).get(link.getRelationType()).fixOrder();
    }
 
    /**
@@ -115,7 +115,7 @@ public class LinkManager {
       if (link.getArtifactA() == null || link.getArtifactB() == null) throw new IllegalArgumentException(
             "Can not add links that have a null artifact reference");
 
-      descriptors.add(link.getLinkDescriptor());
+      descriptors.add(link.getRelationType());
       hashLink((artifact == link.getArtifactA()) ? sideBLinks : sideALinks, link);
       if (link.isDeleted())
          deletedLinks.add(link);
@@ -124,7 +124,7 @@ public class LinkManager {
    }
 
    private boolean hashLink(Map<IRelationType, RelationLinkGroup> hash, IRelationLink link) {
-      RelationLinkGroup group = hash.get(link.getLinkDescriptor());
+      RelationLinkGroup group = hash.get(link.getRelationType());
       Artifact artA = link.getArtifactA();
       Artifact artB = link.getArtifactB();
 
@@ -132,8 +132,8 @@ public class LinkManager {
             "Link does not pertain to this linkmanger's artifact");
 
       if (group == null) {
-         group = new RelationLinkGroup(this, link.getLinkDescriptor(), artifact != artA);
-         hash.put(link.getLinkDescriptor(), group);
+         group = new RelationLinkGroup(this, link.getRelationType(), artifact != artA);
+         hash.put(link.getRelationType(), group);
       }
 
       return group.getGroupSide().add(link);
@@ -156,9 +156,9 @@ public class LinkManager {
       checkReleased();
       boolean useSideB = (link.getArtifactA().isLinkManagerLoaded() && this == link.getArtifactA().getLinkManager());
 
-      if (unhashLink((useSideB) ? sideBLinks : sideALinks, link) && !((useSideB) ? sideALinks : sideBLinks).containsKey(link.getLinkDescriptor())) {
+      if (unhashLink((useSideB) ? sideBLinks : sideALinks, link) && !((useSideB) ? sideALinks : sideBLinks).containsKey(link.getRelationType())) {
 
-         descriptors.remove(link.getLinkDescriptor());
+         descriptors.remove(link.getRelationType());
       }
       links.remove(link);
    }
@@ -169,7 +169,7 @@ public class LinkManager {
    }
 
    private boolean unhashLink(Map<IRelationType, RelationLinkGroup> hash, IRelationLink link) {
-      RelationLinkGroup group = hash.get(link.getLinkDescriptor());
+      RelationLinkGroup group = hash.get(link.getRelationType());
       if (group == null) {
          return false;
          // throw new IllegalStateException("link does not exist on this artifact");
@@ -184,7 +184,7 @@ public class LinkManager {
       // ((DynamicRelationLink)link).aaaSerialId + " type:" + link.getLinkDescriptor().getName() + "
       // from:" + artifact.aaaSerialId + "-" + aaaSerialId);
       if (group.getGroupSide().isEmpty()) {
-         hash.remove(link.getLinkDescriptor());
+         hash.remove(link.getRelationType());
          return true;
       }
 
@@ -246,8 +246,8 @@ public class LinkManager {
       for (IRelationLink link : links) {
          if (currentLink == link) {
             if (artifact == link.getArtifactA())
-               return link.getLinkDescriptor().getSideAName();
-            else if (artifact == link.getArtifactB()) return link.getLinkDescriptor().getSideBName();
+               return link.getRelationType().getSideAName();
+            else if (artifact == link.getArtifactB()) return link.getRelationType().getSideBName();
          }
       }
       return "empty";
@@ -447,7 +447,7 @@ public class LinkManager {
          else
             otherLinkManager.removeLink(link);
 
-         eventManager.kick(new CacheRelationModifiedEvent(link, link.getLinkDescriptor().getTypeName(),
+         eventManager.kick(new CacheRelationModifiedEvent(link, link.getRelationType().getTypeName(),
                link.getASideName(), ModType.Deleted.name(), this, link.getBranch()));
       }
    }

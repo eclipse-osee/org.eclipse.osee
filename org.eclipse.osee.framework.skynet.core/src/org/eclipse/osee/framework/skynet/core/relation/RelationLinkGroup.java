@@ -149,7 +149,7 @@ public class RelationLinkGroup {
       if (persist)
          link.persist();
       else
-         eventManager.kick(new CacheRelationModifiedEvent(link, link.getLinkDescriptor().getTypeName(),
+         eventManager.kick(new CacheRelationModifiedEvent(link, link.getRelationType().getTypeName(),
                link.getASideName(), ModType.Added.name(), this, link.getBranch()));
 
       return true;
@@ -170,7 +170,7 @@ public class RelationLinkGroup {
          if (artifact == ((sideA) ? link.getArtifactA() : link.getArtifactB())) {
             link.delete();
             // TODO the link.delete() call is kicking this event also ...
-            eventManager.kick(new CacheRelationModifiedEvent(link, link.getLinkDescriptor().getTypeName(),
+            eventManager.kick(new CacheRelationModifiedEvent(link, link.getRelationType().getTypeName(),
                   link.getASideName(), ModType.Deleted.name(), this, link.getBranch()));
             return true;
          }

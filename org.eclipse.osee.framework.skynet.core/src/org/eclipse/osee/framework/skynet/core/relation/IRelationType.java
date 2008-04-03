@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-
 public interface IRelationType extends Comparable<IRelationType> {
 
    /**
@@ -53,10 +52,4 @@ public interface IRelationType extends Comparable<IRelationType> {
    public boolean isSideAName(String sideName);
 
    public int getRelationTypeId();
-
-   public void setLinkSideRestriction(int artTypeId, LinkSideRestriction linkSideRestriction);
-
-   public boolean canLinkType(int id);
-
-   public int getRestrictionSizeFor(int id, boolean sideA);
 }

@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author Robert A. Fisher
  */
@@ -25,7 +22,6 @@ public class RelationType implements IRelationType {
    private String aToBPhrasing;
    private String bToAPhrasing;
    private String shortName;
-   private Map<Integer, LinkSideRestriction> restrictions;
 
    public RelationType(int linkTypeId, String namespace, String typeName, String sideAName, String sideBName, String aToBPhrasing, String bToAPhrasing, String shortName) {
       super();
@@ -37,7 +33,6 @@ public class RelationType implements IRelationType {
       this.aToBPhrasing = aToBPhrasing;
       this.bToAPhrasing = bToAPhrasing;
       this.shortName = shortName;
-      this.restrictions = new HashMap<Integer, LinkSideRestriction>();
    }
 
    /**
@@ -96,23 +91,6 @@ public class RelationType implements IRelationType {
             "sideName does not match either of the available side names");
 
       return sideAName.equals(sideName);
-   }
-
-   /**
-    * @param linkSideRestriction
-    */
-   public void setLinkSideRestriction(int id, LinkSideRestriction linkSideRestriction) {
-      restrictions.put(id, linkSideRestriction);
-   }
-
-   public boolean canLinkType(int id) {
-      return restrictions.containsKey(id);
-   }
-
-   public int getRestrictionSizeFor(int id, boolean sideA) {
-      LinkSideRestriction restriction = restrictions.get(id);
-      if (restriction == null) return 0;
-      return sideA ? restriction.getSideALinkMax() : restriction.getSideBLinkMax();
    }
 
    /*

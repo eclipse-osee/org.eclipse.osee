@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.importing;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
  * @author Ryan D. Brooks
@@ -58,11 +58,6 @@ public class RelationValidity {
          this.branch = branch;
       }
 
-      public void persist() {
-         configurationPersistenceManager.persistRelationLinkValidity(branch, artifactType, linkDescriptor, sideAmax,
-               sideBmax);
-      }
-
       /* (non-Javadoc)
        * @see java.lang.Object#equals(java.lang.Object)
        */
@@ -95,23 +90,13 @@ public class RelationValidity {
    public void persist() throws SQLException {
       for (ValidityRow row : validityArray) {
          for (String artifactTypeName : importer.determineConcreateTypes(row.artifactSuperTypeName)) {
+            ArtifactSubtypeDescriptor artifactType =
+                  configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName);
+            IRelationType linkDescriptor = relationManager.getIRelationLinkDescriptor(row.relationTypeName);
 
-            try {
-               ArtifactSubtypeDescriptor artifactType =
-                     configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName);
-               IRelationType linkDescriptor = relationManager.getIRelationLinkDescriptor(row.relationTypeName);
-               if (linkDescriptor == null) {
-                  logger.log(Level.SEVERE, "IRelationLinkDescriptor == null ( " + row.relationTypeName + " )");
-                  continue;
-               }
-               validitySet.add(new ValidityConstraint(branch, artifactType, linkDescriptor, row.sideAmax, row.sideBmax));
-            } catch (IllegalArgumentException ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            }
+            RelationTypeManager.getInstance().createRelationLinkValidity(branch, artifactType, linkDescriptor,
+                  row.sideAmax, row.sideBmax);
          }
-      }
-      for (ValidityConstraint constraint : validitySet) {
-         constraint.persist();
       }
    }
 

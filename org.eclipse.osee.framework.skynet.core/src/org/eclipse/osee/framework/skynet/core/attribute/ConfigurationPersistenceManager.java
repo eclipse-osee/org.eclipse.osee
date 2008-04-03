@@ -42,9 +42,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeValidityCache
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
-import org.eclipse.osee.framework.skynet.core.relation.LinkSideRestriction;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
@@ -308,30 +305,6 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
          SkynetActivator.getLogger().log(Level.SEVERE, "Error getting valid enumeration values", ex);
       }
       return names;
-   }
-
-   public void persistRelationLinkValidity(Branch branch, ArtifactSubtypeDescriptor artDescriptor, IRelationType linkDescriptor, int sideAMax, int sideBMax) {
-
-      checkTransaction();
-
-      if (artDescriptor == null) throw new IllegalArgumentException("The artDescriptor can no be null");
-      if (linkDescriptor == null) throw new IllegalArgumentException("The linkDescriptor can no be null");
-      if (sideAMax < 0) throw new IllegalArgumentException("The sideAMax can no be negative");
-      if (sideBMax < 0) throw new IllegalArgumentException("The sideBMax can no be negative");
-
-      int artTypeId = artDescriptor.getArtTypeId();
-      int relLinkTypeId = linkDescriptor.getRelationTypeId();
-
-      try {
-         RelationTypeManager.getInstance().createRelationLinkValidity(branch, artTypeId, relLinkTypeId, sideAMax,
-               sideBMax);
-
-         linkDescriptor.setLinkSideRestriction(artDescriptor.getArtTypeId(),
-               new LinkSideRestriction(sideAMax, sideBMax));
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, "Error encountered while persisting relation link type", ex);
-         throw new RuntimeException(ex);
-      }
    }
 
    public void startBatch(Branch branch) throws SQLException {

@@ -39,11 +39,13 @@ public class XAttributeTypeListViewer extends XTypeListViewer {
 
       setInput(input);
 
-      try {
-         DynamicAttributeDescriptor attributeType = configurationManager.getDynamicAttributeType(defaultValue);
-         setDefaultSelected(attributeType);
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      if (defaultValue != null) {
+         try {
+            DynamicAttributeDescriptor attributeType = configurationManager.getDynamicAttributeType(defaultValue);
+            setDefaultSelected(attributeType);
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
       }
    }
 }

@@ -33,11 +33,13 @@ public class XArtifactTypeListViewer extends XTypeListViewer {
 
       setInput(input);
 
-      try {
-         ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(defaultValue);
-         setDefaultSelected(artifactType);
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      if (defaultValue != null) {
+         try {
+            ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(defaultValue);
+            setDefaultSelected(artifactType);
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
       }
    }
 }

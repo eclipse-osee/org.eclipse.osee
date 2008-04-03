@@ -970,7 +970,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public ArrayList<IRelationLink> getRelations(IRelationType relationType) throws SQLException {
       ArrayList<IRelationLink> links = new ArrayList<IRelationLink>();
       for (IRelationLink link : getLinkManager().getLinks()) {
-         if (link.getLinkDescriptor().equals(relationType)) {
+         if (link.getRelationType().equals(relationType)) {
             links.add(link);
          }
       }

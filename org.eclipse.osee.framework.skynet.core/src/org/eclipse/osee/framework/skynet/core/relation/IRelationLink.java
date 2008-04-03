@@ -19,7 +19,7 @@ public interface IRelationLink extends PersistenceObject {
 
    public static final IRelationLink[] EMPTY_ARRAY = new IRelationLink[0];
 
-   public IRelationType getLinkDescriptor();
+   public IRelationType getRelationType();
 
    public int getAOrder();
 

@@ -127,7 +127,7 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
             for (IRelationLink link : grp.getGroupSide()) {
                // Don't process link if onlyShowRel is populated and doesn't contain link name
                if (onlyShowRelations.size() > 0) {
-                  if (!onlyShowRelations.contains(link.getLinkDescriptor().getTypeName())) continue;
+                  if (!onlyShowRelations.contains(link.getRelationType().getTypeName())) continue;
                   x++;
                   if (x == 4) x = 0;
                }
