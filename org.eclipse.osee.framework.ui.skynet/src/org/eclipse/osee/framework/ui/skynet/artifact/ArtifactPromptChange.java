@@ -87,12 +87,27 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws SQLException {
-      return promptChangeStringAttribute(attributeName, displayName, VALID_FLOAT_REG_EX,
-            Arrays.asList(new Artifact[] {artifact}), persist);
+      return promptChangeFloatAttribute(attributeName, displayName,Arrays.asList(new Artifact[] {artifact}), persist);
    }
 
    public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws SQLException {
-      return promptChangeStringAttribute(attributeName, displayName, VALID_FLOAT_REG_EX, smas, persist);
+     EntryDialog ed =
+         new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
+               "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
+     if (smas.size() == 1) ed.setEntry("" + smas.iterator().next().getSoleXAttributeValue(attributeName));
+     if (VALID_FLOAT_REG_EX != null) ed.setValidationRegularExpression(VALID_FLOAT_REG_EX);
+     int result = ed.open();
+     if (result == 0 || result == 1) {
+      for (Artifact sma : smas) {
+         if (result == 0)
+            sma.setSoleXAttributeValue(attributeName, new Double(ed.getEntry()));
+         else
+            sma.setSoleXAttributeValue(attributeName, new Double(0));
+         if (persist) sma.persistAttributes();
+      }
+      return true;
+   }
+   return false;
    }
 
    public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws SQLException {
