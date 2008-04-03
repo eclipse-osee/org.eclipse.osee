@@ -807,23 +807,20 @@
        <MatchCriteria
              match="org.eclipse.osee.framework.ui.skynet.word PREVIEW">
        </MatchCriteria>
-       <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.tis Test Information Sheet PREVIEW PREVIEW_ARTIFACT">
-       </MatchCriteria>
     </Template>
     <Template
           File="support/templates/PREVIEW_ALL_RECURSE.xml">
        <MatchCriteria
              match="org.eclipse.osee.framework.ui.skynet.word PREVIEW PREVIEW_WITH_RECURSE">
        </MatchCriteria>
-       <MatchCriteria
-             match="org.eclipse.osee.framework.ui.skynet.tis Test Information Sheet PREVIEW PREVIEW_WITH_RECURSE">
-       </MatchCriteria>
     </Template>
     <Template
           File="support/templates/PREVIEW Software Requirement.xml">
        <MatchCriteria
              match="org.eclipse.osee.framework.ui.skynet.word EDIT">
+       </MatchCriteria>
+       <MatchCriteria
+             match="org.eclipse.osee.framework.ui.skynet.tis Test Information Sheet EDIT">
        </MatchCriteria>
     </Template>
  </extension>
