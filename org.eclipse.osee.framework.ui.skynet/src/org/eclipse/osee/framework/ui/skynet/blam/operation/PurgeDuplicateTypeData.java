@@ -28,12 +28,18 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  */
 public class PurgeDuplicateTypeData extends AbstractBlam {
    ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
+   private static final String UPDATE_RELATION_VALIDITY_TXS =
+         "UPDATE osee_define_txs txs1 SET txs1.gamma_id = ? WHERE txs1.gamma_id IN (SELECT var2.gamma_id FROM osee_define_valid_relations var2 WHERE var2.rel_link_type_id = ? AND var2.art_type_id = ? AND var2.gamma_id <> ? AND NOT EXISTS (SELECT 'x' FROM osee_define_txs txs3 WHERE txs1.transaction_id = txs3.transaction_id AND txs3.gamma_id = ?))";
+   private static final String DELETE_RELATION_VALIDITY =
+         "DELETE FROM osee_define_valid_relations where rel_link_type_id = ? and art_type_id = ? and gamma_id <> ?";
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      purgeDuplicateAttributeValidity();
+      //purgeDuplicateAttributeValidity();
+
+      purgeRelationValidityAndGammas();
 
       for (ArtifactSubtypeDescriptor artifactType : new HashSet<ArtifactSubtypeDescriptor>(
             configurationManager.getArtifactSubtypeDescriptors())) {
@@ -141,6 +147,36 @@ public class PurgeDuplicateTypeData extends AbstractBlam {
 
       ConnectionHandler.runPreparedUpdate("DELETE FROM osee_define_artifact_type where art_type_id = ?",
             SQL3DataType.INTEGER, oldArtifactTypeId);
+   }
+
+   private void purgeRelationValidityAndGammas() throws SQLException {
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt =
+               ConnectionHandler.runPreparedQuery("SELECT min(gamma_id) minGamma, rel_link_type_id, art_type_id FROM osee_define_valid_relations group by rel_link_type_id, art_type_id order by rel_link_type_id, art_type_id");
+         ResultSet rSet = chStmt.getRset();
+         while (rSet.next()) {
+            eliminateDuplicateRelationValidityAndGammas(rSet.getInt("minGamma"), rSet.getInt("rel_link_type_id"),
+                  rSet.getInt("art_type_id"));
+         }
+      } finally {
+         DbUtil.close(chStmt);
+      }
+   }
+
+   private void eliminateDuplicateRelationValidityAndGammas(int newGamma, int relationTypeId, int artifactTypeId) throws SQLException {
+      int updateCount =
+            ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_RELATION_VALIDITY_TXS, SQL3DataType.INTEGER,
+                  newGamma, SQL3DataType.INTEGER, relationTypeId, SQL3DataType.INTEGER, artifactTypeId,
+                  SQL3DataType.INTEGER, newGamma, SQL3DataType.INTEGER, newGamma);
+
+      appendResultLine("number of txs rows updated " + updateCount);
+
+      updateCount =
+            ConnectionHandler.runPreparedUpdateReturnCount(DELETE_RELATION_VALIDITY, SQL3DataType.INTEGER,
+                  relationTypeId, SQL3DataType.INTEGER, artifactTypeId, SQL3DataType.INTEGER, newGamma);
+
+      appendResultLine("number of relation validity rows deleted " + updateCount);
    }
 
    /*

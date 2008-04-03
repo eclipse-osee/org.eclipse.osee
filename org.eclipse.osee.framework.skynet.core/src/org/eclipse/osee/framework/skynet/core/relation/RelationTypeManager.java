@@ -59,6 +59,14 @@ public class RelationTypeManager {
     * @return
     */
    public List<IRelationType> getValidTypes(Branch branch) throws SQLException {
+      return getAllTypes();
+   }
+
+   /**
+    * @return all Relation types in the datastore
+    * @throws SQLException
+    */
+   public List<IRelationType> getAllTypes() throws SQLException {
       return new ArrayList<IRelationType>(idToTypeMap.values());
    }
 

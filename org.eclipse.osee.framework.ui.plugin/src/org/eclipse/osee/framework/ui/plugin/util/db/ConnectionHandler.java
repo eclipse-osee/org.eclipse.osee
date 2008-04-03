@@ -284,9 +284,15 @@ public final class ConnectionHandler {
    }
 
    public static int runPreparedUpdateReturnCount(String query, Object... data) throws SQLException {
-      ConnectionHandlerStatement chStmt = runPreparedUpdateReturnStmt(false, query, data);
-      int updateCount = chStmt.getStatement().getUpdateCount();
-      DbUtil.close(chStmt);
+      ConnectionHandlerStatement chStmt = null;
+      int updateCount;
+      try {
+         chStmt = runPreparedUpdateReturnStmt(false, query, data);
+         updateCount = chStmt.getStatement().getUpdateCount();
+      } finally {
+         DbUtil.close(chStmt);
+      }
+
       return updateCount;
    }
 
