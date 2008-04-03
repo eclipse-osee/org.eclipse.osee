@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  */
 public class SimpleTemplateProvider implements ITemplateProvider {
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private HashMap<String, Artifact> templateMap;
 
    public SimpleTemplateProvider() {
@@ -80,7 +79,7 @@ public class SimpleTemplateProvider implements ITemplateProvider {
             return template.getSoleXAttributeValue(WordAttribute.CONTENT_NAME);
          }
       }
-      throw new IllegalStateException(String.format("Unable to find a valid tempalte for [%s, %s, %s, %s].",
+      throw new IllegalStateException(String.format("Unable to find a valid template match for [%s, %s, %s, %s].",
             renderer.toString(), artifact.toString(), presentationType, option));
    }
 
