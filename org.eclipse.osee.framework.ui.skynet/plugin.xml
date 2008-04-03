@@ -13,6 +13,7 @@
 	<extension-point id="XWidgetProvider" name="XWidgetProvider" schema="schema/XWidgetProvider.exsd"/>
 	<extension-point id="IgnorePublishAttribute" name="IgnorePublishAttribute" schema="schema/IgnorePublishAttribute.exsd"/>
 	<extension-point id="TemplateProvider" name="TemplateProvider" schema="schema/TemplateProvider.exsd"/>
+ <extension-point id="SimpleTemplateProviderTemplate" name="SimpleTemplateProviderTemplate" schema="schema/SimpleTemplateProviderTemplate.exsd"/>
  <extension
        point="org.eclipse.ui.commands">
     <command
@@ -787,5 +788,43 @@
     <XWidgetProvider
           classname="org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetProvider">
     </XWidgetProvider>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.database.IDbInitializationTask"
+       id="SimpleTemplateProviderTask"
+         name="SimpleTemplateProviderTask">
+    <DatabaseTask
+          classname="org.eclipse.osee.framework.ui.skynet.templates.SimpleTemplateProviderDbTask">
+    </DatabaseTask>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTemplate">
+    <Template
+          File="support/templates/PREVIEW_ALL.xml">
+       <MatchCriteria
+             match="org.eclipse.osee.framework.ui.skynet.word PREVIEW PREVIEW_ARTIFACT">
+       </MatchCriteria>
+       <MatchCriteria
+             match="org.eclipse.osee.framework.ui.skynet.word PREVIEW">
+       </MatchCriteria>
+       <MatchCriteria
+             match="org.eclipse.osee.framework.ui.skynet.tis Test Information Sheet PREVIEW PREVIEW_ARTIFACT">
+       </MatchCriteria>
+    </Template>
+    <Template
+          File="support/templates/PREVIEW_ALL_RECURSE.xml">
+       <MatchCriteria
+             match="org.eclipse.osee.framework.ui.skynet.word PREVIEW PREVIEW_WITH_RECURSE">
+       </MatchCriteria>
+       <MatchCriteria
+             match="org.eclipse.osee.framework.ui.skynet.tis Test Information Sheet PREVIEW PREVIEW_WITH_RECURSE">
+       </MatchCriteria>
+    </Template>
+    <Template
+          File="support/templates/PREVIEW Software Requirement.xml">
+       <MatchCriteria
+             match="org.eclipse.osee.framework.ui.skynet.word EDIT">
+       </MatchCriteria>
+    </Template>
  </extension>
 </plugin>

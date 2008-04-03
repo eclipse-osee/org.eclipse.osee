@@ -11,19 +11,18 @@
 
 package org.eclipse.osee.framework.ui.skynet.templates;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Ryan D. Brooks This provider gets all of its templates from the common branch based on a name created from
@@ -32,30 +31,51 @@ import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 public class SimpleTemplateProvider implements ITemplateProvider {
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private final HashMap<String, Artifact> templateMap;
+   private HashMap<String, Artifact> templateMap;
 
    public SimpleTemplateProvider() {
-      templateMap = new HashMap<String, Artifact>();
+
+   }
+
+   private void ensureTemplateCachePopulated() throws SQLException {
+      if (templateMap == null) {
+         templateMap = new HashMap<String, Artifact>();
+         Collection<Artifact> artifacts =
+               ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName("Renderer Template",
+                     branchManager.getCommonBranch());
+         for (Artifact art : artifacts) {
+            Collection<Attribute<String>> attrs = art.getAttributes("Template Match Criteria");
+            for (Attribute<String> attr : attrs) {
+               String matchCriteria = attr.getValue();
+               Artifact cachedArt = templateMap.get(matchCriteria);
+               if (cachedArt == null) {
+                  templateMap.put(matchCriteria, art);
+               } else { //use the artifact with the higher name value and warn the user that there are duplicate match criteria
+                  int value = cachedArt.getDescriptiveName().compareTo(art.getDescriptiveName());
+                  if (value < 0) {
+                     templateMap.put(matchCriteria, art);
+                  }
+                  OSEELog.logSevere(
+                        SimpleTemplateProvider.class,
+                        String.format(
+                              "SimpleTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
+                              matchCriteria, templateMap.get(matchCriteria).getDescriptiveName()), false);
+               }
+            }
+         }
+      }
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.template.ITemplateProvider#getTemplate(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
     */
-   @Override
    public String getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws Exception {
-
+      ensureTemplateCachePopulated();
       List<String> possibleTemplateNames =
             getPossibleTemplateNamesOrderedBySpecialization(renderer, artifact, presentationType, option);
 
       for (String name : possibleTemplateNames) {
          Artifact template = templateMap.get(name);
-         if (template == null && !templateMap.containsKey(name)) {//we check the key so that we do not hit the DB a second time, in the case where the template can not be found
-            template =
-                  artifactManager.getArtifactFromTypeName("Template (WordML)", name, branchManager.getCommonBranch(),
-                        false);
-            templateMap.put(name, template);
-
-         }
          if (template != null) {
             return template.getSoleXAttributeValue(WordAttribute.CONTENT_NAME);
          }
@@ -83,24 +103,8 @@ public class SimpleTemplateProvider implements ITemplateProvider {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.template.ITemplateProvider#getApplicabilityRating(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String, java.lang.String)
     */
-   @Override
    public int getApplicabilityRating(IRenderer rendererId, Artifact artifact, String presentationType, String option) {
       return ITemplateProvider.DEFAULT_MATCH;
-   }
-
-   public void somefunctionToBeUsedbyDBinit() throws SQLException, IllegalStateException, IOException {
-      Artifact templateFolder =
-            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Folder", "Document Templates",
-                  BranchPersistenceManager.getInstance().getCommonBranch(), true);
-
-      ArtifactSubtypeDescriptor descriptor =
-            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Template (WordML)");
-      Artifact template = descriptor.makeNewArtifact(templateFolder.getBranch());
-      String name = null;
-      template.setDescriptiveName(name);
-      InputStream stream = null;
-      template.setSoleAttributeFromStream(WordAttribute.CONTENT_NAME, stream);
-      templateFolder.addChild(template);
    }
 
 }
