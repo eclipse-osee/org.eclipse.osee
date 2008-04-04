@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.service.control.wizards.launcher.pages;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
@@ -166,7 +165,7 @@ public class ExecutePage extends DynamicWizardPage {
                      }
                      String output = serviceInfo.getSSHConnection().executeCommandList(execCommands);
                      updateText.addText(output);
-                  } catch (IOException ex) {
+                  } catch (Exception ex) {
                      updateText.addText("\n" + ControlPlugin.getStackMessages(ex) + "\n", SWT.NORMAL, SWT.COLOR_RED);
                   }
                   execute.setEnabled(true);

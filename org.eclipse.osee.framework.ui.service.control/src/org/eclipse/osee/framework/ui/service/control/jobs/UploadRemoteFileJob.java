@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.service.control.jobs;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -162,7 +161,7 @@ public class UploadRemoteFileJob extends Job {
             display.addText(output, SWT.NORMAL, SWT.COLOR_BLACK, false);
             display.updateScrollBar();
          }
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          display.addText(String.format("\n%s\n\n", ControlPlugin.getStackMessages(ex)), SWT.NORMAL, SWT.COLOR_RED,
                false);
       }
@@ -181,7 +180,7 @@ public class UploadRemoteFileJob extends Job {
             display.addText(output.toString(), SWT.NORMAL, SWT.COLOR_BLACK, false);
             display.updateScrollBar();
          }
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          display.addText(String.format("\n%s\n\n", ControlPlugin.getStackMessages(ex)), SWT.NORMAL, SWT.COLOR_RED,
                false);
       }

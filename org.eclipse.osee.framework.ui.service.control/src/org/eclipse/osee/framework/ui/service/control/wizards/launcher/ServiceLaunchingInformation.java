@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.service.control.wizards.launcher;
 
-import java.io.IOException;
 import java.util.List;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.ServiceItem;
-import osee.ssh.SecureRemoteAccess;
 
 public class ServiceLaunchingInformation {
 
@@ -99,7 +97,7 @@ public class ServiceLaunchingInformation {
       this.selectedHost = selectedHost;
    }
 
-   public void connectToRemoteHost() throws IOException {
+   public void connectToRemoteHost() throws Exception {
       sshConnection = SecureRemoteAccess.getRemoteAccessAuthenticateWithPassword(selectedHost, user, password);
    }
 

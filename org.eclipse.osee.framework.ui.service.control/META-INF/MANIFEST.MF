@@ -23,11 +23,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.jdk.core,
  net.jini,
- ganymed.ssh,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.jini,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.swt
+ org.eclipse.osee.framework.ui.swt,
+ com.jcraft.jsch
 Eclipse-LazyStart: true

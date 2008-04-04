@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.service.control.wizards.launcher.pages;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -191,7 +190,7 @@ public class HostInfoPage extends DynamicWizardPage {
 
       try {
          serviceInfo.connectToRemoteHost();
-      } catch (IOException ex) {
+      } catch (Exception ex) {
          StringWriter error = new StringWriter();
          ex.printStackTrace(new PrintWriter(error));
          MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
