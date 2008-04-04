@@ -25,5 +25,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.plugin
+ org.eclipse.osee.framework.ui.plugin,
+ org.eclipse.osee.framework.database
 Eclipse-LazyStart: true
