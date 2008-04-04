@@ -19,19 +19,15 @@ import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 
 /**
  * @author Donald G. Dunne
  */
 public class OseeInfo {
    public static Logger logger = ConfigUtil.getConfigFactory().getLogger(OseeInfo.class);
-   private static final String GET_VALUE_SQL =
-         "Select OSEE_VALUE FROM " + SkynetDatabase.OSEE_INFO_TABLE + " where OSEE_KEY=?";
-   private static final String INSERT_KEY_VALUE_SQL =
-         "INSERT INTO " + SkynetDatabase.OSEE_INFO_TABLE + "(OSEE_VALUE, OSEE_KEY) VALUES (?,?)";
-   private static final String DELETE_KEY_SQL = "DELETE FROM " + SkynetDatabase.OSEE_INFO_TABLE + " WHERE OSEE_KEY=?";
-
+   private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM OSEE_INFO where OSEE_KEY = ?";
+   private static final String INSERT_KEY_VALUE_SQL = "INSERT INTO OSEE_INFO(OSEE_VALUE, OSEE_KEY) VALUES (?, ?)";
+   private static final String DELETE_KEY_SQL = "DELETE FROM OSEE_INFO WHERE OSEE_KEY = ?";
    public static final String SAVE_OUTFILE_IN_DB = "SAVE_OUTFILE_IN_DB";
 
    public static String getValue(String key) {
@@ -51,14 +47,8 @@ public class OseeInfo {
       return returnValue;
    }
 
-   public static void putValue(String key, String value) {
-      try {
-         ConnectionHandler.runPreparedUpdate(DELETE_KEY_SQL, SQL3DataType.VARCHAR, key);
-         ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, SQL3DataType.VARCHAR, key, SQL3DataType.VARCHAR,
-               value);
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
+   public static void putValue(String key, String value) throws SQLException {
+      ConnectionHandler.runPreparedUpdate(DELETE_KEY_SQL, SQL3DataType.VARCHAR, key);
+      ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, SQL3DataType.VARCHAR, key, SQL3DataType.VARCHAR, value);
    }
-
 }

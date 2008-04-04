@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
+import java.sql.SQLException;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -59,7 +60,7 @@ public class SkynetActivator extends OseeUiActivator {
       return Boolean.parseBoolean(OseeInfo.getValue(SkynetActivator.AUTO_TAG_KEY));
    }
 
-   public static void setAutoTaggingEnabled(boolean enabled) {
+   public static void setAutoTaggingEnabled(boolean enabled) throws SQLException {
       OseeInfo.putValue(SkynetActivator.AUTO_TAG_KEY, String.valueOf(enabled));
    }
 }
