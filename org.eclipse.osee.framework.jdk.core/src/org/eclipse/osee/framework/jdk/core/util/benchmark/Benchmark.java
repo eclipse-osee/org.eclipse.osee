@@ -245,6 +245,12 @@ public class Benchmark {
 
    }
 
+   public String toString() {
+      return String.format("%s\t total samples: %d,\t average: %fms,\t max time: %f, min: %fms, exceed count: %d",
+            name, new Long(getTotalSamples()), new Float(getLongestSample() / 1000), new Float(
+                  getShortestSample() / 1000), new Float(getAverage() / 1000), new Long(getExceedCount()));
+   }
+
    public void addExceeder(String exceeder) {
       Integer c = exceeders.get(exceeder);
       if (c == null) {
