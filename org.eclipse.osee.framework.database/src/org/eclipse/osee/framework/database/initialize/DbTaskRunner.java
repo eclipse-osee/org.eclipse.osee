@@ -15,8 +15,8 @@ import java.sql.SQLException;
 import java.util.Queue;
 import org.eclipse.osee.framework.database.core.DatabaseNotSupportedException;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
+import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
-import org.eclipse.osee.framework.ui.plugin.sql.SqlFactory;
 
 /**
  * @author Roberto E. Escobar

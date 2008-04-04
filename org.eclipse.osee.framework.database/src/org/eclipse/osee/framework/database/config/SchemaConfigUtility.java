@@ -15,8 +15,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.SchemaData;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.TableElement;
+import org.eclipse.osee.framework.database.data.SchemaData;
+import org.eclipse.osee.framework.database.data.TableElement;
 
 /**
  * @author Roberto E. Escobar

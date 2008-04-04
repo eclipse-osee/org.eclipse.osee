@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import org.eclipse.osee.framework.database.data.SchemaData;
+import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
 import org.eclipse.osee.framework.database.utility.DatabaseDataExtractor;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.SchemaData;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.TableElement;
 
 public class BackupTableData implements IDbInitializationTask {
    private Set<String> schemas;

@@ -19,15 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.database.config.SchemaConfigUtility;
+import org.eclipse.osee.framework.database.data.ColumnMetadata;
+import org.eclipse.osee.framework.database.data.ConstraintElement;
+import org.eclipse.osee.framework.database.data.ForeignKey;
+import org.eclipse.osee.framework.database.data.IndexElement;
+import org.eclipse.osee.framework.database.data.ReferenceClause;
+import org.eclipse.osee.framework.database.data.SchemaData;
+import org.eclipse.osee.framework.database.data.TableElement;
+import org.eclipse.osee.framework.database.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.ColumnMetadata;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.ConstraintElement;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.ForeignKey;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.IndexElement;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.ReferenceClause;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.SchemaData;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.TableElement;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.TableElement.TableDescriptionFields;
 
 public class DatabaseConfigurationData {
 

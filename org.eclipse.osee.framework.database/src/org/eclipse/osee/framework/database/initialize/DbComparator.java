@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.database.initialize;
 
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.SchemaData;
+import org.eclipse.osee.framework.database.data.SchemaData;
 
 /**
  * @author Roberto E. Escobar

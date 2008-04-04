@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.database.data.SchemaData;
+import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
+import org.eclipse.osee.framework.database.sql.SqlFactory;
+import org.eclipse.osee.framework.database.sql.SqlManager;
 import org.eclipse.osee.framework.database.utility.DatabaseDataImporter;
 import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
-import org.eclipse.osee.framework.ui.plugin.sql.SqlFactory;
-import org.eclipse.osee.framework.ui.plugin.sql.manager.SqlManager;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.SchemaData;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.TableElement;
 
 public class RestoreTableData implements IDbInitializationTask {
    private Set<String> schemas;

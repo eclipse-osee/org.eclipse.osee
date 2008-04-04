@@ -14,12 +14,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.database.data.SchemaData;
+import org.eclipse.osee.framework.database.data.TableElement;
+import org.eclipse.osee.framework.database.sql.SqlFactory;
+import org.eclipse.osee.framework.database.sql.SqlManager;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
-import org.eclipse.osee.framework.ui.plugin.sql.SqlFactory;
-import org.eclipse.osee.framework.ui.plugin.sql.manager.SqlManager;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.SchemaData;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.TableElement;
 
 /**
  * @author Roberto E. Escobar
