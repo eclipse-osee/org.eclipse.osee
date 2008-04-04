@@ -61,7 +61,7 @@ public class BlamOperations {
                BlamOperation task = (BlamOperation) obj;
                blamOperations.add(task);
             } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, "Error loading BlamOperation extension", ex, true);
+               OSEELog.logException(SkynetGuiPlugin.class, "Error loading BlamOperation extension", ex, false);
             }
          }
       }
