@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TYPE_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.FACTORY_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TXD_COMMENT;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_TYPE_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.FACTORY_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,6 +37,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.DbUtil;
+import org.eclipse.osee.framework.database.Query;
+import org.eclipse.osee.framework.database.RsetProcessor;
+import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
+import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
+import org.eclipse.osee.framework.database.schemas.Table;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetArtifactEvent;
@@ -67,6 +76,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
@@ -84,18 +94,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransacti
 import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
-import org.eclipse.osee.framework.ui.plugin.util.db.Query;
-import org.eclipse.osee.framework.ui.plugin.util.db.RsetProcessor;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.Table;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
 
 /**
  * @author Ryan D. Brooks
@@ -280,12 +280,12 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    public void doSave(Artifact artifact, SkynetTransaction transaction, boolean persistAttributes) throws SQLException {
       workingOn(artifact.getDescriptiveName());
       boolean newArtifact = artifact.getPersistenceMemo() == null;
-      SkynetDatabase.ModificationType modType;
+      ModificationType modType;
 
       if (newArtifact) {
-         modType = SkynetDatabase.ModificationType.NEW;
+         modType = ModificationType.NEW;
       } else {
-         modType = SkynetDatabase.ModificationType.CHANGE;
+         modType = ModificationType.CHANGE;
       }
 
       int artGamma = SkynetDatabase.getNextGammaId();
@@ -313,7 +313,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             }
          }
 
-         if (modType == SkynetDatabase.ModificationType.NEW ? false : true) {
+         if (modType == ModificationType.NEW ? false : true) {
             transaction.addRemoteEvent(RemoteArtifactEventFactory.makeEvent(artifact,
                   transaction.getTransactionNumber()));
          }
@@ -322,7 +322,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       workedOneUnit();
    }
 
-   private void processTransactionForArtifact(Artifact artifact, SkynetDatabase.ModificationType modType, SkynetTransaction transaction, int artGamma) throws SQLException {
+   private void processTransactionForArtifact(Artifact artifact, ModificationType modType, SkynetTransaction transaction, int artGamma) throws SQLException {
       transaction.addTransactionDataItem(new ArtifactTransactionData(artifact, artGamma,
             transaction.getTransactionNumber(), modType));
    }
@@ -351,7 +351,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       InputStream stream = attribute.getRawContentStream();
       AttributeMemo memo;
       ModType modType;
-      SkynetDatabase.ModificationType attrModType;
+      ModificationType attrModType;
 
       if (artifact.isVersionControlled()) {
          if (attribute.getPersistenceMemo() == null) {
@@ -360,14 +360,14 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                         SkynetDatabase.getNextGammaId());
             attribute.setPersistenceMemo(memo);
             modType = ModType.Added;
-            attrModType = SkynetDatabase.ModificationType.NEW;
+            attrModType = ModificationType.NEW;
 
          } else {
             memo = attribute.getPersistenceMemo();
             memo = new AttributeMemo(memo.getAttrId(), memo.getAttrTypeId(), SkynetDatabase.getNextGammaId());
             attribute.setPersistenceMemo(memo);
             modType = ModType.Changed;
-            attrModType = SkynetDatabase.ModificationType.CHANGE;
+            attrModType = ModificationType.CHANGE;
          }
          transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
                memo.getAttrTypeId(), value, memo.getGammaId(), transaction.getTransactionNumber(), stream, attrModType));
@@ -379,7 +379,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                   createAttributeMemo(attribute.getManager().getAttributeType().getAttrTypeId(),
                         SkynetDatabase.getNextGammaId());
             attribute.setPersistenceMemo(memo);
-            attrModType = SkynetDatabase.ModificationType.NEW;
+            attrModType = ModificationType.NEW;
 
             transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
                   memo.getAttrTypeId(), value, memo.getGammaId(), transaction.getTransactionNumber(), stream,
@@ -459,7 +459,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          try {
             chStmt =
                   ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_BY_GUID, SQL3DataType.VARCHAR, guid,
-                        SQL3DataType.INTEGER, SkynetDatabase.ModificationType.DELETE.getValue(), SQL3DataType.INTEGER,
+                        SQL3DataType.INTEGER, ModificationType.DELETE.getValue(), SQL3DataType.INTEGER,
                         transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                         transactionId.getBranch().getBranchId());
 
@@ -521,7 +521,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    private static final String ARTIFACT_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id", "art_type_id", "guid", "human_readable_id") + ", " + ARTIFACT_TYPE_TABLE.columns(
-               "factory_id", "factory_key") + ", " + FACTORY_TABLE.columns("factory_id", "factory_class") + ", " + TRANSACTIONS_TABLE.column("gamma_id") + " FROM " + ARTIFACT_TABLE + ", " + ARTIFACT_TYPE_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + ", " + FACTORY_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_type_id") + "=" + ARTIFACT_TYPE_TABLE.column("art_type_id") + " AND " + ARTIFACT_TABLE.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_TYPE_TABLE.column("factory_id") + "=" + FACTORY_TABLE.column("factory_id") + " AND " + TRANSACTIONS_TABLE.column("gamma_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ?)" + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "<>" + SkynetDatabase.ModificationType.DELETE + " AND ";
+               "factory_id", "factory_key") + ", " + FACTORY_TABLE.columns("factory_id", "factory_class") + ", " + TRANSACTIONS_TABLE.column("gamma_id") + " FROM " + ARTIFACT_TABLE + ", " + ARTIFACT_TYPE_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + ", " + FACTORY_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_type_id") + "=" + ARTIFACT_TYPE_TABLE.column("art_type_id") + " AND " + ARTIFACT_TABLE.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_TYPE_TABLE.column("factory_id") + "=" + FACTORY_TABLE.column("factory_id") + " AND " + TRANSACTIONS_TABLE.column("gamma_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ?)" + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "<>" + ModificationType.DELETE + " AND ";
 
    private static final String ARTIFACT_ID_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
@@ -1095,7 +1095,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       LinkManager linkManager = artifact.getLinkManager();
 
-      processTransactionForArtifact(artifact, SkynetDatabase.ModificationType.DELETE, transaction,
+      processTransactionForArtifact(artifact, ModificationType.DELETE, transaction,
             SkynetDatabase.getNextGammaId());
 
       transaction.addRemoteEvent(new NetworkArtifactDeletedEvent(artifact.getBranch().getBranchId(),
@@ -1124,7 +1124,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       int gammaId = SkynetDatabase.getNextGammaId();
       transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
             memo.getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null,
-            SkynetDatabase.ModificationType.DELETE));
+            ModificationType.DELETE));
 
       transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
    }
@@ -1308,7 +1308,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          chStmt =
                ConnectionHandler.runPreparedQuery(SELECT_HISTORICAL_ARTIFACT_DELETED, SQL3DataType.INTEGER, artId,
                      SQL3DataType.INTEGER, branchId, SQL3DataType.INTEGER,
-                     SkynetDatabase.ModificationType.DELETE.getValue());
+                     ModificationType.DELETE.getValue());
 
          ResultSet rSet = chStmt.getRset();
          if (rSet.next()) {

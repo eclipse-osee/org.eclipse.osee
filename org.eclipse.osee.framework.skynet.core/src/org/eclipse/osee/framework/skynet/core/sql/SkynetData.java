@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.sql;
 
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
+import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
 
 public class SkynetData {
    private static SkynetData instance = null;

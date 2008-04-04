@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.BRANCH_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_TABLE;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -21,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkRenameBranchEvent;
@@ -32,8 +34,6 @@ import org.eclipse.osee.framework.skynet.core.event.LocalRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 
 /**
  * @author Robert A. Fisher

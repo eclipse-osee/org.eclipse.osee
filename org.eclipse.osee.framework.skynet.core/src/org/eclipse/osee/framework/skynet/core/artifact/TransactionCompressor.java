@@ -14,11 +14,11 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.database.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 
 /**
  * Compresses gammaIds from osee_define_txs table so earlier versions to not cause conflicts. This is needed for

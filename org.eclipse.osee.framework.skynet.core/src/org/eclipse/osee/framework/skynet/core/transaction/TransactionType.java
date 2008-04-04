@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 
 /**
  * MERGED will not be used the in database but will be replaced with the transaction_id of the change that was merged

@@ -11,11 +11,11 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.BRANCH_DEFINITIONS;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.BRANCH_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_DEFINITIONS;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TXD_COMMENT;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -37,6 +37,12 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.DbUtil;
+import org.eclipse.osee.framework.database.Query;
+import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
@@ -54,20 +60,15 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.WindowLocal;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
-import org.eclipse.osee.framework.ui.plugin.util.db.Query;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 
 public class BranchPersistenceManager implements PersistenceManager {
    static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
@@ -627,7 +628,7 @@ public class BranchPersistenceManager implements PersistenceManager {
       Artifact bArtifact = null;
 
       try {
-         if (modType == SkynetDatabase.ModificationType.DELETE.getValue()) {
+         if (modType == ModificationType.DELETE.getValue()) {
             aArtifact = artifactManager.getArtifactFromId(aArtId, parentBranch);
             bArtifact = artifactManager.getArtifactFromId(bArtId, parentBranch);
 
@@ -637,7 +638,7 @@ public class BranchPersistenceManager implements PersistenceManager {
                         aArtifact.getFactory().getClass().getCanonicalName(),
                         bArtifact.getFactory().getClass().getCanonicalName(),
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
-         } else if (modType == SkynetDatabase.ModificationType.CHANGE.getValue()) {
+         } else if (modType == ModificationType.CHANGE.getValue()) {
             aArtifact = artifactManager.getArtifactFromId(aArtId, parentBranch);
             bArtifact = artifactManager.getArtifactFromId(bArtId, parentBranch);
 
@@ -648,7 +649,7 @@ public class BranchPersistenceManager implements PersistenceManager {
                         aArtifact.getFactory().getClass().getCanonicalName(),
                         bArtifact.getFactory().getClass().getCanonicalName(),
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
-         } else if (modType == SkynetDatabase.ModificationType.NEW.getValue()) {
+         } else if (modType == ModificationType.NEW.getValue()) {
             aArtifact = artifactManager.getArtifactFromId(aArtId, childBranch);
             bArtifact = artifactManager.getArtifactFromId(bArtId, childBranch);
 
@@ -739,7 +740,7 @@ public class BranchPersistenceManager implements PersistenceManager {
                continue;
             }
 
-            if (modificationId == SkynetDatabase.ModificationType.DELETE.getValue()) {
+            if (modificationId == ModificationType.DELETE.getValue()) {
                remoteEvent =
                      new NetworkArtifactDeletedEvent(parentBranch.getBranchId(), newTransactionNumber,
                            artifact.getArtId(), artifact.getArtTypeId(),

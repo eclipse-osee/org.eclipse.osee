@@ -11,11 +11,10 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_TYPE_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_TYPE_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,7 +25,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.Query;
+import org.eclipse.osee.framework.database.RsetProcessor;
+import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
+import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
@@ -42,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -51,12 +56,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.data.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteLinkEventFactory;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.plugin.util.db.Query;
-import org.eclipse.osee.framework.ui.plugin.util.db.RsetProcessor;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 
 /**
  * Controls all aspects of saving and recovering relations. The data-store happens to be a database, but that should be
@@ -188,7 +187,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       int bArtId = bArtifact.getArtId();
       int bArtTypeId = bArtifact.getArtTypeId();
       ModType modType;
-      SkynetDatabase.ModificationType modId;
+      ModificationType modId;
 
       if (relationLink.getPersistenceMemo() == null) {
          linkId = Query.getNextSeqVal(null, SkynetDatabase.REL_LINK_ID_SEQ);
@@ -196,7 +195,7 @@ public class RelationPersistenceManager implements PersistenceManager {
          cache(relationLink);
          transaction.addRemoteEvent(RemoteLinkEventFactory.makeEvent(relationLink, transaction.getTransactionNumber()));
          modType = ModType.Added;
-         modId = SkynetDatabase.ModificationType.NEW;
+         modId = ModificationType.NEW;
       } else {
          LinkPersistenceMemo memo = relationLink.getPersistenceMemo();
          relationLink.getPersistenceMemo().setGammaId(gammaId);
@@ -211,7 +210,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 
          modType = ModType.Changed;
-         modId = SkynetDatabase.ModificationType.CHANGE;
+         modId = ModificationType.CHANGE;
       }
 
       transaction.addTransactionDataItem(new RelationTransactionData(relationLink, gammaId,
@@ -259,7 +258,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       int bArtTypeId = bArtifact.getArtTypeId();
 
       transaction.addTransactionDataItem(new RelationTransactionData(relationLink, gammaId,
-            transaction.getTransactionNumber(), SkynetDatabase.ModificationType.DELETE));
+            transaction.getTransactionNumber(), ModificationType.DELETE));
 
       transaction.addRemoteEvent(new NetworkRelationLinkDeletedEvent(relationLink.getPersistenceMemo().getGammaId(),
             relationLink.getBranch().getBranchId(), transaction.getTransactionNumber(),
@@ -384,9 +383,9 @@ public class RelationPersistenceManager implements PersistenceManager {
       TransactionId transactionId = artifact.getPersistenceMemo().getTransactionId();
       Query.acquireCollection(relationCollection, new RelationLinkProcessor(transactionId), SELECT_LINKS,
             SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-            SkynetDatabase.ModificationType.DELETE.getValue(), SQL3DataType.INTEGER, branch.getBranchId(),
+            ModificationType.DELETE.getValue(), SQL3DataType.INTEGER, branch.getBranchId(),
             SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER, artifact.getArtId(),
-            SQL3DataType.INTEGER, SkynetDatabase.ModificationType.DELETE.getValue(), SQL3DataType.INTEGER,
+            SQL3DataType.INTEGER, ModificationType.DELETE.getValue(), SQL3DataType.INTEGER,
             branch.getBranchId(), SQL3DataType.INTEGER, transactionId.getTransactionNumber());
       }
       catch(Exception exception){

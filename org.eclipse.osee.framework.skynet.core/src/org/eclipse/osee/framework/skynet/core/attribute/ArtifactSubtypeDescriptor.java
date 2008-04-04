@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.CONFLICTING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.INCOMING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.OUTGOING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
+import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
+import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
+import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -29,11 +29,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictionType;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
 import org.eclipse.swt.graphics.Image;
 
 /**

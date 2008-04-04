@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
+import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 
 /**
  * @author Robert A. Fisher

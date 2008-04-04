@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.transaction.data;
 
 import java.util.List;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 
 /**
  * @author Jeff C. Phillips

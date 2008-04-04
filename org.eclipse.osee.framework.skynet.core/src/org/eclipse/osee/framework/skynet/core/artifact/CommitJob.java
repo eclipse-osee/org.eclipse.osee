@@ -14,11 +14,13 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.database.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkCommitBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -32,9 +34,6 @@ import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 
 /**
  * Commits gammaIds from a Source branch into a destination branch.

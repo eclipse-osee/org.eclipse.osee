@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TABLE;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;

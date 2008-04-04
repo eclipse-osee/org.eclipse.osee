@@ -27,11 +27,5 @@ Export-Package: org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.io,
  org.eclipse.osee.framework.ui.plugin.security,
  org.eclipse.osee.framework.ui.plugin.server,
- org.eclipse.osee.framework.ui.plugin.sql,
- org.eclipse.osee.framework.ui.plugin.sql.dataType,
- org.eclipse.osee.framework.ui.plugin.sql.manager,
- org.eclipse.osee.framework.ui.plugin.util,
- org.eclipse.osee.framework.ui.plugin.util.db,
- org.eclipse.osee.framework.ui.plugin.util.db.data,
- org.eclipse.osee.framework.ui.plugin.util.db.schemas
+ org.eclipse.osee.framework.ui.plugin.util
 Bundle-ClassPath: library.jar

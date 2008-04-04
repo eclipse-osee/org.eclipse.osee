@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.change.ChangeIcons;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;
 
 /**

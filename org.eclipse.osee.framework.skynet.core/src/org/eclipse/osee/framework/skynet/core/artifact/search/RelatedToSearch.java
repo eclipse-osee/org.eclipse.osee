@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.List;
+import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 
 /**
  * @author Robert A. Fisher
@@ -61,7 +61,7 @@ public class RelatedToSearch implements ISearchPrimitive {
       dataList.add(SQL3DataType.INTEGER);
       dataList.add(branch.getBranchId());
       dataList.add(SQL3DataType.INTEGER);
-      dataList.add(SkynetDatabase.ModificationType.DELETE.getValue());
+      dataList.add(ModificationType.DELETE.getValue());
 
       return sql;
    }

@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.CONFLICTING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.INCOMING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.OUTGOING;
+import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
+import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
+import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;
 
 /**

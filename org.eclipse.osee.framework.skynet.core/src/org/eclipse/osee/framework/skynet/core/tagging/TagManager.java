@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.tagging;
 
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TAG_ART_MAP_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TAG_TABLE;
 import static org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor.AUTO_INDEXED;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TAG_ART_MAP_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TAG_TABLE;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
@@ -28,9 +31,6 @@ import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IAttributeSaveListener;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.LocalAliasTable;
 
 /**
  * Manages the tagging of Artifacts in Skynet.

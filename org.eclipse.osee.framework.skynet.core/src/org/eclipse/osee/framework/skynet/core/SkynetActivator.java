@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.skynet.core;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.database.OseeInfo;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.plugin.util.OseeInfo;
 import org.osgi.framework.BundleContext;
 
 /**

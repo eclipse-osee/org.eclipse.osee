@@ -16,17 +16,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.DbTransactionEventCompleted;
+import org.eclipse.osee.framework.database.IDbTransactionEvent;
+import org.eclipse.osee.framework.database.IDbTransactionListener;
+import org.eclipse.osee.framework.database.KeyedLevelManager;
 import org.eclipse.osee.framework.jdk.core.util.ThreadKeyLocal;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.plugin.util.db.DbTransactionEventCompleted;
-import org.eclipse.osee.framework.ui.plugin.util.db.IDbTransactionEvent;
-import org.eclipse.osee.framework.ui.plugin.util.db.IDbTransactionListener;
-import org.eclipse.osee.framework.ui.plugin.util.db.KeyedLevelManager;
 
 /**
  * @author Robert A. Fisher

@@ -11,9 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class RevisionChange implements IRevisionChange, IAdaptable {
    private ChangeType changeType;
-   private SkynetDatabase.ModificationType modType;
+   private ModificationType modType;
    private long gammaId;
 
    /**
@@ -52,7 +51,7 @@ public abstract class RevisionChange implements IRevisionChange, IAdaptable {
       return gammaId;
    }
 
-   public SkynetDatabase.ModificationType getModType() {
+   public ModificationType getModType() {
       return modType;
    }
 

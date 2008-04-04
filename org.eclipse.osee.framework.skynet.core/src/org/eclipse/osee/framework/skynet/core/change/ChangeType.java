@@ -8,24 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.plugin.util.db.schemas;
+package org.eclipse.osee.framework.skynet.core.change;
+
+import java.io.Serializable;
 
 /**
- * @author Ryan D. Brooks
+ * Values for Change Types.
+ * 
+ * @author Robert A. Fisher
  */
-public class View extends Table {
-   private final String definition;
-
-   /**
-    * @param name
-    * @param definition
-    */
-   public View(String name, String definition) {
-      super(name);
-      this.definition = definition;
-   }
-
-   public String getDefinition() {
-      return definition;
-   }
+public enum ChangeType implements Serializable {
+   INCOMING, OUTGOING, CONFLICTING
 }

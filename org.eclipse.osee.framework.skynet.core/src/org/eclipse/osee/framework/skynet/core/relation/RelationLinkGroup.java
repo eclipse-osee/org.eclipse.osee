@@ -18,12 +18,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.database.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
-import org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate;
 
 public class RelationLinkGroup {
 
