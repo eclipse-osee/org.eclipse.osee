@@ -18,15 +18,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import org.eclipse.osee.framework.database.DBConnection;
+import org.eclipse.osee.framework.database.data.SchemaData;
+import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.utility.DatabaseDataExtractor;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.FileUtility;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.config.data.DbInformation;
-import org.eclipse.osee.framework.ui.plugin.util.db.DBConnection;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.SchemaData;
-import org.eclipse.osee.framework.ui.plugin.util.db.data.TableElement;
 
 public class ImportDataFromDbService implements IDbInitializationTask {
    private Map<String, SchemaData> userSpecifiedConfig;

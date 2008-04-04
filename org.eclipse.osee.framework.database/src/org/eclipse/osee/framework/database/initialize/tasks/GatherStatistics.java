@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.database.initialize.tasks;
 
 import java.sql.Connection;
+import org.eclipse.osee.framework.database.ConnectionHandler;
 import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 
 public class GatherStatistics extends DbInitializationTask {
    private static final String gatherStats =
