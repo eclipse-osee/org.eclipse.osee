@@ -14,6 +14,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -22,8 +24,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**

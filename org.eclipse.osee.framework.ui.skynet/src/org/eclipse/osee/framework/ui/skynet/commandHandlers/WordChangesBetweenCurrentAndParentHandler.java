@@ -22,10 +22,10 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
@@ -88,7 +88,7 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
             boolean readPermission = myAccessControlManager.checkObjectPermission(artifact, PermissionEnum.READ);
             boolean wordArtifactSelected = artifact instanceof WordArtifact;
             boolean modifiedWordArtifactSelected =
-                  wordArtifactSelected && artifactChange.getModType() == SkynetDatabase.ModificationType.CHANGE;
+                  wordArtifactSelected && artifactChange.getModType() == ModificationType.CHANGE;
             boolean conflictedWordArtifactSelected =
                   modifiedWordArtifactSelected && artifactChange.getChangeType() == ChangeType.CONFLICTING;
             isEnabled = readPermission && conflictedWordArtifactSelected;

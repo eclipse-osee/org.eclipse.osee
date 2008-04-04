@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.IAttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.IRelationLinkChange;
@@ -35,9 +37,6 @@ import org.eclipse.osee.framework.skynet.core.revision.IRevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.ShowAttributeAction;
@@ -282,7 +281,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
 
    private String getChangeType(ArtifactChange artifactChange) throws SQLException {
       // Compare using artids cause a historical artifact is NOT equal to a current artifact
-      if ((artifactChange.getModType() == SkynetDatabase.ModificationType.CHANGE) && attributeModifiedArtifactIds != null && !attributeModifiedArtifactIds.contains(artifactChange.getArtifact().getArtId())) return artifactChange.getModType().getDisplayName() + " Relation Only";
+      if ((artifactChange.getModType() == ModificationType.CHANGE) && attributeModifiedArtifactIds != null && !attributeModifiedArtifactIds.contains(artifactChange.getArtifact().getArtId())) return artifactChange.getModType().getDisplayName() + " Relation Only";
       return artifactChange.getModType().getDisplayName();
    }
 

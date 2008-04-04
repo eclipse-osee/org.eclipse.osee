@@ -14,13 +14,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.DbUtil;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**

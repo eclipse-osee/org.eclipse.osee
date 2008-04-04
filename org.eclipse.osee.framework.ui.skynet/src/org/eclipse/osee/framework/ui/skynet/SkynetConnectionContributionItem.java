@@ -12,13 +12,13 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.osee.framework.database.ConnectionHandler;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.config.data.DbDetailData;
 import org.eclipse.osee.framework.ui.plugin.event.ConnectionEvent;
 import org.eclipse.osee.framework.ui.plugin.event.CoreEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.part.ViewPart;
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
+import org.eclipse.osee.framework.database.ConnectionHandler;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.swt.widgets.Composite;
 

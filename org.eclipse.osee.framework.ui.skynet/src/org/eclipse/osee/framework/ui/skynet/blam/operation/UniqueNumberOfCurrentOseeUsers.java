@@ -14,10 +14,10 @@ import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.DbUtil;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.ui.plugin.util.db.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**

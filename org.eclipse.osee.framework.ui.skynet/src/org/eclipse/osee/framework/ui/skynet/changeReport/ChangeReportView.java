@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.changeReport;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType.OUTGOING;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
+import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +41,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.database.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -51,6 +54,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
@@ -68,15 +73,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
-import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
-import org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.ui.plugin.util.db.ConnectionHandler;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.LabelSorter;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
@@ -398,17 +398,17 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                      // do nothing since this is comparator, errors will be too many
                   }
                   return getComparator().compare(artChg1.getName(), artChg2.getName());
-               } else if (artChg1.getModType() == SkynetDatabase.ModificationType.CHANGE)
+               } else if (artChg1.getModType() == ModificationType.CHANGE)
                   return -1;
-               else if (artChg2.getModType() == SkynetDatabase.ModificationType.CHANGE)
+               else if (artChg2.getModType() == ModificationType.CHANGE)
                   return 1;
-               else if (artChg1.getModType() == SkynetDatabase.ModificationType.NEW)
+               else if (artChg1.getModType() == ModificationType.NEW)
                   return -1;
-               else if (artChg2.getModType() == SkynetDatabase.ModificationType.NEW)
+               else if (artChg2.getModType() == ModificationType.NEW)
                   return 1;
-               else if (artChg1.getModType() == SkynetDatabase.ModificationType.DELETE)
+               else if (artChg1.getModType() == ModificationType.DELETE)
                   return -1;
-               else if (artChg2.getModType() == SkynetDatabase.ModificationType.DELETE)
+               else if (artChg2.getModType() == ModificationType.DELETE)
                   return 1;
                else
                   return getComparator().compare(artChg1.getName(), artChg2.getName());

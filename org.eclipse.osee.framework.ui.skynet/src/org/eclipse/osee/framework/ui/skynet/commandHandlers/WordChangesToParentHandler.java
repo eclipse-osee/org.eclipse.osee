@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.NEW;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;

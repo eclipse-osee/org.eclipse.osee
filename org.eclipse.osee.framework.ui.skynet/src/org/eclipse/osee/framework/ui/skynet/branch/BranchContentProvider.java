@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +41,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactNameDescriptorCache;
 import org.eclipse.osee.framework.skynet.core.revision.AttributeChange;
@@ -55,8 +57,6 @@ import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.ChangeType;
-import org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.ui.swt.IContentProviderRunnable;
 import org.eclipse.osee.framework.ui.swt.ITreeNode;
 import org.eclipse.osee.framework.ui.swt.TreeNode;
@@ -402,7 +402,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          } else if (change instanceof ArtifactChange) {
             ArtifactChange artifactChange = (ArtifactChange) change;
 
-            if (artifactChange.getModType() == SkynetDatabase.ModificationType.DELETE) {
+            if (artifactChange.getModType() == ModificationType.DELETE) {
                summary.add(artifactChange);
             }
          } else {

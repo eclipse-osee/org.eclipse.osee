@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.queryLog;
 import java.util.LinkedList;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.ui.plugin.util.db.QueryLog;
-import org.eclipse.osee.framework.ui.plugin.util.db.QueryRecord;
+import org.eclipse.osee.framework.database.QueryLog;
+import org.eclipse.osee.framework.database.QueryRecord;
 
 /**
  * @author Robert A. Fisher
