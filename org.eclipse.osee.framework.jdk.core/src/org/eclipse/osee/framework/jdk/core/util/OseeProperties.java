@@ -88,6 +88,10 @@ public class OseeProperties {
       return System.getProperty(OSEE_OVERRIDE_VERSION_CHECK) != null;
    }
 
+   public void setOverrideVersionCheck(String value) {
+      System.setProperty(OSEE_OVERRIDE_VERSION_CHECK, value);
+   }
+
    public String getAuthenticationProviderId() {
       return System.getProperty(OSEE_AUTHENTICATION_PROVIDER_ID);
    }
