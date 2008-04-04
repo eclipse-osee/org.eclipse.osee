@@ -59,6 +59,7 @@ public class SimpleTemplateProvider implements ITemplateProvider {
                         String.format(
                               "SimpleTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
                               matchCriteria, templateMap.get(matchCriteria).getDescriptiveName()), false);
+
                }
             }
          }

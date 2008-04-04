@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn.SortDa
  */
 public class XViewerSorter extends ViewerSorter {
    private final XViewer treeViewer;
+   private final static SimpleDateFormat format10 = new SimpleDateFormat("MM/dd/yyyy");
 
    public XViewerSorter(XViewer treeViewer) {
       super();
@@ -141,19 +143,33 @@ public class XViewerSorter extends ViewerSorter {
    public int getCompareForDate(String date1, String date2) {
       if (date1.trim().equals("")) return -1;
       if (date2.trim().equals("")) return 1;
+      DateFormat format;
+      if (date1.length() == 10) {
+         format = format10;
+      } else {
+         format = SimpleDateFormat.getInstance();
+      }
       Date date1Date = null;
       try {
-         date1Date = SimpleDateFormat.getInstance().parse(date1);
+         date1Date = format.parse(date1);
       } catch (ParseException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         return 0;
+         try {
+            date1Date = SimpleDateFormat.getInstance().parse(date1);
+         } catch (ParseException ex2) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex2, false);
+            return 0;
+         }
       }
       Date date2Date = null;
       try {
-         date2Date = SimpleDateFormat.getInstance().parse(date2);
+         date2Date = format.parse(date2);
       } catch (ParseException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         return 0;
+         try {
+            date2Date = SimpleDateFormat.getInstance().parse(date2);
+         } catch (ParseException ex2) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex2, false);
+            return 0;
+         }
       }
       return getCompareForDate(date1Date, date2Date);
    }
