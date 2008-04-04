@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -50,29 +54,38 @@ public class RequirementData {
       this.allSwRequirements.clear();
    }
 
-   public void initialize(IProgressMonitor monitor) throws Exception {
-      reset();
-      monitor.subTask(String.format("Loading Software Requirements from: [%s]", getBranch().getBranchShortestName()));
+   public IStatus initialize(IProgressMonitor monitor) {
+      IStatus toReturn = Status.CANCEL_STATUS;
+      try {
+         reset();
+         monitor.subTask(String.format("Loading Software Requirements from: [%s]", getBranch().getBranchShortestName()));
 
-      directSwRequirements.addAll(artifactManager.getArtifactsFromSubtypeName(Requirements.SOFTWARE_REQUIREMENT,
-            getBranch()));
-      populateTraceMap(monitor, directSwRequirements, directMap);
-      monitor.worked(30);
-
-      if (monitor.isCanceled() != true) {
-         monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
-               getBranch().getBranchShortestName()));
-         inDirectSwRequirements.addAll(artifactManager.getArtifactsFromSubtypeName(
-               Requirements.INDIRECT_SOFTWARE_REQUIREMENT, getBranch()));
-         populateTraceMap(monitor, inDirectSwRequirements, indirectMap);
-         monitor.worked(7);
+         directSwRequirements.addAll(artifactManager.getArtifactsFromSubtypeName(Requirements.SOFTWARE_REQUIREMENT,
+               getBranch()));
+         populateTraceMap(monitor, directSwRequirements, directMap);
+         monitor.worked(30);
 
          if (monitor.isCanceled() != true) {
-            allSwRequirements.addAll(directSwRequirements);
-            allSwRequirements.addAll(inDirectSwRequirements);
-            monitor.worked(1);
+            monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
+                  getBranch().getBranchShortestName()));
+            inDirectSwRequirements.addAll(artifactManager.getArtifactsFromSubtypeName(
+                  Requirements.INDIRECT_SOFTWARE_REQUIREMENT, getBranch()));
+            populateTraceMap(monitor, inDirectSwRequirements, indirectMap);
+            monitor.worked(7);
+
+            if (monitor.isCanceled() != true) {
+               allSwRequirements.addAll(directSwRequirements);
+               allSwRequirements.addAll(inDirectSwRequirements);
+               monitor.worked(1);
+            }
          }
+         if (monitor.isCanceled() != true) {
+            toReturn = Status.OK_STATUS;
+         }
+      } catch (Exception ex) {
+         toReturn = new Status(IStatus.ERROR, DefinePlugin.PLUGIN_ID, "Loading requirement data.", ex);
       }
+      return toReturn;
    }
 
    private void populateTraceMap(IProgressMonitor monitor, List<Artifact> artList, HashMap<String, Artifact> toPopulate) {
@@ -124,6 +137,24 @@ public class RequirementData {
          reqArtifact = indirectMap.get(canonicalTraceMark);
       }
       return reqArtifact;
+   }
+
+   /**
+    * Get Requirement Artifact based on traceMark mark if it fails, check if trace mark is a structured requirement and
+    * try again
+    * 
+    * @param traceMark
+    * @return requirement artifact
+    */
+   public Artifact getRequirementFromTraceMarkIncludeStructuredRequirements(String traceMark) {
+      Artifact toReturn = getRequirementFromTraceMark(traceMark);
+      if (toReturn == null) {
+         Pair<String, String> structured = TraceabilityExtractor.getInstance().getStructuredRequirement(traceMark);
+         if (structured != null) {
+            toReturn = getRequirementFromTraceMark(structured.getKey());
+         }
+      }
+      return toReturn;
    }
 
 }

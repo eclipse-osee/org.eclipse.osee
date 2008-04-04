@@ -84,42 +84,45 @@ public class ImportTraceabilityJob extends Job {
          monitor.beginTask("Importing From " + file.getName(), 100);
          monitor.worked(1);
 
-         requirementData.initialize(monitor);
-
-         if (monitor.isCanceled() != true) {
-            if (writeOutResults) {
-               excelWriter.startSheet("srs <--> code units", 6);
-               excelWriter.writeRow("Req in DB", "Code Unit", "Requirement Name", "Requirement Trace Mark in Code");
-            }
-
-            if (file.isFile()) {
-               for (String path : Lib.readListFromFile(file, true)) {
-                  monitor.subTask(path);
-                  handleDirectory(new File(path));
-                  if (monitor.isCanceled() == true) {
-                     break;
-                  }
-               }
-            } else if (file.isDirectory()) {
-               handleDirectory(file);
-            } else {
-               throw new IllegalStateException("unexpected file system type");
-            }
-
-            if (writeOutResults && monitor.isCanceled() != true) {
-               excelWriter.endSheet();
-
-               writeNoTraceFilesSheet();
-               writeTraceCountsSheet();
-
-               excelWriter.endWorkbook();
-               IFile iFile = OseeData.getIFile("CodeUnit_To_SRS_Trace.xml");
-               AIFile.writeToFile(iFile, charBak);
-               Program.launch(iFile.getLocation().toOSString());
-            }
-
+         toReturn = requirementData.initialize(monitor);
+         if (toReturn.getSeverity() == IStatus.OK) {
             if (monitor.isCanceled() != true) {
-               toReturn = Status.OK_STATUS;
+               if (writeOutResults) {
+                  excelWriter.startSheet("srs <--> code units", 6);
+                  excelWriter.writeRow("Req in DB", "Code Unit", "Requirement Name", "Requirement Trace Mark in Code");
+               }
+
+               if (file.isFile()) {
+                  for (String path : Lib.readListFromFile(file, true)) {
+                     monitor.subTask(path);
+                     handleDirectory(new File(path));
+                     if (monitor.isCanceled() == true) {
+                        break;
+                     }
+                  }
+               } else if (file.isDirectory()) {
+                  handleDirectory(file);
+               } else {
+                  throw new IllegalStateException("unexpected file system type");
+               }
+
+               if (writeOutResults && monitor.isCanceled() != true) {
+                  excelWriter.endSheet();
+
+                  writeNoTraceFilesSheet();
+                  writeTraceCountsSheet();
+
+                  excelWriter.endWorkbook();
+                  IFile iFile = OseeData.getIFile("CodeUnit_To_SRS_Trace.xml");
+                  AIFile.writeToFile(iFile, charBak);
+                  Program.launch(iFile.getLocation().toOSString());
+               }
+
+               if (monitor.isCanceled() != true) {
+                  toReturn = Status.OK_STATUS;
+               } else {
+                  toReturn = Status.CANCEL_STATUS;
+               }
             }
          }
       } catch (Exception ex) {
