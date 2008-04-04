@@ -288,13 +288,6 @@
       </AutoRunTask>
    </extension>
    <extension
-         id="DuplicateUsersItem"
-         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
-      <AutoRunTask
-            classname="org.eclipse.osee.ats.health.DuplicateUsersItem">
-      </AutoRunTask>
-   </extension>
-   <extension
          id="InvalidEstimatedHoursAttribute"
          point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
       <AutoRunTask
