@@ -52,7 +52,7 @@ public class SkynetActivator extends OseeUiActivator {
       return logger;
    }
 
-   public boolean isAutoTaggingEnabled() {
+   public boolean isAutoTaggingEnabled() throws SQLException {
       String propertyValue = System.getProperty(AUTO_TAG_KEY, null);
       if (propertyValue != null) {
          return Boolean.parseBoolean(propertyValue);

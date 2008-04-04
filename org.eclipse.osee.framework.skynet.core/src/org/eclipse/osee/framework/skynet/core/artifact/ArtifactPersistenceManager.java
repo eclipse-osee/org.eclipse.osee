@@ -20,7 +20,6 @@ import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabas
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.ui.plugin.util.db.schemas.SkynetDatabase.TXD_COMMENT;
-
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -188,9 +186,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       this.attributeSaveListeners =
             new ExtensionDefinedObjects<IAttributeSaveListener>(
                   "org.eclipse.osee.framework.skynet.core.AttributeSaveListener", "AttributeSaveListener", "classname");
-      if (!plugin.isAutoTaggingEnabled()) {
-         logger.log(Level.INFO, "Tagging on Artifacts is DISABLED");
-      }
    }
 
    public static ArtifactPersistenceManager getInstance() {
@@ -1217,61 +1212,52 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * 
     * @param event
     */
-   public void updateArtifactCache(ISkynetArtifactEvent event,
-			Collection<Event> localEvents, TransactionId newTransactionId,
-			TransactionId notEditableTransactionId) {
-		try {
-			int artId = event.getArtId();
-			int branchId = event.getBranchId();
-			String factoryName = event.getFactoryName();
-			Collection<IRelationLink> links;
-			ArtifactFactory<?> factory = (ArtifactFactory<?>) configurationPersistenceManager
-					.getFactoryFromName(factoryName);
+   public void updateArtifactCache(ISkynetArtifactEvent event, Collection<Event> localEvents, TransactionId newTransactionId, TransactionId notEditableTransactionId) {
+      try {
+         int artId = event.getArtId();
+         int branchId = event.getBranchId();
+         String factoryName = event.getFactoryName();
+         Collection<IRelationLink> links;
+         ArtifactFactory<?> factory =
+               (ArtifactFactory<?>) configurationPersistenceManager.getFactoryFromName(factoryName);
 
-			if (factory == null)
-				throw new IllegalArgumentException(
-						"The factory for this artifact remote event could not be determined.");
+         if (factory == null) throw new IllegalArgumentException(
+               "The factory for this artifact remote event could not be determined.");
 
-			if (factory.containsArtifact(artId, branchId)) {
-				Branch branch = branchManager.getBranch(branchId);
-				Artifact oldArtifact = getArtifactFromId(artId, branch);
-				// this forces the links to load
-				oldArtifact.isDirty(true);
+         if (factory.containsArtifact(artId, branchId)) {
+            Branch branch = branchManager.getBranch(branchId);
+            Artifact oldArtifact = getArtifactFromId(artId, branch);
+            // this forces the links to load
+            oldArtifact.isDirty(true);
 
-				if (newTransactionId.getTransactionNumber() != notEditableTransactionId
-						.getTransactionNumber()) {
-					oldArtifact.getPersistenceMemo().setTransactionId(
-							notEditableTransactionId);
-				}
+            if (newTransactionId.getTransactionNumber() != notEditableTransactionId.getTransactionNumber()) {
+               oldArtifact.getPersistenceMemo().setTransactionId(notEditableTransactionId);
+            }
 
-				if (event instanceof NetworkArtifactModifiedEvent) {
-					// only if links are loaded
-					if (oldArtifact.isLinkManagerLoaded()) {
-						links = oldArtifact.getLinkManager().getLinks();
-					} else {
-						links = new ArrayList<IRelationLink>(0);
-					}
+            if (event instanceof NetworkArtifactModifiedEvent) {
+               // only if links are loaded
+               if (oldArtifact.isLinkManagerLoaded()) {
+                  links = oldArtifact.getLinkManager().getLinks();
+               } else {
+                  links = new ArrayList<IRelationLink>(0);
+               }
 
-					Artifact newArtifact = (Artifact) oldArtifact.clone();
-					setChangedAttributesOnNewArtifact(newArtifact,
-							((NetworkArtifactModifiedEvent) event)
-									.getAttributeChanges());
-					relationManager.resetLinksToNewArtifact(newArtifact,
-							oldArtifact, links);
-					newArtifact.setNotDirty();
+               Artifact newArtifact = (Artifact) oldArtifact.clone();
+               setChangedAttributesOnNewArtifact(newArtifact,
+                     ((NetworkArtifactModifiedEvent) event).getAttributeChanges());
+               relationManager.resetLinksToNewArtifact(newArtifact, oldArtifact, links);
+               newArtifact.setNotDirty();
 
-					localEvents.add(new ArtifactVersionIncrementedEvent(
-							oldArtifact, newArtifact, this));
-				} else if (event instanceof NetworkArtifactDeletedEvent) {
-					oldArtifact.setDeleted();
-					localEvents.add(new TransactionArtifactModifiedEvent(
-							oldArtifact, ModType.Deleted, this));
-				}
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.toString(), e);
-		}
-	}
+               localEvents.add(new ArtifactVersionIncrementedEvent(oldArtifact, newArtifact, this));
+            } else if (event instanceof NetworkArtifactDeletedEvent) {
+               oldArtifact.setDeleted();
+               localEvents.add(new TransactionArtifactModifiedEvent(oldArtifact, ModType.Deleted, this));
+            }
+         }
+      } catch (Exception e) {
+         logger.log(Level.SEVERE, e.toString(), e);
+      }
+   }
 
    private void setChangedAttributesOnNewArtifact(Artifact artifact, Collection<SkynetAttributeChange> changes) throws SQLException {
       for (SkynetAttributeChange change : changes) {

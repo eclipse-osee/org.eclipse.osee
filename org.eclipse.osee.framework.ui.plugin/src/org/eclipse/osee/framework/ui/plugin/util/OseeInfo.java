@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.plugin.sql.SQL3DataType;
@@ -30,7 +29,7 @@ public class OseeInfo {
    private static final String DELETE_KEY_SQL = "DELETE FROM OSEE_INFO WHERE OSEE_KEY = ?";
    public static final String SAVE_OUTFILE_IN_DB = "SAVE_OUTFILE_IN_DB";
 
-   public static String getValue(String key) {
+   public static String getValue(String key) throws SQLException {
       String returnValue = "";
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -39,8 +38,6 @@ public class OseeInfo {
          if (rSet.next()) {
             returnValue = rSet.getString("osee_value");
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, "Failed to get the value from table: OSEE_INFO.", ex);
       } finally {
          DbUtil.close(chStmt);
       }
