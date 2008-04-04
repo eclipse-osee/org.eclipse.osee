@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescript
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -111,7 +110,6 @@ public class WordTemplateProcessor {
    private RelationSide outlineRelation;
    private String headingAttributeName;
    private List<AttributeElement> attributeElements;
-   private boolean updateParagraphNumbers;
    private boolean saveParagraphNumOnArtifact;
    private Set<String> ignoreAttributeExtensions;
    private int previousTemplateCopyIndex;
@@ -126,7 +124,6 @@ public class WordTemplateProcessor {
       this.masterTemplate = masterTemplate;
       this.slaveTemplate = slaveTemplate;
       this.attributeElements = new LinkedList<AttributeElement>();
-      this.updateParagraphNumbers = false;
       this.saveParagraphNumOnArtifact = false;
       this.isEditMode = false;
       this.ignoreAttributeExtensions = new HashSet<String>();
@@ -290,19 +287,7 @@ public class WordTemplateProcessor {
          attributeElements.clear();
          extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
 
-         if (updateParagraphNumbers) {
-            AbstractSkynetTxTemplate artifactProcessTx =
-                  new AbstractSkynetTxTemplate(branchManager.getDefaultBranch()) {
-
-                     @Override
-                     protected void handleTxWork() throws Exception {
-                        processTreeHelper(tree, wordMl, outlineType);
-                     }
-                  };
-            artifactProcessTx.execute();
-         } else {
-            processTreeHelper(tree, wordMl, outlineType);
-         }
+         processTreeHelper(tree, wordMl, outlineType);
       }
    }
 
@@ -334,18 +319,7 @@ public class WordTemplateProcessor {
          attributeElements.clear();
          extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
 
-         if (updateParagraphNumbers) {
-            AbstractSkynetTxTemplate processArtTx = new AbstractSkynetTxTemplate(branchManager.getDefaultBranch()) {
-
-               @Override
-               protected void handleTxWork() throws Exception {
-                  processArtifactSetHelper(artifactSetName, variableMap, wordMl, outlineType);
-               }
-            };
-            processArtTx.execute();
-         } else {
-            processArtifactSetHelper(artifactSetName, variableMap, wordMl, outlineType);
-         }
+         processArtifactSetHelper(artifactSetName, variableMap, wordMl, outlineType);
       }
    }
 
