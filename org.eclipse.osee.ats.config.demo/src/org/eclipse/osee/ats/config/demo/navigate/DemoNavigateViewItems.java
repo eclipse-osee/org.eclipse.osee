@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.health.ActionsHaveOneTeam;
 import org.eclipse.osee.ats.health.AssignedActiveActions;
 import org.eclipse.osee.ats.health.AttributeDuplication;
-import org.eclipse.osee.ats.health.DuplicateUsersItem;
 import org.eclipse.osee.ats.health.OrphanedTasks;
 import org.eclipse.osee.ats.health.TeamWorkflowsHaveZeroOrOneVersion;
 import org.eclipse.osee.ats.health.UnAssignedAssignedAtsObjects;
@@ -145,7 +144,6 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       new OrphanedTasks(healthItems);
       new ActionsHaveOneTeam(healthItems);
       new AssignedActiveActions(healthItems);
-      new DuplicateUsersItem(healthItems);
       new TeamWorkflowsHaveZeroOrOneVersion(healthItems);
       new UnAssignedAssignedAtsObjects(healthItems);
 
