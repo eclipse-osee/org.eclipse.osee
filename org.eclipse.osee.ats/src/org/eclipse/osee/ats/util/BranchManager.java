@@ -22,10 +22,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.ATSBranchMetrics;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -64,9 +66,11 @@ public class BranchManager {
 
    private boolean commitPopup;
    private final SMAManager smaMgr;
+   private final ATSBranchMetrics atsBranchMetrics;
 
    public BranchManager(SMAManager smaMgr) {
       this.smaMgr = smaMgr;
+      atsBranchMetrics = new ATSBranchMetrics(this);
    }
 
    /**
@@ -434,6 +438,7 @@ public class BranchManager {
     */
    public Collection<Artifact> getArtifactsModified(boolean includeRelationOnlyChanges) throws SQLException {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
       if (smaMgr.getBranchMgr().isWorkingBranch()) {
          Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
          if (workingBranch != null) {
@@ -466,6 +471,7 @@ public class BranchManager {
     */
    public Collection<Artifact> getArtifactsRelChanged() throws SQLException {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
       TransactionId transactionId = getTransactionId();
       if (transactionId == null) return arts;
       try {
@@ -477,6 +483,22 @@ public class BranchManager {
    }
 
    /**
+    * @return true if isWorkingBranch() and changes exist else false
+    * @throws SQLException
+    */
+   public Boolean isChangesOnWorkingBranch() throws SQLException {
+      if (isWorkingBranch()) {
+         Pair<TransactionId, TransactionId> transactionToFrom =
+               TransactionIdManager.getInstance().getStartEndPoint(getWorkingBranch());
+         if (transactionToFrom.getKey().equals(transactionToFrom.getValue())) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+   }
+
+   /**
     * Since deleted artifacts don't exist, this method will return the artifact object just prior to it's deletion.
     * NOTE: This is a VERY expensive operation as each artifact must be loaded. Retrieving data through change report
     * snapshot is cheaper.
@@ -485,6 +507,7 @@ public class BranchManager {
     */
    public Collection<Artifact> getArtifactsDeleted() throws SQLException {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
       TransactionId transactionId = getTransactionId();
       if (transactionId == null) return arts;
 
@@ -509,12 +532,28 @@ public class BranchManager {
     */
    public Collection<Artifact> getArtifactsModifiedHead() throws SQLException {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
       TransactionId transactionId = getTransactionId();
       if (transactionId == null) return arts;
       Collection<Artifact> transArts =
             ArtifactPersistenceManager.getInstance().getArtifacts(new ArtifactInTransactionSearch(transactionId),
                   transactionId.getBranch());
       return transArts;
+   }
+
+   /**
+    * @return the atsBranchMetrics
+    */
+   public ATSBranchMetrics getAtsBranchMetrics(boolean cache) throws Exception {
+      if (cache) atsBranchMetrics.persist();
+      return atsBranchMetrics;
+   }
+
+   /**
+    * @return the smaMgr
+    */
+   public SMAManager getSmaMgr() {
+      return smaMgr;
    }
 
 }
