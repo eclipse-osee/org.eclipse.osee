@@ -5,16 +5,28 @@
  */
 package org.eclipse.osee.framework.ui.service.control.wizards.launcher;
 
-import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.UIKeyboardInteractive;
+import com.jcraft.jsch.UserInfo;
 
 /**
  * @author Roberto E. Escobar
@@ -23,43 +35,61 @@ public class SecureRemoteAccess {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SecureRemoteAccess.class);
    private Session session;
 
-   private SecureRemoteAccess(String host, String user, String password) throws Exception {
+   private SecureRemoteAccess(String host, String user) throws Exception {
       JSch.setLogger(new LogForwarding());
-      JSch jsch = new JSch();
-      session = jsch.getSession(user, host);
-      session.setPassword(password);
-      session.connect(30000);
+      try {
+         JSch jsch = new JSch();
+         jsch.setKnownHosts(host);
+         session = jsch.getSession(user, host);
+         session.setUserInfo(new PromptUserInfo());
+         session.connect(30000);
+      } catch (JSchException ex) {
+         throw new Exception("Error connecting to server.", ex);
+      }
    }
 
    public String executeCommandList(String[] commands) throws Exception {
       StringBuilder toReturn = new StringBuilder();
-      ByteArrayOutputStream output = new ByteArrayOutputStream();
       Channel channel = null;
+      InputStreamReader inputStreamReader = null;
+      OutputStream outputStream = null;
       try {
          channel = session.openChannel("shell");
-         channel.setOutputStream(output);
-         channel.connect(3000);
-         PrintWriter cmds = new PrintWriter(channel.getOutputStream());
-         for (int i = 0; i < commands.length; i++) {
-            cmds.println(commands[i]);
-            cmds.flush();
+         ChannelShell shell = (ChannelShell) channel;
+         shell.setXForwarding(false);
+         outputStream = shell.getOutputStream();
+         inputStreamReader = new InputStreamReader(shell.getInputStream());
+
+         channel.connect();
+
+         PrintWriter pw = new PrintWriter(outputStream);
+         for (String cmd : commands) {
+            pw.write(cmd);
+            pw.flush();
          }
-         toReturn.append(output.toString());
+         CharBuffer buffer = CharBuffer.wrap(toReturn);
+         inputStreamReader.read(buffer);
+      } catch (JSchException ex) {
+         throw new Exception("Error executing commands on server.", ex);
       } finally {
-         output.close();
-         channel.disconnect();
+         if (inputStreamReader != null) {
+            inputStreamReader.close();
+         }
+         if (channel != null) {
+            channel.disconnect();
+         }
       }
       return toReturn.toString();
    }
 
-   public void uploadFiles(String[] localFiles, String destinationDirectory) throws Exception {
-      // we need to break out the local files so we'll build a tree
-      //      SCPClient client = connection.createSCPClient();
-      //      client.put(localFiles, destinationDirectory);
+   public ChannelSftp getScpConnection() throws Exception {
+      Channel channel = session.openChannel("sftp");
+      channel.connect();
+      return (ChannelSftp) channel;
    }
 
-   public static SecureRemoteAccess getRemoteAccessAuthenticateWithPassword(String host, String username, String password) throws Exception {
-      return new SecureRemoteAccess(host, username, password);
+   public static SecureRemoteAccess getRemoteAccessAuthenticateWithPassword(String host, String username) throws Exception {
+      return new SecureRemoteAccess(host, username);
    }
 
    private static class LogForwarding implements com.jcraft.jsch.Logger {
@@ -82,6 +112,64 @@ public class SecureRemoteAccess {
             logLevel = Level.SEVERE;
          }
          logger.log(logLevel, message);
+      }
+   }
+
+   private final class PromptUserInfo implements UserInfo, UIKeyboardInteractive {
+      private String password;
+
+      public String getPassword() {
+         return password;
+      }
+
+      public boolean promptYesNo(String message) {
+         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+         MessageDialog dialog =
+               new MessageDialog(shell, "Warning", null, message, MessageDialog.WARNING, new String[] {
+                     IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 0);
+         return dialog.open() == 0;
+      }
+
+      public String getPassphrase() {
+         return null;
+      }
+
+      public boolean promptPassphrase(String message) {
+         return true;
+      }
+
+      public boolean promptPassword(String message) {
+         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+         MultiTextDialog inputDialog =
+               new MultiTextDialog(shell, "Password", "Enter password: ", new String[] {"password:"},
+                     new boolean[] {false});
+         inputDialog.setBlockOnOpen(true);
+         int result = inputDialog.getReturnCode();
+         if (result == Window.OK) {
+            String[] inputs = inputDialog.getValue();
+            if (inputs != null && inputs.length == 1) {
+               password = inputs[0];
+               return true;
+            }
+         }
+         return false;
+      }
+
+      public void showMessage(String message) {
+         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+         MessageDialog.openInformation(shell, "Log-in Message", message);
+      }
+
+      public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt, boolean[] echo) {
+         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+         MultiTextDialog inputDialog =
+               new MultiTextDialog(shell, destination + ": " + name, "Enter Password: ", prompt, echo);
+         inputDialog.setBlockOnOpen(true);
+         int result = inputDialog.open();
+         if (result == Window.OK) {
+            return inputDialog.getValue();
+         }
+         return null;
       }
    }
 }

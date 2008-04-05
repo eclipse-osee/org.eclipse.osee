@@ -21,7 +21,6 @@ public class ServiceLaunchingInformation {
 
    private String selectedHost;
    private String user;
-   private String password;
    private String[] execCmds;
    private boolean upload;
    private boolean isLocal;
@@ -53,14 +52,6 @@ public class ServiceLaunchingInformation {
       this.execCmds = execCmds;
    }
 
-   public String getPassword() {
-      return password;
-   }
-
-   public void setPassword(String password) {
-      this.password = password;
-   }
-
    public String getSelectedHost() {
       return selectedHost;
    }
@@ -82,7 +73,7 @@ public class ServiceLaunchingInformation {
    }
 
    public boolean canFinish() {
-      return (selectedHost != null && user != null && password != null && execCmds != null || isLocal());
+      return (selectedHost != null && user != null && execCmds != null || isLocal());
    }
 
    public ServiceItem getServiceItem() {
@@ -98,7 +89,7 @@ public class ServiceLaunchingInformation {
    }
 
    public void connectToRemoteHost() throws Exception {
-      sshConnection = SecureRemoteAccess.getRemoteAccessAuthenticateWithPassword(selectedHost, user, password);
+      sshConnection = SecureRemoteAccess.getRemoteAccessAuthenticateWithPassword(selectedHost, user);
    }
 
    public SecureRemoteAccess getSSHConnection() {

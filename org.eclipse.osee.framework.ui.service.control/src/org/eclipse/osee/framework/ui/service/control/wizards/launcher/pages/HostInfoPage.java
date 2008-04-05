@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchDataPersist;
@@ -30,7 +31,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
@@ -38,7 +38,6 @@ public class HostInfoPage extends DynamicWizardPage {
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private Combo hostName;
    private Text userName;
-   private Text password;
    private ServiceLaunchingInformation serviceInfo;
    private List<String> hosts;
 
@@ -47,7 +46,7 @@ public class HostInfoPage extends DynamicWizardPage {
       this.serviceInfo = serviceInfo;
       this.hosts = new ArrayList<String>();
       setTitle("Host Information");
-      setDescription("Please input a valid username and password for the selected host.  This information will be used so that files can be uploaded and commands executed.");
+      setDescription("Please select a remote host to connect to and input a valid username.");
       setPageComplete(false);
    }
 
@@ -67,7 +66,7 @@ public class HostInfoPage extends DynamicWizardPage {
 
    private void createHostInfoGroup(Composite parent) {
       Group hostinfo = new Group(parent, SWT.NONE);
-      hostinfo.setText("Host");
+      hostinfo.setText("Host: ");
 
       GridLayout gridLayout = new GridLayout();
       gridLayout.numColumns = 1;
@@ -108,7 +107,7 @@ public class HostInfoPage extends DynamicWizardPage {
 
    private void createUserInfoGroup(Composite parent) {
       Group userinfo = new Group(parent, SWT.NONE);
-      userinfo.setText("User Info");
+      userinfo.setText("User Name: ");
 
       GridLayout gridLayout = new GridLayout();
       gridLayout.numColumns = 2;
@@ -118,7 +117,6 @@ public class HostInfoPage extends DynamicWizardPage {
       gridData.horizontalSpan = 1;
       userinfo.setLayoutData(gridData);
 
-      new Label(userinfo, SWT.NONE).setText("User:");
       userName = new Text(userinfo, SWT.SINGLE | SWT.BORDER);
       userName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       String name;
@@ -128,32 +126,17 @@ public class HostInfoPage extends DynamicWizardPage {
          name = System.getProperty("user.name");
       }
       userName.setText(name);
-      new Label(userinfo, SWT.NONE).setText("Password:");
-      password = new Text(userinfo, SWT.PASSWORD | SWT.SINGLE | SWT.BORDER);
-      password.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
       userName.addModifyListener(new ModifyListener() {
          public void modifyText(ModifyEvent e) {
             tryToGoToNext();
          }
       });
-
-      password.addModifyListener(new ModifyListener() {
-         public void modifyText(ModifyEvent e) {
-            tryToGoToNext();
-         }
-      });
-
    }
 
    private void tryToGoToNext() {
-      if (verifyString(userName.getText()) && verifyString(password.getText()) && verifyString(this.hostName.getText())) {
+      if (Strings.isValid(userName.getText()) && Strings.isValid(this.hostName.getText())) {
          setPageComplete(true);
       }
-   }
-
-   private boolean verifyString(String str) {
-      return (str != null && !str.equals(""));
    }
 
    @Override
@@ -180,7 +163,6 @@ public class HostInfoPage extends DynamicWizardPage {
    @Override
    public boolean onNextPressed() {
       serviceInfo.setUser(userName.getText());
-      serviceInfo.setPassword(password.getText());
       serviceInfo.setSelectedHost(hostName.getText());
       serviceInfo.setUnzipLocation(serviceInfo.getServiceItem().getUnzipLocation() + "/" + serviceInfo.getServiceItem().getPlugin());
 
