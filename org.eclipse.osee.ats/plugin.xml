@@ -288,13 +288,6 @@
       </AutoRunTask>
    </extension>
    <extension
-         id="InvalidEstimatedHoursAttribute"
-         point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
-      <AutoRunTask
-            classname="org.eclipse.osee.ats.health.InvalidEstimatedHoursAttribute">
-      </AutoRunTask>
-   </extension>
-   <extension
          id="OrphanedTasks"
          point="org.eclipse.osee.framework.skynet.core.AutoRunTask">
       <AutoRunTask
