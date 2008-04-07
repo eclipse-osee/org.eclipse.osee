@@ -163,7 +163,7 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
       }
       if (aCol == AtsXColumn.Version_Target_Col) {
          bm.get(aCol).startSample();
-         value = "test";//wva.getWorldViewVersion();
+         value = wva.getWorldViewVersion();
          bm.get(aCol).endSample();
          return value;
       }
@@ -181,7 +181,7 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
       }
       if (aCol == AtsXColumn.Team_Col) {
          bm.get(aCol).startSample();
-         value = "test";//wva.getWorldViewTeam();
+         value = wva.getWorldViewTeam();
          bm.get(aCol).endSample();
          return value;
       }
@@ -249,7 +249,7 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
       }
       if (aCol == AtsXColumn.Assignees_Col) {
          bm.get(aCol).startSample();
-         value = "test";//wva.getWorldViewActivePoc();
+         value = wva.getWorldViewActivePoc();
          bm.get(aCol).endSample();
          return value;
       }
@@ -403,7 +403,7 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
       }
       if (aCol == AtsXColumn.Total_Hours_Spent_Col) {
          bm.get(aCol).startSample();
-         value = "0";//AtsLib.doubleToStrString(wva.getWorldViewTotalHoursSpent());
+         value = AtsLib.doubleToStrString(wva.getWorldViewTotalHoursSpent());
          bm.get(aCol).endSample();
          return value;
       }
