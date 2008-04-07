@@ -102,7 +102,6 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
     */
    public String getColumnText(Object element, int columnIndex, Artifact artifact, XViewerColumn xCol, AtsXColumn aCol) {
       if (!xCol.isShow()) return ""; // Since not shown, don't display
-      if (true) return "test";
       IWorldViewArtifact wva = (IWorldViewArtifact) artifact;
       String value = "";
       if (aCol == AtsXColumn.Type_Col) {
