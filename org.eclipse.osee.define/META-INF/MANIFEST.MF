@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Define Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.define;singleton:=true
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 0.2.0.qualifier
 Bundle-ClassPath: osee.define.jar
 Bundle-Activator: org.eclipse.osee.define.DefinePlugin
 Bundle-Vendor: Eclipse.org

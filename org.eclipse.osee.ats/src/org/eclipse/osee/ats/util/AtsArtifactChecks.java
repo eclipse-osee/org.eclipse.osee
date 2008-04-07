@@ -39,7 +39,6 @@ public class AtsArtifactChecks implements IArtifactCheck {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.IArtifactOperation#isDeleteable(java.util.Collection)
     */
-   @Override
    public Result isDeleteable(Collection<Artifact> artifacts) throws Exception {
       // Check Actionable Items
       Result result = checkActionableItems(artifacts);
