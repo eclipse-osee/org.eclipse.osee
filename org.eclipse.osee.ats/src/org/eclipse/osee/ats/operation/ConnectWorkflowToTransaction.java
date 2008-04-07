@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.operation;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,9 +20,9 @@ import org.eclipse.osee.framework.database.ConnectionHandler;
 import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.DbUtil;
 import org.eclipse.osee.framework.database.sql.SQL3DataType;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -33,55 +30,50 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 /**
  * @author Ryan D. Brooks
  */
-public class ConnectWorkflowToBranchOrTransaction extends AbstractBlam {
-   private static final Logger logger =
-         ConfigUtil.getConfigFactory().getLogger(ConnectWorkflowToBranchOrTransaction.class);
+public class ConnectWorkflowToTransaction extends AbstractBlam {
    private static final String SELECT_COMMIT_TRANSACTIONS =
-         "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "osee_comment") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("osee_comment") + " LIKE ?";
-   private static final Pattern hridPattern = Pattern.compile("Commit Branch ([A-Z0-9]{5})");
+         "SELECT * FROM osee_define_tx_details where osee_comment like ? and commit_art_id is null";
+   private static final Pattern hridPattern = Pattern.compile("Commit Branch ([A-Z0-9]{5}) ");
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-
-      if (monitor.isCanceled()) return;
-
-      monitor.subTask("Aquiring Team Workflow");
-      Collection<Artifact> teamWorkflows =
-            artifactManager.getArtifactsFromSubtypeName("Lba B3 Req Team Workflow",
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+      monitor.subTask("Aquiring Team Workflows");
 
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(200, SELECT_COMMIT_TRANSACTIONS, SQL3DataType.VARCHAR, "Commit%");
+         chStmt =
+               ConnectionHandler.runPreparedQuery(200, SELECT_COMMIT_TRANSACTIONS, SQL3DataType.VARCHAR,
+                     "Commit Branch%");
          ResultSet rSet = chStmt.getRset();
          while (chStmt.next()) {
             if (monitor.isCanceled()) return;
-            updateWorkflow(teamWorkflows, rSet);
+            updateWorkflow(rSet.getString("osee_comment"), rSet.getInt("transaction_id"));
          }
       } finally {
          DbUtil.close(chStmt);
       }
    }
 
-   private void updateWorkflow(Collection<Artifact> teamWorkflows, ResultSet rSet) throws SQLException {
-      String commitComment = rSet.getString("osee_comment");
+   private void updateWorkflow(String commitComment, int transactionId) throws SQLException {
+      ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
+      Branch atsBranch = BranchPersistenceManager.getInstance().getCommonBranch();
       Matcher hridMatcher = hridPattern.matcher(commitComment);
 
       if (hridMatcher.find()) {
          String hrid = hridMatcher.group(1);
-         for (Artifact workflow : teamWorkflows) {
-            if (workflow.getHumanReadableId().equals(hrid)) {
-               workflow.setSoleStringAttributeValue("ats.Transaction Id", String.valueOf(rSet.getInt("transaction_id")));
-               workflow.persistAttributes();
-               return;
-            }
+         Collection<Artifact> artiafcts = artifactManager.getArtifactsFromHrid(hrid, atsBranch);
+         if (artiafcts.size() == 1) {
+            int artId = artiafcts.iterator().next().getArtId();
+            ConnectionHandler.runPreparedUpdate(
+                  "UPDATE osee_define_tx_details SET commit_art_id = ? where transaction_id = ?", SQL3DataType.INTEGER,
+                  artId, SQL3DataType.INTEGER, transactionId);
+         } else {
+            appendResultLine("expected to find one match for HRID " + hrid + " not " + artiafcts.size());
          }
-         logger.log(Level.WARNING, "Could not find a team workflow to with the hrid " + hrid);
       } else {
-         logger.log(Level.WARNING, "Commit comment not of expected pattern: " + commitComment);
+         appendResultLine("Commit comment not of expected pattern: " + commitComment);
       }
    }
 

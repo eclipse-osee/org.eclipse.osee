@@ -213,10 +213,10 @@
       </Operation>
    </extension>
    <extension
-         id="ConnectWorkflowToBranchOrTransaction"
-         name="ConnectWorkflowToBranchOrTransaction"
+         id="ConnectWorkflowToTransaction"
+         name="Connect Workflow To Transaction"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation className="org.eclipse.osee.ats.operation.ConnectWorkflowToBranchOrTransaction"/>
+      <Operation className="org.eclipse.osee.ats.operation.ConnectWorkflowToTransaction"/>
    </extension>
    <extension
          id="ats"

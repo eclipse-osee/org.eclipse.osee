@@ -211,13 +211,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       relationCriteria.add(new InRelationSearch(thisArtSearch, side));
 
       Set<A> arts = new HashSet<A>();
-      try {
-         for (Artifact a : ArtifactPersistenceManager.getInstance().getArtifacts(relationCriteria, true,
-               this.getBranch())) {
-            arts.add((A) a);
-         }
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      for (Artifact a : ArtifactPersistenceManager.getInstance().getArtifacts(relationCriteria, true, this.getBranch())) {
+         arts.add((A) a);
       }
       return arts;
    }
@@ -1602,15 +1597,14 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
       int diff;
       if (otherArtifact.equals(this)) {
-    	  diff = 0;
-      }
-      else {
-      try {
-         diff = getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
-      } catch (Exception ex) {
          diff = 0;
+      } else {
+         try {
+            diff = getDescriptiveName().compareTo(otherArtifact.getDescriptiveName());
+         } catch (Exception ex) {
+            diff = 0;
+         }
       }
-       }
 
       return diff;
    }
