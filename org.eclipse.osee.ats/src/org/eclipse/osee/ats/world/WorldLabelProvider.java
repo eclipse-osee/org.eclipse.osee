@@ -112,7 +112,7 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
       }
       if (aCol == AtsXColumn.Actionable_Items_Col) {
          bm.get(aCol).startSample();
-         value = "test";//wva.getWorldViewActionableItems();
+         value = wva.getWorldViewActionableItems();
          bm.get(aCol).endSample();
          return value;
       }
