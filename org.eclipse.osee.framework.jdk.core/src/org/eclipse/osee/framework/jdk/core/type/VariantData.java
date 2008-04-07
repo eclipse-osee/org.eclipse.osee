@@ -37,6 +37,10 @@ public class VariantData implements IVariantData {
       return (String) storageData.get(key);
    }
 
+   public boolean isEmpty(String key) {
+      return get(key).equals("");
+   }
+
    public String[] getArray(String key) {
       return (String[]) storageArrays.get(key);
    }

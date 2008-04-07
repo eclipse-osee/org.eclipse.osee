@@ -15,6 +15,8 @@ public interface IVariantData {
 
    public String get(String key);
 
+   public boolean isEmpty(String key);
+
    public String[] getArray(String key);
 
    public boolean getBoolean(String key);
