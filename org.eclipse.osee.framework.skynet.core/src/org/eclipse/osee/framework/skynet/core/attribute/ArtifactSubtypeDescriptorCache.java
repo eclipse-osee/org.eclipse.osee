@@ -80,7 +80,7 @@ public class ArtifactSubtypeDescriptorCache {
       return idToTypeMap.values();
    }
 
-   public boolean descriptorExists(String namespace, String name) throws SQLException {
+   public boolean typeExists(String namespace, String name) throws SQLException {
       ensurePopulated();
       return nameToTypeMap.get(namespace + name) != null;
    }
