@@ -24,6 +24,7 @@ import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSAC
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TXD_COMMENT;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.VALID_RELATIONS_TABLE;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -35,6 +36,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.eclipse.osee.framework.database.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.database.ConnectionHandler;
 import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
@@ -44,6 +46,8 @@ import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
 import org.eclipse.osee.framework.database.schemas.Table;
 import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkNewBranchEvent;
@@ -59,6 +63,7 @@ import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 
@@ -147,7 +152,30 @@ public class BranchCreator implements PersistenceManager {
       skynetAuth = SkynetAuthentication.getInstance();
    }
 
-   private void copyBranchAddressing(Branch newBranch, int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
+   private Pair<Branch, Integer> createBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName) throws SQLException{
+       User userToBlame = skynetAuth.getAuthenticatedUser();
+       Branch parentBranch = sourceTransactionId.getBranch();
+       int userId = (userToBlame == null) ? skynetAuth.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
+       String comment =
+             BranchPersistenceManager.NEW_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ")";
+       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
+       Branch childBranch =
+             initializeBranch(childBranchShortName, childBranchName, sourceTransactionId, userId, timestamp, comment,
+                   associatedArtifact);
+
+       // insert the new transaction data first.
+       int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
+       String query =
+             "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
+                   "time", "author");
+       ConnectionHandler.runPreparedUpdate(query, SQL3DataType.INTEGER, childBranch.getBranchId(),
+             SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, childBranch.getCreationComment(),
+             SQL3DataType.TIMESTAMP, childBranch.getCreationDate(), SQL3DataType.INTEGER, childBranch.getAuthorId());
+	   
+       return new Pair<Branch, Integer>(childBranch, newTransactionNumber);
+   }
+   
+   private void copyBranchAddressingFromTransaction(Branch newBranch, int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       if (compressArtTypes != null && preserveArtTypes != null) {
          Set<ArtifactSubtypeDescriptor> intersection = new HashSet<ArtifactSubtypeDescriptor>(compressArtTypes);
          intersection.retainAll(preserveArtTypes);
@@ -490,29 +518,15 @@ public class BranchCreator implements PersistenceManager {
 
       @Override
       protected void handleTxWork() throws Exception {
-         User userToBlame = skynetAuth.getAuthenticatedUser();
-         Branch parentBranch = parentTransactionId.getBranch();
-         int userId = (userToBlame == null) ? skynetAuth.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
-         String comment =
-               BranchPersistenceManager.NEW_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + parentTransactionId.getTransactionNumber() + ")";
-         Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-         childBranch =
-               initializeBranch(childBranchShortName, childBranchName, parentTransactionId, userId, timestamp, comment,
-                     associatedArtifact);
-
-         // insert the new transaction data first.
-         int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
-         String query =
-               "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
-                     "time", "author");
-         ConnectionHandler.runPreparedUpdate(query, SQL3DataType.INTEGER, childBranch.getBranchId(),
-               SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, childBranch.getCreationComment(),
-               SQL3DataType.TIMESTAMP, childBranch.getCreationDate(), SQL3DataType.INTEGER, childBranch.getAuthorId());
-
-         copyBranchAddressing(childBranch, newTransactionNumber, parentTransactionId, compressArtTypes,
-               preserveArtTypes);
-
-         success = true;
+		  Pair<Branch, Integer> branchWithTransactionNumber = createBranchWithBaselineTransactionNumber(associatedArtifact, parentTransactionId, childBranchShortName, childBranchName);
+	
+		  childBranch = branchWithTransactionNumber.getKey();
+		  int newTransactionNumber = branchWithTransactionNumber.getValue();
+		  
+		  copyBranchAddressingFromTransaction(childBranch, newTransactionNumber, parentTransactionId, compressArtTypes,
+	           preserveArtTypes);
+	
+	     success = true;
 
       }
 
@@ -543,5 +557,63 @@ public class BranchCreator implements PersistenceManager {
       public Branch getChildBranch() {
          return childBranch;
       }
+   }
+   
+   /**
+    * Creates a new merge branch based on the artifacts from the source branch
+    */
+   public Branch createMergeBranch(Branch sourceBranch, Collection<Integer> artIds) throws Exception{
+	   CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, artIds);
+	   createMergeBranchTx.execute();
+	   return createMergeBranchTx.getMergeBranch();
+   }
+   
+   private final class CreateMergeBranchTx extends AbstractDbTxTemplate{
+	private Branch sourceBranch;
+	private Collection<Integer> artIds;
+	private Branch mergeBranch;
+	
+	/**
+	 * @param sourceBranch
+	 * @param destBranch
+	 * @param artIds
+	 */
+	public CreateMergeBranchTx(Branch sourceBranch, Collection<Integer> artIds) {
+		super();
+		this.sourceBranch = sourceBranch;
+		this.artIds = artIds;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
+	 */
+	@Override
+	protected void handleTxWork() throws Exception {
+		if(artIds == null || artIds.isEmpty()){
+			throw new IllegalArgumentException("Artifact IDs can not be null or empty");
+		}
+		
+		Pair<Branch, Integer> branchWithTransactionNumber = createBranchWithBaselineTransactionNumber(SkynetAuthentication.getInstance().getAuthenticatedUser(), TransactionIdManager.getInstance().getStartEndPoint(sourceBranch).getKey(), "Merge "+sourceBranch.getDisplayName(), "Merge "+sourceBranch.getDisplayName());
+		String attributeGammas = "INSERT INTO OSEE_DEFINE_TXS (transaction_id, tx_type, gamma_id) VALUES ?, ?, SELECT attr1.gamma_id From osee_define_attribute attr1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in "+Collections.toString(artIds, "(", ",", ")")+" GROUP BY t6.attr_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = attr1.gamma_id and attr1.art_id = ? and attr1.attr_id = t4.attr_id order by attr1.gamma_id";
+		String artifactVersionGammas = "INSERT INTO OSEE_DEFINE_TXS (transaction_id, tx_type, gamma_id) VALUES ?, ?, SELECT art1.gamma_id From osee_define_artifact_version art1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS transaction_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_artifact_version t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in "+Collections.toString(artIds, "(", ",", ")")+" GROUP BY t6.art_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = art1.gamma_id and art1.art_id = ? order by art1.gamma_id";
+	
+		insertGammas(attributeGammas, branchWithTransactionNumber.getValue());
+		insertGammas(artifactVersionGammas, branchWithTransactionNumber.getValue());
+		
+		mergeBranch = branchWithTransactionNumber.getKey();
+	}
+	
+	public Branch getMergeBranch(){
+		return mergeBranch;
+	}
+	
+	private void insertGammas(String sql, int baselineTransactionNumber)
+				throws SQLException {
+			ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
+					baselineTransactionNumber, SQL3DataType.INTEGER,
+					TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
+					sourceBranch.getBranchId(), SQL3DataType.INTEGER,
+					sourceBranch.getBranchId());
+		}
    }
 }
