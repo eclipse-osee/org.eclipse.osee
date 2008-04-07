@@ -65,8 +65,7 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
          lastHeaderNumber = headerNumber;
       }
 
-      if (!headerNumber.equals("") && WordUtil.isHeadingStyle(paragraphStyle) && !WordUtil.textOnly(content).trim().equals(
-            "")) {
+      if (!headerNumber.equals("") && WordUtil.isHeadingStyle(paragraphStyle) && !WordUtil.textOnly(content).equals("")) {
          setContent();
          roughArtifact = setUpNewArtifact(headerNumber);
          previousNamedArtifact = roughArtifact;
