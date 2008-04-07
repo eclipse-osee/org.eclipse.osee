@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.word;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.database.ConnectionHandler;
 import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.DbUtil;
@@ -37,7 +35,6 @@ import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -174,10 +171,7 @@ public class WordUtil {
 
    public static String textOnly(String string) {
       string = paragraphPattern.matcher(Xml.unescape(string)).replaceAll(" ");
-      string = tagKiller.matcher(string).replaceAll("");
-      if (Strings.isValid(string) != false) {
-         string = string.trim();
-      }
+      string = tagKiller.matcher(string).replaceAll("").trim();
       return string;
    }
 
@@ -233,21 +227,24 @@ public class WordUtil {
       }
       return guid;
    }
-   
-   private static final Matcher spellCheck = Pattern.compile("<w:proofErr w:type=\"spell(End|Start)\"/>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   public final static String stripSpellCheck(String content){
-	   spellCheck.reset(content);
-	   return spellCheck.replaceAll("");
+
+   private static final Matcher spellCheck =
+         Pattern.compile("<w:proofErr w:type=\"spell(End|Start)\"/>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+
+   public final static String stripSpellCheck(String content) {
+      spellCheck.reset(content);
+      return spellCheck.replaceAll("");
    }
-   
-   public static void main(String[] args){
-	   String match = "do something <w:proofErr w:type=\"spellEnd\"/> some more stuff <w:proofErr w:type=\"spellStart\"/> now some more stuff";
-	   
-	   String result = WordUtil.stripSpellCheck(match);
-	   
-	   if("do something  some more stuff  now some more stuff".equals(result)){
-		   System.out.println("success");
-	   }
-	   
+
+   public static void main(String[] args) {
+      String match =
+            "do something <w:proofErr w:type=\"spellEnd\"/> some more stuff <w:proofErr w:type=\"spellStart\"/> now some more stuff";
+
+      String result = WordUtil.stripSpellCheck(match);
+
+      if ("do something  some more stuff  now some more stuff".equals(result)) {
+         System.out.println("success");
+      }
+
    }
 }

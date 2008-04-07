@@ -55,8 +55,8 @@ public class Xml {
     * @param text
     * @return Returns a string with entity reference characters unescaped.
     */
-   public static String unescape(String text) {
-      StringBuffer stringBuffer = new StringBuffer();
+   public static StringBuilder unescape(String text) {
+      StringBuilder strB = new StringBuilder();
       int startIndex, endIndex;
       char chr;
 
@@ -70,24 +70,24 @@ public class Xml {
             String entityReference = text.substring(startIndex, endIndex);
 
             if (entityReference.equals("&amp;"))
-               stringBuffer.append('&');
+               strB.append('&');
             else if (entityReference.equals("&lt;"))
-               stringBuffer.append('<');
+               strB.append('<');
             else if (entityReference.equals("&gt;"))
-               stringBuffer.append('>');
+               strB.append('>');
             else if (entityReference.equals("&nbsp;"))
-               stringBuffer.append(' ');
+               strB.append(' ');
             else if (entityReference.equals("&quot;"))
-               stringBuffer.append('"');
+               strB.append('"');
             else
                throw new IllegalArgumentException("unknown entity reference: " + text.substring(startIndex, endIndex));
 
             index = endIndex - 1;
          } else {
-            stringBuffer.append(chr);
+            strB.append(chr);
          }
       }
-      return stringBuffer.toString();
+      return strB;
    }
 
    /**
