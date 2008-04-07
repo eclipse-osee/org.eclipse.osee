@@ -5,10 +5,8 @@
  */
 package org.eclipse.osee.framework.ui.service.control.wizards.launcher;
 
-import java.io.InputStreamReader;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -16,12 +14,12 @@ import java.util.logging.Logger;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -49,37 +47,36 @@ public class SecureRemoteAccess {
    }
 
    public String executeCommandList(String[] commands) throws Exception {
-      StringBuilder toReturn = new StringBuilder();
       Channel channel = null;
-      InputStreamReader inputStreamReader = null;
-      OutputStream outputStream = null;
+      CharBackedInputStream inputStream = new CharBackedInputStream();
+      OutputStream outputStream = new ByteArrayOutputStream();
       try {
          channel = session.openChannel("shell");
-         ChannelShell shell = (ChannelShell) channel;
-         shell.setXForwarding(false);
-         outputStream = shell.getOutputStream();
-         inputStreamReader = new InputStreamReader(shell.getInputStream());
+         channel.setInputStream(inputStream);
+         channel.setOutputStream(outputStream);
+
+         for (String cmd : commands) {
+            inputStream.append(cmd);
+            inputStream.append("\n");
+         }
 
          channel.connect();
+         Thread.sleep(5000);
 
-         PrintWriter pw = new PrintWriter(outputStream);
-         for (String cmd : commands) {
-            pw.write(cmd);
-            pw.flush();
-         }
-         CharBuffer buffer = CharBuffer.wrap(toReturn);
-         inputStreamReader.read(buffer);
       } catch (JSchException ex) {
          throw new Exception("Error executing commands on server.", ex);
       } finally {
-         if (inputStreamReader != null) {
-            inputStreamReader.close();
+         if (inputStream != null) {
+            inputStream.close();
+         }
+         if (outputStream != null) {
+            outputStream.close();
          }
          if (channel != null) {
             channel.disconnect();
          }
       }
-      return toReturn.toString();
+      return outputStream.toString();
    }
 
    public ChannelSftp getScpConnection() throws Exception {
@@ -93,7 +90,7 @@ public class SecureRemoteAccess {
    }
 
    private static class LogForwarding implements com.jcraft.jsch.Logger {
-      static Map<Integer, Level> levelMap = new HashMap<Integer, Level>();
+      private static Map<Integer, Level> levelMap = new HashMap<Integer, Level>();
       static {
          levelMap.put(com.jcraft.jsch.Logger.INFO, Level.INFO);
          levelMap.put(com.jcraft.jsch.Logger.WARN, Level.WARNING);
