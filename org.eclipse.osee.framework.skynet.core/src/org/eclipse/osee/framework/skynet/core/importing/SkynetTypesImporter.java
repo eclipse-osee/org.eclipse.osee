@@ -169,7 +169,7 @@ public class SkynetTypesImporter implements RowProcessor {
     */
    private void associateAttribute(String[] row) throws SQLException {
       if (debugRows) System.out.println("   associateAttribute => " + row[0] + "," + row[1]);
-      attributeMapRows.add(new AttributeMapRow(this, row, branch));
+      attributeMapRows.add(new AttributeMapRow(this, row));
    }
 
    /**

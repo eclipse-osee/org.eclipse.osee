@@ -83,9 +83,14 @@ public class RelationTypeManager {
       ensurePopulated();
       IRelationType relationType = nameToTypeMap.get(namespace + typeName);
       if (relationType == null) {
-         throw new IllegalArgumentException("The relation type: " + namespace + typeName);
+         throw new IllegalArgumentException("The relation type: " + namespace + typeName + " does not exist");
       }
       return relationType;
+   }
+
+   public boolean typeExists(String namespace, String name) throws SQLException {
+      ensurePopulated();
+      return nameToTypeMap.get(namespace + name) != null;
    }
 
    public IRelationType getType(String typeName) throws SQLException {
@@ -211,36 +216,34 @@ public class RelationTypeManager {
     * @throws SQLException
     */
    public IRelationType createRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName) throws SQLException {
-      IRelationType relationType = getType(namespace, relationTypeName);
-      if (relationType != null) {
-         return relationType;
-      } else {
-         if (relationTypeName == null || relationTypeName.equals("")) throw new IllegalArgumentException(
-               "The relationName can not be null or empty");
-         if (sideAName == null || sideAName.equals("")) throw new IllegalArgumentException(
-               "The sideAName can not be null or empty");
-         if (sideBName == null || sideBName.equals("")) throw new IllegalArgumentException(
-               "The sideBName can not be null or empty");
-         if (abPhrasing == null || abPhrasing.equals("")) throw new IllegalArgumentException(
-               "The abPhrasing can not be null or empty");
-         if (baPhrasing == null || baPhrasing.equals("")) throw new IllegalArgumentException(
-               "The baPhrasing can not be null or empty");
-         if (shortName == null || shortName.equals("")) throw new IllegalArgumentException(
-               "The shortName can not be null or empty");
-
-         int relationTypeId = Query.getNextSeqVal(null, REL_LINK_TYPE_ID_SEQ);
-
-         ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, SQL3DataType.INTEGER, relationTypeId,
-               SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, relationTypeName, SQL3DataType.VARCHAR,
-               sideAName, SQL3DataType.VARCHAR, sideBName, SQL3DataType.VARCHAR, abPhrasing, SQL3DataType.VARCHAR,
-               baPhrasing, SQL3DataType.VARCHAR, shortName);
-
-         relationType =
-               new RelationType(relationTypeId, namespace, relationTypeName, sideAName, sideBName, abPhrasing,
-                     baPhrasing, shortName);
-
-         cache(relationType);
+      if (typeExists(namespace, relationTypeName)) {
+         return getType(namespace, relationTypeName);
       }
+      if (relationTypeName == null || relationTypeName.equals("")) throw new IllegalArgumentException(
+            "The relationName can not be null or empty");
+      if (sideAName == null || sideAName.equals("")) throw new IllegalArgumentException(
+            "The sideAName can not be null or empty");
+      if (sideBName == null || sideBName.equals("")) throw new IllegalArgumentException(
+            "The sideBName can not be null or empty");
+      if (abPhrasing == null || abPhrasing.equals("")) throw new IllegalArgumentException(
+            "The abPhrasing can not be null or empty");
+      if (baPhrasing == null || baPhrasing.equals("")) throw new IllegalArgumentException(
+            "The baPhrasing can not be null or empty");
+      if (shortName == null || shortName.equals("")) throw new IllegalArgumentException(
+            "The shortName can not be null or empty");
+
+      int relationTypeId = Query.getNextSeqVal(null, REL_LINK_TYPE_ID_SEQ);
+
+      ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, SQL3DataType.INTEGER, relationTypeId,
+            SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, relationTypeName, SQL3DataType.VARCHAR, sideAName,
+            SQL3DataType.VARCHAR, sideBName, SQL3DataType.VARCHAR, abPhrasing, SQL3DataType.VARCHAR, baPhrasing,
+            SQL3DataType.VARCHAR, shortName);
+
+      IRelationType relationType =
+            new RelationType(relationTypeId, namespace, relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
+                  shortName);
+      cache(relationType);
+
       return relationType;
    }
 

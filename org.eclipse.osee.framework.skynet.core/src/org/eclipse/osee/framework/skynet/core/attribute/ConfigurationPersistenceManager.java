@@ -149,7 +149,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    }
 
    public void makeSubtypePersistent(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws SQLException {
-      if (!cacheArtifactSubtypeDescriptors.descriptorExists(namespace, artifactTypeName)) {
+      if (!cacheArtifactSubtypeDescriptors.typeExists(namespace, artifactTypeName)) {
          int artTypeId = Query.getNextSeqVal(null, SkynetDatabase.ART_TYPE_ID_SEQ);
          InputStreamImageDescriptor imageDescriptor = getDefaultImageDescriptor(artifactTypeName);
          IArtifactFactory factory = artifactFactoryCache.getFactoryFromName(factoryName);
@@ -272,7 +272,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    }
 
    public boolean artifactTypeExists(String namespace, String name) throws SQLException {
-      return cacheArtifactSubtypeDescriptors.descriptorExists(namespace, name);
+      return cacheArtifactSubtypeDescriptors.typeExists(namespace, name);
    }
 
    @Deprecated
