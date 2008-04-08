@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 
 /**
  * @author Donald G. Dunne
  */
 public class XRadioButtonViaAttribute extends XRadioButton {
 
-   private Attribute attribute;
+   private BooleanAttribute attribute;
 
    public XRadioButtonViaAttribute(String displayLabel) {
       this(displayLabel, "");
@@ -27,30 +27,30 @@ public class XRadioButtonViaAttribute extends XRadioButton {
       super(displayLabel, xmlRoot);
    }
 
-   public Attribute getAttribute() {
+   public BooleanAttribute getAttribute() {
       return attribute;
    }
 
-   public void setAttribute(Attribute attribute) {
+   public void setAttribute(BooleanAttribute attribute) {
       this.attribute = attribute;
 
-      super.setSelected(attribute.getStringData().equals("yes") ? true : false);
+      super.setSelected(attribute.getValue());
    }
 
    @Override
    public void setSelected(boolean selected) {
       super.setSelected(selected);
-      attribute.setStringData(isSelected() ? "yes" : "no");
+      attribute.setValue(isSelected());
    }
 
    @Override
    public void save() {
-      if (isDirty()) attribute.setStringData(isSelected() ? "yes" : "no");
+      if (isDirty()) attribute.setValue(isSelected());
    }
 
    @Override
    public boolean isDirty() {
-      return (!attribute.getStringData().equals(isSelected() ? "yes" : "no"));
+      return (!attribute.getValue() == isSelected());
    }
 
 }

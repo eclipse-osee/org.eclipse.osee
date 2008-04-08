@@ -492,9 +492,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             Collection<TaskArtifact> taskArts = smaMgr.getTaskMgr().getTaskArtifacts(DefaultTeamState.Implement.name());
             if (taskArts.size() == 0) return new Result("No tasks assigned for Implement state");
             for (TaskArtifact taskArt : taskArts) {
-               String value =
-                     taskArt.getSoleStringAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
-               if (value == null || value.equals("")) return new Result("Task Estimated Hours not set.");
+               Double value = taskArt.getSoleXAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+               if (value == null || value == 0.0) return new Result("Task Estimated Hours not set.");
                try {
                   new Float(value).doubleValue();
                } catch (NumberFormatException ex) {

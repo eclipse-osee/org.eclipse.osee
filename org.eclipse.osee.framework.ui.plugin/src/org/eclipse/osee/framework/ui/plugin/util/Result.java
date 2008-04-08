@@ -48,6 +48,10 @@ public class Result {
       return text;
    }
 
+   public String toString() {
+      return String.valueOf(isTrue()) + (getText().equals("") ? "" : " - \"" + getText() + "\"");
+   }
+
    public void popup() {
       popup(false);
    }

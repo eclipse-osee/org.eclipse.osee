@@ -594,8 +594,7 @@ public class SMAManager {
                   new DateSelectionDialog("Select Release Date", "Select Release Date", sma.getWorldViewReleaseDate());
             if (getSma().getWorldViewReleaseDate() != null) diag.setSelectedDate(sma.getWorldViewReleaseDate());
             if (diag.open() == 0) {
-               sma.setSoleStringAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
-                     diag.getSelectedDate().getTime() + "");
+               sma.setSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), diag.getSelectedDate());
                sma.persistAttributes();
                return true;
             }

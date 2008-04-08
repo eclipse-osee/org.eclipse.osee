@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 
 /**
  * @author Donald G. Dunne
  */
 public class XCheckBoxViaAttribute extends XCheckBox {
 
-   private Attribute attribute;
+   private BooleanAttribute attribute;
 
    public XCheckBoxViaAttribute(String displayLabel) {
       this(displayLabel, "");
@@ -27,31 +27,31 @@ public class XCheckBoxViaAttribute extends XCheckBox {
       super(displayLabel, xmlRoot);
    }
 
-   public Attribute getAttribute() {
+   public BooleanAttribute getAttribute() {
       return attribute;
    }
 
-   public void setAttribute(Attribute attribute) {
+   public void setAttribute(BooleanAttribute attribute) {
       this.attribute = attribute;
-      super.set(attribute.getStringData().equals("yes") ? true : false);
+      super.set(attribute.getValue());
    }
 
    @Override
    public void set(boolean selected) {
       super.set(selected);
-      attribute.setStringData(get() ? "yes" : "no");
+      attribute.setValue(get());
    }
 
    @Override
    public void save() {
       if (isDirty()) {
-         attribute.setStringData(get() ? "yes" : "no");
+         attribute.setValue(get());
       }
    }
 
    @Override
    public boolean isDirty() {
-      return (!attribute.getStringData().equals(get() ? "yes" : "no"));
+      return (!attribute.getValue() == get());
    }
 
 }

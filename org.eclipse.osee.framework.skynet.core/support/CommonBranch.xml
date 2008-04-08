@@ -185,10 +185,10 @@
  </Styles>
  <Worksheet ss:Name="skynetBase">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R44C1:R48C4"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R45C1:R49C4"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="52" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="54" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="300"/>
    <Column ss:StyleID="s21" ss:Width="156.75"/>
@@ -415,8 +415,16 @@
     <Cell ss:StyleID="s36"><Data ss:Type="String">is user of</Data></Cell>
     <Cell ss:StyleID="s36"><Data ss:Type="String">Usr</Data></Cell>
    </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s36"><Data ss:Type="String">Supercedes</Data></Cell>
+    <Cell ss:StyleID="s36"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s36"><Data ss:Type="String">supercedes</Data></Cell>
+    <Cell ss:StyleID="s36"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s36"><Data ss:Type="String">is superceeded by</Data></Cell>
+    <Cell ss:StyleID="s36"><Data ss:Type="String">Sprcds</Data></Cell>
+   </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
-   <Row ss:Index="41" ss:AutoFitHeight="0" ss:Height="13.5">
+   <Row ss:Index="42" ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -476,6 +484,12 @@
       ss:Name="_FilterDatabase"/></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
+    <Cell ss:StyleID="s38"><Data ss:Type="String">Artifact</Data></Cell>
+    <Cell ss:StyleID="s36"><Data ss:Type="String">Supercedes</Data></Cell>
+    <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s39"><Data ss:Type="String">UNLIMITED</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s40"/>
     <Cell ss:StyleID="s41"/>
     <Cell ss:StyleID="s42"/>
@@ -503,11 +517,12 @@
     <VerticalResolution>600</VerticalResolution>
    </Print>
    <Selected/>
+   <TopRowVisible>12</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>32</ActiveRow>
-     <ActiveCol>1</ActiveCol>
+     <ActiveRow>39</ActiveRow>
+     <ActiveCol>5</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

@@ -103,7 +103,7 @@ public class DefaultTeamWorkflowManager {
    public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws IllegalStateException, SQLException {
       if (!smaMgr.getCurrentStateName().equals("Endorse")) return new Result("Action not in Endorse state");
       if (propRes == null || propRes.equals(""))
-         teamArt.setSoleStringAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), "yes");
+         teamArt.setSoleBooleanAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleStringAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
       smaMgr.getCurrentStateDam().setHoursSpent(stateHoursSpent);
@@ -114,14 +114,14 @@ public class DefaultTeamWorkflowManager {
    public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws IllegalStateException, SQLException {
       if (!smaMgr.getCurrentStateName().equals("Analyze")) return new Result("Action not in Analyze state");
       if (problem == null || problem.equals(""))
-         teamArt.setSoleStringAttributeValue(ATSAttributes.PROBLEM_OVERRIDE_ATTRIBUTE.getStoreName(), "yes");
+         teamArt.setSoleBooleanAttributeValue(ATSAttributes.PROBLEM_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleStringAttributeValue(ATSAttributes.PROBLEM_ATTRIBUTE.getStoreName(), problem);
       if (propRes == null || propRes.equals(""))
-         teamArt.setSoleStringAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), "yes");
+         teamArt.setSoleBooleanAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleStringAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
-      teamArt.setSoleStringAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate + "");
+      teamArt.setSoleXAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate);
       smaMgr.getCurrentStateDam().setHoursSpent(stateHoursSpent);
       smaMgr.getCurrentStateDam().setPercentComplete(statePercentComplete);
       return Result.TrueResult;
@@ -137,7 +137,7 @@ public class DefaultTeamWorkflowManager {
    public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws IllegalStateException, SQLException {
       if (!smaMgr.getCurrentStateName().equals("Implement")) return new Result("Action not in Implement state");
       if (resolution == null || resolution.equals(""))
-         teamArt.setSoleStringAttributeValue(ATSAttributes.RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), "yes");
+         teamArt.setSoleBooleanAttributeValue(ATSAttributes.RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleStringAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), resolution);
       smaMgr.getCurrentStateDam().setHoursSpent(stateHoursSpent);
