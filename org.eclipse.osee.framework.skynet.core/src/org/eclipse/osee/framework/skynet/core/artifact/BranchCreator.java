@@ -24,7 +24,6 @@ import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSAC
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TXD_COMMENT;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.VALID_RELATIONS_TABLE;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -36,14 +35,12 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.database.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.database.ConnectionHandler;
 import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.DbUtil;
 import org.eclipse.osee.framework.database.Query;
 import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
-import org.eclipse.osee.framework.database.schemas.Table;
 import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -152,29 +149,29 @@ public class BranchCreator implements PersistenceManager {
       skynetAuth = SkynetAuthentication.getInstance();
    }
 
-   private Pair<Branch, Integer> createBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName) throws SQLException{
-       User userToBlame = skynetAuth.getAuthenticatedUser();
-       Branch parentBranch = sourceTransactionId.getBranch();
-       int userId = (userToBlame == null) ? skynetAuth.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
-       String comment =
-             BranchPersistenceManager.NEW_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ")";
-       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-       Branch childBranch =
-             initializeBranch(childBranchShortName, childBranchName, sourceTransactionId, userId, timestamp, comment,
-                   associatedArtifact);
+   private Pair<Branch, Integer> createBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName) throws SQLException {
+      User userToBlame = skynetAuth.getAuthenticatedUser();
+      Branch parentBranch = sourceTransactionId.getBranch();
+      int userId = (userToBlame == null) ? skynetAuth.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
+      String comment =
+            BranchPersistenceManager.NEW_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ")";
+      Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
+      Branch childBranch =
+            initializeBranch(childBranchShortName, childBranchName, sourceTransactionId, userId, timestamp, comment,
+                  associatedArtifact);
 
-       // insert the new transaction data first.
-       int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
-       String query =
-             "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
-                   "time", "author");
-       ConnectionHandler.runPreparedUpdate(query, SQL3DataType.INTEGER, childBranch.getBranchId(),
-             SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, childBranch.getCreationComment(),
-             SQL3DataType.TIMESTAMP, childBranch.getCreationDate(), SQL3DataType.INTEGER, childBranch.getAuthorId());
-	   
-       return new Pair<Branch, Integer>(childBranch, newTransactionNumber);
+      // insert the new transaction data first.
+      int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
+      String query =
+            "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
+                  "time", "author");
+      ConnectionHandler.runPreparedUpdate(query, SQL3DataType.INTEGER, childBranch.getBranchId(), SQL3DataType.INTEGER,
+            newTransactionNumber, SQL3DataType.VARCHAR, childBranch.getCreationComment(), SQL3DataType.TIMESTAMP,
+            childBranch.getCreationDate(), SQL3DataType.INTEGER, childBranch.getAuthorId());
+
+      return new Pair<Branch, Integer>(childBranch, newTransactionNumber);
    }
-   
+
    private void copyBranchAddressingFromTransaction(Branch newBranch, int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       if (compressArtTypes != null && preserveArtTypes != null) {
          Set<ArtifactSubtypeDescriptor> intersection = new HashSet<ArtifactSubtypeDescriptor>(compressArtTypes);
@@ -183,8 +180,6 @@ public class BranchCreator implements PersistenceManager {
             throw new IllegalArgumentException("The following artifact types are in both sets: " + intersection);
          }
       }
-
-      copyTypeConfigurationAddressing(newTransactionNumber, parentTransactionId);
 
       if (compressArtTypes != null && compressArtTypes.size() > 0) {
          createBaselineTransaction(newTransactionNumber, parentTransactionId, compressArtTypes);
@@ -207,9 +202,9 @@ public class BranchCreator implements PersistenceManager {
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                                                                                                                                                                                                                                       * parent
-                                                                                                                                                                                                                                                                                                                                       * transactoin_id
-                                                                                                                                                                                                                                                                                                                                       */, Integer /* gamma_id */>(
+                                                                                                                                                                                                                                                                                                                                                             * parent
+                                                                                                                                                                                                                                                                                                                                                             * transactoin_id
+                                                                                                                                                                                                                                                                                                                                                             */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -326,13 +321,6 @@ public class BranchCreator implements PersistenceManager {
       return historyMap;
    }
 
-   private void copyTypeConfigurationAddressing(int newTransactionNumber, TransactionId parentTransactionId) throws SQLException {
-      insertGamms(newTransactionNumber, parentTransactionId, RELATION_LINK_TYPE_ALIAS_1, RELATION_LINK_TYPE_ALIAS_2,
-            "rel_link_type_id");
-      insertGamms(newTransactionNumber, parentTransactionId, VALID_RELATIONS_ALIAS_1, VALID_RELATIONS_ALIAS_2,
-            "rel_link_type_id", "art_type_id");
-   }
-
    private void createBaselineTransaction(int newTransactionNumber, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes) throws SQLException {
       for (ArtifactSubtypeDescriptor artifactType : compressArtTypes) {
          int count =
@@ -358,24 +346,6 @@ public class BranchCreator implements PersistenceManager {
                   parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                   parentTransactionId.getBranch().getBranchId());
       if (count > 0) logger.log(Level.INFO, "inserted " + count + " relations");
-   }
-
-   private void insertGamms(int newTransactionNumber, TransactionId parentTransactionId, Table table1, Table table2, String... columns) throws SQLException {
-      StringBuilder joinParallelColumns = new StringBuilder(300);
-      for (String column : columns) {
-         joinParallelColumns.append(table1.join(table2, column));
-         joinParallelColumns.append(" AND ");
-      }
-
-      String insert =
-            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + table1.column("gamma_id") + ", ?" + " FROM " + table1 + ", " + TRANSACTIONS_ALIAS_1 + " WHERE " + table1.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_1.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + table2 + "," + TRANSACTIONS_ALIAS_2 + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + joinParallelColumns + table2.column("gamma_id") + "=" + TRANSACTIONS_ALIAS_2.column("gamma_id") + " AND " + TRANSACTIONS_ALIAS_2.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=" + "?)";
-
-      int count =
-            ConnectionHandler.runPreparedUpdateReturnCount(insert, SQL3DataType.INTEGER, newTransactionNumber,
-                  SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
-                  parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                  parentTransactionId.getBranch().getBranchId());
-      logger.log(Level.INFO, "inserted row count for " + table1 + ": " + count);
    }
 
    private static String makeArtTypeSet(Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) {
@@ -518,15 +488,17 @@ public class BranchCreator implements PersistenceManager {
 
       @Override
       protected void handleTxWork() throws Exception {
-		  Pair<Branch, Integer> branchWithTransactionNumber = createBranchWithBaselineTransactionNumber(associatedArtifact, parentTransactionId, childBranchShortName, childBranchName);
-	
-		  childBranch = branchWithTransactionNumber.getKey();
-		  int newTransactionNumber = branchWithTransactionNumber.getValue();
-		  
-		  copyBranchAddressingFromTransaction(childBranch, newTransactionNumber, parentTransactionId, compressArtTypes,
-	           preserveArtTypes);
-	
-	     success = true;
+         Pair<Branch, Integer> branchWithTransactionNumber =
+               createBranchWithBaselineTransactionNumber(associatedArtifact, parentTransactionId, childBranchShortName,
+                     childBranchName);
+
+         childBranch = branchWithTransactionNumber.getKey();
+         int newTransactionNumber = branchWithTransactionNumber.getValue();
+
+         copyBranchAddressingFromTransaction(childBranch, newTransactionNumber, parentTransactionId, compressArtTypes,
+               preserveArtTypes);
+
+         success = true;
 
       }
 
@@ -558,62 +530,66 @@ public class BranchCreator implements PersistenceManager {
          return childBranch;
       }
    }
-   
+
    /**
     * Creates a new merge branch based on the artifacts from the source branch
     */
-   public Branch createMergeBranch(Branch sourceBranch, Collection<Integer> artIds) throws Exception{
-	   CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, artIds);
-	   createMergeBranchTx.execute();
-	   return createMergeBranchTx.getMergeBranch();
+   public Branch createMergeBranch(Branch sourceBranch, Collection<Integer> artIds) throws Exception {
+      CreateMergeBranchTx createMergeBranchTx = new CreateMergeBranchTx(sourceBranch, artIds);
+      createMergeBranchTx.execute();
+      return createMergeBranchTx.getMergeBranch();
    }
-   
-   private final class CreateMergeBranchTx extends AbstractDbTxTemplate{
-	private Branch sourceBranch;
-	private Collection<Integer> artIds;
-	private Branch mergeBranch;
-	
-	/**
-	 * @param sourceBranch
-	 * @param destBranch
-	 * @param artIds
-	 */
-	public CreateMergeBranchTx(Branch sourceBranch, Collection<Integer> artIds) {
-		super();
-		this.sourceBranch = sourceBranch;
-		this.artIds = artIds;
-	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
-	 */
-	@Override
-	protected void handleTxWork() throws Exception {
-		if(artIds == null || artIds.isEmpty()){
-			throw new IllegalArgumentException("Artifact IDs can not be null or empty");
-		}
-		
-		Pair<Branch, Integer> branchWithTransactionNumber = createBranchWithBaselineTransactionNumber(SkynetAuthentication.getInstance().getAuthenticatedUser(), TransactionIdManager.getInstance().getStartEndPoint(sourceBranch).getKey(), "Merge "+sourceBranch.getDisplayName(), "Merge "+sourceBranch.getDisplayName());
-		String attributeGammas = "INSERT INTO OSEE_DEFINE_TXS (transaction_id, tx_type, gamma_id) SELECT ?, ?, attr1.gamma_id From osee_define_attribute attr1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in "+Collections.toString(artIds, "(", ",", ")")+" GROUP BY t6.attr_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = attr1.gamma_id and attr1.art_id = ? and attr1.attr_id = t4.attr_id order by attr1.gamma_id";
-		String artifactVersionGammas = "INSERT INTO OSEE_DEFINE_TXS (transaction_id, tx_type, gamma_id) SELECT ?, ?, art1.gamma_id From osee_define_artifact_version art1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS transaction_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_artifact_version t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in "+Collections.toString(artIds, "(", ",", ")")+" GROUP BY t6.art_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = art1.gamma_id and art1.art_id = ? order by art1.gamma_id";
-	
-		insertGammas(attributeGammas, branchWithTransactionNumber.getValue());
-		insertGammas(artifactVersionGammas, branchWithTransactionNumber.getValue());
-		
-		mergeBranch = branchWithTransactionNumber.getKey();
-	}
-	
-	public Branch getMergeBranch(){
-		return mergeBranch;
-	}
-	
-	private void insertGammas(String sql, int baselineTransactionNumber)
-				throws SQLException {
-			ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-					baselineTransactionNumber, SQL3DataType.INTEGER,
-					TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
-					sourceBranch.getBranchId(), SQL3DataType.INTEGER,
-					sourceBranch.getBranchId());
-		}
+   private final class CreateMergeBranchTx extends AbstractDbTxTemplate {
+      private Branch sourceBranch;
+      private Collection<Integer> artIds;
+      private Branch mergeBranch;
+
+      /**
+       * @param sourceBranch
+       * @param destBranch
+       * @param artIds
+       */
+      public CreateMergeBranchTx(Branch sourceBranch, Collection<Integer> artIds) {
+         super();
+         this.sourceBranch = sourceBranch;
+         this.artIds = artIds;
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxWork()
+       */
+      @Override
+      protected void handleTxWork() throws Exception {
+         if (artIds == null || artIds.isEmpty()) {
+            throw new IllegalArgumentException("Artifact IDs can not be null or empty");
+         }
+
+         Pair<Branch, Integer> branchWithTransactionNumber =
+               createBranchWithBaselineTransactionNumber(SkynetAuthentication.getInstance().getAuthenticatedUser(),
+                     TransactionIdManager.getInstance().getStartEndPoint(sourceBranch).getKey(),
+                     "Merge " + sourceBranch.getDisplayName(), "Merge " + sourceBranch.getDisplayName());
+         String attributeGammas =
+               "INSERT INTO OSEE_DEFINE_TXS (transaction_id, tx_type, gamma_id) SELECT ?, ?, attr1.gamma_id From osee_define_attribute attr1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in " + Collections.toString(
+                     artIds, "(", ",", ")") + " GROUP BY t6.attr_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = attr1.gamma_id and attr1.art_id = ? and attr1.attr_id = t4.attr_id order by attr1.gamma_id";
+         String artifactVersionGammas =
+               "INSERT INTO OSEE_DEFINE_TXS (transaction_id, tx_type, gamma_id) SELECT ?, ?, art1.gamma_id From osee_define_artifact_version art1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS transaction_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_artifact_version t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in " + Collections.toString(
+                     artIds, "(", ",", ")") + " GROUP BY t6.art_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = art1.gamma_id and art1.art_id = ? order by art1.gamma_id";
+
+         insertGammas(attributeGammas, branchWithTransactionNumber.getValue());
+         insertGammas(artifactVersionGammas, branchWithTransactionNumber.getValue());
+
+         mergeBranch = branchWithTransactionNumber.getKey();
+      }
+
+      public Branch getMergeBranch() {
+         return mergeBranch;
+      }
+
+      private void insertGammas(String sql, int baselineTransactionNumber) throws SQLException {
+         ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER, baselineTransactionNumber, SQL3DataType.INTEGER,
+               TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER, sourceBranch.getBranchId(),
+               SQL3DataType.INTEGER, sourceBranch.getBranchId());
+      }
    }
 }
