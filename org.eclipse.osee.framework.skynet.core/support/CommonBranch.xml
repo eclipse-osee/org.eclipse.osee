@@ -185,10 +185,10 @@
  </Styles>
  <Worksheet ss:Name="skynetBase">
   <Names>
-   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R45C1:R49C4"
+   <NamedRange ss:Name="_FilterDatabase" ss:RefersTo="=skynetBase!R55C1:R59C4"
     ss:Hidden="1"/>
   </Names>
-  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="54" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="64" x:FullColumns="1"
    x:FullRows="1" ss:StyleID="s21" ss:DefaultRowHeight="12">
    <Column ss:StyleID="s21" ss:AutoFitWidth="0" ss:Width="300"/>
    <Column ss:StyleID="s21" ss:Width="156.75"/>
@@ -337,6 +337,51 @@
     <Cell ss:StyleID="s34"><Data ss:Type="String">UNLIMITED</Data></Cell>
     <Cell ss:StyleID="s32"><Data ss:Type="String">Criteria that determines what template is selected ie: 'Render Artifact PresentationType Option'</Data></Cell>
    </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s32"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Company</Data></Cell>
+    <Cell ss:StyleID="s32"/>
+    <Cell ss:StyleID="s32"/>
+    <Cell ss:StyleID="s32"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s32"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s32"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">City</Data></Cell>
+    <Cell ss:StyleID="s32"/>
+    <Cell ss:StyleID="s32"/>
+    <Cell ss:StyleID="s32"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s32"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s32"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">State</Data></Cell>
+    <Cell ss:StyleID="s32"/>
+    <Cell ss:StyleID="s32"/>
+    <Cell ss:StyleID="s32"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s32"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s32"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Country</Data></Cell>
+    <Cell ss:StyleID="s32"/>
+    <Cell ss:StyleID="s32"/>
+    <Cell ss:StyleID="s32"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s32"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s32"><Data ss:Type="String">StringAttribute</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Notes</Data></Cell>
+    <Cell ss:StyleID="s32"/>
+    <Cell ss:StyleID="s32"/>
+    <Cell ss:StyleID="s32"><Data ss:Type="Number">0</Data></Cell>
+    <Cell ss:StyleID="s32"><Data ss:Type="String">UNLIMITED</Data></Cell>
+    <Cell ss:StyleID="s32"/>
+   </Row>
    <Row ss:AutoFitHeight="0"/>
    <Row ss:AutoFitHeight="0" ss:Height="11.25"/>
    <Row ss:AutoFitHeight="0">
@@ -374,6 +419,26 @@
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
     <Cell ss:StyleID="s27"><Data ss:Type="String">Dictionary</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">City</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">State</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Country</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Notes</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s27"><Data ss:Type="String">User</Data></Cell>
+    <Cell ss:StyleID="s27"><Data ss:Type="String">Company</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0">
     <Cell ss:StyleID="s27"><Data ss:Type="String">Global Preferences</Data></Cell>
@@ -424,7 +489,7 @@
     <Cell ss:StyleID="s36"><Data ss:Type="String">Sprcds</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5" ss:Span="1"/>
-   <Row ss:Index="42" ss:AutoFitHeight="0" ss:Height="13.5">
+   <Row ss:Index="52" ss:AutoFitHeight="0" ss:Height="13.5">
     <Cell ss:StyleID="s37"><Data ss:Type="String">#the first max values specified for an &lt;artifact type, relation type&gt; pair is used, so put the constraint for a concreate type before the constraint for a supertype</Data></Cell>
    </Row>
    <Row ss:AutoFitHeight="0" ss:Height="13.5">
@@ -522,7 +587,7 @@
     <Pane>
      <Number>3</Number>
      <ActiveRow>39</ActiveRow>
-     <ActiveCol>5</ActiveCol>
+     <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

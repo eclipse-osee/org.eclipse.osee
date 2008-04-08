@@ -15,7 +15,12 @@ import java.util.Map;
 
 public enum PermissionEnum {
 
-   READ(10, "Read"), WRITE(20, "Write"), FULLACCESS(30, "Full Access"), LOCK(40, "Lock"), DENY(65535, "Deny");
+   NONE(5, "None"),
+   READ(10, "Read"),
+   WRITE(20, "Write"),
+   FULLACCESS(30, "Full Access"),
+   LOCK(40, "Lock"),
+   DENY(65535, "Deny");
 
    // keeping this in sync with the number of permissions will ensure optimal memory usage
    private static final int COUNT = 4;
