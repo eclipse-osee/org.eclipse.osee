@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.ArtifactVersionIncrementedEvent;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -107,7 +110,14 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          public void run() {
             try {
                for (Artifact artifact : artifacts) {
-                  AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
+                  if (!AccessControlManager.getInstance().checkObjectPermission(
+                        SkynetAuthentication.getInstance().getAuthenticatedUser(), artifact, PermissionEnum.READ)) {
+                     OSEELog.logInfo(
+                           SkynetGuiPlugin.class,
+                           "The user " + SkynetAuthentication.getInstance().getAuthenticatedUser() + " does not have read access to " + artifact,
+                           true);
+                  } else
+                     AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
                }
             } catch (PartInitException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -120,7 +130,13 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
-               if (artifact != null) {
+               if (!AccessControlManager.getInstance().checkObjectPermission(
+                     SkynetAuthentication.getInstance().getAuthenticatedUser(), artifact, PermissionEnum.READ)) {
+                  OSEELog.logInfo(
+                        SkynetGuiPlugin.class,
+                        "The user " + SkynetAuthentication.getInstance().getAuthenticatedUser() + " does not have read access to " + artifact,
+                        true);
+               } else if (artifact != null) {
                   AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
                }
             } catch (PartInitException ex) {

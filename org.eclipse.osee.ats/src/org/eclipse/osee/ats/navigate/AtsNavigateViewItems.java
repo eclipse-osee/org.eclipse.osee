@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.health.AttributeDuplication;
 import org.eclipse.osee.ats.health.OrphanedTasks;
 import org.eclipse.osee.ats.health.TeamWorkflowsHaveZeroOrOneVersion;
 import org.eclipse.osee.ats.health.UnAssignedAssignedAtsObjects;
+import org.eclipse.osee.ats.navigate.EmailGroupsAndUserGroups.GroupType;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.report.ExtendedStatusReportItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
@@ -226,6 +227,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       new EmailTeamsItem(emailItems, null, MemberType.Both);
       new EmailTeamsItem(emailItems, null, MemberType.Leads);
       new EmailTeamsItem(emailItems, null, MemberType.Members);
+      new EmailGroupsAndUserGroups(emailItems, GroupType.Both);
       items.add(emailItems);
 
       items.add(reportItems);

@@ -14,7 +14,11 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
@@ -73,8 +77,26 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    public static void editArtifacts(final String name, final Collection<? extends Artifact> artifacts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
+            boolean accessControlFilteredResults = false;
             try {
-               AWorkbench.getActivePage().openEditor(new MassArtifactEditorInput(name, artifacts), EDITOR_ID);
+               Set<Artifact> accessibleArts = new HashSet<Artifact>();
+               for (Artifact artifact : artifacts) {
+                  if (!AccessControlManager.getInstance().checkObjectPermission(
+                        SkynetAuthentication.getInstance().getAuthenticatedUser(), artifact, PermissionEnum.READ)) {
+                     OSEELog.logInfo(
+                           SkynetGuiPlugin.class,
+                           "The user " + SkynetAuthentication.getInstance().getAuthenticatedUser() + " does not have read access to " + artifact,
+                           false);
+                     accessControlFilteredResults = true;
+                  } else
+                     accessibleArts.add(artifact);
+               }
+               if (accessibleArts.size() == 0)
+                  AWorkbench.popup("ERROR", "No Artifacts to edit");
+               else
+                  AWorkbench.getActivePage().openEditor(new MassArtifactEditorInput(name, accessibleArts), EDITOR_ID);
+               if (accessControlFilteredResults) AWorkbench.popup("ERROR",
+                     "Some Artifacts not loaded due to access control limitations.");
             } catch (PartInitException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
@@ -86,6 +108,14 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
+               if (!AccessControlManager.getInstance().checkObjectPermission(
+                     SkynetAuthentication.getInstance().getAuthenticatedUser(), artifact, PermissionEnum.READ)) {
+                  OSEELog.logInfo(
+                        SkynetGuiPlugin.class,
+                        "The user " + SkynetAuthentication.getInstance().getAuthenticatedUser() + " does not have read access to " + artifact,
+                        true);
+                  return;
+               }
                AWorkbench.getActivePage().openEditor(
                      new MassArtifactEditorInput("", Arrays.asList(new Artifact[] {artifact})), EDITOR_ID);
             } catch (PartInitException ex) {
