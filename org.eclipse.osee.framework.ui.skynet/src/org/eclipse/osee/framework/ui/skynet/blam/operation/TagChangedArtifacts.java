@@ -10,20 +10,45 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
  * @author Ryan D. Brooks
  */
-public class DeleteArchivedBranches extends AbstractBlam {
+public class TagChangedArtifacts extends AbstractBlam {
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      BranchPersistenceManager.getInstance().deleteArchivedBranches();
+      TagManager tagManager = TagManager.getInstance();
+
+      List<Branch> branches = BranchPersistenceManager.getInstance().getChangeManagedBranches();
+      monitor.beginTask("Tag change managed branches", branches.size());
+
+      for (Branch branch : branches) {
+         int count = 0;
+         Collection<Change> changes = RevisionManager.getInstance().getArtifactChanges(branch);
+         int total = changes.size();
+
+         for (Change change : changes) {
+            if (monitor.isCanceled()) {
+               return;
+            }
+
+            monitor.subTask("Tagging change on branch " + branch.getBranchShortestName() + " for artifact " + ++count + " of " + total);
+            tagManager.autoTag(true, change.getArtifact());
+         }
+         monitor.worked(1);
+      }
    }
 
    /*
@@ -38,6 +63,6 @@ public class DeleteArchivedBranches extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getDescriptionUsage()
     */
    public String getDescriptionUsage() {
-      return "Permantly purges all branches that are archived";
+      return "Select parameters below and click the play button at the top right.";
    }
 }

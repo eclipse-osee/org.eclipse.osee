@@ -16,7 +16,6 @@ import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TXD_COMMENT;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -32,7 +31,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -288,19 +286,21 @@ public class BranchPersistenceManager implements PersistenceManager {
    }
 
    /**
-    * Calls the getMergeBranch method and if it returns null it will create a new merge branch based on the artIds from the source branch.
+    * Calls the getMergeBranch method and if it returns null it will create a new merge branch based on the artIds from
+    * the source branch.
     */
-   public Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destinBranch, ArrayList<Integer> artIds)throws Exception{
-	   Branch mergeBranch = getMergeBranch(sourceBranch.getBranchId(), destinBranch.getBranchId());
-	   
-	   if(mergeBranch == null){
-		   mergeBranch = branchCreator.createMergeBranch(sourceBranch, artIds);
-	   }
-	   return mergeBranch;
+   public Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destinBranch, ArrayList<Integer> artIds) throws Exception {
+      Branch mergeBranch = getMergeBranch(sourceBranch.getBranchId(), destinBranch.getBranchId());
+
+      if (mergeBranch == null) {
+         mergeBranch = branchCreator.createMergeBranch(sourceBranch, artIds);
+      }
+      return mergeBranch;
    }
-   
+
    /**
-    * Checks the merge branch cache for the branch if it does not find it then it will query the database for the branch. 
+    * Checks the merge branch cache for the branch if it does not find it then it will query the database for the
+    * branch.
     */
    public Branch getMergeBranch(Integer sourceBranchId, Integer destBranchId) throws Exception {
       if (sourceBranchId < 1 || destBranchId < 1) {
@@ -924,8 +924,21 @@ public class BranchPersistenceManager implements PersistenceManager {
 
    public List<Branch> getRootBranches() throws SQLException {
       List<Branch> branches = new ArrayList<Branch>();
-      for (Branch branch : getBranches())
-         if (!branch.hasParentBranch()) branches.add(branch);
+      for (Branch branch : getBranches()) {
+         if (!branch.hasParentBranch()) {
+            branches.add(branch);
+         }
+      }
+      return branches;
+   }
+
+   public List<Branch> getChangeManagedBranches() throws SQLException {
+      List<Branch> branches = new ArrayList<Branch>();
+      for (Branch branch : getBranches()) {
+         if (branch.isChangeManaged()) {
+            branches.add(branch);
+         }
+      }
       return branches;
    }
 

@@ -11,20 +11,14 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TYPE_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_TYPE_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.VALID_ATTRIBUTES_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.VALID_RELATIONS_TABLE;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -39,7 +33,7 @@ import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.database.schemas.Table;
 import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkDeletedBranchEvent;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -68,19 +62,8 @@ class DeleteBranchJob extends Job {
          "delete from " + RELATION_LINK_VERSION_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + RELATION_LINK_VERSION_TABLE.column("gamma_id") + ")";
    private static final String DELETE_ARTIFACT_VERSIONS =
          "delete from " + ARTIFACT_VERSION_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + ARTIFACT_VERSION_TABLE.column("gamma_id") + ")";
-   private static final String DELETE_ARTIFACT_TYPE =
-         "delete from " + ARTIFACT_TYPE_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + ARTIFACT_TYPE_TABLE.column("gamma_id") + ")";
-   private static final String DELETE_ATTRIBUTE_TYPE =
-         "delete from " + ATTRIBUTE_TYPE_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + ATTRIBUTE_TYPE_TABLE.column("gamma_id") + ")";
-   private static final String DELETE_RELATION_TYPE =
-         "delete from " + RELATION_LINK_TYPE_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + RELATION_LINK_TYPE_TABLE.column("gamma_id") + ")";
-   private static final String DELETE_VLAID_RELATION =
-         "delete from " + VALID_RELATIONS_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + VALID_RELATIONS_TABLE.column("gamma_id") + ")";
-   private static final String DELETE_VALID_ATTRIBUTE =
-         "delete from " + VALID_ATTRIBUTES_TABLE + DELETE_GAMMAS_RIGHT_HAND_SIDE + VALID_ATTRIBUTES_TABLE.column("gamma_id") + ")";
    private static final String DELETE_FROM_BRANCH_TABLE =
          "DELETE FROM " + BRANCH_TABLE + " WHERE " + BRANCH_TABLE.column("branch_id") + " = ?";
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(DeleteBranchJob.class);
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
@@ -110,7 +93,7 @@ class DeleteBranchJob extends Job {
          deleteBranchTx.execute();
          toReturn = deleteBranchTx.getResult();
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
       return toReturn;
    }
@@ -158,11 +141,6 @@ class DeleteBranchJob extends Job {
          deleteAttributeVersions();
          deleteRelationVersions();
          deleteArtifactVersions();
-         deleteArtifactTypes();
-         deleteAttributeTypes();
-         deleteRelationTypes();
-         deleteValidAttributes();
-         deleteValidRelations();
          deleteBranch();
       }
 
@@ -203,46 +181,6 @@ class DeleteBranchJob extends Job {
          if (true != isCanceled()) {
             monitor.setTaskName("Delete artifact versions");
             ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_VERSIONS, SQL3DataType.INTEGER, branch.getBranchId());
-            monitor.worked(1);
-         }
-      }
-
-      private void deleteArtifactTypes() throws SQLException {
-         if (true != isCanceled()) {
-            monitor.setTaskName("Delete artifact types");
-            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_TYPE, SQL3DataType.INTEGER, branch.getBranchId());
-            monitor.worked(1);
-         }
-      }
-
-      private void deleteAttributeTypes() throws SQLException {
-         if (true != isCanceled()) {
-            monitor.setTaskName("Delete attribute types");
-            ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, branch.getBranchId());
-            monitor.worked(1);
-         }
-      }
-
-      private void deleteRelationTypes() throws SQLException {
-         if (true != isCanceled()) {
-            monitor.setTaskName("Delete relation types");
-            ConnectionHandler.runPreparedUpdate(DELETE_RELATION_TYPE, SQL3DataType.INTEGER, branch.getBranchId());
-            monitor.worked(1);
-         }
-      }
-
-      private void deleteValidAttributes() throws SQLException {
-         if (true != isCanceled()) {
-            monitor.setTaskName("Delete valid attributes");
-            ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, SQL3DataType.INTEGER, branch.getBranchId());
-            monitor.worked(1);
-         }
-      }
-
-      private void deleteValidRelations() throws SQLException {
-         if (true != isCanceled()) {
-            monitor.setTaskName("Delete valid relations");
-            ConnectionHandler.runPreparedUpdate(DELETE_VLAID_RELATION, SQL3DataType.INTEGER, branch.getBranchId());
             monitor.worked(1);
          }
       }
