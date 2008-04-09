@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
@@ -72,6 +73,11 @@ public class AttributeCellModifier implements ICellModifier {
     */
    public Object getValue(Object element, String property) {
       Attribute<?> attribute = (Attribute<?>) element;
+      if (attribute instanceof BooleanAttribute) {
+         enumeratedValue.setValue(((BooleanAttribute) attribute).getValue() ? "yes" : "no");
+         enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
+         return enumeratedValue;
+      }
       if (attribute instanceof StringAttribute || attribute instanceof IntegerAttribute || attribute instanceof FloatingPointAttribute) {
          stringValue.setValue(String.valueOf(attribute.getValue()));
          return stringValue;
@@ -112,6 +118,9 @@ public class AttributeCellModifier implements ICellModifier {
 
       if (attribute instanceof DateAttribute) {
          ((DateAttribute) attribute).setValue((Date) value);
+      }
+      if (attribute instanceof BooleanAttribute) {
+         ((BooleanAttribute) attribute).setValue(value.equals("yes"));
       }
       //binary attributes should not be changed.
       else if (!(attribute instanceof BinaryAttribute)) {

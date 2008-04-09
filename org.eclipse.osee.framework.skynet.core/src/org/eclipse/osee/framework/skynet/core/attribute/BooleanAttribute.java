@@ -17,7 +17,7 @@ import java.io.InputStream;
  * @author Ryan D. Brooks
  */
 public class BooleanAttribute extends Attribute<Boolean> {
-   private static final String[] booleanChoices = new String[] {"yes", "no"};
+   public static final String[] booleanChoices = new String[] {"yes", "no"};
 
    public BooleanAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.swt.graphics.Image;
 
@@ -49,6 +50,9 @@ public class AttributeLabelProvider implements ITableLabelProvider {
       }
       if ((attribute instanceof EnumeratedAttribute) && attribute.toString() == null) {
          return "<Select>";
+      }
+      if (attribute instanceof BooleanAttribute) {
+         return ((BooleanAttribute) attribute).getValue() ? "yes" : "no";
       }
       return attribute.toString();
    }
