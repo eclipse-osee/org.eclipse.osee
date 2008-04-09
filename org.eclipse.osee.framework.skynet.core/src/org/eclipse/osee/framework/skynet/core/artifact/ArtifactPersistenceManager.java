@@ -486,7 +486,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    /**
     * This method assumes that the artId is for an artifact is not deleted at the specified transaction. However if it
-    * is, the artifact will still be returned but the state of the artifact may be inconsistant.
+    * is, the artifact will still be returned but the state of the artifact may be inconsistent.
     * 
     * @param artId
     * @param transactionId
@@ -1095,8 +1095,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       LinkManager linkManager = artifact.getLinkManager();
 
-      processTransactionForArtifact(artifact, ModificationType.DELETE, transaction,
-            SkynetDatabase.getNextGammaId());
+      processTransactionForArtifact(artifact, ModificationType.DELETE, transaction, SkynetDatabase.getNextGammaId());
 
       transaction.addRemoteEvent(new NetworkArtifactDeletedEvent(artifact.getBranch().getBranchId(),
             transaction.getTransactionNumber(), artifact.getArtId(), artifact.getArtTypeId(),
@@ -1123,8 +1122,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       int gammaId = SkynetDatabase.getNextGammaId();
       transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
-            memo.getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null,
-            ModificationType.DELETE));
+            memo.getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null, ModificationType.DELETE));
 
       transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
    }
@@ -1307,8 +1305,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       try {
          chStmt =
                ConnectionHandler.runPreparedQuery(SELECT_HISTORICAL_ARTIFACT_DELETED, SQL3DataType.INTEGER, artId,
-                     SQL3DataType.INTEGER, branchId, SQL3DataType.INTEGER,
-                     ModificationType.DELETE.getValue());
+                     SQL3DataType.INTEGER, branchId, SQL3DataType.INTEGER, ModificationType.DELETE.getValue());
 
          ResultSet rSet = chStmt.getRset();
          if (rSet.next()) {
