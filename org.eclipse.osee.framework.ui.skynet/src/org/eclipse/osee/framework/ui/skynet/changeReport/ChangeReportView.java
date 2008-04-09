@@ -236,7 +236,6 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
     */
    private void defineMenusNewerWay() {
       MenuManager menuManager = new MenuManager();
-      menuManager.setRemoveAllWhenShown(true);
       changeTable.getTree().setMenu(menuManager.createContextMenu(changeTable.getTree()));
       menuManager.add(new Separator("Top"));
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
