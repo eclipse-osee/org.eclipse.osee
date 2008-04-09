@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +18,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
@@ -26,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XBranchListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboBooleanDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
@@ -116,6 +119,26 @@ public class XWidgetFactory {
          } else
             throw new IllegalArgumentException(
                   "Invalid XComboDam.  " + "Must be \"XComboDam(option1,option2,option3)\"");
+      } else if (xWidgetName.startsWith("XComboBooleanDam")) {
+         xWidget = new XComboBooleanDam(name);
+         XComboBooleanDam combo = new XComboBooleanDam(name);
+         combo.setDataStrings(BooleanAttribute.booleanChoices);
+         xWidget = combo;
+         if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
+            try {
+               String value = xWidgetLayoutData.getDefaultValue();
+               if (value == null)
+                  combo.set("");
+               else if (value.equals("true") || value.equals("yes"))
+                  combo.set("yes");
+               else if (value.equals("false") || value.equals("no"))
+                  combo.set("no");
+               else
+                  combo.set("");
+            } catch (SQLException ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            }
+         }
       } else if (xWidgetName.startsWith("XCombo")) {
          String values[] =
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
