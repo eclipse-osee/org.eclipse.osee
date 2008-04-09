@@ -9,24 +9,24 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.navigate;
+package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.UserGroupsCheckTreeDialog;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.swt.program.Program;
@@ -36,8 +36,7 @@ import org.eclipse.swt.program.Program;
  */
 public class EmailGroupsAndUserGroups extends XNavigateItemAction {
 
-   private List<User> users = new ArrayList<User>();
-   private final List<GroupType> groupTypes;
+   private final GroupType[] groupType;
    public static enum GroupType {
       Groups, UserGroups, Both
    };
@@ -46,11 +45,32 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
     * @param parent
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
-   public EmailGroupsAndUserGroups(XNavigateItem parent, GroupType... memberType) {
+   public EmailGroupsAndUserGroups(XNavigateItem parent, GroupType... groupType) {
       super(parent,
-            "Email " + (Arrays.asList(memberType).contains(GroupType.Both) ? "Groups / User Groups" : (Arrays.asList(
-                  memberType).contains(GroupType.Groups) ? "Groups" : "User Groups")));
-      groupTypes = Arrays.asList(memberType);
+            "Email " + (Arrays.asList(groupType).contains(GroupType.Both) ? "Groups / User Groups" : (Arrays.asList(
+                  groupType).contains(GroupType.Groups) ? "Groups" : "User Groups")));
+      this.groupType = groupType;
+   }
+
+   public static Set<Artifact> getEmailGroupsAndUserGroups(User user, GroupType... groupType) throws SQLException {
+      List<GroupType> groupTypes = Arrays.asList(groupType);
+      Set<Artifact> groupOptions = new HashSet<Artifact>();
+      if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.Groups)) {
+         for (Artifact art : UniversalGroup.getGroups(BranchPersistenceManager.getInstance().getAtsBranch())) {
+            // Only add group if have read permissions
+            if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.getInstance().checkObjectPermission(
+                  art, PermissionEnum.READ)) groupOptions.add(art);
+         }
+      }
+      if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.UserGroups)) {
+         for (Artifact art : ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName("User Group",
+               BranchPersistenceManager.getInstance().getAtsBranch())) {
+            // Only add group if have read permissions
+            if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.getInstance().checkObjectPermission(
+                  art, PermissionEnum.READ)) groupOptions.add(art);
+         }
+      }
+      return groupOptions;
    }
 
    /*
@@ -60,20 +80,8 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
     */
    @Override
    public void run() throws SQLException {
-      Set<Artifact> groupOptions = new HashSet<Artifact>();
-      if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.Groups)) {
-         for (Artifact art : UniversalGroup.getGroups(AtsPlugin.getAtsBranch())) {
-            // Only add group if have read permissions
-            if (AccessControlManager.getInstance().checkObjectPermission(art, PermissionEnum.READ)) groupOptions.add(art);
-         }
-      }
-      if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.UserGroups)) {
-         for (Artifact art : ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName("User Group",
-               AtsPlugin.getAtsBranch())) {
-            // Only add group if have read permissions
-            if (AccessControlManager.getInstance().checkObjectPermission(art, PermissionEnum.READ)) groupOptions.add(art);
-         }
-      }
+      Set<Artifact> groupOptions =
+            getEmailGroupsAndUserGroups(SkynetAuthentication.getInstance().getAuthenticatedUser(), groupType);
       UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(groupOptions);
       dialog.setTitle("Select Groups to Email");
       if (dialog.open() == 0) {

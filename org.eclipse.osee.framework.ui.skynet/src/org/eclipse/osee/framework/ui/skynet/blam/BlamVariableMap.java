@@ -106,7 +106,7 @@ public class BlamVariableMap {
    }
 
    @SuppressWarnings("unchecked")
-   private <T> Collection<T> getCollection(Class<T> clazz, String parameterName) {
+   public <T> Collection<T> getCollection(Class<T> clazz, String parameterName) {
       return getValue(Collection.class, parameterName);
    }
 

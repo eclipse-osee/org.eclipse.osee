@@ -97,6 +97,8 @@ public class XWidgetFactory {
       else if (xWidgetName.equals("XCheckBox")) {
          XCheckBox checkBox = new XCheckBox(name);
          checkBox.setLabelAfter(labelAfter);
+         if (!xWidgetLayoutData.getDefaultValue().equals("")) checkBox.set(xWidgetLayoutData.getDefaultValue().equals(
+               "true"));
          xWidget = checkBox;
       } else if (xWidgetName.equals("XCheckBoxDam")) {
          XCheckBoxDam checkBox = new XCheckBoxDam(name);

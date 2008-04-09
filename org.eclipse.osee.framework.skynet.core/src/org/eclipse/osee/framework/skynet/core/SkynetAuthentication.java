@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.eclipse.osee.framework.jdk.core.util.OseeUser;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -272,6 +271,21 @@ public class SkynetAuthentication implements PersistenceManager {
          } else {
             // Note this is normal for the creation of this user (i.e. db init)
             throw new IllegalArgumentException("User requested by id " + userId + " was not found.  ");
+         }
+      }
+      return user;
+   }
+
+   public User getUserById(String userId) throws SQLException, IllegalArgumentException, IllegalStateException {
+      if (userId == null || userId.equals("")) throw new IllegalStateException("UserId can't be null or \"\"");
+      User user = nameOrIdToUserMap.get(userId);
+
+      if (user == null) {
+         Collection<Artifact> users =
+               artifactManager.getArtifacts(new UserIdSearch(userId, Operator.EQUAL), branchManager.getCommonBranch());
+         if (users.size() == 1) {
+            user = (User) users.iterator().next();
+            addUserToMap(user);
          }
       }
       return user;
