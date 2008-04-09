@@ -98,7 +98,7 @@ public class XWidgetFactory {
       else if (xWidgetName.equals("XCheckBox")) {
          XCheckBox checkBox = new XCheckBox(name);
          checkBox.setLabelAfter(labelAfter);
-         if (!xWidgetLayoutData.getDefaultValue().equals("")) checkBox.set(xWidgetLayoutData.getDefaultValue().equals(
+         if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) checkBox.set(xWidgetLayoutData.getDefaultValue().equals(
                "true"));
          xWidget = checkBox;
       } else if (xWidgetName.equals("XCheckBoxDam")) {
@@ -155,7 +155,7 @@ public class XWidgetFactory {
             XList list = new XList(name);
             list.add(values);
             xWidget = list;
-            if (!xWidgetLayoutData.getDefaultValue().equals("")) list.setSelected(Arrays.asList(xWidgetLayoutData.getDefaultValue().split(
+            if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) list.setSelected(Arrays.asList(xWidgetLayoutData.getDefaultValue().split(
                   ",")));
          } else
             throw new IllegalArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
