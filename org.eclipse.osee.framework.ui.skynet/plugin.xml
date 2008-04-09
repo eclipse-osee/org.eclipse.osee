@@ -593,9 +593,6 @@
 	<extension id="SrsProducer" name="SrsProducer" point="org.eclipse.osee.framework.ui.skynet.WordMlProducer">
 		<producer class="org.eclipse.osee.framework.ui.skynet.render.word.SrsProducer"/>
 	</extension>
-	<extension id="TagAllItems" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.TagAllItems"/>
-	</extension>
 	<extension id="PruneWorkspace" name="PruneWorkspace" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.PruneWorkspace"/>
 	</extension>
@@ -830,6 +827,14 @@
              match="org.eclipse.osee.framework.ui.skynet.tis Test Information Sheet EDIT">
        </MatchCriteria>
     </Template>
+ </extension>
+ <extension
+       id="TagChangedArtifacts"
+       name="Tag Changed Artifacts"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.TagChangedArtifacts">
+    </Operation>
  </extension>
  <extension
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
