@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.jdk.core.util.xml;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -23,6 +25,7 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
@@ -30,6 +33,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * @author David Diepenbrock
+ * @author Paul Waldfogel
  */
 public class Xml {
    private static final String[] XML_CHARS = new String[] {"[&]", "[<]", "[>]", "[\"]"};
@@ -37,7 +41,6 @@ public class Xml {
    private static final String LINEFEED = "&#10;";
    private static final String CARRIAGE_RETURN = "&#13;";
    private static final Pattern squareBracket = Pattern.compile("\\]");
-
    public final static XPathFactory myXPathFactory = XPathFactory.newInstance();
    public final static XPath myXPath = myXPathFactory.newXPath();
    public final static String wordLeader1 =
@@ -48,6 +51,7 @@ public class Xml {
    public final static String wordBody = "<w:body></w:body>";
    public final static String wordTrailer = "</w:wordDocument> ";
    public final SimpleNamespaceContext mySimpleNamespaceContext = new SimpleNamespaceContext();
+   public final static Matcher theSeriousXPathMatcher = Pattern.compile(".*(\\[|\\]|[(]|[)]|[:]).*").matcher("");
 
    /**
     * TODO Optimize algorithm
@@ -358,36 +362,53 @@ public class Xml {
    }
 
    public static final Node[] selectNodeList(Node startingNode, String xPathExpression) throws XPathExpressionException {
-      Object publisherNodeSet = null;
-      publisherNodeSet = myXPath.evaluate(xPathExpression, startingNode, XPathConstants.NODESET);
-      DTMNodeList myNodeList = (DTMNodeList) publisherNodeSet;
-      Node[] resultNodes = new Node[myNodeList.getLength()];
-      for (int i = 0; i < resultNodes.length; i++) {
-         resultNodes[i] = myNodeList.item(i);
+      Node[] resultNodes = null;
+      if (!theSeriousXPathMatcher.reset(xPathExpression).matches() && startingNode.getNodeType() == Node.ELEMENT_NODE) {
+         List<Element> resultElementList = Jaxp.findElements((Element) startingNode, xPathExpression);
+         resultNodes = resultElementList.toArray(new Node[0]);
+      } else {
+         Object publisherNodeSet = null;
+         publisherNodeSet = myXPath.evaluate(xPathExpression, startingNode, XPathConstants.NODESET);
+         DTMNodeList myNodeList = (DTMNodeList) publisherNodeSet;
+         resultNodes = new Node[myNodeList.getLength()];
+         for (int i = 0; i < resultNodes.length; i++) {
+            resultNodes[i] = myNodeList.item(i);
+         }
       }
       return resultNodes;
    }
 
    public static final String selectNodesText(Node startingNode, String xPathExpression) throws XPathExpressionException {
       String resultString = "";
-      Node[] selectedNodes = selectNodeList(startingNode, xPathExpression);
-      if (selectedNodes.length == 1) {
-         Node[] selectedTextNodes = selectNodeList(selectedNodes[0], "child::text()");
-         for (Node node : selectedTextNodes) {
-            resultString = resultString.concat(node.getNodeValue().trim());
+      if (!theSeriousXPathMatcher.reset(xPathExpression).matches() && startingNode.getNodeType() == Node.ELEMENT_NODE) {
+         resultString = Jaxp.getElementCharacterData(Jaxp.findElement((Element) startingNode, xPathExpression)).trim();
+      } else {
+         Node[] selectedNodes = selectNodeList(startingNode, xPathExpression);
+         if (selectedNodes.length == 1) {
+            Node[] selectedTextNodes = selectNodeList(selectedNodes[0], "child::text()");
+            for (Node node : selectedTextNodes) {
+               resultString = resultString.concat(node.getNodeValue().trim());
+            }
          }
-
       }
       return resultString;
    }
 
-   public static final Element makeTable(Element parentDivElement, String caption, String[][] columnDescriptors) {
+   public static final String selectNodesText(Node startingNode) {
+      StringBuffer resultStringBuffer = new StringBuffer();
+      NodeList childNodes = startingNode.getChildNodes();
+      for (int i = 0; i < childNodes.getLength(); i++) {
+         if (childNodes.item(i).getNodeType() == Node.CDATA_SECTION_NODE || childNodes.item(i).getNodeType() == Node.TEXT_NODE) {
+            resultStringBuffer.append(childNodes.item(i).getNodeValue().trim());
+         }
+      }
+      return resultStringBuffer.toString();
+   }
 
-      //      appendNewElementWithTextAndAttributes(parentDivElement, "a", null, new String[][] {{"name", caption}});
+   public static final Element makeTable(Element parentDivElement, String caption, String[][] columnDescriptors) {
       Element newTableElement =
             appendNewElementWithTextAndAttributes(parentDivElement, "table", null, new String[][] { {"border", "1"},
                   {"cellpadding", "3"}, {"cellspacing", "0"}, {"width", "95%"}});
-      //      appendNewElementWithText(newTableElement, "caption", "");
       appendNewElementWithText(newTableElement, "caption", caption);
       Element columnGroupElement =
             appendNewElementWithTextAndAttributes(newTableElement, "colgroup", null, new String[][] {{"align", "left"}});
@@ -412,7 +433,6 @@ public class Xml {
    public static final Element[] makeTableRow(Element[] devAndTableElements, String[] cellContents) {
       Element nextRow = Xml.appendNewElementWithText(devAndTableElements[2], "tr", null);
       appendNewElementsWithText(nextRow, "td", cellContents);
-      //      devAndTableElements[0].appendChild(devAndTableElements[1]);
       return devAndTableElements;
    }
 
@@ -425,9 +445,7 @@ public class Xml {
          } else {
             appendNewElementsWithText(nextRow, "td", new String[] {cellContentsAndStyleArray[0]});
          }
-
       }
-      //      devAndTableElements[0].appendChild(devAndTableElements[1]);
       return devAndTableElements;
    }
 
