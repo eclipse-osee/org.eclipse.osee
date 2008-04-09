@@ -71,6 +71,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.DeleteArtifactHandler;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
@@ -147,8 +148,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       aContentProvider = new ArtifactListContentProvider(this);
       viewer.setContentProvider(aContentProvider);
       viewer.setSorter(new DecoratorIgnoringViewerSorter(artifactLabelProvider));
-      // globalMenuHelper = new ArtifactTableViewerGlobalMenuHelper(viewer);
-
       viewer.addDoubleClickListener(new ArtifactDoubleClick());
 
       createContextMenu(viewer.getControl());
@@ -175,7 +174,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
          public void menuAboutToShow(IMenuManager manager) {
-            ArtifactSearchViewPage.this.fillPopupMenu(manager);
+            fillPopupMenu(manager);
          }
       });
 
@@ -199,8 +198,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       menuManager.add(new Separator());
       createSetAllPartitions(menuManager, viewer);
       menuManager.add(new Separator());
-      createDeleteArtifactHandler(menuManager, viewer);
-      createPurgeArtifactHandler(menuManager, viewer);
+      createPurgeArtifactHandler(menuManager, viewer);       
 
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -225,7 +223,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       menuManager.add(new Separator());
       addSetAllPartitions(menuManager, viewer);
       menuManager.add(new Separator());
-      addDeleteArtifactHandler(menuManager, viewer);
       addPurgeArtifactHandler(menuManager, viewer);
 
       // The additions group is a standard group
@@ -311,51 +308,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
             return isEnabled;
          }
       });
-   }
-
-   /**
-    * @param menuManager
-    * @param viewer
-    */
-   private String addDeleteArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
-      CommandContributionItem deleteArtifactCommand =
-            Commands.getLocalCommandContribution("org.eclipse.ui.edit.delete", getSite(), null, null, null, null, null,
-                  null, null, null);
-      menuManager.add(deleteArtifactCommand);
-
-      return deleteArtifactCommand.getId();
-   }
-
-   private void createDeleteArtifactHandler(MenuManager menuManager, final TableViewer viewer) {
-      handlerService.activateHandler(addDeleteArtifactHandler(menuManager, viewer),
-            new AbstractSelectionEnabledHandler(menuManager) {
-               @Override
-               public Object execute(ExecutionEvent event) throws ExecutionException {
-                  try {
-                     MessageDialog dialog =
-                           new MessageDialog(
-                                 Display.getCurrent().getActiveShell(),
-                                 "Confirm Artifact Deletion",
-                                 null,
-                                 " Are you sure you want to delete this artifact and all of the default hierarchy children?",
-                                 MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL,
-                                       IDialogConstants.NO_LABEL}, 1);
-                     if (dialog.open() == 0) {
-                        ArtifactPersistenceManager.getInstance().deleteArtifact(
-                              getSelectedArtifacts(viewer).toArray(Artifact.EMPTY_ARRAY));
-                     }
-                  } catch (Exception ex) {
-                     OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-                  }
-                  return null;
-               }
-
-               @Override
-               public boolean isEnabled() {
-                  return accessControlManager.checkObjectListPermission(getSelectedArtifacts(viewer),
-                        PermissionEnum.WRITE);
-               }
-            });
    }
 
    /**
@@ -705,7 +657,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
             try {
                RevisionHistoryView revisionHistoryView =
                      (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, selectedArtifact.getGuid(),
-                           IWorkbenchPage.VIEW_ACTIVATE);
+                           IWorkbenchPage.VIEW_VISIBLE);
                revisionHistoryView.explore(selectedArtifact);
             } catch (Exception ex) {
                logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -954,44 +906,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
    public boolean runOnEventInDisplayThread() {
       return true;
    }
-
-   // public class ArtifactMenuListener implements MenuListener {
-   //
-   // public void menuHidden(MenuEvent e) {
-   // }
-   //
-   // public void menuShown(MenuEvent e) {
-   // // Use this menu listener until all menu items can be moved to GlobaMenu
-   // GlobalMenuPermissions permiss = new
-   // GlobalMenuPermissions(globalMenuHelper);
-   //
-   // IStructuredSelection selection = (IStructuredSelection)
-   // viewer.getSelection();
-   // addTemplateItem.setEnabled(selection.size() == 1 && ((Match)
-   // selection.getFirstElement()).getElement() instanceof WordRenderer);
-   //
-   // openMenuItem.setEnabled(permiss.isHasArtifacts() &&
-   // permiss.isWritePermission());
-   // openInAtsWorldMenuItem.setEnabled(permiss.isHasArtifacts() &&
-   // permiss.isWritePermission());
-   // openInMassEditorMenuItem.setEnabled(permiss.isHasArtifacts() &&
-   // permiss.isWritePermission());
-   // skywalkerEditorMenuItem.setEnabled(permiss.isHasArtifacts() &&
-   // permiss.isReadPermission());
-   // // previewMenuItem.setEnabled(permiss.isHasArtifacts() &&
-   // permiss.isReadPermission());
-   // editItem.setEnabled(permiss.isHasArtifacts() &&
-   // permiss.isWritePermission());
-   // revisionMenuItem.setEnabled(permiss.isHasArtifacts() &&
-   // permiss.isReadPermission());
-   // showInExplorerMenuItem.setEnabled(permiss.isHasArtifacts() &&
-   // permiss.isReadPermission());
-   // exportMenuItem.setEnabled(permiss.isHasArtifacts() &&
-   // permiss.isReadPermission());
-   // setAllPartitionsMenuItem.setEnabled(permiss.isHasArtifacts() &&
-   // permiss.isWritePermission());
-   // }
-   // }
 
    private class SearchDragAndDrop extends SkynetDragAndDrop {
 
