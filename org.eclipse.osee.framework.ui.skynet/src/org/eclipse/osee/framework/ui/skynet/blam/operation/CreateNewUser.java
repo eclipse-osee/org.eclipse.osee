@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XList.XListItem;
 public class CreateNewUser extends AbstractBlam {
 
    private final static List<String> attrNames =
-         Arrays.asList(new String[] {"Company", "Company Title", "City", "State", "Phone"});
+         Arrays.asList(new String[] {"Company", "Company Title", "City", "State", "Phone", "Notes"});
    private Set<Artifact> groupArts;
 
    /* (non-Javadoc)
