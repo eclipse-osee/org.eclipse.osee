@@ -138,7 +138,8 @@ public class CreateNewUser extends AbstractBlam {
             groupStr += art.getDescriptiveName() + ",";
          }
          groupStr = groupStr.replaceFirst(",$", "");
-         widgetXml += "<XWidget xwidgetType=\"XList(" + groupStr + ")\" displayName=\"Groups\"/>";
+         widgetXml +=
+               "<XWidget xwidgetType=\"XList(" + groupStr + ")\" displayName=\"Groups\" defaultValue=\"Everyone\"/>";
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

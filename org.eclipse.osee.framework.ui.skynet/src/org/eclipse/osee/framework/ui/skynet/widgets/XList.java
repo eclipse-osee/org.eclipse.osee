@@ -294,6 +294,7 @@ public class XList extends XWidget {
    }
 
    protected void updateListWidget() {
+      if (listList == null) return;
       String listItems[] = listList.getItems();
       Set<String> listItemsSet = new HashSet<String>();
       Set<String> selected = new HashSet<String>();

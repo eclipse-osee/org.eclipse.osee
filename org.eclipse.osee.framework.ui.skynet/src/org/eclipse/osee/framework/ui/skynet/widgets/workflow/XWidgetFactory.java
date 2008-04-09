@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -154,8 +155,11 @@ public class XWidgetFactory {
             XList list = new XList(name);
             list.add(values);
             xWidget = list;
+            if (!xWidgetLayoutData.getDefaultValue().equals("")) list.setSelected(Arrays.asList(xWidgetLayoutData.getDefaultValue().split(
+                  ",")));
          } else
             throw new IllegalArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
+
       } else {
          throw new IllegalArgumentException("Unhandled XWidget \"" + xWidgetName);
       }
