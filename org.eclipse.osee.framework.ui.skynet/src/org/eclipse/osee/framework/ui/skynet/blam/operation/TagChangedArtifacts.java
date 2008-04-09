@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -45,7 +46,10 @@ public class TagChangedArtifacts extends AbstractBlam {
             }
 
             monitor.subTask("Tagging change on branch " + branch.getBranchShortestName() + " for artifact " + ++count + " of " + total);
-            tagManager.autoTag(true, change.getArtifact());
+            Artifact artifact = change.getArtifact();
+            if (!artifact.isDeleted()) {
+               tagManager.autoTag(true, artifact);
+            }
          }
          monitor.worked(1);
       }
