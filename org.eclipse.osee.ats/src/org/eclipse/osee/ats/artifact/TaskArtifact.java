@@ -353,6 +353,14 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return 0;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isWorldViewAnnualCostAvoidanceValid()
+    */
+   @Override
+   public Result isWorldViewAnnualCostAvoidanceValid() {
+      return Result.TrueResult;
+   }
+
    /*
     * (non-Javadoc)
     * 

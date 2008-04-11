@@ -573,6 +573,19 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    /**
+    * Get sole double attribute value if it exists, else return 0.0
+    * 
+    * @param attributeName
+    * @return
+    * @throws IllegalStateException
+    */
+   public double getSoleDoubleAttributeValue(String attributeTypeName) throws IllegalStateException {
+      Double value = getSoleXAttributeValueHideException(attributeTypeName);
+      if (value == null) return 0.0;
+      return value;
+   }
+
+   /**
     * @param attributeName
     * @return true if attribute exists AND set to "yes"; else return false
     * @throws IllegalStateException
