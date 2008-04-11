@@ -17,13 +17,11 @@ import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBU
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_DEFINITIONS;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_ID_SEQ;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_TYPE_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TXD_COMMENT;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.VALID_RELATIONS_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -69,14 +67,6 @@ import org.eclipse.osee.framework.skynet.core.user.UserEnum;
  */
 public class BranchCreator implements PersistenceManager {
    static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
-
-   private static final LocalAliasTable RELATION_LINK_TYPE_ALIAS_1 =
-         new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "t1");
-   private static final LocalAliasTable RELATION_LINK_TYPE_ALIAS_2 =
-         new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "t2");
-
-   private static final LocalAliasTable VALID_RELATIONS_ALIAS_1 = new LocalAliasTable(VALID_RELATIONS_TABLE, "t1");
-   private static final LocalAliasTable VALID_RELATIONS_ALIAS_2 = new LocalAliasTable(VALID_RELATIONS_TABLE, "t2");
 
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_1 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t1");
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_2 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t2");
@@ -202,9 +192,9 @@ public class BranchCreator implements PersistenceManager {
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                                                                                                                                                                                                                                                             * parent
-                                                                                                                                                                                                                                                                                                                                                             * transactoin_id
-                                                                                                                                                                                                                                                                                                                                                             */, Integer /* gamma_id */>(
+                                                                                                                                                                                                                                                                                                                                                                        * parent
+                                                                                                                                                                                                                                                                                                                                                                        * transactoin_id
+                                                                                                                                                                                                                                                                                                                                                                        */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
