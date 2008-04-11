@@ -32,10 +32,14 @@ public class DateAttribute extends Attribute<Date> {
    // TODO: handle default String value
    public DateAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);
+      if ((defaultValue == null) || (defaultValue.equals("")))
+         setRawStringValue("0");
+      else
+         setRawStringValue(defaultValue);
    }
 
    public void setValue(Date value) {
-         setRawStringValue(Long.toString(value.getTime()));
+      setRawStringValue(Long.toString(value.getTime()));
    }
 
    public Date getValue() {
