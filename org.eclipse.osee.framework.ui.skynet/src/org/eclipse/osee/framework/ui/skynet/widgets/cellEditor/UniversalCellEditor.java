@@ -134,7 +134,7 @@ public class UniversalCellEditor extends CellEditor {
          return textBox.getText();
       }
       if (control instanceof CalendarCombo) {
-         return datePicker.getDate();
+         return datePicker.getDate().getTime();
       }
       throw new IllegalArgumentException("Control was of an unexpected type: " + control.getClass().getName());
    }

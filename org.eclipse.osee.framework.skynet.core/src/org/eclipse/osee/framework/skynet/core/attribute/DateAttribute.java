@@ -33,7 +33,7 @@ public class DateAttribute extends Attribute<Date> {
    public DateAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);
       if ((defaultValue == null) || (defaultValue.equals("")))
-         setRawStringValue("0");
+         setRawStringValue("");
       else
          setRawStringValue(defaultValue);
    }
@@ -43,6 +43,7 @@ public class DateAttribute extends Attribute<Date> {
    }
 
    public Date getValue() {
+      if (getRawStringValue().equals("")) return null;
       return new Date(Long.parseLong(getRawStringValue()));
    }
 

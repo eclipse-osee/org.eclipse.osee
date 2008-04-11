@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.swt.graphics.Image;
 
@@ -53,6 +54,9 @@ public class AttributeLabelProvider implements ITableLabelProvider {
       }
       if (attribute instanceof BooleanAttribute) {
          return ((BooleanAttribute) attribute).getValue() ? "yes" : "no";
+      }
+      if (attribute instanceof DateAttribute) {
+         return ((DateAttribute) attribute).getAsFormattedString(DateAttribute.MMDDYY);
       }
       return attribute.toString();
    }

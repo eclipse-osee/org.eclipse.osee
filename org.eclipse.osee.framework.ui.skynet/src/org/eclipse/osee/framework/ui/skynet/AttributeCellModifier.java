@@ -118,8 +118,7 @@ public class AttributeCellModifier implements ICellModifier {
 
       if (attribute instanceof DateAttribute) {
          ((DateAttribute) attribute).setValue((Date) value);
-      }
-      if (attribute instanceof BooleanAttribute) {
+      } else if (attribute instanceof BooleanAttribute) {
          ((BooleanAttribute) attribute).setValue(value.equals("yes"));
       }
       //binary attributes should not be changed.
