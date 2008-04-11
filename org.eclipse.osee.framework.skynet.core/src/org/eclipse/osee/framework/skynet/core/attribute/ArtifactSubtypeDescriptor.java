@@ -53,8 +53,8 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
    private static final ImageDescriptor incNew = SkynetActivator.getInstance().getImageDescriptor("inc_new.gif");
    private static final ImageDescriptor incChange = SkynetActivator.getInstance().getImageDescriptor("inc_change.gif");
    private static final ImageDescriptor incDeleted = SkynetActivator.getInstance().getImageDescriptor("inc_delete.gif");
-   private static final ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change_2.gif");
-   private static final ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete_2.gif");
+   private static final ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change.gif");
+   private static final ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete.gif");
    private static final ImageDescriptor lockedAccess =
          SkynetActivator.getInstance().getImageDescriptor("green_lock.gif");
    private static final ImageDescriptor lockedNoAccess =
