@@ -31,23 +31,22 @@ public class ResultSetProcessor {
          int columnIndex = index;
          int type = meta.getColumnType(columnIndex);
          String typeName = meta.getColumnTypeName(columnIndex);
-         String name = meta.getColumnName(columnIndex).toUpperCase();
+         String name = meta.getColumnName(columnIndex);
+         // Store name - all upper case
+         name = name.toUpperCase();
          switch (type) {
             case Types.CLOB:
             case Types.BINARY:
                InputStream inputStream = resultSet.getAsciiStream(columnIndex);
-               // Always store column name as uppercase
                toReturn.put(name, streamToByteArray(inputStream));
                break;
             case Types.BLOB:
                InputStream blobStream = resultSet.getBinaryStream(columnIndex);
-               // Always store column name as uppercase
                toReturn.put(name, streamToByteArray(blobStream));
                break;
             case Types.DATE:
                Date date = resultSet.getDate(columnIndex);
                if (date != null) {
-                  // Always store column name as uppercase
                   toReturn.put(name, date.getTime());
                }
                break;
@@ -57,7 +56,6 @@ public class ResultSetProcessor {
                   if (Strings.isValid(value) != false) {
                      value = value.trim();
                   }
-                  // Always store column name as uppercase
                   toReturn.put(name, resultSet.getString(columnIndex));
                } catch (Exception ex) {
                   throw new Exception(getErrorMessage(name, typeName), ex);
