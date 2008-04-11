@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
@@ -124,6 +125,13 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (((WorldArtifactItem) element).getArtifact() instanceof TaskArtifact) return false;
       if (((WorldArtifactItem) element).getArtifact() instanceof DecisionReviewArtifact) return false;
       if (((WorldArtifactItem) element).getArtifact() instanceof PeerToPeerReviewArtifact) return false;
+      if (((WorldArtifactItem) element).getArtifact() instanceof TeamWorkFlowArtifact) {
+         try {
+            return ((WorldArtifactItem) element).getChildren().length > 0;
+         } catch (Exception ex) {
+            return false;
+         }
+      }
       if (((WorldArtifactItem) element).getArtifact().isDeleted()) return false;
       return true;
    }
