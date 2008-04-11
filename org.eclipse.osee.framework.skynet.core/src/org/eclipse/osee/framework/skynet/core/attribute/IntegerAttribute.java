@@ -20,7 +20,10 @@ public class IntegerAttribute extends Attribute<Integer> {
 
    public IntegerAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);
-      setRawStringValue(defaultValue);
+      if (defaultValue.equals(""))
+         setRawStringValue("0");
+      else
+         setRawStringValue(defaultValue);
    }
 
    /* (non-Javadoc)

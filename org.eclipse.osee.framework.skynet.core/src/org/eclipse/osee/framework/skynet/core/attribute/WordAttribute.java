@@ -52,15 +52,21 @@ public class WordAttribute extends StringAttribute {
     */
    @Override
    public String getValue() {
+      return getValue(getRawContentStream(), getRawContent());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
+    */
+   public static String getValue(ByteArrayInputStream rawContentStream, byte[] bytes) {
       try {
-         ByteArrayInputStream rawContentStream = getRawContentStream();
          if (rawContentStream != null) {
-            byte[] bytes = Lib.decompressBytes(rawContentStream);
-            if (bytes.length == 0) {
+            byte[] local_bytes = Lib.decompressBytes(rawContentStream);
+            if (local_bytes.length == 0) {
                //assume decompression failed because the content was not compress originally (do this to be backwards compatible for now)
-               bytes = getRawContent();
+               local_bytes = bytes;
             }
-            return WordUtil.reassignBinDataID(new String(bytes, "UTF-8"));
+            return WordUtil.reassignBinDataID(new String(local_bytes, "UTF-8"));
          }
       } catch (IOException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -76,7 +82,7 @@ public class WordAttribute extends StringAttribute {
       try {
          value = WordUtil.removeWordMarkupSmartTags(value);
          if(false){
-        	 setRawContent(Lib.compressFile(new ByteArrayInputStream(value.getBytes("UTF-8")), getAttributeType().getName()));
+         setRawContent(Lib.compressFile(new ByteArrayInputStream(value.getBytes("UTF-8")), getAttributeType().getName()));
          } else {
         	 setRawContent(value.getBytes("UTF-8"));
          }
@@ -91,9 +97,30 @@ public class WordAttribute extends StringAttribute {
    @Override
    public void setValueFromInputStream(InputStream value) throws IOException {
       if(false){
-    	  setRawContent(Lib.compressFile(value, getAttributeType().getName()));
-      } else {
-    	  setRawContent(Lib.inputStreamToBytes(value));
+      setRawContent(Lib.compressFile(value, getAttributeType().getName()));
       }
+   }
+   
+   public static String convertStreamToString(ByteArrayInputStream stream, byte[] rawContent){
+	      try {
+	          if (stream != null) {
+	             byte[] bytes = Lib.decompressBytes(stream);
+	             if (bytes.length == 0) {
+	                //assume decompression failed because the content was not compress originally (do this to be backwards compatible for now)
+	                bytes = rawContent;
+	             }
+	             return WordUtil.reassignBinDataID(new String(bytes, "UTF-8"));
+	          }
+	       } catch (IOException ex) {
+	          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+	       }
+	       return null;
+	   
+   }
+   
+
+   @Override
+   public void setRawContent(byte[] value) {
+	   super.setRawContent(value);
    }
 }

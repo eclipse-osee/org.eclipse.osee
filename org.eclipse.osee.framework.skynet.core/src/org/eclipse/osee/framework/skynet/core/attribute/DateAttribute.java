@@ -35,7 +35,10 @@ public class DateAttribute extends Attribute<Date> {
    }
 
    public void setValue(Date value) {
-      setRawStringValue(Long.toString(value.getTime()));
+      if (value.equals(""))
+         setRawStringValue("0");
+      else
+         setRawStringValue(Long.toString(value.getTime()));
    }
 
    public Date getValue() {
