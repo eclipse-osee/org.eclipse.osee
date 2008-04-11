@@ -64,6 +64,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
  * @author Jeff C. Phillips
  */
 public class WordRenderer extends FileRenderer {
+   public static final String WORD_RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.word";
    public static final String DEFAULT_SET_NAME = "Default";
    public static final String ARTIFACT_NAME = "Word Renderer";
    public static final String TEMPLATE_ATTRIBUTE = "Word Template";
