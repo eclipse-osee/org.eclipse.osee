@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,8 +21,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.DbUtil;
 import org.eclipse.osee.framework.database.Query;
-import org.eclipse.osee.framework.database.RsetProcessor;
 import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
@@ -65,7 +65,7 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
 public class RelationPersistenceManager implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationPersistenceManager.class);
    private static final String SELECT_LINKS =
-         "SELECT * FROM osee_define_rel_link rl_1, osee_define_txs txs1 WHERE(rl_1.a_art_id = ? OR rl_1.b_art_id = ?) AND rl_1.gamma_id = txs1.gamma_id AND rl_1.modification_id <> ? AND txs1.transaction_id = (SELECT MAX(txd1.transaction_id) FROM osee_define_tx_details txd1 WHERE txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txd1.transaction_id <= ?)";
+         "SELECT rl_1.*, txs1.* FROM osee_define_rel_link rl_1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE (rl_1.a_art_id = ?  OR rl_1.b_art_id = ?) AND rl_1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? order by rl_1.rel_link_id, txs1.transaction_id desc";
 
    private static final String UPDATE_RELATION_ORDERS =
          "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order_value=?, b_order_value=? WHERE gamma_id=?";
@@ -347,17 +347,81 @@ public class RelationPersistenceManager implements PersistenceManager {
    }
 
    public void populateArtifactRelations(Artifact artifact) throws SQLException {
+      int previousRelationId = -1;
       if (artifact.getPersistenceMemo() == null) {
          return;
       }
-
-      Collection<IRelationLink> relationCollection = new ArrayList<IRelationLink>();
-      Branch branch = artifact.getBranch();
+      int branchId = artifact.getBranch().getBranchId();
       TransactionId transactionId = artifact.getPersistenceMemo().getTransactionId();
-      Query.acquireCollection(relationCollection, new RelationLinkProcessor(transactionId), SELECT_LINKS,
-            SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-            ModificationType.DELETE.getValue(), SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
-            transactionId.getTransactionNumber());
+      ConnectionHandlerStatement chStmt = null;
+
+      try {
+         chStmt =
+               ConnectionHandler.runPreparedQuery(100, SELECT_LINKS, SQL3DataType.INTEGER, artifact.getArtId(),
+                     SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
+                     transactionId.getTransactionNumber(), SQL3DataType.INTEGER, branchId);
+         ResultSet rSet = chStmt.getRset();
+
+         while (rSet.next()) {
+            int relId = rSet.getInt("rel_link_id");
+            if (relId == previousRelationId) {
+               continue;
+            }
+            previousRelationId = relId;
+            if (rSet.getInt("modification_id") == ModificationType.DELETE.getValue()) {
+               continue;
+            }
+
+            IRelationLink link = null;
+            String rationale = rSet.getString("rationale");
+            int aArtId = rSet.getInt("a_art_id");
+            int bArtId = rSet.getInt("b_art_id");
+            int aOrderValue = rSet.getInt("a_order_value");
+            int bOrderValue = rSet.getInt("b_order_value");
+            int gammaId = rSet.getInt("gamma_id");
+
+            link = relationsCache.get(relId, transactionId);
+
+            if (link == null) {
+               try {
+                  Artifact artA = artifactManager.getArtifactFromId(aArtId, transactionId);
+                  Artifact artB = artifactManager.getArtifactFromId(bArtId, transactionId);
+                  IRelationType relationType = relationTypeManger.getType(rSet.getInt("rel_link_type_id"));
+
+                  link =
+                        new DynamicRelationLink(artA, artB, relationType, new LinkPersistenceMemo(relId, gammaId),
+                              (rationale != null && !rationale.equals("null")) ? rationale : "", aOrderValue,
+                              bOrderValue, false);
+               } catch (RuntimeException ex) {
+                  logger.log(
+                        Level.WARNING,
+                        ex.getLocalizedMessage() + ": rel_id = " + relId + " a_art_id = " + aArtId + " b_art_id = " + bArtId,
+                        ex);
+                  continue;
+               }
+               relationsCache.put(relId, transactionId, link);
+
+               if (link.getArtifactA().isLinkManagerLoaded()) {
+                  link.getArtifactA().getLinkManager().addLink(link);
+               }
+               if (link.getArtifactB().isLinkManagerLoaded()) {
+                  link.getArtifactB().getLinkManager().addLink(link);
+               }
+
+               link.setNotDirty();
+
+            } else {
+               if (!link.getArtifactA().getLinkManager().deletedLinks.contains(link) && !link.isDeleted()) {
+
+                  link.getArtifactA().getLinkManager().addLink(link);
+                  link.getArtifactB().getLinkManager().addLink(link);
+               }
+            }
+
+         }
+      } finally {
+         DbUtil.close(chStmt);
+      }
    }
 
    /**
@@ -370,85 +434,6 @@ public class RelationPersistenceManager implements PersistenceManager {
     */
    public IRelationType getIRelationLinkDescriptor(String typeName) throws SQLException {
       return RelationTypeManager.getInstance().getType(typeName);
-   }
-
-   /**
-    * Define how relation links are acquired from a ResultSet and validated before being placed in a Collection. This
-    * processor expects to receive ResultSet's with access to columns art_id, link_code, rationale, and tag_id.
-    * 
-    * @author Robert A. Fisher
-    * @author Jeff C. Phillips
-    */
-   private class RelationLinkProcessor implements RsetProcessor<IRelationLink> {
-
-      private final TransactionId transactionId;
-
-      /**
-       * @param transactionId
-       */
-      public RelationLinkProcessor(TransactionId transactionId) {
-         this.transactionId = transactionId;
-      }
-
-      public IRelationLink process(ResultSet rSet) throws SQLException {
-         IRelationLink link = null;
-         IRelationType relationType = null;
-         String rationale = rSet.getString("rationale");
-         int relId = rSet.getInt("rel_link_id");
-         int aArtId = rSet.getInt("a_art_id");
-         int bArtId = rSet.getInt("b_art_id");
-         int aOrderValue = rSet.getInt("a_order_value");
-         int bOrderValue = rSet.getInt("b_order_value");
-         int gammaId = rSet.getInt("gamma_id");
-
-         relationType = relationTypeManger.getType(rSet.getInt("rel_link_type_id"));
-         link = relationsCache.get(relId, transactionId);
-
-         if (link == null) {
-            Artifact artA = null;
-            Artifact artB = null;
-
-            try {
-               artA = artifactManager.getArtifactFromId(aArtId, transactionId);
-               artB = artifactManager.getArtifactFromId(bArtId, transactionId);
-            } catch (RuntimeException ex) {
-               logger.log(
-                     Level.WARNING,
-                     "Loading link failed:  " + ex.getLocalizedMessage() + ": rel_id = " + relId + " art_id = " + (artA == null ? aArtId : bArtId),
-                     ex);
-               return null;
-            }
-
-            link =
-                  new DynamicRelationLink(artA, artB, relationType, new LinkPersistenceMemo(relId, gammaId),
-                        (rationale != null && !rationale.equals("null")) ? rationale : "", aOrderValue, bOrderValue,
-                        false);
-
-            relationsCache.put(relId, transactionId, link);
-
-            if (link.getArtifactA().isLinkManagerLoaded()) {
-               link.getArtifactA().getLinkManager().addLink(link);
-            }
-            if (link.getArtifactB().isLinkManagerLoaded()) {
-               link.getArtifactB().getLinkManager().addLink(link);
-            }
-
-            link.setNotDirty();
-
-         } else {
-            if (!link.getArtifactA().getLinkManager().deletedLinks.contains(link) && !link.isDeleted()) {
-
-               link.getArtifactA().getLinkManager().addLink(link);
-               link.getArtifactB().getLinkManager().addLink(link);
-               return link;
-            }
-         }
-         return link;
-      }
-
-      public boolean validate(IRelationLink item) {
-         return item != null;
-      }
    }
 
    public void cache(IRelationLink link, TransactionId transactionId) {
