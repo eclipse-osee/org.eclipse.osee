@@ -11,15 +11,11 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_TYPE_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +24,6 @@ import java.util.logging.Logger;
 import org.eclipse.osee.framework.database.ConnectionHandler;
 import org.eclipse.osee.framework.database.Query;
 import org.eclipse.osee.framework.database.RsetProcessor;
-import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
 import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
@@ -69,27 +64,8 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
  */
 public class RelationPersistenceManager implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationPersistenceManager.class);
-   private static final LocalAliasTable LINK_ALIAS_1 = new LocalAliasTable(RELATION_LINK_VERSION_TABLE, "t1");
-   private static final LocalAliasTable LINK_ALIAS_2 = new LocalAliasTable(RELATION_LINK_VERSION_TABLE, "t2");
-
    private static final String SELECT_LINKS =
-         "SELECT DISTINCT " + RELATION_LINK_TYPE_TABLE.columns("type_name", "a_name", "b_name", "ab_phrasing",
-               "ba_phrasing", "short_name") + ", " + LINK_ALIAS_1.columns("rel_link_id", "a_art_id", "b_art_id",
-               "rationale", "a_order_value", "b_order_value", "gamma_id")
-
-         + " FROM " + LINK_ALIAS_1 + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE
-
-         + " WHERE " + LINK_ALIAS_1.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND " + LINK_ALIAS_1.column("a_art_id") + "= ?" + " AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + LINK_ALIAS_1.column("modification_id") + "<> ?" + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)"
-
-         + " UNION ALL "
-
-         + "SELECT DISTINCT " + RELATION_LINK_TYPE_TABLE.columns("type_name", "a_name", "b_name", "ab_phrasing",
-               "ba_phrasing", "short_name") + ", " + LINK_ALIAS_1.columns("rel_link_id", "a_art_id", "b_art_id",
-               "rationale", "a_order_value", "b_order_value", "gamma_id")
-
-         + " FROM " + LINK_ALIAS_1 + "," + RELATION_LINK_TYPE_TABLE + "," + TRANSACTIONS_TABLE
-
-         + " WHERE " + LINK_ALIAS_1.column("rel_link_type_id") + "=" + RELATION_LINK_TYPE_TABLE.column("rel_link_type_id") + " AND " + LINK_ALIAS_1.column("b_art_id") + "= ?" + " AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + LINK_ALIAS_1.column("modification_id") + "<> ?" + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?)";
+         "SELECT * FROM osee_define_rel_link rl_1, osee_define_txs txs1 WHERE(rl_1.a_art_id = ? OR rl_1.b_art_id = ?) AND rl_1.gamma_id = txs1.gamma_id AND rl_1.modification_id <> ? AND txs1.transaction_id = (SELECT MAX(txd1.transaction_id) FROM osee_define_tx_details txd1 WHERE txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txd1.transaction_id <= ?)";
 
    private static final String UPDATE_RELATION_ORDERS =
          "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order_value=?, b_order_value=? WHERE gamma_id=?";
@@ -109,12 +85,12 @@ public class RelationPersistenceManager implements PersistenceManager {
    }
 
    // This hash is keyed on the rel_link_id of the relation link, then transaction_id
-   private HashMap<Integer, IRelationLink> relationsCache;
+   private DoubleKeyHashMap<Integer, TransactionId, IRelationLink> relationsCache;
 
    private static final RelationPersistenceManager instance = new RelationPersistenceManager();
 
    private RelationPersistenceManager() {
-      this.relationsCache = new HashMap<Integer, IRelationLink>();
+      this.relationsCache = new DoubleKeyHashMap<Integer, TransactionId, IRelationLink>();
    }
 
    /**
@@ -192,7 +168,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       if (relationLink.getPersistenceMemo() == null) {
          linkId = Query.getNextSeqVal(null, SkynetDatabase.REL_LINK_ID_SEQ);
          relationLink.setPersistenceMemo(new LinkPersistenceMemo(linkId, gammaId));
-         cache(relationLink);
+         cache(relationLink, transaction.getTransactionId());
          transaction.addRemoteEvent(RemoteLinkEventFactory.makeEvent(relationLink, transaction.getTransactionNumber()));
          modType = ModType.Added;
          modId = ModificationType.NEW;
@@ -371,33 +347,24 @@ public class RelationPersistenceManager implements PersistenceManager {
    }
 
    public void populateArtifactRelations(Artifact artifact) throws SQLException {
-
       if (artifact.getPersistenceMemo() == null) {
          return;
       }
-      
-      try{
 
       Collection<IRelationLink> relationCollection = new ArrayList<IRelationLink>();
       Branch branch = artifact.getBranch();
       TransactionId transactionId = artifact.getPersistenceMemo().getTransactionId();
       Query.acquireCollection(relationCollection, new RelationLinkProcessor(transactionId), SELECT_LINKS,
-            SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-            ModificationType.DELETE.getValue(), SQL3DataType.INTEGER, branch.getBranchId(),
-            SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER, artifact.getArtId(),
-            SQL3DataType.INTEGER, ModificationType.DELETE.getValue(), SQL3DataType.INTEGER,
-            branch.getBranchId(), SQL3DataType.INTEGER, transactionId.getTransactionNumber());
-      }
-      catch(Exception exception){
-    	  System.out.println("funny");
-      }
+            SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
+            ModificationType.DELETE.getValue(), SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
+            transactionId.getTransactionNumber());
    }
 
    /**
     * Get a particular link descriptor by its type name. If no such descriptor exists then a null reference will be
     * returned.
-    * @param name The type name of the relation link.
     * 
+    * @param name The type name of the relation link.
     * @return The corresponding descriptor, null if one does not exist.
     * @throws SQLException
     */
@@ -423,29 +390,21 @@ public class RelationPersistenceManager implements PersistenceManager {
          this.transactionId = transactionId;
       }
 
-      public IRelationLink process(ResultSet set) throws SQLException {
+      public IRelationLink process(ResultSet rSet) throws SQLException {
          IRelationLink link = null;
          IRelationType relationType = null;
-         String rationale = set.getString("rationale");
-         int relId = set.getInt("rel_link_id");
-         int aArtId = set.getInt("a_art_id");
-         int bArtId = set.getInt("b_art_id");
-         int aOrderValue = set.getInt("a_order_value");
-         int bOrderValue = set.getInt("b_order_value");
-         int gammaId = set.getInt("gamma_id");
+         String rationale = rSet.getString("rationale");
+         int relId = rSet.getInt("rel_link_id");
+         int aArtId = rSet.getInt("a_art_id");
+         int bArtId = rSet.getInt("b_art_id");
+         int aOrderValue = rSet.getInt("a_order_value");
+         int bOrderValue = rSet.getInt("b_order_value");
+         int gammaId = rSet.getInt("gamma_id");
 
-         relationType = relationTypeManger.getType(set.getString("type_name"));
-         link = relationsCache.get(relId);
+         relationType = relationTypeManger.getType(rSet.getInt("rel_link_type_id"));
+         link = relationsCache.get(relId, transactionId);
 
-         if (link != null) {
-
-            if (!link.getArtifactA().getLinkManager().deletedLinks.contains(link) && !link.isDeleted()) {
-
-               link.getArtifactA().getLinkManager().addLink(link);
-               link.getArtifactB().getLinkManager().addLink(link);
-               return link;
-            }
-         } else {
+         if (link == null) {
             Artifact artA = null;
             Artifact artB = null;
 
@@ -465,13 +424,24 @@ public class RelationPersistenceManager implements PersistenceManager {
                         (rationale != null && !rationale.equals("null")) ? rationale : "", aOrderValue, bOrderValue,
                         false);
 
-            relationsCache.put(relId, link);
+            relationsCache.put(relId, transactionId, link);
 
-            if (link.getArtifactA().isLinkManagerLoaded()) link.getArtifactA().getLinkManager().addLink(link);
-
-            if (link.getArtifactB().isLinkManagerLoaded()) link.getArtifactB().getLinkManager().addLink(link);
+            if (link.getArtifactA().isLinkManagerLoaded()) {
+               link.getArtifactA().getLinkManager().addLink(link);
+            }
+            if (link.getArtifactB().isLinkManagerLoaded()) {
+               link.getArtifactB().getLinkManager().addLink(link);
+            }
 
             link.setNotDirty();
+
+         } else {
+            if (!link.getArtifactA().getLinkManager().deletedLinks.contains(link) && !link.isDeleted()) {
+
+               link.getArtifactA().getLinkManager().addLink(link);
+               link.getArtifactB().getLinkManager().addLink(link);
+               return link;
+            }
          }
          return link;
       }
@@ -481,8 +451,8 @@ public class RelationPersistenceManager implements PersistenceManager {
       }
    }
 
-   public void cache(IRelationLink link) {
-      relationsCache.put(link.getPersistenceMemo().getLinkId(), link);
+   public void cache(IRelationLink link, TransactionId transactionId) {
+      relationsCache.put(link.getPersistenceMemo().getLinkId(), transactionId, link);
    }
 
    /**
@@ -490,7 +460,7 @@ public class RelationPersistenceManager implements PersistenceManager {
     * 
     * @param event
     */
-   public void updateRelationCache(ISkynetRelationLinkEvent event, Collection<Event> localEvents) {
+   public void updateRelationCache(ISkynetRelationLinkEvent event, Collection<Event> localEvents, TransactionId newTransactionId) {
       try {
          Integer relId = event.getRelId();
          Integer gammaId = event.getGammaId();
@@ -498,8 +468,8 @@ public class RelationPersistenceManager implements PersistenceManager {
          int artAId = event.getArtAId();
          int artBId = event.getArtBId();
 
-         if (relationsCache.containsKey(relId)) {
-            IRelationLink link = relationsCache.get(relId);
+         if (relationsCache.containsKey(relId, newTransactionId)) {
+            IRelationLink link = relationsCache.get(relId, newTransactionId);
 
             if (event instanceof NetworkRelationLinkModifiedEvent) {
 
@@ -528,8 +498,8 @@ public class RelationPersistenceManager implements PersistenceManager {
 
                if (bArt.isLinkManagerLoaded()) bArt.getLinkManager().removeLink(link);
 
-               localEvents.add(new TransactionRelationModifiedEvent(link, branch,
-                     link.getRelationType().getTypeName(), link.getASideName(), ModType.Deleted, this));
+               localEvents.add(new TransactionRelationModifiedEvent(link, branch, link.getRelationType().getTypeName(),
+                     link.getASideName(), ModType.Deleted, this));
             }
          } else if (event instanceof NetworkNewRelationLinkEvent) {
             NetworkNewRelationLinkEvent newRelationEvent = (NetworkNewRelationLinkEvent) event;
@@ -560,7 +530,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                   if (artA.isLinkManagerLoaded()) artA.getLinkManager().addLink(link);
                   if (artB.isLinkManagerLoaded()) artB.getLinkManager().addLink(link);
 
-                  relationsCache.put(relId, link);
+                  relationsCache.put(relId, newTransactionId, link);
                   link.setNotDirty();
 
                   localEvents.add(new TransactionRelationModifiedEvent(link, branch,

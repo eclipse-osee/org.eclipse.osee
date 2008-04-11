@@ -34,31 +34,21 @@ public abstract class RelationLinkBase implements IRelationLink {
    private int bOrder;
    private String rationale;
    private LinkPersistenceMemo memo;
-   private IRelationType descriptor;
+   private IRelationType relationType;
    private static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-
    protected boolean dirty;
 
-   protected RelationLinkBase(IRelationType descriptor) {
-      if (descriptor == null) throw new IllegalArgumentException("descriptor can not be null");
-
-      this.descriptor = descriptor;
-      this.deleted = false;
-      this.dirty = true;
-      this.rationale = "";
-   }
-
    protected RelationLinkBase(Artifact artA, Artifact artB, IRelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder) {
-      if (relationType == null) throw new IllegalArgumentException("descriptor can not be null");
-
       this.artA = artA;
       this.artB = artB;
-      this.descriptor = relationType;
+      this.relationType = relationType;
       this.memo = memo;
       this.rationale = rationale;
       this.aOrder = aOrder;
       this.bOrder = bOrder;
+      this.deleted = false;
+      this.dirty = false;
    }
 
    /**
@@ -119,13 +109,13 @@ public abstract class RelationLinkBase implements IRelationLink {
    public Artifact getArtifact(String sideName) {
       if (sideName == null) throw new IllegalArgumentException("sideName can not be null");
 
-      if (descriptor.getSideAName().equals(sideName)) {
+      if (relationType.getSideAName().equals(sideName)) {
          return artA;
-      } else if (descriptor.getSideBName().equals(sideName)) {
+      } else if (relationType.getSideBName().equals(sideName)) {
          return artB;
       } else {
          throw new IllegalArgumentException(
-               "sideName '" + sideName + "' does not match '" + descriptor.getSideAName() + "' or '" + descriptor.getSideBName() + "' for link type " + descriptor.getTypeName());
+               "sideName '" + sideName + "' does not match '" + relationType.getSideAName() + "' or '" + relationType.getSideBName() + "' for link type " + relationType.getTypeName());
       }
    }
 
@@ -287,7 +277,7 @@ public abstract class RelationLinkBase implements IRelationLink {
    }
 
    public IRelationType getRelationType() {
-      return descriptor;
+      return relationType;
    }
 
    public LinkPersistenceMemo getPersistenceMemo() {
@@ -318,15 +308,15 @@ public abstract class RelationLinkBase implements IRelationLink {
       if (artifact == artA) {
 
          if (otherArtifact)
-            sideName = descriptor.getSideBName();
+            sideName = relationType.getSideBName();
          else
-            sideName = descriptor.getSideAName();
+            sideName = relationType.getSideAName();
       } else if (artifact == artB) {
 
          if (otherArtifact)
-            sideName = descriptor.getSideAName();
+            sideName = relationType.getSideAName();
          else
-            sideName = descriptor.getSideBName();
+            sideName = relationType.getSideBName();
       } else
          throw new IllegalArgumentException("Link does not contain the artifact.");
 
@@ -348,15 +338,15 @@ public abstract class RelationLinkBase implements IRelationLink {
       if (artifact == artA) {
 
          if (otherArtifact)
-            sideName = descriptor.getBToAPhrasing();
+            sideName = relationType.getBToAPhrasing();
          else
-            sideName = descriptor.getAToBPhrasing();
+            sideName = relationType.getAToBPhrasing();
       } else if (artifact == artB) {
 
          if (otherArtifact)
-            sideName = descriptor.getAToBPhrasing();
+            sideName = relationType.getAToBPhrasing();
          else
-            sideName = descriptor.getBToAPhrasing();
+            sideName = relationType.getBToAPhrasing();
       } else
          throw new IllegalArgumentException("Link does not contain the artifact.");
 
@@ -365,35 +355,35 @@ public abstract class RelationLinkBase implements IRelationLink {
 
    public String getASideName() {
       checkDeleted();
-      return descriptor.getSideAName();
+      return relationType.getSideAName();
    }
 
    public String getBSideName() {
       checkDeleted();
-      return descriptor.getSideBName();
+      return relationType.getSideBName();
    }
 
    public String getName() {
       checkDeleted();
-      return descriptor.getTypeName();
+      return relationType.getTypeName();
    }
 
    /**
     * @return Returns the aToBPhrasing.
     */
    public String getAToBPhrasing() {
-      return descriptor.getAToBPhrasing();
+      return relationType.getAToBPhrasing();
    }
 
    /**
     * @return Returns the bToAPhrasing.
     */
    public String getBToAPhrasing() {
-      return descriptor.getBToAPhrasing();
+      return relationType.getBToAPhrasing();
    }
 
    public String toString() {
-      return String.format("%s: %s(%s)<-->%s(%s)", descriptor.getTypeName(), artA.getDescriptiveName(),
+      return String.format("%s: %s(%s)<-->%s(%s)", relationType.getTypeName(), artA.getDescriptiveName(),
             Float.toString(aOrder), artB.getDescriptiveName(), Float.toString(bOrder));
    }
 }

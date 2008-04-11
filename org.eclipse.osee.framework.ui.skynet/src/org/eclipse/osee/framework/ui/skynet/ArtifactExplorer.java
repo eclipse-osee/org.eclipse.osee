@@ -152,7 +152,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
    private TreeViewer treeViewer;
    private Action upAction;
-   private Artifact root;
+   private Artifact exploreRoot;
    private MenuItem editMenuItem;
    private MenuItem massEditMenuItem;
    private MenuItem skywalkerMenuItem;
@@ -378,7 +378,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          @Override
          public void run() {
             try {
-               Artifact parent = root.getParent();
+               Artifact parent = exploreRoot.getParent();
 
                if (parent == null) return;
 
@@ -386,7 +386,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                Object[] expandedPlus = new Object[expanded.length + 1];
                for (int i = 0; i < expanded.length; i++)
                   expandedPlus[i] = expanded[i];
-               expandedPlus[expandedPlus.length - 1] = root;
+               expandedPlus[expandedPlus.length - 1] = exploreRoot;
 
                explore(parent);
 
@@ -598,7 +598,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          try {
             // If nothing was selected, then the child belongs at the root
             if (!itemsIter.hasNext()) {
-               root.addNewChild(descriptor, ed.getEntry());
+               exploreRoot.addNewChild(descriptor, ed.getEntry());
             } else {
                while (itemsIter.hasNext()) {
                   ((Artifact) itemsIter.next()).addNewChild(descriptor, ed.getEntry());
@@ -996,7 +996,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }
 
-      root = artifact;
+      exploreRoot = artifact;
 
       SkynetEventManager.getInstance().unRegisterAll(this);
       SkynetEventManager.getInstance().register(ArtifactVersionIncrementedEvent.class, this);
@@ -1012,7 +1012,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       SkynetEventManager.getInstance().register(RemoteCommitBranchEvent.class, this);
 
       if (treeViewer != null) {
-         treeViewer.setInput(root);
+         treeViewer.setInput(exploreRoot);
          setupPopupMenu();
          updateEnablementsEtAl();
 
@@ -1029,20 +1029,20 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       // The upAction may be null if this viewpart has not been layed out yet
       if (upAction != null) {
          try {
-            upAction.setEnabled(root != null && root.getParent() != null);
+            upAction.setEnabled(exploreRoot != null && exploreRoot.getParent() != null);
          } catch (SQLException ex) {
             upAction.setEnabled(false);
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
 
-      if (root != null)
-         setContentDescription(root.getDescriptiveName());
+      if (exploreRoot != null)
+         setContentDescription(exploreRoot.getDescriptiveName());
       else
          setContentDescription("");
 
-      if (root != null && root.getPersistenceMemo() != null) {
-         Branch branch = root.getPersistenceMemo().getTransactionId().getBranch();
+      if (exploreRoot != null && exploreRoot.getPersistenceMemo() != null) {
+         Branch branch = exploreRoot.getPersistenceMemo().getTransactionId().getBranch();
          if (editMenuItem != null) {
             editMenuItem.setText("Edit (" + StringFormat.truncate(branch.getBranchName(), 25) + ")");
          }
@@ -1119,9 +1119,9 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
     * Add the selection from the define explorer
     */
    private void addExploreSelection() {
-      if (root != null) {
+      if (exploreRoot != null) {
          try {
-            treeViewer.setInput(root);
+            treeViewer.setInput(exploreRoot);
          } catch (IllegalArgumentException ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
@@ -1214,17 +1214,19 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                   // branch
                   Branch defaultBranch = branchManager.getDefaultBranch();
 
-                  if (root == null) {
-                     explore(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch));
-                  } else if (root.getBranch() != defaultBranch) {
-                     Artifact candidate =
-                           ArtifactPersistenceManager.getInstance().getArtifact(root.getGuid(), defaultBranch);
-                     if (candidate == null) {
-                        explore(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch));
-                     } else {
-                        explore(candidate);
+                  Artifact candidateRoot;
+                  if (exploreRoot == null) {
+                     candidateRoot =
+                           ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch);
+                  } else {
+                     candidateRoot =
+                           ArtifactPersistenceManager.getInstance().getArtifact(exploreRoot.getGuid(), defaultBranch);
+                     if (candidateRoot == null) {
+                        candidateRoot =
+                              ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch);
                      }
                   }
+                  explore(candidateRoot);
                } catch (Exception ex) {
                   logger.log(Level.SEVERE, ex.toString(), ex);
                } finally {
@@ -1317,8 +1319,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
-      if (root != null) {
-         memento.putString(ROOT_GUID, root.getGuid());
+      if (exploreRoot != null) {
+         memento.putString(ROOT_GUID, exploreRoot.getGuid());
       }
    }
 
