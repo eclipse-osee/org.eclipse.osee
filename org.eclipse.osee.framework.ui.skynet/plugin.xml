@@ -811,6 +811,9 @@
        <MatchCriteria
              match="org.eclipse.osee.framework.ui.skynet.word PREVIEW">
        </MatchCriteria>
+       <MatchCriteria
+             match="org.eclipse.osee.framework.ui.skynet.word DIFF">
+       </MatchCriteria>
     </Template>
     <Template
           File="support/templates/PREVIEW_ALL_RECURSE.xml">
