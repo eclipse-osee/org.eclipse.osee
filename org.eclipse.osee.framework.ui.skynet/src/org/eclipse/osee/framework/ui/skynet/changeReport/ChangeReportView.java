@@ -33,6 +33,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -236,6 +238,14 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
     */
    private void defineMenusNewerWay() {
       MenuManager menuManager = new MenuManager();
+      menuManager.setRemoveAllWhenShown(true);
+      menuManager.addMenuListener(new IMenuListener() {
+         public void menuAboutToShow(IMenuManager manager) {
+            MenuManager menuManager = (MenuManager) manager;
+            menuManager.add(new Separator("Top"));
+            menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+         }
+      });
       changeTable.getTree().setMenu(menuManager.createContextMenu(changeTable.getTree()));
       menuManager.add(new Separator("Top"));
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -507,7 +517,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
             }
             WordRenderer renderer =
                   (WordRenderer) RendererManager.getInstance().getRendererById(
-                        "org.eclipse.osee.framework.ui.skynet.word");
+                		  WordRenderer.WORD_RENDERER_EXTENSION);
 
             try {
                renderer.compareArtifacts(baseArtifacts, newerArtifacts, DIFF_ARTIFACT, null,
