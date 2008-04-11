@@ -1,12 +1,11 @@
-<!-- Do Not Remove: VUE mapping @version(1.1) jar:file:/C:/Program%20Files/vue/VUE.jar!/tufts/vue/resources/lw_mapping_1_1.xml -->
-<!-- Do Not Remove: Saved date Fri Sep 28 10:39:26 MST 2007 by b0727536 on platform Windows XP 5.1 in JVM 1.5.0_07-b03 -->
+<!-- Do Not Remove: VUE mapping @version(1.1) jar:file:/C:/Program%20Files/VUE/VUE.jar!/tufts/vue/resources/lw_mapping_1_1.xml -->
+<!-- Do Not Remove: Saved date Fri Apr 11 11:31:09 MST 2008 by b0727536 on platform Windows XP 5.1 in JVM 1.5.0_07-b03 -->
 <!-- Do Not Remove: Saving version @(#)VUE: built October 17 2006 at 0400 by vue on Linux 2.4.21-37.EL i386 JVM 1.5.0_06-b05 -->
 <?xml version="1.0" encoding="US-ASCII"?>
 <LW-MAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="none" ID="0"
-    label="osee_ats_decisionReview_workflow(AAABEu5a1BQAaR82IjQ3GQ) Fri Sep 28 10;39;03 MST 2007.xml"
-    x="110.425" y="-9.0" width="337.09998" height="378.0"
-    strokeWidth="0.0" autoSized="false">
+    label="osee_ats_decisionReview_workflow.vue" x="110.425" y="-9.0"
+    width="337.09998" height="378.0" strokeWidth="0.0" autoSized="false">
     <fillColor>#ffffff</fillColor>
     <strokeColor>#404040</strokeColor>
     <font>SansSerif-plain-14</font>
@@ -14,7 +13,7 @@
     <child ID="4" label="Prepare" x="209.17499" y="-8.5"
         width="92.649994" height="29.0" strokeWidth="1.0"
         autoSized="false" xsi:type="node">
-        <notes>&lt;WorkPage startPage="true" pageId="osee.ats.decisionReview.Prepare"&gt;%nl;%nl;&lt;XWidget displayName="Title" storageName="Name" required="true" xwidgetType="XTextDam"/&gt;%nl;%nl;&lt;XWidget displayName="Decision Review Options" storageName="ats.Decision Review Options" required="true" xwidgetType="XTextDam" fill="Vertically"/&gt;%nl;%nl;&lt;XWidget displayName="Description" storageName="ats.Description" xwidgetType="XTextDam" fill="Vertically"/&gt;%nl;%nl;&lt;XWidget displayName="Blocking Review" storageName="ats.Blocking Review" xwidgetType="XComboDam(yes,no)" required="true" horizontalLabel="true" beginComposite="4"/&gt;%nl;%nl;&lt;XWidget displayName="Need By" storageName="ats.Need By" xwidgetType="XDateDam" horizontalLabel="true"/&gt;%nl;%nl;&lt;/WorkPage&gt;</notes>
+        <notes>&lt;WorkPage startPage="true" pageId="osee.ats.decisionReview.Prepare"&gt;%nl;%nl;&lt;XWidget displayName="Title" storageName="Name" required="true" xwidgetType="XTextDam"/&gt;%nl;%nl;&lt;XWidget displayName="Decision Review Options" storageName="ats.Decision Review Options" required="true" xwidgetType="XTextDam" fill="Vertically"/&gt;%nl;%nl;&lt;XWidget displayName="Description" storageName="ats.Description" xwidgetType="XTextDam" fill="Vertically"/&gt;%nl;%nl;&lt;XWidget displayName="Blocking Review" storageName="ats.Blocking Review" xwidgetType="XComboBooleanDam" required="true" horizontalLabel="true" beginComposite="4"/&gt;%nl;%nl;&lt;XWidget displayName="Need By" storageName="ats.Need By" xwidgetType="XDateDam" horizontalLabel="true"/&gt;%nl;%nl;&lt;/WorkPage&gt;</notes>
         <fillColor>#7f9cc6</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
