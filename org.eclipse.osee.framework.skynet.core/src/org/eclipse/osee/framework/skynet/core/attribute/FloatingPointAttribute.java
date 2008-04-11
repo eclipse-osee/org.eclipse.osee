@@ -20,10 +20,11 @@ public class FloatingPointAttribute extends Attribute<Double> {
 
    public FloatingPointAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);
-      if (defaultValue.equals(""))
+      if (defaultValue == null || defaultValue.equals("")) {
          setRawStringValue("0");
-      else
+      } else {
          setRawStringValue(defaultValue);
+      }
    }
 
    /* (non-Javadoc)

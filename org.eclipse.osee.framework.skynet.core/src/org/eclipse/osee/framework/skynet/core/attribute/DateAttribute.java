@@ -35,9 +35,6 @@ public class DateAttribute extends Attribute<Date> {
    }
 
    public void setValue(Date value) {
-      if (value.equals(""))
-         setRawStringValue("0");
-      else
          setRawStringValue(Long.toString(value.getTime()));
    }
 
