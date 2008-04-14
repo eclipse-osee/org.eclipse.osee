@@ -17,4 +17,3 @@ Export-Package: org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.server.resources,
  org.eclipse.osee.framework.plugin.core.server.task,
  org.eclipse.osee.framework.plugin.core.util
-Bundle-ClassPath: library.jar
