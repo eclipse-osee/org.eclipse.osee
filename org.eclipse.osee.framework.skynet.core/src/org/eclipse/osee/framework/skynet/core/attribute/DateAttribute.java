@@ -34,18 +34,22 @@ public class DateAttribute extends Attribute<Date> {
    // TODO: handle default String value
    public DateAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);
-      if ((defaultValue == null) || (defaultValue.equals("")))
+      if ((defaultValue == null) || (defaultValue.equals(""))) {
          setRawStringValue(Long.toString(Calendar.getInstance(Locale.getDefault()).getTime().getTime()));
-      else
+      } else {
          setRawStringValue(defaultValue);
+      }
    }
 
    public void setValue(Date value) {
+      if (value == null) {
+         throw new IllegalArgumentException("Date value can not be null");
+      }
+
       setRawStringValue(Long.toString(value.getTime()));
    }
 
    public Date getValue() {
-      if (getRawStringValue().equals("")) return null;
       return new Date(Long.parseLong(getRawStringValue()));
    }
 
