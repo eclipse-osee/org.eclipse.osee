@@ -41,4 +41,8 @@ public enum ProgramAttributes {
    Modification_Flag,
    Test_Log,
    Safety_Criticality;
+
+   public String toString() {
+      return name().replace("_", " ");
+   }
 }
