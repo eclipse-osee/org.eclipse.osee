@@ -32,8 +32,7 @@ public class DateAttribute extends Attribute<Date> {
    // TODO: handle default String value
    public DateAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) throws IllegalArgumentException {
       super(attributeType);
-      if (defaultValue.equals("")) throw new IllegalArgumentException("defaultValue can not be \"\"");
-      if (defaultValue == null) {
+      if (defaultValue == null || defaultValue.equals("")) {
          setRawStringValue("");
       } else {
          setRawStringValue(defaultValue);
