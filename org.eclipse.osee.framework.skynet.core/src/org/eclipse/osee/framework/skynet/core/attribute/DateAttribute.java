@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author Robert A. Fisher
@@ -33,7 +35,7 @@ public class DateAttribute extends Attribute<Date> {
    public DateAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType);
       if ((defaultValue == null) || (defaultValue.equals("")))
-         setRawStringValue("");
+         setRawStringValue(Long.toString(Calendar.getInstance(Locale.getDefault()).getTime().getTime()));
       else
          setRawStringValue(defaultValue);
    }
