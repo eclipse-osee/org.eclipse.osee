@@ -72,8 +72,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
    public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName) throws Exception {
       Branch branch = BranchPersistenceManager.getInstance().getBranch(branchName);
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
-      verArt.setSoleStringAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
-            String.valueOf(branch.getBranchId()));
+      verArt.setSoleXAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), branch.getBranchId());
       verArt.persistAttributes();
    }
 
