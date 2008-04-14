@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.StringValue;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Item;
+import java.util.GregorianCalendar;
 
 /**
  * @author Ryan D. Brooks
@@ -78,14 +79,14 @@ public class AttributeCellModifier implements ICellModifier {
          enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
          return enumeratedValue;
       }
-      if (attribute instanceof StringAttribute || attribute instanceof IntegerAttribute || attribute instanceof FloatingPointAttribute) {
-         stringValue.setValue(String.valueOf(attribute.getValue()));
-         return stringValue;
-      }
       if (attribute instanceof EnumeratedAttribute) {
          enumeratedValue.setValue(attribute.getStringData());
          enumeratedValue.setChocies(((EnumeratedAttribute) attribute).getChoices());
          return enumeratedValue;
+      }
+      if (attribute instanceof StringAttribute || attribute instanceof IntegerAttribute || attribute instanceof FloatingPointAttribute) {
+         stringValue.setValue(String.valueOf(attribute.getValue()));
+         return stringValue;
       }
       if (attribute instanceof DateAttribute) {
          dateValue.setValue(((DateAttribute) attribute).getValue());
@@ -93,6 +94,10 @@ public class AttributeCellModifier implements ICellModifier {
       }
       if (attribute instanceof WordAttribute) {
          stringValue.setValue(((WordAttribute) attribute).getValue());
+         return stringValue;
+      }
+      if (attribute instanceof BooleanAttribute) {
+         stringValue.setValue(((BooleanAttribute) attribute).getValue().toString());
          return stringValue;
       }
       if (attribute instanceof BinaryAttribute) {
@@ -111,14 +116,21 @@ public class AttributeCellModifier implements ICellModifier {
     */
    public void modify(Object element, String property, Object value) {
       // Note that it is possible for an SWT Item to be passed instead of the model element.
+//      if (element == null ) return;
       if (element instanceof Item) {
          element = ((Item) element).getData();
       }
       Attribute<?> attribute = (Attribute<?>) element;
 
       if (attribute instanceof DateAttribute) {
+         if (value instanceof GregorianCalendar){
+            ((DateAttribute) attribute).setValue(new Date (((GregorianCalendar) value).getTimeInMillis()));
+
+         } else {
          ((DateAttribute) attribute).setValue((Date) value);
-      } else if (attribute instanceof BooleanAttribute) {
+         }
+      }
+      else if (attribute instanceof BooleanAttribute) {
          ((BooleanAttribute) attribute).setValue(value.equals("yes"));
       }
       //binary attributes should not be changed.
