@@ -39,7 +39,6 @@ public abstract class Attribute<T> implements PersistenceObject {
    private final DynamicAttributeDescriptor attributeType;
    private DynamicAttributeManager manager;
    private AttributeMemo memo;
-   private boolean required;
    private boolean deletable;
    private boolean deleted;
    protected boolean dirty;
@@ -49,7 +48,6 @@ public abstract class Attribute<T> implements PersistenceObject {
 
    protected Attribute(DynamicAttributeDescriptor attributeType) {
       this.attributeType = attributeType;
-      this.required = true;
       this.deletable = true;
       this.dirty = false;
       this.memo = null;
@@ -69,22 +67,6 @@ public abstract class Attribute<T> implements PersistenceObject {
     */
    public DynamicAttributeDescriptor getAttributeType() {
       return attributeType;
-   }
-
-   /**
-    * @return Returns the required.
-    */
-   public boolean isRequired() {
-      checkDeleted();
-      return required;
-   }
-
-   /**
-    * @param required The required to set.
-    */
-   public void setRequired(boolean required) {
-      checkDeleted();
-      this.required = required;
    }
 
    /*
