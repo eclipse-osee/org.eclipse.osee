@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.CharacterCodingException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -22,7 +21,6 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.PersistenceMemo;
 import org.eclipse.osee.framework.jdk.core.util.PersistenceObject;
-import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
@@ -176,10 +174,10 @@ public abstract class Attribute<T> implements PersistenceObject {
     * @return exact bytes from datastore
     */
    public ByteArrayInputStream getRawContentStream() {
-      if (rawContent == null) {
+      if (getRawContent() == null) {
          return null;
       }
-      return new ByteArrayInputStream(rawContent);
+      return new ByteArrayInputStream(getRawContent());
    }
 
    /**
@@ -192,7 +190,7 @@ public abstract class Attribute<T> implements PersistenceObject {
       } else {
          attributeCopy = artifact.getAttributeManager(attributeType).getAttributeForSet();
       }
-      attributeCopy.setRawContent(rawContent);
+      attributeCopy.setRawContent(getRawContent());
       attributeCopy.setRawStringValue(rawStringValue);
    }
 
@@ -247,22 +245,6 @@ public abstract class Attribute<T> implements PersistenceObject {
    }
 
    /**
-    * Provides Attribute subclasses access to an inputstream that is either the large object value from the datastore if
-    * it is not null or the string value
-    * 
-    * @return raw string or lob as appropriate as a stream
-    * @throws CharacterCodingException
-    */
-   @Deprecated
-   // probably not needed
-   protected InputStream getRawValueAsStream() throws CharacterCodingException {
-      if (rawContent == null) {
-         return new CharBackedInputStream(rawStringValue);
-      }
-      return new ByteArrayInputStream(rawContent);
-   }
-
-   /**
     * @param rawStringValue the rawStringVaule to set
     */
    protected void setRawStringValue(String rawStringValue) {
@@ -289,7 +271,7 @@ public abstract class Attribute<T> implements PersistenceObject {
     * @param rawContent the rawContent to set
     */
    protected void setRawContent(byte[] rawContent) {
-      if (Arrays.equals(this.rawContent, rawContent)) {
+      if (Arrays.equals(getRawContent(), rawContent)) {
          return;
       }
 

@@ -944,6 +944,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                attributeManager.setupForInitialization(false);
             }
 
+            //                                        change this to be the URI
             attribute = attributeManager.injectFromDb(rSet.getBinaryStream("content"), rSet.getString("value"));
             attribute.setPersistenceMemo(new AttributeMemo(rSet.getInt("attr_id"), attrTypeId, rSet.getInt("gamma_id")));
 
