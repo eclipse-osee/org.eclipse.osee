@@ -74,6 +74,7 @@
 		<Column id="VALUE" limits="4000" type="VARCHAR" />
 		<Column id="CONTENT" type="BLOB" />
 		<Column id="MODIFICATION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="URI" limits="200" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_AT_G_PK" type="PRIMARY KEY" appliesTo="ATTR_ID, GAMMA_ID" />
 		<Constraint schema="OSEE" id="ART_ID1_FK" type="FOREIGN KEY" appliesTo="ART_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_ARTIFACT" column="ART_ID" onDelete="CASCADE" />
