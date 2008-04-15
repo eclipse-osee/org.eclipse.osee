@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.skywalker;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -127,7 +126,7 @@ public class SkyWalkerView extends ViewPart {
                   Artifact art = (Artifact) viewer.getInput();
                   explore(SkynetAuthentication.getInstance().getUser(UserEnum.UnAssigned));
                   if (art != null) explore(art);
-               } catch (SQLException ex) {
+               } catch (Exception ex) {
                   // DO Nothing
                }
             } else

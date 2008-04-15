@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
+import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
 
 /**
  * @author Ryan D. Brooks
@@ -139,7 +140,7 @@ public class BranchCreator implements PersistenceManager {
       skynetAuth = SkynetAuthentication.getInstance();
    }
 
-   private Pair<Branch, Integer> createBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName) throws SQLException {
+   private Pair<Branch, Integer> createBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName) throws SQLException, IllegalArgumentException, IllegalStateException, UserNotInDatabase {
       User userToBlame = skynetAuth.getAuthenticatedUser();
       Branch parentBranch = sourceTransactionId.getBranch();
       int userId = (userToBlame == null) ? skynetAuth.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
@@ -192,9 +193,9 @@ public class BranchCreator implements PersistenceManager {
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                                                                                                                                                                                                                                                                        * parent
-                                                                                                                                                                                                                                                                                                                                                                        * transactoin_id
-                                                                                                                                                                                                                                                                                                                                                                        */, Integer /* gamma_id */>(
+                                                                                                                                                                                                                                                                                                                                                                                                         * parent
+                                                                                                                                                                                                                                                                                                                                                                                                         * transactoin_id
+                                                                                                                                                                                                                                                                                                                                                                                                         */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -375,10 +376,12 @@ public class BranchCreator implements PersistenceManager {
     * @return branch object
     * @throws SQLException
     * @throws IllegalArgumentException
+    * @throws UserNotInDatabase
+    * @throws IllegalStateException
     * @see BranchPersistenceManager#createRootBranch(String, String, int)
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
-   public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, IllegalArgumentException {
+   public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, IllegalArgumentException, IllegalStateException, UserNotInDatabase {
       Branch branch =
             initializeBranch(shortBranchName, branchName, null, -1, GlobalTime.GreenwichMeanTimestamp(), "", null);
       if (staticBranchName != null) ConnectionHandler.runPreparedUpdate(INSERT_DEFAULT_BRANCH_NAMES,
@@ -393,8 +396,10 @@ public class BranchCreator implements PersistenceManager {
     * @param parentBranchId the id of the parent branch or NULL_PARENT_BRANCH_ID if this branch has no parent
     * @return branch object that represents the newly created branch
     * @throws SQLException
+    * @throws UserNotInDatabase
+    * @throws IllegalStateException
     */
-   private Branch initializeBranch(String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact) throws SQLException, IllegalArgumentException {
+   private Branch initializeBranch(String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact) throws SQLException, IllegalArgumentException, IllegalStateException, UserNotInDatabase {
       ConnectionHandlerStatement chStmt =
             ConnectionHandler.runPreparedQuery(SELECT_BRANCH_BY_NAME, SQL3DataType.VARCHAR, branchName);
       ResultSet rset = chStmt.getRset();

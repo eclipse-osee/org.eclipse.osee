@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util.email;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -93,7 +92,7 @@ public class EmailWizardPage extends WizardPage {
          names.addAll(SkynetAuthentication.getInstance().getUsers());
          names.remove(skynetAuth.getUser(UserEnum.UnAssigned));
          names.remove(skynetAuth.getUser(UserEnum.NoOne));
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, false);
          names.add(ex.getLocalizedMessage());
       }

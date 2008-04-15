@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Matcher;
@@ -135,7 +134,7 @@ public class DecisionOption {
          while (m.find()) {
             try {
                assignees.add(SkynetAuthentication.getInstance().getUserByIdWithError(m.group(3)));
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, false);
             }
          }

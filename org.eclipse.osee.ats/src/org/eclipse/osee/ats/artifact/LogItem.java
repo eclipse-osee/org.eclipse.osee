@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -45,7 +44,7 @@ public class LogItem {
       this.state = state;
       try {
          this.user = SkynetAuthentication.getInstance().getUserByIdWithError(userId);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       this.type = type;

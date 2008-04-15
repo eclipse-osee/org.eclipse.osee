@@ -14,9 +14,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class SMAState {
    private String name;
@@ -154,11 +156,12 @@ public class SMAState {
          while (m.find()) {
             String userId = m.group(1);
             if (userId == null || userId.equals("")) throw new IllegalArgumentException("Blank userId specified.");
-            User u = SkynetAuthentication.getInstance().getUserByIdWithError(m.group(1));
-            if (u == null)
-               throw new IllegalArgumentException("Can't retrieve user => " + m.group(1));
-            else
+            try {
+               User u = SkynetAuthentication.getInstance().getUserByIdWithError(m.group(1));
                assignees.add(u);
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, false);
+            }
          }
       } else
          throw new IllegalArgumentException("Can't unpack state data => " + xml);

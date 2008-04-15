@@ -11,14 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.Search;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
@@ -37,7 +36,6 @@ import org.eclipse.swt.widgets.Label;
  * @author Donald G. Dunne
  */
 public class XMembersCombo extends XWidget {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(XMembersCombo.class);
    private static SkynetAuthentication skyAuth = SkynetAuthentication.getInstance();
    private static final String DEFAULT_SELECTION = "--select--";
    private Combo dataCombo;
@@ -207,7 +205,7 @@ public class XMembersCombo extends XWidget {
          try {
             user = skyAuth.getUserByIdWithError(userId);
          } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Error Searching for User in DB.\n", ex);
+            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
          set(user);
       }

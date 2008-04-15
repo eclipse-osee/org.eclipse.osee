@@ -179,7 +179,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
                SkynetAuthentication.getInstance().getUser(UserEnum.UnAssigned))) {
             smaMgr.setAssignee(SkynetAuthentication.getInstance().getAuthenticatedUser());
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       Result result = smaMgr.transition(DefaultTeamState.Completed.name(), (User) null, persist);

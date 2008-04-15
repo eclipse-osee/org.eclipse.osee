@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.defect;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -129,11 +128,11 @@ public class DefectItem {
    }
 
    public String toXml() {
-      return "<severity>" + severity.name() + "</severity><disposition>" + disposition.name() + 
+      return "<severity>" + severity.name() + "</severity><disposition>" + disposition.name() +
       //
-      "</disposition><injectionActivity>" + injectionActivity.name() + "</injectionActivity><date>" + date.getTime() + 
+      "</disposition><injectionActivity>" + injectionActivity.name() + "</injectionActivity><date>" + date.getTime() +
       //
-      "</date><user>" + user.getUserId() + "</user><description>" + description + "</description><location>" + location + 
+      "</date><user>" + user.getUserId() + "</user><description>" + description + "</description><location>" + location +
       //
       "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><guid>" + guid + "</guid>";
    }
@@ -147,7 +146,7 @@ public class DefectItem {
       this.date = date;
       try {
          this.user = SkynetAuthentication.getInstance().getUserByIdWithError(AXml.getTagData(xml, "user"));
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
       this.description = AXml.getTagData(xml, "description");

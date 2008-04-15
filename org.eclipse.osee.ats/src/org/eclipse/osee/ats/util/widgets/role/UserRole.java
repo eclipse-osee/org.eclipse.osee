@@ -59,11 +59,7 @@ public class UserRole {
    }
 
    public UserRole(String xml) {
-      try {
-         fromXml(xml);
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
+      fromXml(xml);
    }
 
    public void update(UserRole dItem) throws SQLException {
@@ -80,17 +76,21 @@ public class UserRole {
       return sb.toString();
    }
 
-   public void fromXml(String xml) throws SQLException {
-      this.role = Role.valueOf(AXml.getTagData(xml, "role"));
-      this.user = SkynetAuthentication.getInstance().getUserByIdWithError(AXml.getTagData(xml, "userId"));
-      this.hoursSpent =
-            AXml.getTagData(xml, "hoursSpent").equals("") ? null : Double.valueOf(AXml.getTagData(xml, "hoursSpent")).doubleValue();
-      String completedStr = AXml.getTagData(xml, "completed");
-      if (completedStr != null)
-         this.completed = completedStr.equals("true");
-      else
-         this.completed = false;
-      this.guid = AXml.getTagData(xml, "guid");
+   public void fromXml(String xml) {
+      try {
+         this.role = Role.valueOf(AXml.getTagData(xml, "role"));
+         this.user = SkynetAuthentication.getInstance().getUserByIdWithError(AXml.getTagData(xml, "userId"));
+         this.hoursSpent =
+               AXml.getTagData(xml, "hoursSpent").equals("") ? null : Double.valueOf(AXml.getTagData(xml, "hoursSpent")).doubleValue();
+         String completedStr = AXml.getTagData(xml, "completed");
+         if (completedStr != null)
+            this.completed = completedStr.equals("true");
+         else
+            this.completed = false;
+         this.guid = AXml.getTagData(xml, "guid");
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
    }
 
    @Override

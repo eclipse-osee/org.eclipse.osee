@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
+import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
 import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
 import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication;
@@ -55,22 +56,22 @@ public class SkynetAuthentication implements PersistenceManager {
       Active, InActive, Both
    }
    private boolean firstTimeThrough;
-   private final Map<String, User> nameOrIdToUserMap;
-   private final Map<Integer, User> artIdToUserMap;
-   private final ArrayList<User> activeUsers;
-   private String[] activeUserNames;
+   private final Map<String, User> nameOrIdToUserCache;
+   private final Map<Integer, User> artIdToUserCache;
+   private final ArrayList<User> activeUserCache;
+   private String[] activeUserNameCache;
    private User currentUser;
-   private final Map<OseeUser, User> enumeratedUsers;
+   private final Map<OseeUser, User> enumeratedUserCache;
    private boolean duringUserCreation;
 
    private static final SkynetAuthentication instance = new SkynetAuthentication();
 
    private SkynetAuthentication() {
       firstTimeThrough = true;
-      enumeratedUsers = new HashMap<OseeUser, User>(30);
-      nameOrIdToUserMap = new HashMap<String, User>(800);
-      artIdToUserMap = new HashMap<Integer, User>(800);
-      activeUsers = new ArrayList<User>(700);
+      enumeratedUserCache = new HashMap<OseeUser, User>(30);
+      nameOrIdToUserCache = new HashMap<String, User>(800);
+      artIdToUserCache = new HashMap<Integer, User>(800);
+      activeUserCache = new ArrayList<User>(700);
    }
 
    public static SkynetAuthentication getInstance() {
@@ -113,57 +114,43 @@ public class SkynetAuthentication implements PersistenceManager {
    }
 
    public synchronized User getAuthenticatedUser() throws IllegalStateException {
-      if (SkynetDbInit.isPreArtifactCreation()) {
-         try {
+      try {
+         if (SkynetDbInit.isPreArtifactCreation()) {
             return BootStrapUser.getInstance();
-         } catch (SQLException ex) {
-            // A BootSrapUser is not supposed to touch the database anyway
-            logger.log(Level.SEVERE, ex.toString(), ex);
-         }
-      } else {
-         if (firstTimeThrough) {
-            forceAuthenticationRoutine();
-         }
-
-         if (!oseeAuthentication.isAuthenticated()) {
-            try {
-               currentUser = getUser(UserEnum.Guest);
-            } catch (IllegalArgumentException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
-            } catch (SQLException ex) {
-               logger.log(Level.SEVERE, ex.toString(), ex);
-            }
          } else {
-            String userId = oseeAuthentication.getCredentials().getField(UserCredentialEnum.Id);
-            if (currentUser == null || !currentUser.getUserId().equals(userId)) {
-               try {
+            if (firstTimeThrough) {
+               forceAuthenticationRoutine();
+            }
+
+            if (!oseeAuthentication.isAuthenticated()) {
+               currentUser = getUser(UserEnum.Guest);
+            } else {
+               String userId = oseeAuthentication.getCredentials().getField(UserCredentialEnum.Id);
+               if (currentUser == null || !currentUser.getUserId().equals(userId)) {
                   try {
                      currentUser = getUserByIdWithError(userId);
-                  } catch (IllegalArgumentException ex) {
-                     if (firstTimeThrough) {
-                        // try one more time to be sure the user doesn't already exist
-                        try {
-                           currentUser = getUserByIdWithError(userId);
-                        } catch (IllegalArgumentException ex1) {
-                           if (createLoginUserIfNecessary) {
-                              currentUser =
-                                    createUser(oseeAuthentication.getCredentials().getField(UserCredentialEnum.Name),
-                                          "spawnedBySkynet", userId, true);
-                              persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
-                           } else {
-                              AWorkbench.popup("Logged in as Guest",
-                                    "If you do not expect to be logged in as Guest, please report this immediately.");
-                              currentUser = getUser(UserEnum.Guest);
-                           }
-                        }
+                  } catch (UserNotInDatabase ex) {
+                     if (createLoginUserIfNecessary) {
+                        currentUser =
+                              createUser(oseeAuthentication.getCredentials().getField(UserCredentialEnum.Name),
+                                    "spawnedBySkynet", userId, true);
+                        persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
+                     } else {
+                        AWorkbench.popup("Logged in as Guest",
+                              "If you do not expect to be logged in as Guest, please report this immediately.");
+                        currentUser = getUser(UserEnum.Guest);
                      }
                   }
-               } catch (SQLException ex) {
-                  logger.log(Level.SEVERE, ex.toString(), ex);
                }
             }
+            firstTimeThrough = false; // firstTimeThrough must be set false after last use of its value
          }
-         firstTimeThrough = false; // firstTimeThrough must be set false after last use of its value
+      } catch (UserNotInDatabase ex) {
+         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (IllegalArgumentException ex) {
+         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (SQLException ex) {
+         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
 
       return currentUser;
@@ -183,15 +170,15 @@ public class SkynetAuthentication implements PersistenceManager {
    public User createUser(OseeUser userEnum) {
       User user = createUser(userEnum.getName(), userEnum.getEmail(), userEnum.getUserID(), userEnum.isActive());
       persistUser(user);
-      enumeratedUsers.put(userEnum, user);
+      enumeratedUserCache.put(userEnum, user);
       return user;
    }
 
-   public User getUser(OseeUser userEnum) throws IllegalArgumentException, SQLException {
-      User user = enumeratedUsers.get(userEnum);
+   public User getUser(OseeUser userEnum) throws IllegalArgumentException, SQLException, IllegalStateException, UserNotInDatabase {
+      User user = enumeratedUserCache.get(userEnum);
       if (user == null) {
          user = getUserByIdWithError(userEnum.getUserID());
-         enumeratedUsers.put(userEnum, user);
+         enumeratedUserCache.put(userEnum, user);
       }
       return user;
    }
@@ -224,7 +211,7 @@ public class SkynetAuthentication implements PersistenceManager {
     */
    @SuppressWarnings("unchecked")
    public ArrayList<User> getUsers() {
-      if (activeUsers.size() == 0) {
+      if (activeUserCache.size() == 0) {
          try {
             Collection<Artifact> dbUsers =
                   artifactManager.getArtifacts(new ArtifactTypeSearch(User.ARTIFACT_NAME, Operator.EQUAL),
@@ -232,27 +219,29 @@ public class SkynetAuthentication implements PersistenceManager {
             for (Artifact a : dbUsers) {
                User user = (User) a;
                if (user.isActive()) {
-                  activeUsers.add(user);
+                  activeUserCache.add(user);
                }
                addUserToMap(user);
             }
-            Collections.sort(activeUsers);
+            Collections.sort(activeUserCache);
             int i = 0;
-            activeUserNames = new String[activeUsers.size()];
-            for (User user : activeUsers) {
-               activeUserNames[i++] = user.getName();
+            activeUserNameCache = new String[activeUserCache.size()];
+            for (User user : activeUserCache) {
+               activeUserNameCache[i++] = user.getName();
             }
          } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Error Searching for User in DB.\n", ex);
          }
       }
 
-      return (ArrayList<User>) activeUsers.clone();
+      return (ArrayList<User>) activeUserCache.clone();
    }
 
-   public User getUserByIdWithError(String userId) throws SQLException, IllegalArgumentException, IllegalStateException {
-      if (userId == null || userId.equals("")) throw new IllegalStateException("UserId can't be null or \"\"");
-      User user = nameOrIdToUserMap.get(userId);
+   public User getUserByIdWithError(String userId) throws SQLException, IllegalArgumentException, IllegalStateException, UserNotInDatabase {
+      if (userId == null || userId.equals("")) {
+         throw new IllegalArgumentException("UserId can't be null or \"\"");
+      }
+      User user = nameOrIdToUserCache.get(userId);
 
       if (user == null) {
          Collection<Artifact> users =
@@ -270,7 +259,7 @@ public class SkynetAuthentication implements PersistenceManager {
                   users.iterator().next().getDescriptiveName(), userId));
          } else {
             // Note this is normal for the creation of this user (i.e. db init)
-            throw new IllegalArgumentException("User requested by id " + userId + " was not found.  ");
+            throw new UserNotInDatabase("User requested by id \"" + userId + "\" was not found.");
          }
       }
       return user;
@@ -278,7 +267,7 @@ public class SkynetAuthentication implements PersistenceManager {
 
    public User getUserById(String userId) throws SQLException, IllegalArgumentException, IllegalStateException {
       if (userId == null || userId.equals("")) throw new IllegalStateException("UserId can't be null or \"\"");
-      User user = nameOrIdToUserMap.get(userId);
+      User user = nameOrIdToUserCache.get(userId);
 
       if (user == null) {
          Collection<Artifact> users =
@@ -298,7 +287,7 @@ public class SkynetAuthentication implements PersistenceManager {
     */
    public String[] getUserNames() {
       getUsers(); // ensure users are cached
-      return activeUserNames;
+      return activeUserNameCache;
    }
 
    /**
@@ -307,7 +296,7 @@ public class SkynetAuthentication implements PersistenceManager {
     * @return user
     */
    public User getUserByName(String name, boolean create) {
-      User user = nameOrIdToUserMap.get(name);
+      User user = nameOrIdToUserCache.get(name);
       if (user == null) {
          try {
             user =
@@ -337,27 +326,27 @@ public class SkynetAuthentication implements PersistenceManager {
       // Anything under 1 will never be acquirable
       if (authorId < 1) {
          return null;
-      } else if (artIdToUserMap.containsKey(authorId)) {
-         user = artIdToUserMap.get(authorId);
+      } else if (artIdToUserCache.containsKey(authorId)) {
+         user = artIdToUserCache.get(authorId);
       } else {
          try {
             user = (User) artifactManager.getArtifactFromId(authorId, branchManager.getCommonBranch());
             addUserToMap(user);
          } catch (SQLException ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            artIdToUserMap.put(authorId, null);
+            artIdToUserCache.put(authorId, null);
          } catch (IllegalArgumentException ex) {
-            artIdToUserMap.put(authorId, null);
+            artIdToUserCache.put(authorId, null);
          }
       }
       return user;
    }
 
    private void addUserToMap(User user) {
-      nameOrIdToUserMap.put(user.getDescriptiveName(), user);
-      nameOrIdToUserMap.put(user.getUserId(), user);
+      nameOrIdToUserCache.put(user.getDescriptiveName(), user);
+      nameOrIdToUserCache.put(user.getUserId(), user);
       if (user.isInDb()) {
-         artIdToUserMap.put(user.getArtId(), user);
+         artIdToUserCache.put(user.getArtId(), user);
       }
    }
 
