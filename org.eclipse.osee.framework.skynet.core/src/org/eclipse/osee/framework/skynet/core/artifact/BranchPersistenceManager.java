@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_DEFINITIONS;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
@@ -95,8 +94,6 @@ public class BranchPersistenceManager implements PersistenceManager {
    private static final String UPDATE_ASSOCIATED_ART_BRANCH =
          "UPDATE " + BRANCH_TABLE + " set associated_art_id = ? WHERE branch_id = ?";
 
-   private static final String GET_BRANCH_NAMES_FROM_CONFIG = "SELECT * FROM " + BRANCH_DEFINITIONS;
-
    private final static String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
    private static final IPreferenceStore preferenceStore = SkynetActivator.getInstance().getPreferenceStore();
 
@@ -111,7 +108,6 @@ public class BranchPersistenceManager implements PersistenceManager {
    //This hash is keyed in the source branch id and destination branch id
    private DoubleKeyHashMap<Integer, Integer, Branch> mergeBranchCache;
    private Map<Integer, Branch> transactionIdBranchCache;
-   private Map<String, Branch> keynameBranchMap;
 
    private static final BranchPersistenceManager instance = new BranchPersistenceManager();
 
@@ -119,7 +115,6 @@ public class BranchPersistenceManager implements PersistenceManager {
       this.branchCache = new TreeMap<Integer, Branch>();
       this.transactionIdBranchCache = new HashMap<Integer, Branch>();
       this.mergeBranchCache = new DoubleKeyHashMap<Integer, Integer, Branch>();
-      this.keynameBranchMap = null;
    }
 
    public static BranchPersistenceManager getInstance() {
@@ -138,17 +133,6 @@ public class BranchPersistenceManager implements PersistenceManager {
       configurationManager = ConfigurationPersistenceManager.getInstance();
    }
 
-   private void getBranchNames() throws SQLException {
-      keynameBranchMap = new HashMap<String, Branch>();
-
-      ConnectionHandlerStatement stmt = ConnectionHandler.runPreparedQuery(GET_BRANCH_NAMES_FROM_CONFIG);
-      ResultSet rset = stmt.getRset();
-      while (rset.next()) {
-         keynameBranchMap.put(rset.getString("static_branch_name").toLowerCase(),
-               getBranch(rset.getInt("mapped_branch_id")));
-      }
-   }
-
    public Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact) throws SQLException {
       ensurePopulatedCache(false);
       Set<Branch> branches = new HashSet<Branch>();
@@ -157,26 +141,12 @@ public class BranchPersistenceManager implements PersistenceManager {
       return branches;
    }
 
-   private void checkBranchNames() throws SQLException {
-      if (keynameBranchMap == null) {
-         getBranchNames();
-      }
-   }
-
    public Branch getCommonBranch() throws SQLException {
       return getKeyedBranch(Branch.COMMON_BRANCH_CONFIG_ID);
    }
 
    public Branch getKeyedBranch(String keyname) throws SQLException {
-      if (keyname == null) throw new IllegalArgumentException("keyname can not be null");
-
-      checkBranchNames();
-      String lowerKeyname = keyname.toLowerCase();
-      if (keynameBranchMap.containsKey(lowerKeyname)) {
-         return keynameBranchMap.get(lowerKeyname);
-      } else {
-         throw new IllegalArgumentException("The key \"" + keyname + "\" does not refer to any branch");
-      }
+      return KeyedBranchCache.getInstance().getKeyedBranch(keyname);
    }
 
    public Branch getAtsBranch() throws SQLException {
@@ -902,11 +872,12 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
    public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName, Collection<String> skynetTypesImportExtensionsIds, boolean initialize) throws Exception {
-      checkBranchNames();
       // Create branch with name and static name; short name will be computed from full name
       Branch branch = branchCreator.createRootBranch(null, branchName, staticBranchName);
       // Add name to cached keyname if static branch name is desired
-      if (staticBranchName != null) keynameBranchMap.put(staticBranchName.toLowerCase(), branch);
+      if (staticBranchName != null) {
+         KeyedBranchCache.getInstance().createKeyedBranch(staticBranchName, branch);
+      }
       // Re-init factory cache
       ArtifactFactoryCache.getInstance().reInitialize();
       // Import skynet types if specified
