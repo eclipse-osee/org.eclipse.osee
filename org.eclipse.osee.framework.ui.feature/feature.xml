@@ -29,6 +29,8 @@
       <import plugin="org.eclipse.osee.framework.skynet.core"/>
       <import plugin="org.eclipse.osee.framework.messaging.event.skynet"/>
       <import plugin="org.eclipse.osee.framework.plugin.core"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.osee.framework.database"/>
       <import plugin="org.eclipse.pde.core"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.eclipse.core.resources"/>
@@ -39,22 +41,44 @@
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.update.core"/>
       <import plugin="org.eclipse.update.ui"/>
       <import plugin="net.jini"/>
-      <import plugin="ganymed.ssh"/>
       <import plugin="org.eclipse.osee.framework.jini"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="javax.mail"/>
-      <import plugin="org.eclipse.osee.framework.database"/>
       <import plugin="org.eclipse.osee.framework.svn"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.draw2d"/>
+      <import plugin="com.jcraft.jsch"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="com.ibm.icu"/>
    </requires>
+
+   <plugin
+         id="org.eclipse.nebula.widgets.calendarcombo"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.zest.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.zest.layouts"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.osee.framework.ui.admin"
@@ -95,8 +119,7 @@
          id="org.eclipse.osee.framework.ui.product"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.osee.framework.ui.security"
@@ -127,20 +150,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.mylyn.zest.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.mylyn.zest.layouts"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="external.osee.xslt.transform.engine"
          download-size="0"
          install-size="0"
@@ -156,13 +165,6 @@
 
    <plugin
          id="org.eclipse.osee.framework.ui.web"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.nebula.widgets.calendarcombo"
          download-size="0"
          install-size="0"
          version="0.0.0"
