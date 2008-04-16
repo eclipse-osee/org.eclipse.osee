@@ -845,4 +845,12 @@
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.CreateNewUser">
     </Operation>
  </extension>
+ <extension
+       id="SwitchParentBranch"
+       name="Switch Parent Branch"
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.SwitchParentBranch">
+    </Operation>
+ </extension>
 </plugin>
