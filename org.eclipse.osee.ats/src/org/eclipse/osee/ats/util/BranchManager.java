@@ -364,6 +364,37 @@ public class BranchManager {
             return new Result("Commit Branch Failed: Can not locate branch.");
          }
 
+         // If team uses versions, then validate that the parent branch id is specified by either
+         // the team definition's attribute or the related version's attribute
+         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+            TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) smaMgr.getSma();
+            // Only perform checks if team definition uses ATS versions
+            if (team.getTeamDefinition().isTeamUsesVersions()) {
+               // Validate that a parent branch is specified in ATS configuration
+               Branch parentBranch = getParentBranchForWorkingBranchCreation();
+               if (parentBranch == null) {
+                  return new Result(
+                        String.format(
+                              "Commit Branch Failed: Workflow \"%s\" can't access parent branch to commit to.\n\nSince the configured Team Definition uses versions, the parent branch must be specified in either the targeted Version Artifact or the Team Definition Artifact.",
+                              smaMgr.getSma().getHumanReadableId()));
+               }
+
+               // Validate that the configured parentBranch is the same as the working branch's
+               // parent branch.
+               Integer targetedVersionBranchId = parentBranch.getBranchId();
+               Integer workflowWorkingBranchParentBranchId =
+                     smaMgr.getBranchMgr().getWorkingBranch().getParentBranchId();
+               if (!targetedVersionBranchId.equals(workflowWorkingBranchParentBranchId)) {
+                  return new Result(
+                        String.format(
+                              "Commit Branch Failed: Workflow \"%s\" targeted version \"%s\" branch id \"%s\" does not match workflow's " + "parent branch id \"%s\"",
+                              smaMgr.getSma().getHumanReadableId(), team.getTargetedForVersion().getDescriptiveName(),
+                              String.valueOf(targetedVersionBranchId),
+                              String.valueOf(workflowWorkingBranchParentBranchId)));
+               }
+            }
+         }
+
          if (!overrideStateValidation) {
             // Check extenstion points for valid commit
             for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(smaMgr.getWorkPage().getId())) {
