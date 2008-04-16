@@ -379,16 +379,16 @@ public class Xml {
    }
 
    public static final String selectNodesText(Node startingNode, String xPathExpression) throws XPathExpressionException {
-      String resultString = "";
+      String resultString = null;
       if (!theSeriousXPathMatcher.reset(xPathExpression).matches() && startingNode.getNodeType() == Node.ELEMENT_NODE) {
-         resultString = Jaxp.getElementCharacterData(Jaxp.findElement((Element) startingNode, xPathExpression)).trim();
+         Element foundElement = Jaxp.findElement((Element) startingNode, xPathExpression);
+         if (foundElement != null) {
+            resultString = Jaxp.getElementCharacterData(foundElement).trim();
+         }
       } else {
          Node[] selectedNodes = selectNodeList(startingNode, xPathExpression);
          if (selectedNodes.length == 1) {
-            Node[] selectedTextNodes = selectNodeList(selectedNodes[0], "child::text()");
-            for (Node node : selectedTextNodes) {
-               resultString = resultString.concat(node.getNodeValue().trim());
-            }
+            resultString = Jaxp.getElementCharacterData((Element) selectedNodes[0]).trim();
          }
       }
       return resultString;
