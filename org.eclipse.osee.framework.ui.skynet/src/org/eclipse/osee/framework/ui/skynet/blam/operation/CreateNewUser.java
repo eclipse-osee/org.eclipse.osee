@@ -36,7 +36,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XList.XListItem;
 public class CreateNewUser extends AbstractBlam {
 
    private final static List<String> attrNames =
-         Arrays.asList(new String[] {"Company", "Company Title", "City", "State", "Phone", "Notes"});
+         Arrays.asList(new String[] {"Company", "Company Title", "Street", "City", "State", "Zip", "Phone",
+               "Mobile Phone", "Fax Phone", "Website", "Notes"});
    private Set<Artifact> groupArts;
 
    /* (non-Javadoc)
@@ -76,6 +77,9 @@ public class CreateNewUser extends AbstractBlam {
          return;
       }
       user.setSoleStringAttributeValue("User Id", userId);
+
+      boolean active = variableMap.getBoolean("Active");
+      user.setSoleBooleanAttributeValue("Active", active);
 
       String email = variableMap.getString("Email");
       if (email.equals("")) {
