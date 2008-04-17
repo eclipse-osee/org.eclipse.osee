@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeObjectConverter;
+
 /**
  * @author Donald G. Dunne
  */
@@ -87,11 +87,11 @@ public class ArtifactPromptChange {
    }
 
    public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws SQLException {
-      return promptChangeFloatAttribute(attributeName, displayName,Arrays.asList(new Artifact[] {artifact}), persist);
+      return promptChangeFloatAttribute(attributeName, displayName, Arrays.asList(new Artifact[] {artifact}), persist);
    }
 
    public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws SQLException {
-     return promptChangeStringAttribute(attributeName, displayName, VALID_FLOAT_REG_EX, smas, persist);
+      return promptChangeStringAttribute(attributeName, displayName, VALID_FLOAT_REG_EX, smas, persist);
    }
 
    public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws SQLException {
@@ -169,19 +169,19 @@ public class ArtifactPromptChange {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
-      if (smas.size() == 1) ed.setEntry(smas.iterator().next().getSoleXAttributeValue(attributeName).toString());
+      if (smas.size() == 1) {
+         Object obj = smas.iterator().next().getSoleXAttributeValue(attributeName);
+         if (obj != null) ed.setEntry(String.valueOf(obj));
+      }
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();
       if (result == 0 || result == 1) {
          for (Artifact sma : smas) {
             String value = ed.getEntry();
-            if (result == 0){
-               sma.setSoleXAttributeValue(attributeName, AttributeObjectConverter.stringToObject
-                     (sma.getAttributeManager(attributeName).getSoleAttribute(), value));
-            }
-            else{
-               sma.setSoleXAttributeValue(attributeName, AttributeObjectConverter.stringToObject
-                     (sma.getAttributeManager(attributeName).getSoleAttribute(), ""));
+            if (result == 0) {
+               sma.setSoleXAttributeValue(attributeName, value);
+            } else {
+               sma.setSoleXAttributeValue(attributeName, "");
             }
             if (persist) sma.persistAttributes();
          }
