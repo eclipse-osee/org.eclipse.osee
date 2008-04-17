@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats;
+package org.eclipse.osee.ats.util;
 
 import java.sql.SQLException;
 import java.util.Collection;

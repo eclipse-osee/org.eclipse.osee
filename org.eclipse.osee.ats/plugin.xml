@@ -243,7 +243,7 @@
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider">
-      <Provider class="org.eclipse.osee.ats.TeamBasedDefaultBranchProvider"/>
+      <Provider class="org.eclipse.osee.ats.util.TeamBasedDefaultBranchProvider"/>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.ArtifactAnnotation">
