@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 public class ConnectWorkflowToTransaction extends AbstractBlam {
    private static final String SELECT_COMMIT_TRANSACTIONS =
          "SELECT * FROM osee_define_tx_details where osee_comment like ? and commit_art_id is null";
-   private static final Pattern hridPattern = Pattern.compile("Commit Branch ([A-Z0-9]{5}) ");
+   private static final Pattern hridPattern = Pattern.compile("Commit Branch ([A-Z0-9]{5})[ _]");
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
