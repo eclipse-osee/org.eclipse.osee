@@ -59,10 +59,6 @@ public class GetChildrenJob extends Job {
 
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
-                  // TODO figure out why this is having refresh troubles
-                  //            if (viewer instanceof StructuredViewer && parent.getParent() != null)
-                  //               ((StructuredViewer)viewer).refresh(parent.getParent());
-                  //            else
                   viewer.refresh();
                }
             });

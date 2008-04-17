@@ -72,7 +72,7 @@ public class TransactionIdManager {
     * Returns the transaction corresponding to current head of the given branch
     * 
     * @param branch
- * @throws SQLException 
+    * @throws SQLException
     */
    public TransactionId getEditableTransactionId(Branch branch) throws SQLException {
       TransactionId transactionId = editableTransactionCache.get(branch);
@@ -154,7 +154,7 @@ public class TransactionIdManager {
     * 
     * @param newTransactionNumber
     * @param branch
- * @throws SQLException 
+    * @throws SQLException
     */
    public void resetEditableTransactionId(Integer newTransactionNumber, Branch branch) throws SQLException {
       TransactionId oldEditabletransactionId = getEditableTransactionId(branch);
@@ -170,7 +170,7 @@ public class TransactionIdManager {
     * 
     * @param newTransactionNumber
     * @param branch
- * @throws SQLException 
+    * @throws SQLException
     */
    public synchronized TransactionId updateEditableTransactionId(Integer newTransactionNumber, Branch branch) throws SQLException {
       TransactionId transactionId = getEditableTransactionId(branch);
@@ -383,7 +383,9 @@ public class TransactionIdManager {
          ResultSet rset = chStmt.getRset();
          if (rset.next()) {
             int priorId = rset.getInt("prior_id");
-            if (!rset.wasNull()) priorTransactionId = getPossiblyEditableTransactionIfFromCache(priorId);
+            if (!rset.wasNull()) {
+               priorTransactionId = getPossiblyEditableTransactionIfFromCache(priorId);
+            }
          }
       } finally {
          DbUtil.close(chStmt);

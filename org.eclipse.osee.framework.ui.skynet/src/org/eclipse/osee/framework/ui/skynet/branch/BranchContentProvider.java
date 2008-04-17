@@ -284,10 +284,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    }
 
    private static Object[] getArtifactChanges(TransactionId baseParentTransaction, TransactionId baseTransaction, TransactionId toTransaction) throws SQLException {
-      // Collection<Artifact> newAndModArts =
-      // revisionManager.getNewAndModifiedArtifacts(baseTransaction, toTransaction,
-      // true);
-
       TransactionId headParentTransaction =
             baseParentTransaction == null ? null : transactionIdManager.getStartEndPoint(
                   baseParentTransaction.getBranch()).getValue();

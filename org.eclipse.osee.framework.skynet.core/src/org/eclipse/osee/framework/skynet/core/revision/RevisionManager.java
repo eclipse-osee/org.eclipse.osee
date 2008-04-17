@@ -665,10 +665,12 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
    }
 
    public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws SQLException {
-      if (!fromTransactionId.getBranch().equals(toTransactionId.getBranch())) throw new IllegalArgumentException(
-            "The fromTransactionId and toTransactionId must be on the same branch");
-      if (fromTransactionId.getTransactionNumber() > toTransactionId.getTransactionNumber()) throw new IllegalArgumentException(
-            "The fromTransactionId can not be greater than the toTransactionId.");
+      if (!fromTransactionId.getBranch().equals(toTransactionId.getBranch())) {
+         throw new IllegalArgumentException("The fromTransactionId and toTransactionId must be on the same branch");
+      }
+      if (fromTransactionId.getTransactionNumber() > toTransactionId.getTransactionNumber()) {
+         throw new IllegalArgumentException("The fromTransactionId can not be greater than the toTransactionId.");
+      }
 
       Collection<ArtifactChange> deletedArtifacts = new LinkedList<ArtifactChange>();
 
