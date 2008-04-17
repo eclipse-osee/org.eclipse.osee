@@ -32,7 +32,11 @@ public class IntegerAttribute extends Attribute<Integer> {
     */
    @Override
    public Integer getValue() throws NumberFormatException {
-      return Integer.valueOf(getRawStringValue());
+      String integerString = getRawStringValue();
+      if (integerString == null || integerString.equals("")) {
+         return null;
+      }
+      return Integer.valueOf(integerString);
    }
 
    /* (non-Javadoc)

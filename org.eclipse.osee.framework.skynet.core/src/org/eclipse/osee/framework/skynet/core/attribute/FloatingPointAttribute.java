@@ -32,7 +32,11 @@ public class FloatingPointAttribute extends Attribute<Double> {
     */
    @Override
    public Double getValue() {
-      return Double.valueOf(getRawStringValue());
+      String doubleString = getRawStringValue();
+      if (doubleString == null || doubleString.equals("")) {
+         return null;
+      }
+      return Double.valueOf(doubleString);
    }
 
    /* (non-Javadoc)

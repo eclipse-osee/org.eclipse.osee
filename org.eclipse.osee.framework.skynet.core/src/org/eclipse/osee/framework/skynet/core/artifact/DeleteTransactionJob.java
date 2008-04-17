@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.DbUtil;
 import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
@@ -60,23 +61,24 @@ public class DeleteTransactionJob extends Job {
 
       try {
 
-         int previousTransaction =
-               transactionIdManager.getPriorTransaction(
-                     transactionIdManager.getPossiblyEditableTransactionId(transactionIdNumber)).getTransactionNumber();
+         TransactionId previousTransactionId =
+               transactionIdManager.getPriorTransaction(transactionIdManager.getPossiblyEditableTransactionId(transactionIdNumber));
 
-         chStmt1 =
-               ConnectionHandler.runPreparedQuery(
-                     "select transaction_id, osee_comment from osee_define_tx_details where osee_comment like ?",
-                     SQL3DataType.VARCHAR, "%" + transactionIdNumber + ")");
+         if (previousTransactionId != null) {
+            chStmt1 =
+                  ConnectionHandler.runPreparedQuery(
+                        "select transaction_id, osee_comment from osee_define_tx_details where osee_comment like ?",
+                        SQL3DataType.VARCHAR, "%" + transactionIdNumber + ")");
 
-         ResultSet rSet = chStmt1.getRset();
-         while (rSet.next()) {
-            String newComment =
-                  rSet.getString("osee_comment").replace(String.valueOf(transactionIdNumber),
-                        String.valueOf(previousTransaction));
-            ConnectionHandler.runPreparedUpdate(
-                  "Update osee_define_tx_details SET osee_comment = ? WHERE transaction_id = ?", SQL3DataType.VARCHAR,
-                  newComment, SQL3DataType.INTEGER, rSet.getInt("transaction_id"));
+            ResultSet rSet = chStmt1.getRset();
+            while (rSet.next()) {
+               String newComment =
+                     rSet.getString("osee_comment").replace(String.valueOf(transactionIdNumber),
+                           String.valueOf(previousTransactionId.getTransactionNumber()));
+               ConnectionHandler.runPreparedUpdate(
+                     "Update osee_define_tx_details SET osee_comment = ? WHERE transaction_id = ?",
+                     SQL3DataType.VARCHAR, newComment, SQL3DataType.INTEGER, rSet.getInt("transaction_id"));
+            }
          }
 
          chStmt2 =

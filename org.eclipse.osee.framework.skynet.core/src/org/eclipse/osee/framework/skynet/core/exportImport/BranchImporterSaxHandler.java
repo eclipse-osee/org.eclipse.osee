@@ -27,6 +27,7 @@ import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSAC
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Stack;
@@ -288,10 +289,15 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       int gammaId = Query.getNextSeqVal(null, GAMMA_ID_SEQ);
       ModificationType modificationType = getModType(modified, deleted);
 
+      InputStream content = null;
+      if (contentValue.length > 0) {
+         content = new ByteArrayInputStream(contentValue);
+      }
+
       ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE, SQL3DataType.INTEGER, currentArtifactId,
             SQL3DataType.INTEGER, attrId, SQL3DataType.INTEGER, attrTypeId, SQL3DataType.VARCHAR, stringValue,
-            SQL3DataType.INTEGER, gammaId, SQL3DataType.BLOB, new ByteArrayInputStream(contentValue),
-            SQL3DataType.INTEGER, modificationType.getValue());
+            SQL3DataType.INTEGER, gammaId, SQL3DataType.BLOB, content, SQL3DataType.INTEGER,
+            modificationType.getValue());
       insertTxAddress(gammaId);
    }
 
