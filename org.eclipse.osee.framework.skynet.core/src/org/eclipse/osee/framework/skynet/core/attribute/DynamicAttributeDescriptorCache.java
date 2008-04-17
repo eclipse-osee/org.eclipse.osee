@@ -98,7 +98,7 @@ public class DynamicAttributeDescriptorCache {
       DynamicAttributeDescriptor attributeType = nameToTypeMap.get(namespace + name);
       if (attributeType == null) {
          throw new IllegalArgumentException(
-               "Attribute with namespace \"" + namespace + "\" and name \"" + name + "\" is not available.");
+               "Attribute Type with namespace \"" + namespace + "\" and name \"" + name + "\" does not exist.");
       }
       return attributeType;
    }
