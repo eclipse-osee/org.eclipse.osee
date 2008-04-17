@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeObjectConverter;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
@@ -597,12 +598,35 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return result;
    }
 
+   /**
+    * Return sole attribute value if it exists or null if attribute does not exist
+    * 
+    * @param <T>
+    * @param attributeTypeName
+    * @return
+    * @throws IllegalStateException if more than one attribute exists of this type
+    * @throws SQLException
+    */
    public <T> T getSoleXAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
       Attribute<T> attribute = getSoleAttribute(attributeTypeName);
       if (attribute == null) {
          return null;
       }
       return attribute.getValue();
+   }
+
+   /**
+    * Delete attribute if exactly one exists. Does nothing if attribute does not exist.
+    * 
+    * @param attributeTypeName
+    * @throws IllegalStateException if more than one attribute of this type exists
+    * @throws SQLException
+    */
+   public void deleteSoleAttribute(String attributeTypeName) throws IllegalStateException, SQLException {
+      Attribute<?> attribute = getSoleAttribute(attributeTypeName);
+      if (attribute != null) {
+         attribute.delete();
+      }
    }
 
    public <T> T getSoleXAttributeValue(String attributeTypeName, Class<T> clazz) throws IllegalStateException, SQLException {
@@ -626,6 +650,12 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public <T> void setSoleXAttributeValue(String attributeTypeName, T value) throws IllegalStateException, SQLException {
       Attribute<T> attribute = getSoleAttributeForSet(attributeTypeName);
       attribute.setValue(value);
+   }
+
+   @SuppressWarnings("unchecked")
+   public <T> void setSoleXAttributeValue(String attributeTypeName, String value) throws IllegalStateException, SQLException {
+      Attribute<T> attribute = getSoleAttributeForSet(attributeTypeName);
+      attribute.setValue((T) AttributeObjectConverter.stringToObject(attribute, value));
    }
 
    public void setSoleAttributeFromStream(String attributeTypeName, InputStream stream) throws IllegalStateException, SQLException, IOException {
