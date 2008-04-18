@@ -311,6 +311,11 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       }
    }
 
+   /**
+    * @param artifactType
+    * @return whether this artifact's type or any of its super-types are the specified type
+    * @throws SQLException
+    */
    public boolean isOfType(String artifactType) throws SQLException {
       if (artifactType.equals("Abstract Software Requirement") && (getArtifactTypeName().equals(
             Requirements.SOFTWARE_REQUIREMENT) || getArtifactTypeName().equals(
@@ -626,7 +631,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       Attribute<?> attribute = getSoleAttribute(attributeTypeName);
       if (attribute != null) {
          attribute.delete();
-      }
+   }
    }
 
    public <T> T getSoleXAttributeValue(String attributeTypeName, Class<T> clazz) throws IllegalStateException, SQLException {

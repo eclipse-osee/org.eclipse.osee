@@ -35,7 +35,7 @@ public class PublishPids extends AbstractBlam {
       ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
       RendererManager rendererManager = RendererManager.getInstance();
       Artifact root = artifactManager.getDefaultHierarchyRootArtifact(branch);
-      Artifact subsysTopFolder = root.getChild(Requirements.SUBSYSTEM_REQUIREMENT);
+      Artifact subsysTopFolder = root.getChild(Requirements.SUBSYSTEM_REQUIREMENTS);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
       artifactManager.getArtifactsFromSubtypeName(Requirements.SUBSYSTEM_REQUIREMENT, branch);
