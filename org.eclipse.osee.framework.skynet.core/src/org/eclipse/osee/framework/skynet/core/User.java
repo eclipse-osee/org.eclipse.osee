@@ -126,7 +126,7 @@ public class User extends Artifact implements Serializable {
    }
 
    public String getUserId() throws SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue(userIdAttributeName, "");
+      return getSoleAttributeValue(userIdAttributeName, "");
    }
 
    public void setUserID(String userId) throws IllegalStateException, SQLException {
@@ -134,7 +134,7 @@ public class User extends Artifact implements Serializable {
    }
 
    public String getEmail() throws SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue(Attributes.Email.toString(), "");
+      return getSoleAttributeValue(Attributes.Email.toString(), "");
    }
 
    public void setEmail(String email) throws IllegalStateException, SQLException {
@@ -150,7 +150,7 @@ public class User extends Artifact implements Serializable {
    }
 
    public String getPhone() throws SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue(Attributes.Phone.toString(), "");
+      return getSoleAttributeValue(Attributes.Phone.toString(), "");
    }
 
    public void setPhone(String phone) throws IllegalStateException, SQLException {
@@ -158,7 +158,7 @@ public class User extends Artifact implements Serializable {
    }
 
    public Boolean isActive() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist, MultipleAttributesExist {
-      return getSoleTAttributeValue(Attributes.Active.toString());
+      return getSoleAttributeValue(Attributes.Active.toString());
    }
 
    public void setActive(boolean required) throws IllegalStateException, SQLException {

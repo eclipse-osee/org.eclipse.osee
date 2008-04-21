@@ -241,7 +241,7 @@ public class WordTemplateManager {
                   performedOutLining = true;
 
                   String headingText =
-                        artifact.getSoleTAttributeValue(artifactProcessingTask.getHeadingAttributeName(), "");
+                        artifact.getSoleAttributeValue(artifactProcessingTask.getHeadingAttributeName(), "");
                   CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, null);
                }
 
@@ -322,8 +322,8 @@ public class WordTemplateManager {
             if (!artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
                if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-                  if (!artifact.getSoleTAttributeValue("Imported Paragraph Number", "").equals("")) {
-                     startParagraphNumber = artifact.getSoleTAttributeValue("Imported Paragraph Number", "");
+                  if (!artifact.getSoleAttributeValue("Imported Paragraph Number", "").equals("")) {
+                     startParagraphNumber = artifact.getSoleAttributeValue("Imported Paragraph Number", "");
                   }
                }
             }

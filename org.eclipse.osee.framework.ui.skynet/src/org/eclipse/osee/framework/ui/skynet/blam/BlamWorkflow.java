@@ -95,7 +95,7 @@ public class BlamWorkflow extends Artifact {
    }
 
    private void loadFromXml() throws ParserConfigurationException, SQLException, MultipleAttributesExist, SAXException, IOException, IllegalArgumentException, CoreException {
-      String blamXml = getSoleTAttributeValue("Workflow Definition", "");
+      String blamXml = getSoleAttributeValue("Workflow Definition", "");
       Document document = Jaxp.readXmlDocument(blamXml);
       Element rootElement = document.getDocumentElement();
 
@@ -162,7 +162,7 @@ public class BlamWorkflow extends Artifact {
    }
 
    public void saveLayoutData(String xml) throws ParserConfigurationException, SQLException, MultipleAttributesExist, SAXException, IOException, IllegalArgumentException, CoreException, SQLException {
-      String blamXml = getSoleTAttributeValue("Workflow Definition", "");
+      String blamXml = getSoleAttributeValue("Workflow Definition", "");
       Document document = Jaxp.readXmlDocument(blamXml);
       Element rootElement = document.getDocumentElement();
 

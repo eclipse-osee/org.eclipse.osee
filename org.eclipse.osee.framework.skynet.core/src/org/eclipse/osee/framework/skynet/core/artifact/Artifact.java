@@ -166,8 +166,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
       try {
          if (getArtifactTypeName().equals("Version")) {
-            boolean next = getSoleTAttributeValue("ats.Next Version", false);
-            boolean released = getSoleTAttributeValue("ats.Released", false);
+            boolean next = getSoleAttributeValue("ats.Next Version", false);
+            boolean released = getSoleAttributeValue("ats.Released", false);
             return descriptor.getImage(next, released);
          }
       } catch (Exception ex) {
@@ -566,7 +566,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws IllegalStateException
     * @throws SQLException
     */
-   public <T> T getSoleTAttributeValue(String attributeTypeName) throws AttributeDoesNotExist, MultipleAttributesExist, IllegalStateException, SQLException {
+   public <T> T getSoleAttributeValue(String attributeTypeName) throws AttributeDoesNotExist, MultipleAttributesExist, IllegalStateException, SQLException {
       DynamicAttributeManager attributeManager = getAttributeManager(attributeTypeName);
       Collection<Attribute<T>> attributes = attributeManager.getAttributes();
       if (attributes.size() == 0)
@@ -591,9 +591,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws MultipleAttributesExist if multiple attribute instances exist
     * @throws SQLException
     */
-   public String getSoleTAttributeAsString(String attributeTypeName, String defaultReturnValue) throws MultipleAttributesExist, SQLException {
+   public String getSoleAttributeValueAsString(String attributeTypeName, String defaultReturnValue) throws MultipleAttributesExist, SQLException {
       try {
-         return getSoleTAttributeValue(attributeTypeName).toString();
+         return getSoleAttributeValue(attributeTypeName).toString();
       } catch (AttributeDoesNotExist ex) {
          return defaultReturnValue;
       }
@@ -612,9 +612,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws MultipleAttributesExist if multiple attribute instances exist
     * @throws SQLException
     */
-   public <T> T getSoleTAttributeValue(String attributeTypeName, T defaultReturnValue) throws MultipleAttributesExist, SQLException {
+   public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue) throws MultipleAttributesExist, SQLException {
       try {
-         return getSoleTAttributeValue(attributeTypeName);
+         return getSoleAttributeValue(attributeTypeName);
       } catch (AttributeDoesNotExist ex) {
          return defaultReturnValue;
       }
@@ -638,8 +638,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws MultipleAttributesExist if multiple attribute instances exist
     * @throws SQLException
     */
-   public <T> T getSoleTAttributeValue(String attributeTypeName, T defaultReturnValue, Class<T> clazz) throws MultipleAttributesExist, SQLException {
-      return (T) getSoleTAttributeValue(attributeTypeName, defaultReturnValue);
+   public <T> T getSoleAttributeValue(String attributeTypeName, T defaultReturnValue, Class<T> clazz) throws MultipleAttributesExist, SQLException {
+      return (T) getSoleAttributeValue(attributeTypeName, defaultReturnValue);
    }
 
    /**
@@ -654,14 +654,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       if (attribute != null) {
          attribute.delete();
       }
-   }
-
-   public <T> T getSoleXAttributeValue(String attributeTypeName, Class<T> clazz) throws IllegalStateException, SQLException {
-      Attribute<T> attribute = getSoleAttribute(attributeTypeName);
-      if (attribute == null) {
-         return null;
-      }
-      return (T) attribute.getValue();
    }
 
    public <T> void setSoleXAttributeValue(String attributeTypeName, T value) throws IllegalStateException, SQLException {

@@ -86,7 +86,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       excelWriter.writeRow("Paragraph Number", "Paragraph Title", "Paragraph Number", "Paragraph Title");
 
       for (Artifact subsystemRequirement : subsystem.getDescendants()) {
-         excelWriter.writeCell(subsystemRequirement.getSoleTAttributeValue("Imported Paragraph Number", ""));
+         excelWriter.writeCell(subsystemRequirement.getSoleAttributeValue("Imported Paragraph Number", ""));
          excelWriter.writeCell(subsystemRequirement.getDescriptiveName());
 
          if (subsystemRequirement.isOfType("Subsystem Requirement")) {
@@ -94,7 +94,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
             for (Artifact subsystemDesign : subsystemRequirement.getArtifacts(RelationSide.Design__Design)) {
                if (subsystemDesign.isOfType("Subsystem Design")) {
                   loopNeverRan = false;
-                  excelWriter.writeCell(subsystemDesign.getSoleTAttributeValue("Imported Paragraph Number", ""), 2);
+                  excelWriter.writeCell(subsystemDesign.getSoleAttributeValue("Imported Paragraph Number", ""), 2);
                   excelWriter.writeCell(subsystemDesign.getDescriptiveName(), 3);
                   excelWriter.endRow();
                }

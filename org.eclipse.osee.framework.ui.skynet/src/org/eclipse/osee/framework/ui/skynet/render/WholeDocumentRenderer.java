@@ -70,7 +70,7 @@ public class WholeDocumentRenderer extends FileRenderer {
     */
    @Override
    public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
-      String content = artifact.getSoleTAttributeValue(WordAttribute.CONTENT_NAME);
+      String content = artifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME);
       if (content == null || content.matches("")) {
          String wordLeader1 =
                "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>" + "<?mso-application progid='Word.Document'?>";

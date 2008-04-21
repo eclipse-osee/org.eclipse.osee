@@ -70,7 +70,7 @@ public class ATSLog {
    public List<LogItem> getLogItems() {
       List<LogItem> logItems = new ArrayList<LogItem>();
       try {
-         String xml = artifact.getSoleTAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), "");
+         String xml = artifact.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), "");
          if (!xml.equals("")) {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
             for (int i = 0; i < nodes.getLength(); i++) {

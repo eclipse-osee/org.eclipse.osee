@@ -157,7 +157,7 @@ public class ReviewManager {
       Set<ReviewSMArtifact> arts = new HashSet<ReviewSMArtifact>();
       if (!smaMgr.getSma().isTaskable()) return arts;
       for (ReviewSMArtifact revArt : getReviews()) {
-         if (revArt.getSoleTAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
+         if (revArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
                stateName)) arts.add(revArt);
       }
       return arts;

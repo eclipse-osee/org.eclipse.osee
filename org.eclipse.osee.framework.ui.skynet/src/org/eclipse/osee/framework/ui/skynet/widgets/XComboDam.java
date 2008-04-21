@@ -64,7 +64,7 @@ public class XComboDam extends XCombo implements IDamWidget {
       this.artifact = artifact;
       this.attrName = attrName;
 
-      super.set(artifact.getSoleTAttributeValue(attrName, ""));
+      super.set(artifact.getSoleAttributeValue(attrName, ""));
    }
 
    @Override
@@ -83,7 +83,7 @@ public class XComboDam extends XCombo implements IDamWidget {
    @Override
    public boolean isDirty() {
       try {
-         return !artifact.getSoleTAttributeValue(attrName, "").equals(get());
+         return !artifact.getSoleAttributeValue(attrName, "").equals(get());
       } catch (Exception ex) {
          // do nothing
       }

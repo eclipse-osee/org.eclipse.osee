@@ -171,7 +171,7 @@ public class ExtendedStatusReportJob extends Job {
             if (sma instanceof TaskArtifact) {
                TaskArtifact taskArt = (TaskArtifact) sma;
                desc =
-                     taskArt.getDescription() + " " + taskArt.getSoleTAttributeValue(
+                     taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(
                            ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
             }
             if (desc.matches("^ *$"))

@@ -268,8 +268,8 @@ public class WordTemplateProcessor {
             if (!artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
                if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-                  if (!artifact.getSoleTAttributeValue("Imported Paragraph Number", "").equals("")) {
-                     startParagraphNumber = artifact.getSoleTAttributeValue("Imported Paragraph Number", "");
+                  if (!artifact.getSoleAttributeValue("Imported Paragraph Number", "").equals("")) {
+                     startParagraphNumber = artifact.getSoleAttributeValue("Imported Paragraph Number", "");
                   }
                }
             }
@@ -463,7 +463,7 @@ public class WordTemplateProcessor {
 
       if (outlining) {
          performedOutLining = true;
-         String headingText = artifact.getSoleTAttributeValue(headingAttributeName, "");
+         String headingText = artifact.getSoleAttributeValue(headingAttributeName, "");
          CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
          if (paragraphNumber != null && saveParagraphNumOnArtifact) {
@@ -521,7 +521,7 @@ public class WordTemplateProcessor {
 
       if (attributeTypeName.equals("TIS Traceability")) {
          for (Artifact requirement : artifact.getArtifacts(RelationSide.Verification__Requirement)) {
-            wordMl.addParagraph(requirement.getSoleTAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
+            wordMl.addParagraph(requirement.getSoleAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
          }
          return;
       }
@@ -554,7 +554,7 @@ public class WordTemplateProcessor {
                   wordMl.addWordMl(wordContent);
                }
             } else {
-               System.out.println(artifact.getArtifactType().getName() + " : " + artifact.getSoleTAttributeValue("Name") + " : " + attribute.getAttributeType().getName() + " == null");
+               System.out.println(artifact.getArtifactType().getName() + " : " + artifact.getSoleAttributeValue("Name") + " : " + attribute.getAttributeType().getName() + " == null");
             }
 
             wordMl.resetListValue();

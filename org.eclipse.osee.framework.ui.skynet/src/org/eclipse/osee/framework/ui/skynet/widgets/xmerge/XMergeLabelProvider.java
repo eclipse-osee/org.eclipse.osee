@@ -78,7 +78,7 @@ public class XMergeLabelProvider implements ITableLabelProvider {
             } else if (aCol == MergeColumn.Destination)
                return attributeChange.getDestDisplayData();
             else if (aCol == MergeColumn.Merged) {
-               return attributeChange.getArtifact().getSoleTAttributeValue(
+               return attributeChange.getArtifact().getSoleAttributeValue(
                      attributeChange.getDynamicAttributeDescriptor().getName(), "");
             }
          }

@@ -31,7 +31,7 @@ public class XDecisionOptions {
 
    public DecisionOption getDecisionOption(String stateName, boolean create) throws SQLException, MultipleAttributesExist {
       String decisionOptions =
-            sma.getSoleTAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
+            sma.getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
       for (String decsionOpt : decisionOptions.split("\n")) {
          DecisionOption state = new DecisionOption();
          state.setFromXml(decsionOpt);
@@ -42,7 +42,7 @@ public class XDecisionOptions {
    }
 
    public Set<DecisionOption> getDecisionOptions() throws SQLException, MultipleAttributesExist {
-      String decString = sma.getSoleTAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
+      String decString = sma.getSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
       return getDecisionOptions(decString);
    }
 
@@ -64,7 +64,7 @@ public class XDecisionOptions {
    }
 
    public Result validateDecisionOptions() throws SQLException, MultipleAttributesExist {
-      return validateDecisionOptions(sma.getSoleTAttributeValue(
+      return validateDecisionOptions(sma.getSoleAttributeValue(
             ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), ""));
    }
 

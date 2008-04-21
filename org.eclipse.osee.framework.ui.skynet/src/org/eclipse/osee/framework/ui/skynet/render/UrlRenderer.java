@@ -46,7 +46,7 @@ public class UrlRenderer extends Renderer {
 
    @Override
    public String getArtifactUrl(Artifact artifact) throws MultipleAttributesExist, SQLException {
-      String url = artifact.getSoleTAttributeValue("Content URL", "");
+      String url = artifact.getSoleAttributeValue("Content URL", "");
       if (url.startsWith("ws:")) {
          IFile iFile = WorkspaceURL.getIFile(url);
          url = iFile.getLocation().toString();

@@ -114,7 +114,7 @@ public class ArtifactPromptChange {
       // change
       DateSelectionDialog diag =
             new DateSelectionDialog("Select " + displayName, "Select " + displayName,
-                  artifacts.size() == 1 ? artifacts.iterator().next().getSoleTAttributeValue(attributeName, null,
+                  artifacts.size() == 1 ? artifacts.iterator().next().getSoleAttributeValue(attributeName, null,
                         Date.class) : null);
       if (diag.open() == 0) {
          for (Artifact artifact : artifacts) {
@@ -171,7 +171,7 @@ public class ArtifactPromptChange {
             new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
       if (smas.size() == 1) {
-         Object obj = smas.iterator().next().getSoleTAttributeValue(attributeName);
+         Object obj = smas.iterator().next().getSoleAttributeValue(attributeName);
          if (obj != null) ed.setEntry(String.valueOf(obj));
       }
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
@@ -198,7 +198,7 @@ public class ArtifactPromptChange {
 
    public static boolean promptChangeBoolean(String attributeName, String displayName, final Collection<? extends Artifact> smas, String toggleMessage, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       boolean set = false;
-      if (smas.size() == 1) set = smas.iterator().next().getSoleTAttributeValue(attributeName, false);
+      if (smas.size() == 1) set = smas.iterator().next().getSoleAttributeValue(attributeName, false);
       MessageDialogWithToggle md =
             new MessageDialogWithToggle(Display.getCurrent().getActiveShell(), displayName, null, displayName,
                   MessageDialog.QUESTION, new String[] {"Ok", "Cancel"}, MessageDialog.OK,

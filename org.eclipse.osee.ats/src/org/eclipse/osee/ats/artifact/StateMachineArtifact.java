@@ -548,7 +548,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    public String getWorldViewLegacyPCR() {
       try {
          if (isAttributeTypeValid(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName())) {
-            return getSoleTAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
+            return getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
@@ -596,7 +596,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
             }
             return hours;
          } else {
-            Double value = getSoleTAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+            Double value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
             if (value == null) return 0;
             return value;
          }
@@ -634,7 +634,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public Result isWorldViewRemainHoursValid() {
       try {
-         Double value = getSoleTAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+         Double value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
          if (value == null) return new Result("Estimated Hours not set.");
          return Result.TrueResult;
       } catch (Exception ex) {
@@ -675,7 +675,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
       if (result.isFalse()) return result;
       String value = null;
       try {
-         value = getSoleTAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName(), "");
+         value = getSoleAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName(), "");
          if (value == null || value.equals("")) return new Result("Weekly Benefit Hours not set.");
          double val = new Float(value).doubleValue();
          if (val == 0) return new Result("Weekly Benefit Hours not set.");
@@ -702,7 +702,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public String getWorldViewNotes() {
       try {
-         return getSoleTAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -710,7 +710,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public String getWorldViewWorkPackage() {
       try {
-         return getSoleTAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -718,7 +718,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public String getWorldViewCategory() {
       try {
-         return getSoleTAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -726,7 +726,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public String getWorldViewCategory2() {
       try {
-         return getSoleTAttributeValue(ATSAttributes.CATEGORY2_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(ATSAttributes.CATEGORY2_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -734,7 +734,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public String getWorldViewCategory3() {
       try {
-         return getSoleTAttributeValue(ATSAttributes.CATEGORY3_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(ATSAttributes.CATEGORY3_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -932,7 +932,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
     */
    public String getWorldViewValidationRequiredStr() {
       try {
-         if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) return String.valueOf(getSoleTAttributeValue(
+         if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) return String.valueOf(getSoleAttributeValue(
                ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);

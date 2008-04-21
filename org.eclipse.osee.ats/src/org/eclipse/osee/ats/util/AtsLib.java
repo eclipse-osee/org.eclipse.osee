@@ -75,7 +75,7 @@ public class AtsLib implements IAtsLib {
             else {
                // Ats config Artifact is Active unless otherwise specified
                boolean attributeActive =
-                     ((A) art).getSoleTAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false);
+                     ((A) art).getSoleAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false);
                if (active == Active.Active && attributeActive) {
                   results.add((A) art);
                } else if (active == Active.InActive && !attributeActive) {

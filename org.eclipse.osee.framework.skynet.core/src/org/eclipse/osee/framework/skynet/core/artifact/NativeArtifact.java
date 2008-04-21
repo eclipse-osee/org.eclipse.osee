@@ -61,7 +61,7 @@ public class NativeArtifact extends Artifact {
    }
 
    public String getFileExtension() throws SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue("Extension", "");
+      return getSoleAttributeValue("Extension", "");
    }
 
    public InputStream getNativeContent() throws IOException, SQLException {

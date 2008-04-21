@@ -45,11 +45,11 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public Boolean isReleased() throws IllegalStateException, SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), false);
+      return getSoleAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), false);
    }
 
    public Boolean isNextVersion() throws IllegalStateException, SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false);
+      return getSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false);
    }
 
    public String toString() {
@@ -65,7 +65,7 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public String getFullName() throws SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), "");
    }
 
    public void setFullName(String name) throws IllegalStateException, SQLException {
@@ -73,7 +73,7 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public String getDescription() throws SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
    public void setDescription(String desc) throws IllegalStateException, SQLException {
@@ -107,11 +107,11 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public Date getEstimatedReleaseDate() throws IllegalStateException, SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
+      return getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
    }
 
    public Date getReleaseDate() throws IllegalStateException, SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
+      return getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
    }
 
 }

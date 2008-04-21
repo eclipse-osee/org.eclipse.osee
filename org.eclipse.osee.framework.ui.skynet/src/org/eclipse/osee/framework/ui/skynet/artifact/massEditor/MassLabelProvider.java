@@ -58,7 +58,7 @@ public class MassLabelProvider implements ITableLabelProvider {
          if (artifact.getAttributeManager(colName).getAttributeType().getBaseAttributeClass().equals(
                DateAttribute.class)) {
             if (artifact.getAttributeManager(colName).getAttributes().size() > 0) {
-               DateAttribute.MMDDYYHHMM.format(artifact.getSoleTAttributeValue(colName));
+               DateAttribute.MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
             }
             return "";
          }

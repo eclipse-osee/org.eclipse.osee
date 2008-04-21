@@ -53,7 +53,7 @@ public class TaskManager {
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws SQLException, MultipleAttributesExist {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
       for (TaskArtifact taskArt : smaMgr.getSma().getArtifacts(RelationSide.SmaToTask_Task, TaskArtifact.class)) {
-         if (taskArt.getSoleTAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
+         if (taskArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
                stateName)) arts.add(taskArt);
       }
       return arts;

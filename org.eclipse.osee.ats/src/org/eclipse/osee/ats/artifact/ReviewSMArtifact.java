@@ -60,7 +60,7 @@ public abstract class ReviewSMArtifact extends StateMachineArtifact {
    }
 
    public boolean isBlocking() throws IllegalStateException, SQLException, MultipleAttributesExist, MultipleAttributesExist {
-      return getSoleTAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
+      return getSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
    }
 
    public DefectManager getDefectManager() {

@@ -186,7 +186,7 @@ public class UpdateArtifactJob extends UpdateJob {
             Artifact artifact = persistenceManager.getArtifact(guid, getTxBranch());
 
             if (artifact != null) {
-               containsOleData = !artifact.getSoleTAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("");
+               containsOleData = !artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("");
 
                if (oleDataElement == null && containsOleData) {
                   artifact.setSoleXAttributeValue(WordAttribute.OLE_DATA_NAME, "");

@@ -623,7 +623,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
                   art.getCurrentStateName().replaceAll("(Task|State)", ""), smaMgr.getAssigneesWasIsStr(),
                   smaMgr.getSma().getWorldViewTotalPercentComplete() + "",
                   smaMgr.getSma().getWorldViewTotalHoursSpent() + "",
-                  art.getSoleTAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), ""),
+                  art.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), ""),
                   art.getHumanReadableId()}));
          }
          html.append(AHTML.endBorderTable());

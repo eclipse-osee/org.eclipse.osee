@@ -40,7 +40,7 @@ public class XTextDam extends XText implements IDamWidget {
    }
 
    public String getUdatStringValue() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
-      return artifact.getSoleTAttributeValue(attributeTypeName, null);
+      return artifact.getSoleAttributeValue(attributeTypeName, null);
    }
 
    XModifiedListener modifyListener = new XModifiedListener() {

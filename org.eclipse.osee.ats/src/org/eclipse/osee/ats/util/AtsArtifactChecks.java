@@ -90,7 +90,7 @@ public class AtsArtifactChecks implements IArtifactCheck {
    public Result checkAtsVueWorkflows(Collection<Artifact> artifacts) throws Exception {
       for (Artifact art : artifacts) {
          if (art.getArtifactTypeName().equals("General Document")) {
-            String ext = art.getSoleTAttributeValue("Extension", "");
+            String ext = art.getSoleAttributeValue("Extension", "");
             if (ext != null && ext.equals("vue")) {
                if (art.getArtifacts(RelationSide.TeamDefinitionToTaskWorkflowDiagram_TeamDefinition).size() > 0) return new Result(
                      "Team Workflow selected to delete has related Team Definition(s); Team Definitions to new Team Workflows first.");

@@ -55,7 +55,7 @@ public class DefectManager {
 
    public Set<DefectItem> getDefectItems() throws SQLException, MultipleAttributesExist {
       Set<DefectItem> defectItems = new HashSet<DefectItem>();
-      String xml = artifact.getSoleTAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, "");
+      String xml = artifact.getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, "");
       defectMatcher.reset(xml);
       while (defectMatcher.find()) {
          DefectItem item = new DefectItem(defectMatcher.group());

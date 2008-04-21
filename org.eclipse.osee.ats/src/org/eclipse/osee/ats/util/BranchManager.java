@@ -265,7 +265,7 @@ public class BranchManager {
          if (verArt != null) {
             try {
                Integer branchId =
-                     verArt.getSoleTAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+                     verArt.getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
                if (branchId != null && branchId > 0) {
                   parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
                }
@@ -279,7 +279,7 @@ public class BranchManager {
       if (parentBranch == null && (smaMgr.getSma() instanceof TeamWorkFlowArtifact)) {
          try {
             Integer branchId =
-                  ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleTAttributeValue(
+                  ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleAttributeValue(
                         ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
             if (branchId != null && branchId > 0) {
                parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);

@@ -27,7 +27,7 @@ public class TaskCurrentStateFilter extends ViewerFilter {
       try {
          TaskArtifactItem item = (TaskArtifactItem) element;
          if (item.getTaskArtifact().isDeleted()) return true;
-         return (item.getTaskArtifact().getSoleTAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
+         return (item.getTaskArtifact().getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
                "").equals(stateName));
       } catch (Exception ex) {
          // do nothing

@@ -59,7 +59,7 @@ public class ATSNote {
    public List<NoteItem> getNoteItems() {
       List<NoteItem> logItems = new ArrayList<NoteItem>();
       try {
-         String xml = artifact.getSoleTAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), "");
+         String xml = artifact.getSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), "");
          if (!xml.equals("")) {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
             for (int i = 0; i < nodes.getLength(); i++) {

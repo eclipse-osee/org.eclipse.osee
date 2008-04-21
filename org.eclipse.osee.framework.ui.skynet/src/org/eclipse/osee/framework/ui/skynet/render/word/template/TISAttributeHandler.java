@@ -25,7 +25,7 @@ public class TISAttributeHandler implements ITemplateAttributeHandler {
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute attribute) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist, AttributeDoesNotExist {
       if (true) return;
       for (Artifact requirement : artifact.getArtifacts(RelationSide.Verification__Requirement)) {
-         wordMl.addParagraph(requirement.getSoleTAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
+         wordMl.addParagraph(requirement.getSoleAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
       }
    }
 

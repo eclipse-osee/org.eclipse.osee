@@ -102,7 +102,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       try {
          StateMachineArtifact parentSMA = getParentSMA();
          boolean unCancellable =
-               (parentSMA.getCurrentStateName().equals(getSoleTAttributeValue(
+               (parentSMA.getCurrentStateName().equals(getSoleAttributeValue(
                      ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "")));
          if (!unCancellable) return false;
          return super.isUnCancellable();
@@ -125,7 +125,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    @Override
    public String getDescription() {
       try {
-         return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
          return "Error: " + ex.getLocalizedMessage();
       }
@@ -134,7 +134,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    @Override
    public String getWorldViewRelatedToState() {
       try {
-         return getSoleTAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -245,7 +245,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     */
    public String getWorldViewDescription() {
       try {
-         return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -260,12 +260,12 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     */
    public Date getWorldViewEstimatedReleaseDate() throws Exception {
       if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewEstimatedReleaseDate();
-      return getSoleTAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+      return getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
 
    public Date getWorldViewReleaseDate() throws Exception {
       if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewReleaseDate();
-      return getSoleTAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+      return getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
 
    public VersionArtifact getTargetedForVersion() throws SQLException {

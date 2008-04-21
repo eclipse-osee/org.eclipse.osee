@@ -123,7 +123,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public VersionArtifact getNextReleaseVersion() throws SQLException, MultipleAttributesExist {
       for (VersionArtifact verArt : getArtifacts(RelationSide.TeamDefinitionToVersion_Version, VersionArtifact.class)) {
-         if (verArt.getSoleTAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false)) {
+         if (verArt.getSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false)) {
             return verArt;
          }
       }
@@ -160,7 +160,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       ActiveArtifactTypeSearch search =
             new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getInstance().getAtsBranch());
       for (TeamDefinitionArtifact teamDef : search.getArtifacts(TeamDefinitionArtifact.class)) {
-         if (teamDef.getVersionsArtifacts().size() > 0 && teamDef.getSoleTAttributeValue(
+         if (teamDef.getVersionsArtifacts().size() > 0 && teamDef.getSoleAttributeValue(
                ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false)) teamDefs.add(teamDef);
       }
       return teamDefs;
@@ -235,7 +235,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     */
    public double getManDayHrsFromItemAndChildren(TeamDefinitionArtifact teamDef) {
       try {
-         Double manDaysHrs = teamDef.getSoleTAttributeValue(ATSAttributes.MAN_DAYS_NEEDED_ATTRIBUTE.getStoreName());
+         Double manDaysHrs = teamDef.getSoleAttributeValue(ATSAttributes.MAN_DAYS_NEEDED_ATTRIBUTE.getStoreName());
          if (manDaysHrs != null && manDaysHrs != 0) return manDaysHrs;
          if (teamDef.getParent() != null && (teamDef.getParent() instanceof TeamDefinitionArtifact)) return teamDef.getManDayHrsFromItemAndChildren((TeamDefinitionArtifact) teamDef.getParent());
          return StateMachineArtifact.MAN_DAY_HOURS;
@@ -330,7 +330,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public boolean isTeamUsesVersions() throws IllegalStateException, SQLException, MultipleAttributesExist {
-      return getSoleTAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), false);
+      return getSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), false);
    }
 
    /**
@@ -341,7 +341,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @throws SQLException
     */
    public Branch getTeamBranch() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
-      Integer branchId = getSoleTAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+      Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
       if (branchId != null && branchId > 0) {
          return branchManager.getBranch(branchId);
       } else {

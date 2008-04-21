@@ -415,7 +415,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void createNotesHeader(Composite comp, XFormToolkit toolkit) throws SQLException, MultipleAttributesExist {
       // Display SMA Note
-      String note = smaMgr.getSma().getSoleTAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
+      String note = smaMgr.getSma().getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
       if (!note.equals("")) {
          Label label = toolkit.createLabel(comp, "Note: " + note);
          GridData gd = new GridData(GridData.FILL_HORIZONTAL);

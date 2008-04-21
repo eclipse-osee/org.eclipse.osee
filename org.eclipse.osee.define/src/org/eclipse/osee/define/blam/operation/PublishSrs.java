@@ -35,12 +35,12 @@ public class PublishSrs extends AbstractBlam {
       Artifact srsMasterTemplate =
             ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Renderer Template", "srsMasterTemplate",
                   BranchPersistenceManager.getInstance().getCommonBranch());
-      String masterTemplate = srsMasterTemplate.getSoleTAttributeValue(WordAttribute.CONTENT_NAME, "");
+      String masterTemplate = srsMasterTemplate.getSoleAttributeValue(WordAttribute.CONTENT_NAME, "");
 
       Artifact srsSlaveTemplate =
             ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Renderer Template", "srsSlaveTemplate",
                   BranchPersistenceManager.getInstance().getCommonBranch());
-      String slaveTemplate = srsSlaveTemplate.getSoleTAttributeValue(WordAttribute.CONTENT_NAME, "");
+      String slaveTemplate = srsSlaveTemplate.getSoleAttributeValue(WordAttribute.CONTENT_NAME, "");
 
       boolean updateParagraphNumber = variableMap.getValue(Boolean.class, "Update Paragraph Numbers");
       WordTemplateProcessor processor = new WordTemplateProcessor(masterTemplate, slaveTemplate);

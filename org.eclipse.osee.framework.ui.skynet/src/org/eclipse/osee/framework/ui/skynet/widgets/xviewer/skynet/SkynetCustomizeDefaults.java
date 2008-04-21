@@ -66,7 +66,7 @@ public class SkynetCustomizeDefaults implements IXViewerCustomizeDefaults {
    private void loadCustomizeDefaults() throws MultipleAttributesExist, SQLException {
       String xml = "";
       if (user != null) {
-         xml = user.getSoleTAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, "");
+         xml = user.getSoleAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, "");
       }
       setDefaultCustomizationsFromXml(xml);
    }

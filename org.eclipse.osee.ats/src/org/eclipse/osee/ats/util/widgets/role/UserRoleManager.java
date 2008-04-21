@@ -53,7 +53,7 @@ public class UserRoleManager {
 
    public Set<UserRole> getUserRoles() throws SQLException, MultipleAttributesExist {
       Set<UserRole> uRoles = new HashSet<UserRole>();
-      String xml = artifact.getSoleTAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, "");
+      String xml = artifact.getSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, "");
       Matcher m =
             java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(xml);
       while (m.find()) {

@@ -78,7 +78,7 @@ public class XCheckBoxDam extends XCheckBox implements IDamWidget {
    public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       this.artifact = artifact;
       this.attrName = attrName;
-      super.set(artifact.getSoleTAttributeValue(attrName, false));
+      super.set(artifact.getSoleAttributeValue(attrName, false));
    }
 
    @Override
@@ -91,7 +91,7 @@ public class XCheckBoxDam extends XCheckBox implements IDamWidget {
    @Override
    public boolean isDirty() throws IllegalStateException, SQLException {
       try {
-         return artifact.getSoleTAttributeValue(attrName, false) != get();
+         return artifact.getSoleAttributeValue(attrName, false) != get();
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          return false;

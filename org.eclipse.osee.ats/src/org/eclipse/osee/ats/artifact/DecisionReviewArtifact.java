@@ -151,7 +151,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     */
    public String getWorldViewDecision() {
       try {
-         return getSoleTAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -164,7 +164,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     */
    public String getWorldViewDescription() {
       try {
-         return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+         return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }

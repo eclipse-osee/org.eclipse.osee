@@ -412,16 +412,16 @@ public class WordRenderer extends FileRenderer {
          template = getTemplate(firstArtifact, presentationType, option);
 
          if (isSingleEdit) {
-            if (!firstArtifact.getSoleTAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {
+            if (!firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {
                template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
                template =
                      template.replaceAll(
                            STYLES_END,
-                           STYLES_END + OLE_START + firstArtifact.getSoleTAttributeValue(WordAttribute.OLE_DATA_NAME, "") + OLE_END);
+                           STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "") + OLE_END);
             }
          } else {
             for (Artifact artifact : artifacts) {
-               if (!artifact.getSoleTAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("") && presentationType == PresentationType.EDIT) {
+               if (!artifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("") && presentationType == PresentationType.EDIT) {
                   notMultiEditableArtifacts.add(artifact);
                }
             }

@@ -102,7 +102,7 @@ public class TaskMetrics extends AbstractBlam {
          int percentComplete = state.getPercentComplete();
 
          if (percentComplete == 100) {
-            String resolution = task.getSoleTAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
+            String resolution = task.getSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
 
             if (resolution.equals("Complete")) {
                metrics.put(user, 100);
