@@ -1,11 +1,7 @@
 <OSEEConfig>
 <Developer/>
 	<Mode>Production</Mode>
-	<HttpServer address="http://osee.msc.az.boeing.com" port="8015" />
 	<ServiceLookup>
-		<Location>jini://sun800.msc.az.boeing.com</Location>
-		<Location>jini://sun801.msc.az.boeing.com</Location>
-		<Location>jini://sun402.msc.az.boeing.com</Location>
 		<Group>LBA_DEVELOPMENT</Group>	
 	</ServiceLookup>
 	<Logger>
