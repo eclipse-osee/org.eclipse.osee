@@ -295,7 +295,7 @@
 	<Table name="OSEE_DEFINE_TXS" schema="OSEE">
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
-		<Column id="TX_TYPE" type="INTEGER" />
+		<Column id="TX_TYPE" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_TXS_G_TX_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID, TRANSACTION_ID"/>
 		<Constraint schema="OSEE" id="OSEE_TRANSACTION_ID_FK" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_TX_DETAILS" column="TRANSACTION_ID" onDelete="CASCADE" />
