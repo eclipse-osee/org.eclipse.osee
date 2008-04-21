@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A hash map implementation that uses composite keys
+ * A hash map implementation that uses composite keys. This class is not thread safe.
  * 
  * @author Ken J. Aguilar
  * @param <KeyOne>
@@ -26,15 +26,18 @@ import java.util.Set;
 public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<CompositeKeyHashMap.CompositeKey<KeyOne, KeyTwo>, Value> {
 
    private final Map<CompositeKey<KeyOne, KeyTwo>, Value> map;
+   private final CompositeKey<KeyOne, KeyTwo> tempKey = new CompositeKey<KeyOne, KeyTwo>();
 
    public static final class CompositeKey<A, B> {
-      private final A key1;
-      private final B key2;
+      private A key1;
+      private B key2;
+
+      public CompositeKey() {
+
+      }
 
       public CompositeKey(A key1, B key2) {
-         super();
-         this.key1 = key1;
-         this.key2 = key2;
+         setKeys(key1, key2);
       }
 
       public A getKey1() {
@@ -43,6 +46,12 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
 
       public B getKey2() {
          return key2;
+      }
+
+      public CompositeKey<A, B> setKeys(A key1, B key2) {
+         this.key1 = key1;
+         this.key2 = key2;
+         return this;
       }
 
       @Override
@@ -82,7 +91,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    }
 
    public boolean containsKey(KeyOne a, KeyTwo b) {
-      return map.containsKey(new CompositeKey<KeyOne, KeyTwo>(a, b));
+      return map.containsKey(tempKey.setKeys(a, b));
    }
 
    public boolean containsValue(Object value) {
@@ -94,7 +103,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    }
 
    public Value get(Object key) {
-      if (new CompositeKey<KeyOne, KeyTwo>(null, null).getClass().isInstance(key)) {
+      if (CompositeKey.class.isInstance(key)) {
          return map.get(key);
       } else {
          throw new IllegalArgumentException(String.format("Expected Type [CompositeKey], got type [%s].",
@@ -103,7 +112,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    }
 
    public Value get(KeyOne a, KeyTwo b) {
-      return map.get(new CompositeKey<KeyOne, KeyTwo>(a, b));
+      return map.get(tempKey.setKeys(a, b));
    }
 
    public boolean isEmpty() {
@@ -131,7 +140,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    }
 
    public Value remove(KeyOne a, KeyTwo b) {
-      return map.remove(new CompositeKey<KeyOne, KeyTwo>(a, b));
+      return map.remove(tempKey.setKeys(a, b));
    }
 
    public int size() {
@@ -141,5 +150,4 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
    public Collection<Value> values() {
       return map.values();
    }
-
 }
