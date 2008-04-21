@@ -178,17 +178,21 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
     * @return image to display
     */
    public Image getColumnImage(Object element, int columnIndex, Artifact artifact, XViewerColumn xCol, AtsXColumn aCol) {
-      if (element instanceof String) return null;
-      IWorldViewArtifact wva = (IWorldViewArtifact) artifact;
-      if (!xCol.isShow()) return null; // Since not shown, don't display
-      if (aCol == AtsXColumn.Type_Col)
-         return artifact.getImage();
-      else if (aCol == AtsXColumn.Change_Type_Col)
-         return wva.getWorldViewChangeType().getImage();
-      else if (aCol == AtsXColumn.Assignees_Col)
-         return wva.getAssigneeImage();
-      else if (aCol == AtsXColumn.Deadline_Col) {
-         if (wva.isWorldViewDeadlineAlerting().isTrue()) return AtsPlugin.getInstance().getImage("warn.gif");
+      try {
+         if (element instanceof String) return null;
+         IWorldViewArtifact wva = (IWorldViewArtifact) artifact;
+         if (!xCol.isShow()) return null; // Since not shown, don't display
+         if (aCol == AtsXColumn.Type_Col)
+            return artifact.getImage();
+         else if (aCol == AtsXColumn.Change_Type_Col)
+            return wva.getWorldViewChangeType().getImage();
+         else if (aCol == AtsXColumn.Assignees_Col)
+            return wva.getAssigneeImage();
+         else if (aCol == AtsXColumn.Deadline_Col) {
+            if (wva.isWorldViewDeadlineAlerting().isTrue()) return AtsPlugin.getInstance().getImage("warn.gif");
+         }
+      } catch (Exception ex) {
+         // do nothing
       }
       return null;
    }

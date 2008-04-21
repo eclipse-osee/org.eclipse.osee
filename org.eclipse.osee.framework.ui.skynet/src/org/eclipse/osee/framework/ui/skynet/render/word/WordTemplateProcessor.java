@@ -44,6 +44,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescript
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -248,7 +250,7 @@ public class WordTemplateProcessor {
    }
 
    @SuppressWarnings("unchecked")
-   protected String peekAtFirstArtifactToGetParagraphNumber(String template, String nextParagraphNumber, BlamVariableMap variableMap) throws IllegalStateException, SQLException {
+   protected String peekAtFirstArtifactToGetParagraphNumber(String template, String nextParagraphNumber, BlamVariableMap variableMap) throws SQLException, MultipleAttributesExist, IllegalStateException, SQLException {
       String startParagraphNumber = "1";
       Matcher matcher = headElementsPattern.matcher(template);
 
@@ -266,8 +268,8 @@ public class WordTemplateProcessor {
             if (!artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
                if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-                  if (!artifact.getSoleStringAttributeValue("Imported Paragraph Number").equals("")) {
-                     startParagraphNumber = artifact.getSoleStringAttributeValue("Imported Paragraph Number");
+                  if (!artifact.getSoleTAttributeValue("Imported Paragraph Number", "").equals("")) {
+                     startParagraphNumber = artifact.getSoleTAttributeValue("Imported Paragraph Number", "");
                   }
                }
             }
@@ -291,7 +293,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processTreeHelper(Tree<Object> tree, WordMLProducer wordMl, String outlineType) throws IOException, SQLException {
+   private void processTreeHelper(Tree<Object> tree, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       for (TreeNode<Object> treeNode : tree.getRoot().getChildren()) {
 
          if (treeNode.getSelf() instanceof Artifact) {
@@ -324,7 +326,7 @@ public class WordTemplateProcessor {
    }
 
    @SuppressWarnings("unchecked")
-   private void processArtifactSetHelper(String artifactSetName, BlamVariableMap variableMap, WordMLProducer wordMl, String outlineType) throws IOException, SQLException {
+   private void processArtifactSetHelper(String artifactSetName, BlamVariableMap variableMap, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       for (Artifact artifact : variableMap.getArtifacts(artifactSetName)) {
          if (artifact != null) {
             processObjectArtifact(artifact, wordMl, outlineType);
@@ -450,18 +452,18 @@ public class WordTemplateProcessor {
    }
 
    @SuppressWarnings("unchecked")
-   private void processObject(Object object, WordMLProducer wordMl, String outlineType) throws IOException, SQLException {
+   private void processObject(Object object, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       processObjectArtifact((Artifact) object, wordMl, outlineType);
 
    }
 
    @SuppressWarnings("unchecked")
-   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType) throws IOException, SQLException {
+   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       boolean performedOutLining = false;
 
       if (outlining) {
          performedOutLining = true;
-         String headingText = artifact.getSoleStringAttributeValue(headingAttributeName);
+         String headingText = artifact.getSoleTAttributeValue(headingAttributeName, "");
          CharSequence paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
 
          if (paragraphNumber != null && saveParagraphNumOnArtifact) {
@@ -485,7 +487,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processAttributes(Artifact artifact, WordMLProducer wordMl) throws IOException, SQLException {
+   private void processAttributes(Artifact artifact, WordMLProducer wordMl) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
@@ -503,7 +505,7 @@ public class WordTemplateProcessor {
       wordMl.setPageLayout(artifact);
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs) throws IOException, SQLException {
+   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, String attributeTypeName, boolean allAttrs) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       String format = attributeElement.getFormat();
 
       // This is for SRS Publishing. Do not publish unspecified attributes
@@ -519,7 +521,7 @@ public class WordTemplateProcessor {
 
       if (attributeTypeName.equals("TIS Traceability")) {
          for (Artifact requirement : artifact.getArtifacts(RelationSide.Verification__Requirement)) {
-            wordMl.addParagraph(requirement.getSoleXAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
+            wordMl.addParagraph(requirement.getSoleTAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
          }
          return;
       }
@@ -552,7 +554,7 @@ public class WordTemplateProcessor {
                   wordMl.addWordMl(wordContent);
                }
             } else {
-               System.out.println(artifact.getArtifactType().getName() + " : " + artifact.getSoleXAttributeValue("Name") + " : " + attribute.getAttributeType().getName() + " == null");
+               System.out.println(artifact.getArtifactType().getName() + " : " + artifact.getSoleTAttributeValue("Name") + " : " + attribute.getAttributeType().getName() + " == null");
             }
 
             wordMl.resetListValue();

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.defect;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -19,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -59,7 +61,7 @@ public class DefectItem {
       }
    };
 
-   public void update(DefectItem dItem) {
+   public void update(DefectItem dItem) throws SQLException, MultipleAttributesExist {
       fromXml(dItem.toXml());
    }
 
@@ -127,7 +129,7 @@ public class DefectItem {
       return guid.hashCode();
    }
 
-   public String toXml() {
+   public String toXml() throws SQLException, MultipleAttributesExist {
       return "<severity>" + severity.name() + "</severity><disposition>" + disposition.name() +
       //
       "</disposition><injectionActivity>" + injectionActivity.name() + "</injectionActivity><date>" + date.getTime() +

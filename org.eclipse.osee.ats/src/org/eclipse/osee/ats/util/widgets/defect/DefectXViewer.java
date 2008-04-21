@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
@@ -159,25 +160,29 @@ public class DefectXViewer extends XViewer {
     */
    @Override
    public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-      DefectColumn aCol = DefectColumn.getAtsXColumn(xCol);
-      DefectItem defectItem = (DefectItem) treeItem.getData();
-      boolean modified = false;
-      if (aCol == DefectColumn.Closed_Col) {
-         modified = true;
-         defectItem.setClosed(!defectItem.isClosed());
-      }
-      if (aCol == DefectColumn.Severity_Col) {
-         return handleAltLeftClick(treeColumn, treeItem);
-      }
-      if (aCol == DefectColumn.Disposition_Col) {
-         return handleAltLeftClick(treeColumn, treeItem);
-      }
-      if (modified) {
-         xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false);
-         xDefectViewer.notifyXModifiedListeners();
-         update(defectItem, null);
-         return true;
+      try {
+         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
+         DefectColumn aCol = DefectColumn.getAtsXColumn(xCol);
+         DefectItem defectItem = (DefectItem) treeItem.getData();
+         boolean modified = false;
+         if (aCol == DefectColumn.Closed_Col) {
+            modified = true;
+            defectItem.setClosed(!defectItem.isClosed());
+         }
+         if (aCol == DefectColumn.Severity_Col) {
+            return handleAltLeftClick(treeColumn, treeItem);
+         }
+         if (aCol == DefectColumn.Disposition_Col) {
+            return handleAltLeftClick(treeColumn, treeItem);
+         }
+         if (modified) {
+            xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false);
+            xDefectViewer.notifyXModifiedListeners();
+            update(defectItem, null);
+            return true;
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return false;
    }

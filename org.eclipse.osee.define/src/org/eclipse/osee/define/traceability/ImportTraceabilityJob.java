@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -178,7 +179,7 @@ public class ImportTraceabilityJob extends Job {
       excelWriter.endSheet();
    }
 
-   private void handelReqTrace(String path, String traceMark) throws SQLException, IOException {
+   private void handelReqTrace(String path, String traceMark) throws SQLException, IOException, MultipleAttributesExist {
       String foundStr;
       Artifact reqArtifact = null;
 
@@ -197,7 +198,7 @@ public class ImportTraceabilityJob extends Job {
                   // for local data and procedures search requirement text for traceMark
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
                   String textContent =
-                        WordUtil.textOnly(reqArtifact.getSoleStringAttributeValue(WordAttribute.CONTENT_NAME)).toUpperCase();
+                        WordUtil.textOnly(reqArtifact.getSoleTAttributeValue(WordAttribute.CONTENT_NAME, "")).toUpperCase();
                   if (textContent.contains(traceExtractor.getCanonicalRequirementName(structuredRequirement.getValue()))) {
                      foundStr = "req body match";
                   } else {

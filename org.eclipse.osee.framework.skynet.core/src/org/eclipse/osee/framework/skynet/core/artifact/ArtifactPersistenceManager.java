@@ -92,6 +92,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -157,8 +159,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    private static final String UPDATE_ARTIFACT_TYPE =
          "UPDATE " + ARTIFACT_TABLE + " SET art_type_id = ? WHERE art_id =?";
-
-   private static final SkynetActivator plugin = SkynetActivator.getInstance();
 
    private SkynetTransactionManager transactionManager;
    private TransactionIdManager transactionIdManager;
@@ -1187,22 +1187,32 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return getDefaultHierarchyRootArtifact(branch, false);
    }
 
-   public Artifact getArtifactFromTypeName(String artType, String nameValue, Branch branch) throws SQLException {
-      return getArtifactFromTypeName(artType, nameValue, branch, true);
-   }
-
-   public Artifact getArtifactFromTypeName(String artType, String nameValue, Branch branch, boolean existenceRequired) throws SQLException {
+   /**
+    * Return single artifact of type and name
+    * 
+    * @param artifactTypeName
+    * @param artifactName
+    * @param branch
+    * @return
+    * @throws SQLException
+    * @throws MultipleArtifactsExist if multiple artifacts found
+    * @throws ArtifactDoesNotExist if no single artifact found
+    */
+   public Artifact getArtifactFromTypeName(String artifactTypeName, String artifactName, Branch branch) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
       List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(artType, EQUAL));
-      criteria.add(new AttributeValueSearch("Name", nameValue, EQUAL));
+      criteria.add(new ArtifactTypeSearch(artifactTypeName, EQUAL));
+      criteria.add(new AttributeValueSearch("Name", artifactName, EQUAL));
 
       Collection<Artifact> artifacts = getArtifacts(criteria, true, branch);
 
       if (artifacts.size() == 1) return artifacts.iterator().next();
-      if (artifacts.size() != 1 && existenceRequired) {
-         throw new IllegalStateException(String.format(
-               "There must be exactly one \"%s\" artifact named \"%s\" - not %d", artType, nameValue, artifacts.size()));
+      if (artifacts.size() > 1) {
+         throw new MultipleArtifactsExist(String.format(
+               "Multiple artifacts named \"%s\" (\"%s\") exist.  Found \"%s\"", artifactTypeName, artifactName,
+               artifacts.size()));
       }
+      if (artifacts.size() == 0) throw new ArtifactDoesNotExist(String.format(
+            "Artifact named \"%s\" (\"%s\") does not exist.", artifactTypeName, artifactName));
       return null;
    }
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -52,7 +51,7 @@ public abstract class UserSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       if (isCancelled()) return EMPTY_SET;
       if (user != null)
          return searchIt(user);
@@ -60,11 +59,11 @@ public abstract class UserSearchItem extends WorldSearchItem {
          return searchIt();
    }
 
-   protected Collection<Artifact> searchIt(User user) throws SQLException, IllegalArgumentException {
+   protected Collection<Artifact> searchIt(User user) throws Exception {
       return EMPTY_SET;
    }
 
-   private Collection<Artifact> searchIt() throws SQLException, IllegalArgumentException {
+   private Collection<Artifact> searchIt() throws Exception {
       if (isCancelled()) return EMPTY_SET;
       if (selectedUser != null) return searchIt(selectedUser);
       return EMPTY_SET;

@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -44,8 +45,8 @@ public class XMergeLabelProvider implements ITableLabelProvider {
          MergeColumn aCol = MergeColumn.getAtsXColumn(xCol);
          try {
             return getColumnText(element, columnIndex, xCol, aCol);
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         } catch (Exception ex) {
+            XViewerCells.getCellExceptionString(ex);
          }
       }
       return "";
@@ -63,23 +64,26 @@ public class XMergeLabelProvider implements ITableLabelProvider {
     * @return column string
     * @throws SQLException
     */
-   public String getColumnText(Object element, int columnIndex, XViewerColumn xCol, MergeColumn aCol) throws SQLException {
-      if (!xCol.isShow()) return ""; // Since not shown, don't display
-
-      if (element instanceof AttributeConflict) {
-         AttributeConflict attributeChange = (AttributeConflict) element;
-         if (aCol == MergeColumn.Artifact_Name) {
-            return attributeChange.getArtifact().getDescriptiveName();
-         } else if (aCol == MergeColumn.Change_Item) {
-            return attributeChange.getDynamicAttributeDescriptor().getName();
-         } else if (aCol == MergeColumn.Source) {
-            return attributeChange.getSourceDisplayData();
-         } else if (aCol == MergeColumn.Destination)
-            return attributeChange.getDestDisplayData();
-         else if (aCol == MergeColumn.Merged){ 
-        	 return attributeChange.getArtifact().getSoleStringAttributeValue(attributeChange.getDynamicAttributeDescriptor().getName());
-        	 }
-
+   public String getColumnText(Object element, int columnIndex, XViewerColumn xCol, MergeColumn aCol) {
+      try {
+         if (!xCol.isShow()) return ""; // Since not shown, don't display
+         if (element instanceof AttributeConflict) {
+            AttributeConflict attributeChange = (AttributeConflict) element;
+            if (aCol == MergeColumn.Artifact_Name) {
+               return attributeChange.getArtifact().getDescriptiveName();
+            } else if (aCol == MergeColumn.Change_Item) {
+               return attributeChange.getDynamicAttributeDescriptor().getName();
+            } else if (aCol == MergeColumn.Source) {
+               return attributeChange.getSourceDisplayData();
+            } else if (aCol == MergeColumn.Destination)
+               return attributeChange.getDestDisplayData();
+            else if (aCol == MergeColumn.Merged) {
+               return attributeChange.getArtifact().getSoleTAttributeValue(
+                     attributeChange.getDynamicAttributeDescriptor().getName(), "");
+            }
+         }
+      } catch (Exception ex) {
+         XViewerCells.getCellExceptionString(ex);
       }
       return "";
    }

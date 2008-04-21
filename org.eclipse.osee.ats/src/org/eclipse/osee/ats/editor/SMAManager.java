@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
@@ -126,7 +127,7 @@ public class SMAManager {
       return Result.FalseResult;
    }
 
-   public void setState(SMAState state) throws IllegalStateException, SQLException {
+   public void setState(SMAState state) throws Exception {
       if (getCurrentStateName().equals(state.getName()))
          getCurrentStateDam().setState(state);
       else
@@ -165,7 +166,7 @@ public class SMAManager {
       return item.getUser();
    }
 
-   public void setOriginator(User user) {
+   public void setOriginator(User user) throws IllegalStateException, SQLException, MultipleAttributesExist {
       sma.getLog().addLog(LogType.Originated, "",
             "Changed by " + SkynetAuthentication.getInstance().getAuthenticatedUser().getName(), user);
    }
@@ -177,7 +178,7 @@ public class SMAManager {
       if (!(getSma() instanceof TeamWorkFlowArtifact)) return false;
       try {
          return ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().isTeamUsesVersions();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return false;
       }
@@ -190,7 +191,7 @@ public class SMAManager {
       try {
          VersionArtifact verArt = getTargetedForVersion();
          if (verArt != null) return verArt.isReleased();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          // Do Nothing
       }
       return false;
@@ -219,53 +220,47 @@ public class SMAManager {
          return (sma.getStateDam().getState(name, create));
    }
 
-   public boolean promptChangeAssignees() {
+   public boolean promptChangeAssignees() throws Exception {
       return promptChangeAssignees(Arrays.asList(new StateMachineArtifact[] {sma}));
    }
 
-   public static boolean promptChangeAssignees(final Collection<? extends StateMachineArtifact> smas) {
-      try {
-         for (StateMachineArtifact sma : smas) {
-            SMAManager smaMgr = new SMAManager(sma);
-            if (smaMgr.isCompleted()) {
-               AWorkbench.popup("ERROR",
-                     "Can't assign completed " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
-               return false;
-            } else if (smaMgr.isCancelled()) {
-               AWorkbench.popup("ERROR",
-                     "Can't assign cancelled " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
-               return false;
-            }
-         }
-         UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
-         uld.setMessage("Select to assign.\nDeSelect to un-assign.");
-         if (smas.size() == 1) {
-            SMAManager smaMgr = new SMAManager(smas.iterator().next());
-            uld.setInitialSelections(smaMgr.getAssignees());
-         }
-         if (uld.open() != 0) return false;
-         Collection<User> users = uld.getUsersSelected();
-         if (users.size() == 0) {
-            AWorkbench.popup("ERROR", "Must have at least one assignee");
+   public static boolean promptChangeAssignees(final Collection<? extends StateMachineArtifact> smas) throws Exception {
+      for (StateMachineArtifact sma : smas) {
+         SMAManager smaMgr = new SMAManager(sma);
+         if (smaMgr.isCompleted()) {
+            AWorkbench.popup("ERROR",
+                  "Can't assign completed " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
+            return false;
+         } else if (smaMgr.isCancelled()) {
+            AWorkbench.popup("ERROR",
+                  "Can't assign cancelled " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
             return false;
          }
-         for (StateMachineArtifact sma : smas) {
-            SMAManager smaMgr = new SMAManager(sma);
-            smaMgr.setAssignees(users);
-         }
-      } catch (IllegalStateException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+      UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
+      uld.setMessage("Select to assign.\nDeSelect to un-assign.");
+      if (smas.size() == 1) {
+         SMAManager smaMgr = new SMAManager(smas.iterator().next());
+         uld.setInitialSelections(smaMgr.getAssignees());
+      }
+      if (uld.open() != 0) return false;
+      Collection<User> users = uld.getUsersSelected();
+      if (users.size() == 0) {
+         AWorkbench.popup("ERROR", "Must have at least one assignee");
+         return false;
+      }
+      for (StateMachineArtifact sma : smas) {
+         SMAManager smaMgr = new SMAManager(sma);
+         smaMgr.setAssignees(users);
       }
       return true;
    }
 
-   public boolean promptChangeOriginator() {
+   public boolean promptChangeOriginator() throws IllegalStateException, SQLException, MultipleAttributesExist {
       return promptChangeOriginator(Arrays.asList(new StateMachineArtifact[] {sma}));
    }
 
-   public static boolean promptChangeOriginator(final Collection<? extends StateMachineArtifact> smas) {
+   public static boolean promptChangeOriginator(final Collection<? extends StateMachineArtifact> smas) throws IllegalStateException, SQLException, MultipleAttributesExist {
       UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New Originator");
       int result = ld.open();
       if (result == 0) {
@@ -279,12 +274,12 @@ public class SMAManager {
       return false;
    }
 
-   public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws SQLException {
+   public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws SQLException, MultipleAttributesExist {
       return promptChangeVersion(Arrays.asList(new TeamWorkFlowArtifact[] {(TeamWorkFlowArtifact) sma}),
             versionReleaseType, persist);
    }
 
-   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws SQLException {
+   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws SQLException, MultipleAttributesExist {
       TeamDefinitionArtifact teamDefHoldingVersions = null;
       for (TeamWorkFlowArtifact teamArt : smas) {
          SMAManager smaMgr = new SMAManager(teamArt);
@@ -369,12 +364,11 @@ public class SMAManager {
          }
       }
       final ChangeTypeDialog ald = new ChangeTypeDialog(Display.getCurrent().getActiveShell());
-      if (teams.size() == 1) {
-         ald.setSelected(teams.iterator().next().getChangeType());
-      }
-      if (ald.open() == 0) {
-
-         try {
+      try {
+         if (teams.size() == 1) {
+            ald.setSelected(teams.iterator().next().getChangeType());
+         }
+         if (ald.open() == 0) {
             AbstractSkynetTxTemplate txWrapper =
                   new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
                      @Override
@@ -389,12 +383,12 @@ public class SMAManager {
                      }
                   };
             txWrapper.execute();
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
-            return false;
          }
+         return true;
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
+         return false;
       }
-      return true;
    }
 
    public boolean promptChangePriority(boolean persist) {
@@ -413,11 +407,11 @@ public class SMAManager {
          }
       }
       final AtsPriorityDialog ald = new AtsPriorityDialog(Display.getCurrent().getActiveShell());
-      if (teams.size() == 1) {
-         ald.setSelected(teams.iterator().next().getPriority());
-      }
-      if (ald.open() == 0) {
-         try {
+      try {
+         if (teams.size() == 1) {
+            ald.setSelected(teams.iterator().next().getPriority());
+         }
+         if (ald.open() == 0) {
             AbstractSkynetTxTemplate txWrapper =
                   new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
                      @Override
@@ -431,23 +425,23 @@ public class SMAManager {
                      }
                   };
             txWrapper.execute();
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
-            return false;
          }
+         return true;
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, "Can't change priority", ex, true);
+         return false;
       }
-      return true;
    }
 
-   public boolean promptChangeStatus(boolean persist) {
+   public boolean promptChangeStatus(boolean persist) throws Exception {
       return promptChangeStatus(null, persist);
    }
 
-   public boolean promptChangeStatus(List<TaskResOptionDefinition> options, boolean persist) {
+   public boolean promptChangeStatus(List<TaskResOptionDefinition> options, boolean persist) throws Exception {
       return promptChangeStatus(options, Arrays.asList(new StateMachineArtifact[] {sma}), persist);
    }
 
-   public static boolean promptChangeStatus(List<TaskResOptionDefinition> options, final Collection<? extends StateMachineArtifact> smas, boolean persist) {
+   public static boolean promptChangeStatus(List<TaskResOptionDefinition> options, final Collection<? extends StateMachineArtifact> smas, boolean persist) throws Exception {
       try {
          for (StateMachineArtifact sma : smas) {
             SMAManager smaMgr = new SMAManager(sma);
@@ -507,30 +501,50 @@ public class SMAManager {
    }
 
    public boolean promptChangeFloatAttribute(ATSAttributes atsAttr, boolean persist) throws SQLException {
-      return ArtifactPromptChange.promptChangeFloatAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-            Arrays.asList(new Artifact[] {sma}), persist);
+      try {
+         return ArtifactPromptChange.promptChangeFloatAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+               Arrays.asList(new Artifact[] {sma}), persist);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+      return false;
    }
 
    public boolean promptChangeIntegerAttribute(ATSAttributes atsAttr, boolean persist) throws SQLException {
-      return ArtifactPromptChange.promptChangeIntegerAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-            Arrays.asList(new Artifact[] {sma}), persist);
+      try {
+         return ArtifactPromptChange.promptChangeIntegerAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+               Arrays.asList(new Artifact[] {sma}), persist);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+      return false;
    }
 
    public boolean promptChangePercentAttribute(ATSAttributes atsAttr, boolean persist) throws SQLException {
-      return ArtifactPromptChange.promptChangePercentAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-            Arrays.asList(new Artifact[] {sma}), persist);
+      try {
+         return ArtifactPromptChange.promptChangePercentAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+               Arrays.asList(new Artifact[] {sma}), persist);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+      return false;
    }
 
    public boolean promptChangeBoolean(ATSAttributes atsAttr, String toggleMessage, boolean persist) throws SQLException {
-      return ArtifactPromptChange.promptChangeBoolean(atsAttr.getStoreName(), atsAttr.getDisplayName(),
-            Arrays.asList(new Artifact[] {sma}), toggleMessage, persist);
+      try {
+         return ArtifactPromptChange.promptChangeBoolean(atsAttr.getStoreName(), atsAttr.getDisplayName(),
+               Arrays.asList(new Artifact[] {sma}), toggleMessage, persist);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+      return false;
    }
 
    public static boolean promptChangeAttribute(ATSAttributes atsAttr, final Collection<? extends StateMachineArtifact> smas, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                null, smas, persist);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return false;
@@ -540,7 +554,7 @@ public class SMAManager {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                Arrays.asList(new Artifact[] {sma}), persist);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return false;
@@ -550,7 +564,7 @@ public class SMAManager {
       try {
          return ArtifactPromptChange.promptChangeStringAttribute(atsAttr.getStoreName(), atsAttr.getDisplayName(),
                Arrays.asList(new Artifact[] {sma}), persist);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return false;
@@ -559,7 +573,7 @@ public class SMAManager {
    public boolean promptChangeDate(ATSAttributes atsAttr, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeDate(atsAttr.getStoreName(), atsAttr.getDisplayName(), sma, persist);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class,
                "Can't save " + atsAttr.getDisplayName() + " date to artifact " + sma.getHumanReadableId(), ex, true);
       }
@@ -688,10 +702,9 @@ public class SMAManager {
     * Sets the assignees AND writes to SMA. Does not persist.
     * 
     * @param assignees
-    * @throws SQLException
-    * @throws IllegalStateException
+    * @throws Exception
     */
-   public void setAssignees(Collection<User> assignees) throws IllegalStateException, SQLException {
+   public void setAssignees(Collection<User> assignees) throws Exception {
       SMAState currState = getSMAState();
       currState.setAssignees(assignees);
       sma.getCurrentStateDam().setState(currState);
@@ -701,16 +714,15 @@ public class SMAManager {
     * Sets the assignee AND writes to SMA. Does not persist.
     * 
     * @param assignee
-    * @throws SQLException
-    * @throws IllegalStateException
+    * @throws Exception
     */
-   public void setAssignee(User assignee) throws IllegalStateException, SQLException {
+   public void setAssignee(User assignee) throws Exception {
       SMAState currState = getSMAState();
       currState.setAssignee(assignee);
       sma.getCurrentStateDam().setState(currState);
    }
 
-   public void clearAssignees() throws IllegalStateException, SQLException {
+   public void clearAssignees() throws Exception {
       SMAState currState = getSMAState();
       currState.clearAssignees();
       sma.getCurrentStateDam().setState(currState);
@@ -861,7 +873,7 @@ public class SMAManager {
       return Result.TrueResult;
    }
 
-   private void transitionHelper(Collection<User> toAssignees, boolean persist, AtsWorkPage fromPage, AtsWorkPage toPage, String toStateName, String cancelReason) throws SQLException {
+   private void transitionHelper(Collection<User> toAssignees, boolean persist, AtsWorkPage fromPage, AtsWorkPage toPage, String toStateName, String cancelReason) throws Exception {
       // Log transition
       if (toPage.isCancelledPage()) {
          getSma().getLog().addLog(LogType.StateCancelled, getCurrentStateName(), cancelReason);

@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Composite;
@@ -59,10 +61,10 @@ public class XComboBooleanDam extends XCombo implements IDamWidget {
       super.addXModifiedListener(modifyListener);
    }
 
-   public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException, SQLException {
+   public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       this.artifact = artifact;
       this.attrName = attrName;
-      Boolean result = artifact.getSoleXAttributeValue(attrName);
+      Boolean result = artifact.getSoleTAttributeValue(attrName);
       if (result == null)
          super.set("");
       else
@@ -93,14 +95,14 @@ public class XComboBooleanDam extends XCombo implements IDamWidget {
    @Override
    public boolean isDirty() {
       try {
-         Boolean result = artifact.getSoleXAttributeValue(attrName);
+         Boolean result = artifact.getSoleTAttributeValue(attrName);
          if (result == null && (get() != null || !get().equals("")))
             return true;
          else if ((get() != null || !get().equals("")) && result != null)
             return true;
          else
-            return artifact.getSoleBooleanAttributeValue(attrName) != (get().equals("yes"));
-      } catch (SQLException ex) {
+            return artifact.getSoleTAttributeValue(attrName, false) != (get().equals("yes"));
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
       return false;

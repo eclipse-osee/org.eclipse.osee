@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
-import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -59,13 +58,13 @@ public class MassLabelProvider implements ITableLabelProvider {
          if (artifact.getAttributeManager(colName).getAttributeType().getBaseAttributeClass().equals(
                DateAttribute.class)) {
             if (artifact.getAttributeManager(colName).getAttributes().size() > 0) {
-               DateAttribute.MMDDYYHHMM.format(artifact.getSoleXAttributeValue(colName));
+               DateAttribute.MMDDYYHHMM.format(artifact.getSoleTAttributeValue(colName));
             }
             return "";
          }
 
          return artifact.getAttributesToString(colName);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          return ex.getLocalizedMessage();
       }

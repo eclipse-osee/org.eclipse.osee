@@ -64,31 +64,35 @@ public class NewActionPage2 extends WizardPage {
 
    public void createControl(Composite parent) {
 
-      StringBuffer sb = new StringBuffer();
-      sb.append("<WorkPage><XWidget displayName=\"Description\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + ATSAttributes.DESCRIPTION_ATTRIBUTE.getDescription() + "\"/>");
-      sb.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getDescription() + "\"/>");
-      sb.append("<XWidget displayName=\"Priority\" storageName=\"ats.Priority\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\"/>");
-      sb.append("<XWidget displayName=\"Deadline\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + ATSAttributes.DEADLINE_ATTRIBUTE.getDescription() + "\"/>");
-      sb.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getDescription() + "\"/>");
-      sb.append("<XWidget displayName=\"User Community\" storageName=\"ats.User Community\" xwidgetType=\"XList(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" toolTip=\"" + ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getDescription() + "\"/></WorkPage>");
+      try {
+         StringBuffer sb = new StringBuffer();
+         sb.append("<WorkPage><XWidget displayName=\"Description\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + ATSAttributes.DESCRIPTION_ATTRIBUTE.getDescription() + "\"/>");
+         sb.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getDescription() + "\"/>");
+         sb.append("<XWidget displayName=\"Priority\" storageName=\"ats.Priority\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\"/>");
+         sb.append("<XWidget displayName=\"Deadline\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + ATSAttributes.DEADLINE_ATTRIBUTE.getDescription() + "\"/>");
+         sb.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getDescription() + "\"/>");
+         sb.append("<XWidget displayName=\"User Community\" storageName=\"ats.User Community\" xwidgetType=\"XList(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" toolTip=\"" + ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getDescription() + "\"/></WorkPage>");
 
-      Composite comp = new Composite(parent, SWT.NONE);
-      comp.setLayout(new GridLayout(2, false));
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         Composite comp = new Composite(parent, SWT.NONE);
+         comp.setLayout(new GridLayout(2, false));
+         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      page = new AtsWorkPage("Action", "", sb.toString(), ATSXWidgetOptionResolver.getInstance());
-      page.createBody(null, comp, null, xModListener, true);
+         page = new AtsWorkPage("Action", "", sb.toString(), ATSXWidgetOptionResolver.getInstance());
+         page.createBody(null, comp, null, xModListener, true);
 
-      ((XText) getXWidget("Description")).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
-         public void handleEvent(Event event) {
-            if (event.button == 3) {
-               handlePopulateWithDebugInfo();
+         ((XText) getXWidget("Description")).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
+            public void handleEvent(Event event) {
+               if (event.button == 3) {
+                  handlePopulateWithDebugInfo();
+               }
             }
-         }
-      });
+         });
 
-      setControl(comp);
-      setHelpContexts();
+         setControl(comp);
+         setHelpContexts();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
    }
 
    private void setHelpContexts() {

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -172,11 +173,15 @@ public class OseeClientsTab {
    @SuppressWarnings("unchecked")
    private String[] getSelectedUsers() {
       List<String> toReturn = new ArrayList<String>();
-      Object[] checked = peopleCheckboxTreeViewer.getCheckedElements();
-      for (Object object : checked) {
-         if (false != peopleCheckboxTreeViewer.getChecked(object)) {
-            toReturn.add(((User) object).getUserId());
+      try {
+         Object[] checked = peopleCheckboxTreeViewer.getCheckedElements();
+         for (Object object : checked) {
+            if (false != peopleCheckboxTreeViewer.getChecked(object)) {
+               toReturn.add(((User) object).getUserId());
+            }
          }
+      } catch (Exception ex) {
+         OSEELog.logException(AdminPlugin.class, ex, true);
       }
       return toReturn.toArray(new String[toReturn.size()]);
    }

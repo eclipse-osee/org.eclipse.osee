@@ -11,12 +11,9 @@
 
 package org.eclipse.osee.ats.editor;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -28,7 +25,6 @@ import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -69,7 +66,6 @@ import org.eclipse.ui.actions.ActionFactory;
  */
 public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IEventReceiver, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SMAEditor.class);
    private SMAManager smaMgr;
    private int workFlowPageIndex, taskPageIndex;
    private SMAWorkFlowTab workFlowTab;
@@ -230,8 +226,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          }
 
          setActivePage(workFlowPageIndex);
-      } catch (PartInitException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
 
       enableGlobalPrint();
@@ -341,7 +337,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                redrawPages();
             }
          } else
-            logger.log(Level.SEVERE, "Unexpected event => " + event);
+            OSEELog.logException(AtsPlugin.class, "Unexpected event => " + event, null, false);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
@@ -362,7 +358,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getCurrentStateName()
     */
-   public String getCurrentStateName() {
+   public String getCurrentStateName() throws Exception {
       return smaMgr.getCurrentStateName();
    }
 
@@ -371,7 +367,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getEditor()
     */
-   public IDirtiableEditor getEditor() {
+   public IDirtiableEditor getEditor() throws Exception {
       return this;
    }
 
@@ -380,7 +376,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getParentSmaMgr()
     */
-   public SMAManager getParentSmaMgr() {
+   public SMAManager getParentSmaMgr() throws Exception {
       return smaMgr;
    }
 
@@ -389,7 +385,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getResOptions()
     */
-   public List<TaskResOptionDefinition> getResOptions() {
+   public List<TaskResOptionDefinition> getResOptions() throws Exception {
       if (smaMgr.getWorkPage().isUsingTaskResolutionOptions()) return smaMgr.getWorkPage().getTaskResDef().getOptions();
       return new ArrayList<TaskResOptionDefinition>();
    }
@@ -399,7 +395,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTabName()
     */
-   public String getTabName() {
+   public String getTabName() throws Exception {
       return "Tasks";
    }
 
@@ -408,7 +404,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTaskArtifacts(java.lang.String)
     */
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws SQLException {
+   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws MultipleAttributesExist, Exception {
       if (stateName == null || stateName.equals(""))
          return smaMgr.getTaskMgr().getTaskArtifacts();
       else
@@ -420,7 +416,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isTaskable()
     */
-   public boolean isTaskable() {
+   public boolean isTaskable() throws Exception {
       return smaMgr.isTaskable();
    }
 
@@ -429,7 +425,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isUsingTaskResolutionOptions()
     */
-   public boolean isUsingTaskResolutionOptions() {
+   public boolean isUsingTaskResolutionOptions() throws Exception {
       return smaMgr.getWorkPage().isUsingTaskResolutionOptions();
    }
 
@@ -438,7 +434,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isEditable()
     */
-   public boolean isTasksEditable() {
+   public boolean isTasksEditable() throws Exception {
       return smaMgr.getSma().isTaskable();
    }
 

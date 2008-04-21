@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -74,7 +75,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    }
 
-   public String getStatusReport() throws SQLException {
+   public String getStatusReport() throws SQLException, MultipleAttributesExist {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
       sb.append(getStatusReportBody());
@@ -110,7 +111,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    };
 
-   public String getStatusReportBody() throws SQLException {
+   public String getStatusReportBody() throws SQLException, MultipleAttributesExist {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Columns.getColumnNames()));
@@ -135,7 +136,7 @@ public class ExtendedStatusReportJob extends Job {
       return sb.toString();
    }
 
-   public void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws SQLException {
+   public void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws SQLException, MultipleAttributesExist {
       List<String> values = new ArrayList<String>();
       SMAManager smaMgr = new SMAManager(sma);
       for (Columns col : Columns.values()) {
@@ -170,7 +171,8 @@ public class ExtendedStatusReportJob extends Job {
             if (sma instanceof TaskArtifact) {
                TaskArtifact taskArt = (TaskArtifact) sma;
                desc =
-                     taskArt.getDescription() + " " + taskArt.getSoleStringAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
+                     taskArt.getDescription() + " " + taskArt.getSoleTAttributeValue(
+                           ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
             }
             if (desc.matches("^ *$"))
                values.add(".");

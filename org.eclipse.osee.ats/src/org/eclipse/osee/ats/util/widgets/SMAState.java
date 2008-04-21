@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Matcher;
@@ -18,6 +19,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class SMAState {
@@ -121,7 +123,7 @@ public class SMAState {
       this.name = name;
    }
 
-   public String toXml() {
+   public String toXml() throws SQLException, MultipleAttributesExist {
       StringBuffer sb = new StringBuffer(name);
       sb.append(";");
       sb.append(getAssigneesStorageString(assignees));
@@ -132,7 +134,7 @@ public class SMAState {
       return sb.toString();
    }
 
-   public static String getAssigneesStorageString(Collection<User> users) {
+   public static String getAssigneesStorageString(Collection<User> users) throws SQLException, MultipleAttributesExist {
       StringBuffer sb = new StringBuffer();
       for (User u : users)
          sb.append("<" + u.getUserId() + ">");

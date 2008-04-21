@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.config.data.DbDetailData;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -246,12 +247,16 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
             if (event instanceof SkynetDisconnectClientsEvent) {
                String[] userIds = ((SkynetDisconnectClientsEvent) event).getUserIds();
                User user = skynetAuthentication.getAuthenticatedUser();
-               String userId = user != null ? user.getUserId() : "";
-               for (String temp : userIds) {
-                  if (temp.equals(userId)) {
-                     isShutdownAllowed = true;
-                     break;
+               try {
+                  String userId = user != null ? user.getUserId() : "";
+                  for (String temp : userIds) {
+                     if (temp.equals(userId)) {
+                        isShutdownAllowed = true;
+                        break;
+                     }
                   }
+               } catch (Exception ex) {
+                  SkynetActivator.getLogger().log(Level.SEVERE, "Error processing shutdown", ex);
                }
             }
             final boolean isShutdownRequest = isShutdownAllowed;

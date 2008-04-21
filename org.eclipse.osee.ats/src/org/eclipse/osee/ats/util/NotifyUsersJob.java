@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.framework.jdk.core.util.AEmail;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.REUtil;
@@ -107,7 +108,7 @@ public class NotifyUsersJob extends Job {
       }
    }
 
-   private void notifyCompletion(IProgressMonitor monitor, String html) {
+   private void notifyCompletion(IProgressMonitor monitor, String html) throws SQLException, MultipleAttributesExist {
       monitor.subTask("Notifying of Completion/Cancellation");
 
       String emails = "";
@@ -153,7 +154,7 @@ public class NotifyUsersJob extends Job {
       }
    }
 
-   public void notifyOriginator(IProgressMonitor monitor, String html) {
+   public void notifyOriginator(IProgressMonitor monitor, String html) throws SQLException, MultipleAttributesExist {
       monitor.subTask("Notifying Originator");
       String emails = smaMgr.getOriginator().getEmail();
       if (!testing && AtsPlugin.isAtsAlwaysEmailMe()) {
@@ -241,14 +242,14 @@ public class NotifyUsersJob extends Job {
       }
    }
 
-   private String getActiveEmails() throws SQLException {
+   private String getActiveEmails() throws SQLException, MultipleAttributesExist {
       Collection<User> emails = smaMgr.getAssignees();
       // Never email current user
       emails.remove(skynetAuth.getAuthenticatedUser());
       return getEmails(emails);
    }
 
-   public static String getEmails(Collection<User> users) {
+   public static String getEmails(Collection<User> users) throws SQLException, MultipleAttributesExist {
       StringBuilder builder = new StringBuilder();
       for (User u : users) {
          if (u.getEmail() != null && !u.getEmail().equals("")) builder.append(u.getEmail() + ", ");

@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * @author Donald G. Dunne
@@ -38,17 +39,17 @@ public class XCurrentStateDam extends XStateAssigneesDam {
    }
 
    @Override
-   public void setState(SMAState state) throws IllegalStateException, SQLException {
+   public void setState(SMAState state) throws Exception {
       sma.setSoleStringAttributeValue(attributeName, state.toXml());
    }
 
-   public void logMetrics() {
+   public void logMetrics() throws IllegalStateException, SQLException, MultipleAttributesExist {
       if (sma instanceof TaskArtifact) logMetrics(sma, sma.getWorldViewTotalPercentComplete() + "",
             AtsLib.doubleToStrString(sma.getWorldViewTotalHoursSpent()),
             SkynetAuthentication.getInstance().getAuthenticatedUser(), new Date());
    }
 
-   public static void logMetrics(StateMachineArtifact sma, String percent, String hours, User user, Date date) {
+   public static void logMetrics(StateMachineArtifact sma, String percent, String hours, User user, Date date) throws SQLException, MultipleAttributesExist {
       LogItem logItem =
             new LogItem(LogType.Metrics, date, user, "", String.format("Percent %s Hours %s", percent, hours));
       sma.getLog().addLogItem(logItem);
@@ -58,10 +59,9 @@ public class XCurrentStateDam extends XStateAssigneesDam {
     * Set hours spent on the current state
     * 
     * @param hoursSpent The hoursSpent to set.
-    * @throws SQLException
-    * @throws IllegalStateException
+    * @throws Exception
     */
-   public void setHoursSpent(double hoursSpent) throws IllegalStateException, SQLException {
+   public void setHoursSpent(double hoursSpent) throws Exception {
       SMAState currState = getState();
       currState.setHoursSpent(hoursSpent);
       setState(currState);
@@ -72,10 +72,9 @@ public class XCurrentStateDam extends XStateAssigneesDam {
     * Add hours spent on the current state
     * 
     * @param hoursSpent The hoursSpent to set.
-    * @throws SQLException
-    * @throws IllegalStateException
+    * @throws Exception
     */
-   public void addHoursSpent(double hoursSpent) throws IllegalStateException, SQLException {
+   public void addHoursSpent(double hoursSpent) throws Exception {
       SMAState currState = getState();
       currState.setHoursSpent(hoursSpent + currState.getHoursSpent());
       setState(currState);
@@ -86,10 +85,9 @@ public class XCurrentStateDam extends XStateAssigneesDam {
     * Set percent complete on the current state
     * 
     * @param percentComplete The percentComplete to set.
-    * @throws SQLException
-    * @throws IllegalStateException
+    * @throws Exception
     */
-   public void setPercentComplete(int percentComplete) throws IllegalStateException, SQLException {
+   public void setPercentComplete(int percentComplete) throws Exception {
       SMAState currState = getState();
       currState.setPercentComplete(percentComplete);
       setState(currState);

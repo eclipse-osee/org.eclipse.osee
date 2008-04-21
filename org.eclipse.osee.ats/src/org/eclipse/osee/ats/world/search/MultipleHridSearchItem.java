@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -46,7 +45,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
 
       List<ISearchPrimitive> idCriteria = new LinkedList<ISearchPrimitive>();
       Set<String> nonHridGuids = new HashSet<String>();

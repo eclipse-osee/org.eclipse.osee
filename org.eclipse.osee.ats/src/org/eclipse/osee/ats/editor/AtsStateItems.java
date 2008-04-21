@@ -27,7 +27,7 @@ public class AtsStateItems {
 
    private static List<IAtsStateItem> stateItems = new ArrayList<IAtsStateItem>();
 
-   public List<IAtsStateItem> getStateItems(String stateId) {
+   public List<IAtsStateItem> getStateItems(String stateId) throws Exception {
       loadAllStateItems();
       List<IAtsStateItem> items = new ArrayList<IAtsStateItem>();
       for (IAtsStateItem item : stateItems)
@@ -35,7 +35,7 @@ public class AtsStateItems {
       return items;
    }
 
-   public List<IAtsStateItem> getCurrentPageStateItems(SMAManager smaMgr) {
+   public List<IAtsStateItem> getCurrentPageStateItems(SMAManager smaMgr) throws Exception {
       return getStateItems(smaMgr.getWorkPage().getId());
    }
 

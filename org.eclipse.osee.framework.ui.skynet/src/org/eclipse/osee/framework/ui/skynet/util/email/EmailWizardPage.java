@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util.email;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -21,7 +22,9 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -198,7 +201,11 @@ public class EmailWizardPage extends WizardPage {
       gd.heightHint = 20;
       bccList.getList().setLayoutData(gd);
       bccList.getList().setMenu(getDeletePopup(bccList));
-      bccList.setInput(new Object[] {SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail()});
+      try {
+         bccList.setInput(new Object[] {SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail()});
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
 
       // Additional Text
       Label l = new Label(composite, SWT.NONE);
@@ -233,19 +240,19 @@ public class EmailWizardPage extends WizardPage {
       return previewMenu;
    }
 
-   public String[] getToAddresses() {
+   public String[] getToAddresses() throws SQLException, MultipleAttributesExist {
       return getEmails(toList);
    }
 
-   public String[] getCcAddresses() {
+   public String[] getCcAddresses() throws SQLException, MultipleAttributesExist {
       return getEmails(ccList);
    }
 
-   public String[] getBccAddresses() {
+   public String[] getBccAddresses() throws SQLException, MultipleAttributesExist {
       return getEmails(bccList);
    }
 
-   public String[] getEmails(ListViewer list) {
+   public String[] getEmails(ListViewer list) throws SQLException, MultipleAttributesExist {
 
       ArrayList<String> emails = new ArrayList<String>();
       for (int x = 0; x < list.getList().getItemCount(); x++) {

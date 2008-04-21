@@ -85,7 +85,7 @@ public class EditTasksByTeamVersionSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
 
       List<ISearchPrimitive> teamDefWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       for (TeamDefinitionArtifact tda : getSearchTeamDefs())

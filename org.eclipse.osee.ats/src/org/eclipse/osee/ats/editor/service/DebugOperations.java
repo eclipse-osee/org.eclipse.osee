@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -121,7 +120,7 @@ public class DebugOperations extends WorkPageService {
                try {
                   AtsLib.open(((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getGuid(),
                         OpenView.ArtifactEditor);
-               } catch (SQLException ex) {
+               } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
                }
             }

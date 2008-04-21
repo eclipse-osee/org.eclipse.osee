@@ -15,9 +15,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -42,20 +44,24 @@ public class NativeArtifact extends Artifact {
 
    @Override
    public Image getImage() {
-      Image image = plugin.getImageForProgram(getFileExtension());
-      if (image == null) {
-         image = plugin.getImage("laser_16_16.gif");
+      try {
+         Image image = plugin.getImageForProgram(getFileExtension());
+         if (image == null) {
+            image = plugin.getImage("laser_16_16.gif");
+         }
+         return image;
+      } catch (Exception ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, "Can't access file extension.", ex);
       }
-
-      return image;
+      return null;
    }
 
-   public String getFileName() {
+   public String getFileName() throws SQLException, MultipleAttributesExist {
       return getDescriptiveName() + "." + getFileExtension();
    }
 
-   public String getFileExtension() {
-      return getSoleStringAttributeValue("Extension");
+   public String getFileExtension() throws SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue("Extension", "");
    }
 
    public InputStream getNativeContent() throws IOException, SQLException {

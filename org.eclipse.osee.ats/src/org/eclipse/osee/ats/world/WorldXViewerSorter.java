@@ -41,21 +41,26 @@ public class WorldXViewerSorter extends XViewerSorter {
    @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object o1, Object o2, int sortXColIndex) {
-      if (xViewer == null || !xViewer.getCustomize().getCurrentCustData().getSortingData().isSorting()) return 0;
-      XViewerColumn sortXCol =
-            xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
-      AtsXColumn aCol = AtsXColumn.getAtsXColumn(sortXCol);
-      IWorldViewArtifact m1 = (IWorldViewArtifact) ((WorldArtifactItem) o1).getArtifact();
-      IWorldViewArtifact m2 = (IWorldViewArtifact) ((WorldArtifactItem) o2).getArtifact();
+      try {
+         if (xViewer == null || !xViewer.getCustomize().getCurrentCustData().getSortingData().isSorting()) return 0;
+         XViewerColumn sortXCol =
+               xViewer.getCustomize().getCurrentCustData().getSortingData().getSortXCols().get(sortXColIndex);
+         AtsXColumn aCol = AtsXColumn.getAtsXColumn(sortXCol);
+         IWorldViewArtifact m1 = (IWorldViewArtifact) ((WorldArtifactItem) o1).getArtifact();
+         IWorldViewArtifact m2 = (IWorldViewArtifact) ((WorldArtifactItem) o2).getArtifact();
 
-      if (aCol == AtsXColumn.Change_Type_Col) {
-         int compareInt =
-               getComparator().compare(m1.getWorldViewChangeType().ordinal() + "",
-                     m2.getWorldViewChangeType().ordinal() + "");
-         return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
+         if (aCol == AtsXColumn.Change_Type_Col) {
+            int compareInt =
+                  getComparator().compare(m1.getWorldViewChangeType().ordinal() + "",
+                        m2.getWorldViewChangeType().ordinal() + "");
+            return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
+         }
+
+         return super.compare(viewer, o1, o2, sortXColIndex);
+      } catch (Exception ex) {
+         // do nothing
       }
-
-      return super.compare(viewer, o1, o2, sortXColIndex);
+      return 1;
    }
 
 }

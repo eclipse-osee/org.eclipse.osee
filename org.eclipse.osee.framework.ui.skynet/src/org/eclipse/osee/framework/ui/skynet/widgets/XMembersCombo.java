@@ -267,11 +267,11 @@ public class XMembersCombo extends XWidget {
       return true;
    }
 
-   public String toXml() {
+   public String toXml() throws Exception {
       return toXml(xmlRoot);
    }
 
-   public String toXml(String xmlRoot) {
+   public String toXml(String xmlRoot) throws Exception {
       String s;
       String dataStr = selectedUser.getUserId();
       if (xmlSubRoot == null || xmlSubRoot.equals("")) {

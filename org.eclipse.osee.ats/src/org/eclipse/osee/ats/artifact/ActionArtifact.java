@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -80,7 +81,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       actionableItemsDam = new XActionableItemsDam(this);
    }
 
-   public void resetAttributesOffChildren() throws SQLException {
+   public void resetAttributesOffChildren() throws SQLException, MultipleAttributesExist {
       resetActionItemsOffChildren();
       resetChangeTypeOffChildren();
       resetPriorityOffChildren();
@@ -107,14 +108,15 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    // Set validation to true if any require validation
-   private void resetValidationOffChildren() throws SQLException {
+   private void resetValidationOffChildren() throws SQLException, MultipleAttributesExist {
       boolean validationRequired = false;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (team.getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) validationRequired =
+         if (team.getSoleTAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false)) validationRequired =
                true;
       }
-      if (validationRequired != getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) setSoleBooleanAttributeValue(
-            ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), validationRequired);
+      if (validationRequired != getSoleTAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(),
+            false)) setSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(),
+            validationRequired);
    }
 
    /**
@@ -122,14 +124,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @throws SQLException
     */
-   private void resetDescriptionOffChildren() throws SQLException {
+   private void resetDescriptionOffChildren() throws SQLException, MultipleAttributesExist {
       String desc = "";
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          if (desc.equals(""))
-            desc = team.getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
-         else if (!desc.equals(team.getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName()))) return;
+            desc = team.getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+         else if (!desc.equals(team.getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) return;
       }
-      if (!desc.equals(getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName()))) setSoleStringAttributeValue(
+      if (!desc.equals(getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) setSoleStringAttributeValue(
             ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
    }
 
@@ -140,7 +142,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return actionableItemsDam.setActionableItems(aias);
    }
 
-   private void resetChangeTypeOffChildren() throws SQLException {
+   private void resetChangeTypeOffChildren() throws SQLException, MultipleAttributesExist {
       ChangeType changeType = null;
       Collection<TeamWorkFlowArtifact> teamArts = getTeamWorkFlowArtifacts();
       if (teamArts.size() == 1)
@@ -158,7 +160,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return;
    }
 
-   private void resetPriorityOffChildren() throws SQLException {
+   private void resetPriorityOffChildren() throws SQLException, MultipleAttributesExist {
       PriorityType priorityType = null;
       Collection<TeamWorkFlowArtifact> teamArts = getTeamWorkFlowArtifacts();
       if (teamArts.size() == 1)
@@ -187,12 +189,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       setSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
    }
 
-   public ChangeType getChangeType() {
-      return ChangeType.getChangeType(getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
+   public ChangeType getChangeType() throws SQLException, MultipleAttributesExist {
+      return ChangeType.getChangeType(getSoleTAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
-   public PriorityType getPriority() {
-      return PriorityType.getPriority(getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName()));
+   public PriorityType getPriority() throws SQLException, MultipleAttributesExist {
+      return PriorityType.getPriority(getSoleTAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
    public void setPriority(PriorityType type) throws IllegalStateException, SQLException {
@@ -218,8 +220,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return getDescriptiveName();
    }
 
-   public ChangeType getWorldViewChangeType() {
-      return ChangeType.getChangeType(getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
+   public ChangeType getWorldViewChangeType() throws SQLException, MultipleAttributesExist {
+      return ChangeType.getChangeType(getSoleTAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
    /* (non-Javadoc)
@@ -298,7 +300,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public String getWorldViewPriority() {
       try {
          return PriorityType.getPriority(
-               getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
+               getSoleTAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "")).getShortName();
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -351,7 +353,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
             teams.add(team.getTeamDefinition());
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
       return Artifacts.commaArts(teams);
@@ -840,11 +842,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return teamArt;
    }
 
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String artifactName) throws SQLException {
+   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String artifactName) throws Exception {
       return createTeamWorkflow(teamDef, actionableItems, assignees, null, null, artifactName);
    }
 
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, String artifactName) throws SQLException {
+   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, String artifactName) throws Exception {
 
       // Make sure team doesn't already exist
       for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
@@ -897,8 +899,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @throws SQLException
     * @throws IllegalStateException
     */
-   public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws IllegalStateException, SQLException {
-      String priorityStr = fromAction.getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName());
+   public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws IllegalStateException, SQLException, MultipleAttributesExist {
+      String priorityStr = fromAction.getSoleTAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "");
       PriorityType priType = null;
       if (priorityStr.equals(""))
          priType = null;
@@ -906,14 +908,13 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          priType = PriorityType.getPriority(priorityStr);
       else
          throw new IllegalArgumentException("Invalid priority => " + priorityStr);
-      setArtifactIdentifyData(
-            toTeam,
-            fromAction.getDescriptiveName(),
-            fromAction.getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName()),
-            ChangeType.getChangeType(fromAction.getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName())),
-            priType, fromAction.getAttributesToStringCollection(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()),
-            fromAction.getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName()),
-            fromAction.getSoleXAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), Date.class));
+      setArtifactIdentifyData(toTeam, fromAction.getDescriptiveName(), fromAction.getSoleTAttributeValue(
+            ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""),
+            ChangeType.getChangeType(fromAction.getSoleTAttributeValue(
+                  ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), "")), priType,
+            fromAction.getAttributesToStringCollection(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()),
+            fromAction.getSoleTAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false),
+            fromAction.getSoleTAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), null, Date.class));
    }
 
    /**
@@ -922,13 +923,13 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @param art
     * @throws SQLException
     */
-   public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, boolean validationRequired, Date needByDate) throws SQLException {
+   public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, Boolean validationRequired, Date needByDate) throws SQLException {
       art.setDescriptiveName(title);
       if (!desc.equals("")) art.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
       art.setSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
       DynamicAttributeManager dam = art.getAttributeManager(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
       for (String comm : userComms)
-         dam.getNewAttribute().setStringData(comm);
+         dam.getNewAttribute().setValue(comm);
       if (priority != null) art.setSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             priority.getShortName());
       if (needByDate != null) art.setSoleDateAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), needByDate);
@@ -960,7 +961,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    public String getWorldViewDescription() {
-      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    /*
@@ -970,10 +975,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     */
    public String getWorldViewValidationRequiredStr() {
       try {
-         return String.valueOf(getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName()));
+         return String.valueOf(getSoleTAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
       } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-         return ex.getLocalizedMessage();
+         return XViewerCells.getCellExceptionString(ex);
       }
    }
 
@@ -1276,10 +1280,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       boolean metricsFromTasks = false;
       try {
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (team.getSoleBooleanAttributeValue(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE.getStoreName())) metricsFromTasks =
+            if (team.getSoleTAttributeValue(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE.getStoreName(), false)) metricsFromTasks =
                   true;
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          // do nothing
       }
       return metricsFromTasks;

@@ -42,7 +42,7 @@ public class AtsTeamEndorseStateItem extends AtsStateItem {
     * @see org.eclipse.osee.ats.editor.AtsStateItem#xWidgetCreated(org.eclipse.osee.framework.ui.skynet.widgets.XWidget, org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.ats.workflow.AtsWorkPage, org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
       super.xWidgetCreated(xWidget, toolkit, page, art, xModListener, isEditable);
       if (xWidget.getLabel().equals(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE.getDisplayName())) {
          XCheckBoxDam metricsCheck = (XCheckBoxDam) xWidget;
@@ -64,7 +64,7 @@ public class AtsTeamEndorseStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() {
+   public String getDescription() throws Exception {
       return "AtsTeamEndorseStateItem - Add extra functionality to metrics from tasks toggle to remove hours spent and % complete when toggle.";
    }
 

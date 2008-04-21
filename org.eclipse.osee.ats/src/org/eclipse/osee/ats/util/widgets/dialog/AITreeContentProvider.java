@@ -40,7 +40,7 @@ public class AITreeContentProvider implements ITreeContentProvider {
             ActionableItemArtifact ai = ((ActionableItemArtifact) parentElement);
             return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false), active,
                   ActionableItemArtifact.class).toArray();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
          }
       }
       return new Object[] {};

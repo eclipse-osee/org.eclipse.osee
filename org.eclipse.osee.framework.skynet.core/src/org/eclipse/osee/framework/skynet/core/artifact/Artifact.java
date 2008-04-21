@@ -61,6 +61,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
@@ -164,13 +166,11 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
       try {
          if (getArtifactTypeName().equals("Version")) {
-            boolean next = getSoleBooleanAttributeValue("ats.Next Version");
-            boolean released = getSoleBooleanAttributeValue("ats.Released");
+            boolean next = getSoleTAttributeValue("ats.Next Version", false);
+            boolean released = getSoleTAttributeValue("ats.Released", false);
             return descriptor.getImage(next, released);
          }
-      } catch (IllegalStateException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
       return descriptor.getAnnotationImage(getMainAnnotationType());
@@ -519,19 +519,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return getSoleAttribute(getAttributeManager(attributeTypeName));
    }
 
-   /**
-    * This method is for use on min 0, max 1 attributes. If the attribute exists, it's string value is returned.
-    * Otherwise empty string is returned.
-    * 
-    * @param attributeName
-    * @return Attribute string.
-    * @throws IllegalStateException
-    */
-   public String getSoleStringAttributeValue(String attributeTypeName) throws IllegalStateException {
-      String value = getSoleXAttributeValueHideException(attributeTypeName);
-      return value == null ? "" : value;
-   }
-
    private <T> Attribute<T> getSoleAttribute(DynamicAttributeDescriptor attributeType) throws IllegalStateException, SQLException {
       return getSoleAttribute(getAttributeManager(attributeType));
    }
@@ -566,58 +553,93 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    /**
-    * Get sole integer attribute value if it exists, else return 0
-    * 
-    * @param attributeName
-    * @return
-    * @throws IllegalStateException
-    */
-   public int getSoleIntegerAttributeValue(String attributeTypeName) throws IllegalStateException {
-      Integer value = getSoleXAttributeValueHideException(attributeTypeName);
-      if (value == null) return 0;
-      return value;
-   }
-
-   /**
-    * Get sole double attribute value if it exists, else return 0.0
-    * 
-    * @param attributeName
-    * @return
-    * @throws IllegalStateException
-    */
-   public double getSoleDoubleAttributeValue(String attributeTypeName) throws IllegalStateException {
-      Double value = getSoleXAttributeValueHideException(attributeTypeName);
-      if (value == null) return 0.0;
-      return value;
-   }
-
-   /**
-    * @param attributeName
-    * @return true if attribute exists AND set to "yes"; else return false
-    * @throws IllegalStateException
-    * @throws SQLException
-    */
-   public boolean getSoleBooleanAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
-      Boolean result = getSoleXAttributeValue(attributeTypeName);
-      if (result == null) return false;
-      return result;
-   }
-
-   /**
-    * Return sole attribute value if it exists or null if attribute does not exist
+    * Return sole attribute value for given attribute type name. Will throw exceptions if "Sole" nature of attribute is
+    * invalid.<br>
+    * <br>
+    * Used for quick access to attribute value that should only have 0 or 1 instances of the attribute.
     * 
     * @param <T>
     * @param attributeTypeName
-    * @return
-    * @throws IllegalStateException if more than one attribute exists of this type
+    * @return sole attribute value
+    * @throws AttributeDoesNotExist if no attribute instance exists for this artifact
+    * @throws MultipleAttributesExist if 2 or more attribute instances exist for this artifact
+    * @throws IllegalStateException
     * @throws SQLException
     */
-   public <T> T getSoleXAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
-      Attribute<T> attribute = getSoleAttribute(attributeTypeName);
-      if (attribute == null) {
-         return null;
+   public <T> T getSoleTAttributeValue(String attributeTypeName) throws AttributeDoesNotExist, MultipleAttributesExist, IllegalStateException, SQLException {
+      DynamicAttributeManager attributeManager = getAttributeManager(attributeTypeName);
+      Collection<Attribute<T>> attributes = attributeManager.getAttributes();
+      if (attributes.size() == 0)
+         throw new AttributeDoesNotExist(
+               "Attribute \"" + attributeTypeName + "\" does not exist for artifact " + getHumanReadableId());
+      else if (attributes.size() > 1)
+         throw new MultipleAttributesExist(
+               "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + attributes.size() + ".");
+      else
+         return attributes.iterator().next().getValue();
+   }
+
+   /**
+    * Return sole attribute string value for given attribute type name. Handles AttributeDoesNotExist case by returning
+    * defaultReturnValue.<br>
+    * <br>
+    * Used for display purposes where toString() of attribute is to be displayed.
+    * 
+    * @param attributeTypeName
+    * @param defaultReturnValue return value if attribute instance does not exist
+    * @return
+    * @throws MultipleAttributesExist if multiple attribute instances exist
+    * @throws SQLException
+    */
+   public String getSoleTAttributeAsString(String attributeTypeName, String defaultReturnValue) throws MultipleAttributesExist, SQLException {
+      try {
+         return getSoleTAttributeValue(attributeTypeName).toString();
+      } catch (AttributeDoesNotExist ex) {
+         return defaultReturnValue;
       }
-      return attribute.getValue();
+   }
+
+   /**
+    * Return sole attribute value for given attribute type name Handles AttributeDoesNotExist case by returning
+    * defaultReturnValue.<br>
+    * <br>
+    * Used for purposes where attribute value of specified type is desired.
+    * 
+    * @param <T>
+    * @param attributeTypeName
+    * @param defaultReturnValue
+    * @return
+    * @throws MultipleAttributesExist if multiple attribute instances exist
+    * @throws SQLException
+    */
+   public <T> T getSoleTAttributeValue(String attributeTypeName, T defaultReturnValue) throws MultipleAttributesExist, SQLException {
+      try {
+         return getSoleTAttributeValue(attributeTypeName);
+      } catch (AttributeDoesNotExist ex) {
+         return defaultReturnValue;
+      }
+   }
+
+   /**
+    * Return sole attribute value for given attribute type name or defaultReturnValue if no attribute instance exists
+    * for this artifact.<br>
+    * <br>
+    * Used for purposes where attribute value of specified type is desired.<br>
+    * <br>
+    * NOTE: Use only for inline calls. This method returns identical data as
+    * getSoleTAttributeValue(attributeTypeName,defaultReturnValue) but provides an extra parameter that allows it to be
+    * called within another method call because it specifically defines the return type as clazz
+    * 
+    * @param <T>
+    * @param attributeTypeName
+    * @param defaultReturnValue
+    * @param clazz class to be returned
+    * @return
+    * @throws MultipleAttributesExist if multiple attribute instances exist
+    * @throws SQLException
+    */
+   public <T> T getSoleTAttributeValue(String attributeTypeName, T defaultReturnValue, Class<T> clazz) throws MultipleAttributesExist, SQLException {
+      return (T) getSoleTAttributeValue(attributeTypeName, defaultReturnValue);
    }
 
    /**
@@ -631,7 +653,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       Attribute<?> attribute = getSoleAttribute(attributeTypeName);
       if (attribute != null) {
          attribute.delete();
-   }
+      }
    }
 
    public <T> T getSoleXAttributeValue(String attributeTypeName, Class<T> clazz) throws IllegalStateException, SQLException {
@@ -640,16 +662,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          return null;
       }
       return (T) attribute.getValue();
-   }
-
-   public <T> T getSoleXAttributeValueHideException(String attributeTypeName) throws IllegalStateException {
-      try {
-         return getSoleXAttributeValue(attributeTypeName);
-
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-         return null;
-      }
    }
 
    public <T> void setSoleXAttributeValue(String attributeTypeName, T value) throws IllegalStateException, SQLException {

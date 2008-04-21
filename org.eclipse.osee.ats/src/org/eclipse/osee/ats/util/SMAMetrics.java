@@ -112,7 +112,7 @@ public class SMAMetrics {
 
             }
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return "Exception occurred - see log";
       }

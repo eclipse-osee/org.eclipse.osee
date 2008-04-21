@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -173,7 +174,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
       preSaveOriginator = smaMgr.getOriginator();
    }
 
-   public boolean isValidationRequired() throws SQLException {
+   public boolean isValidationRequired() throws SQLException, MultipleAttributesExist {
       return false;
    }
 
@@ -183,7 +184,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
       return "";
    }
 
-   public ArrayList<EmailGroup> getEmailableGroups() {
+   public ArrayList<EmailGroup> getEmailableGroups() throws SQLException, MultipleAttributesExist {
       ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
       ArrayList<String> emails = new ArrayList<String>();
       emails.add(smaMgr.getOriginator().getEmail());
@@ -298,7 +299,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
          } else {
             return state.getPercentComplete();
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return 0;
       }
@@ -328,7 +329,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
                hours += taskArt.getTotalHoursSpent();
          else
             hours = state.getHoursSpent();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       return hours;
@@ -547,7 +548,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    public String getWorldViewLegacyPCR() {
       try {
          if (isAttributeTypeValid(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName())) {
-            return getSoleStringAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName());
+            return getSoleTAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
@@ -570,15 +571,20 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public abstract VersionArtifact getTargetedForVersion() throws SQLException;
 
-   public ChangeType getWorldViewChangeType() {
+   public ChangeType getWorldViewChangeType() throws SQLException, MultipleAttributesExist {
       return ChangeType.None;
    }
 
    public String getWorldViewChangeTypeStr() {
-      if (getWorldViewChangeType() == null || getWorldViewChangeType() == ChangeType.None)
-         return "";
-      else
-         return getWorldViewChangeType().name();
+      try {
+         if (getWorldViewChangeType() == null || getWorldViewChangeType() == ChangeType.None)
+            return "";
+         else
+            return getWorldViewChangeType().name();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+         return "Exception: " + ex.getLocalizedMessage() + ". See log for details.";
+      }
    }
 
    public double getWorldViewEstimatedHours() {
@@ -590,7 +596,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
             }
             return hours;
          } else {
-            Double value = getSoleXAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+            Double value = getSoleTAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
             if (value == null) return 0;
             return value;
          }
@@ -628,10 +634,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public Result isWorldViewRemainHoursValid() {
       try {
-         Double value = getSoleXAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+         Double value = getSoleTAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
          if (value == null) return new Result("Estimated Hours not set.");
          return Result.TrueResult;
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          return new Result("SQLException: " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
       }
    }
@@ -667,14 +673,18 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    public Result isWorldViewAnnualCostAvoidanceValid() {
       Result result = isWorldViewRemainHoursValid();
       if (result.isFalse()) return result;
-      String value = getSoleStringAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName());
-      if (value == null || value.equals("")) return new Result("Weekly Benefit Hours not set.");
+      String value = null;
       try {
+         value = getSoleTAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName(), "");
+         if (value == null || value.equals("")) return new Result("Weekly Benefit Hours not set.");
          double val = new Float(value).doubleValue();
          if (val == 0) return new Result("Weekly Benefit Hours not set.");
       } catch (NumberFormatException ex) {
          OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, true);
          return new Result("Weekly Benefit value is invalid double \"" + value + "\"");
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, true);
+         return new Result("Exception calculating cost avoidance.  See log for details.");
       }
       return Result.TrueResult;
    }
@@ -691,23 +701,43 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    }
 
    public String getWorldViewNotes() {
-      return getSoleStringAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    public String getWorldViewWorkPackage() {
-      return getSoleStringAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    public String getWorldViewCategory() {
-      return getSoleStringAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    public String getWorldViewCategory2() {
-      return getSoleStringAttributeValue(ATSAttributes.CATEGORY2_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.CATEGORY2_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    public String getWorldViewCategory3() {
-      return getSoleStringAttributeValue(ATSAttributes.CATEGORY3_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.CATEGORY3_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    public int getWorldViewStatePercentComplete() {
@@ -809,10 +839,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    /**
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
-    * 
-    * @throws SQLException
+    * @throws Exception TODO
     */
-   public void transitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws SQLException {
+   public void transitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws Exception {
    }
 
    /*
@@ -903,7 +932,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
     */
    public String getWorldViewValidationRequiredStr() {
       try {
-         if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) return String.valueOf(getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName()));
+         if (isAttributeTypeValid(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName())) return String.valueOf(getSoleTAttributeValue(
+               ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return ex.getLocalizedMessage();

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class MyFavoritesSearchItem extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(User user) throws SQLException, IllegalArgumentException {
+   protected Collection<Artifact> searchIt(User user) throws Exception {
       FromArtifactsSearch userSearch = new FromArtifactsSearch(new UserIdSearch(user.getUserId(), Operator.EQUAL));
 
       List<ISearchPrimitive> subscribedCriteria = new LinkedList<ISearchPrimitive>();

@@ -58,9 +58,9 @@ public class ATSNote {
 
    public List<NoteItem> getNoteItems() {
       List<NoteItem> logItems = new ArrayList<NoteItem>();
-      String xml = artifact.getSoleStringAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName());
-      if (!xml.equals("")) {
-         try {
+      try {
+         String xml = artifact.getSoleTAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), "");
+         if (!xml.equals("")) {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
@@ -70,9 +70,9 @@ public class ATSNote {
                            element.getAttribute("date"), user, element.getAttribute("msg"));
                logItems.add(item);
             }
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
          }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return logItems;
    }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.dialog;
 
-import java.sql.SQLException;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -35,7 +34,7 @@ public class VersionArtifactLabelProvider extends LabelProvider {
             if (verArt.getEstimatedReleaseDate() != null) {
                str += " - Estimated Release: " + XDate.getDateStr(verArt.getEstimatedReleaseDate(), XDate.MMDDYY);
             }
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
          }
          return str;

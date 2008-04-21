@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * @author Ryan D. Brooks
@@ -37,16 +38,15 @@ public class UrlRenderer extends Renderer {
    public UrlRenderer() {
       try {
          descriptors =
-               configurationPersistenceManager.getArtifactTypesFromAttributeType(configurationPersistenceManager.getDynamicAttributeType(
-                     "Content URL"));
+               configurationPersistenceManager.getArtifactTypesFromAttributeType(configurationPersistenceManager.getDynamicAttributeType("Content URL"));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, "", ex);
       }
    }
 
    @Override
-   public String getArtifactUrl(Artifact artifact) {
-      String url = artifact.getSoleStringAttributeValue("Content URL");
+   public String getArtifactUrl(Artifact artifact) throws MultipleAttributesExist, SQLException {
+      String url = artifact.getSoleTAttributeValue("Content URL", "");
       if (url.startsWith("ws:")) {
          IFile iFile = WorkspaceURL.getIFile(url);
          url = iFile.getLocation().toString();

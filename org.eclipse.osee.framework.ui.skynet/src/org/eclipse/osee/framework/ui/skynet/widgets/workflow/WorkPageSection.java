@@ -23,12 +23,12 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class WorkPageSection extends SectionPart {
 
-   public WorkPageSection(Composite parent, XFormToolkit toolkit, int style, WorkPage page) {
+   public WorkPageSection(Composite parent, XFormToolkit toolkit, int style, WorkPage page) throws Exception {
       super(parent, toolkit, style);
       createPage(parent, page, toolkit);
    }
 
-   private Section createPage(Composite comp, WorkPage page, XFormToolkit toolkit) {
+   private Section createPage(Composite comp, WorkPage page, XFormToolkit toolkit) throws Exception {
       Section section = toolkit.createSection(comp, Section.TWISTIE | Section.TITLE_BAR);
       section.setText(page.getName());
       section.setExpanded(true);
@@ -41,7 +41,7 @@ public class WorkPageSection extends SectionPart {
       return section;
    }
 
-   private void createWorkArea(Composite comp, WorkPage page, XFormToolkit toolkit) {
+   private void createWorkArea(Composite comp, WorkPage page, XFormToolkit toolkit) throws Exception {
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 

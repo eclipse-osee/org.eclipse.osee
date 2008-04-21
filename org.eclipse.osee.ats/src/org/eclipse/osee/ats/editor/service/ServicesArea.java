@@ -58,7 +58,7 @@ public class ServicesArea {
          service.dispose();
    }
 
-   public void loadServices(AtsWorkPage page) {
+   public void loadServices(AtsWorkPage page) throws Exception {
       if (services.size() == 0) {
          // Operations
          services.add(new FavoriteOperation(smaMgr));
@@ -110,7 +110,12 @@ public class ServicesArea {
    }
 
    public void createSidebarServices(Composite comp, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      loadServices(page);
+      try {
+         loadServices(page);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+
       Set<String> categories = new HashSet<String>();
       for (WorkPageService service : services) {
          categories.add(service.getSidebarCategory());
@@ -125,14 +130,18 @@ public class ServicesArea {
    }
 
    public void createToolbarServices(IToolBarManager toolbarManager) {
-      loadServices(null);
-      for (final WorkPageService service : services) {
-         try {
-            Action action = service.createToolbarService();
-            if (action != null) toolbarManager.add(action);
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+      try {
+         loadServices(null);
+         for (final WorkPageService service : services) {
+            try {
+               Action action = service.createToolbarService();
+               if (action != null) toolbarManager.add(action);
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, false);
+            }
          }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
       }
    }
 

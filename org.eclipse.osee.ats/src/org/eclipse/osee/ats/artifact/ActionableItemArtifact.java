@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSe
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch.SearchOperator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * @author Donald G. Dunne
@@ -56,7 +57,7 @@ public class ActionableItemArtifact extends BasicArtifact {
       return search.getArtifacts(ActionableItemArtifact.class);
    }
 
-   public static Set<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws SQLException {
+   public static Set<ActionableItemArtifact> getTopLevelActionableItems(Active active) throws SQLException, MultipleAttributesExist {
       ActionableItemArtifact topAi = getTopActionableItem();
       if (topAi == null) return EMPTY_SET;
       return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(topAi, ActionableItemArtifact.class, false), active,

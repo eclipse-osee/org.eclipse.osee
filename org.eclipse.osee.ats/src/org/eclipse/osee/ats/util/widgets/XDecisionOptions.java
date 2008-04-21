@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -28,9 +29,9 @@ public class XDecisionOptions {
       this.sma = sma;
    }
 
-   public DecisionOption getDecisionOption(String stateName, boolean create) {
+   public DecisionOption getDecisionOption(String stateName, boolean create) throws SQLException, MultipleAttributesExist {
       String decisionOptions =
-            sma.getSoleStringAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
+            sma.getSoleTAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
       for (String decsionOpt : decisionOptions.split("\n")) {
          DecisionOption state = new DecisionOption();
          state.setFromXml(decsionOpt);
@@ -40,8 +41,8 @@ public class XDecisionOptions {
       return null;
    }
 
-   public Set<DecisionOption> getDecisionOptions() {
-      String decString = sma.getSoleStringAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
+   public Set<DecisionOption> getDecisionOptions() throws SQLException, MultipleAttributesExist {
+      String decString = sma.getSoleTAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), "");
       return getDecisionOptions(decString);
    }
 
@@ -55,15 +56,16 @@ public class XDecisionOptions {
       return decOptions;
    }
 
-   public DecisionOption getDecisionOption(String name) {
+   public DecisionOption getDecisionOption(String name) throws SQLException, MultipleAttributesExist {
       for (DecisionOption opt : getDecisionOptions()) {
          if (opt.getName().equals(name)) return opt;
       }
       return null;
    }
 
-   public Result validateDecisionOptions() {
-      return validateDecisionOptions(sma.getSoleStringAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName()));
+   public Result validateDecisionOptions() throws SQLException, MultipleAttributesExist {
+      return validateDecisionOptions(sma.getSoleTAttributeValue(
+            ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(), ""));
    }
 
    public static Result validateDecisionOptions(String decisionOptions) {
@@ -75,14 +77,14 @@ public class XDecisionOptions {
       return Result.TrueResult;
    }
 
-   public String toXml(Set<DecisionOption> opts) {
+   public String toXml(Set<DecisionOption> opts) throws SQLException, MultipleAttributesExist {
       StringBuffer sb = new StringBuffer();
       for (DecisionOption opt : opts)
          sb.append(opt.toXml() + "\n");
       return sb.toString().replaceFirst("\n$", "");
    }
 
-   public void setDecisionOptions(String decisionOptions) throws IllegalStateException, SQLException {
+   public void setDecisionOptions(String decisionOptions) throws IllegalStateException, SQLException, MultipleAttributesExist {
       sma.setSoleStringAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
             toXml(getDecisionOptions(decisionOptions)));
    }

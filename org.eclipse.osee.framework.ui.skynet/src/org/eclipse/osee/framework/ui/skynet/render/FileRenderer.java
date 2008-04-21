@@ -76,7 +76,7 @@ public abstract class FileRenderer extends FileSystemRenderer {
       return workingFile;
    }
 
-   protected String getFilenameFromArtifact(Artifact artifact, PresentationType presentationType) {
+   protected String getFilenameFromArtifact(Artifact artifact, PresentationType presentationType) throws Exception {
       StringBuilder name = new StringBuilder(100);
 
       if (artifact != null) {
@@ -107,5 +107,5 @@ public abstract class FileRenderer extends FileSystemRenderer {
 
    public abstract InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception;
 
-   public abstract String getAssociatedExtension(Artifact artifact);
+   public abstract String getAssociatedExtension(Artifact artifact) throws Exception;
 }

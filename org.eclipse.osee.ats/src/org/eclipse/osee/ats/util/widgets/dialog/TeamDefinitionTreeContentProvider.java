@@ -40,7 +40,8 @@ public class TeamDefinitionTreeContentProvider implements ITreeContentProvider {
             TeamDefinitionArtifact teamDef = ((TeamDefinitionArtifact) parentElement);
             return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(teamDef, TeamDefinitionArtifact.class, false),
                   active, TeamDefinitionArtifact.class).toArray();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
+            // do nothing
          }
       }
       return new Object[] {};

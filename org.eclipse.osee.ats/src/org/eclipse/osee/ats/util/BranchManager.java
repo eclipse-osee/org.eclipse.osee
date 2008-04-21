@@ -43,6 +43,8 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -243,7 +245,7 @@ public class BranchManager {
                "Create Working Branch",
                "Create a working branch from parent branch\n\n\"" + parentBranch.getBranchName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) return Result.FalseResult;
          createWorkingBranch(pageId, parentBranch);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return new Result("Exception occurred: " + ex.getLocalizedMessage());
       }
@@ -254,27 +256,36 @@ public class BranchManager {
     * @return Branch that is the configured branch to create working branch from.
     * @throws SQLException
     */
-   private Branch getParentBranchForWorkingBranchCreation() throws SQLException {
+   private Branch getParentBranchForWorkingBranchCreation() throws SQLException, MultipleAttributesExist {
       Branch parentBranch = null;
 
       // Check for parent branch id in Version artifact
       if (smaMgr.isTeamUsesVersions()) {
          VersionArtifact verArt = smaMgr.getTargetedForVersion();
          if (verArt != null) {
-            Integer branchId = verArt.getSoleXAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
-            if (branchId != null && branchId > 0) {
-               parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
+            try {
+               Integer branchId =
+                     verArt.getSoleTAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+               if (branchId != null && branchId > 0) {
+                  parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
+               }
+            } catch (AttributeDoesNotExist ex) {
+               // do nothing
             }
          }
       }
 
       // If not defined in version, check for parent branch from team definition
       if (parentBranch == null && (smaMgr.getSma() instanceof TeamWorkFlowArtifact)) {
-         Integer branchId =
-               ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleXAttributeValue(
-                     ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
-         if (branchId != null && branchId > 0) {
-            parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
+         try {
+            Integer branchId =
+                  ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getSoleTAttributeValue(
+                        ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+            if (branchId != null && branchId > 0) {
+               parentBranch = BranchPersistenceManager.getInstance().getBranch(branchId);
+            }
+         } catch (AttributeDoesNotExist ex) {
+            // do nothing
          }
       }
 
@@ -288,9 +299,9 @@ public class BranchManager {
     * 
     * @param pageId
     * @param parentBranch
-    * @throws SQLException
+    * @throws Exception
     */
-   public void createWorkingBranch(String pageId, Branch parentBranch) throws SQLException {
+   public void createWorkingBranch(String pageId, Branch parentBranch) throws Exception {
       final Artifact stateMachineArtifact = smaMgr.getSma();
       String title = stateMachineArtifact.getDescriptiveName();
       if (title.length() > 40) title = title.substring(0, 39) + "...";
@@ -318,7 +329,7 @@ public class BranchManager {
       Jobs.run("Create Branch", runnable, AtsPlugin.getLogger(), AtsPlugin.PLUGIN_ID);
    }
 
-   public void updateBranchAccessControl() throws SQLException {
+   public void updateBranchAccessControl() throws Exception {
       // Only set/update branch access control if state item is configured to accept
       for (IAtsStateItem stateItem : smaMgr.getStateItems().getCurrentPageStateItems(smaMgr)) {
          if (stateItem.isAccessControlViaAssigneesEnabledForBranching()) {

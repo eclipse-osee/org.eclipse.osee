@@ -114,7 +114,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       getActionableItems();
 
       // Find all Team Workflows with one of the given AI's

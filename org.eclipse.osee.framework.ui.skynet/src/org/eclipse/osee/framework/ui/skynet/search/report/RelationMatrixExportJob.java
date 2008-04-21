@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 
@@ -44,7 +45,7 @@ public class RelationMatrixExportJob extends ReportJob {
    }
 
    @Override
-   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws CoreException, IOException, SQLException {
+   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws CoreException, IOException, SQLException, MultipleAttributesExist {
       matrix.clear();
       columnCount = selectedArtifacts.size() + 2; // use first column is the artifact name and 2nd is its identifier
       header = new String[columnCount];
@@ -61,7 +62,7 @@ public class RelationMatrixExportJob extends ReportJob {
       writeMatrix();
    }
 
-   private void saveRelationsForColumn(Artifact columnArtifact, int columnIndex) throws SQLException {
+   private void saveRelationsForColumn(Artifact columnArtifact, int columnIndex) throws SQLException, MultipleAttributesExist {
       header[columnIndex] = columnArtifact.getDescriptiveName();
 
       LinkManager linkManager = columnArtifact.getLinkManager();
@@ -76,12 +77,12 @@ public class RelationMatrixExportJob extends ReportJob {
       }
    }
 
-   private String[] getAssociatedRow(Artifact artifact) {
+   private String[] getAssociatedRow(Artifact artifact) throws MultipleAttributesExist, SQLException {
       String[] row = matrix.get(artifact);
       if (row == null) {
          row = new String[columnCount];
          row[0] = artifact.getDescriptiveName();
-         row[1] = artifact.getSoleStringAttributeValue("Imported Paragraph Number");
+         row[1] = artifact.getSoleTAttributeValue("Imported Paragraph Number", "");
          matrix.put(artifact, row);
       }
       return row;

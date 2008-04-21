@@ -115,7 +115,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
             AFile.writeFile(filename, html);
             Program.launch(filename);
             AWorkbench.popup("Publish Complete", "Data Published To \"" + filename + "\"");
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
          }
 

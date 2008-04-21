@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -94,14 +95,18 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       super.saveSMA();
       try {
          getParentActionArtifact().resetAttributesOffChildren();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't reset Action parent of children", ex, true);
       }
    }
 
    @Override
    public String getDescription() {
-      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return "Error: " + ex.getLocalizedMessage();
+      }
    }
 
    /*
@@ -110,21 +115,26 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isValidationRequired()
     */
    @Override
-   public boolean isValidationRequired() throws IllegalStateException, SQLException {
-      return getSoleBooleanAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName());
+   public boolean isValidationRequired() throws IllegalStateException, SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false);
    }
 
    @Override
    public int getWorldViewPercentRework() {
-      return getSoleIntegerAttributeValue(ATSAttributes.PERCENT_REWORK_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.PERCENT_REWORK_ATTRIBUTE.getStoreName());
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return 0;
    }
 
    @Override
-   public Set<User> getPrivilegedUsers() throws SQLException {
+   public Set<User> getPrivilegedUsers() {
       Set<User> users = new HashSet<User>();
       try {
          addLeadUsersUpTree(getTeamDefinition(), users);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return users;
@@ -159,16 +169,16 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       actionableItemsDam = new XActionableItemsDam(this);
    }
 
-   public ChangeType getChangeType() {
-      return ChangeType.getChangeType(getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
+   public ChangeType getChangeType() throws SQLException, MultipleAttributesExist {
+      return ChangeType.getChangeType(getSoleTAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
    public void setChangeType(ChangeType type) throws IllegalStateException, SQLException {
       setSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
    }
 
-   public PriorityType getPriority() {
-      return PriorityType.getPriority(getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName()));
+   public PriorityType getPriority() throws SQLException, MultipleAttributesExist {
+      return PriorityType.getPriority(getSoleTAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
    public void setPriority(PriorityType type) throws IllegalStateException, SQLException {
@@ -186,8 +196,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       this.setSoleStringAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid());
    }
 
-   public TeamDefinitionArtifact getTeamDefinition() throws SQLException {
-      String guid = this.getSoleStringAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName());
+   public TeamDefinitionArtifact getTeamDefinition() throws SQLException, MultipleAttributesExist {
+      String guid = this.getSoleTAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), "");
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
             "TeamWorkflow has no TeamDefinition associated.");
       return (TeamDefinitionArtifact) ArtifactPersistenceManager.getInstance().getArtifact(guid,
@@ -201,9 +211,9 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    public String getTeamName() {
       try {
          return getTeamDefinition().getDescriptiveName();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
-         return "Exception - see log";
+         return "Exception: " + ex.getLocalizedMessage() + ". See log for details.";
       }
    }
 
@@ -229,20 +239,20 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             SMAState state = smaMgr.getSMAState(DefaultTeamState.Implement.name(), false);
             if (state != null) return state.getPercentComplete();
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       return 0;
    }
 
-   public ChangeType getWorldViewChangeType() {
-      return ChangeType.getChangeType(getSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName()));
+   public ChangeType getWorldViewChangeType() throws SQLException, MultipleAttributesExist {
+      return ChangeType.getChangeType(getSoleTAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
    public String getWorldViewPriority() {
       try {
          return PriorityType.getPriority(
-               getSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName())).getShortName();
+               getSoleTAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "")).getShortName();
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
@@ -285,7 +295,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    @Override
-   public void transitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws SQLException {
+   public void transitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws Exception {
       super.transitioned(fromPage, toPage, toAssignees, persist);
       for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts())
          taskArt.parentWorkFlowTransitioned(fromPage, toPage, toAssignees, persist);
@@ -303,14 +313,15 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             return XViewerCells.getCellExceptionString(errStr);
          }
          VersionArtifact verArt = verArts.iterator().next();
-         if (!smaMgr.isCompleted() && verArt.getSoleBooleanAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName())) {
+         if (!smaMgr.isCompleted() && verArt.getSoleTAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(),
+               false)) {
             String errStr =
                   "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
             OSEELog.logException(AtsPlugin.class, errStr, null, false);
             return XViewerCells.getCellExceptionString(errStr);
          }
          return verArt.getDescriptiveName();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          // Do nothing
       }
       return "";
@@ -333,7 +344,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    public double getManDayHrsPreference() {
       try {
          return getTeamDefinition().getManDayHrsFromItemAndChildren();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       return StateMachineArtifact.MAN_DAY_HOURS;
@@ -374,7 +385,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       return toReturn;
    }
 
-   public Result convertActionableItems() throws SQLException {
+   public Result convertActionableItems() throws SQLException, MultipleAttributesExist {
       Result toReturn = Result.FalseResult;
       AICheckTreeDialog diag =
             new AICheckTreeDialog(
@@ -438,7 +449,11 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    public String getWorldViewDescription() {
-      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    /**
@@ -452,10 +467,10 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       if (vers.size() > 0) {
          date = vers.iterator().next().getEstimatedReleaseDate();
          if (date == null) {
-            date = getSoleXAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+            date = getSoleTAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
          }
       } else
-         date = getSoleXAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+         date = getSoleTAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
       return date;
    }
 
@@ -473,7 +488,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             return remainHrs;
 
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       return super.getWorldViewRemainHours();
@@ -492,7 +507,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             Collection<TaskArtifact> taskArts = smaMgr.getTaskMgr().getTaskArtifacts(DefaultTeamState.Implement.name());
             if (taskArts.size() == 0) return new Result("No tasks assigned for Implement state");
             for (TaskArtifact taskArt : taskArts) {
-               Double value = taskArt.getSoleXAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+               Double value = taskArt.getSoleTAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
                if (value == null || value == 0.0) return new Result("Task Estimated Hours not set.");
                try {
                   new Float(value).doubleValue();
@@ -503,7 +518,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             }
             return Result.TrueResult;
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          return new Result("Exception: " + ex.getLocalizedMessage());
       }
       return super.isWorldViewRemainHoursValid();
@@ -520,10 +535,10 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       if (vers.size() > 0) {
          date = vers.iterator().next().getReleaseDate();
          if (date == null) {
-            date = getSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+            date = getSoleTAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
          }
       } else
-         date = getSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+         date = getSoleTAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
       return date;
    }
 
@@ -559,7 +574,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
    public Date getWorldViewDeadlineDate() throws Exception {
-      return getSoleXAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName());
+      return getSoleTAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName());
    }
 
    /*
@@ -568,12 +583,12 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
     */
    public double getWorldViewWeeklyBenefit() {
-      String value = getSoleStringAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName());
-      if (value == null || value.equals("")) return 0;
       try {
+         String value = getSoleTAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName(), "");
+         if (value == null || value.equals("")) return 0;
          return new Float(value).doubleValue();
-      } catch (NumberFormatException ex) {
-         OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, true);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, false);
       }
       return 0;
    }
@@ -594,8 +609,13 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isMetricsFromTasks()
     */
-   public boolean isMetricsFromTasks() throws IllegalStateException, SQLException {
-      return getSoleBooleanAttributeValue(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE.getStoreName());
+   public boolean isMetricsFromTasks() {
+      try {
+         return getSoleTAttributeValue(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE.getStoreName(), false);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+      return false;
    }
 
    /*

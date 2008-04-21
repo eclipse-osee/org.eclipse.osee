@@ -61,25 +61,25 @@ public abstract class WorldSearchItem {
       return getName();
    }
 
-   public abstract Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException;
+   public abstract Collection<Artifact> performSearch(SearchType searchType) throws Exception;
 
    public Collection<Artifact> performReSearch() throws SQLException, IllegalArgumentException {
       return EMPTY_SET;
    }
 
-   public Collection<Artifact> performSearchGetResults() throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearchGetResults() throws Exception {
       return performSearchGetResults(false, SearchType.Search);
    }
 
-   public Collection<Artifact> performSearchGetResults(SearchType searchType) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearchGetResults(SearchType searchType) throws Exception {
       return performSearchGetResults(false, searchType);
    }
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearchGetResults(boolean performUi) throws Exception {
       return performSearchGetResults(performUi, SearchType.Search);
    }
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) throws Exception {
       cancelled = false;
       if (performUi) {
          Displays.ensureInDisplayThread(new Runnable() {

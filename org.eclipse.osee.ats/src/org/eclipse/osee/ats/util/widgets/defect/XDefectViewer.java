@@ -18,6 +18,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
@@ -244,19 +245,23 @@ public class XDefectViewer extends XWidget implements IDamWidget, IEventReceiver
    }
 
    public void handleImportDefectsViaList() {
-      EntryDialog ed =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Create Defects", null,
-                  "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
-      ed.setFillVertically(true);
-      if (ed.open() == 0) {
-         for (String str : ed.getEntry().split("\n")) {
-            str = str.replaceAll("\r", "");
-            if (!str.equals("")) {
-               reviewArt.getDefectManager().addDefectItem(str, false);
+      try {
+         EntryDialog ed =
+               new EntryDialog(Display.getCurrent().getActiveShell(), "Create Defects", null,
+                     "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+         ed.setFillVertically(true);
+         if (ed.open() == 0) {
+            for (String str : ed.getEntry().split("\n")) {
+               str = str.replaceAll("\r", "");
+               if (!str.equals("")) {
+                  reviewArt.getDefectManager().addDefectItem(str, false);
+               }
             }
+            loadTable();
+            notifyXModifiedListeners();
          }
-         loadTable();
-         notifyXModifiedListeners();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
 
@@ -295,12 +300,16 @@ public class XDefectViewer extends XWidget implements IDamWidget, IEventReceiver
    }
 
    private void deleteDefectHelper(List<DefectItem> items) {
-      for (DefectItem defectItem : items) {
-         reviewArt.getDefectManager().removeDefectItem(defectItem, false);
-         xViewer.remove(defectItem);
+      try {
+         for (DefectItem defectItem : items) {
+            reviewArt.getDefectManager().removeDefectItem(defectItem, false);
+            xViewer.remove(defectItem);
+         }
+         loadTable();
+         notifyXModifiedListeners();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
-      loadTable();
-      notifyXModifiedListeners();
    }
 
    public void handleNewDefect() {
@@ -354,20 +363,25 @@ public class XDefectViewer extends XWidget implements IDamWidget, IEventReceiver
 
    @Override
    public boolean isValid() {
-      if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
-         extraInfoLabel.setText("At least one defect entry is required");
-         return false;
-      }
-      if (reviewArt != null) {
-         for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
-            if (item.getSeverity() == Severity.None || item.getDisposition() == Disposition.None || item.isClosed() == false) {
-               extraInfoLabel.setText("Review not complete till all items are marked for severity, disposition and closed");
-               return false;
+      try {
+         if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
+            extraInfoLabel.setText("At least one defect entry is required");
+            return false;
+         }
+         if (reviewArt != null) {
+            for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
+               if (item.getSeverity() == Severity.None || item.getDisposition() == Disposition.None || item.isClosed() == false) {
+                  extraInfoLabel.setText("Review not complete till all items are marked for severity, disposition and closed");
+                  return false;
+               }
             }
          }
+         extraInfoLabel.setText("");
+         return true;
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+         return false;
       }
-      extraInfoLabel.setText("");
-      return true;
    }
 
    @Override

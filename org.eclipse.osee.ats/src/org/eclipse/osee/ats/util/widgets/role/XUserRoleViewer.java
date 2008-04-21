@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -243,7 +244,7 @@ public class XUserRoleViewer extends XWidget implements IDamWidget, IEventReceiv
       }
    }
 
-   private void removeUserRoleHelper(List<UserRole> items) throws SQLException {
+   private void removeUserRoleHelper(List<UserRole> items) throws SQLException, MultipleAttributesExist {
       for (UserRole userRole : items) {
          reviewArt.getUserRoleManager().removeUserRole(userRole, false);
          xViewer.remove(userRole);
@@ -298,17 +299,22 @@ public class XUserRoleViewer extends XWidget implements IDamWidget, IEventReceiv
 
    @Override
    public boolean isValid() {
-      if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
-         extraInfoLabel.setText("At least one role entry is required");
+      try {
+         if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
+            extraInfoLabel.setText("At least one role entry is required");
+            return false;
+         }
+         Result result = reviewArt.isUserRoleValid();
+         if (result.isFalse()) {
+            extraInfoLabel.setText(result.getText());
+            return false;
+         }
+         extraInfoLabel.setText("");
+         return true;
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
          return false;
       }
-      Result result = reviewArt.isUserRoleValid();
-      if (result.isFalse()) {
-         extraInfoLabel.setText(result.getText());
-         return false;
-      }
-      extraInfoLabel.setText("");
-      return true;
    }
 
    @Override

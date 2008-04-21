@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.artifact;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.w3c.dom.Document;
@@ -67,9 +69,9 @@ public class ATSLog {
 
    public List<LogItem> getLogItems() {
       List<LogItem> logItems = new ArrayList<LogItem>();
-      String xml = artifact.getSoleStringAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName());
-      if (!xml.equals("")) {
-         try {
+      try {
+         String xml = artifact.getSoleTAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), "");
+         if (!xml.equals("")) {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
@@ -78,9 +80,9 @@ public class ATSLog {
                            element.getAttribute("userId"), element.getAttribute("state"), element.getAttribute("msg"));
                logItems.add(item);
             }
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
          }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return logItems;
    }
@@ -162,19 +164,19 @@ public class ATSLog {
       }
    }
 
-   public void addLog(LogType type, String state, String msg) {
+   public void addLog(LogType type, String state, String msg) throws IllegalStateException, SQLException, MultipleAttributesExist {
       addLog(type, state, msg, new Date(), skynetAuth.getAuthenticatedUser());
    }
 
-   public void addLog(LogType type, String state, String msg, User user) {
+   public void addLog(LogType type, String state, String msg, User user) throws SQLException, MultipleAttributesExist {
       addLog(type, state, msg, new Date(), user);
    }
 
-   public void addLogItem(LogItem item) {
+   public void addLogItem(LogItem item) throws SQLException, MultipleAttributesExist {
       addLog(item.getType(), item.getState(), item.getMsg(), item.getDate(), item.getUser());
    }
 
-   public void addLog(LogType type, String state, String msg, Date date, User user) {
+   public void addLog(LogType type, String state, String msg, Date date, User user) throws SQLException, MultipleAttributesExist {
       if (!enabled) return;
       LogItem logItem = new LogItem(type, date, user, state, msg);
       List<LogItem> logItems = getLogItems();

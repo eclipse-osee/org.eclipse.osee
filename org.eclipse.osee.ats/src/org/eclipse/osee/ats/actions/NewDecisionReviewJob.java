@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.actions;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -69,14 +68,14 @@ public class NewDecisionReviewJob extends Job {
       return Status.OK_STATUS;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, boolean againstCurrentState) throws SQLException {
+   public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, boolean againstCurrentState) throws Exception {
       DecisionReviewArtifact decRev =
             (DecisionReviewArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
                   DecisionReviewArtifact.ARTIFACT_NAME).makeNewArtifact(branchManager.getAtsBranch());
 
       if (teamParent != null) teamParent.relate(RelationSide.TeamWorkflowToReview_Review, decRev);
-      if (againstCurrentState) decRev.setSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
-            teamParent.getCurrentStateName());
+      if (againstCurrentState) decRev.setSoleStringAttributeValue(
+            ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), teamParent.getCurrentStateName());
 
       decRev.getLog().addLog(LogType.Originated, "", "");
       decRev.setDescriptiveName("Should we do this?  Yes will require followup, No will not");

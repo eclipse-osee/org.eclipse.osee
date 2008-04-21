@@ -128,7 +128,7 @@ public class TeamWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       getTeamDefs();
       List<ISearchPrimitive> teamDefWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       for (TeamDefinitionArtifact tda : getSearchTeamDefs())

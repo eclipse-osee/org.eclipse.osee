@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -81,7 +80,7 @@ public class BlockingReview extends WorkPageService {
             label.setText(blocking ? "Blocking Review" : "Non-Blocking Review");
             label.setForeground(blocking ? Display.getCurrent().getSystemColor(SWT.COLOR_RED) : null);
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }

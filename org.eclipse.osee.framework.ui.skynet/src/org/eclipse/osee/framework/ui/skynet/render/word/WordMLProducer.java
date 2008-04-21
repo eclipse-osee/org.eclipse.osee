@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * @author Ryan D. Brooks
@@ -72,10 +74,10 @@ public class WordMLProducer {
          flattenedLevelCount++;
          endOutlineSubSection(true);
          logger.log(Level.WARNING, "Outline level flattened, outline can only go 9 levels deep");
-         if(false){
-        	 startParagraph();
-             addTextInsideParagraph("OUTLINE LEVEL FLATTENED: " + headingText, RGB_RED);
-             endParagraph();
+         if (false) {
+            startParagraph();
+            addTextInsideParagraph("OUTLINE LEVEL FLATTENED: " + headingText, RGB_RED);
+            endParagraph();
          }
          return startOutlineSubSection(font, headingText, outlineType);
       }
@@ -103,9 +105,12 @@ public class WordMLProducer {
       String[] numbers = outLineNumber.split("\\.");
 
       for (String number : numbers) {
-    	 Matcher matcher = Pattern.compile(String.format("<w:start w:val=\"(\\d*?)\"/><w:pStyle w:val=\"Heading%d\"/>", index)).matcher("");
-    	 matcher.reset(template);
-    	 template = matcher.replaceAll(String.format("<w:start w:val=\"%s\"/><w:pStyle w:val=\"Heading%d\"/>", number, index));
+         Matcher matcher =
+               Pattern.compile(String.format("<w:start w:val=\"(\\d*?)\"/><w:pStyle w:val=\"Heading%d\"/>", index)).matcher(
+                     "");
+         matcher.reset(template);
+         template =
+               matcher.replaceAll(String.format("<w:start w:val=\"%s\"/><w:pStyle w:val=\"Heading%d\"/>", number, index));
          index++;
       }
       return template;
@@ -235,12 +240,12 @@ public class WordMLProducer {
     * @throws SQLException
     * @throws IllegalStateException
     */
-   public void setPageLayout(Artifact artifact) throws IOException, IllegalStateException, SQLException {
-	   String pageTypeValue = null;
-	   if(artifact.isAttributeTypeValid("Page Type")){
-		   pageTypeValue = artifact.getSoleXAttributeValue("Page Type");  
-	  }
-      
+   public void setPageLayout(Artifact artifact) throws IOException, IllegalStateException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+      String pageTypeValue = null;
+      if (artifact.isAttributeTypeValid("Page Type")) {
+         pageTypeValue = artifact.getSoleTAttributeValue("Page Type");
+      }
+
       boolean landscape = (pageTypeValue != null && pageTypeValue.equals("Landscape"));
 
       if (landscape || previousPageLandsacpe) {

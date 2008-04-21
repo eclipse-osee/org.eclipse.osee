@@ -58,7 +58,7 @@ public class OverviewPage extends FormPage implements IActionable {
       this.dynamicXWidgetLayout = new DynamicXWidgetLayout();
    }
 
-   public void update(DynamicXWidgetLayout dynamicXWidgetLayout) {
+   public void update(DynamicXWidgetLayout dynamicXWidgetLayout) throws Exception {
       //dispose old widgets before adding the new ones.
       for (Control control : parametersContainer.getChildren()) {
          control.dispose();
@@ -78,15 +78,15 @@ public class OverviewPage extends FormPage implements IActionable {
       List<DynamicXWidgetLayoutData> layoutDatas = null;
       try {
          layoutDatas = workflow.getLayoutDatas();
+
+         if (layoutDatas != null && !layoutDatas.isEmpty()) {
+            dynamicXWidgetLayout.addWorkLayoutDatas(layoutDatas);
+            update(dynamicXWidgetLayout);
+         }
+         parameterSection.setExpanded(true);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
-
-      if (layoutDatas != null && !layoutDatas.isEmpty()) {
-         dynamicXWidgetLayout.addWorkLayoutDatas(layoutDatas);
-         update(dynamicXWidgetLayout);
-      }
-      parameterSection.setExpanded(true);
    }
 
    protected void createFormContent(IManagedForm managedForm) {

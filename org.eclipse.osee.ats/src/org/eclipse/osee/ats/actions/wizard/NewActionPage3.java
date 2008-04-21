@@ -79,26 +79,30 @@ public class NewActionPage3 extends WizardPage {
    }
 
    public void createPage(Composite comp) {
-      if (page == null) {
-         StringBuffer sb = new StringBuffer();
-         sb.append("<WorkPage>");
-         // sb.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\"
-         // xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\""
-         // + ATSAttributes.DESCRIPTION_ATTRIBUTE.getDescription() + "\"/>");
-         for (IAtsWizardItem item : wizardExtensionItems) {
-            try {
-               if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) item.getWizardXWidgetExtensions(
-                     wizard.getSelectedActionableItemArtifacts(), sb);
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
+      try {
+         if (page == null) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("<WorkPage>");
+            // sb.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\"
+            // xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\""
+            // + ATSAttributes.DESCRIPTION_ATTRIBUTE.getDescription() + "\"/>");
+            for (IAtsWizardItem item : wizardExtensionItems) {
+               try {
+                  if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) item.getWizardXWidgetExtensions(
+                        wizard.getSelectedActionableItemArtifacts(), sb);
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+               }
             }
+            sb.append("</WorkPage>");
+
+            page = new AtsWorkPage("Action", "", sb.toString(), ATSXWidgetOptionResolver.getInstance());
+            page.createBody(null, comp, null, xModListener, true);
+
+            comp.layout();
          }
-         sb.append("</WorkPage>");
-
-         page = new AtsWorkPage("Action", "", sb.toString(), ATSXWidgetOptionResolver.getInstance());
-         page.createBody(null, comp, null, xModListener, true);
-
-         comp.layout();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
 

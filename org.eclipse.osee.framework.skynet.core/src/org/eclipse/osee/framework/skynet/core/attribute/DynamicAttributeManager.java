@@ -146,10 +146,11 @@ public class DynamicAttributeManager {
    }
 
    /**
-    * Return a copy of our attributes list so they can't modify our list
+    * Return a copy of our attributes list so they can't modify our list <br>
+    * 
+    * @deprecated use use Artifact.getAttributes()
     */
    @Deprecated
-   // use the generic version of this method
    public <T> Collection<Attribute<T>> getAttributes() {
       Collection<Attribute<T>> attributesCopy = new ArrayList<Attribute<T>>();
       for (Attribute<? extends Object> attribute : attributes) {

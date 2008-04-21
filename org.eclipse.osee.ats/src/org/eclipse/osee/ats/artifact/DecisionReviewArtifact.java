@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 
 /**
  * @author Donald G. Dunne
@@ -149,7 +150,11 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDecision()
     */
    public String getWorldViewDecision() {
-      return getSoleStringAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    /*
@@ -158,7 +163,11 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    public String getWorldViewDescription() {
-      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    public String getWorldViewCategory() {

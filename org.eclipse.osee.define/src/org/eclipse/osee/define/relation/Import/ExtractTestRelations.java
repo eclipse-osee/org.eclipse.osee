@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.jdk.core.text.FindResults;
 import org.eclipse.osee.framework.jdk.core.text.tool.Find;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -27,8 +28,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class ExtractTestRelations {
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
@@ -59,7 +63,7 @@ public class ExtractTestRelations {
       for (FindResults.FindResultsIterator i = results.iterator(); i.hasNext();) {
          try {
             addRelationToDatabaseIfNotAlreadyThere(AWorkspace.fileToIFile(i.currentFile), i.currentRegion);
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             ex.printStackTrace();
          }
       }
@@ -85,7 +89,7 @@ public class ExtractTestRelations {
       }
    }
 
-   private void addRelationToDatabaseIfNotAlreadyThere(IFile testArtifactFile, String reqArtifactName) throws SQLException {
+   private void addRelationToDatabaseIfNotAlreadyThere(IFile testArtifactFile, String reqArtifactName) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
 
       // Make sure that the runtime relation type is available
       Artifact reqArtifact =
@@ -120,17 +124,19 @@ public class ExtractTestRelations {
    }
 
    private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws SQLException {
-      Artifact testArtifact =
-            artifactManager.getArtifactFromTypeName(Requirements.TEST_SCRIPT, testArtifactFile.getName(), branch);
-
-      if (testArtifact == null) {
-         testArtifact =
-               configurationPersistenceManager.getArtifactSubtypeDescriptor(Requirements.TEST_SCRIPT).makeNewArtifact(branch);
+      try {
+         return artifactManager.getArtifactFromTypeName(Requirements.TEST_SCRIPT, testArtifactFile.getName(), branch);
+      } catch (MultipleArtifactsExist ex) {
+         OSEELog.logException(DefinePlugin.class, ex, false);
+         return null;
+      } catch (ArtifactDoesNotExist ex) {
+         Artifact testArtifact =
+               configurationPersistenceManager.getArtifactSubtypeDescriptor(Requirements.TEST_SCRIPT).makeNewArtifact(
+                     branch);
          testArtifact.setSoleStringAttributeValue("Name", testArtifactFile.getName());
          testArtifact.setSoleStringAttributeValue("Content URL", testArtifactFile.getFullPath().toString());
          testArtifact.persistAttributes();
+         return testArtifact;
       }
-      return testArtifact;
-
    }
 }

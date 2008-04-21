@@ -176,7 +176,7 @@ public abstract class Renderer implements IRenderer {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.render.IRenderer#getArtifactUrl(org.eclipse.osee.framework.skynet.core.artifact.Artifact, boolean)
     */
-   public String getArtifactUrl(Artifact artifact) {
+   public String getArtifactUrl(Artifact artifact) throws Exception {
       return ArtifactRequest.getInstance().getUrl(artifact, true);
    }
 }

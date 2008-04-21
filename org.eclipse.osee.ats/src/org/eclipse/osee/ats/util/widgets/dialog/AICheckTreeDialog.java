@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util.widgets.dialog;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -45,7 +44,7 @@ public class AICheckTreeDialog extends CheckedTreeSelectionDialog {
             active));
       try {
          setInput(ActionableItemArtifact.getTopLevelActionableItems(active));
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       this.filterText = new XText("Filter");

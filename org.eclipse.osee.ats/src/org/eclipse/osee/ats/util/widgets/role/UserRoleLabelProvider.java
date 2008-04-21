@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -60,21 +61,25 @@ public class UserRoleLabelProvider implements ITableLabelProvider {
     * @return column string
     */
    public String getColumnText(Object element, int columnIndex, UserRole defectItem, XViewerColumn xCol, UserRoleColumn aCol) {
-      if (!xCol.isShow()) return ""; // Since not shown, don't display
-      if (aCol == UserRoleColumn.User_Col)
-         return defectItem.getUser().getName();
-      else if (aCol == UserRoleColumn.Hours_Spent_Col)
-         return defectItem.getHoursSpent() == null ? "" : AtsLib.doubleToStrString(defectItem.getHoursSpent(), false);
-      else if (aCol == UserRoleColumn.Role_Col)
-         return defectItem.getRole().name();
-      else if (aCol == UserRoleColumn.Completed_Col)
-         return String.valueOf(defectItem.isCompleted());
-      else if (aCol == UserRoleColumn.Num_Major_Col)
-         return treeViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumMajor(defectItem.getUser()) + "";
-      else if (aCol == UserRoleColumn.Num_Minor_Col)
-         return treeViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumMinor(defectItem.getUser()) + "";
-      else if (aCol == UserRoleColumn.Num_Issues_Col) return treeViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumIssues(
-            defectItem.getUser()) + "";
+      try {
+         if (!xCol.isShow()) return ""; // Since not shown, don't display
+         if (aCol == UserRoleColumn.User_Col)
+            return defectItem.getUser().getName();
+         else if (aCol == UserRoleColumn.Hours_Spent_Col)
+            return defectItem.getHoursSpent() == null ? "" : AtsLib.doubleToStrString(defectItem.getHoursSpent(), false);
+         else if (aCol == UserRoleColumn.Role_Col)
+            return defectItem.getRole().name();
+         else if (aCol == UserRoleColumn.Completed_Col)
+            return String.valueOf(defectItem.isCompleted());
+         else if (aCol == UserRoleColumn.Num_Major_Col)
+            return treeViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumMajor(defectItem.getUser()) + "";
+         else if (aCol == UserRoleColumn.Num_Minor_Col)
+            return treeViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumMinor(defectItem.getUser()) + "";
+         else if (aCol == UserRoleColumn.Num_Issues_Col) return treeViewer.getXUserRoleViewer().getReviewArt().getUserRoleManager().getNumIssues(
+               defectItem.getUser()) + "";
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
 
       return "Unhandled Column";
    }

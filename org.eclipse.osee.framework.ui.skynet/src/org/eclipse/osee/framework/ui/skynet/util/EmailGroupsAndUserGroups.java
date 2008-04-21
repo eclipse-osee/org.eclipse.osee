@@ -79,7 +79,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run() throws SQLException {
+   public void run() throws Exception {
       Set<Artifact> groupOptions =
             getEmailGroupsAndUserGroups(SkynetAuthentication.getInstance().getAuthenticatedUser(), groupType);
       UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(groupOptions);

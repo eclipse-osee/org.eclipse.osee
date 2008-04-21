@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -76,7 +75,7 @@ public class DynamicXWidgetLayout {
       }
    }
 
-   public void createBody(FormToolkit toolkit, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) {
+   public void createBody(FormToolkit toolkit, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws Exception {
       Composite attrComp = null;
       if (toolkit != null)
          attrComp = toolkit.createComposite(parent);
@@ -142,9 +141,7 @@ public class DynamicXWidgetLayout {
          if (artifact != null && (xWidget instanceof IDamWidget)) {
             try {
                ((IDamWidget) xWidget).setArtifact(artifact, xWidgetLayoutData.getLayoutName());
-            } catch (IllegalStateException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }

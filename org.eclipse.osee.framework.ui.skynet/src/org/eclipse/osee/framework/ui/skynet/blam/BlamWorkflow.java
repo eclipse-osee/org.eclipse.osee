@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
@@ -73,14 +74,14 @@ public class BlamWorkflow extends Artifact {
       return blamWorkflow;
    }
 
-   public List<DynamicXWidgetLayoutData> getLayoutDatas() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
+   public List<DynamicXWidgetLayoutData> getLayoutDatas() throws IllegalArgumentException, SQLException, MultipleAttributesExist, ParserConfigurationException, SAXException, IOException, CoreException {
       if (layoutDatas.isEmpty()) {
          getOperations();
       }
       return layoutDatas;
    }
 
-   public List<BlamOperation> getOperations() throws IllegalArgumentException, ParserConfigurationException, SAXException, IOException, CoreException {
+   public List<BlamOperation> getOperations() throws IllegalArgumentException, SQLException, MultipleAttributesExist, ParserConfigurationException, SAXException, IOException, CoreException {
       operations.clear();
 
       if (soleOperation == null) {
@@ -93,8 +94,8 @@ public class BlamWorkflow extends Artifact {
       return operations;
    }
 
-   private void loadFromXml() throws ParserConfigurationException, SAXException, IOException, IllegalArgumentException, CoreException {
-      String blamXml = getSoleStringAttributeValue("Workflow Definition");
+   private void loadFromXml() throws ParserConfigurationException, SQLException, MultipleAttributesExist, SAXException, IOException, IllegalArgumentException, CoreException {
+      String blamXml = getSoleTAttributeValue("Workflow Definition", "");
       Document document = Jaxp.readXmlDocument(blamXml);
       Element rootElement = document.getDocumentElement();
 
@@ -160,8 +161,8 @@ public class BlamWorkflow extends Artifact {
       return "Select parameters below and click the play button at the top right.";
    }
 
-   public void saveLayoutData(String xml) throws ParserConfigurationException, SAXException, IOException, IllegalArgumentException, CoreException, SQLException {
-      String blamXml = getSoleStringAttributeValue("Workflow Definition");
+   public void saveLayoutData(String xml) throws ParserConfigurationException, SQLException, MultipleAttributesExist, SAXException, IOException, IllegalArgumentException, CoreException, SQLException {
+      String blamXml = getSoleTAttributeValue("Workflow Definition", "");
       Document document = Jaxp.readXmlDocument(blamXml);
       Element rootElement = document.getDocumentElement();
 

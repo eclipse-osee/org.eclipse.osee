@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
@@ -146,7 +147,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return sb.toString();
    }
 
-   private void fillBody(IManagedForm managedForm) {
+   private void fillBody(IManagedForm managedForm) throws Exception {
       Composite body = managedForm.getForm().getBody();
       GridLayout gridLayout = new GridLayout(1, false);
       body.setLayout(gridLayout);
@@ -157,22 +158,22 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       headerComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
-      createTopLineHeader(headerComp, toolkit);
-      createLatestHeader(headerComp, toolkit);
-      createTeamWorkflowHeader(headerComp, toolkit);
-      createNotesHeader(headerComp, toolkit);
-      createAnnotationsHeader(headerComp, toolkit);
-
-      sections.clear();
-      pages.clear();
-
       // Display relations
       try {
+         createTopLineHeader(headerComp, toolkit);
+         createLatestHeader(headerComp, toolkit);
+         createTeamWorkflowHeader(headerComp, toolkit);
+         createNotesHeader(headerComp, toolkit);
+         createAnnotationsHeader(headerComp, toolkit);
+
+         sections.clear();
+         pages.clear();
+
          if (SMARelationsComposite.relationExists(smaMgr.getSma())) {
             smaRelationsComposite = new SMARelationsComposite(body, toolkit, SWT.NONE);
             smaRelationsComposite.create(smaMgr);
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
 
@@ -412,9 +413,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createNotesHeader(Composite comp, XFormToolkit toolkit) {
+   private void createNotesHeader(Composite comp, XFormToolkit toolkit) throws SQLException, MultipleAttributesExist {
       // Display SMA Note
-      String note = smaMgr.getSma().getSoleStringAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName());
+      String note = smaMgr.getSma().getSoleTAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
       if (!note.equals("")) {
          Label label = toolkit.createLabel(comp, "Note: " + note);
          GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -445,12 +446,15 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             }
 
             public void linkActivated(HyperlinkEvent e) {
-               if (smaMgr.promptChangeOriginator()) {
-                  updateOrigLabel();
-                  smaMgr.getEditor().onDirtied();
+               try {
+                  if (smaMgr.promptChangeOriginator()) {
+                     updateOrigLabel();
+                     smaMgr.getEditor().onDirtied();
+                  }
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
                }
             }
-
          });
          if (smaMgr.getOriginator() == null) {
             Label errorLabel = toolkit.createLabel(comp, "Error: No originator identified.");

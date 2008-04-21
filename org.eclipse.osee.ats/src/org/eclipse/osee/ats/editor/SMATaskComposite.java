@@ -47,7 +47,7 @@ public class SMATaskComposite extends Composite {
       return xTaskViewer.toHTML(AHTML.LABEL_FONT);
    }
 
-   public void create(IXTaskViewer iXTaskViewer) {
+   public void create(IXTaskViewer iXTaskViewer) throws Exception {
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 

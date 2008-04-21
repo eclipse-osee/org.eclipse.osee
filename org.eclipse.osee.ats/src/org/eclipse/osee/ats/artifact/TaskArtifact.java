@@ -102,10 +102,11 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       try {
          StateMachineArtifact parentSMA = getParentSMA();
          boolean unCancellable =
-               (parentSMA.getCurrentStateName().equals(getSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName())));
+               (parentSMA.getCurrentStateName().equals(getSoleTAttributeValue(
+                     ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "")));
          if (!unCancellable) return false;
          return super.isUnCancellable();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          // Do Nothing
       }
       return false;
@@ -123,12 +124,20 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    @Override
    public String getDescription() {
-      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return "Error: " + ex.getLocalizedMessage();
+      }
    }
 
    @Override
    public String getWorldViewRelatedToState() {
-      return getSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    @Override
@@ -186,7 +195,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (result.isFalse()) result.popup();
    }
 
-   public void transitionToInWork(User toUser, boolean persist) throws IllegalStateException, SQLException {
+   public void transitionToInWork(User toUser, boolean persist) throws Exception {
       if (getCurrentState().equals(INWORK_STATE)) return;
       Result result = smaMgr.transition(INWORK_STATE, toUser, false);
       if (smaMgr.getSMAState().getPercentComplete() == 100) smaMgr.getCurrentStateDam().setPercentComplete(99);
@@ -207,15 +216,13 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       else if (getCurrentState().getPercentComplete() != 100 && isCompleted()) {
          try {
             transitionToInWork(SkynetAuthentication.getInstance().getAuthenticatedUser(), true);
-         } catch (IllegalStateException ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }
       }
    }
 
-   public void parentWorkFlowTransitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws IllegalStateException, SQLException {
+   public void parentWorkFlowTransitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws Exception {
       if (toPage.isCancelledPage() && isInWork())
          transitionToCancelled("Parent Cancelled", persist);
       else if (fromPage.isCancelledPage() && isCancelled()) transitionToInWork(
@@ -237,7 +244,11 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    public String getWorldViewDescription() {
-      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    public String getWorldViewNumberOfTasks() {
@@ -249,12 +260,12 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     */
    public Date getWorldViewEstimatedReleaseDate() throws Exception {
       if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewEstimatedReleaseDate();
-      return getSoleXAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+      return getSoleTAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
 
    public Date getWorldViewReleaseDate() throws Exception {
       if (getParentSMA() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewReleaseDate();
-      return getSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+      return getSoleTAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
    }
 
    public VersionArtifact getTargetedForVersion() throws SQLException {

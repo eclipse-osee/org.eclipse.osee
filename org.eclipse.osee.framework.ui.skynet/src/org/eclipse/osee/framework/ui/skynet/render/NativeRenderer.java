@@ -35,7 +35,7 @@ public class NativeRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedExtension()
     */
    @Override
-   public String getAssociatedExtension(Artifact artifact) {
+   public String getAssociatedExtension(Artifact artifact) throws Exception {
       return ((NativeArtifact) artifact).getFileExtension();
    }
 
@@ -43,7 +43,7 @@ public class NativeRenderer extends FileRenderer {
     * @see org.eclipse.osee.framework.ui.skynet.render.FileRenderer#getAssociatedProgram()
     */
    @Override
-   public Program getAssociatedProgram(Artifact artifact) {
+   public Program getAssociatedProgram(Artifact artifact) throws Exception {
       NativeArtifact nativeArtifact = (NativeArtifact) artifact;
 
       Program program = Program.findProgram(nativeArtifact.getFileExtension());

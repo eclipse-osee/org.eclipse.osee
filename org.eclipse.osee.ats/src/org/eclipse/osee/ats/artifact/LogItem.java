@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
@@ -33,7 +35,7 @@ public class LogItem {
    public LogItem() {
    }
 
-   public LogItem(LogType type, Date date, User user, String state, String msg) {
+   public LogItem(LogType type, Date date, User user, String state, String msg) throws SQLException, MultipleAttributesExist {
       this(type.name(), date.getTime() + "", user.getUserId(), state, msg);
    }
 
@@ -54,7 +56,7 @@ public class LogItem {
       this(LogType.getType(type), date, userId, state, msg);
    }
 
-   public String toXml() {
+   public String toXml() throws SQLException, MultipleAttributesExist {
       return "<type>" + type.name() + "</type><date>" + date.getTime() + "</date><user>" + user.getUserId() + "</user><state>" + (state != null ? state : "") + "</state><msg>" + (msg != null ? msg : "") + "</msg>";
    }
 
@@ -80,7 +82,11 @@ public class LogItem {
    }
 
    public String toString() {
-      return (msg.equals("") ? "" : msg) + " (" + type + ") " + (state.equals("") ? "" : "from " + state + " ") + "by " + user.getUserId() + " on " + getDate(XDate.MMDDYYHHMM) + "\n";
+      try {
+         return (msg.equals("") ? "" : msg) + " (" + type + ") " + (state.equals("") ? "" : "from " + state + " ") + "by " + user.getUserId() + " on " + getDate(XDate.MMDDYYHHMM) + "\n";
+      } catch (Exception ex) {
+         return (msg.equals("") ? "" : msg) + " (" + type + ") " + (state.equals("") ? "" : "from " + state + " ");
+      }
    }
 
    public User getUser() {

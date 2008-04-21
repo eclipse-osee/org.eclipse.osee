@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSe
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -107,9 +109,9 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * required that a product configured in ATS uses the versions option. If no parent with versions is found, null is
     * returned. If boolean "Team Uses Versions" is false, just return cause this team doesn't use versions
     * 
-    * @return parent TeamDefinition that holds the version definintions
+    * @return parent TeamDefinition that holds the version definitions
     */
-   public TeamDefinitionArtifact getTeamDefinitionHoldingVersions() throws SQLException {
+   public TeamDefinitionArtifact getTeamDefinitionHoldingVersions() throws SQLException, MultipleAttributesExist {
       if (!isTeamUsesVersions()) return null;
       if (getVersionsArtifacts().size() > 0) return this;
       if (getParent() instanceof TeamDefinitionArtifact) {
@@ -119,16 +121,16 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return null;
    }
 
-   public VersionArtifact getNextReleaseVersion() throws SQLException {
+   public VersionArtifact getNextReleaseVersion() throws SQLException, MultipleAttributesExist {
       for (VersionArtifact verArt : getArtifacts(RelationSide.TeamDefinitionToVersion_Version, VersionArtifact.class)) {
-         if (verArt.getSoleBooleanAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName())) {
+         if (verArt.getSoleTAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false)) {
             return verArt;
          }
       }
       return null;
    }
 
-   public Collection<VersionArtifact> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType) throws SQLException {
+   public Collection<VersionArtifact> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType) throws SQLException, MultipleAttributesExist {
       TeamDefinitionArtifact teamDef = getTeamDefinitionHoldingVersions();
       if (teamDef == null) return new ArrayList<VersionArtifact>();
       return teamDef.getVersionsArtifacts(releaseType);
@@ -140,7 +142,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return search.getArtifacts(TeamDefinitionArtifact.class);
    }
 
-   public static Set<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws SQLException {
+   public static Set<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws SQLException, MultipleAttributesExist {
       TeamDefinitionArtifact topTeamDef = getTopTeamDefinition();
       if (topTeamDef == null) return EMPTY_SET;
       return AtsLib.getActiveSet(Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false),
@@ -153,12 +155,13 @@ public class TeamDefinitionArtifact extends BasicArtifact {
             TeamDefinitionArtifact.class);
    }
 
-   public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws SQLException {
+   public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws SQLException, MultipleAttributesExist {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       ActiveArtifactTypeSearch search =
             new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getInstance().getAtsBranch());
       for (TeamDefinitionArtifact teamDef : search.getArtifacts(TeamDefinitionArtifact.class)) {
-         if (teamDef.getVersionsArtifacts().size() > 0 && teamDef.getSoleBooleanAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName())) teamDefs.add(teamDef);
+         if (teamDef.getVersionsArtifacts().size() > 0 && teamDef.getSoleTAttributeValue(
+               ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false)) teamDefs.add(teamDef);
       }
       return teamDefs;
    }
@@ -230,11 +233,16 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @return number of hours per single person per single day
     * @throws SQLException
     */
-   public double getManDayHrsFromItemAndChildren(TeamDefinitionArtifact teamDef) throws SQLException {
-      Double manDaysHrs = teamDef.getSoleXAttributeValue(ATSAttributes.MAN_DAYS_NEEDED_ATTRIBUTE.getStoreName());
-      if (manDaysHrs != null && manDaysHrs != 0) return manDaysHrs;
-      if (teamDef.getParent() != null && (teamDef.getParent() instanceof TeamDefinitionArtifact)) return teamDef.getManDayHrsFromItemAndChildren((TeamDefinitionArtifact) teamDef.getParent());
-      return StateMachineArtifact.MAN_DAY_HOURS;
+   public double getManDayHrsFromItemAndChildren(TeamDefinitionArtifact teamDef) {
+      try {
+         Double manDaysHrs = teamDef.getSoleTAttributeValue(ATSAttributes.MAN_DAYS_NEEDED_ATTRIBUTE.getStoreName());
+         if (manDaysHrs != null && manDaysHrs != 0) return manDaysHrs;
+         if (teamDef.getParent() != null && (teamDef.getParent() instanceof TeamDefinitionArtifact)) return teamDef.getManDayHrsFromItemAndChildren((TeamDefinitionArtifact) teamDef.getParent());
+         return StateMachineArtifact.MAN_DAY_HOURS;
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
+      return 0.0;
    }
 
    /**
@@ -309,7 +317,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return getArtifacts(RelationSide.TeamDefinitionToVersion_Version, VersionArtifact.class);
    }
 
-   public Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType) throws SQLException {
+   public Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType) throws SQLException, MultipleAttributesExist {
       ArrayList<VersionArtifact> versions = new ArrayList<VersionArtifact>();
       for (VersionArtifact version : getVersionsArtifacts()) {
          if (version.isReleased()) {
@@ -321,8 +329,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return versions;
    }
 
-   public boolean isTeamUsesVersions() throws IllegalStateException, SQLException {
-      return getSoleBooleanAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName());
+   public boolean isTeamUsesVersions() throws IllegalStateException, SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), false);
    }
 
    /**
@@ -332,8 +340,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * 
     * @throws SQLException
     */
-   public Branch getTeamBranch() throws SQLException {
-      Integer branchId = getSoleXAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+   public Branch getTeamBranch() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+      Integer branchId = getSoleTAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
       if (branchId != null && branchId > 0) {
          return branchManager.getBranch(branchId);
       } else {

@@ -85,7 +85,7 @@ public class TargetedForVersionState extends WorkPageService {
                         refresh();
                         section.refreshStateServices();
                      }
-                  } catch (SQLException ex) {
+                  } catch (Exception ex) {
                      OSEELog.logException(AtsPlugin.class, ex, true);
                   }
                }

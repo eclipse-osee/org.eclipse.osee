@@ -50,7 +50,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
     *      org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.ats.workflow.AtsWorkPage,
     *      org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
       if (xWidget.getLabel().equals(ATSAttributes.DECISION_ATTRIBUTE.getDisplayName())) {
          if (xWidget == null) throw new IllegalStateException("Can't retrieve decision review combo widget to set.");
          XComboDam decisionComboDam = (XComboDam) xWidget;
@@ -63,7 +63,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       return Result.TrueResult;
    }
 
-   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) {
+   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws Exception {
       DecisionOption decisionOption = getDecisionOption(section);
       if (decisionOption == null) return null;
       boolean followUpRequired = decisionOption.isFollowupRequired();
@@ -79,13 +79,13 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
     * 
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getOverrideTransitionToAssignees(org.eclipse.osee.ats.editor.SMAWorkFlowSection)
     */
-   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) {
+   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws Exception {
       DecisionOption decisionOption = getDecisionOption(section);
       if (decisionOption == null) return null;
       return decisionOption.getAssignees();
    }
 
-   private DecisionOption getDecisionOption(SMAWorkFlowSection section) {
+   private DecisionOption getDecisionOption(SMAWorkFlowSection section) throws Exception {
       XWidget xWidget = section.getPage().getLayoutData(ATSAttributes.DECISION_ATTRIBUTE.getStoreName()).getXWidget();
       XComboDam decisionComboDam = (XComboDam) xWidget;
       String decision = decisionComboDam.get();
@@ -98,7 +98,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() {
+   public String getDescription() throws Exception {
       return "AtsDecisionReviewDecisionStateItem - Add decision options to review state based on prepare state's entries.";
    }
 

@@ -58,7 +58,7 @@ public interface IRenderer {
 
    public abstract String getName();
 
-   public abstract String getArtifactUrl(Artifact artifact);
+   public abstract String getArtifactUrl(Artifact artifact) throws Exception;
 
    public abstract void setId(String rendererId);
 

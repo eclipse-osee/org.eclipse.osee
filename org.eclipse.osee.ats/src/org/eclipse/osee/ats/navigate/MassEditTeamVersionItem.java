@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -67,7 +68,11 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
          if (teamDef != null) return teamDef;
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-      ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));
+      try {
+         ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));
+      } catch (MultipleAttributesExist ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
       int result = ld.open();
       if (result == 0) {
          return (TeamDefinitionArtifact) ld.getResult()[0];
@@ -85,7 +90,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
             return;
          }
          MassArtifactEditor.editArtifacts(getName(), teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts());
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }

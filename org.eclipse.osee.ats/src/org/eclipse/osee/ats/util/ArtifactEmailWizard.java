@@ -10,19 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
 
 public class ArtifactEmailWizard extends EmailWizard {
 
-   public ArtifactEmailWizard(StateMachineArtifact sma) {
+   public ArtifactEmailWizard(StateMachineArtifact sma) throws SQLException, MultipleAttributesExist {
       this(sma, null);
    }
 
-   public ArtifactEmailWizard(StateMachineArtifact sma, ArrayList<Object> toAddress) {
+   public ArtifactEmailWizard(StateMachineArtifact sma, ArrayList<Object> toAddress) throws SQLException, MultipleAttributesExist {
       super();
       setInitialAddress(toAddress);
       setHtmlMessage(sma.getPreviewHtml(PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE));
@@ -30,7 +32,7 @@ public class ArtifactEmailWizard extends EmailWizard {
       setEmailableGroups(getEmailableGroups(sma));
    }
 
-   private ArrayList<EmailGroup> getEmailableGroups(StateMachineArtifact sma) {
+   private ArrayList<EmailGroup> getEmailableGroups(StateMachineArtifact sma) throws SQLException, MultipleAttributesExist {
       return sma.getEmailableGroups();
    }
 }

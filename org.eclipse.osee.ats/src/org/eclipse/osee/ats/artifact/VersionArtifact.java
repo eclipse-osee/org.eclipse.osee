@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 public class VersionArtifact extends BasicArtifact {
 
@@ -43,12 +44,12 @@ public class VersionArtifact extends BasicArtifact {
       return getArtifacts(RelationSide.TeamDefinitionToVersion_TeamDefinition, TeamDefinitionArtifact.class).iterator().next();
    }
 
-   public Boolean isReleased() throws IllegalStateException, SQLException {
-      return getSoleBooleanAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName());
+   public Boolean isReleased() throws IllegalStateException, SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), false);
    }
 
-   public Boolean isNextVersion() throws IllegalStateException, SQLException {
-      return getSoleBooleanAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName());
+   public Boolean isNextVersion() throws IllegalStateException, SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false);
    }
 
    public String toString() {
@@ -63,16 +64,16 @@ public class VersionArtifact extends BasicArtifact {
       setSoleBooleanAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), nextVersion);
    }
 
-   public String getFullName() {
-      return getSoleStringAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName());
+   public String getFullName() throws SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), "");
    }
 
    public void setFullName(String name) throws IllegalStateException, SQLException {
       setSoleStringAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), name);
    }
 
-   public String getDescription() {
-      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+   public String getDescription() throws SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
    public void setDescription(String desc) throws IllegalStateException, SQLException {
@@ -83,7 +84,7 @@ public class VersionArtifact extends BasicArtifact {
       return getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class);
    }
 
-   public String getFullDisplayName() {
+   public String getFullDisplayName() throws SQLException, MultipleAttributesExist {
       String str = "";
       if (!getDescriptiveName().equals(Artifact.UNNAMED)) str += getDescriptiveName();
       if (!getFullName().equals("")) {
@@ -105,12 +106,12 @@ public class VersionArtifact extends BasicArtifact {
       return (TeamDefinitionArtifact) getFirstArtifact(RelationSide.TeamDefinitionToVersion_TeamDefinition);
    }
 
-   public Date getEstimatedReleaseDate() throws IllegalStateException, SQLException {
-      return getSoleXAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+   public Date getEstimatedReleaseDate() throws IllegalStateException, SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
    }
 
-   public Date getReleaseDate() throws IllegalStateException, SQLException {
-      return getSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+   public Date getReleaseDate() throws IllegalStateException, SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
    }
 
 }

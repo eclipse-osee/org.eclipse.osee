@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(User user) throws SQLException, IllegalArgumentException {
+   protected Collection<Artifact> searchIt(User user) throws Exception {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),

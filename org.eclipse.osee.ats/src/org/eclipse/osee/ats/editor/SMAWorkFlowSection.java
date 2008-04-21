@@ -79,7 +79,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public static String TRANSITION_TO_STATE_COMBO = "Transition To State Combo";
    private Composite mainComp;
 
-   public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) {
+   public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws Exception {
       super(parent, toolkit, style);
       this.toolkit = toolkit;
       this.page = page;
@@ -93,7 +93,7 @@ public class SMAWorkFlowSection extends SectionPart {
       createPage(parent);
    }
 
-   protected Section createPage(Composite comp) {
+   protected Section createPage(Composite comp) throws Exception {
 
       Section section = toolkit.createSection(comp, Section.TWISTIE | Section.TITLE_BAR);
       section.setText(getCurrentStateTitle());
@@ -188,7 +188,7 @@ public class SMAWorkFlowSection extends SectionPart {
       servicesArea.dispose();
    }
 
-   protected Composite createWorkArea(Composite comp, AtsWorkPage page, XFormToolkit toolkit) {
+   protected Composite createWorkArea(Composite comp, AtsWorkPage page, XFormToolkit toolkit) throws Exception {
 
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -219,12 +219,20 @@ public class SMAWorkFlowSection extends SectionPart {
       public void widgetModified(XWidget xWidget) {
          if (smaMgr.getSma().isDeleted()) return;
          // Notify extensions of widget modified
-         for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
-            item.widgetModified(fSection, xWidget);
+         try {
+            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
+               try {
+                  item.widgetModified(fSection, xWidget);
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, false);
+               }
+            }
+            updateTransitionToState();
+            updateTransitionToAssignees();
+            smaMgr.getEditor().onDirtied();
+         } catch (Exception ex) {
+            OSEELog.logException(AtsPlugin.class, ex, false);
          }
-         updateTransitionToState();
-         updateTransitionToAssignees();
-         smaMgr.getEditor().onDirtied();
       }
    };
 
@@ -264,7 +272,11 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
             public void linkActivated(HyperlinkEvent e) {
-               handleChangeCurrentAssignees();
+               try {
+                  handleChangeCurrentAssignees();
+               } catch (Exception ex) {
+                  OSEELog.logException(AtsPlugin.class, ex, true);
+               }
             }
 
          });
@@ -282,7 +294,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   private void handleChangeCurrentAssignees() {
+   private void handleChangeCurrentAssignees() throws Exception {
       if (smaMgr.promptChangeAssignees()) {
          refresh();
          smaMgr.getEditor().onDirtied();
@@ -309,7 +321,7 @@ public class SMAWorkFlowSection extends SectionPart {
       smaMgr.getEditor().onDirtied();
    }
 
-   private void createCurrentPageTransitionLine(Composite parent, AtsWorkPage page, XFormToolkit toolkit) {
+   private void createCurrentPageTransitionLine(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws Exception {
       Composite comp = toolkit.createContainer(parent, 5);
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -353,7 +365,11 @@ public class SMAWorkFlowSection extends SectionPart {
           * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
           */
          public void selectionChanged(SelectionChangedEvent event) {
-            updateTransitionToAssignees();
+            try {
+               updateTransitionToAssignees();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, false);
+            }
          }
       });
 
@@ -376,7 +392,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
    }
 
-   public void updateTransitionToAssignees() {
+   public void updateTransitionToAssignees() throws Exception {
       Collection<User> assignees = null;
       // Determine if the is an override set of assigness
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
@@ -391,7 +407,7 @@ public class SMAWorkFlowSection extends SectionPart {
       refresh();
    }
 
-   public void updateTransitionToState() {
+   public void updateTransitionToState() throws Exception {
       // Determine if there is a transitionToStateOverride for this page
       String transitionStateOverride = null;
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
@@ -528,7 +544,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
          smaMgr.setInTransition(false);
          smaMgr.getEditor().redrawPages();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       } finally {
          smaMgr.setInTransition(false);
@@ -547,7 +563,7 @@ public class SMAWorkFlowSection extends SectionPart {
       return isCurrentState;
    }
 
-   public boolean handlePopulateStateMetrics() throws IllegalStateException, SQLException {
+   public boolean handlePopulateStateMetrics() throws Exception {
 
       // Page has the ability to override the autofill of the metrics
       if (!page.isRequireStateHoursSpentPrompt() && smaMgr.getSma().getCurrentState().getHoursSpent() == 0) {

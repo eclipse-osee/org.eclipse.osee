@@ -113,7 +113,7 @@ public class AssignedActiveActions extends XNavigateItemAutoRunAction implements
       }
    }
 
-   private void assignedActiveActionsHelper(XResultData rd) throws SQLException {
+   private void assignedActiveActionsHelper(XResultData rd) throws Exception {
       java.util.Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
       artTypeNames.add(TaskArtifact.ARTIFACT_NAME);
       List<ISearchPrimitive> artifactTypeCriteria = new LinkedList<ISearchPrimitive>();

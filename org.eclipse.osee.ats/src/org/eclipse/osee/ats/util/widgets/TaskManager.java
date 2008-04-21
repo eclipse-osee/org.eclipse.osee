@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -45,14 +46,15 @@ public class TaskManager {
       return smaMgr.getSma().getArtifacts(RelationSide.SmaToTask_Task, TaskArtifact.class);
    }
 
-   public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws SQLException {
+   public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws SQLException, MultipleAttributesExist {
       return getTaskArtifacts(smaMgr.getSma().getCurrentStateName());
    }
 
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws SQLException {
+   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws SQLException, MultipleAttributesExist {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
       for (TaskArtifact taskArt : smaMgr.getSma().getArtifacts(RelationSide.SmaToTask_Task, TaskArtifact.class)) {
-         if (taskArt.getSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName()).equals(stateName)) arts.add(taskArt);
+         if (taskArt.getSoleTAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
+               stateName)) arts.add(taskArt);
       }
       return arts;
    }
@@ -61,15 +63,15 @@ public class TaskManager {
       return smaMgr.getSma().hasArtifacts(RelationSide.SmaToTask_Task);
    }
 
-   public TaskArtifact createNewTask(String title, boolean persist) throws SQLException {
+   public TaskArtifact createNewTask(String title, boolean persist) throws Exception {
       return createNewTask(Arrays.asList(new User[] {skynetAuth.getAuthenticatedUser()}), title, persist);
    }
 
-   public TaskArtifact createNewTask(User assignee, String title, boolean persist) throws SQLException {
+   public TaskArtifact createNewTask(User assignee, String title, boolean persist) throws Exception {
       return createNewTask(Arrays.asList(new User[] {assignee}), title, persist);
    }
 
-   public TaskArtifact createNewTask(Collection<User> assignees, String title, boolean persist) throws SQLException {
+   public TaskArtifact createNewTask(Collection<User> assignees, String title, boolean persist) throws Exception {
       TaskArtifact taskArt = null;
       taskArt =
             (TaskArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(

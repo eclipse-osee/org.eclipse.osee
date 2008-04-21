@@ -33,8 +33,8 @@ public class ATSBranchMetrics {
    public void load() throws Exception {
       if (numDeletedArtifacts == null) {
          String xml =
-               branchMgr.getSmaMgr().getSma().getSoleStringAttributeValue(
-                     ATSAttributes.BRANCH_METRICS_ATTRIBUTE.getStoreName());
+               branchMgr.getSmaMgr().getSma().getSoleTAttributeValue(
+                     ATSAttributes.BRANCH_METRICS_ATTRIBUTE.getStoreName(), "");
          if (!xml.equals("")) {
             System.err.println("Retrieving cached branch metrics values");
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(XML_TAG);
@@ -53,9 +53,9 @@ public class ATSBranchMetrics {
       }
    }
 
-   public boolean isCached() {
-      return !branchMgr.getSmaMgr().getSma().getSoleStringAttributeValue(
-            ATSAttributes.BRANCH_METRICS_ATTRIBUTE.getStoreName()).equals("");
+   public boolean isCached() throws Exception {
+      return !branchMgr.getSmaMgr().getSma().getSoleTAttributeValue(
+            ATSAttributes.BRANCH_METRICS_ATTRIBUTE.getStoreName(), "").equals("");
    }
 
    public void persist() throws Exception {

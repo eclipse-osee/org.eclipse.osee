@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -54,7 +53,7 @@ public class NextVersionSearchItem extends WorldSearchItem {
             VersionArtifact verArt = teamDef.getNextReleaseVersion();
             name += (verArt != null ? " - " + verArt.getDescriptiveName() : "");
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return "Exception Occurred - See Log - " + ex.getLocalizedMessage();
       }
@@ -72,7 +71,7 @@ public class NextVersionSearchItem extends WorldSearchItem {
     * @see org.eclipse.osee.ats.world.search.WorldSearchItem#performSearch()
     */
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       if (isCancelled()) return EMPTY_SET;
       if (getTeamDefinition(searchType).getNextReleaseVersion() == null) {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition(searchType) + "\"");

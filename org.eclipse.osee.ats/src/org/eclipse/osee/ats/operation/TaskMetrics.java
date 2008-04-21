@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -88,7 +89,7 @@ public class TaskMetrics extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private void tallyState(TaskArtifact task) throws SQLException {
+   private void tallyState(TaskArtifact task) throws SQLException, MultipleAttributesExist {
       XStateDam stateDam = new XStateDam(task);
 
       SMAState state = stateDam.getState(TaskArtifact.INWORK_STATE, false);
@@ -101,7 +102,7 @@ public class TaskMetrics extends AbstractBlam {
          int percentComplete = state.getPercentComplete();
 
          if (percentComplete == 100) {
-            String resolution = task.getSoleStringAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
+            String resolution = task.getSoleTAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), "");
 
             if (resolution.equals("Complete")) {
                metrics.put(user, 100);

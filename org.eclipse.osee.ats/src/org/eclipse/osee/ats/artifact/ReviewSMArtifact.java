@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -58,8 +59,8 @@ public abstract class ReviewSMArtifact extends StateMachineArtifact {
       return "Review";
    }
 
-   public boolean isBlocking() throws IllegalStateException, SQLException {
-      return getSoleBooleanAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName());
+   public boolean isBlocking() throws IllegalStateException, SQLException, MultipleAttributesExist, MultipleAttributesExist {
+      return getSoleTAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
    }
 
    public DefectManager getDefectManager() {
@@ -70,7 +71,7 @@ public abstract class ReviewSMArtifact extends StateMachineArtifact {
       return userRoleManager;
    }
 
-   public Result isUserRoleValid() {
+   public Result isUserRoleValid() throws SQLException, MultipleAttributesExist {
       return Result.TrueResult;
    }
 

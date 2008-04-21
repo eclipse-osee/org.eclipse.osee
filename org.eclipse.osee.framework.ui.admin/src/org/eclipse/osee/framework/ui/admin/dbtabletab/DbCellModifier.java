@@ -16,6 +16,8 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.admin.AdminPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.StringValue;
 import org.eclipse.swt.widgets.TableItem;
@@ -109,10 +111,14 @@ public class DbCellModifier implements ICellModifier {
          String newName = (String) value;
          User newUser = SkynetAuthentication.getInstance().getUserByName(newName, false);
          String oldBems = (String) wasObj;
-         if (!newUser.getUserId().equals(oldBems)) {
-            dbModel.setColumn(columnIndex, newUser.getUserId());
-            dbModel.setNeedSave(true);
-            dbModel.setColumnChanged(property);
+         try {
+            if (!newUser.getUserId().equals(oldBems)) {
+               dbModel.setColumn(columnIndex, newUser.getUserId());
+               dbModel.setNeedSave(true);
+               dbModel.setColumnChanged(property);
+            }
+         } catch (Exception ex) {
+            OSEELog.logException(AdminPlugin.class, ex, true);
          }
       } else if (wasObj instanceof String) {
          if (!((String) wasObj).equals((String) value)) {

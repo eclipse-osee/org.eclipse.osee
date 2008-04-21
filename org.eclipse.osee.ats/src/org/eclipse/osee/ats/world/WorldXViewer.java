@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -164,7 +165,7 @@ public class WorldXViewer extends XViewer {
                      (AtsPlugin.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased), true)) {
                   update(getSelectedArtifactItemsArray(), null);
                }
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
@@ -173,15 +174,14 @@ public class WorldXViewer extends XViewer {
       editAssigneeAction = new Action("Edit Assignee", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            Set<StateMachineArtifact> artifacts = getSelectedSMAArtifacts();
-            if (SMAManager.promptChangeAssignees(artifacts)) {
-               try {
+            try {
+               Set<StateMachineArtifact> artifacts = getSelectedSMAArtifacts();
+               if (SMAManager.promptChangeAssignees(artifacts)) {
                   Artifacts.persist(artifacts, false);
-               } catch (Exception ex) {
-                  OSEELog.logException(AtsPlugin.class, ex, true);
-                  return;
+                  update(getSelectedArtifactItemsArray(), null);
                }
-               update(getSelectedArtifactItemsArray(), null);
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       };
@@ -272,7 +272,11 @@ public class WorldXViewer extends XViewer {
       emailAction = new Action("Email ATS Object", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            handleEmailSelectedAtsObject();
+            try {
+               handleEmailSelectedAtsObject();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
       };
 
@@ -282,7 +286,7 @@ public class WorldXViewer extends XViewer {
             for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
                try {
                   actionArt.resetAttributesOffChildren();
-               } catch (SQLException ex) {
+               } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
                }
             }
@@ -390,7 +394,7 @@ public class WorldXViewer extends XViewer {
       return true;
    }
 
-   public void handleEmailSelectedAtsObject() {
+   public void handleEmailSelectedAtsObject() throws MultipleAttributesExist {
       try {
          Artifact art = getSelectedArtifacts().iterator().next();
          if (art instanceof ActionArtifact) {
@@ -854,7 +858,7 @@ public class WorldXViewer extends XViewer {
             update(wai, null);
             return true;
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return false;
@@ -886,7 +890,7 @@ public class WorldXViewer extends XViewer {
                smaMgr.getSma().persistAttributes();
             }
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }

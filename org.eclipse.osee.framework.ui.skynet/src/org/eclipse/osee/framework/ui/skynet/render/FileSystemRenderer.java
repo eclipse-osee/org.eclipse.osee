@@ -153,6 +153,6 @@ public abstract class FileSystemRenderer extends Renderer {
 
    public abstract IFile renderToFileSystem(IProgressMonitor monitor, IFolder baseFolder, List<Artifact> artifacts, String option, PresentationType presentationType) throws Exception;
 
-   public abstract Program getAssociatedProgram(Artifact artifact);
+   public abstract Program getAssociatedProgram(Artifact artifact) throws Exception;
 
 }

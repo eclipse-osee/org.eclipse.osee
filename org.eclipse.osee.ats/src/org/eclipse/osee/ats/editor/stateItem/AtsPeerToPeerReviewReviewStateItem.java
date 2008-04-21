@@ -43,7 +43,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
     *      java.lang.String, java.lang.String, java.util.Collection)
     */
    @Override
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) {
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception {
       super.transitioned(smaMgr, fromState, toState, toAssignees);
       if (!toState.equals(PeerToPeerReviewArtifact.State.Review.name())) return;
       // Set Assignees to all user roles users
@@ -64,7 +64,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() {
+   public String getDescription() throws Exception {
       return "AtsPeerToPeerReviewReviewStateItem - assign review state to all members of review as per role in prepare state.";
    }
 

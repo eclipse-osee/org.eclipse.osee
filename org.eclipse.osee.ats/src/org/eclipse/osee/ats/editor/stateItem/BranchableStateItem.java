@@ -44,7 +44,7 @@ public abstract class BranchableStateItem extends AtsStateItem {
    public abstract String getId();
 
    @Override
-   public List<WorkPageService> getServices(SMAManager smaMgr) {
+   public List<WorkPageService> getServices(SMAManager smaMgr) throws Exception {
       List<WorkPageService> services = new ArrayList<WorkPageService>();
       services.add(new CreateWorkingBranchService(smaMgr));
       services.add(new CommitManagerService(smaMgr));
@@ -93,7 +93,7 @@ public abstract class BranchableStateItem extends AtsStateItem {
     * 
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() {
+   public String getDescription() throws Exception {
       return "add Branch/Commit block.";
    }
 

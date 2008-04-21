@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,11 +26,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class LegacyPCRActions {
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(TeamDefinitionArtifact teamDef) throws SQLException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(TeamDefinitionArtifact teamDef) throws Exception {
       return getTeamsTeamWorkflowArtifacts(Arrays.asList(new TeamDefinitionArtifact[] {teamDef}));
    }
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws SQLException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem("", teamDefs);
       search.setReturnTeams(true);
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
@@ -41,21 +40,21 @@ public class LegacyPCRActions {
       return teamArts;
    }
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(String pcrId, Collection<TeamDefinitionArtifact> teamDefs) throws SQLException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(String pcrId, Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
       return getTeamsTeamWorkflowArtifacts(Arrays.asList(new String[] {pcrId}), teamDefs);
    }
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(String pcrId) throws SQLException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(String pcrId) throws Exception {
       return getTeamsTeamWorkflowArtifacts(Arrays.asList(new String[] {pcrId}),
             (Collection<TeamDefinitionArtifact>) null);
    }
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, TeamDefinitionArtifact teamDef) throws SQLException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, TeamDefinitionArtifact teamDef) throws Exception {
       return getTeamsTeamWorkflowArtifacts(pcrIds,
             teamDef != null ? Arrays.asList(new TeamDefinitionArtifact[] {teamDef}) : null);
    }
 
-   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) throws SQLException {
+   public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem("", pcrIds, teamDefs);
       search.setReturnTeams(true);
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
@@ -65,11 +64,11 @@ public class LegacyPCRActions {
       return teamArts;
    }
 
-   public static Collection<ActionArtifact> getTeamsActionArtifacts(TeamDefinitionArtifact teamDef) throws SQLException {
+   public static Collection<ActionArtifact> getTeamsActionArtifacts(TeamDefinitionArtifact teamDef) throws Exception {
       return getTeamsActionArtifacts(Arrays.asList(new TeamDefinitionArtifact[] {teamDef}));
    }
 
-   public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws SQLException {
+   public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem("", teamDefs);
       Set<ActionArtifact> actArts = new HashSet<ActionArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
@@ -78,11 +77,11 @@ public class LegacyPCRActions {
       return actArts;
    }
 
-   public static Collection<ActionArtifact> getTeamsActionArtifacts(String pcrId, Collection<TeamDefinitionArtifact> teamDefs) throws SQLException {
+   public static Collection<ActionArtifact> getTeamsActionArtifacts(String pcrId, Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
       return getTeamsActionArtifacts(Arrays.asList(new String[] {pcrId}), teamDefs);
    }
 
-   public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) throws SQLException {
+   public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem("", pcrIds, teamDefs);
       Set<ActionArtifact> actArts = new HashSet<ActionArtifact>();
       for (Artifact art : search.performSearchGetResults()) {

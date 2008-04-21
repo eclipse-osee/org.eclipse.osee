@@ -36,13 +36,14 @@ public class SMAWorkFlowCancelledSection extends SMAWorkFlowSection {
     * @param style
     * @param page
     * @param smaMgr
+    * @throws Exception
     */
-   public SMAWorkFlowCancelledSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) {
+   public SMAWorkFlowCancelledSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws Exception {
       super(parent, toolkit, style, page, smaMgr);
    }
 
    @Override
-   protected Composite createWorkArea(Composite comp, AtsWorkPage page, XFormToolkit toolkit) {
+   protected Composite createWorkArea(Composite comp, AtsWorkPage page, XFormToolkit toolkit) throws Exception {
       Composite workComp = super.createWorkArea(comp, page, toolkit);
       LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
       toolkit.createLabel(workComp, "Cancellation Reason: " + item.getMsg());

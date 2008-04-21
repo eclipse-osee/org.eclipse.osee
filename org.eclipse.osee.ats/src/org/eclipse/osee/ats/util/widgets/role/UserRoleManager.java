@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -25,6 +24,7 @@ import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -43,7 +43,7 @@ public class UserRoleManager {
       this.artifact = artifact;
    }
 
-   public String getHtml() {
+   public String getHtml() throws SQLException, MultipleAttributesExist {
       if (getUserRoles().size() == 0) return "";
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Defects"));
@@ -51,9 +51,9 @@ public class UserRoleManager {
       return sb.toString();
    }
 
-   public Set<UserRole> getUserRoles() {
+   public Set<UserRole> getUserRoles() throws SQLException, MultipleAttributesExist {
       Set<UserRole> uRoles = new HashSet<UserRole>();
-      String xml = artifact.getSoleStringAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME);
+      String xml = artifact.getSoleTAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, "");
       Matcher m =
             java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">").matcher(xml);
       while (m.find()) {
@@ -63,14 +63,14 @@ public class UserRoleManager {
       return uRoles;
    }
 
-   public Set<UserRole> getUserRoles(Role role) {
+   public Set<UserRole> getUserRoles(Role role) throws SQLException, MultipleAttributesExist {
       Set<UserRole> roles = new HashSet<UserRole>();
       for (UserRole uRole : getUserRoles())
          if (uRole.getRole() == role) roles.add(uRole);
       return roles;
    }
 
-   public Set<User> getRoleUsers(Role role) {
+   public Set<User> getRoleUsers(Role role) throws SQLException, MultipleAttributesExist {
       Set<User> users = new HashSet<User>();
       for (UserRole uRole : getUserRoles())
          if (uRole.getRole() == role) users.add(uRole.getUser());
@@ -92,7 +92,7 @@ public class UserRoleManager {
       }
    }
 
-   public void addOrUpdateUserRole(UserRole userRole, boolean persist) throws SQLException {
+   public void addOrUpdateUserRole(UserRole userRole, boolean persist) throws SQLException, MultipleAttributesExist {
       Set<UserRole> roleItems = getUserRoles();
       boolean found = false;
       for (UserRole uRole : roleItems) {
@@ -105,7 +105,7 @@ public class UserRoleManager {
       saveRoleItems(roleItems, persist);
    }
 
-   private void updateAssignees() throws SQLException {
+   private void updateAssignees() throws Exception {
       // Set assigness based on roles that are not set as completed
       Set<User> assignees = new HashSet<User>();
       for (UserRole uRole : getUserRoles()) {
@@ -115,7 +115,7 @@ public class UserRoleManager {
       artifact.getSmaMgr().setAssignees(assignees);
    }
 
-   public void removeUserRole(UserRole userRole, boolean persist) throws SQLException {
+   public void removeUserRole(UserRole userRole, boolean persist) throws SQLException, MultipleAttributesExist {
       Set<UserRole> roleItems = getUserRoles();
       roleItems.remove(userRole);
       saveRoleItems(roleItems, persist);
@@ -125,7 +125,7 @@ public class UserRoleManager {
       saveRoleItems(new HashSet<UserRole>(), persist);
    }
 
-   public String getTable() {
+   public String getTable() throws SQLException, MultipleAttributesExist {
       StringBuilder builder = new StringBuilder();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Role</TH>" + "<TH>User</TH><TH>Hours</TH><TH>Major</TH><TH>Minor</TH><TH>Issues</TH>");
       for (UserRole item : getUserRoles()) {
@@ -150,21 +150,21 @@ public class UserRoleManager {
       return builder.toString();
    }
 
-   public int getNumMajor(User user) {
+   public int getNumMajor(User user) throws SQLException, MultipleAttributesExist {
       int x = 0;
       for (DefectItem dItem : ((IReviewArtifact) artifact).getDefectManager().getDefectItems())
          if (dItem.getSeverity() == Severity.Major && dItem.getUser() == user) x++;
       return x;
    }
 
-   public int getNumMinor(User user) {
+   public int getNumMinor(User user) throws SQLException, MultipleAttributesExist {
       int x = 0;
       for (DefectItem dItem : ((IReviewArtifact) artifact).getDefectManager().getDefectItems())
          if (dItem.getSeverity() == Severity.Minor && dItem.getUser() == user) x++;
       return x;
    }
 
-   public int getNumIssues(User user) {
+   public int getNumIssues(User user) throws SQLException, MultipleAttributesExist {
       int x = 0;
       for (DefectItem dItem : ((IReviewArtifact) artifact).getDefectManager().getDefectItems())
          if (dItem.getSeverity() == Severity.Issue && dItem.getUser() == user) x++;
@@ -179,17 +179,13 @@ public class UserRoleManager {
       this.enabled = enabled;
    }
 
-   public void rollupHoursSpentToReviewState(boolean persist) throws SQLException {
+   public void rollupHoursSpentToReviewState(boolean persist) throws Exception {
       double hoursSpent = 0.0;
-      try {
-         for (UserRole role : getUserRoles())
-            hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
-         SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
-         smaMgr.getCurrentStateDam().setHoursSpent(hoursSpent);
-         if (artifact.isDirty() && persist) artifact.persistAttributes();
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
+      for (UserRole role : getUserRoles())
+         hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
+      SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
+      smaMgr.getCurrentStateDam().setHoursSpent(hoursSpent);
+      if (artifact.isDirty() && persist) artifact.persistAttributes();
    }
 
 }

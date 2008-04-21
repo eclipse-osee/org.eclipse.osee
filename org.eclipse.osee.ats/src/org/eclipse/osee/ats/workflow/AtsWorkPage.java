@@ -81,7 +81,7 @@ public class AtsWorkPage extends WorkPage {
     *      osee.skynet.gui.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws Exception {
       super.widgetCreated(xWidget, toolkit, art, page, xModListener, isEditable);
       // Check extenstion points for page creation
       if (smaMgr != null) {
@@ -100,7 +100,7 @@ public class AtsWorkPage extends WorkPage {
     *      osee.skynet.gui.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
       super.createXWidgetLayoutData(layoutData, xWidget, toolkit, art, xModListener, isEditable);
       // If no tooltip, add global tooltip
       if ((xWidget.getToolTip() == null || xWidget.getToolTip().equals("")) && ATSAttributes.getAtsAttributeByStoreName(layoutData.getLayoutName()) != null && ATSAttributes.getAtsAttributeByStoreName(
@@ -122,7 +122,7 @@ public class AtsWorkPage extends WorkPage {
     *      osee.skynet.gui.widgets.XModifiedListener, boolean)
     */
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws Exception {
       super.widgetCreating(xWidget, toolkit, art, page, xModListener, isEditable);
       // Check extenstion points for page creation
       if (smaMgr != null) {

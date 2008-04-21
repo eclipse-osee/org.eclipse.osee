@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.actions.wizard;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -72,64 +71,68 @@ public class NewActionPage1 extends WizardPage {
 
    public void createControl(Composite parent) {
 
-      String xWidgetXml =
-            "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + ATSAttributes.TITLE_ATTRIBUTE.getDescription() + "\"/></WorkPage>";
-      Composite comp = new Composite(parent, SWT.NONE);
-      comp.setLayout(new GridLayout(1, false));
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-      page = new AtsWorkPage("Action", "", xWidgetXml, ATSXWidgetOptionResolver.getInstance());
-      page.createBody(null, comp, null, xModListener, true);
-
-      Composite aiComp = new Composite(comp, SWT.NONE);
-      aiComp.setLayout(new GridLayout(1, false));
-      aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      (new Label(aiComp, SWT.NONE)).setText("Select Actionable Items:");
-      treeViewer =
-            new CheckboxTreeViewer(aiComp,
-                  SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-      treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      treeViewer.setContentProvider(new AITreeContentProvider(Active.Active));
-      treeViewer.setLabelProvider(new ArtifactLabelProvider());
       try {
-         // Load all AIs due to performance
-         ActionableItemArtifact.getActionableItems();
-         treeViewer.setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Active));
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
-      nameFilter = new ActionableItemFilter(treeViewer);
-      treeViewer.addFilter(nameFilter);
-      treeViewer.setSorter(new ArtifactNameSorter());
-      treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-         public void selectionChanged(SelectionChangedEvent event) {
-            storeSelectedActionableItemArtifacts();
-            getContainer().updateButtons();
+         String xWidgetXml =
+               "<WorkPage><XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + ATSAttributes.TITLE_ATTRIBUTE.getDescription() + "\"/></WorkPage>";
+         Composite comp = new Composite(parent, SWT.NONE);
+         comp.setLayout(new GridLayout(1, false));
+         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+         page = new AtsWorkPage("Action", "", xWidgetXml, ATSXWidgetOptionResolver.getInstance());
+         page.createBody(null, comp, null, xModListener, true);
+
+         Composite aiComp = new Composite(comp, SWT.NONE);
+         aiComp.setLayout(new GridLayout(1, false));
+         aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+         (new Label(aiComp, SWT.NONE)).setText("Select Actionable Items:");
+         treeViewer =
+               new CheckboxTreeViewer(aiComp,
+                     SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         treeViewer.setContentProvider(new AITreeContentProvider(Active.Active));
+         treeViewer.setLabelProvider(new ArtifactLabelProvider());
+         try {
+            // Load all AIs due to performance
+            ActionableItemArtifact.getActionableItems();
+            treeViewer.setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Active));
+         } catch (Exception ex) {
+            OSEELog.logException(AtsPlugin.class, ex, false);
          }
-      });
-      if (wizard.getCheckedArtifacts() != null && wizard.getCheckedArtifacts().size() > 0) {
-         treeViewer.setCheckedElements(wizard.getCheckedArtifacts().toArray(
-               new Object[wizard.getCheckedArtifacts().size()]));
-         for (Artifact art : wizard.getCheckedArtifacts())
-            treeViewer.reveal(art);
+         nameFilter = new ActionableItemFilter(treeViewer);
+         treeViewer.addFilter(nameFilter);
+         treeViewer.setSorter(new ArtifactNameSorter());
+         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+               storeSelectedActionableItemArtifacts();
+               getContainer().updateButtons();
+            }
+         });
+         if (wizard.getCheckedArtifacts() != null && wizard.getCheckedArtifacts().size() > 0) {
+            treeViewer.setCheckedElements(wizard.getCheckedArtifacts().toArray(
+                  new Object[wizard.getCheckedArtifacts().size()]));
+            for (Artifact art : wizard.getCheckedArtifacts())
+               treeViewer.reveal(art);
+         }
+
+         Composite filterComp = new Composite(aiComp, SWT.NONE);
+         filterComp.setLayout(new GridLayout(2, false));
+         filterComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         (new Label(filterComp, SWT.NONE)).setText("Filter");
+         filterText.setDisplayLabel(false);
+         filterText.createWidgets(filterComp, 2);
+         filterText.addModifyListener(new ModifyListener() {
+            public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
+               nameFilter.setContains(filterText.get());
+               treeViewer.refresh();
+            };
+         });
+
+         setControl(comp);
+         setHelpContexts();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
-
-      Composite filterComp = new Composite(aiComp, SWT.NONE);
-      filterComp.setLayout(new GridLayout(2, false));
-      filterComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      (new Label(filterComp, SWT.NONE)).setText("Filter");
-      filterText.setDisplayLabel(false);
-      filterText.createWidgets(filterComp, 2);
-      filterText.addModifyListener(new ModifyListener() {
-         public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
-            nameFilter.setContains(filterText.get());
-            treeViewer.refresh();
-         };
-      });
-
-      setControl(comp);
-      setHelpContexts();
    }
 
    private void setHelpContexts() {

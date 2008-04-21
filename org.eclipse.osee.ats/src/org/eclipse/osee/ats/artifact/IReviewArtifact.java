@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public interface IReviewArtifact {
 
-   public boolean isBlocking() throws SQLException;
+   public boolean isBlocking() throws SQLException, MultipleAttributesExist;
 
    public DefectManager getDefectManager();
 
@@ -29,6 +30,6 @@ public interface IReviewArtifact {
 
    public Artifact getArtifact();
 
-   public Result isUserRoleValid();
+   public Result isUserRoleValid() throws SQLException, MultipleAttributesExist;
 
 }

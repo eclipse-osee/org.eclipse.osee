@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * @author Donald G. Dunne
@@ -51,7 +53,7 @@ public class User extends Artifact implements Serializable {
       super(parentFactory, guid, humanReadableId, branch);
    }
 
-   public void setFieldsBasedon(User u) throws SQLException {
+   public void setFieldsBasedon(User u) throws Exception {
       setName(u.getName());
       setPhone(u.getPhone());
       setEmail(u.getEmail());
@@ -60,7 +62,11 @@ public class User extends Artifact implements Serializable {
    }
 
    public String toString() {
-      return String.format("%s (%s)", getName(), getUserId());
+      try {
+         return String.format("%s (%s)", getName(), getUserId());
+      } catch (Exception ex) {
+         return "Exception: " + ex.getLocalizedMessage();
+      }
    }
 
    public boolean equals(Object obj) {
@@ -80,14 +86,22 @@ public class User extends Artifact implements Serializable {
          } else {
             return false;
          }
+
+      } catch (Exception ex) {
+         // do nothing
       } finally {
          deleteCheckOveride = false;
          if (otherUser != null) otherUser.deleteCheckOveride = false;
       }
+      return false;
    }
 
-   public boolean isMe() {
-      return (getUserId().equals(SkynetAuthentication.getInstance().getAuthenticatedUser().getUserId()));
+   public boolean isMe() throws SQLException, MultipleAttributesExist {
+      try {
+         return (getUserId().equals(SkynetAuthentication.getInstance().getAuthenticatedUser().getUserId()));
+      } catch (Exception ex) {
+         return false;
+      }
    }
 
    public boolean equals(User users[]) {
@@ -99,23 +113,28 @@ public class User extends Artifact implements Serializable {
 
    public int hashCode() {
       try {
-         deleteCheckOveride = true;
-         return getUserId().hashCode();
-      } finally {
-         deleteCheckOveride = false;
+         try {
+            deleteCheckOveride = true;
+            return getUserId().hashCode();
+         } finally {
+            deleteCheckOveride = false;
+         }
+      } catch (Exception ex) {
+         // do nothing
       }
+      return 0;
    }
 
-   public String getUserId() {
-      return getSoleStringAttributeValue(userIdAttributeName);
+   public String getUserId() throws SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(userIdAttributeName, "");
    }
 
    public void setUserID(String userId) throws IllegalStateException, SQLException {
       setSoleStringAttributeValue(userIdAttributeName, userId);
    }
 
-   public String getEmail() {
-      return getSoleStringAttributeValue(Attributes.Email.toString());
+   public String getEmail() throws SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(Attributes.Email.toString(), "");
    }
 
    public void setEmail(String email) throws IllegalStateException, SQLException {
@@ -130,17 +149,16 @@ public class User extends Artifact implements Serializable {
       setDescriptiveName(name);
    }
 
-   public String getPhone() {
-      return getSoleStringAttributeValue(Attributes.Phone.toString());
+   public String getPhone() throws SQLException, MultipleAttributesExist {
+      return getSoleTAttributeValue(Attributes.Phone.toString(), "");
    }
 
    public void setPhone(String phone) throws IllegalStateException, SQLException {
       setSoleStringAttributeValue(Attributes.Phone.toString(), phone);
    }
 
-   public Boolean isActive() throws SQLException {
-      Boolean active = getSoleXAttributeValue(Attributes.Active.toString());
-      return active;
+   public Boolean isActive() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist, MultipleAttributesExist {
+      return getSoleTAttributeValue(Attributes.Active.toString());
    }
 
    public void setActive(boolean required) throws IllegalStateException, SQLException {

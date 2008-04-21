@@ -76,13 +76,13 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewValidationRequiredStr();
 
-   public boolean isMetricsFromTasks() throws Exception;
+   public boolean isMetricsFromTasks();
 
    public Date getWorldViewCancelledDate() throws Exception;
 
    public String getWorldViewCancelledDateStr();
 
-   public ChangeType getWorldViewChangeType();
+   public ChangeType getWorldViewChangeType() throws Exception;
 
    public String getWorldViewChangeTypeStr();
 

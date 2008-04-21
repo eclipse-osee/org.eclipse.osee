@@ -31,6 +31,9 @@ import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
 import org.eclipse.osee.framework.ui.plugin.security.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.plugin.security.OseeAuthentication;
@@ -143,6 +146,8 @@ public class SkynetAuthentication implements PersistenceManager {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (MultipleAttributesExist ex) {
+         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
 
       return currentUser;
@@ -166,7 +171,7 @@ public class SkynetAuthentication implements PersistenceManager {
       return user;
    }
 
-   public User getUser(OseeUser userEnum) throws IllegalArgumentException, SQLException, IllegalStateException, UserNotInDatabase {
+   public User getUser(OseeUser userEnum) throws IllegalArgumentException, SQLException, IllegalStateException, MultipleAttributesExist, UserNotInDatabase {
       User user = enumeratedUserCache.get(userEnum);
       if (user == null) {
          user = getUserByIdWithError(userEnum.getUserID());
@@ -190,7 +195,7 @@ public class SkynetAuthentication implements PersistenceManager {
          // this is here in case a user is created at an unexpected time
          if (!SkynetDbInit.isDbInit()) logger.log(Level.INFO, "Created user " + user, new Exception(
                "just wanted the stack trace"));
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          logger.log(Level.WARNING, "Error Creating User.\n", ex);
       } finally {
          duringUserCreation = false;
@@ -221,7 +226,7 @@ public class SkynetAuthentication implements PersistenceManager {
             for (User user : activeUserCache) {
                activeUserNameCache[i++] = user.getName();
             }
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Error Searching for User in DB.\n", ex);
          }
       }
@@ -229,7 +234,7 @@ public class SkynetAuthentication implements PersistenceManager {
       return (ArrayList<User>) activeUserCache.clone();
    }
 
-   public User getUserByIdWithError(String userId) throws SQLException, IllegalArgumentException, IllegalStateException, UserNotInDatabase {
+   public User getUserByIdWithError(String userId) throws SQLException, IllegalArgumentException, MultipleAttributesExist, IllegalStateException, UserNotInDatabase {
       if (userId == null || userId.equals("")) {
          throw new IllegalArgumentException("UserId can't be null or \"\"");
       }
@@ -257,7 +262,7 @@ public class SkynetAuthentication implements PersistenceManager {
       return user;
    }
 
-   public User getUserById(String userId) throws SQLException, IllegalArgumentException, IllegalStateException {
+   public User getUserById(String userId) throws SQLException, MultipleAttributesExist, IllegalArgumentException, IllegalStateException {
       if (userId == null || userId.equals("")) throw new IllegalStateException("UserId can't be null or \"\"");
       User user = nameOrIdToUserCache.get(userId);
 
@@ -294,21 +299,26 @@ public class SkynetAuthentication implements PersistenceManager {
             user =
                   (User) artifactManager.getArtifactFromTypeName(User.ARTIFACT_NAME, name,
                         branchManager.getCommonBranch());
-         } catch (IllegalStateException ex) {
-            if (create && ex.getLocalizedMessage().contains("There must be exactly one")) {
+         } catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
+         } catch (MultipleArtifactsExist ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
+         } catch (ArtifactDoesNotExist ex) {
+            if (create) {
                user = createUser(name, "", name, true);
                try {
                   user.persistAttributes();
                } catch (SQLException ex2) {
                   logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex2);
                }
-               addUserToMap(user);
-               return user;
-            }
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            } else
+               logger.log(Level.SEVERE, ex.toString(), ex);
          }
-         if (user != null) addUserToMap(user);
+         try {
+            if (user != null) addUserToMap(user);
+         } catch (Exception ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
+         }
       }
       return user;
    }
@@ -324,17 +334,15 @@ public class SkynetAuthentication implements PersistenceManager {
          try {
             user = (User) artifactManager.getArtifactFromId(authorId, branchManager.getCommonBranch());
             addUserToMap(user);
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            artIdToUserCache.put(authorId, null);
-         } catch (IllegalArgumentException ex) {
             artIdToUserCache.put(authorId, null);
          }
       }
       return user;
    }
 
-   private void addUserToMap(User user) {
+   private void addUserToMap(User user) throws SQLException, MultipleAttributesExist {
       nameOrIdToUserCache.put(user.getDescriptiveName(), user);
       nameOrIdToUserCache.put(user.getUserId(), user);
       if (user.isInDb()) {
@@ -343,7 +351,7 @@ public class SkynetAuthentication implements PersistenceManager {
    }
 
    /**
-    * @return whether the Authentification manager is in the middle of creating a user
+    * @return whether the Authentication manager is in the middle of creating a user
     */
    public boolean duringUserCreation() {
       return duringUserCreation;

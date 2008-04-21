@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -54,7 +55,7 @@ public class ReviewManager {
     * @return new review
     * @throws SQLException
     */
-   public DecisionReviewArtifact createValidateReview(boolean force) throws SQLException {
+   public DecisionReviewArtifact createValidateReview(boolean force) throws SQLException, MultipleAttributesExist {
       // If not validate page, don't do anything
       if (!force && !smaMgr.getWorkPage().isValidatePage()) return null;
       // If validate review already created for this state, return
@@ -79,22 +80,22 @@ public class ReviewManager {
 
          return decRev;
 
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return null;
    }
 
-   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String againstState) throws SQLException {
+   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String againstState) throws Exception {
       return createNewPeerToPeerReview(againstState, SkynetAuthentication.getInstance().getAuthenticatedUser(),
             new Date());
    }
 
-   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String againstState, User origUser, Date origDate) throws SQLException {
+   public PeerToPeerReviewArtifact createNewPeerToPeerReview(String againstState, User origUser, Date origDate) throws IllegalStateException, Exception {
       return createNewPeerToPeerReview(smaMgr.getSma(), againstState, origUser, origDate);
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String againstState, User origUser, Date origDate) throws SQLException {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String againstState, User origUser, Date origDate) throws IllegalStateException, Exception {
       PeerToPeerReviewArtifact peerToPeerRev =
             (PeerToPeerReviewArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
                   PeerToPeerReviewArtifact.ARTIFACT_NAME).makeNewArtifact(
@@ -124,7 +125,7 @@ public class ReviewManager {
    public String getValidateReviewFollowupUsersStr() {
       try {
          return SMAState.getAssigneesStorageString(getValidateReviewFollowupUsers());
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return ex.getLocalizedMessage();
       }
@@ -137,7 +138,7 @@ public class ReviewManager {
       try {
          // Else if Team Workflow , return it to the leads of this team
          if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       // Else, return current user; should never hit this
@@ -148,15 +149,16 @@ public class ReviewManager {
       return smaMgr.getSma().getArtifacts(RelationSide.TeamWorkflowToReview_Review, ReviewSMArtifact.class);
    }
 
-   public Collection<ReviewSMArtifact> getReviewsFromCurrentState() throws SQLException {
+   public Collection<ReviewSMArtifact> getReviewsFromCurrentState() throws SQLException, MultipleAttributesExist {
       return getReviews(smaMgr.getSma().getCurrentStateName());
    }
 
-   public Collection<ReviewSMArtifact> getReviews(String stateName) throws SQLException {
+   public Collection<ReviewSMArtifact> getReviews(String stateName) throws SQLException, MultipleAttributesExist {
       Set<ReviewSMArtifact> arts = new HashSet<ReviewSMArtifact>();
       if (!smaMgr.getSma().isTaskable()) return arts;
       for (ReviewSMArtifact revArt : getReviews()) {
-         if (revArt.getSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName()).equals(stateName)) arts.add(revArt);
+         if (revArt.getSoleTAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
+               stateName)) arts.add(revArt);
       }
       return arts;
    }

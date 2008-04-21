@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Composite;
@@ -59,11 +60,11 @@ public class XComboDam extends XCombo implements IDamWidget {
       super.addXModifiedListener(modifyListener);
    }
 
-   public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException, SQLException {
+   public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException, MultipleAttributesExist, SQLException {
       this.artifact = artifact;
       this.attrName = attrName;
 
-      super.set(artifact.getSoleStringAttributeValue(attrName));
+      super.set(artifact.getSoleTAttributeValue(attrName, ""));
    }
 
    @Override
@@ -81,7 +82,12 @@ public class XComboDam extends XCombo implements IDamWidget {
 
    @Override
    public boolean isDirty() {
-      return !artifact.getSoleStringAttributeValue(attrName).equals(get());
+      try {
+         return !artifact.getSoleTAttributeValue(attrName, "").equals(get());
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return false;
    }
 
 }

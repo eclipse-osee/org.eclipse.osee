@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -42,7 +41,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
          }
 
          return branches;
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(TeamBasedDefaultBranchProvider.class, ex, true);
       }
 

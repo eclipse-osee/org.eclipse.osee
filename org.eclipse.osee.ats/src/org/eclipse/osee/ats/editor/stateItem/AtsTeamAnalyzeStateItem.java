@@ -46,7 +46,7 @@ public class AtsTeamAnalyzeStateItem extends AtsStateItem {
     *      org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.ats.workflow.AtsWorkPage,
     *      org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
       if (xWidget.getLabel().contains(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName())) {
          XFloatDam estimatedHrsFloat = (XFloatDam) xWidget;
          SMAManager smaMgr = new SMAManager((StateMachineArtifact) art);
@@ -67,7 +67,7 @@ public class AtsTeamAnalyzeStateItem extends AtsStateItem {
     *      org.eclipse.ui.forms.widgets.FormToolkit, org.eclipse.osee.ats.workflow.AtsWorkPage,
     *      org.eclipse.osee.framework.skynet.core.artifact.Artifact, org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
       if (xWidget.getLabel().equals(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getDisplayName())) {
          XFloatDam estimatedHrsFloat = (XFloatDam) xWidget;
          SMAManager smaMgr = new SMAManager((StateMachineArtifact) art);
@@ -86,7 +86,7 @@ public class AtsTeamAnalyzeStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() {
+   public String getDescription() throws Exception {
       return "AtsTeamAnalyzeStateItem - Modify hours widget based on MetricsFromTasks selection.";
    }
 

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Composite;
@@ -70,7 +71,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
       if (changed) {
          try {
             save();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
          return true;
@@ -90,14 +91,14 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    @Override
-   public void save() throws SQLException {
+   public void save() throws Exception {
       if (isDirty()) {
          DynamicAttributeManager udat = getUdat();
          udat.setSoleAttributeValue(getSelectedStringValue());
       }
    }
 
-   public String getSelectedStringValue() {
+   public String getSelectedStringValue() throws SQLException, MultipleAttributesExist {
       StringBuffer sb = new StringBuffer();
       for (User user : getSelectedUsers()) {
          sb.append(AXml.addTagData("userId", user.getUserId()));
@@ -106,7 +107,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    @Override
-   public boolean isDirty() throws SQLException {
+   public boolean isDirty() throws Exception {
       return (!getUdatStringValue().equals(getSelectedStringValue()));
    }
 }

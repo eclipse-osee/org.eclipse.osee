@@ -28,7 +28,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 
 /**
  * @author Donald G. Dunne
@@ -70,7 +72,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @see org.eclipse.osee.ats.artifact.ReviewSMArtifact#isUserRoleValid()
     */
    @Override
-   public Result isUserRoleValid() {
+   public Result isUserRoleValid() throws SQLException, MultipleAttributesExist {
       if (getUserRoleManager().getUserRoles(Role.Author).size() <= 0) return new Result("Must have at least one Author");
       if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) return new Result(
             "Must have at least one Reviewer");
@@ -153,7 +155,11 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
    public String getWorldViewDescription() {
-      return getSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
+      try {
+         return getSoleTAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    public String getWorldViewCategory() {
@@ -260,7 +266,11 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
     */
    public String getWorldViewReviewAuthor() {
-      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Author));
+      try {
+         return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Author));
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    /* (non-Javadoc)
@@ -274,14 +284,22 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
     */
    public String getWorldViewReviewModerator() {
-      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Moderator));
+      try {
+         return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Moderator));
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
     */
    public String getWorldViewReviewReviewer() {
-      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Reviewer));
+      try {
+         return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Reviewer));
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
 }

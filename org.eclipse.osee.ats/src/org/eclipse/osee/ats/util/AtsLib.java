@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -65,7 +66,7 @@ public class AtsLib implements IAtsLib {
     * @throws SQLException
     */
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> Set<A> getActiveSet(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws SQLException {
+   public static <A extends Artifact> Set<A> getActiveSet(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws SQLException, MultipleAttributesExist {
       Set<A> results = new HashSet<A>();
       for (Artifact art : artifacts) {
          if ((art.getClass().equals(clazz)) && art.isAttributeTypeValid(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName())) {
@@ -74,7 +75,7 @@ public class AtsLib implements IAtsLib {
             else {
                // Ats config Artifact is Active unless otherwise specified
                boolean attributeActive =
-                     ((A) art).getSoleBooleanAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName());
+                     ((A) art).getSoleTAttributeValue(ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false);
                if (active == Active.Active && attributeActive) {
                   results.add((A) art);
                } else if (active == Active.InActive && !attributeActive) {

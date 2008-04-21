@@ -65,13 +65,13 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       this("", "", null, optionResolver);
    }
 
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws Exception {
    }
 
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws Exception {
    }
 
-   public void createXWidgetLayoutData(DynamicXWidgetLayoutData workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+   public void createXWidgetLayoutData(DynamicXWidgetLayoutData workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
    }
 
    /*
@@ -83,7 +83,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
     *      org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout,
     *      org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws Exception {
       widgetCreated(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
@@ -96,7 +96,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
     *      org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout,
     *      org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener, boolean)
     */
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws Exception {
       widgetCreating(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
@@ -117,7 +117,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       return false;
    }
 
-   public void createBody(FormToolkit toolkit, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) {
+   public void createBody(FormToolkit toolkit, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws Exception {
       dynamicXWidgetLayout.createBody(toolkit, parent, artifact, xModListener, isEditable);
    }
 

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -62,11 +63,11 @@ public class UserRole {
       fromXml(xml);
    }
 
-   public void update(UserRole dItem) throws SQLException {
+   public void update(UserRole dItem) throws SQLException, MultipleAttributesExist {
       fromXml(dItem.toXml());
    }
 
-   public String toXml() {
+   public String toXml() throws SQLException, MultipleAttributesExist {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("role", role.name()));
       sb.append(AXml.addTagData("userId", user.getUserId()));

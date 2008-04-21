@@ -24,6 +24,8 @@ import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -78,7 +80,11 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
          if (teamDef != null) return teamDef;
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-      ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));
+      try {
+         ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));
+      } catch (MultipleAttributesExist ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
       int result = ld.open();
       if (result == 0) {
          return (TeamDefinitionArtifact) ld.getResult()[0];
@@ -102,7 +108,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
             XResultData rd = new XResultData(AtsPlugin.getLogger());
             rd.addRaw(html);
             rd.report(getName(), Manipulations.RAW_HTML);
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
          }
 

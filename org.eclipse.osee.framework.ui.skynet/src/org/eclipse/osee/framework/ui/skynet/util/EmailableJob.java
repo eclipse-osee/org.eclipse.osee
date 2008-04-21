@@ -44,15 +44,15 @@ public class EmailableJob extends Job {
     */
    protected void notifyOfCompletion(String subject, String htmlBody) {
       if (notifyUsers.size() > 0) {
-         Set<String> emails = new HashSet<String>();
-         for (User user : notifyUsers)
-            emails.add(user.getEmail());
-         emails.addAll(emailAddresses);
-         AEmail emailMessage =
-               new AEmail(emails.toArray(new String[emails.size()]),
-                     SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(),
-                     SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(), subject);
          try {
+            Set<String> emails = new HashSet<String>();
+            for (User user : notifyUsers)
+               emails.add(user.getEmail());
+            emails.addAll(emailAddresses);
+            AEmail emailMessage =
+                  new AEmail(emails.toArray(new String[emails.size()]),
+                        SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(),
+                        SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(), subject);
             emailMessage.setSubject(subject);
             emailMessage.addHTMLBody(htmlBody);
             emailMessage.send();

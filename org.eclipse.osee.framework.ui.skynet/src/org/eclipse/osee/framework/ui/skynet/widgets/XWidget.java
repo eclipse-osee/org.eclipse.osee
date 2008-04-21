@@ -182,7 +182,7 @@ public abstract class XWidget {
 
    public abstract String toHTML(String labelFont);
 
-   public String toXml() {
+   public String toXml() throws Exception {
       if (xmlSubRoot.equals("")) {
          return toXml(xmlRoot);
       } else {
@@ -190,12 +190,12 @@ public abstract class XWidget {
       }
    }
 
-   public String toXml(String xmlRoot) {
+   public String toXml(String xmlRoot) throws Exception {
       String s = "<" + xmlRoot + ">" + AXml.textToXml(getXmlData()) + "</" + xmlRoot + ">\n";
       return s;
    }
 
-   public String toXml(String xmlRoot, String xmlSubRoot) {
+   public String toXml(String xmlRoot, String xmlSubRoot) throws Exception {
       String s =
             "<" + xmlRoot + ">" + "<" + xmlSubRoot + ">" + AXml.textToXml(getXmlData()) + "</" + xmlSubRoot + ">" + "</" + xmlRoot + ">\n";
       return s;
@@ -410,7 +410,7 @@ public abstract class XWidget {
    /**
     * Used by XWidgets that perform external data storage
     */
-   public void save() throws SQLException {
+   public void save() throws Exception {
    }
 
    /**
@@ -422,7 +422,7 @@ public abstract class XWidget {
    /**
     * Used by XWidgets that perform external data storage
     */
-   public boolean isDirty() throws IllegalStateException, SQLException {
+   public boolean isDirty() throws Exception {
       return false;
    }
 

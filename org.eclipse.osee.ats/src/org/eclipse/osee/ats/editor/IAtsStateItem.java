@@ -26,27 +26,27 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public interface IAtsStateItem {
 
-   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, SMAManager smaMgr, XModifiedListener xModListener, boolean isEditable);
+   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, SMAManager smaMgr, XModifiedListener xModListener, boolean isEditable) throws Exception;
 
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable);
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception;
 
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable);
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception;
 
-   public void widgetModified(SMAWorkFlowSection section, XWidget xWidget);
+   public void widgetModified(SMAWorkFlowSection section, XWidget xWidget) throws Exception;
 
-   public String getOverrideTransitionToStateName(SMAWorkFlowSection section);
+   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws Exception;
 
-   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section);
+   public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws Exception;
 
-   public String getDescription();
+   public String getDescription() throws Exception;
 
-   public String getBranchShortName(SMAManager smaMgr);
+   public String getBranchShortName(SMAManager smaMgr) throws Exception;
 
-   public boolean isAccessControlViaAssigneesEnabledForBranching();
+   public boolean isAccessControlViaAssigneesEnabledForBranching() throws Exception;
 
-   public Collection<String> getIds();
+   public Collection<String> getIds() throws Exception;
 
-   public List<WorkPageService> getServices(SMAManager smaMgr);
+   public List<WorkPageService> getServices(SMAManager smaMgr) throws Exception;
 
    /**
     * @param smaMgr
@@ -58,12 +58,13 @@ public interface IAtsStateItem {
     */
    public Result transitioning(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception;
 
-   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees);
+   public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception;
 
    /**
     * @param smaMgr TODO
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.
+    * @throws Exception TODO
     */
-   public Result committing(SMAManager smaMgr);
+   public Result committing(SMAManager smaMgr) throws Exception;
 
 }

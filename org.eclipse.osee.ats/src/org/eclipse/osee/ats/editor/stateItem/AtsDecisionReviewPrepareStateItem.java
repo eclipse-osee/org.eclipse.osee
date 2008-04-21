@@ -49,7 +49,7 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#getDescription()
     */
-   public String getDescription() {
+   public String getDescription() throws Exception {
       return "AtsDecisionReviewPrepareStateItem - Add validation of decision options prior to transitioning.";
    }
 

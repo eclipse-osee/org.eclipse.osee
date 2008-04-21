@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -101,23 +102,27 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Id", "Legacy Id", "Date", "Type", "Role", "State",
             "Title"}));
       MyReviewWorkflowItem srch = new MyReviewWorkflowItem("", user, ReviewState.All);
-      Collection<Artifact> reviewArts = srch.performSearchGetResults();
-      for (Artifact art : reviewArts) {
-         ReviewSMArtifact reviewArt = (ReviewSMArtifact) art;
-         try {
-            sb.append(AHTML.addRowMultiColumnTable(new String[] {reviewArt.getHumanReadableId(),
-                  reviewArt.getSoleStringAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName()),
-                  getDateString(reviewArt.getWorldViewCompletedDate()), reviewArt.getArtifactTypeName(),
-                  getRolesStr(reviewArt, user), reviewArt.getCurrentStateName(), reviewArt.getDescriptiveName()}));
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+      try {
+         Collection<Artifact> reviewArts = srch.performSearchGetResults();
+         for (Artifact art : reviewArts) {
+            ReviewSMArtifact reviewArt = (ReviewSMArtifact) art;
+            try {
+               sb.append(AHTML.addRowMultiColumnTable(new String[] {reviewArt.getHumanReadableId(),
+                     reviewArt.getSoleTAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), ""),
+                     getDateString(reviewArt.getWorldViewCompletedDate()), reviewArt.getArtifactTypeName(),
+                     getRolesStr(reviewArt, user), reviewArt.getCurrentStateName(), reviewArt.getDescriptiveName()}));
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, false);
+            }
          }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();
    }
 
-   private static String getRolesStr(ReviewSMArtifact reviewArt, User user) {
+   private static String getRolesStr(ReviewSMArtifact reviewArt, User user) throws SQLException, MultipleAttributesExist {
       String str = "";
       for (UserRole role : reviewArt.getUserRoleManager().getUserRoles()) {
          if (role.getUser().equals(user)) str += role.getRole().name() + ", ";

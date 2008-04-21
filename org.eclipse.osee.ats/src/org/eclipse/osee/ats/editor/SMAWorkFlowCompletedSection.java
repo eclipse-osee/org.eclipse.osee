@@ -38,13 +38,14 @@ public class SMAWorkFlowCompletedSection extends SMAWorkFlowSection {
     * @param style
     * @param page
     * @param smaMgr
+    * @throws Exception
     */
-   public SMAWorkFlowCompletedSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) {
+   public SMAWorkFlowCompletedSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws Exception {
       super(parent, toolkit, style, page, smaMgr);
    }
 
    @Override
-   protected Composite createWorkArea(Composite comp, AtsWorkPage page, XFormToolkit toolkit) {
+   protected Composite createWorkArea(Composite comp, AtsWorkPage page, XFormToolkit toolkit) throws Exception {
       Composite workComp = super.createWorkArea(comp, page, toolkit);
       LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateComplete);
       toolkit.createLabel(workComp, "Completed From State: " + item.getState());

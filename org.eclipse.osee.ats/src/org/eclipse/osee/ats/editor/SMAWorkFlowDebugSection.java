@@ -31,13 +31,14 @@ public class SMAWorkFlowDebugSection extends SMAWorkFlowSection {
     * @param style
     * @param page
     * @param smaMgr
+    * @throws Exception
     */
-   public SMAWorkFlowDebugSection(Composite parent, XFormToolkit toolkit, int style, SMAManager smaMgr) {
+   public SMAWorkFlowDebugSection(Composite parent, XFormToolkit toolkit, int style, SMAManager smaMgr) throws Exception {
       super(parent, toolkit, style, new AtsDebugWorkPage(), smaMgr);
    }
 
    @Override
-   protected Composite createWorkArea(Composite comp, AtsWorkPage page, XFormToolkit toolkit) {
+   protected Composite createWorkArea(Composite comp, AtsWorkPage page, XFormToolkit toolkit) throws Exception {
       this.toolkit = toolkit;
       workComp = super.createWorkArea(comp, page, toolkit);
       toolkit.createLabel(workComp, "ATS Debug Section");
@@ -73,7 +74,7 @@ public class SMAWorkFlowDebugSection extends SMAWorkFlowSection {
     * @see org.eclipse.osee.ats.editor.SMAWorkFlowSection#createPage(org.eclipse.swt.widgets.Composite)
     */
    @Override
-   protected Section createPage(Composite comp) {
+   protected Section createPage(Composite comp) throws Exception {
       Section section = super.createPage(comp);
       return section;
    }

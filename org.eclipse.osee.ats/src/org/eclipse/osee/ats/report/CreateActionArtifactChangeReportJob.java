@@ -97,7 +97,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       StringBuffer sb = new StringBuffer(AHTML.beginMultiColumnTable(95));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", byAttribute, "RPCR", "Change"}));
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         String rcprId = teamArt.getSoleStringAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName());
+         String rcprId = teamArt.getSoleTAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
          String result =
                (String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
                      teamArt.getTeamDefinition().getDescriptiveName()));
@@ -116,7 +116,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
    }
 
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, StringBuffer sb) throws Exception {
-      String rpcrNum = teamArt.getSoleStringAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName());
+      String rpcrNum = teamArt.getSoleTAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
       for (Artifact modArt : teamArt.getSmaMgr().getBranchMgr().getArtifactsModified(false)) {
          Set<String> attrStrs = modArt.getAttributesToStringCollection(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);

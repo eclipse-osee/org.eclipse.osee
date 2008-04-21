@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.editor.service;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
@@ -71,7 +70,7 @@ public class StatePercentCompleteStat extends WorkPageService {
                            "Percent Complete is rollup of task(s) percent complete " + "and can not be edited here.");
                      return;
                   } else if (smaMgr.promptChangeStatus(false)) section.refreshStateServices();
-               } catch (SQLException ex) {
+               } catch (Exception ex) {
                   OSEELog.logException(AtsPlugin.class, ex, true);
                }
             }

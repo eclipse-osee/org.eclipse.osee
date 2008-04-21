@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
 /**
  * @author Donald G. Dunne
@@ -67,9 +69,9 @@ public class UniversalGroup {
       return addGroupTx.getGroupArtifact();
    }
 
-   public static Artifact getTopUniversalGroupArtifact(Branch branch) throws SQLException {
+   public static Artifact getTopUniversalGroupArtifact(Branch branch) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
       return ArtifactPersistenceManager.getInstance().getArtifactFromTypeName(UniversalGroup.ARTIFACT_TYPE_NAME,
-            ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch, false);
+            ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
    }
 
    public static Artifact createTopUniversalGroupArtifact(Branch branch) throws SQLException {

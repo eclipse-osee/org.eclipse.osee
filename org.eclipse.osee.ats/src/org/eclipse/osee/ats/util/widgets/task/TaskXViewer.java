@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.task;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -174,9 +173,13 @@ public class TaskXViewer extends WorldXViewer {
       editTaskAssigneesAction = new Action("Edit Task Assignees", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (SMAManager.promptChangeAssignees(getSelectedTaskArtifacts())) {
-               editor.onDirtied();
-               update(getSelectedTaskArtifactItemsArray(), null);
+            try {
+               if (SMAManager.promptChangeAssignees(getSelectedTaskArtifacts())) {
+                  editor.onDirtied();
+                  update(getSelectedTaskArtifactItemsArray(), null);
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       };
@@ -184,10 +187,14 @@ public class TaskXViewer extends WorldXViewer {
       editTaskStatusAction = new Action("Edit Task Status", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            if (SMAManager.promptChangeStatus((isUsingTaskResolutionOptions ? taskResOptionDefinitions : null),
-                  getSelectedTaskArtifacts(), false)) {
-               editor.onDirtied();
-               update(getSelectedTaskArtifactItemsArray(), null);
+            try {
+               if (SMAManager.promptChangeStatus((isUsingTaskResolutionOptions ? taskResOptionDefinitions : null),
+                     getSelectedTaskArtifacts(), false)) {
+                  editor.onDirtied();
+                  update(getSelectedTaskArtifactItemsArray(), null);
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       };
@@ -195,7 +202,11 @@ public class TaskXViewer extends WorldXViewer {
       editTaskResolutionAction = new Action("Edit Task Resolution", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            handleChangeResolution();
+            try {
+               handleChangeResolution();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
       };
 
@@ -209,7 +220,7 @@ public class TaskXViewer extends WorldXViewer {
                   editor.onDirtied();
                   update(getSelectedTaskArtifactItemsArray(), null);
                }
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
@@ -296,7 +307,7 @@ public class TaskXViewer extends WorldXViewer {
 
    }
 
-   public boolean handleChangeResolution() {
+   public boolean handleChangeResolution() throws Exception {
       if (isUsingTaskResolutionOptions) {
          if (SMAManager.promptChangeStatus(taskResOptionDefinitions, getSelectedTaskArtifacts(), false)) {
             editor.onDirtied();
@@ -350,7 +361,7 @@ public class TaskXViewer extends WorldXViewer {
             update(((TaskArtifactItem) treeItem.getData()), null);
             return true;
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return false;

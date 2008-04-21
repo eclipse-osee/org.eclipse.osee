@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.dialog;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -67,7 +66,7 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
                for (Artifact art : ((TeamDefinitionArtifact) sel.iterator().next()).getVersionsFromTeamDefHoldingVersions(VersionReleaseType.Both))
                   objs.add(art);
                versionList.setInput(objs);
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, false);
             }
          }

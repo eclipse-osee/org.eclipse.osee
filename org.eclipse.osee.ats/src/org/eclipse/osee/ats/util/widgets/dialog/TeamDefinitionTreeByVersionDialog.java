@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util.widgets.dialog;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -49,7 +48,7 @@ public class TeamDefinitionTreeByVersionDialog extends TeamDefinitionTreeDialog 
       super(active);
       try {
          setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(active));
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
 
@@ -72,7 +71,7 @@ public class TeamDefinitionTreeByVersionDialog extends TeamDefinitionTreeDialog 
                      objs.add(art);
                }
                versionList.setInput(objs);
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, false);
             }
          }

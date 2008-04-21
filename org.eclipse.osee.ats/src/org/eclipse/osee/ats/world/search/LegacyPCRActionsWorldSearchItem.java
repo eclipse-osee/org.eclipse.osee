@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -51,7 +50,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       List<ISearchPrimitive> prodCriteria = new LinkedList<ISearchPrimitive>();
       if (pcrIds != null && pcrIds.size() > 0) {
          for (String pcrId : pcrIds) {

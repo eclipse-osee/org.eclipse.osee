@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -42,10 +41,9 @@ public class DefaultTeamWorkflowManager {
     * @param user User to transition to OR null if should use user of current state
     * @param popup
     * @return
-    * @throws SQLException
-    * @throws IllegalStateException
+    * @throws Exception
     */
-   public Result transitionTo(DefaultTeamState toState, User user, boolean popup) throws IllegalStateException, SQLException {
+   public Result transitionTo(DefaultTeamState toState, User user, boolean popup) throws Exception {
       Result result = setEndorseData(null, 100, .2);
       if (result.isFalse()) {
          if (popup) result.popup();
@@ -100,7 +98,7 @@ public class DefaultTeamWorkflowManager {
 
    }
 
-   public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws IllegalStateException, SQLException {
+   public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws Exception {
       if (!smaMgr.getCurrentStateName().equals("Endorse")) return new Result("Action not in Endorse state");
       if (propRes == null || propRes.equals(""))
          teamArt.setSoleBooleanAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
@@ -111,7 +109,7 @@ public class DefaultTeamWorkflowManager {
       return Result.TrueResult;
    }
 
-   public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws IllegalStateException, SQLException {
+   public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws Exception {
       if (!smaMgr.getCurrentStateName().equals("Analyze")) return new Result("Action not in Analyze state");
       if (problem == null || problem.equals(""))
          teamArt.setSoleBooleanAttributeValue(ATSAttributes.PROBLEM_OVERRIDE_ATTRIBUTE.getStoreName(), true);
@@ -127,14 +125,14 @@ public class DefaultTeamWorkflowManager {
       return Result.TrueResult;
    }
 
-   public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent) throws IllegalStateException, SQLException {
+   public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent) throws Exception {
       if (!smaMgr.getCurrentStateName().equals("Authorize")) return new Result("Action not in Authorize state");
       smaMgr.getCurrentStateDam().setHoursSpent(stateHoursSpent);
       smaMgr.getCurrentStateDam().setPercentComplete(statePercentComplete);
       return Result.TrueResult;
    }
 
-   public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws IllegalStateException, SQLException {
+   public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws Exception {
       if (!smaMgr.getCurrentStateName().equals("Implement")) return new Result("Action not in Implement state");
       if (resolution == null || resolution.equals(""))
          teamArt.setSoleBooleanAttributeValue(ATSAttributes.RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);

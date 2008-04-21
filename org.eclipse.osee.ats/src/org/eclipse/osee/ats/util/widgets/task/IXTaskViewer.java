@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.task;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -23,28 +22,29 @@ import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
  */
 public interface IXTaskViewer {
 
-   public String getTabName();
+   public String getTabName() throws Exception;
 
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws SQLException;
+   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws Exception;
 
-   public IDirtiableEditor getEditor();
+   public IDirtiableEditor getEditor() throws Exception;
 
-   public boolean isUsingTaskResolutionOptions();
+   public boolean isUsingTaskResolutionOptions() throws Exception;
 
-   public List<TaskResOptionDefinition> getResOptions() throws SQLException;
+   public List<TaskResOptionDefinition> getResOptions() throws Exception;
 
-   public boolean isTaskable();
+   public boolean isTaskable() throws Exception;
 
-   public String getCurrentStateName();
+   public String getCurrentStateName() throws Exception;
 
-   public SMAManager getParentSmaMgr();
+   public SMAManager getParentSmaMgr() throws Exception;
 
    /**
     * Overriding flag to denote if tasks are allowed to be edited. If false, task viewer will disable all right-click
     * and alt-left-click editing functionailty.
     * 
     * @return false if tasks are readonly from the TaskViewer
+    * @throws Exception TODO
     */
-   public boolean isTasksEditable();
+   public boolean isTasksEditable() throws Exception;
 
 }

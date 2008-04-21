@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -54,7 +55,12 @@ public class CreateNewVersionItem extends XNavigateItemAction {
     */
    @Override
    public void run() throws SQLException {
-      final TeamDefinitionArtifact teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();
+      TeamDefinitionArtifact teamDefHoldingVersions = null;
+      try {
+         teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();
+      } catch (Exception ex) {
+         // do nothing
+      }
       if (teamDefHoldingVersions == null) return;
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Version", null, "Enter Version Name",
@@ -81,7 +87,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       }
    }
 
-   public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws SQLException {
+   public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws SQLException, MultipleAttributesExist {
       if (teamDefHoldingVersions != null) return teamDefHoldingVersions;
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));

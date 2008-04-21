@@ -104,8 +104,9 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
 
    /**
     * @param label
+    * @throws Exception
     */
-   public XTaskViewer(IXTaskViewer iXTaskViewer) {
+   public XTaskViewer(IXTaskViewer iXTaskViewer) throws Exception {
       super(iXTaskViewer.getTabName());
       this.iXTaskViewer = iXTaskViewer;
       eventManager.register(RemoteTransactionEvent.class, this);
@@ -126,73 +127,73 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       mainComp.setLayout(ALayout.getZeroMarginLayout());
       if (toolkit != null) toolkit.paintBordersFor(mainComp);
 
-      createTaskActionBar(mainComp);
-
       try {
+         createTaskActionBar(mainComp);
+
          xViewer =
                new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(),
                      iXTaskViewer.isUsingTaskResolutionOptions(), iXTaskViewer.getResOptions(), this);
+         xViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
+         xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+
+         xViewer.setContentProvider(new TaskContentProvider(xViewer));
+         xViewer.setLabelProvider(new TaskLabelProvider(xViewer));
+         xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+               updateExtraInfoLine();
+            }
+         });
+         xViewer.getTree().addKeyListener(new KeyListener() {
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
+             */
+            public void keyPressed(KeyEvent event) {
+               // if CTRL key is already pressed
+               if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
+                  if (event.keyCode == 'a') {
+                     xViewer.getTree().setSelection(xViewer.getTree().getItems());
+                     updateExtraInfoLine();
+                  } else if (event.keyCode == 'x') {
+                     if (selectionMetricsMenuItem != null) {
+                        selectionMetricsMenuItem.setSelection(!selectionMetricsMenuItem.getSelection());
+                        updateExtraInfoLine();
+                     }
+                  } else if (event.keyCode == 'f') {
+                     if (filterCompletedMenuItem != null) {
+                        filterCompletedMenuItem.setSelection(!filterCompletedMenuItem.getSelection());
+                        handleFilterAction();
+                     }
+                  }
+               }
+               // System.out.println("keypressed " + event.keyCode);
+            }
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
+             */
+            public void keyReleased(KeyEvent event) {
+            }
+         });
+
+         if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
+
+         Tree tree = xViewer.getTree();
+         GridData gridData = new GridData(GridData.FILL_BOTH);
+         gridData.heightHint = 100;
+         tree.setLayout(ALayout.getZeroMarginLayout());
+         tree.setLayoutData(gridData);
+         tree.setHeaderVisible(true);
+         tree.setLinesVisible(true);
+         if (toolkit != null) toolkit.adapt(tree);
+         updateCurrentStateFilter();
+         setupDragAndDropSupport();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
-      xViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
-      xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      xViewer.setContentProvider(new TaskContentProvider(xViewer));
-      xViewer.setLabelProvider(new TaskLabelProvider(xViewer));
-      xViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-         public void selectionChanged(SelectionChangedEvent event) {
-            updateExtraInfoLine();
-         }
-      });
-      xViewer.getTree().addKeyListener(new KeyListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyListener#keyPressed(org.eclipse.swt.events.KeyEvent)
-          */
-         public void keyPressed(KeyEvent event) {
-            // if CTRL key is already pressed
-            if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
-               if (event.keyCode == 'a') {
-                  xViewer.getTree().setSelection(xViewer.getTree().getItems());
-                  updateExtraInfoLine();
-               } else if (event.keyCode == 'x') {
-                  if (selectionMetricsMenuItem != null) {
-                     selectionMetricsMenuItem.setSelection(!selectionMetricsMenuItem.getSelection());
-                     updateExtraInfoLine();
-                  }
-               } else if (event.keyCode == 'f') {
-                  if (filterCompletedMenuItem != null) {
-                     filterCompletedMenuItem.setSelection(!filterCompletedMenuItem.getSelection());
-                     handleFilterAction();
-                  }
-               }
-            }
-            // System.out.println("keypressed " + event.keyCode);
-         }
-
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.swt.events.KeyListener#keyReleased(org.eclipse.swt.events.KeyEvent)
-          */
-         public void keyReleased(KeyEvent event) {
-         }
-      });
-
-      if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
-
-      Tree tree = xViewer.getTree();
-      GridData gridData = new GridData(GridData.FILL_BOTH);
-      gridData.heightHint = 100;
-      tree.setLayout(ALayout.getZeroMarginLayout());
-      tree.setLayoutData(gridData);
-      tree.setHeaderVisible(true);
-      tree.setLinesVisible(true);
-      if (toolkit != null) toolkit.adapt(tree);
-      updateCurrentStateFilter();
-      setupDragAndDropSupport();
    }
 
    public void handleFilterAction() {
@@ -216,7 +217,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       xViewer.refresh();
    }
 
-   public void createTaskActionBar(Composite parent) {
+   public void createTaskActionBar(Composite parent) throws IllegalArgumentException, Exception {
 
       // Button composite for state transitions, etc
       Composite bComp = new Composite(parent, SWT.NONE);
@@ -245,7 +246,11 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       currentStateFilterItem.setToolTipText("Filter by Current State.");
       currentStateFilterItem.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            updateCurrentStateFilter();
+            try {
+               updateCurrentStateFilter();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
       });
 
@@ -301,7 +306,11 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       item.setToolTipText("Refresh Tasks");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            loadTable();
+            try {
+               loadTable();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
       });
 
@@ -327,7 +336,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       extraInfoLabel.getParent().layout();
    }
 
-   public void updateCurrentStateFilter() {
+   public void updateCurrentStateFilter() throws Exception {
       if (currentStateFilterItem != null && currentStateFilterItem.getSelection()) {
          currentStateFilter = new TaskCurrentStateFilter(iXTaskViewer.getCurrentStateName());
          getXViewer().addFilter(currentStateFilter);
@@ -360,7 +369,11 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       currentStateFilterMenuItem.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
             currentStateFilterItem.setSelection(!currentStateFilterItem.getSelection());
-            updateCurrentStateFilter();
+            try {
+               updateCurrentStateFilter();
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
       });
 
@@ -380,30 +393,38 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
          }
       });
 
-      if (iXTaskViewer.isTaskable()) {
+      try {
+         if (iXTaskViewer.isTaskable()) {
 
-         MenuItem item = new MenuItem(menu, SWT.PUSH);
-         item.setText("Import Tasks via spreadsheet");
-         item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
-         item.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-               handleImportTasksViaSpreadsheet();
-            }
-         });
+            MenuItem item = new MenuItem(menu, SWT.PUSH);
+            item.setText("Import Tasks via spreadsheet");
+            item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
+            item.addSelectionListener(new SelectionAdapter() {
+               public void widgetSelected(SelectionEvent e) {
+                  try {
+                     handleImportTasksViaSpreadsheet();
+                  } catch (Exception ex) {
+                     OSEELog.logException(AtsPlugin.class, ex, true);
+                  }
+               }
+            });
 
-         item = new MenuItem(menu, SWT.PUSH);
-         item.setText("Import Tasks via simple list");
-         item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
-         item.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-               handleImportTasksViaList();
-            }
-         });
+            item = new MenuItem(menu, SWT.PUSH);
+            item.setText("Import Tasks via simple list");
+            item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
+            item.addSelectionListener(new SelectionAdapter() {
+               public void widgetSelected(SelectionEvent e) {
+                  handleImportTasksViaList();
+               }
+            });
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
 
    }
 
-   public void loadTable() {
+   public void loadTable() throws Exception {
       try {
          getXViewer().set(iXTaskViewer.getTaskArtifacts(""));
       } catch (SQLException ex) {
@@ -442,7 +463,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       }
    }
 
-   public void handleImportTasksViaSpreadsheet() {
+   public void handleImportTasksViaSpreadsheet() throws Exception {
       TaskImportWizard actionWizard = new TaskImportWizard();
       actionWizard.setHrid(iXTaskViewer.getParentSmaMgr().getSma().getHumanReadableId());
       WizardDialog dialog =
@@ -500,7 +521,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
             iXTaskViewer.getEditor().onDirtied();
             xViewer.add(taskArt);
             xViewer.getTree().setFocus();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }
       }
@@ -547,7 +568,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
             RelationPersistenceManager.getInstance().moveObjectB(iXTaskViewer.getParentSmaMgr().getSma(), taskArt,
                   RelationSide.SmaToTask_Task, dir);
             refresh();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }
       }
@@ -602,11 +623,11 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
                   art.getCurrentStateName().replaceAll("(Task|State)", ""), smaMgr.getAssigneesWasIsStr(),
                   smaMgr.getSma().getWorldViewTotalPercentComplete() + "",
                   smaMgr.getSma().getWorldViewTotalHoursSpent() + "",
-                  art.getSoleStringAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName()),
+                  art.getSoleTAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), ""),
                   art.getHumanReadableId()}));
          }
          html.append(AHTML.endBorderTable());
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return "Task Exception - " + ex.getLocalizedMessage();
       }
@@ -628,14 +649,18 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
    public void onEvent(final Event event) {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
 
-      if (event instanceof TransactionEvent) {
-         if (iXTaskViewer.getParentSmaMgr() != null) {
-            EventData ed = ((TransactionEvent) event).getEventData(iXTaskViewer.getParentSmaMgr().getSma());
-            if (ed.isHasEvent() && ed.isRelChange())
-               loadTable();
-            else
-               refresh();
+      try {
+         if (event instanceof TransactionEvent) {
+            if (iXTaskViewer.getParentSmaMgr() != null) {
+               EventData ed = ((TransactionEvent) event).getEventData(iXTaskViewer.getParentSmaMgr().getSma());
+               if (ed.isHasEvent() && ed.isRelChange())
+                  loadTable();
+               else
+                  refresh();
+            }
          }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
       }
    }
 
@@ -698,9 +723,9 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
 
    private void performDrop(DropTargetEvent e) {
       if (e.data instanceof ArtifactData) {
-         if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
-         final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
          try {
+            if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
+            final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
             AbstractSkynetTxTemplate txWrapper =
                   new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
                      @Override

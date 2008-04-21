@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
-import java.sql.SQLException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -47,7 +46,7 @@ public class XNavigateItemAction extends XNavigateItem {
       this.promptFirst = promptFirst;
    }
 
-   public void run() throws SQLException {
+   public void run() throws Exception {
       if (action != null) {
          if (promptFirst) {
             Displays.ensureInDisplayThread(new Runnable() {

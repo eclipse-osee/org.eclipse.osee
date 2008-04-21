@@ -127,7 +127,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException, IllegalArgumentException {
+   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       getTeamDefs();
       List<ISearchPrimitive> teamDefWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       for (TeamDefinitionArtifact tda : getSearchTeamDefs())
@@ -211,7 +211,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       TeamDefinitionTreeDialog diag = new TeamDefinitionTreeDialog(Active.Both);
       try {
          diag.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       diag.setShowFinished(showFinished);

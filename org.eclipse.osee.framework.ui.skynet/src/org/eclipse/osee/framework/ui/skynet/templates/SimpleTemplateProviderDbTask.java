@@ -19,6 +19,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
@@ -73,23 +75,25 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
    }
 
    private Artifact getTemplateFolder() throws SQLException {
-      Artifact templateFolder =
-            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Folder", "Document Templates",
-                  BranchPersistenceManager.getInstance().getCommonBranch(), false);
-
-      if (templateFolder == null) {
-
+      try {
+         return ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Folder", "Document Templates",
+               BranchPersistenceManager.getInstance().getCommonBranch());
+      } catch (MultipleArtifactsExist ex) {
+         OSEELog.logException(SimpleTemplateProviderDbTask.class, ex.getLocalizedMessage(), ex, false);
+      } catch (ArtifactDoesNotExist ex) {
          Artifact rootArt =
                ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
                      BranchPersistenceManager.getInstance().getCommonBranch(), true);
 
          ArtifactSubtypeDescriptor folderDescriptor =
                ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Folder");
-         templateFolder = folderDescriptor.makeNewArtifact(BranchPersistenceManager.getInstance().getCommonBranch());
+         Artifact templateFolder =
+               folderDescriptor.makeNewArtifact(BranchPersistenceManager.getInstance().getCommonBranch());
          templateFolder.setDescriptiveName("Document Templates");
          rootArt.addChild(templateFolder);
          rootArt.persist(true);
+         return templateFolder;
       }
-      return templateFolder;
+      return null;
    }
 }

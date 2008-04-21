@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -118,24 +117,28 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    @Override
    protected void addPages() {
 
-      SkynetContributionItem.addTo(this, true);
+      try {
+         SkynetContributionItem.addTo(this, true);
 
-      IEditorInput editorInput = getEditorInput();
-      if (editorInput instanceof TaskEditorInput) {
-         TaskEditorInput aei = (TaskEditorInput) editorInput;
-         tasks = ((TaskEditorInput) aei).getTaskArts();
-      } else
-         throw new IllegalArgumentException("Editor Input not TaskEditorInput");
+         IEditorInput editorInput = getEditorInput();
+         if (editorInput instanceof TaskEditorInput) {
+            TaskEditorInput aei = (TaskEditorInput) editorInput;
+            tasks = ((TaskEditorInput) aei).getTaskArts();
+         } else
+            throw new IllegalArgumentException("Editor Input not TaskEditorInput");
 
-      setPartName(((TaskEditorInput) editorInput).getName());
+         setPartName(((TaskEditorInput) editorInput).getName());
 
-      // Create Tasks tab
-      taskComposite = new SMATaskComposite(getContainer(), SWT.NONE);
-      taskComposite.create(this);
-      taskPageIndex = addPage(taskComposite);
-      setPageText(taskPageIndex, "Tasks");
+         // Create Tasks tab
+         taskComposite = new SMATaskComposite(getContainer(), SWT.NONE);
+         taskComposite.create(this);
+         taskPageIndex = addPage(taskComposite);
+         setPageText(taskPageIndex, "Tasks");
 
-      setActivePage(taskPageIndex);
+         setActivePage(taskPageIndex);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
    }
 
    @Override
@@ -167,7 +170,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getCurrentStateName()
     */
-   public String getCurrentStateName() {
+   public String getCurrentStateName() throws Exception {
       return "";
    }
 
@@ -176,7 +179,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getEditor()
     */
-   public IDirtiableEditor getEditor() {
+   public IDirtiableEditor getEditor() throws Exception {
       return this;
    }
 
@@ -185,7 +188,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getOptions()
     */
-   public List<TaskResOptionDefinition> getResOptions() throws SQLException {
+   public List<TaskResOptionDefinition> getResOptions() throws Exception {
       if (((TaskEditorInput) (IEditorInput) getEditorInput()).getResOptions() != null) return ((TaskEditorInput) (IEditorInput) getEditorInput()).getResOptions();
       return new ArrayList<TaskResOptionDefinition>();
    }
@@ -195,7 +198,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getParentSmaMgr()
     */
-   public SMAManager getParentSmaMgr() {
+   public SMAManager getParentSmaMgr() throws Exception {
       return null;
    }
 
@@ -204,7 +207,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTabName()
     */
-   public String getTabName() {
+   public String getTabName() throws Exception {
       return "Tasks";
    }
 
@@ -213,7 +216,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getTaskArtifacts(java.lang.String)
     */
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws SQLException {
+   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws Exception {
       return tasks;
    }
 
@@ -222,7 +225,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isTaskable()
     */
-   public boolean isTaskable() {
+   public boolean isTaskable() throws Exception {
       return false;
    }
 
@@ -231,7 +234,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     * 
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isUsingTaskResolutionOptions()
     */
-   public boolean isUsingTaskResolutionOptions() {
+   public boolean isUsingTaskResolutionOptions() throws Exception {
       try {
          return getResOptions().size() > 0;
       } catch (Exception ex) {
@@ -243,7 +246,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isTasksEditable()
     */
-   public boolean isTasksEditable() {
+   public boolean isTasksEditable() throws Exception {
       return true;
    }
 

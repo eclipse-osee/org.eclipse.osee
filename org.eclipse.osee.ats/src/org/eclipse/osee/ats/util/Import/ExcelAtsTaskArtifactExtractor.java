@@ -182,7 +182,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
             job.setPriority(Job.SHORT);
             job.schedule();
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }

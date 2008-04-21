@@ -30,7 +30,9 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -76,7 +78,11 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-         ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));
+         try {
+            ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));
+         } catch (MultipleAttributesExist ex) {
+            OSEELog.logException(AtsPlugin.class, ex, true);
+         }
          int result = ld.open();
          if (result == 0) {
             useTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];

@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Composite;
@@ -26,7 +28,7 @@ public class XTextDam extends XText implements IDamWidget {
       super(displayLabel);
    }
 
-   public void setArtifact(Artifact artifact, String attrName) throws SQLException {
+   public void setArtifact(Artifact artifact, String attrName) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       this.artifact = artifact;
       this.attributeTypeName = attrName;
 
@@ -37,8 +39,8 @@ public class XTextDam extends XText implements IDamWidget {
       return artifact.getAttributeManager(attributeTypeName);
    }
 
-   public String getUdatStringValue() throws SQLException {
-      return artifact.getSoleXAttributeValue(attributeTypeName);
+   public String getUdatStringValue() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+      return artifact.getSoleTAttributeValue(attributeTypeName, null);
    }
 
    XModifiedListener modifyListener = new XModifiedListener() {
@@ -75,6 +77,11 @@ public class XTextDam extends XText implements IDamWidget {
 
    @Override
    public boolean isDirty() throws SQLException {
-      return (!getUdatStringValue().equals(get()));
+      try {
+         return (!getUdatStringValue().equals(get()));
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      }
+      return false;
    }
 }

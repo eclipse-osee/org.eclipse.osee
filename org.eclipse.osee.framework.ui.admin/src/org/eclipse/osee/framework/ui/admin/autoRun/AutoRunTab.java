@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.ui.admin.autoRun;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.admin.AdminPlugin;
 import org.eclipse.osee.framework.ui.admin.OseeClientsTab;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButtons;
@@ -100,7 +102,11 @@ public class AutoRunTab {
 
       emailResultsText = new XText("");
       emailResultsText.createWidgets(emailResultsComp, 1);
-      emailResultsText.setText(SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail());
+      try {
+         emailResultsText.setText(SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail());
+      } catch (Exception ex) {
+         OSEELog.logException(AdminPlugin.class, ex, false);
+      }
 
       TabItem tab = new TabItem(tabFolder, SWT.NONE);
       tab.setControl(mainComposite);

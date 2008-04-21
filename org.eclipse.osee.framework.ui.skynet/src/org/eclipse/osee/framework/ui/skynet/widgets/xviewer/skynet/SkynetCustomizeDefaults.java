@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.customize.CustomizeData;
@@ -35,7 +36,11 @@ public class SkynetCustomizeDefaults implements IXViewerCustomizeDefaults {
 
    public SkynetCustomizeDefaults(User user) {
       this.user = user;
-      loadCustomizeDefaults();
+      try {
+         loadCustomizeDefaults();
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
    }
 
    private void setDefaultCustomizationsFromXml(String xml) {
@@ -58,10 +63,10 @@ public class SkynetCustomizeDefaults implements IXViewerCustomizeDefaults {
       return defaultGuids.contains(custData.getGuid());
    }
 
-   private void loadCustomizeDefaults() {
+   private void loadCustomizeDefaults() throws MultipleAttributesExist, SQLException {
       String xml = "";
       if (user != null) {
-         xml = user.getSoleStringAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE);
+         xml = user.getSoleTAttributeValue(XVIEWER_DEFAULT_ATTRIBUTE, "");
       }
       setDefaultCustomizationsFromXml(xml);
    }

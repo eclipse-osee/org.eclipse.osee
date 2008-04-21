@@ -35,7 +35,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       this.attributeName = attributeName;
       try {
          setArtifact(sma, attributeName);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
@@ -79,7 +79,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
       return states;
    }
 
-   public void setState(SMAState state) throws IllegalStateException, SQLException {
+   public void setState(SMAState state) throws Exception {
       // Update attribute if it already exists
       try {
          for (Attribute attr : getDam().getAttributes()) {
