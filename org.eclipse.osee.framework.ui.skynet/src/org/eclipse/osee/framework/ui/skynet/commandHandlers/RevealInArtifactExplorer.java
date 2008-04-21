@@ -12,14 +12,11 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -31,7 +28,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class RevealInArtifactExplorer extends AbstractHandler {
    private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AbstractSelectionChangedHandler.class);
    private Artifact artifact;
 
    /* (non-Javadoc)
@@ -39,11 +35,7 @@ public class RevealInArtifactExplorer extends AbstractHandler {
     */
    @Override
    public Object execute(ExecutionEvent arg0) throws ExecutionException {
-      try {
-         ArtifactExplorer.revealArtifact(artifact.getGuid(), artifact.getBranch());
-      } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      }
+      ArtifactExplorer.revealArtifact(artifact);
       return null;
    }
 
