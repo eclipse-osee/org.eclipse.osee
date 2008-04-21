@@ -341,7 +341,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @throws SQLException
     */
    public Branch getTeamBranch() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
-      Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName());
+      Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
       if (branchId != null && branchId > 0) {
          return branchManager.getBranch(branchId);
       } else {
