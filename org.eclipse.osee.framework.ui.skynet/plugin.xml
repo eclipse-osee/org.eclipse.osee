@@ -145,14 +145,6 @@
            </with>
         </or>
      </activeWhen>
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ViewerReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.viewerReport.command">
       </handler>
@@ -289,14 +281,6 @@
      </enabledWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.TagArtifactsHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.tagArtifacts.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
       </handler>
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevealInArtifactExplorer"
@@ -333,14 +317,6 @@
            </with>
         </or>
      </activeWhen>
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
   </handler>
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.PurgeArtifactHandler"
