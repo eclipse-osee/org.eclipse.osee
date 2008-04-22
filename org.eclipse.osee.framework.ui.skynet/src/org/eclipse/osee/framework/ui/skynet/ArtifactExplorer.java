@@ -1207,35 +1207,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             } else if (event instanceof TransactionEvent) {
                ((TransactionEvent) event).fireSingleEvent(artifactExplorer);
             } else if (event instanceof DefaultBranchChangedEvent) {
-               try {
-                  // Check that we are not already displaying the default
-                  // branch
-                  Branch defaultBranch = branchManager.getDefaultBranch();
-
-                  Artifact candidateRoot = null;
-                  if (exploreRoot == null) {
-                     candidateRoot =
-                           ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch);
-                  } else {
-                     // Change Here
-                     try {
-                        candidateRoot =
-                              ArtifactPersistenceManager.getInstance().getArtifact(exploreRoot.getGuid(), defaultBranch);
-                     } catch (Exception ex) {
-                        logger.log(Level.SEVERE, ex.toString(), ex);
-                     }
-                     if (candidateRoot == null) {
-                        candidateRoot =
-                              ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch);
-                     }
-                  }
-                  explore(candidateRoot);
-               } catch (Exception ex) {
-
-                  logger.log(Level.SEVERE, ex.toString(), ex);
-               } finally {
-                  updateEnablementsEtAl();
-               }
+               onBranchChangeEvent();
             } else if (event instanceof ArtifactLockStatusChanged) {
                treeViewer.update(((ArtifactLockStatusChanged) event).getArtifact(), null);
             } else if (event instanceof AuthenticationEvent) {
@@ -1261,6 +1233,27 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       } catch (SQLException ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
+   }
+
+   private void onBranchChangeEvent() throws SQLException, IllegalArgumentException {
+      Branch defaultBranch = branchManager.getDefaultBranch();
+
+      Artifact candidateRoot = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch);
+
+      if (exploreRoot != null) {
+         try {
+            candidateRoot = ArtifactPersistenceManager.getInstance().getArtifact(exploreRoot.getGuid(), defaultBranch);
+         } catch (IllegalStateException ex) {
+            // this will happen if the previous root does not exist on this branch, so the DefaultHierarchyRootArtifact will be used if we do nothing
+         }
+      }
+
+      try {
+         explore(candidateRoot);
+      } catch (CoreException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
+      updateEnablementsEtAl();
    }
 
    public boolean runOnEventInDisplayThread() {

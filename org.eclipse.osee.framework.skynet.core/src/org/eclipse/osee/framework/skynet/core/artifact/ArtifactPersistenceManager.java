@@ -441,10 +441,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                throw new IllegalStateException(
                      "The artifact with " + idString + " or does not exist for transaction \"" + transactionId + "\"");
             }
-            if (rSet.getInt("modification_id") == ModificationType.DELETE.getValue()) {
-               throw new IllegalStateException(
-                     "The artifact with " + idString + " was deleted in or before the (transactionId) \"" + transactionId + "\"");
-            }
 
             artifact = prepArtifact(rSet, transactionId);
 
