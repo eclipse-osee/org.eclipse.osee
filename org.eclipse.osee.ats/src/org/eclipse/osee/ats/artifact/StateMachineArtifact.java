@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
@@ -85,8 +86,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
     * @param branch
     * @throws SQLException
     */
-   public StateMachineArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch) throws SQLException {
-      super(parentFactory, guid, humanReadableId, branch);
+   public StateMachineArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    @Override

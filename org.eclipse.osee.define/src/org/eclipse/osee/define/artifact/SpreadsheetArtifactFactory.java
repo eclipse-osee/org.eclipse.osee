@@ -13,6 +13,7 @@ package org.eclipse.osee.define.artifact;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
  * @author Ryan D. Brooks
@@ -36,7 +37,7 @@ public class SpreadsheetArtifactFactory extends ArtifactFactory<Spreadsheet> {
    }
 
    @Override
-   public Spreadsheet getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
-      return new Spreadsheet(this, guid, humandReadableId, branch);
+   public Spreadsheet getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      return new Spreadsheet(this, guid, humandReadableId, branch, artifactType);
    }
 }

@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
  */
 public interface IArtifactFactory {
 
-   public abstract Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor descriptor) throws SQLException;
+   public abstract Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException;
 
-   public abstract Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor descriptor, String guid, String humandReadableId) throws SQLException;
+   public abstract Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor artifactType, String guid, String humandReadableId) throws SQLException;
 
    public abstract int getFactoryId();
 
-   public abstract Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException;
+   public abstract Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException;
 }

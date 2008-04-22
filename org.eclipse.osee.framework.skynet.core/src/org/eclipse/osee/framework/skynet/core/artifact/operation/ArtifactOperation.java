@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
  * @author Ryan D. Brooks
@@ -24,14 +25,8 @@ public abstract class ArtifactOperation extends Artifact implements WorkflowStep
    public static final String PROVIDES_ACCEPTABLE_INPUT = "Provides Acceptable Input";
    public static final String ARTIFACT_NAME = "Artifact Operation";
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param tagId
-    * @throws SQLException
-    */
-   public ArtifactOperation(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch tagId) throws SQLException {
-      super(parentFactory, guid, humanReadableId, tagId);
+   public ArtifactOperation(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    /**

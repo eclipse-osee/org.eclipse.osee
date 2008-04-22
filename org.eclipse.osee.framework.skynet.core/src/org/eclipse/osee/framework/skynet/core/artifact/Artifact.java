@@ -80,19 +80,14 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    private static final AccessControlManager accessManager = AccessControlManager.getInstance();
    private static int count = 0;
    public final int aaaSerialId = count++;
-   @SuppressWarnings("unused")
-   private final Date birthTime = new Date();
-   @SuppressWarnings("unused")
-   private final Exception birthPlace = new Exception();
    private final Branch branch;
    private final String guid;
    protected boolean deleteCheckOveride;
    protected boolean dirty;
    protected boolean inTransaction;
-   private String artifactTypeName;
    private Collection<DynamicAttributeManager> attributeManagers;
    private boolean deleted;
-   private ArtifactSubtypeDescriptor descriptor;
+   private ArtifactSubtypeDescriptor artifactType;
    private String humanReadableId;
    private LinkManager linkManager;
    private boolean initializingAttributes;
@@ -103,11 +98,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    // TODO refactor annotationMgr to another class
    private AttributeAnnotationManager annotationMgr;
 
-   protected Artifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch) throws SQLException {
-
-      // Make sure that the stack trace is available at debug time
-      this.birthPlace.getStackTrace();
-
+   protected Artifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
       if (guid == null) {
          this.guid = GUID.generateGuidStr();
       } else {
@@ -129,6 +120,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       this.memo = null;
       this.deleteCheckOveride = false;
       this.initializingAttributes = false;
+      this.artifactType = artifactType;
    }
 
    public boolean isInDb() {
@@ -161,19 +153,19 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
    public Image getImage() {
       if (accessManager.hasLock(this)) {
-         return descriptor.getLockedImage(accessManager.hasLockAccess(this));
+         return artifactType.getLockedImage(accessManager.hasLockAccess(this));
       }
 
       try {
          if (getArtifactTypeName().equals("Version")) {
             boolean next = getSoleAttributeValue("ats.Next Version", false);
             boolean released = getSoleAttributeValue("ats.Released", false);
-            return descriptor.getImage(next, released);
+            return artifactType.getImage(next, released);
          }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
-      return descriptor.getAnnotationImage(getMainAnnotationType());
+      return artifactType.getAnnotationImage(getMainAnnotationType());
    }
 
    public boolean isVersionControlled() {
@@ -274,7 +266,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @return Returns the artTypeId.
     */
    public int getArtTypeId() {
-      return descriptor.getArtTypeId();
+      return artifactType.getArtTypeId();
    }
 
    /**
@@ -294,7 +286,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    public String getArtifactTypeName() throws SQLException {
-      return descriptor.getName();
+      return artifactType.getName();
    }
 
    public String getArtifactTypeNameSuppressException() {
@@ -1236,17 +1228,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @return Returns the descriptor.
     */
    public ArtifactSubtypeDescriptor getArtifactType() {
-      return descriptor;
-   }
-
-   /**
-    * @param descriptor The descriptor to set.
-    */
-   public void setDescriptor(ArtifactSubtypeDescriptor descriptor) {
-      if (descriptor == null) {
-         throw new IllegalArgumentException("a null descriptor was passed to setDescriptor");
-      }
-      this.descriptor = descriptor;
+      return artifactType;
    }
 
    public String getVersionedName() {
@@ -1367,7 +1349,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public Artifact duplicate(Branch branch) throws CloneNotSupportedException, SQLException {
-      Artifact newArtifact = descriptor.makeNewArtifact(branch);
+      Artifact newArtifact = artifactType.makeNewArtifact(branch);
 
       if (newArtifact.attributesNotLoaded()) {
          newArtifact.startAttributeInitialization();
@@ -1401,8 +1383,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       try {
          // Need another way to create artifacts
          clonedArtifact =
-               getFactory().getNewArtifact(getGuid(), getHumanReadableId(), getArtifactType().getName(), getBranch());
-         clonedArtifact.setDescriptor(getArtifactType());
+               getFactory().getNewArtifact(getGuid(), getHumanReadableId(), getArtifactType().getName(), getBranch(),
+                     artifactType);
          clonedArtifact.setPersistenceMemo(new ArtifactPersistenceMemo(
                TransactionIdManager.getInstance().getEditableTransactionId(getBranch()), getArtId(),
                getPersistenceMemo().getGammaId()));
@@ -1461,12 +1443,12 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    /**
     * Changes the artifact type in the database.
     * 
-    * @param descriptor
+    * @param artifactType
     * @throws SQLException
     */
-   public void changeArtifactType(ArtifactSubtypeDescriptor descriptor) throws SQLException {
-      artifactManager.changeArtifactSubStype(this, descriptor);
-      setDescriptor(descriptor);
+   public void changeArtifactType(ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      artifactManager.changeArtifactSubStype(this, artifactType);
+      this.artifactType = artifactType;
    }
 
    /**

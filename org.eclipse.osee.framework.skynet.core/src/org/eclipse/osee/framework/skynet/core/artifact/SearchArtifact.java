@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.WorkflowStep;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
@@ -32,11 +33,11 @@ public class SearchArtifact extends BasicArtifact implements WorkflowStep {
    /**
     * @param parentFactory
     * @param guid
-    * @param tagId
+    * @param branch
     * @throws SQLException
     */
-   public SearchArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch tagId) throws SQLException {
-      super(parentFactory, guid, humanReadableId, tagId);
+   public SearchArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    public String getPreviewHtml() throws SQLException {

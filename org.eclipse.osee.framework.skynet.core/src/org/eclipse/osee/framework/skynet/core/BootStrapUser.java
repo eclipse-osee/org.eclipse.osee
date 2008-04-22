@@ -28,7 +28,7 @@ public class BootStrapUser extends User {
     * @throws SQLException
     */
    private BootStrapUser() throws SQLException {
-      super(null, null, null, null);
+      super(null, null, null, null, null);
    }
 
    /**

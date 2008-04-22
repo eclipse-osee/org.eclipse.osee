@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
  * @author Ryan D. Brooks
@@ -41,8 +42,8 @@ public class WordArtifactFactory extends ArtifactFactory<WordArtifact> {
    }
 
    @Override
-   public WordArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
-      WordArtifact artifact = new WordArtifact(this, guid, humandReadableId, branch);
+   public WordArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      WordArtifact artifact = new WordArtifact(this, guid, humandReadableId, branch, artifactType);
       artifact.setWholeWordArtifact(Arrays.binarySearch(WholeArtifactMatches, factoryKey) >= 0);
       return artifact;
    }

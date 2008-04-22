@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
@@ -63,8 +64,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * @param branch
     * @throws SQLException
     */
-   public TeamWorkFlowArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch) throws SQLException {
-      super(parentFactory, guid, humanReadableId, branch);
+   public TeamWorkFlowArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      super(parentFactory, guid, humanReadableId, branch, artifactType);
       registerSMARelation(RelationSide.SmaToTask_Task);
       registerSMARelation(RelationSide.TeamWorkflowToReview_Review);
       registerSMARelation(RelationSide.TeamWorkflowTargetedForVersion_Version);

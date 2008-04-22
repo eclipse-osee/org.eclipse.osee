@@ -35,15 +35,14 @@ public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFa
       return descriptor.getFactory().getFactoryId() == this.factoryId;
    }
 
-   public A makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor descriptor, String guid, String humandReadableId) throws SQLException {
-      if (!compatibleWith(descriptor)) {
+   public A makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor artifactType, String guid, String humandReadableId) throws SQLException {
+      if (!compatibleWith(artifactType)) {
          throw new IllegalArgumentException("The supplied descriptor is not appropriate for this factory");
       }
 
-      A artifact = getNewArtifact(guid, humandReadableId, descriptor.getFactoryKey(), branch);
+      A artifact = getNewArtifact(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
 
       // For now, the only difference we make is the ID, all other initialization is the same
-      artifact.setDescriptor(descriptor);
       artifact.onBirth();
       artifact.onInitializationComplete();
 
@@ -60,7 +59,7 @@ public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFa
     * @return Return artifact reference
     * @throws SQLException
     */
-   public abstract A getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException;
+   public abstract A getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException;
 
    public int getFactoryId() {
       return factoryId;

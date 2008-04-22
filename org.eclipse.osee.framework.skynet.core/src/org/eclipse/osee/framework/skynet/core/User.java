@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
@@ -49,8 +50,8 @@ public class User extends Artifact implements Serializable {
       if (EveryoneGroup.getInstance() != null) EveryoneGroup.getInstance().addGroupMember(this);
    }
 
-   public User(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch) throws SQLException {
-      super(parentFactory, guid, humanReadableId, branch);
+   public User(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    public void setFieldsBasedon(User u) throws Exception {

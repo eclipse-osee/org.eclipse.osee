@@ -18,7 +18,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
@@ -27,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactType
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch.SearchOperator;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemArtifact extends BasicArtifact {
+public class ActionableItemArtifact extends Artifact {
 
    public static String ARTIFACT_NAME = "Actionable Item";
    public static String TOP_AI_STATIC_ID = "osee.ats.TopActionableItem";
@@ -47,8 +47,8 @@ public class ActionableItemArtifact extends BasicArtifact {
     * @param branch
     * @throws SQLException
     */
-   public ActionableItemArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch) throws SQLException {
-      super(parentFactory, guid, humanReadableId, branch);
+   public ActionableItemArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    public static Set<ActionableItemArtifact> getActionableItems(Active active) throws SQLException {

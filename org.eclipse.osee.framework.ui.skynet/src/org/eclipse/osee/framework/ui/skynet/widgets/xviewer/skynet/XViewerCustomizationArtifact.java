@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -40,8 +41,8 @@ public class XViewerCustomizationArtifact extends BasicArtifact {
     * @param branch
     * @throws SQLException
     */
-   public XViewerCustomizationArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch) throws SQLException {
-      super(parentFactory, guid, humanReadableId, branch);
+   public XViewerCustomizationArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    public static XViewerCustomizationArtifact getAtsCustArtifact() {

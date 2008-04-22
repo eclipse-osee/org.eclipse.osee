@@ -30,11 +30,11 @@ public class WorkspaceFileArtifact extends Artifact {
    /**
     * @param parentFactory
     * @param guid
-    * @param tagId
+    * @param branch
     * @throws SQLException
     */
-   public WorkspaceFileArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch tagId) throws SQLException {
-      super(parentFactory, guid, humanReadableId, tagId);
+   public WorkspaceFileArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws IllegalStateException {

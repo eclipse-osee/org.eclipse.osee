@@ -668,10 +668,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       Artifact artifact =
             factory.getNewArtifact(rSet.getString("guid"), rSet.getString("human_readable_id"),
-                  artifactType.getFactoryKey(), transactionId.getBranch());
+                  artifactType.getFactoryKey(), transactionId.getBranch(), artifactType);
       artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, rSet.getInt("art_id"),
             rSet.getInt("gamma_id")));
-      artifact.setDescriptor(artifactType);
 
       return artifact;
    }
@@ -1238,11 +1237,11 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * Changes the artifact type
     * 
     * @param artifact
-    * @param descriptor
+    * @param artifactType
     * @throws SQLException
     */
-   public void changeArtifactSubStype(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE, SQL3DataType.INTEGER, descriptor.getArtTypeId(),
+   public void changeArtifactSubStype(Artifact artifact, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE, SQL3DataType.INTEGER, artifactType.getArtTypeId(),
             SQL3DataType.INTEGER, artifact.getArtId());
    }
 

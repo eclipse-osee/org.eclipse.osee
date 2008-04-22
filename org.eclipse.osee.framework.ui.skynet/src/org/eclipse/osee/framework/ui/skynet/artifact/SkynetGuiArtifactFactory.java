@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustomizationArtifact;
 
 /**
@@ -39,12 +40,12 @@ public class SkynetGuiArtifactFactory extends ArtifactFactory<Artifact> {
    }
 
    public @Override
-   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
+   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
       if (factoryKey.equals(XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME)) {
-         return new XViewerCustomizationArtifact(this, guid, humandReadableId, branch);
+         return new XViewerCustomizationArtifact(this, guid, humandReadableId, branch, artifactType);
       }
       if (factoryKey.equals(GlobalPreferences.ARTIFACT_NAME)) {
-         return new GlobalPreferences(this, guid, humandReadableId, branch);
+         return new GlobalPreferences(this, guid, humandReadableId, branch, artifactType);
       }
 
       throw new IllegalArgumentException("did not recognize the factory key: " + factoryKey);

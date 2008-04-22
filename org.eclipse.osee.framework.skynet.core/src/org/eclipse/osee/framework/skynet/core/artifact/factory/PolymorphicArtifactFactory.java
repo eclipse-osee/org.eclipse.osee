@@ -43,8 +43,8 @@ public class PolymorphicArtifactFactory extends ArtifactFactory<BasicArtifact> {
    }
 
    public @Override
-   BasicArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
-      return new BasicArtifact(this, guid, humandReadableId, branch);
+   BasicArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      return new BasicArtifact(this, guid, humandReadableId, branch, artifactType);
    }
 
    /* (non-Javadoc)

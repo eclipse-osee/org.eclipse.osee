@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
  * @author Ryan D. Brooks
@@ -37,9 +38,9 @@ public class BlamFactory extends ArtifactFactory<Artifact> {
    }
 
    public @Override
-   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
+   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
       if (factoryKey.equals(BlamWorkflow.ARTIFACT_NAME)) {
-         return new BlamWorkflow(this, guid, humandReadableId, branch);
+         return new BlamWorkflow(this, guid, humandReadableId, branch, artifactType);
       }
       throw new IllegalArgumentException("did not recognize the factory key: " + factoryKey);
    }

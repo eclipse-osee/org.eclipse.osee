@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -49,8 +50,8 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @param branch
     * @throws SQLException
     */
-   public PeerToPeerReviewArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch) throws SQLException {
-      super(parentFactory, guid, humanReadableId, branch);
+   public PeerToPeerReviewArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      super(parentFactory, guid, humanReadableId, branch, artifactType);
       registerSMARelation(RelationSide.TeamWorkflowToReview_Team);
       defectManager = new DefectManager(this);
    }

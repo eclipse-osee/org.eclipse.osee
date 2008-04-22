@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -37,8 +38,8 @@ public abstract class ReviewSMArtifact extends StateMachineArtifact {
     * @param branch
     * @throws SQLException
     */
-   public ReviewSMArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch) throws SQLException {
-      super(parentFactory, guid, humanReadableId, branch);
+   public ReviewSMArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    @Override

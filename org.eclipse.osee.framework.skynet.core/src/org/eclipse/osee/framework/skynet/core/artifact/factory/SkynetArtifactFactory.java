@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
  * @author Ryan D. Brooks
@@ -38,12 +39,12 @@ public class SkynetArtifactFactory extends ArtifactFactory<Artifact> {
    }
 
    public @Override
-   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
+   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
       if (factoryKey.equals(User.ARTIFACT_NAME)) {
-         return new User(this, guid, humandReadableId, branch);
+         return new User(this, guid, humandReadableId, branch, artifactType);
       }
       if (factoryKey.equals(WorkspaceFileArtifact.ARTIFACT_NAME)) {
-         return new WorkspaceFileArtifact(this, guid, humandReadableId, branch);
+         return new WorkspaceFileArtifact(this, guid, humandReadableId, branch, artifactType);
       }
       throw new IllegalArgumentException("did not recognize the factory key: " + factoryKey);
    }

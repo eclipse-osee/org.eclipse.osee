@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.factory;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
  * @author Ryan D. Brooks
@@ -36,7 +37,7 @@ public class BasicArtifactFactory extends ArtifactFactory<BasicArtifact> {
    }
 
    public @Override
-   BasicArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
-      return new BasicArtifact(this, guid, humandReadableId, branch);
+   BasicArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+      return new BasicArtifact(this, guid, humandReadableId, branch, artifactType);
    }
 }
