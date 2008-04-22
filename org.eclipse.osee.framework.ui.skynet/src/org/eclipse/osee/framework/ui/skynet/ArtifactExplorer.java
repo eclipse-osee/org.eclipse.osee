@@ -1212,13 +1212,18 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                   // branch
                   Branch defaultBranch = branchManager.getDefaultBranch();
 
-                  Artifact candidateRoot;
+                  Artifact candidateRoot = null;
                   if (exploreRoot == null) {
                      candidateRoot =
                            ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch);
                   } else {
-                     candidateRoot =
-                           ArtifactPersistenceManager.getInstance().getArtifact(exploreRoot.getGuid(), defaultBranch);
+                     // Change Here
+                     try {
+                        candidateRoot =
+                              ArtifactPersistenceManager.getInstance().getArtifact(exploreRoot.getGuid(), defaultBranch);
+                     } catch (Exception ex) {
+                        logger.log(Level.SEVERE, ex.toString(), ex);
+                     }
                      if (candidateRoot == null) {
                         candidateRoot =
                               ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch);
@@ -1226,6 +1231,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                   }
                   explore(candidateRoot);
                } catch (Exception ex) {
+
                   logger.log(Level.SEVERE, ex.toString(), ex);
                } finally {
                   updateEnablementsEtAl();
