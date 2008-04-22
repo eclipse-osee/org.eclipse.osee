@@ -171,8 +171,14 @@ public class ArtifactPromptChange {
             new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
       if (smas.size() == 1) {
-         Object obj = smas.iterator().next().getSoleAttributeValue(attributeName);
-         if (obj != null) ed.setEntry(String.valueOf(obj));
+         try {
+            Object obj = smas.iterator().next().getSoleAttributeValue(attributeName);
+            if (obj != null) ed.setEntry(String.valueOf(obj));
+         } catch (AttributeDoesNotExist ex) {
+            // do nothing - not an incorrect state
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
       }
       if (validationRegEx != null) ed.setValidationRegularExpression(validationRegEx);
       int result = ed.open();
