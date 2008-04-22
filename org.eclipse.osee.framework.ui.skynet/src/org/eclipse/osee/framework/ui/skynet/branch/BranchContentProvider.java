@@ -315,9 +315,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
                         baseTransaction.getBranch().getBranchId(), baseTransaction.getTransactionNumber(),
                         toTransaction.getTransactionNumber());
 
-            // Collection<Artifact> artModConflicts = artifactManager.getArtifacts(new
-            // PrefetchSearch(conflictCriteria, headParentTransaction.getBranch()),
-            // headParentTransaction);
             Collection<Artifact> artModConflicts =
                   artifactManager.getArtifacts(conflictCriteria, headParentTransaction);
             for (Artifact artifact : artModConflicts)

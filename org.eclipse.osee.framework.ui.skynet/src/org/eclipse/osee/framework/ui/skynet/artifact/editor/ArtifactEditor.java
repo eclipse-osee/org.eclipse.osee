@@ -321,7 +321,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          public void widgetSelected(SelectionEvent e) {
             Artifact artifact = getEditorInput().getArtifact();
             try {
-               ArtifactExplorer.revealArtifact(artifact.getGuid(), artifact.getBranch());
+               ArtifactExplorer.revealArtifact(artifact);
             } catch (Exception ex) {
                OSEELog.logException(getClass(), ex, true);
             }

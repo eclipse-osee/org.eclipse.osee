@@ -25,9 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeIdSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.RelationTypeIdSearch;
 import org.eclipse.osee.framework.ui.skynet.search.page.data.ArtifactTypeNode;
-import org.eclipse.osee.framework.ui.skynet.search.page.data.RelationTypeNode;
 
 public class OriginalArtifactSearch {
 
@@ -205,9 +203,6 @@ public class OriginalArtifactSearch {
    private ISearchPrimitive getSearchPrimative(TreeObject treeObject) {
       if (treeObject instanceof ArtifactTypeNode) {
          return new ArtifactTypeIdSearch(((ArtifactTypeNode) treeObject).getSubTypeDescriptor().getArtTypeId(), EQUAL);
-      } else if (treeObject instanceof RelationTypeNode) {
-         return new RelationTypeIdSearch(
-               ((RelationTypeNode) treeObject).getRelationLinkDescriptor().getRelationTypeId(), EQUAL);
       }
       return null;
    }

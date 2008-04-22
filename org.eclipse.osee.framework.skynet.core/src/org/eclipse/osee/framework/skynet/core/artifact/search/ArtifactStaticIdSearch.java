@@ -17,8 +17,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -64,12 +62,12 @@ public class ArtifactStaticIdSearch {
       this.operator = operator;
    }
 
-   public static <A extends Artifact> Set<A> getArtifacts(String artifactType, String staticId, Branch branch, SearchOperator operator, Class<A> clazz) {
+   public static <A extends Artifact> Set<A> getArtifacts(String artifactType, String staticId, Branch branch, SearchOperator operator, Class<A> clazz) throws SQLException {
       return (new ArtifactStaticIdSearch(artifactType, staticId, branch, operator)).getArtifacts(clazz);
    }
 
    @SuppressWarnings("unchecked")
-   public <A extends Artifact> Set<A> getArtifacts(Class<A> clazz) {
+   public <A extends Artifact> Set<A> getArtifacts(Class<A> clazz) throws SQLException {
       Set<A> results = new HashSet<A>();
       List<ISearchPrimitive> activeCriteria = new LinkedList<ISearchPrimitive>();
       if (artifactType != null) activeCriteria.add(new ArtifactTypeSearch(artifactType, Operator.EQUAL));
@@ -77,26 +75,21 @@ public class ArtifactStaticIdSearch {
          activeCriteria.add(new AttributeValueSearch(STATIC_ID_ATTRIBUTE, artifactName, Operator.EQUAL));
       else
          activeCriteria.add(new AttributeValueSearch(STATIC_ID_ATTRIBUTE, "%" + artifactName + "%", Operator.LIKE));
-      try {
-         Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, branch);
-         for (Artifact art : arts)
-            results.add((A) art);
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
-      }
+      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, branch);
+      for (Artifact art : arts)
+         results.add((A) art);
       return results;
    }
 
-   public static <A extends Artifact> A getSingletonArtifactOrException(String artifactType, String staticId, Branch branch, SearchOperator operator, Class<A> clazz) {
+   public static <A extends Artifact> A getSingletonArtifactOrException(String artifactType, String staticId, Branch branch, SearchOperator operator, Class<A> clazz) throws SQLException {
       return (new ArtifactStaticIdSearch(artifactType, staticId, branch, operator)).getSingletonArtifactOrException(clazz);
    }
 
-   public static <A extends Artifact> A getSingletonArtifact(String artifactType, String staticId, Branch branch, SearchOperator operator, Class<A> clazz) {
+   public static <A extends Artifact> A getSingletonArtifact(String artifactType, String staticId, Branch branch, SearchOperator operator, Class<A> clazz) throws SQLException {
       return (new ArtifactStaticIdSearch(artifactType, staticId, branch, operator)).getSingletonArtifact(clazz);
    }
 
-   public <A extends Artifact> A getSingletonArtifactOrException(Class<A> clazz) {
+   public <A extends Artifact> A getSingletonArtifactOrException(Class<A> clazz) throws SQLException {
       Collection<A> arts = getArtifacts(clazz);
       if (arts.size() == 0)
          throw new IllegalArgumentException("Can't find requested artifact \"" + artifactName + "\"");
@@ -105,7 +98,7 @@ public class ArtifactStaticIdSearch {
       return arts.iterator().next();
    }
 
-   public <A extends Artifact> A getSingletonArtifact(Class<A> clazz) {
+   public <A extends Artifact> A getSingletonArtifact(Class<A> clazz) throws SQLException {
       Collection<A> arts = getArtifacts(clazz);
       if (arts.size() == 1) return arts.iterator().next();
       return null;

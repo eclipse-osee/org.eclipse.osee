@@ -15,7 +15,6 @@ import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFAC
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_BASE_TYPE_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTR_BASE_TYPE_ID_SEQ;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTR_TYPE_ID_SEQ;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_TYPE_TABLE;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -58,8 +57,6 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ConfigurationPersistenceManager.class);
    private static final String SELECT_ATTRIBUTE_BASE_TYPE =
          "SELECT attr_base_type_id FROM " + ATTRIBUTE_BASE_TYPE_TABLE + " WHERE attribute_class = ?";
-   private static final String SELECT_REL_LINK_TYPE =
-         "SELECT gamma_id, rel_link_type_id FROM " + RELATION_LINK_TYPE_TABLE + " WHERE type_name = ?";
    private static final String INSERT_ARTIFACT_TYPE =
          "INSERT INTO osee_define_artifact_type (art_type_id, factory_id, namespace, name, factory_key, image) VALUES (?,?,?,?,?,?)";
    private static final String INSERT_VALID_ATTRIBUTE =
@@ -72,9 +69,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    private final DynamicAttributeDescriptorCache cacheDynamicAttributeDescriptors;
    private final AttributeTypeValidityCache cacheAttributeTypeValidity;
    private final ArtifactTypeValidityCache artifactTypeValidityCache;
-   //   private RelationPersistenceManager relationPersistenceManager;
    private ArtifactFactoryCache artifactFactoryCache;
-   //   private TransactionIdManager transactionIdManager;
    private SkynetTransaction transaction;
    private HashMap<String, Pair<String, String>> imageMap;
    private static Pair<String, String> defaultIconLocation =
@@ -101,9 +96,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
     */
    public void onManagerWebInit() throws Exception {
-      //      relationPersistenceManager = RelationPersistenceManager.getInstance();
       artifactFactoryCache = ArtifactFactoryCache.getInstance();
-      //      transactionIdManager = TransactionIdManager.getInstance();
    }
 
    public void makePersistent(Class<? extends Attribute> baseAttributeClass, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {

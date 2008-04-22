@@ -308,24 +308,22 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    /**
     * Reveal an artifact in the viewer and select it.
     * 
+    * @param artifact TODO
     * @throws SQLException
     * @throws PartInitException
     */
-   public static void revealArtifact(String guid, Branch branch) throws SQLException, PartInitException {
-      Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifact(guid, branch);
-      if (artifact == null) {
-         throw new IllegalArgumentException("A null artifact was returned for guid: " + guid + " and branch " + branch);
-      } else {
+   public static void revealArtifact(Artifact artifact) {
+      try {
          if (artifact.isOrphan()) {
-            OSEELog.logInfo(
-                  SkynetGuiPlugin.class,
-                  "The artifact " + artifact.getDescriptiveName() + " is detached from the default hierarchy (orphan).",
-                  true);
+            OSEELog.logInfo(SkynetGuiPlugin.class,
+                  "The artifact " + artifact.getDescriptiveName() + " does not have a parent (orphan).", true);
          } else {
             IWorkbenchPage page = AWorkbench.getActivePage();
             ArtifactExplorer artifactExplorer = (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID);
             artifactExplorer.treeViewer.setSelection(new StructuredSelection(artifact), true);
          }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 

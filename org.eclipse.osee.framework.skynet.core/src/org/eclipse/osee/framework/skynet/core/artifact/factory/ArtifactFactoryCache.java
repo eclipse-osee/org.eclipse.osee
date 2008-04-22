@@ -18,7 +18,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.ConnectionHandler;
@@ -26,20 +25,17 @@ import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.DbUtil;
 import org.eclipse.osee.framework.database.Query;
 import org.eclipse.osee.framework.database.sql.SQL3DataType;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.osgi.framework.Bundle;
 
 /**
  * @author Ryan D. Brooks
  */
 public class ArtifactFactoryCache implements PersistenceManager {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactFactoryCache.class);
-   private static final String SELECT_FROM_FACTORY = "SELECT * FROM " + FACTORY_TABLE;
+   private static final String SELECT_FROM_FACTORY = "SELECT * FROM osee_define_factory";
    private final HashMap<String, String> factoryBundleMap;
    private final HashMap<String, IArtifactFactory> factoryNameMap;
    private final HashMap<Integer, IArtifactFactory> factoryIdMap;
@@ -91,26 +87,6 @@ public class ArtifactFactoryCache implements PersistenceManager {
       return factory;
    }
 
-   public Artifact checkArtifactCache(int artId, TransactionId transactionId) {
-      Artifact artifact = null;
-
-      for (IArtifactFactory factory : factoryNameMap.values()) {
-         artifact = factory.getArtifact(artId, transactionId);
-         if (artifact != null) break;
-      }
-      return artifact;
-   }
-
-   public Artifact checkArtifactCache(String guid, TransactionId transactionId) {
-      Artifact artifact = null;
-
-      for (IArtifactFactory factory : factoryNameMap.values()) {
-         artifact = factory.getArtifact(guid, transactionId);
-         if (artifact != null) break;
-      }
-      return artifact;
-   }
-
    /**
     * The method should only be used in circumstances where the factory class is not known until runtime. If it is known
     * at compile time, then just explicitly call the factory's getInstance.
@@ -119,7 +95,8 @@ public class ArtifactFactoryCache implements PersistenceManager {
       try {
          String bundleSymbolicName = factoryBundleMap.get(factoryClassName);
          if (bundleSymbolicName == null) {
-            logger.log(Level.WARNING, "No bundle associated with the factory class: " + factoryClassName);
+            SkynetActivator.getLogger().log(Level.WARNING,
+                  "No bundle associated with the factory class: " + factoryClassName);
             return;
          }
 
@@ -130,12 +107,12 @@ public class ArtifactFactoryCache implements PersistenceManager {
          factoryNameMap.put(factoryClassName, factory);
          factoryIdMap.put(factoryId, factory);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, "Unable to create factory: " + factoryClassName, ex);
+         SkynetActivator.getLogger().log(Level.SEVERE, "Unable to create factory: " + factoryClassName, ex);
       }
    }
 
    /**
-    * calls getInstance for all the factories that are already regeistered with the DB
+    * calls getInstance for all the factories that are already registered with the DB
     */
    private void createFactoriesFromDB() throws SQLException {
       ConnectionHandlerStatement chStmt = null;

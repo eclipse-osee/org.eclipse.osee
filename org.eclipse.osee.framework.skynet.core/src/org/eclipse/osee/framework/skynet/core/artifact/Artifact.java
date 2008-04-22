@@ -249,7 +249,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * artifacts to set default attributes or do default processing.
     */
    public void onBirth() throws SQLException {
-      checkDeleted();
    };
 
    /**
@@ -295,12 +294,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    public String getArtifactTypeName() throws SQLException {
-      checkDeleted();
-      if (artifactTypeName == null) {
-         int id = getArtTypeId();
-         artifactTypeName = artifactManager.getArtifactTypeName(id);
-      }
-      return artifactTypeName;
+      return descriptor.getName();
    }
 
    public String getArtifactTypeNameSuppressException() {
@@ -432,7 +426,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public boolean hasChildren() throws SQLException {
       checkDeleted();
 
-      if (isLinkManagerLoaded()) return getChildren().size() > 0;
+      if (isLinkManagerLoaded()) {
+         return getChildren().size() > 0;
+      }
 
       return artifactManager.getArtifactDhChildCount(memo.getArtId(), getBranch()) > 0;
    }
@@ -1065,7 +1061,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
    protected void setDeleted() {
       checkDeleted();
-      if (isInDb()) parentFactory.deCache(this);
+      if (isInDb()) {
+         ArtifactCache.getInstance().deCache(this);
+      }
       this.deleted = true;
    }
 
@@ -1228,7 +1226,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public void setPersistenceMemo(PersistenceMemo memo) {
       if (memo != null && memo instanceof ArtifactPersistenceMemo) {
          this.memo = (ArtifactPersistenceMemo) memo;
-         parentFactory.cache(this);
+         ArtifactCache.getInstance().cache(this);
          dirty = true;
       } else
          throw new IllegalArgumentException("Invalid memo type");
@@ -1408,7 +1406,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          clonedArtifact.setPersistenceMemo(new ArtifactPersistenceMemo(
                TransactionIdManager.getInstance().getEditableTransactionId(getBranch()), getArtId(),
                getPersistenceMemo().getGammaId()));
-         getFactory().cache(clonedArtifact);
 
          for (DynamicAttributeManager attrManager : getAttributeManagers()) {
             attributeManagers.add((DynamicAttributeManager) attrManager.clone(clonedArtifact));

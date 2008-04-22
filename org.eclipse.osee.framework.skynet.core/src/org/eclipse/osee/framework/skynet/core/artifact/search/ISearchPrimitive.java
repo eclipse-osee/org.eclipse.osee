@@ -27,12 +27,12 @@ public interface ISearchPrimitive {
    /**
     * The name of the column to use as the art_id column.
     * 
-    * @return Return artifacr column name string
+    * @return Return artifact column name string
     */
    public String getArtIdColName();
 
    /**
-    * Returns a list of the tables, comma seperated, that are necessary for the sql statement returned from getSql().
+    * Returns a list of the tables, comma separated, that are necessary for the sql statement returned from getSql().
     * 
     * @param branch TODO
     * @return tables string

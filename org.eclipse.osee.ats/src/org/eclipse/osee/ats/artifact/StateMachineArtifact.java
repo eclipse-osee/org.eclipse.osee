@@ -634,11 +634,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
 
    public Result isWorldViewRemainHoursValid() {
       try {
-         Double value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
+         Double value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), null);
          if (value == null) return new Result("Estimated Hours not set.");
          return Result.TrueResult;
       } catch (Exception ex) {
-         return new Result("SQLException: " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
+         return new Result(
+               ex.getClass().getName() + ": " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
       }
    }
 
@@ -839,6 +840,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    /**
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
+    * 
     * @throws Exception TODO
     */
    public void transitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws Exception {

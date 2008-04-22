@@ -113,14 +113,6 @@ public class ArtifactPersistenceManagerTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager#getArtifactTypeName(int)}.
-    */
-   public void testGetArtifactTypeName() {
-      fail("Not yet implemented");
-   }
-
-   /**
-    * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager#getArtifactsFromHrid(java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch)}.
     */
    public void testGetArtifactsFromHrid() {
@@ -137,7 +129,7 @@ public class ArtifactPersistenceManagerTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager#getArtifact(java.lang.String, org.eclipse.osee.framework.skynet.core.attribute.TransactionId)}.
+    * {@link org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager#getArtifactFromCache(java.lang.String, org.eclipse.osee.framework.skynet.core.attribute.TransactionId)}.
     */
    public void testGetArtifactStringTransactionId() {
       fail("Not yet implemented");

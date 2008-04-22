@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
  * 
  * @see org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor
  * @author Robert A. Fisher
+ * @author Ryan D. Brooks
  */
 public class ArtifactSubtypeDescriptorCache {
-   private static final String SELECT_ARTIFACT_TYPES =
-         "SELECT * FROM osee_define_artifact_type aty1, osee_define_factory fac2 WHERE aty1.factory_id = fac2.factory_id ORDER BY aty1.namespace, aty1.name";
+   private static final String SELECT_ARTIFACT_TYPES = "SELECT * FROM osee_define_artifact_type";
 
    private final HashMap<String, ArtifactSubtypeDescriptor> nameToTypeMap;
    private final HashMap<Integer, ArtifactSubtypeDescriptor> idToTypeMap;
@@ -56,7 +56,7 @@ public class ArtifactSubtypeDescriptorCache {
          ResultSet rSet = chStmt.getRset();
          while (rSet.next()) {
             try {
-               IArtifactFactory factory = configurationManager.getFactoryFromName(rSet.getString("factory_class"));
+               IArtifactFactory factory = configurationManager.getFactoryFromId(rSet.getInt("factory_id"));
                new ArtifactSubtypeDescriptor(this, rSet.getInt("art_type_id"), rSet.getString("factory_key"), factory,
                      rSet.getString("namespace"), rSet.getString("name"), new InputStreamImageDescriptor(
                            rSet.getBinaryStream("image")));

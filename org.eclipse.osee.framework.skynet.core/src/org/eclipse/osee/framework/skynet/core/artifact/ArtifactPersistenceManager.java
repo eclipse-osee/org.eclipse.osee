@@ -11,10 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TYPE_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.FACTORY_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
@@ -41,7 +39,6 @@ import org.eclipse.osee.framework.database.ConnectionHandler;
 import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.DbUtil;
 import org.eclipse.osee.framework.database.Query;
-import org.eclipse.osee.framework.database.RsetProcessor;
 import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
 import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.database.schemas.Table;
@@ -63,7 +60,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactHridSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
@@ -120,9 +116,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    private static final LocalAliasTable ATTRIBUTE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "t1");
    private static final LocalAliasTable ATTRIBUTE_ALIAS_2 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "t2");
 
-   private static final String SELECT_ARTIFACT_TYPE_NAME =
-         "SELECT name FROM " + ARTIFACT_TYPE_TABLE + " WHERE art_type_id = ?";
-
    private static final String PURGE_ARTIFACT = "DELETE FROM " + ARTIFACT_TABLE + " WHERE art_id = ?";
    private static final String PURGE_ARTIFACT_GAMMAS =
          "DELETE" + " FROM " + TRANSACTIONS_TABLE + " WHERE gamma_id IN" + "(SELECT gamma_id" + " FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE art_id = ? UNION " + "(SELECT gamma_id" + " FROM " + RELATION_LINK_VERSION_TABLE + " where a_art_id = ? " + " UNION SELECT gamma_id " + " FROM " + RELATION_LINK_VERSION_TABLE + " WHERE b_art_id = ?))";
@@ -130,13 +123,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    private static final String PURGE_ATTRIBUTE = "DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE attr_id = ?";
    private static final String PURGE_ATTRIBUTE_GAMMAS =
          "DELETE" + " FROM " + TRANSACTIONS_TABLE + " WHERE gamma_id IN" + "(SELECT gamma_id" + " FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE attr_id = ?)";
-
-   private static final String SELECT_ARTIFACT_FOR_INIT =
-         "SELECT art1.art_type_id, arv2.gamma_id, arv2.modification_id FROM osee_define_artifact art1, osee_define_artifact_version arv2, osee_define_txs txs3, osee_define_tx_details txd4 WHERE art1.art_id = ? AND art1.art_id = arv2.art_id AND arv2.gamma_id = txs3.gamma_id AND txs3.transaction_id <= ? AND txs3.transaction_id = txd4.transaction_id AND txd4.branch_id = ? order by txs3.transaction_id desc";
-
-   private static final String SELECT_ARTIFACT_BY_GUID =
-         "SELECT " + ARTIFACT_TABLE.columns("art_id", "art_type_id", "guid", "human_readable_id") + ", " + ARTIFACT_TYPE_TABLE.columns(
-               "factory_id", "factory_key") + "," + FACTORY_TABLE.column("factory_class") + " FROM " + ARTIFACT_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + "," + FACTORY_TABLE + ", " + ARTIFACT_TYPE_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("guid") + " = ?" + " AND " + ARTIFACT_TABLE.column("art_type_id") + "=" + ARTIFACT_TYPE_TABLE.column("art_type_id") + " AND " + ARTIFACT_TYPE_TABLE.column("factory_id") + "=" + FACTORY_TABLE.column("factory_id") + " AND " + ARTIFACT_TABLE.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "<>?" + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
    // this query implicitly filters out transactions were an artifact was deleted because those transactions will not also contain matching attribute value
    private static final String SELECT_HISTORICAL_ARTIFACTS =
@@ -148,12 +134,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                "SELECT tx from osee_define_txs txs3, osee_define_artifact_version arv4, (SELECT %s, arv1.art_id alpha from osee_define_artifact_version arv1, osee_define_txs txs2, osee_define_tx_details txd3 WHERE arv1.art_id = ? AND arv1.gamma_id = txs2.gamma_id and txs2.transaction_id = txd3.transaction_id and txd3.branch_id = ? group by arv1.art_id) t5 where t5.tx = txs3.transaction_id AND txs3.gamma_id = arv4.gamma_id and arv4.art_id = t5.alpha and arv4.modification_id = ?",
                Table.alias("MAX(txd3.transaction_id)", "tx"));
 
-   private static final String SELECT_ARTIFACT_BY_ID =
-         "SELECT art1.art_id, art1.art_type_id, art1.guid, art1.human_readable_id, ary2.factory_id, ary2.factory_key, fac3.factory_class FROM osee_define_artifact art1, osee_define_artifact_type ary2, osee_define_factory fac3 WHERE art1.art_id = ? AND art1.art_type_id = ary2.art_type_id AND ary2.factory_id = fac3.factory_id";
-
-   // NOTE: the 'order by transaction_id desc' clause works with the DynamicAttributeManager to
-   // allow it to ignore effectively overwritten attributes with {min,max} of {0,1} 
-   // with >1 attribute instances.
+   // 'order by transaction_id desc' clause works with the DynamicAttributeManager to ignore effectively overwritten attributes with {min,max} of {0,1} with >1 attribute instances.
    private static final String SELECT_ATTRIBUTES_FOR_ARTIFACT =
          "SELECT " + ATTRIBUTE_ALIAS_1.columns("attr_id", "attr_type_id", "gamma_id", "value", "content") + " FROM " + ATTRIBUTE_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + "=?" + " AND " + ATTRIBUTE_ALIAS_1.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")" + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " <= ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)" + " ORDER BY " + TRANSACTIONS_TABLE.column("transaction_id") + " DESC";
 
@@ -162,15 +143,13 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    private SkynetTransactionManager transactionManager;
    private TransactionIdManager transactionIdManager;
-   private ConfigurationPersistenceManager configurationPersistenceManager;
+   private ConfigurationPersistenceManager configurationManager;
    private RelationPersistenceManager relationManager;
    private AccessControlManager accessControlManager;
-   private ArtifactFactoryCache factoryCache;
    private TagManager tagManager;
    private BranchPersistenceManager branchManager;
    private ExtensionDefinedObjects<IAttributeSaveListener> attributeSaveListeners;
 
-   private final HashMap<Integer, String> artifactTypeCache;
    private final ArtifactDhChildCountCache artifactDhChildCountCache;
    private IProgressMonitor monitor;
    public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
@@ -181,7 +160,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    public static boolean initFinished = false;
 
    private ArtifactPersistenceManager() {
-      this.artifactTypeCache = new HashMap<Integer, String>();
       this.artifactDhChildCountCache = new ArtifactDhChildCountCache();
       this.attributeSaveListeners =
             new ExtensionDefinedObjects<IAttributeSaveListener>(
@@ -199,9 +177,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
     */
    public void onManagerWebInit() throws Exception {
-      configurationPersistenceManager = ConfigurationPersistenceManager.getInstance();
+      configurationManager = ConfigurationPersistenceManager.getInstance();
       relationManager = RelationPersistenceManager.getInstance();
-      factoryCache = ArtifactFactoryCache.getInstance();
       transactionIdManager = TransactionIdManager.getInstance();
       transactionManager = SkynetTransactionManager.getInstance();
       accessControlManager = AccessControlManager.getInstance();
@@ -336,7 +313,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       TransactionId transactionId = transactionIdManager.getEditableTransactionId(artifact.getBranch());
       artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, artId, gammaId));
-      artifact.getFactory().cache(artifact);
    }
 
    /**
@@ -401,46 +377,16 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return new AttributeMemo(Query.getNextSeqVal(null, SkynetDatabase.ATTR_ID_SEQ), attrTypeId, gammaId);
    }
 
-   /**
-    * This returns the artifact type name for the given artifact type id
-    * 
-    * @param artTypeId stored in the db
-    * @return artifact type name.
-    * @throws SQLException
-    */
-   public String getArtifactTypeName(int artTypeId) throws SQLException {
-      String name = null;
-      ConnectionHandlerStatement chStmt = null;
-
-      if (artifactTypeCache.containsKey(artTypeId)) {
-         name = artifactTypeCache.get(artTypeId);
-      } else {
-         try {
-            chStmt = ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_TYPE_NAME, SQL3DataType.INTEGER, artTypeId);
-            ResultSet rSet = chStmt.getRset();
-            if (rSet.next()) {
-               name = rSet.getString("name");
-               artifactTypeCache.put(artTypeId, name);
-            }
-         } finally {
-            DbUtil.close(chStmt);
-         }
-      }
-
-      return name;
-   }
-
    public Collection<Artifact> getArtifactsFromHrid(String hrid, Branch branch) throws SQLException {
       return getArtifacts(new ArtifactHridSearch(hrid), branch);
    }
 
-   public Artifact getArtifact(String guid, Branch branch) throws SQLException {
-      TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
-
-      if (transactionId == null) return null;
-
-      return getArtifact(guid, transactionId);
-   }
+   private static final String SELECT_ARTIFACT_START =
+         "SELECT art1.*, arv2.gamma_id, arv2.modification_id FROM osee_define_artifact art1, osee_define_artifact_version arv2, osee_define_txs txs3, osee_define_tx_details txd4 WHERE ";
+   private static final String SELECT_ARTIFACT_END =
+         " = ? AND art1.art_id = arv2.art_id AND arv2.gamma_id = txs3.gamma_id AND txs3.transaction_id <= ? AND txs3.transaction_id = txd4.transaction_id AND txd4.branch_id = ? order by txs3.transaction_id desc";
+   private static final String SELECT_ARTIFACT_BY_GUID = SELECT_ARTIFACT_START + "art1.guid" + SELECT_ARTIFACT_END;
+   private static final String SELECT_ARTIFACT_BY_ID = SELECT_ARTIFACT_START + "art1.art_id" + SELECT_ARTIFACT_END;
 
    /**
     * This method acquires <code>Artifact</code>'s directly from the database. This should only be called by
@@ -451,112 +397,103 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    public Artifact getArtifact(String guid, TransactionId transactionId) throws SQLException {
-      Artifact artifact = factoryCache.checkArtifactCache(guid, transactionId);
+      return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_GUID, SQL3DataType.VARCHAR, guid, -1, true);
+   }
 
-      // If not available in cache, then do full processing.
+   public Artifact getArtifact(String guid, Branch branch) throws SQLException {
+      return getArtifact(guid, transactionIdManager.getEditableTransactionId(branch));
+   }
+
+   public Artifact getArtifactFromId(int artId, TransactionId transactionId) throws SQLException, IllegalArgumentException {
+      return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_ID, SQL3DataType.INTEGER, null, artId, false);
+   }
+
+   public Artifact getArtifactFromId(int artId, Branch branch) throws SQLException, IllegalArgumentException {
+      return getArtifactFromId(artId, transactionIdManager.getEditableTransactionId(branch));
+   }
+
+   private Artifact getArtifactInternal(TransactionId transactionId, String query, SQL3DataType sqlDataType, String guid, int artId, boolean useGuid) throws SQLException {
+      // First try to acquire the artifact from cache
+      Artifact artifact;
+      Object data;
+      String idString;
+      if (useGuid) {
+         artifact = ArtifactCache.getInstance().getArtifactFromCache(guid, transactionId);
+         data = guid;
+         idString = "guid \"" + guid + "\"";
+      } else {
+         artifact = ArtifactCache.getInstance().getArtifactFromCache(artId, transactionId);
+         data = artId;
+         idString = "id \"" + artId + "\"";
+      }
+
+      // If it wasn't found, then it must be acquired from the database
       if (artifact == null) {
          ConnectionHandlerStatement chStmt = null;
          try {
             chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_BY_GUID, SQL3DataType.VARCHAR, guid,
-                        SQL3DataType.INTEGER, ModificationType.DELETE.getValue(), SQL3DataType.INTEGER,
+                  ConnectionHandler.runPreparedQuery(1, query, sqlDataType, data, SQL3DataType.INTEGER,
                         transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                         transactionId.getBranch().getBranchId());
 
-            if (chStmt.next()) {
-               ArtifactProcessor artifactProcessor = new ArtifactProcessor(this, transactionId);
-               artifact = artifactProcessor.process(chStmt.getRset());
+            ResultSet rSet = chStmt.getRset();
+            if (!rSet.next()) {
+               throw new IllegalStateException(
+                     "The artifact with " + idString + " or does not exist for transaction \"" + transactionId + "\"");
             }
+            if (rSet.getInt("modification_id") == ModificationType.DELETE.getValue()) {
+               throw new IllegalStateException(
+                     "The artifact with " + idString + " was deleted in or before the (transactionId) \"" + transactionId + "\"");
+            }
+
+            artifact = prepArtifact(rSet, transactionId);
+
+            setAttributesOnArtifact(artifact);
+            // This artifact is fresh, so mark it as not dirty
+            artifact.setNotDirty();
+
+            artifact.onInitializationComplete();
          } finally {
             DbUtil.close(chStmt);
          }
-      }
-
-      return artifact;
-   }
-
-   public Artifact getArtifactFromId(int artId, Branch branch) throws SQLException, IllegalArgumentException {
-      TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
-
-      if (transactionId == null) throw new IllegalArgumentException(
-            "Editable transaction id can not be null for branch: " + branch.getBranchId());
-
-      return getArtifactFromId(artId, transactionId);
-   }
-
-   /**
-    * This method assumes that the artId is for an artifact is not deleted at the specified transaction. However if it
-    * is, the artifact will still be returned but the state of the artifact may be inconsistent.
-    * 
-    * @param artId
-    * @param transactionId
-    * @return
-    * @throws SQLException
-    * @throws IllegalArgumentException
-    */
-   public Artifact getArtifactFromId(int artId, TransactionId transactionId) throws SQLException, IllegalArgumentException {
-      Artifact artifact = factoryCache.checkArtifactCache(artId, transactionId);
-
-      ConnectionHandlerStatement chStmt = null;
-      // If not available in cache, then do full processing.
-      if (artifact == null) {
-         try {
-            chStmt = ConnectionHandler.runPreparedQuery(SELECT_ARTIFACT_BY_ID, SQL3DataType.INTEGER, artId);
-
-            if (chStmt.next()) {
-               artifact = new ArtifactProcessor(this, transactionId).process(chStmt.getRset());
-            }
-         } finally {
-            DbUtil.close(chStmt);
-         }
-      }
-
-      if (artifact == null) {
-         throw new IllegalArgumentException(
-               "Artifact could not be acquired. Transaction id: " + transactionId.getTransactionNumber() + " Branch:" + transactionId.getBranch().getBranchId());
       }
 
       return artifact;
    }
 
    private static final String ARTIFACT_SELECT =
-         "SELECT " + ARTIFACT_TABLE.columns("art_id", "art_type_id", "guid", "human_readable_id") + ", " + ARTIFACT_TYPE_TABLE.columns(
-               "factory_id", "factory_key") + ", " + FACTORY_TABLE.columns("factory_id", "factory_class") + ", " + TRANSACTIONS_TABLE.column("gamma_id") + " FROM " + ARTIFACT_TABLE + ", " + ARTIFACT_TYPE_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + ", " + FACTORY_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_type_id") + "=" + ARTIFACT_TYPE_TABLE.column("art_type_id") + " AND " + ARTIFACT_TABLE.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_TYPE_TABLE.column("factory_id") + "=" + FACTORY_TABLE.column("factory_id") + " AND " + TRANSACTIONS_TABLE.column("gamma_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ?)" + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "<>" + ModificationType.DELETE + " AND ";
+         "SELECT art1.*, arv1.gamma_id, arv1.modification_id FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1 WHERE art1.art_id = arv1.art_id AND arv1.modification_id <> " + ModificationType.DELETE + " AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txd1.transaction_id) FROM osee_define_artifact_version arv2, osee_define_txs txs2, osee_define_tx_details txd1 WHERE arv1.art_id = arv2.art_id AND arv2.gamma_id = txs2.gamma_id AND txs2.transaction_id = txd1.transaction_id AND txd1.branch_id =? AND txd1.transaction_id <= ?) AND ";
 
    private static final String ARTIFACT_ID_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
 
    private static final String ARTIFACT_COUNT_SELECT = "SELECT COUNT(*) artifacts FROM " + ARTIFACT_TABLE + " WHERE ";
 
-   private static String getSql(ISearchPrimitive searchCriteria, String header, List<Object> dataList, Branch branch) throws SQLException {
-      StringBuilder sql = new StringBuilder(header);
-
-      sql.append(ARTIFACT_TABLE.column("art_id") + " in (");
-      sql.append(getSelectArtIdSql(searchCriteria, dataList, branch));
-      sql.append(")");
-
-      return sql.toString();
-   }
-
-   public static String getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, Branch branch) throws SQLException {
+   public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, Branch branch) throws SQLException {
       return getSelectArtIdSql(searchCriteria, dataList, null, branch);
    }
 
-   public static String getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, String alias, Branch branch) throws SQLException {
+   public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, String alias, Branch branch) throws SQLException {
       StringBuilder sql = new StringBuilder();
 
       sql.append("SELECT ");
       sql.append(searchCriteria.getArtIdColName());
 
-      if (alias != null) sql.append(" AS " + alias);
+      if (alias != null) {
+         sql.append(" AS " + alias);
+      }
 
       sql.append(" FROM ");
       sql.append(searchCriteria.getTableSql(dataList, branch));
 
       String criteriaSql = searchCriteria.getCriteriaSql(dataList, branch);
-      if (criteriaSql.trim().length() != 0) sql.append(" WHERE (" + criteriaSql + ")");
+      if (criteriaSql.trim().length() != 0) {
+         sql.append(" WHERE (");
+         sql.append(criteriaSql);
+         sql.append(")");
+      }
 
-      return sql.toString();
+      return sql;
    }
 
    public int getArtifactCount(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
@@ -586,6 +523,16 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return getSql(searchCriteria, all, ARTIFACT_ID_SELECT, dataList, branch);
    }
 
+   private static String getSql(ISearchPrimitive searchCriteria, String header, List<Object> dataList, Branch branch) throws SQLException {
+      StringBuilder sql = new StringBuilder(header);
+
+      sql.append("art1.art_id in (");
+      sql.append(getSelectArtIdSql(searchCriteria, dataList, branch));
+      sql.append(")");
+
+      return sql.toString();
+   }
+
    private String getSql(List<ISearchPrimitive> searchCriteria, boolean all, List<Object> dataList, TransactionId transactionId) throws SQLException {
       dataList.add(SQL3DataType.INTEGER);
       dataList.add(transactionId.getBranch().getBranchId());
@@ -593,6 +540,17 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       dataList.add(transactionId.getTransactionNumber());
 
       return getSql(searchCriteria, all, ARTIFACT_SELECT, dataList, transactionId.getBranch());
+   }
+
+   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, TransactionId transactionId) throws SQLException {
+      LinkedList<Object> dataList = new LinkedList<Object>();
+      dataList.add(SQL3DataType.INTEGER);
+      dataList.add(transactionId.getBranch().getBranchId());
+      dataList.add(SQL3DataType.INTEGER);
+      dataList.add(transactionId.getTransactionNumber());
+
+      return getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, dataList, transactionId.getBranch()), dataList,
+            transactionId, null);
    }
 
    private static String getSql(List<ISearchPrimitive> searchCriteria, boolean all, String header, List<Object> dataList, Branch branch) throws SQLException {
@@ -604,7 +562,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
          while (iter.hasNext()) {
             primitive = iter.next();
-            sql.append(ARTIFACT_TABLE.column("art_id") + " in (");
+            sql.append("art1.art_id in (");
             sql.append(getSelectArtIdSql(primitive, dataList, branch));
 
             if (iter.hasNext()) {
@@ -651,41 +609,22 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return count;
    }
 
-   public int getArtifactDhChildCount(int artId, Branch branch) {
+   public int getArtifactDhChildCount(int artId, Branch branch) throws SQLException {
       return artifactDhChildCountCache.getChildCount(artId, branch);
    }
 
    public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
-      LinkedList<Object> dataList = new LinkedList<Object>();
-      dataList.add(SQL3DataType.INTEGER);
-      dataList.add(branch.getBranchId());
-      dataList.add(SQL3DataType.INTEGER);
-      dataList.add(transactionIdManager.getEditableTransactionId(branch).getTransactionNumber());
-
-      return getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, dataList, branch), dataList, branch, null);
+      return getArtifacts(searchCriteria, transactionIdManager.getEditableTransactionId(branch));
    }
 
    public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws SQLException {
-      LinkedList<Object> dataList = new LinkedList<Object>();
-      return getArtifacts(getSql(searchCriteria, all, dataList, transactionIdManager.getEditableTransactionId(branch)),
-            dataList, branch, null);
+      return getArtifacts(searchCriteria, all, branch, null);
    }
 
    public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws SQLException {
       LinkedList<Object> dataList = new LinkedList<Object>();
-      return getArtifacts(getSql(searchCriteria, all, dataList, transactionIdManager.getEditableTransactionId(branch)),
-            dataList, branch, confirmer);
-   }
-
-   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, TransactionId transactionId) throws SQLException {
-      LinkedList<Object> dataList = new LinkedList<Object>();
-      dataList.add(SQL3DataType.INTEGER);
-      dataList.add(transactionId.getBranch().getBranchId());
-      dataList.add(SQL3DataType.INTEGER);
-      dataList.add(transactionId.getTransactionNumber());
-
-      return getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, dataList, transactionId.getBranch()), dataList,
-            transactionId, null);
+      TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
+      return getArtifacts(getSql(searchCriteria, all, dataList, transactionId), dataList, transactionId, confirmer);
    }
 
    public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, TransactionId transactionId) throws SQLException {
@@ -693,46 +632,52 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return getArtifacts(getSql(searchCriteria, all, dataList, transactionId), dataList, transactionId, null);
    }
 
-   private Collection<Artifact> getArtifacts(String sql, List<Object> dataList, Branch branch, ISearchConfirmer confirmer) throws SQLException {
-      return getArtifacts(sql, dataList, transactionIdManager.getEditableTransactionId(branch), confirmer);
-   }
-
    private Collection<Artifact> getArtifacts(String sql, List<Object> dataList, TransactionId transactionId, ISearchConfirmer confirmer) throws SQLException {
-      Map<IArtifactFactory, Collection<ArtifactToLoadDescription>> factoryMap =
-            new HashMap<IArtifactFactory, Collection<ArtifactToLoadDescription>>();
-      Collection<Artifact> artifacts = new LinkedList<Artifact>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.runPreparedQuery(sql, dataList.toArray());
+      Collection<Artifact> artifacts = new ArrayList<Artifact>(50);
+      Collection<Artifact> artifactsToInit = new LinkedList<Artifact>();
 
-      ResultSet set = chStmt.getRset();
-
-      IArtifactFactory fact;
-      Collection<ArtifactToLoadDescription> descriptions;
+      ConnectionHandlerStatement chStmt = null;
       int artifactsCount = 0;
 
       try {
-         while (set.next()) {
-            fact = configurationPersistenceManager.getFactoryFromName(set.getString("factory_class"));
-            descriptions = factoryMap.get(fact);
-            if (descriptions == null) {
-               descriptions = new LinkedList<ArtifactToLoadDescription>();
-               factoryMap.put(fact, descriptions);
-            }
-            descriptions.add(new ArtifactToLoadDescription(set.getInt("art_id"), set.getInt("art_type_id"),
-                  set.getString("guid"), set.getString("human_readable_id"), set.getString("factory_key"),
-                  set.getInt("gamma_id")));
+         chStmt = ConnectionHandler.runPreparedQuery(sql, dataList.toArray());
+         ResultSet rSet = chStmt.getRset();
+         while (rSet.next()) {
             artifactsCount++;
+
+            Artifact artifact = ArtifactCache.getInstance().getArtifactFromCache(rSet.getInt("art_id"), transactionId);
+            if (artifact == null) { // if not in cache
+               artifact = prepArtifact(rSet, transactionId);
+               artifactsToInit.add(artifact);
+            }
+            artifacts.add(artifact);
          }
       } finally {
          DbUtil.close(chStmt);
       }
+
       if (confirmer == null || confirmer.canProceed(artifactsCount)) {
-         // Get all of the artifacts from the appropriate factories
-         for (IArtifactFactory factory : factoryMap.keySet()) {
-            artifacts.addAll(factory.getArtifacts(factoryMap.get(factory), transactionId));
-         }
+         initializeArtifacts(artifactsToInit, transactionId);
+      } else {
+         artifacts.clear();
       }
 
       return artifacts;
+   }
+
+   private Artifact prepArtifact(ResultSet rSet, TransactionId transactionId) throws SQLException {
+      ArtifactSubtypeDescriptor artifactType =
+            configurationManager.getArtifactSubtypeDescriptor(rSet.getInt("art_type_id"));
+      IArtifactFactory factory = artifactType.getFactory();
+
+      Artifact artifact =
+            factory.getNewArtifact(rSet.getString("guid"), rSet.getString("human_readable_id"),
+                  artifactType.getFactoryKey(), transactionId.getBranch());
+      artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, rSet.getInt("art_id"),
+            rSet.getInt("gamma_id")));
+      artifact.setDescriptor(artifactType);
+
+      return artifact;
    }
 
    public Collection<Artifact> getArtifactsFromSubtype(Branch branch, ArtifactSubtypeDescriptor descriptor) throws SQLException {
@@ -764,8 +709,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       DynamicAttributeManager attributeManager;
 
       Collection<DynamicAttributeDescriptor> attributeTypeDescriptors =
-            configurationPersistenceManager.getAttributeTypesFromArtifactType(artifact.getArtifactType(),
-                  artifact.getBranch());
+            configurationManager.getAttributeTypesFromArtifactType(artifact.getArtifactType(), artifact.getBranch());
       for (DynamicAttributeDescriptor attributeType : attributeTypeDescriptors) {
          attributeManager = attributeType.createAttributeManager(artifact, false);
          attributeManager.setupForInitialization(false);
@@ -796,8 +740,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                   // defined in the schema as being appropriate for this Artifact.
                   if (type == null) {
                      type =
-                           configurationPersistenceManager.getDynamicAttributeType(attrTypeId).createAttributeManager(
-                                 artifact, false);
+                           configurationManager.getDynamicAttributeType(attrTypeId).createAttributeManager(artifact,
+                                 false);
                      type.setupForInitialization(false);
                      typeHash.put(attrTypeId, type);
                   }
@@ -828,43 +772,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    /**
-    * Place all of the information from the database for an artifact into the artifact. It is expected that the artifact
-    * already has the appropriate GUID and branch for this call to succeed.
-    * 
-    * @param artifact
-    * @throws SQLException
-    */
-
-   public void initializeArtifact(int artId, Artifact artifact, TransactionId transactionId) throws SQLException {
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(1, SELECT_ARTIFACT_FOR_INIT, SQL3DataType.INTEGER, artId,
-                     SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                     transactionId.getBranch().getBranchId());
-
-         ResultSet rSet = chStmt.getRset();
-         if (!rSet.next()) {
-            throw new IllegalStateException(
-                  "The artifact with id " + artId + " does not exist for transaction \"" + transactionId + "\"");
-         } else if (rSet.getInt("modification_id") == ModificationType.DELETE.getValue()) {
-            throw new IllegalStateException(
-                  "The artifact with id " + artId + " was deleted in or before the (transactionId) \"" + transactionId + "\"");
-         } else {
-            artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, artId, rSet.getInt("gamma_id")));
-            artifact.setDescriptor(configurationPersistenceManager.getArtifactSubtypeDescriptor(rSet.getInt("art_type_id")));
-
-            setAttributesOnArtifact(artifact);
-         }
-      } finally {
-         DbUtil.close(chStmt);
-      }
-
-      // This artifact is fresh, so mark it as not dirty
-      artifact.setNotDirty();
-   }
-
-   /**
     * Place all of the information from the database for a set of artifacts into the artifacts. It is expected that the
     * artifacts already have the appropriate guids and tags for this call to succeed.
     * 
@@ -890,7 +797,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       DynamicAttributeManager attributeManager;
 
       for (Artifact artifact : artifacts) {
-         for (DynamicAttributeDescriptor attributeType : configurationPersistenceManager.getAttributeTypesFromArtifactType(
+         for (DynamicAttributeDescriptor attributeType : configurationManager.getAttributeTypesFromArtifactType(
                artifact.getArtifactType(), artifact.getBranch())) {
             attributeManager = attributeType.createAttributeManager(artifact, false);
             attributeManager.setupForInitialization(false);
@@ -938,8 +845,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             attributeManager = typeHash.get(artId, attrTypeId);
             if (attributeManager == null) {
                attributeManager =
-                     configurationPersistenceManager.getDynamicAttributeType(attrTypeId).createAttributeManager(
-                           artifact, false);
+                     configurationManager.getDynamicAttributeType(attrTypeId).createAttributeManager(artifact, false);
                typeHash.put(artId, attrTypeId, attributeManager);
                attributeManager.setupForInitialization(false);
             }
@@ -982,31 +888,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       }
 
       return artIdList.toString();
-   }
-
-   /**
-    * Define how artifacts are acquired from a ResultSet and validated before being placed in a Collection. This
-    * processor expects to receive ResultSet's with access to columns art_id, art_type_id, guid, factory_id.
-    * 
-    * @author Robert A. Fisher
-    */
-   private class ArtifactProcessor implements RsetProcessor<Artifact> {
-      private final TransactionId transactionId;
-
-      public ArtifactProcessor(ArtifactPersistenceManager manager, TransactionId transactionId) {
-         this.transactionId = transactionId;
-      }
-
-      public Artifact process(ResultSet set) throws SQLException {
-         IArtifactFactory factory = null;
-         factory = configurationPersistenceManager.getFactoryFromName(set.getString("factory_class"));
-         return factory.getArtifact(set.getInt("art_id"), set.getString("guid"), set.getString("human_readable_id"),
-               set.getString("factory_key"), transactionId.getBranch(), transactionId);
-      }
-
-      public boolean validate(Artifact item) {
-         return item != null;
-      }
    }
 
    /**
@@ -1227,13 +1108,12 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          int branchId = event.getBranchId();
          String factoryName = event.getFactoryName();
          Collection<IRelationLink> links;
-         ArtifactFactory<?> factory =
-               (ArtifactFactory<?>) configurationPersistenceManager.getFactoryFromName(factoryName);
+         ArtifactFactory<?> factory = (ArtifactFactory<?>) configurationManager.getFactoryFromName(factoryName);
 
          if (factory == null) throw new IllegalArgumentException(
                "The factory for this artifact remote event could not be determined.");
 
-         if (factory.containsArtifact(artId, branchId)) {
+         if (ArtifactCache.getInstance().containsArtifact(artId, branchId)) {
             Branch branch = branchManager.getBranch(branchId);
             Artifact oldArtifact = getArtifactFromId(artId, branch);
             // this forces the links to load
@@ -1331,8 +1211,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    private Artifact createRoot(Branch branch) throws SQLException {
-      ArtifactSubtypeDescriptor descriptor =
-            configurationPersistenceManager.getArtifactSubtypeDescriptor(ROOT_ARTIFACT_TYPE_NAME);
+      ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor(ROOT_ARTIFACT_TYPE_NAME);
       Artifact root = descriptor.makeNewArtifact(branch);
       root.setDescriptiveName(DEFAULT_HIERARCHY_ROOT_NAME);
       root.persistAttributes();

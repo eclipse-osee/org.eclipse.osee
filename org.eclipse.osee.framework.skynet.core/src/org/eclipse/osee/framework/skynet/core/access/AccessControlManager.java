@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
  * Provides access control for OSEE.
@@ -67,7 +68,7 @@ public class AccessControlManager implements PersistenceManager {
    private static final String DELETE_BRANCH_ACL_FROM_BRANCH =
          "DELETE FROM " + SkynetDatabase.BRANCH_TABLE_ACL + " WHERE branch_id =?";
    private static final String USER_GROUP_MEMBERS =
-         "SELECT t2.b_art_id AS user_id FROM " + SkynetDatabase.RELATION_LINK_TYPE_TABLE + " t1, " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2 WHERE t1.type_name = 'Users' AND t1.rel_link_type_id = t2.rel_link_type_id AND t2.a_art_id =? ORDER BY user_id";
+         "SELECT b_art_id FROM osee_define_rel_link WHERE a_art_id =? AND rel_link_type_id =? ORDER BY b_art_id";
 
    public static enum ObjectTypeEnum {
       ALL, BRANCH, REL_TYPE, ART_TYPE, ATTR_TYPE, ART;
@@ -131,8 +132,10 @@ public class AccessControlManager implements PersistenceManager {
 
    /**
     * populates all of the access control lists.
+    * 
+    * @throws SQLException
     */
-   private void populateAccessControlLists() {
+   private void populateAccessControlLists() throws SQLException {
       populateArtifactAccessControlList();
       populateBranchAccessControlList();
       // populateSubjectsAccessControlList();
@@ -162,8 +165,10 @@ public class AccessControlManager implements PersistenceManager {
 
    /**
     * populates the branch access control list.
+    * 
+    * @throws SQLException
     */
-   private void populateBranchAccessControlList() {
+   private void populateBranchAccessControlList() throws SQLException {
       ConnectionHandlerStatement chStmt = null;
       BranchAccessObject branchAccessObject = null;
       String subjectName;
@@ -187,8 +192,6 @@ public class AccessControlManager implements PersistenceManager {
                populateGroupMembers(subjectId);
             }
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
       } finally {
          DbUtil.close(chStmt);
       }
@@ -196,8 +199,10 @@ public class AccessControlManager implements PersistenceManager {
 
    /**
     * popualtes the artifact access control list cache
+    * 
+    * @throws SQLException
     */
-   private void populateArtifactAccessControlList() {
+   private void populateArtifactAccessControlList() throws SQLException {
       ConnectionHandlerStatement chStmt = null;
       Integer subjectId = null;
       Integer objectId = null;
@@ -228,8 +233,6 @@ public class AccessControlManager implements PersistenceManager {
                }
             }
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
       } finally {
          DbUtil.close(chStmt);
       }
@@ -240,11 +243,12 @@ public class AccessControlManager implements PersistenceManager {
          Integer groupMember;
 
          ConnectionHandlerStatement chStmt =
-               ConnectionHandler.runPreparedQuery(USER_GROUP_MEMBERS, SQL3DataType.INTEGER, groupId);
+               ConnectionHandler.runPreparedQuery(USER_GROUP_MEMBERS, SQL3DataType.INTEGER, groupId,
+                     SQL3DataType.INTEGER, RelationTypeManager.getInstance().getType("Users").getRelationTypeId());
 
          // get group members and populate subjectToGroupCache
          while (chStmt.next()) {
-            groupMember = chStmt.getRset().getInt("user_id");
+            groupMember = chStmt.getRset().getInt("b_art_id");
             subjectToGroupCache.put(groupMember, groupId);
             groupToSubjectsCache.put(groupId, groupMember);
          }
@@ -519,7 +523,7 @@ public class AccessControlManager implements PersistenceManager {
       }
    }
 
-   private void cacheAccessControlData(AccessControlData data) {
+   private void cacheAccessControlData(AccessControlData data) throws SQLException {
       AccessObject accessObject = data.getObject();
       int subjectId = data.getSubject().getArtId();
       PermissionEnum permission = data.getPermission();
@@ -528,11 +532,7 @@ public class AccessControlManager implements PersistenceManager {
          accessControlListCache.put(subjectId, accessObject, permission);
          objectToSubjectCache.put(accessObject, subjectId);
 
-         try {
-            populateGroupMembers(subjectId);
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
-         }
+         populateGroupMembers(subjectId);
       }
    }
 

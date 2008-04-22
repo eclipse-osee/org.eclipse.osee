@@ -35,7 +35,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -49,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
@@ -71,7 +69,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.commandHandlers.DeleteArtifactHandler;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
@@ -90,7 +87,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
@@ -198,7 +194,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       menuManager.add(new Separator());
       createSetAllPartitions(menuManager, viewer);
       menuManager.add(new Separator());
-      createPurgeArtifactHandler(menuManager, viewer);       
+      createPurgeArtifactHandler(menuManager, viewer);
 
       // The additions group is a standard group
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -711,13 +707,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
             Artifact artifact = getSelectedArtifact(viewer);
-            try {
-               ArtifactExplorer.revealArtifact(artifact.getGuid(), artifact.getBranch());
-            } catch (PartInitException ex) {
-               throw new ExecutionException(ex.getLocalizedMessage());
-            } catch (SQLException ex) {
-               throw new ExecutionException(ex.getLocalizedMessage());
-            }
+            ArtifactExplorer.revealArtifact(artifact);
             return null;
          }
 

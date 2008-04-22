@@ -36,10 +36,10 @@ import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
@@ -490,13 +490,8 @@ public class RelationPersistenceManager implements PersistenceManager {
             NetworkNewRelationLinkEvent newRelationEvent = (NetworkNewRelationLinkEvent) event;
 
             try {
-               ArtifactFactory<?> aFactory =
-                     (ArtifactFactory<?>) configurationManager.getFactoryFromName(newRelationEvent.getAFactoryName());
-               ArtifactFactory<?> bFactory =
-                     (ArtifactFactory<?>) configurationManager.getFactoryFromName(newRelationEvent.getBFactoryName());
-
-               if (aFactory.containsArtifact(artAId, branch.getBranchId()) || bFactory.containsArtifact(artBId,
-                     branch.getBranchId())) {
+               if (ArtifactCache.getInstance().containsArtifact(artAId, branch.getBranchId()) || ArtifactCache.getInstance().containsArtifact(
+                     artBId, branch.getBranchId())) {
                   Artifact artA =
                         artifactManager.getArtifactFromId(artAId, transactionIdManager.getEditableTransactionId(branch));
                   Artifact artB =

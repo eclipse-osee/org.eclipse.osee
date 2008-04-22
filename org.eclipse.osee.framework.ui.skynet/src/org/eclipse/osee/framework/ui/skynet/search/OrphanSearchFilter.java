@@ -10,11 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import java.sql.SQLException;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.OrphanArtifactSearch;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -35,10 +40,20 @@ public class OrphanSearchFilter extends SearchFilter {
     */
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
-      for (String type : searchTypeList.getList().getSelection()) {
-         ISearchPrimitive primitive = new OrphanArtifactSearch(type);
-         if (not) primitive = new NotSearch(primitive);
-         filterViewer.addItem(primitive, filterName, type, "");
+      try {
+         for (String typeName : searchTypeList.getList().getSelection()) {
+
+            ArtifactSubtypeDescriptor artifactType =
+                  ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(typeName);
+
+            ISearchPrimitive primitive = new OrphanArtifactSearch(artifactType);
+            if (not) {
+               primitive = new NotSearch(primitive);
+            }
+            filterViewer.addItem(primitive, filterName, typeName, "");
+         }
+      } catch (SQLException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 

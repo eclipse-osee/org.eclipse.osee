@@ -516,8 +516,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                }
             }
             WordRenderer renderer =
-                  (WordRenderer) RendererManager.getInstance().getRendererById(
-                		  WordRenderer.WORD_RENDERER_EXTENSION);
+                  (WordRenderer) RendererManager.getInstance().getRendererById(WordRenderer.WORD_RENDERER_EXTENSION);
 
             try {
                renderer.compareArtifacts(baseArtifacts, newerArtifacts, DIFF_ARTIFACT, null,
@@ -767,13 +766,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
          @Override
          public void widgetSelected(SelectionEvent e) {
             for (Artifact artifact : getHeadArtifactsForSelection()) {
-               try {
-                  ArtifactExplorer.revealArtifact(artifact.getGuid(), artifact.getBranch());
-               } catch (PartInitException ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-               } catch (SQLException ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-               }
+               ArtifactExplorer.revealArtifact(artifact);
             }
          }
       });

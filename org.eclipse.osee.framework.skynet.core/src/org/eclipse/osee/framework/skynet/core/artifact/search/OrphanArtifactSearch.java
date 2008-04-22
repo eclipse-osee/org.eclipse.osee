@@ -10,36 +10,41 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TYPE_TABLE;
+import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
 import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
  * @author Jeff C. Phillips
  */
 public class OrphanArtifactSearch implements ISearchPrimitive {
 
-   private static final String tables = ARTIFACT_TABLE + ", " + ARTIFACT_TYPE_TABLE;
-   private final static String TOKEN = ";";
+   private static final String tables = "osee_define_artifact";
    private static final String sql =
-         "" + SkynetDatabase.ARTIFACT_TYPE_TABLE + ".art_type_id = " + SkynetDatabase.ARTIFACT_TABLE + ".art_type_id AND " + SkynetDatabase.ARTIFACT_TYPE_TABLE + ".NAME = ? AND art_id NOT in (SELECT t2.art_id FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + SkynetDatabase.ARTIFACT_TABLE + " t2, " + SkynetDatabase.RELATION_LINK_TYPE_TABLE + " t3, " + SkynetDatabase.TRANSACTIONS_TABLE + " t4, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t5, (SELECT Max(t1.gamma_id) AS gamma_id, t1.rel_link_id, t3.branch_id FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 WHERE t1.gamma_id = t2.gamma_id AND t2.transaction_id = t3.transaction_id AND t3.branch_id = ? GROUP BY t1.rel_link_id, t3.branch_id) t6 WHERE t3.type_name = 'Default Hierarchical' AND t3.rel_link_type_id = t1.rel_link_type_id AND t1.b_art_id = t2.art_id AND t1.gamma_id = t4.gamma_id AND t4.transaction_id = t5.transaction_id AND t1.rel_link_id = t6.rel_link_id AND t5.branch_id = t6.branch_id AND t1.gamma_id = t6.gamma_id AND t1.modification_id <> 3 GROUP BY t2.art_id)";
-   private String descriptorName;
+         "osee_define_artifact.art_type_id =? AND art_id NOT in (SELECT t2.art_id FROM osee_define_rel_link t1, osee_define_artifact t2, " + SkynetDatabase.TRANSACTIONS_TABLE + " t4, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t5, (SELECT Max(t1.gamma_id) AS gamma_id, t1.rel_link_id, t3.branch_id FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 WHERE t1.gamma_id = t2.gamma_id AND t2.transaction_id = t3.transaction_id AND t3.branch_id = ? GROUP BY t1.rel_link_id, t3.branch_id) t6 WHERE t1.rel_link_type_id =? AND t1.b_art_id = t2.art_id AND t1.gamma_id = t4.gamma_id AND t4.transaction_id = t5.transaction_id AND t1.rel_link_id = t6.rel_link_id AND t5.branch_id = t6.branch_id AND t1.gamma_id = t6.gamma_id AND t1.modification_id <> 3 GROUP BY t2.art_id)";
+   private ArtifactSubtypeDescriptor aritfactType;
+   private int relationTypeId;
 
-   public OrphanArtifactSearch(String descriptor) {
-      this.descriptorName = descriptor;
+   public OrphanArtifactSearch(ArtifactSubtypeDescriptor aritfactType) throws SQLException {
+      this.aritfactType = aritfactType;
+      this.relationTypeId = RelationTypeManager.getInstance().getType("Default Hierarchical").getRelationTypeId();
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getSql(java.util.List, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
-      dataList.add(SQL3DataType.VARCHAR);
-      dataList.add(descriptorName);
+      dataList.add(SQL3DataType.INTEGER);
+      dataList.add(aritfactType.getArtTypeId());
       dataList.add(SQL3DataType.INTEGER);
       dataList.add(branch.getBranchId());
+      dataList.add(SQL3DataType.INTEGER);
+      dataList.add(relationTypeId);
+
       return sql;
    }
 
@@ -61,12 +66,12 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getStorageString()
     */
    public String getStorageString() {
-      return "Orphan Search: " + descriptorName + TOKEN;
+      return "Orphan Search: " + aritfactType.getName() + ";";
    }
 
    @Override
    public String toString() {
-      return "Orphan Search: " + descriptorName;
+      return "Orphan Search: " + aritfactType.getName();
    }
 
 }
