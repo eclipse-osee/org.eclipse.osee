@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.history;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -41,6 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactPreviewMenu;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -60,9 +58,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author Jeff C. Phillips
  */
 public class RevisionHistoryView extends ViewPart implements IActionable, IEventReceiver {
-
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView";
-   private static Logger logger = ConfigUtil.getConfigFactory().getLogger(RevisionHistoryView.class);
    private static final String[] columnNames = {"Revision", "Time Stamp", "Author", "Comment"};
    private static final String ARTIFACT_GUID = "GUID";
    private TreeViewer treeViewer;
@@ -93,7 +89,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
                      IWorkbenchPage.VIEW_ACTIVATE);
          revisionHistoryView.explore(artifact);
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 
@@ -226,7 +222,7 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
             }
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, "Falling back to the root artifact: " + ex.getLocalizedMessage(), ex);
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 

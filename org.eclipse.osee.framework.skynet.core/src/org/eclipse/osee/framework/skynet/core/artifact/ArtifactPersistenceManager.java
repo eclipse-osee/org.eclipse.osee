@@ -574,7 +574,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          ISearchPrimitive primitive = null;
          Iterator<ISearchPrimitive> iter = searchCriteria.iterator();
 
-         sql.append(ARTIFACT_TABLE.column("art_id") + " IN(SELECT art_id FROM " + ARTIFACT_TABLE + ", (");
+         sql.append("art1.art_id IN(SELECT art_id FROM " + ARTIFACT_TABLE + ", (");
 
          while (iter.hasNext()) {
             primitive = iter.next();
