@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
  * @author Ryan D. Brooks
  */
 public enum TransactionType {
-   CREATED(-1), REVISED(-2), DELETED(-3), BRANCHED(-4), COMMITTED(-5), MERGED(-6);
+   Created(-1), Revised(-2), Deleted(-3), Branched(-4), Committed(-5), Merged(-6);
 
    private int id;
 
@@ -44,13 +44,13 @@ public enum TransactionType {
 
       switch (modificationType.getValue()) {
          case 1:
-            transactionType = CREATED;
+            transactionType = Created;
             break;
          case 2:
-            transactionType = REVISED;
+            transactionType = Revised;
             break;
          case 3:
-            transactionType = DELETED;
+            transactionType = Deleted;
             break;
          default:
             break;
@@ -58,30 +58,30 @@ public enum TransactionType {
 
       return transactionType;
    }
-   
+
    public static ModificationType convertTransactionTypeToModificationType(TransactionType transactionType) {
-	   ModificationType modificationType = null;
+      ModificationType modificationType = null;
 
-	      switch (transactionType.getId()) {
-	         case -1:
-	        	 modificationType = ModificationType.NEW;
-	            break;
-	         case -2:
-	        	 modificationType = ModificationType.CHANGE;
-	            break;
-	         case -3:
-	        	 modificationType = ModificationType.DELETE;
-	            break;
-	         case -4:
-	        	 modificationType = ModificationType.CHANGE;
-	            break;
-	         case -5:
-	        	 modificationType = ModificationType.CHANGE;
-	            break;
-	         default:
-	            break;
-	      }
+      switch (transactionType.getId()) {
+         case -1:
+            modificationType = ModificationType.NEW;
+            break;
+         case -2:
+            modificationType = ModificationType.CHANGE;
+            break;
+         case -3:
+            modificationType = ModificationType.DELETE;
+            break;
+         case -4:
+            modificationType = ModificationType.CHANGE;
+            break;
+         case -5:
+            modificationType = ModificationType.CHANGE;
+            break;
+         default:
+            break;
+      }
 
-	      return modificationType;
-	   }
+      return modificationType;
+   }
 }
