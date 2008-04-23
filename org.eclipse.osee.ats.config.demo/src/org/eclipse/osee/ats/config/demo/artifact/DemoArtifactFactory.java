@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
  * Provides the factory for the loading of the XYZ demo artifact types.
@@ -39,13 +40,13 @@ public class DemoArtifactFactory extends ArtifactFactory<Artifact> {
    }
 
    @Override
-   public Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch) throws SQLException {
+   public Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
       if (factoryKey.equals(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME)) return new DemoCodeTeamWorkflowArtifact(this,
-            guid, humandReadableId, branch);
+            guid, humandReadableId, branch, artifactType);
       if (factoryKey.equals(DemoTestTeamWorkflowArtifact.ARTIFACT_NAME)) return new DemoTestTeamWorkflowArtifact(this,
-            guid, humandReadableId, branch);
+            guid, humandReadableId, branch, artifactType);
       if (factoryKey.equals(DemoReqTeamWorkflowArtifact.ARTIFACT_NAME)) return new DemoReqTeamWorkflowArtifact(this,
-            guid, humandReadableId, branch);
+            guid, humandReadableId, branch, artifactType);
       throw new IllegalArgumentException("did not recognize the factory key: " + factoryKey);
    }
 }
