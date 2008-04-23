@@ -15,7 +15,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -1305,7 +1304,7 @@ public final class Lib {
       return bos.toByteArray();
    }
 
-   public static byte[] decompressBytes(ByteArrayInputStream inputStream) throws IOException {
+   public static byte[] decompressBytes(InputStream inputStream) throws IOException {
       ByteArrayOutputStream out = null;
       // Open the ZIP file
       ZipInputStream in = new ZipInputStream(inputStream);
