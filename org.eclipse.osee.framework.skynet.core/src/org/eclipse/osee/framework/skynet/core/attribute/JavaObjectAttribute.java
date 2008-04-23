@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +31,7 @@ public class JavaObjectAttribute extends Attribute<Object> {
    public Object getValue() {
       Object obj = null;
       try {
-         ByteArrayInputStream inputStream = getRawContentStream();
+         InputStream inputStream = getRawContentStream();
          if (inputStream != null) {
             ObjectInputStream objectStream = new ObjectInputStream(inputStream);
             obj = objectStream.readObject();
