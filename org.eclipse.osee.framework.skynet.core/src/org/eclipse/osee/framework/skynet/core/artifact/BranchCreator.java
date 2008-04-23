@@ -238,7 +238,7 @@ public class BranchCreator implements PersistenceManager {
          Collection<Integer> gammas = historyMap.getValues(parentTransactionNumber);
          for (Integer gamma : gammas) {
             txAddressData.add(new Object[] {SQL3DataType.INTEGER, nextTransactionNumber, SQL3DataType.INTEGER, gamma,
-                  SQL3DataType.INTEGER, TransactionType.BRANCHED.getId()});
+                  SQL3DataType.INTEGER, TransactionType.Branched.getId()});
          }
          ConnectionHandler.runBatchablePreparedUpdate(INSERT_TX_FOR_HISTORY, true, txAddressData);
          txAddressData.clear();
@@ -318,7 +318,7 @@ public class BranchCreator implements PersistenceManager {
          int count =
                ConnectionHandler.runPreparedUpdateReturnCount(SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED,
                      SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
-                     TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER, artifactType.getArtTypeId(),
+                     TransactionType.Branched.getId(), SQL3DataType.INTEGER, artifactType.getArtTypeId(),
                      SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                      parentTransactionId.getBranch().getBranchId());
          if (count > 0) logger.log(Level.INFO, "inserted " + count + " " + artifactType.getName() + " artifacts");
@@ -326,14 +326,14 @@ public class BranchCreator implements PersistenceManager {
 
       int count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
-                  newTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
+                  newTransactionNumber, SQL3DataType.INTEGER, TransactionType.Branched.getId(), SQL3DataType.INTEGER,
                   newTransactionNumber, SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(),
                   SQL3DataType.INTEGER, parentTransactionId.getBranch().getBranchId());
       if (count > 0) logger.log(Level.INFO, "inserted " + count + " attributes");
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_LINK_GAMMAS, SQL3DataType.INTEGER,
-                  newTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER,
+                  newTransactionNumber, SQL3DataType.INTEGER, TransactionType.Branched.getId(), SQL3DataType.INTEGER,
                   newTransactionNumber, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
                   parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                   parentTransactionId.getBranch().getBranchId());
@@ -584,7 +584,7 @@ public class BranchCreator implements PersistenceManager {
 
       private void insertGammas(String sql, int baselineTransactionNumber) throws SQLException {
          ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER, baselineTransactionNumber, SQL3DataType.INTEGER,
-               TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER, sourceBranch.getBranchId(),
+               TransactionType.Branched.getId(), SQL3DataType.INTEGER, sourceBranch.getBranchId(),
                SQL3DataType.INTEGER, sourceBranch.getBranchId());
       }
    }

@@ -1171,7 +1171,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       try {
          chStmt =
                ConnectionHandler.runPreparedQuery(SELECT_HISTORICAL_ARTIFACTS, SQL3DataType.VARCHAR, attributeValue,
-                     SQL3DataType.INTEGER, TransactionType.BRANCHED.getId());
+                     SQL3DataType.INTEGER, TransactionType.Branched.getId());
 
          ResultSet rSet = chStmt.getRset();
          while (rSet.next()) {

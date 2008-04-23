@@ -138,23 +138,23 @@ class CommitJob extends Job {
 
          int insertCount =
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ARTIFACT, SQL3DataType.INTEGER,
-                     newTransactionNumber, SQL3DataType.INTEGER, TransactionType.COMMITTED.getId(),
-                     SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
-                     SQL3DataType.INTEGER, TransactionType.DELETED.getId(), SQL3DataType.INTEGER,
+                     newTransactionNumber, SQL3DataType.INTEGER, TransactionType.Committed.getId(),
+                     SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, TransactionType.Branched.getId(),
+                     SQL3DataType.INTEGER, TransactionType.Deleted.getId(), SQL3DataType.INTEGER,
                      baseTransactionId.getTransactionNumber());
 
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_ATTRIBUTE, SQL3DataType.INTEGER,
-                     newTransactionNumber, SQL3DataType.INTEGER, TransactionType.COMMITTED.getId(),
-                     SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
-                     SQL3DataType.INTEGER, TransactionType.DELETED.getId(), SQL3DataType.INTEGER,
+                     newTransactionNumber, SQL3DataType.INTEGER, TransactionType.Committed.getId(),
+                     SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, TransactionType.Branched.getId(),
+                     SQL3DataType.INTEGER, TransactionType.Deleted.getId(), SQL3DataType.INTEGER,
                      baseTransactionId.getTransactionNumber());
 
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_RELATIONS, SQL3DataType.INTEGER,
-                     newTransactionNumber, SQL3DataType.INTEGER, TransactionType.COMMITTED.getId(),
-                     SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
-                     SQL3DataType.INTEGER, TransactionType.DELETED.getId(), SQL3DataType.INTEGER,
+                     newTransactionNumber, SQL3DataType.INTEGER, TransactionType.Committed.getId(),
+                     SQL3DataType.INTEGER, fromBranchId, SQL3DataType.INTEGER, TransactionType.Branched.getId(),
+                     SQL3DataType.INTEGER, TransactionType.Deleted.getId(), SQL3DataType.INTEGER,
                      baseTransactionId.getTransactionNumber());
 
          if (insertCount > 0) {
