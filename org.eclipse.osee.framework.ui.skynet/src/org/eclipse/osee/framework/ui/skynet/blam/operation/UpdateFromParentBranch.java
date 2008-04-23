@@ -97,19 +97,19 @@ public class UpdateFromParentBranch extends AbstractBlam {
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ARTIFACTS, SQL3DataType.INTEGER,
-                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
+                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.Branched.getId(),
                   SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
       OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " artifacts", false);
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
-                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
+                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.Branched.getId(),
                   SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
       OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " attributes", false);
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_LINKS_GAMMAS, SQL3DataType.INTEGER,
-                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.BRANCHED.getId(),
+                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.Branched.getId(),
                   SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
       OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " relations", false);
 

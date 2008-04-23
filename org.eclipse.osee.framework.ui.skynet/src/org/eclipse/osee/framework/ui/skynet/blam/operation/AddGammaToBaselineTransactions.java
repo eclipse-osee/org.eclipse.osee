@@ -39,7 +39,7 @@ public class AddGammaToBaselineTransactions extends AbstractBlam {
          int gammaId = Integer.parseInt(gammaIdMatcher.group());
          ConnectionHandler.runPreparedUpdate(INSERT_GAMMA, SQL3DataType.INTEGER, gammaId, SQL3DataType.INTEGER,
                branch.getBranchId(), SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
-               TransactionType.BRANCHED.getId(), SQL3DataType.INTEGER, gammaId);
+               TransactionType.Branched.getId(), SQL3DataType.INTEGER, gammaId);
       }
    }
 

@@ -37,7 +37,7 @@ public class CopyTransactionDataToBaseline extends AbstractBlam {
       TransactionId baseLineTransaction = transactionIdManager.getStartEndPoint(branch).getValue();
 
       ConnectionHandler.runPreparedUpdate(COPY_TX_DATA, SQL3DataType.INTEGER, baseLineTransaction,
-            SQL3DataType.INTEGER, TransactionType.BRANCHED, SQL3DataType.INTEGER, fromTransactionId);
+            SQL3DataType.INTEGER, TransactionType.Branched, SQL3DataType.INTEGER, fromTransactionId);
 
    }
 
