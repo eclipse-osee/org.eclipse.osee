@@ -382,11 +382,11 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    private static final String SELECT_ARTIFACT_START =
-         "SELECT art1.*, arv2.gamma_id, arv2.modification_id FROM osee_define_artifact art1, osee_define_artifact_version arv2, osee_define_txs txs3, osee_define_tx_details txd4 WHERE ";
+         "SELECT art1.*, arv1.gamma_id, arv1.modification_id FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
    private static final String SELECT_ARTIFACT_END =
-         " = ? AND art1.art_id = arv2.art_id AND arv2.gamma_id = txs3.gamma_id AND txs3.transaction_id <= ? AND txs3.transaction_id = txd4.transaction_id AND txd4.branch_id = ? order by txs3.transaction_id desc";
-   private static final String SELECT_ARTIFACT_BY_GUID = SELECT_ARTIFACT_START + "art1.guid" + SELECT_ARTIFACT_END;
-   private static final String SELECT_ARTIFACT_BY_ID = SELECT_ARTIFACT_START + "art1.art_id" + SELECT_ARTIFACT_END;
+         " AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? order by txs1.transaction_id desc";
+   private static final String SELECT_ARTIFACT_BY_GUID = SELECT_ARTIFACT_START + "art1.guid =?" + SELECT_ARTIFACT_END;
+   private static final String SELECT_ARTIFACT_BY_ID = SELECT_ARTIFACT_START + "art1.art_id =?" + SELECT_ARTIFACT_END;
 
    /**
     * This method acquires <code>Artifact</code>'s directly from the database. This should only be called by
@@ -458,7 +458,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    private static final String ARTIFACT_SELECT =
-         "SELECT art1.*, arv1.gamma_id, arv1.modification_id FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1 WHERE art1.art_id = arv1.art_id AND arv1.modification_id <> " + ModificationType.DELETE + " AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = (SELECT max(txd1.transaction_id) FROM osee_define_artifact_version arv2, osee_define_txs txs2, osee_define_tx_details txd1 WHERE arv1.art_id = arv2.art_id AND arv2.gamma_id = txs2.gamma_id AND txs2.transaction_id = txd1.transaction_id AND txd1.branch_id =? AND txd1.transaction_id <= ?) AND ";
+         "SELECT " + ARTIFACT_TABLE.columns("art_id", "art_type_id", "guid", "human_readable_id") + ", " + TRANSACTIONS_TABLE.column("gamma_id") + " FROM " + ARTIFACT_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + ", " + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + TRANSACTIONS_TABLE.column("gamma_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ?)" + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "<>" + ModificationType.DELETE + " AND ";
 
    private static final String ARTIFACT_ID_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
@@ -522,7 +522,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    private static String getSql(ISearchPrimitive searchCriteria, String header, List<Object> dataList, Branch branch) throws SQLException {
       StringBuilder sql = new StringBuilder(header);
 
-      sql.append("art1.art_id in (");
+      sql.append(ARTIFACT_TABLE.column("art_id") + " in (");
       sql.append(getSelectArtIdSql(searchCriteria, dataList, branch));
       sql.append(")");
 
@@ -558,7 +558,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
          while (iter.hasNext()) {
             primitive = iter.next();
-            sql.append("art1.art_id in (");
+            sql.append(ARTIFACT_TABLE.column("art_id") + " in (");
             sql.append(getSelectArtIdSql(primitive, dataList, branch));
 
             if (iter.hasNext()) {
@@ -570,7 +570,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          ISearchPrimitive primitive = null;
          Iterator<ISearchPrimitive> iter = searchCriteria.iterator();
 
-         sql.append("art1.art_id IN(SELECT art_id FROM " + ARTIFACT_TABLE + ", (");
+         sql.append(ARTIFACT_TABLE.column("art_id") + " IN(SELECT art_id FROM " + ARTIFACT_TABLE + ", (");
 
          while (iter.hasNext()) {
             primitive = iter.next();
