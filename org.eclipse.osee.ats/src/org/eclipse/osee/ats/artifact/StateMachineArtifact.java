@@ -99,7 +99,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
       atsLog = new ATSLog(this);
       atsNote = new ATSNote(this);
       preSaveState = smaMgr.getSMAState();
-      if (getLog().getLastEvent(LogType.Originated) == null)
+      if (smaMgr.getOriginator() == null)
          preSaveOriginator = SkynetAuthentication.getInstance().getAuthenticatedUser();
       else
          preSaveOriginator = smaMgr.getOriginator();
@@ -535,7 +535,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
    }
 
    public Date getWorldViewCreatedDate() throws Exception {
-      return getLog().getEvent(LogType.Originated).getDate();
+      return getLog().getCreationDate();
    }
 
    public String getWorldViewOriginator() {

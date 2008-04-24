@@ -19,11 +19,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 
 /**
  * @author Donald G. Dunne
@@ -48,9 +46,9 @@ public class VersionTeamMetrics {
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (VersionArtifact verArt : verTeamDef.getVersionsArtifacts()) {
          for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
-            LogItem logItem = team.getLog().getStateEvent(LogType.Originated);
-            if (logItem != null) {
-               if (logItem.getDate().after(startDate) && logItem.getDate().before(endDate)) teams.add(team);
+            Date origDate = team.getLog().getCreationDate();
+            if (origDate != null) {
+               if (origDate.after(startDate) && origDate.before(endDate)) teams.add(team);
             }
          }
       }

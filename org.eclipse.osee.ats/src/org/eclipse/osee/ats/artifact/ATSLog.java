@@ -125,6 +125,26 @@ public class ATSLog {
    }
 
    /**
+    * Since originator can be changed, return the date of the first originated log item
+    * 
+    * @return
+    */
+   public Date getCreationDate() {
+      LogItem logItem = getEvent(LogType.Originated);
+      if (logItem == null) return null;
+      return logItem.getDate();
+   }
+
+   /**
+    * Since originator change be changed, return the last originated event's user
+    * 
+    * @return
+    */
+   public User getOriginator() {
+      return getLastEvent(LogType.Originated).getUser();
+   }
+
+   /**
     * Overwrite the first logItem to match type and state with newItem data
     * 
     * @param matchType

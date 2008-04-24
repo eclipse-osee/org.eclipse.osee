@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -60,6 +59,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeTypeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
@@ -117,10 +117,12 @@ public class SMAManager {
 
    public String getEditorHeaderString() {
       if (sma instanceof TeamWorkFlowArtifact)
-         return String.format("Current State: %s        Team: %s       Assignee(s): %s", getCurrentStateName(),
-               ((TeamWorkFlowArtifact) sma).getTeamName(), getAssigneesStr());
+         return String.format("Current State: %s        Team: %s       Assignee(s): %s        Created: %s",
+               getCurrentStateName(), ((TeamWorkFlowArtifact) sma).getTeamName(), getAssigneesStr(), XDate.getDateStr(
+                     getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM));
       else
-         return String.format("Current State: %s        Assignee(s): %s", getCurrentStateName(), getAssigneesStr());
+         return String.format("Current State: %s        Assignee(s): %s        Created: %s", getCurrentStateName(),
+               getAssigneesStr(), XDate.getDateStr(getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM));
    }
 
    public Result getUserInputNeeded() {
@@ -161,9 +163,7 @@ public class SMAManager {
    }
 
    public User getOriginator() {
-      LogItem item = sma.getLog().getLastEvent(LogType.Originated);
-      if (item == null) return null;
-      return item.getUser();
+      return sma.getLog().getOriginator();
    }
 
    public void setOriginator(User user) throws IllegalStateException, SQLException, MultipleAttributesExist {

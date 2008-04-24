@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -125,7 +126,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                         ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewActivePoc()),
                   //
                   AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ",
-                        ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewOriginator())
+                        ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewOriginator()),
+                  //
+                  AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", XDate.getDateStr(
+                        smaMgr.getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM))
 
             }));
             sb.append(AHTML.endMultiColumnTable());

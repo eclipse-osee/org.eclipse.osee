@@ -138,7 +138,7 @@ public class Overview {
                AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
                AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
          addTable(getLabelValue("Originator", smaMgr.getOriginator().getDescriptiveName()), getLabelValue(
-               "Creation Date", smaMgr.getSma().getLog().getStateEvent(LogType.Originated).getDate(XDate.MMDDYYHHMM)));
+               "Creation Date", XDate.getDateStr(smaMgr.getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM)));
          if (smaMgr.getSma() instanceof TeamWorkFlowArtifact)
             addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName()), getLabelValue(
                   "Assignees", smaMgr.getAssigneesStr()));
