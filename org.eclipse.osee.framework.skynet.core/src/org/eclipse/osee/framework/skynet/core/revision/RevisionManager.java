@@ -958,7 +958,6 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             if (!set.wasNull()) lastGoodTransactionId =
                   TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
                         lastGoodTransactionNumber);
-            Branch branch = BranchPersistenceManager.getInstance().getBranch(set.getInt("branch_id"));
             ArtifactSubtypeDescriptor descriptor =
                   configurationManager.getArtifactSubtypeDescriptor(set.getString("type_name"));
             String name = set.getString("name");
