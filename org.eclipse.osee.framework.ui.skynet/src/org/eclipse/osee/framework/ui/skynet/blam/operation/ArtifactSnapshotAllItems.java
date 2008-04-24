@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotManager;
@@ -37,9 +38,9 @@ public class ArtifactSnapshotAllItems extends AbstractBlam {
 
          ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
          ArtifactSnapshotManager artifactSnapshotManager = ArtifactSnapshotManager.getInstance();
-         for (ArtifactSubtypeDescriptor descriptor : descriptors) {
-            monitor.subTask(String.format("Loading artifacts of type [%s]", descriptor.getName()));
-            Collection<Artifact> artifacts = artifactManager.getArtifactsFromSubtype(branch, descriptor);
+         for (ArtifactSubtypeDescriptor artifactType : descriptors) {
+            monitor.subTask(String.format("Loading artifacts of type [%s]", artifactType.getName()));
+            Collection<Artifact> artifacts = ArtifactQuery.getAtrifactsFromType(artifactType, branch);
             int count = 0;
             int total = artifacts.size();
             for (Artifact artifact : artifacts) {
