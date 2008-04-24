@@ -125,6 +125,18 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
             }));
             sb.append(AHTML.endMultiColumnTable());
+            try {
+               sb.append(AHTML.beginMultiColumnTable(100));
+               sb.append(AHTML.addRowMultiColumnTable(new String[] {
+                     //
+                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", smaMgr.getSma().getArtifactTypeName()),
+                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "HRID: ", smaMgr.getSma().getHumanReadableId()),
+                     (smaMgr.getSma().getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT,
+                           "Action HRID: ", smaMgr.getSma().getParentActionArtifact().getHumanReadableId()))}));
+               sb.append(AHTML.endMultiColumnTable());
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
             sb.append(workFlowTab.getHtml());
             sb.append(taskComposite.getHtml());
             sb.append(AHTML.newline());
