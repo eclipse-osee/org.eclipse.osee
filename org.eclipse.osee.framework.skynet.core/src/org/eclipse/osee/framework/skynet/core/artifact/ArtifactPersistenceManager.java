@@ -61,7 +61,6 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactHridSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -377,10 +376,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return new AttributeMemo(Query.getNextSeqVal(null, SkynetDatabase.ATTR_ID_SEQ), attrTypeId, gammaId);
    }
 
-   public Collection<Artifact> getArtifactsFromHrid(String hrid, Branch branch) throws SQLException {
-      return getArtifacts(new ArtifactHridSearch(hrid), branch);
-   }
-
    private static final String SELECT_ARTIFACT_START =
          "SELECT art1.*, arv1.gamma_id, arv1.modification_id FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
    private static final String SELECT_ARTIFACT_END =
@@ -400,6 +395,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_GUID, SQL3DataType.VARCHAR, guid, -1, true);
    }
 
+   // use ArtifactQuery.getArtifactFromId() instead
+   @Deprecated
    public Artifact getArtifact(String guid, Branch branch) throws SQLException {
       return getArtifact(guid, transactionIdManager.getEditableTransactionId(branch));
    }
@@ -628,7 +625,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return getArtifacts(getSql(searchCriteria, all, dataList, transactionId), dataList, transactionId, null);
    }
 
-   private Collection<Artifact> getArtifacts(String sql, List<Object> dataList, TransactionId transactionId, ISearchConfirmer confirmer) throws SQLException {
+   public Collection<Artifact> getArtifacts(String sql, List<Object> dataList, TransactionId transactionId, ISearchConfirmer confirmer) throws SQLException {
       Collection<Artifact> artifacts = new ArrayList<Artifact>(50);
       Collection<Artifact> artifactsToInit = new LinkedList<Artifact>();
 
@@ -673,11 +670,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             rSet.getInt("gamma_id")));
 
       return artifact;
-   }
-
-   public Collection<Artifact> getArtifactsFromSubtype(Branch branch, ArtifactSubtypeDescriptor descriptor) throws SQLException {
-      // TODO: this should be more direct by using the descriptor and not just its name
-      return getArtifacts(new ArtifactTypeSearch(descriptor.getName(), Operator.EQUAL), branch);
    }
 
    public Collection<Artifact> getArtifactsFromSubtypeName(String subtypeName, Branch branch) throws SQLException {
