@@ -143,6 +143,12 @@
                     value="org.eclipse.search.ui.views.SearchView">
               </equals>
            </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView">
+              </equals>
+           </with>
         </or>
      </activeWhen>
       </handler>
@@ -737,6 +743,71 @@
                 commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
           </command>
        </menu>
+    </menuContribution>
+ </extension>
+ <extension
+       name="The new change view"
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          locationURI="popup:org.eclipse.osee.framework.ui.skynetd.widgets.xchange.ChangeView">
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.wordChangesMadeTo.command">
+       </command>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.openInEdit.command"
+             label="Open Final Version">
+       </command>
+       <separator
+             name="org.eclipse.osee.framework.ui.skynet.ChangeView.wordChangesMadeTo.seperatro"
+             visible="true">
+       </separator>
+       <menu
+             label="Preview">
+          <command
+                commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
+          </command>
+          <command
+                commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
+          </command>
+       </menu>
+       <separator
+             name="org.eclipse.osee.framework.ui.skynet.changeReportView.previewArtifactRecurse.separator"
+             visible="true">
+       </separator>
+       <separator
+             name="org.eclipse.osee.framework.ui.skynet.changeView.previewArtifactRecurse.separator"
+             visible="true">
+       </separator>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
+       </command>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
+       </command>
+       <separator
+             name="org.eclipse.osee.framework.ui.skynet.changeView.wordChangeReport.separator"
+             visible="true">
+       </separator>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
+       </command>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.viewerReport">
+       </command>
+       <separator
+             name="org.eclipse.osee.framework.ui.skynet.ChangeView.viewerReport.separator"
+             visible="true">
+       </separator>
+       <command
+             commandId="org.eclipse.ui.edit.copy">
+       </command>
+       <separator
+             name="org.eclipse.ui.edit.ChangeView.copy.seperator"
+             visible="true">
+       </separator>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command">
+       </command>
     </menuContribution>
  </extension>
  <extension

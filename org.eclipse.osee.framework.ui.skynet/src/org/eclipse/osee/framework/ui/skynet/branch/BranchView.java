@@ -316,57 +316,52 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       nameFilter = new BranchNameFilter();
       branchTable.addFilter(nameFilter);
 
-
-      MenuManager menuManager = new MenuManager("#PopupMenu");      
-	  menuManager.setRemoveAllWhenShown(true);
-	  menuManager.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				BranchView.this.fillPopupMenu(manager);
-			}
-		});
-      
+      MenuManager menuManager = new MenuManager("#PopupMenu");
+      menuManager.setRemoveAllWhenShown(true);
+      menuManager.addMenuListener(new IMenuListener() {
+         public void menuAboutToShow(IMenuManager manager) {
+            BranchView.this.fillPopupMenu(manager);
+         }
+      });
 
       branchTable.getTree().setMenu(menuManager.createContextMenu(branchTable.getTree()));
-	  
-	  menuManager.add(new Separator());
-	  createOpenArtifactsMenuItem(menuManager);
-	  menuManager.add(new Separator());
-	  createSetDefaultCommand(menuManager);
-	  createChangeReportCommand(menuManager);
-	  createBranchCommand(menuManager);
-	  createSelectivelyBranchCommand(menuManager);
-	  createCommitCommand(menuManager);
-	  createCommitIntoCommand(menuManager);
-	  menuManager.add(new Separator());
-	  createImportOntoBranchCommand(menuManager);
-	  createImportDescendantsOntoBranchCommand(menuManager);
-	  createExportBranchCommand(menuManager);
-	  createExportBranchDescendantsCommand(menuManager);
-	  menuManager.add(new Separator());
-	  createMarkAsFavoriteCommand(menuManager);
-	  menuManager.add(new Separator());
-	  createDeleteBranchCommand(menuManager);
-	  createDeleteTransactionCommand(menuManager);
-	  createMoveTransactionCommand(menuManager);
-      createRenameBranchCommand(menuManager);
-	  createSetBranchShortNameCommand(menuManager);
-	  createSetAssociatedArtifactCommand(menuManager);
-	  createOpenAssociatedArtifactCommand(menuManager);
-	  menuManager.add(new Separator());
-	  createViewTableMenuItem(menuManager);
-	  menuManager.add(new Separator());
-	  createAccessControlCommand(menuManager);
-	  createMergeViewCommand(menuManager);
-	  createChangeViewCommand(menuManager);
-	  // The additions group is a standard group
-	  menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	      
 
+      menuManager.add(new Separator());
+      createOpenArtifactsMenuItem(menuManager);
+      menuManager.add(new Separator());
+      createSetDefaultCommand(menuManager);
+      createChangeReportCommand(menuManager);
+      createBranchCommand(menuManager);
+      createSelectivelyBranchCommand(menuManager);
+      createCommitCommand(menuManager);
+      createCommitIntoCommand(menuManager);
+      menuManager.add(new Separator());
+      createImportOntoBranchCommand(menuManager);
+      createImportDescendantsOntoBranchCommand(menuManager);
+      createExportBranchCommand(menuManager);
+      createExportBranchDescendantsCommand(menuManager);
+      menuManager.add(new Separator());
+      createMarkAsFavoriteCommand(menuManager);
+      menuManager.add(new Separator());
+      createDeleteBranchCommand(menuManager);
+      createDeleteTransactionCommand(menuManager);
+      createMoveTransactionCommand(menuManager);
+      createRenameBranchCommand(menuManager);
+      createSetBranchShortNameCommand(menuManager);
+      createSetAssociatedArtifactCommand(menuManager);
+      createOpenAssociatedArtifactCommand(menuManager);
+      menuManager.add(new Separator());
+      createViewTableMenuItem(menuManager);
+      menuManager.add(new Separator());
+      createAccessControlCommand(menuManager);
+      createMergeViewCommand(menuManager);
+      createChangeViewCommand(menuManager);
+      // The additions group is a standard group
+      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
       getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.branch.BranchView", menuManager, branchTable);
 
       branchTable.addSelectionChangedListener(new SelectionCountChangeListener(getViewSite()));
-
 
       getSite().setSelectionProvider(branchTable);
 
@@ -377,8 +372,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
       loadPreferences();
    }
-   
-   private void fillPopupMenu(IMenuManager Manager){
+
+   private void fillPopupMenu(IMenuManager Manager) {
       MenuManager menuManager = (MenuManager) Manager;
       menuManager.add(new Separator());
       addOpenArtifactsMenuItem(menuManager);
@@ -387,131 +382,139 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       addChangeReportCommand(menuManager);
       addBranchCommand(menuManager);
       addSelectivelyBranchCommand(menuManager);
-	  addCommitCommand(menuManager);
-	  addCommitIntoCommand(menuManager);
-	  menuManager.add(new Separator());
-	  addImportOntoBranchCommand(menuManager);
-	  addImportDescendantsOntoBranchCommand(menuManager);
-	  addExportBranchCommand(menuManager);
-	  addExportBranchDescendantsCommand(menuManager);
-	  menuManager.add(new Separator());
-	  addMarkAsFavoriteCommand(menuManager);
-	  menuManager.add(new Separator());
-	  addDeleteBranchCommand(menuManager);
-	  addDeleteTransactionCommand(menuManager);
-	  addMoveTransactionCommand(menuManager);
-	  addRenameBranchCommand(menuManager);
-	  addSetBranchShortNameCommand(menuManager);
-	  addSetAssociatedArtifactCommand(menuManager);
-	  addOpenAssociatedArtifactCommand(menuManager);
-	  menuManager.add(new Separator());
-	  addViewTableMenuItem(menuManager);
-	  menuManager.add(new Separator());
-	  addAccessControlCommand(menuManager);
-	  addMergeViewCommand(menuManager);
-	  addChangeViewCommand(menuManager);
-	  // The additions group is a standard group
-	  menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+      addCommitCommand(menuManager);
+      addCommitIntoCommand(menuManager);
+      menuManager.add(new Separator());
+      addImportOntoBranchCommand(menuManager);
+      addImportDescendantsOntoBranchCommand(menuManager);
+      addExportBranchCommand(menuManager);
+      addExportBranchDescendantsCommand(menuManager);
+      menuManager.add(new Separator());
+      addMarkAsFavoriteCommand(menuManager);
+      menuManager.add(new Separator());
+      addDeleteBranchCommand(menuManager);
+      addDeleteTransactionCommand(menuManager);
+      addMoveTransactionCommand(menuManager);
+      addRenameBranchCommand(menuManager);
+      addSetBranchShortNameCommand(menuManager);
+      addSetAssociatedArtifactCommand(menuManager);
+      addOpenAssociatedArtifactCommand(menuManager);
+      menuManager.add(new Separator());
+      addViewTableMenuItem(menuManager);
+      menuManager.add(new Separator());
+      addAccessControlCommand(menuManager);
+      addMergeViewCommand(menuManager);
+      addChangeViewCommand(menuManager);
+      // The additions group is a standard group
+      menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
    }
 
-  class BranchArtifact implements IBranchArtifact{
+   class BranchArtifact implements IBranchArtifact {
 
-	  private Branch branch;
-	  
-	  public BranchArtifact(Branch branch){
-		  this.branch = branch;
-	  }
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getArtifact()
-	 */
-	public Artifact getArtifact() {
-		try {
-			return branch.getAssociatedArtifact();
-		} catch (SQLException ex) {
-			logger.log(Level.SEVERE, ex.toString(), ex);
-		}
-		return null;
-	}
+      private Branch branch;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getWorkingBranch()
-	 */
-	public Branch getWorkingBranch() throws IllegalStateException, SQLException {
-		return branch;
-	}
-	
-}
-private String addMergeViewCommand(MenuManager menuManager) {
-	CommandContributionItem accessControlCommand =
-		Commands.getLocalCommandContribution(getSite(), "mergeViewCommand", "Experimental Only -Merge View- Not For Production", null, null,
-	              null, "M", null, null);
-	menuManager.add(accessControlCommand);
-	return accessControlCommand.getId();
- }
-private void createMergeViewCommand(MenuManager menuManager) {
+      public BranchArtifact(Branch branch) {
+         this.branch = branch;
+      }
 
-  handlerService.activateHandler(addMergeViewCommand(menuManager),
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getArtifact()
+       */
+      public Artifact getArtifact() {
+         try {
+            return branch.getAssociatedArtifact();
+         } catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
+         }
+         return null;
+      }
 
-  new AbstractSelectionEnabledHandler(menuManager) {
-     @Override
-     public Object execute(ExecutionEvent event) throws ExecutionException {
-        IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-        Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-        try {
-           if (selectedBranch != null) {
-        	   Conflict[] transactionArtifactChanges = new Conflict[0];
-        	   MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(selectedBranch, selectedBranch.getParentBranch(), TransactionIdManager.getInstance().getStartEndPoint(selectedBranch).getKey()).toArray(transactionArtifactChanges));
-           }
-        } catch (Exception ex) {
-           logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        }
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getWorkingBranch()
+       */
+      public Branch getWorkingBranch() throws IllegalStateException, SQLException {
+         return branch;
+      }
 
-        return null;
-     }
+   }
 
-     @Override
-     public boolean isEnabled() {
-    	 return true;
-     }
-  });
-}
+   private String addMergeViewCommand(MenuManager menuManager) {
+      CommandContributionItem accessControlCommand =
+            Commands.getLocalCommandContribution(getSite(), "mergeViewCommand",
+                  "Experimental Only -Merge View- Not For Production", null, null, null, "M", null, null);
+      menuManager.add(accessControlCommand);
+      return accessControlCommand.getId();
+   }
 
-private String addChangeViewCommand(MenuManager menuManager) {
-    CommandContributionItem accessControlCommand =
-        Commands.getLocalCommandContribution(getSite(), "change2ViewCommand", "Experimental Use Only -New Change Report- Not For Production", null, null,
-              null, "M", null, null);
-  menuManager.add(accessControlCommand);
-  return accessControlCommand.getId();
-}
-private void createChangeViewCommand(MenuManager menuManager) {
-	
-  handlerService.activateHandler(addChangeViewCommand(menuManager),
+   private void createMergeViewCommand(MenuManager menuManager) {
 
-  new AbstractSelectionEnabledHandler(menuManager) {
-     @Override
-     public Object execute(ExecutionEvent event) throws ExecutionException {
-        IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-        Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-        try {
-           if (selectedBranch != null) {
-        	   Change[] changes = new Change[0];
-        	   ChangeView.openViewUpon(RevisionManager.getInstance().getArtifactChanges(selectedBranch).toArray(changes));
-           }
-        } catch (Exception ex) {
-           logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        }
+      handlerService.activateHandler(addMergeViewCommand(menuManager),
 
-        return null;
-     }
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+            Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+            try {
+               if (selectedBranch != null) {
+                  Conflict[] transactionArtifactChanges = new Conflict[0];
+                  MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(selectedBranch,
+                        selectedBranch.getParentBranch(),
+                        TransactionIdManager.getInstance().getStartEndPoint(selectedBranch).getKey()).toArray(
+                        transactionArtifactChanges));
+               }
+            } catch (Exception ex) {
+               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
 
-     @Override
-     public boolean isEnabled() {
-    	 return true;
-     }
-  });
-}
+            return null;
+         }
 
-private Preferences getViewPreference() {
+         @Override
+         public boolean isEnabled() {
+            return true;
+         }
+      });
+   }
+
+   private String addChangeViewCommand(MenuManager menuManager) {
+      CommandContributionItem accessControlCommand =
+            Commands.getLocalCommandContribution(getSite(), "change2ViewCommand",
+                  "Experimental Use Only -New Change Report- Not For Production", null, null, null, "M", null, null);
+      menuManager.add(accessControlCommand);
+      return accessControlCommand.getId();
+   }
+
+   private void createChangeViewCommand(MenuManager menuManager) {
+
+      handlerService.activateHandler(addChangeViewCommand(menuManager),
+
+      new AbstractSelectionEnabledHandler(menuManager) {
+         @Override
+         public Object execute(ExecutionEvent event) throws ExecutionException {
+            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+            Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+            try {
+               if (selectedBranch != null) {
+                  Change[] changes = new Change[0];
+                  ChangeView.openViewUpon(RevisionManager.getInstance().getChangesPerBranch(selectedBranch).toArray(
+                        changes));
+               }
+            } catch (Exception ex) {
+               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+
+            return null;
+         }
+
+         @Override
+         public boolean isEnabled() {
+            return true;
+         }
+      });
+   }
+
+   private Preferences getViewPreference() {
       return preferencesService.getRootNode().node(InstanceScope.SCOPE).node(VIEW_ID);
    }
 
@@ -549,8 +552,9 @@ private Preferences getViewPreference() {
       menuManager.add(openArtifactsCommand);
       return openArtifactsCommand.getId();
    }
+
    private void createOpenArtifactsMenuItem(MenuManager menuManager) {
-	   
+
       branchTable.addDoubleClickListener(new IDoubleClickListener() {
 
          public void doubleClick(DoubleClickEvent event) {
@@ -608,6 +612,7 @@ private Preferences getViewPreference() {
       menuManager.add(accessControlCommand);
       return accessControlCommand.getId();
    }
+
    private void createAccessControlCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addAccessControlCommand(menuManager),
@@ -645,8 +650,9 @@ private Preferences getViewPreference() {
       menuManager.add(deleteTransactionCommand);
       return deleteTransactionCommand.getId();
    }
+
    private void createDeleteTransactionCommand(MenuManager menuManager) {
-	   
+
       handlerService.activateHandler(addDeleteTransactionCommand(menuManager),
 
       new AbstractSelectionEnabledHandler(menuManager) {
@@ -689,26 +695,27 @@ private Preferences getViewPreference() {
          return false;
       }
    }
+
    private void addBranchSelectionMenu(MenuManager menuManager) {
-	      try {
-	         for (Branch branch : BranchPersistenceManager.getInstance().getBranches()) {
+      try {
+         for (Branch branch : BranchPersistenceManager.getInstance().getBranches()) {
 
-	            Map<String, String> parameters = new HashMap<String, String>();
-	            parameters.put(BRANCH_ID, Integer.toString(branch.getBranchId()));
+            Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put(BRANCH_ID, Integer.toString(branch.getBranchId()));
 
-	            CommandContributionItem branchCommand =
-	                  Commands.getLocalCommandContribution(getSite(), menuManager.getId(), branch.getBranchName(),
-	                        BRANCH_PARAMETER_DEF, parameters, null, null, null, null);
-	            menuManager.add(branchCommand);
-	         }
-	      } catch (SQLException ex) {
-	         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-	      }
-	   }
-   
+            CommandContributionItem branchCommand =
+                  Commands.getLocalCommandContribution(getSite(), menuManager.getId(), branch.getBranchName(),
+                        BRANCH_PARAMETER_DEF, parameters, null, null, null, null);
+            menuManager.add(branchCommand);
+         }
+      } catch (SQLException ex) {
+         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
+   }
+
    private void createBranchSelectionMenu(MenuManager menuManager, IHandler selectionHandler) {
-	   addBranchSelectionMenu(menuManager);
-       handlerService.activateHandler(getSite().getId() + "." + menuManager.getId(), selectionHandler);
+      addBranchSelectionMenu(menuManager);
+      handlerService.activateHandler(getSite().getId() + "." + menuManager.getId(), selectionHandler);
    }
 
    private class BranchSelectionHandler extends AbstractSelectionEnabledHandler {
@@ -752,7 +759,7 @@ private Preferences getViewPreference() {
       menuManager.add(subMenuManager);
       addBranchSelectionMenu(subMenuManager);
    }
-   
+
    private void createMoveTransactionCommand(MenuManager menuManager) {
       MenuManager subMenuManager = new MenuManager("Move Transaction To", "moveTransaction");
       menuManager.add(subMenuManager);
@@ -765,7 +772,7 @@ private Preferences getViewPreference() {
       menuManager.add(subMenuManager);
       addBranchSelectionMenu(subMenuManager);
    }
-   
+
    private void createCommitIntoCommand(MenuManager menuManager) {
       MenuManager subMenuManager = new MenuManager("Commit Into", "commitTransaction");
       menuManager.add(subMenuManager);
@@ -779,6 +786,7 @@ private Preferences getViewPreference() {
       menuManager.add(deleteBranchCommand);
       return deleteBranchCommand.getId();
    }
+
    private void createDeleteBranchCommand(MenuManager menuManager) {
       handlerService.activateHandler(addDeleteBranchCommand(menuManager),
 
@@ -815,6 +823,7 @@ private Preferences getViewPreference() {
       menuManager.add(renameBranchCommand);
       return renameBranchCommand.getId();
    }
+
    private void createRenameBranchCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addRenameBranchCommand(menuManager),
@@ -852,21 +861,21 @@ private Preferences getViewPreference() {
                   } else if (e.keyCode == SWT.ESC) {
                      myTextBeingRenamed.dispose();
                   }
-                  }
+               }
             });
             myTextBeingRenamed.selectAll();
             myTextBeingRenamed.setFocus();
             myTreeEditor.setEditor(myTextBeingRenamed, myTreeItem);
             return null;
-               }
+         }
 
          private void updateText(String newLabel, Branch selectedBranch) {
             selectedBranch.setBranchName(newLabel);
-               try {
+            try {
                selectedBranch.rename(newLabel);
             } catch (SQLException mySQLException) {
                mySQLException.printStackTrace();
-               }
+            }
             branchTable.refresh();
          }
 
@@ -885,6 +894,7 @@ private Preferences getViewPreference() {
       menuManager.add(setBranchShortNameCommand);
       return setBranchShortNameCommand.getId();
    }
+
    private void createSetBranchShortNameCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addSetBranchShortNameCommand(menuManager),
@@ -943,6 +953,7 @@ private Preferences getViewPreference() {
       menuManager.add(setBranchShortNameCommand);
       return setBranchShortNameCommand.getId();
    }
+
    private void createSetAssociatedArtifactCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addSetAssociatedArtifactCommand(menuManager),
@@ -995,6 +1006,7 @@ private Preferences getViewPreference() {
       menuManager.add(setBranchShortNameCommand);
       return setBranchShortNameCommand.getId();
    }
+
    private void createOpenAssociatedArtifactCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addOpenAssociatedArtifactCommand(menuManager),
@@ -1101,6 +1113,7 @@ private Preferences getViewPreference() {
       menuManager.add(setBranchDefaultCommand);
       return setBranchDefaultCommand.getId();
    }
+
    private void createSetDefaultCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addSetDefaultCommand(menuManager),
@@ -1135,6 +1148,7 @@ private Preferences getViewPreference() {
       menuManager.add(showChangeReportCommand);
       return showChangeReportCommand.getId();
    }
+
    private void createChangeReportCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addChangeReportCommand(menuManager),
@@ -1204,8 +1218,9 @@ private Preferences getViewPreference() {
          }
       });
    }
+
    private void createMarkAsFavoriteCommand(MenuManager menuManager) {
-      addMarkAsFavoriteCommand(menuManager);  
+      addMarkAsFavoriteCommand(menuManager);
       handlerService.activateHandler(getSite().getId() + ".markAsFavoriteCommand",
 
       new AbstractSelectionEnabledHandler(menuManager) {
@@ -1313,32 +1328,34 @@ private Preferences getViewPreference() {
          return (validBranchSelected) || (!useParentBranch && OseeProperties.getInstance().isDeveloper() && SkynetSelections.oneBranchSelected(selection));
       }
    }
+
    private void addCommitCommand(MenuManager menuManager) {
-	      menuManager.add(new CompoundContributionItem() {
-	         @Override
-	         protected IContributionItem[] getContributionItems() {
-	            String parentBranchName = "";
-	            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
+      menuManager.add(new CompoundContributionItem() {
+         @Override
+         protected IContributionItem[] getContributionItems() {
+            String parentBranchName = "";
+            IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
-	            try {
-	               if (SkynetSelections.oneDescendantBranchSelected(selection)) {
-	                  Branch parent =
-	                        ((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).getParentBranch();
-	                  parentBranchName = parent.getBranchName();
-	               }
-	            } catch (SQLException ex) {
-	               logger.log(Level.SEVERE, ex.toString(), ex);
-	            }
-	            IContributionItem[] myIContributionItems =
-	                  new IContributionItem[] {Commands.getLocalCommandContribution(getSite(), "commitIntoParentCommand",
-	                        "Commit Into Parent Branch: " + parentBranchName, null, null, null, null, null, null)};
+            try {
+               if (SkynetSelections.oneDescendantBranchSelected(selection)) {
+                  Branch parent =
+                        ((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).getParentBranch();
+                  parentBranchName = parent.getBranchName();
+               }
+            } catch (SQLException ex) {
+               logger.log(Level.SEVERE, ex.toString(), ex);
+            }
+            IContributionItem[] myIContributionItems =
+                  new IContributionItem[] {Commands.getLocalCommandContribution(getSite(), "commitIntoParentCommand",
+                        "Commit Into Parent Branch: " + parentBranchName, null, null, null, null, null, null)};
 
-	            return myIContributionItems;
-	         }
-	      });
+            return myIContributionItems;
+         }
+      });
    }
+
    private void createCommitCommand(MenuManager menuManager) {
-	  addCommitCommand(menuManager);
+      addCommitCommand(menuManager);
       handlerService.activateHandler(getSite().getId() + ".commitIntoParentCommand", new CommitHandler(menuManager,
             true));
    }
@@ -1350,6 +1367,7 @@ private Preferences getViewPreference() {
       menuManager.add(createBranchCommand);
       return createBranchCommand.getId();
    }
+
    private void createBranchCommand(MenuManager menuManager) {
       handlerService.activateHandler(addBranchCommand(menuManager), new BranchCreationHandler(menuManager, branchTable,
             false));
@@ -1362,6 +1380,7 @@ private Preferences getViewPreference() {
       menuManager.add(createSelectiveBranchCommand);
       return createSelectiveBranchCommand.getId();
    }
+
    private void createSelectivelyBranchCommand(MenuManager menuManager) {
       handlerService.activateHandler(addSelectivelyBranchCommand(menuManager), new BranchCreationHandler(menuManager,
             branchTable, true));
@@ -1374,6 +1393,7 @@ private Preferences getViewPreference() {
       menuManager.add(viewTableReportCommand);
       return viewTableReportCommand.getId();
    }
+
    private void createViewTableMenuItem(MenuManager menuManager) {
 
       handlerService.activateHandler(addViewTableMenuItem(menuManager),
@@ -1401,6 +1421,7 @@ private Preferences getViewPreference() {
       menuManager.add(importOntoBranchCommand);
       return importOntoBranchCommand.getId();
    }
+
    private void createImportOntoBranchCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addImportOntoBranchCommand(menuManager),
@@ -1435,6 +1456,7 @@ private Preferences getViewPreference() {
       menuManager.add(importDescendantsOntoBranchCommand);
       return importDescendantsOntoBranchCommand.getId();
    }
+
    private void createImportDescendantsOntoBranchCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addImportDescendantsOntoBranchCommand(menuManager),
@@ -1469,6 +1491,7 @@ private Preferences getViewPreference() {
       menuManager.add(exportBranchAndDescendantsCommand);
       return exportBranchAndDescendantsCommand.getId();
    }
+
    private void createExportBranchCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addExportBranchCommand(menuManager),
@@ -1503,6 +1526,7 @@ private Preferences getViewPreference() {
       menuManager.add(exportDescendantsCommand);
       return exportDescendantsCommand.getId();
    }
+
    private void createExportBranchDescendantsCommand(MenuManager menuManager) {
 
       handlerService.activateHandler(addExportBranchDescendantsCommand(menuManager),

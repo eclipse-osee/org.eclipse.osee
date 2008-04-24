@@ -24,7 +24,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Ryan D. Brooks
  */
-public class ChangeIcons {
+public class AttributeChangeIcons {
    private static final SkynetActivator skynetActivator = SkynetActivator.getInstance();
    private static final String BASE_IMAGE_STRING = "molecule";
    private static boolean imagesInitialized;

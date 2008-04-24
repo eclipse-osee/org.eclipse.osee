@@ -21,10 +21,10 @@ import org.eclipse.swt.SWT;
  */
 public enum ChangeColumn {
 
-   Artifact_Name("Artifact", 300, SWT.LEFT, true, SortDataType.String, false),
-
-   Attribute_Name("Attribute", 250, SWT.LEFT, true, SortDataType.String, false),
-
+   Name("Artifact name(s)", 350, SWT.LEFT, true, SortDataType.String, false),
+   Item_Type("Item Type", 150, SWT.LEFT, true, SortDataType.String, false),
+   Item_Kind("Item Kind", 80, SWT.LEFT, true, SortDataType.String, false),
+   Change_Type("Change Type", 80, SWT.LEFT, true, SortDataType.String, false),
    Value("Value", 300, SWT.LEFT, true, SortDataType.String, false);
 
    private final String name;

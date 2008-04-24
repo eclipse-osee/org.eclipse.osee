@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeContentProvider;
@@ -33,34 +32,31 @@ public class XChangeLabelProvider implements ITableLabelProvider {
    }
 
    public String getColumnText(Object element, int columnIndex) {
+      String text = "";
+
       if (element instanceof String) {
-         if (columnIndex == 1)
-            return (String) element;
-         else
-            return "";
+         text = (String) element;
       }
-      try{
-		if (element instanceof Change) {
-			if (columnIndex == 0) {
-				return ((Change) element).getArtifactName();
-			}
-		}
+      try {
+         if (element instanceof Change) {
+            Change change = (Change) element;
 
-		if (element instanceof AttributeChanged) {
-			AttributeChanged attributeChange = (AttributeChanged) element;
-			if (columnIndex == 0) {
-				return attributeChange.getArtifactName();
-			} else if (columnIndex == 1) {
-				return attributeChange.getDynamicAttributeDescriptor().getName();
-			} 
-			else if (columnIndex == 2)
-				return attributeChange.getSourceDisplayData();
+            if (columnIndex == 0) {
+               text = change.getName();
+            } else if (columnIndex == 1) {
+               text = change.getItemTypeName();
+            } else if (columnIndex == 2) {
+               text = change.getItemKind();
+            } else if (columnIndex == 3) {
+               text = change.getTransactionType().toString();
+            } else if (columnIndex == 4) {
+               text = change.getValue();
+            }
+         }
+      } catch (SQLException exception) {
 
-		}
-      }catch(SQLException exception){
-    	  
       }
-      return "";
+      return text;
    }
 
    /**
@@ -77,12 +73,17 @@ public class XChangeLabelProvider implements ITableLabelProvider {
     */
    public String getColumnText(Object element, int columnIndex, Branch branch, XViewerColumn xCol, ChangeColumn aCol) throws SQLException {
       if (!xCol.isShow()) return ""; // Since not shown, don't display
-      if (aCol == ChangeColumn.Artifact_Name) {
-         return "Artifact";
-      } else if (aCol == ChangeColumn.Attribute_Name) {
-         return "Attribute";
-      } else if (aCol == ChangeColumn.Value)
-         return "Value";
+      if (aCol == ChangeColumn.Name) {
+         return ChangeColumn.Name.getName();
+      } else if (aCol == ChangeColumn.Item_Type) {
+         return ChangeColumn.Item_Type.getName();
+      } else if (aCol == ChangeColumn.Value) {
+         return ChangeColumn.Value.getName();
+      } else if (aCol == ChangeColumn.Item_Kind) {
+         return ChangeColumn.Item_Kind.getName();
+      } else if (aCol == ChangeColumn.Change_Type) {
+         return ChangeColumn.Change_Type.getName();
+      }
       return "Unhandled Column";
    }
 
@@ -111,23 +112,23 @@ public class XChangeLabelProvider implements ITableLabelProvider {
       if (xCol == null) return null;
       ChangeColumn dCol = ChangeColumn.getAtsXColumn(xCol);
       if (!xCol.isShow()) return null; // Since not shown, don't display
-      
-      if (element instanceof Change) {
-          Change change = (Change) element;
 
-          if (dCol == ChangeColumn.Artifact_Name) {
-             try {
-                return change.getArtifactImage();
-             } catch (IllegalArgumentException ex) {
-                OSEELog.logException(XMergeContentProvider.class, ex, true);
-             } catch (SQLException ex) {
-                OSEELog.logException(XMergeContentProvider.class, ex, true);
-             }
-          } else if (dCol == ChangeColumn.Attribute_Name) {
-             return change.getImage();
-          } 
+      if (element instanceof Change) {
+         Change change = (Change) element;
+
+         if (dCol == ChangeColumn.Name) {
+            try {
+               return change.getItemKindImage();
+            } catch (IllegalArgumentException ex) {
+               OSEELog.logException(XMergeContentProvider.class, ex, true);
+            } catch (Exception ex) {
+               OSEELog.logException(XMergeContentProvider.class, ex, true);
+            }
+         } else if (dCol == ChangeColumn.Item_Type) {
+            return change.getItemTypeImage();
+         }
       }
-      
+
       return null;
    }
 }

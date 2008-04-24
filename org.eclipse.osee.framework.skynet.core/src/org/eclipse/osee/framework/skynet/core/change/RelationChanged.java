@@ -1,0 +1,176 @@
+/*
+ * Created on Apr 15, 2008
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.framework.skynet.core.change;
+
+import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
+import org.eclipse.swt.graphics.Image;
+
+/**
+ * @author Jeff C. Phillips
+ */
+public class RelationChanged extends Change {
+
+   private int bArtId;
+   private String bArtName;
+   private Artifact bArtifact;
+   private int relLinkId;
+   private String rationale;
+   private int aLinkOrder;
+   private int bLinkOrder;
+   private IRelationType relationType;
+
+   /**
+    * @param aArtTypeId
+    * @param aArtName
+    * @param sourceGamma
+    * @param aArtId
+    * @param toTransactionId
+    * @param fromTransactionId
+    * @param transactionType
+    * @param changeType
+    * @param bArtId
+    * @param bArtifact
+    * @param relLinkId
+    * @param rationale
+    * @param aLinkOrder
+    * @param relationType
+    */
+   public RelationChanged(int aArtTypeId, String aArtName, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, TransactionType transactionType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, IRelationType relationType) {
+      super(aArtTypeId, aArtName, sourceGamma, aArtId, toTransactionId, fromTransactionId, transactionType, changeType);
+      this.bArtId = bArtId;
+      this.relLinkId = relLinkId;
+      this.rationale = rationale;
+      this.aLinkOrder = aLinkOrder;
+      this.bLinkOrder = bLinkOrder;
+      this.relationType = relationType;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getImage()
+    */
+   @Override
+   public Image getItemTypeImage() {
+      return RelationChangeIcons.getImage(getChangeType(),
+            TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+    */
+   @SuppressWarnings("unchecked")
+   @Override
+   public Object getAdapter(Class adapter) {
+      return null;
+   }
+
+   /**
+    * @return the bArtId
+    */
+   public int getBArtId() {
+      return bArtId;
+   }
+
+   /**
+    * @return the bArtifact
+    */
+   public Artifact getBArtifact() {
+      return bArtifact;
+   }
+
+   /**
+    * @return the relLinkId
+    */
+   public int getRelLinkId() {
+      return relLinkId;
+   }
+
+   /**
+    * @return the rationale
+    */
+   public String getRationale() {
+      return rationale;
+   }
+
+   /**
+    * @return the linkOrder
+    */
+   public int getLinkOrder() {
+      return aLinkOrder;
+   }
+
+   /**
+    * @return the relationType
+    */
+   public IRelationType getRelationType() {
+      return relationType;
+   }
+
+   /**
+    * @return the bArtName
+    */
+   public String getBArtName() {
+      return bArtName;
+   }
+
+   /**
+    * @param artName the bArtName to set
+    */
+   public void setBArtName(String artName) {
+      bArtName = artName;
+   }
+
+   /**
+    * @return the bLinkOrder
+    */
+   public int getBLinkOrder() {
+      return bLinkOrder;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getName()
+    */
+   @Override
+   public String getName() {
+      return getArtifactName() + " <-> " + getBArtName();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getTypeName()
+    */
+   @Override
+   public String getItemTypeName() throws SQLException {
+      return relationType.getTypeName();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getValue()
+    */
+   @Override
+   public String getValue() {
+      return getRationale();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getArtifactImage()
+    */
+   @Override
+   public Image getItemKindImage() throws IllegalArgumentException, SQLException {
+      return getItemTypeImage();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemKind()
+    */
+   @Override
+   public String getItemKind() {
+      return "Relation";
+   }
+
+}

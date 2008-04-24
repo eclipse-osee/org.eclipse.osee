@@ -300,7 +300,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
    public void setChanges(Change[] changes) throws IllegalStateException, SQLException {
 	      this.changes = changes;
 	      loadTable();
-	      xChangeViewer.setWorkingBranch(changes);
+	      xChangeViewer.setChanges(changes);
    }
 
 }

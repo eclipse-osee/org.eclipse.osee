@@ -112,7 +112,7 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setWorkingBranch(Change[] changes) throws SQLException {
+   public void setChanges(Change[] changes) throws SQLException {
       this.changes = changes;
       setInput(changes);
       expandAll();

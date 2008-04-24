@@ -37,7 +37,7 @@ public class TagChangedArtifacts extends AbstractBlam {
 
       for (Branch branch : branches) {
          int count = 0;
-         Collection<Change> changes = RevisionManager.getInstance().getArtifactChanges(branch);
+         Collection<Change> changes = RevisionManager.getInstance().getChangesPerBranch(branch);
          int total = changes.size();
 
          for (Change change : changes) {

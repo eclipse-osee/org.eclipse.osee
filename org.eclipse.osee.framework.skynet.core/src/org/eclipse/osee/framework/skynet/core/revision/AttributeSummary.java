@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.change.ChangeIcons;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChangeIcons;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;
@@ -58,6 +58,6 @@ public class AttributeSummary extends ChangeSummary<AttributeChange> implements 
    }
 
    protected Image getImage(ChangeType changeType, ModificationType modType) {
-      return ChangeIcons.getImage(changeType, modType);
+      return AttributeChangeIcons.getImage(changeType, modType);
    }
 }

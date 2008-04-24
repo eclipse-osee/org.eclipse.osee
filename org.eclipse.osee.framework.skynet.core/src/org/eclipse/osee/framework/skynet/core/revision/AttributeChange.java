@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
 import java.io.InputStream;
-import org.eclipse.osee.framework.skynet.core.change.ChangeIcons;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChangeIcons;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;
@@ -99,7 +99,7 @@ public class AttributeChange extends RevisionChange implements IAttributeChange 
     */
    @Override
    public Image getImage() {
-      return ChangeIcons.getImage(getChangeType(), getModType());
+      return AttributeChangeIcons.getImage(getChangeType(), getModType());
    }
 
    /**

@@ -13,8 +13,12 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.swt.graphics.Image;
@@ -23,11 +27,13 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public class AttributeChanged extends Change {
+   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AttributeChanged.class);
    private String sourceValue;
    private InputStream sourceContent;
    private int attrId;
    private int attrTypeId;
    private DynamicAttributeDescriptor dynamicAttributeDescriptor;
+   private ArtifactChange artifactChange;
 
    /**
     * @param sourceGamma
@@ -47,13 +53,6 @@ public class AttributeChanged extends Change {
       this.sourceContent = sourceContent;
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
-   }
-
-   /**
-    * @return the sourceValue
-    */
-   public String getSourceValue() {
-      return sourceValue;
    }
 
    /**
@@ -87,17 +86,52 @@ public class AttributeChanged extends Change {
       return dynamicAttributeDescriptor;
    }
 
-   public Image getImage() {
-      return ChangeIcons.getImage(getChangeType(),
+   public Image getItemTypeImage() {
+      return AttributeChangeIcons.getImage(getChangeType(),
             TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.change.Change#getSourceDisplayData()
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getName()
     */
    @Override
-   public String getSourceDisplayData() {
-      return getSourceValue() != null ? getSourceValue() : "Stream data";
+   public String getName() {
+      return getArtifactName();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getTypeName()
+    */
+   @Override
+   public String getItemTypeName() throws SQLException {
+      return getDynamicAttributeDescriptor().getName();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getItemKind()
+    */
+   @Override
+   public String getItemKind() {
+      return "Attribute";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getValue()
+    */
+   @Override
+   public String getValue() {
+      return sourceValue != null ? sourceValue : "Stream data";
+   }
+
+   private ArtifactChange getArtifactChange() throws SQLException {
+      if (artifactChange == null) {
+         artifactChange =
+               new ArtifactChange(getChangeType(), getArtId(),
+                     TransactionType.convertTransactionTypeToModificationType(getTransactionType()).getValue(),
+                     getGamma(), getToTransactionId(), getFromTransactionId(),
+                     ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(getArtTypeId()));
+      }
+      return artifactChange;
    }
 
    /* (non-Javadoc)
@@ -105,6 +139,30 @@ public class AttributeChanged extends Change {
     */
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
+      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+
+      try {
+         // this is a temporary fix until the old change report goes away.
+         if (adapter.isInstance(getArtifactChange())) {
+            return getArtifactChange();
+         }
+         if (adapter.isInstance(getArtifact())) {
+            return getArtifact();
+         }
+      } catch (IllegalArgumentException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (SQLException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getObjectImage()
+    */
+   @Override
+   public Image getItemKindImage() throws IllegalArgumentException, SQLException {
+      return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artTypeId).getImage(
+            getChangeType(), TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
    }
 }

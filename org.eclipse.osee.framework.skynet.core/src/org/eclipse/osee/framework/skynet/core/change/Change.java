@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.swt.graphics.Image;
@@ -33,7 +32,7 @@ public abstract class Change implements IAdaptable {
    private TransactionType transactionType;
    private ChangeType changeType;
    private String artName;
-   private int artTypeId;
+   protected int artTypeId;
 
    /**
     * @param sourceGamma
@@ -89,7 +88,7 @@ public abstract class Change implements IAdaptable {
    /**
     * @return the sourceGamma
     */
-   public int getSourceGamma() {
+   public int getGamma() {
       return sourceGamma;
    }
 
@@ -121,12 +120,29 @@ public abstract class Change implements IAdaptable {
       this.fromTransactionId = fromTransactionId;
    }
 
-   public Image getArtifactImage() throws IllegalArgumentException, SQLException {
-      return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artTypeId).getImage(
-            getChangeType(), TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
+   public abstract Image getItemKindImage() throws IllegalArgumentException, SQLException;
+
+   public abstract Image getItemTypeImage();
+
+   public abstract String getValue();
+
+   public abstract String getItemTypeName() throws SQLException;
+
+   public abstract String getName();
+
+   public abstract String getItemKind();
+
+   /**
+    * @param artName the artName to set
+    */
+   public void setArtName(String artName) {
+      this.artName = artName;
    }
 
-   public abstract Image getImage();
-
-   public abstract String getSourceDisplayData();
+   /**
+    * @return the artTypeId
+    */
+   public int getArtTypeId() {
+      return artTypeId;
+   }
 }
