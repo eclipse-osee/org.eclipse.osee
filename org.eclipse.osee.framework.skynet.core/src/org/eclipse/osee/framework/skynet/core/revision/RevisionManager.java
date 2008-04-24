@@ -388,7 +388,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
       loadAttributeChanges(sourceBranch, changes);
       loadRelationChanges(sourceBranch, artIds, changeItemsNeedName);
-      loadDeletedArtifacChanges(sourceBranch, artIds, changeItemsNeedName);
+      loadDeletedArtifactChanges(sourceBranch, artIds, changeItemsNeedName);
 
       setArtifactNames(sourceBranch, changeItemsNeedName, changes, artIds);
 
@@ -438,7 +438,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param changes
     * @throws SQLException
     */
-   private void loadDeletedArtifacChanges(Branch sourceBranch, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
+   private void loadDeletedArtifactChanges(Branch sourceBranch, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       TransactionId sourceHeadTransactionId = transactionIdManager.getEditableTransactionId(sourceBranch);
       try {
