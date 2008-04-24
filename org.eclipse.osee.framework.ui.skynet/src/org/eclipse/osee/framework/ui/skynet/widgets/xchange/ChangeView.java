@@ -55,13 +55,13 @@ public class ChangeView extends ViewPart implements IActionable {
       Job job = new Job("Open Change View") {
 
          @Override
-         protected IStatus run(IProgressMonitor monitor) {
+         protected IStatus run(final IProgressMonitor monitor) {
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
                   try {
 
-                     if (changes.length == 0) {
-
+                     if (changes == null || changes.length == 0) {
+                        AWorkbench.popup("Information", "There are no changes on this branch.");
                      } else {
                         IWorkbenchPage page = AWorkbench.getActivePage();
                         ChangeView changeView =
@@ -75,7 +75,6 @@ public class ChangeView extends ViewPart implements IActionable {
                   }
                }
             });
-
             monitor.done();
             return Status.OK_STATUS;
          }
