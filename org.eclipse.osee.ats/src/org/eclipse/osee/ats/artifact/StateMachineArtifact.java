@@ -597,9 +597,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
             }
             return hours;
          } else {
-            Double value = getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
-            if (value == null) return 0;
-            return value;
+            return getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), 0.0);
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, true);
