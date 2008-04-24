@@ -8,18 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.util;
-
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
+package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 /**
- * @author Donald G. Dunne
+ * @author Ryan D. Brooks
  */
-public class ArtifactDoesNotExist extends OseeCoreException {
+public abstract class AbstractArtifactSearchCriteria {
 
-   private static final long serialVersionUID = 1L;
+   public abstract void addToTableSql(ArtifactQueryBuilder builder);
 
-   public ArtifactDoesNotExist(String message) {
-      super(message);
+   public abstract void addToWhereSql(ArtifactQueryBuilder builder);
+
+   public void addJoinSql(ArtifactQueryBuilder builder, AbstractArtifactSearchCriteria rightCriteria) {
+
+   }
+
+   public void addJoinArtId(ArtifactQueryBuilder builder) {
    }
 }

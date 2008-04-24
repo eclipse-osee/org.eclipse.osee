@@ -12,7 +12,6 @@ Require-Bundle: org.eclipse.core.runtime,
  net.jini,
  org.eclipse.osee.framework.jini,
  org.eclipse.osee.framework.database,
- org.junit,
  org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.ui.plugin
 Eclipse-LazyStart: true

@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -124,8 +125,8 @@ public class FullPortableExport {
    }
 
    public void createArtifactSheets(Branch branch) throws IOException, SQLException {
-      for (ArtifactSubtypeDescriptor descriptor : configurationManager.getValidArtifactTypes(branch)) {
-         createArtifactSheet(descriptor, artifactManager.getArtifactsFromSubtype(branch, descriptor));
+      for (ArtifactSubtypeDescriptor artifactType : configurationManager.getValidArtifactTypes(branch)) {
+         createArtifactSheet(artifactType, ArtifactQuery.getAtrifactsFromType(artifactType, branch));
       }
    }
 

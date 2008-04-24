@@ -1,22 +1,25 @@
-/*
- * Created on Apr 18, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.util;
+
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public class MultipleArtifactsExist extends Exception {
+public class MultipleArtifactsExist extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   /**
-    * @param arg0
-    */
-   public MultipleArtifactsExist(String arg0) {
-      super(arg0);
+   public MultipleArtifactsExist(String message) {
+      super(message);
    }
-
 }
