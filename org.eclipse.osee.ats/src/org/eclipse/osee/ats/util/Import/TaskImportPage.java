@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.util.Import;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.resources.IResource;
@@ -24,9 +23,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.FileSelector;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -142,8 +142,8 @@ public class TaskImportPage extends WizardDataTransferPage {
       if (currentResourceSelection != null) fileSelector.setText(currentResourceSelection.getLocation().toString());
       setPageComplete(determinePageCompletion());
    } /*
-                 * @see WizardPage#becomesVisible
-                 */
+                       * @see WizardPage#becomesVisible
+                       */
 
    public void setVisible(boolean visible) {
       super.setVisible(visible);
@@ -164,25 +164,23 @@ public class TaskImportPage extends WizardDataTransferPage {
          setErrorMessage("Enter valid HRID");
          return false;
       }
-      Collection<Artifact> arts;
       try {
-         arts =
-               ArtifactPersistenceManager.getInstance().getArtifactsFromHrid(hrid,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
-         if (arts.size() != 1) {
+         try {
+            Artifact artifact =
+                  ArtifactQuery.getArtifactFromId(hrid, BranchPersistenceManager.getInstance().getAtsBranch());
+            if (!(artifact instanceof StateMachineArtifact)) {
+               setErrorMessage("Artifact retrieved is not a StateMachineArtifact");
+               actionLabel.setText("");
+               return false;
+            }
+            actionLabel.setText(String.format("Import to: \"%s\"\nCurrent state: %s", artifact.getDescriptiveName(),
+                  ((StateMachineArtifact) artifact).getCurrentStateName()));
+            actionLabel.getParent().layout();
+         } catch (OseeCoreException ex) {
             setErrorMessage("Can't retrieve artifact for entered HRID");
             actionLabel.setText("");
             return false;
          }
-         Artifact art = arts.iterator().next();
-         if (!(art instanceof StateMachineArtifact)) {
-            setErrorMessage("Artifact retrieved is not a StateMachineArtifact");
-            actionLabel.setText("");
-            return false;
-         }
-         actionLabel.setText(String.format("Import to: \"%s\"\nCurrent state: %s",
-               ((StateMachineArtifact) art).getDescriptiveName(), ((StateMachineArtifact) art).getCurrentStateName()));
-         actionLabel.getParent().layout();
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }

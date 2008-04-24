@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.operation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,10 +19,10 @@ import org.eclipse.osee.framework.database.ConnectionHandler;
 import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.DbUtil;
 import org.eclipse.osee.framework.database.sql.SQL3DataType;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
 
@@ -57,23 +56,20 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
    }
 
    private void updateWorkflow(String commitComment, int transactionId) throws SQLException {
-      ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
       Branch atsBranch = BranchPersistenceManager.getInstance().getCommonBranch();
       Matcher hridMatcher = hridPattern.matcher(commitComment);
 
       if (hridMatcher.find()) {
          String hrid = hridMatcher.group(1);
-         Collection<Artifact> artiafcts = artifactManager.getArtifactsFromHrid(hrid, atsBranch);
-         if (artiafcts.size() == 1) {
-            int artId = artiafcts.iterator().next().getArtId();
+
+         try {
+            int artId = ArtifactQuery.getArtifactFromId(hrid, atsBranch).getArtId();
             ConnectionHandler.runPreparedUpdate(
                   "UPDATE osee_define_tx_details SET commit_art_id = ? where transaction_id = ?", SQL3DataType.INTEGER,
                   artId, SQL3DataType.INTEGER, transactionId);
-         } else {
-            appendResultLine("expected to find one match for HRID " + hrid + " not " + artiafcts.size());
+         } catch (OseeCoreException ex) {
+            appendResultLine(ex.getLocalizedMessage());
          }
-      } else {
-         appendResultLine("Commit comment not of expected pattern: " + commitComment);
       }
    }
 

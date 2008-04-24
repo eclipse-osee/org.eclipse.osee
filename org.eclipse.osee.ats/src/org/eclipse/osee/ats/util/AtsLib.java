@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -121,16 +122,9 @@ public class AtsLib implements IAtsLib {
    public void openArtifact(String guidOrHrid, Integer branchId, OseeAts.OpenView view) {
       try {
          Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
-         Artifact art = null;
-         if (guidOrHrid.length() == 5) {
-            Collection<Artifact> arts =
-                  ArtifactPersistenceManager.getInstance().getArtifactsFromHrid(guidOrHrid, branch);
-            if (arts.size() > 0) art = arts.iterator().next();
-         } else {
-            art = ArtifactPersistenceManager.getInstance().getArtifact(guidOrHrid, branch);
-         }
-         if (art != null) openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
-      } catch (SQLException ex) {
+         Artifact artifact = ArtifactQuery.getArtifactFromId(guidOrHrid, branch);
+         openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
@@ -141,38 +135,23 @@ public class AtsLib implements IAtsLib {
     * @param guid
     */
    public void openArtifact(String guid, OseeAts.OpenView view) {
-      Artifact art = null;
+      Artifact artifact = null;
       try {
-         if (guid.length() == 5) {
-            Collection<Artifact> arts =
-                  apm.getArtifactsFromHrid(guid, BranchPersistenceManager.getInstance().getAtsBranch());
-            if (arts.size() > 1) {
-               OSEELog.logSevere(AtsPlugin.class, "Action in DB more than once " + guid, true);
-            } else if (arts.size() == 1) art = arts.iterator().next();
-         } else
-            art = apm.getArtifact(guid, BranchPersistenceManager.getInstance().getAtsBranch());
-      } catch (SQLException ex) {
+         artifact = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getInstance().getAtsBranch());
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
-      }
-      if (art == null) {
-         AWorkbench.popup("ERROR", "Action not in DB");
          return;
       }
+
       if (view == OseeAts.OpenView.ActionEditor) {
-         if ((art instanceof StateMachineArtifact) || (art instanceof ActionArtifact))
-            openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+         if ((artifact instanceof StateMachineArtifact) || (artifact instanceof ActionArtifact))
+            openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
          else
-            ArtifactEditor.editArtifact(art);
+            ArtifactEditor.editArtifact(artifact);
       } else if (view == OseeAts.OpenView.ArtifactEditor) {
-         ArtifactEditor.editArtifact(art);
+         ArtifactEditor.editArtifact(artifact);
       } else if (view == OseeAts.OpenView.ArtifactHyperViewer) {
          AWorkbench.popup("ERROR", "Unimplemented");
-         // try {
-         // ArtifactHyperView.openArtifact(art);
-         // }
-         // catch (PartInitException ex) {
-         // OSEELog.logException(AtsPlugin.class, ex, true);
-         // }
       }
    }
 

@@ -16,7 +16,6 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -30,9 +29,10 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.xml.sax.InputSource;
@@ -58,17 +58,17 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
       return description;
    }
 
-   public ExcelAtsTaskArtifactExtractor(String hrid, Branch branch, boolean emailPOCs) throws SQLException, IllegalArgumentException {
+   public ExcelAtsTaskArtifactExtractor(String hrid, Branch branch, boolean emailPOCs) throws SQLException, IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       super(branch);
       this.emailPOCs = emailPOCs;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifactsFromHrid(hrid,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
-      if (arts.size() == 0) throw new IllegalArgumentException("Can't find artifact associated with " + hrid);
-      if (arts.size() > 1) throw new IllegalArgumentException("Found two artifacts for HRID " + hrid);
-      if (!(arts.iterator().next() instanceof StateMachineArtifact)) throw new IllegalArgumentException(
-            "Artifact must be StateMachineArtifact");
-      sma = (StateMachineArtifact) arts.iterator().next();
+
+      Artifact artifact = ArtifactQuery.getArtifactFromId(hrid, branch);
+
+      if (!(artifact instanceof StateMachineArtifact)) {
+         throw new IllegalArgumentException("Artifact must be StateMachineArtifact");
+      }
+
+      sma = (StateMachineArtifact) artifact;
       smaMgr = new SMAManager(sma);
    }
 
