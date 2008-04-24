@@ -109,6 +109,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          public void run() {
             StringBuffer sb = new StringBuffer();
             sb.append(AHTML.beginMultiColumnTable(100));
+            sb.append(AHTML.addRowMultiColumnTable(new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Title: ",
+                  smaMgr.getSma().getDescriptiveName())}));
+            sb.append(AHTML.endMultiColumnTable());
+            sb.append(AHTML.beginMultiColumnTable(100));
             sb.append(AHTML.addRowMultiColumnTable(new String[] {
             //
                   AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ",
