@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.util;
+package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.io.File;
 import javax.mail.Message;

@@ -17,7 +17,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.jdk.core.util.AEmail;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;

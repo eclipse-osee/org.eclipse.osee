@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.util;
+package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.io.File;
 import java.util.Properties;
@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.jdk.core.util.StringDataSource;
 
 /**
  * @author Michael A. Winston

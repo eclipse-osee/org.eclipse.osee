@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import javax.mail.Message;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.jdk.core.util.AEmail;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.ui.skynet.util.AEmail;
 
 /**
  * @author Donald G. Dunne
