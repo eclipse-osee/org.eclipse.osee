@@ -402,6 +402,10 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @throws SQLException
     */
    private void setArtifactNames(Branch sourceBranch, Set<Change> changeItemsNeedName, ArrayList<Change> changes, Set<Integer> artIds) throws SQLException {
+      if (changeItemsNeedName.isEmpty()) {
+         return;
+      }
+
       Map<Integer, String> artIdsToName = new HashMap<Integer, String>();
       ConnectionHandlerStatement connectionHandlerStatement = null;
       String ART_NAMES =
