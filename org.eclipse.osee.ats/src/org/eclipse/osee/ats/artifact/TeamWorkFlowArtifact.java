@@ -575,7 +575,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
    public Date getWorldViewDeadlineDate() throws Exception {
-      return getSoleAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName());
+      return getSoleAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), null);
    }
 
    /*
