@@ -236,7 +236,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     */
    public double getManDayHrsFromItemAndChildren(TeamDefinitionArtifact teamDef) {
       try {
-         Double manDaysHrs = teamDef.getSoleAttributeValue(ATSAttributes.MAN_DAYS_NEEDED_ATTRIBUTE.getStoreName());
+         Double manDaysHrs = teamDef.getSoleAttributeValue(ATSAttributes.MAN_DAYS_NEEDED_ATTRIBUTE.getStoreName(), 0.0);
          if (manDaysHrs != null && manDaysHrs != 0) return manDaysHrs;
          if (teamDef.getParent() != null && (teamDef.getParent() instanceof TeamDefinitionArtifact)) return teamDef.getManDayHrsFromItemAndChildren((TeamDefinitionArtifact) teamDef.getParent());
          return StateMachineArtifact.MAN_DAY_HOURS;

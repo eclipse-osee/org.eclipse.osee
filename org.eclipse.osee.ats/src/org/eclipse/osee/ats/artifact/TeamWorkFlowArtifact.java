@@ -468,10 +468,10 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       if (vers.size() > 0) {
          date = vers.iterator().next().getEstimatedReleaseDate();
          if (date == null) {
-            date = getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+            date = getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
          }
       } else
-         date = getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName());
+         date = getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
       return date;
    }
 
@@ -536,10 +536,10 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       if (vers.size() > 0) {
          date = vers.iterator().next().getReleaseDate();
          if (date == null) {
-            date = getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+            date = getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
          }
       } else
-         date = getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName());
+         date = getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
       return date;
    }
 
