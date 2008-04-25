@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Connection Plug-in
+Bundle-SymbolicName: org.eclipse.osee.framework.db.connection
+Bundle-Version: 0.2.0.qualifier
+Bundle-Activator: org.eclipse.osee.framework.db.connection.Activator
+Bundle-Vendor: Boeing
+Eclipse-LazyStart: true
+Import-Package: org.eclipse.osee.framework.logging,
+ org.osgi.framework;version="1.3.0",
+ org.osgi.util.tracker;version="1.3.3"
+Export-Package: org.eclipse.osee.framework.db.connection,
+ org.eclipse.osee.framework.db.connection.core,
+ org.eclipse.osee.framework.db.connection.core.query,
+ org.eclipse.osee.framework.db.connection.core.schema,
+ org.eclipse.osee.framework.db.connection.core.transaction,
+ org.eclipse.osee.framework.db.connection.info
+Require-Bundle: org.eclipse.osee.framework.jdk.core
