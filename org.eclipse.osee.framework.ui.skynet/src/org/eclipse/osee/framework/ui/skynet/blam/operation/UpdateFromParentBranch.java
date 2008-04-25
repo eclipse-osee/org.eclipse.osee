@@ -120,6 +120,6 @@ public class UpdateFromParentBranch extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XBranchListViewer\" displayName=\"Child Branch Name\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Parent Branch Artifacts to update to Child Branch\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Child Branch Name\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Parent Branch Artifacts to update to Child Branch\" /></xWidgets>";
    }
 }
