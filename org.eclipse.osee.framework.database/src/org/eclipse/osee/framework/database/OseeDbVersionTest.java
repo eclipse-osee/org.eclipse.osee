@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.database;
 
 import java.sql.SQLException;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.core.OseeCodeVersion;
+import org.eclipse.osee.framework.db.connection.core.OseeDbVersion;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.plugin.core.db.OseeCodeVersion;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +29,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#setOseeDbVersion(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#setOseeDbVersion(java.sql.Connection)}.
     */
    public void testSetOseeDbVersion() throws Exception {
       OseeDbVersion.setOseeDbVersion(ConnectionHandler.getConnection(), TIME_STAMP);
@@ -40,7 +42,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#getOseeDbVersion(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#getOseeDbVersion(java.sql.Connection)}.
     */
    public void testGetOseeDbVersion() throws SQLException {
       String str = OseeDbVersion.getOseeDbVersion(ConnectionHandler.getConnection());
@@ -49,7 +51,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#setOseeDbCheckVersion(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#setOseeDbCheckVersion(java.sql.Connection)}.
     */
    public void testSetOseeDbCheckVersion() throws SQLException {
       OseeDbVersion.setOseeDbCheckVersion(ConnectionHandler.getConnection(), false);
@@ -62,7 +64,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#getOseeDbCheckVersion(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#getOseeDbCheckVersion(java.sql.Connection)}.
     */
    public void testGetOseeDbCheckVersion() throws SQLException {
       boolean check = OseeDbVersion.getOseeDbCheckVersion(ConnectionHandler.getConnection());
@@ -71,7 +73,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_DevDevCheck() throws Exception {
       // codeVersion = "Development";  dbVersion = "Development"; checkVersion = true; == PASS 
@@ -83,7 +85,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_DevTimeCheck() throws Exception {
       // codeVersion = "Development";  dbVersion = TIME_STAMP; checkVersion = true; == PASS 
@@ -95,7 +97,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_TimeTimeCheck() throws Exception {
       // codeVersion = TIME_STAMP;  dbVersion = TIME_STAMP; checkVersion = true; == PASS 
@@ -107,7 +109,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_PosttimeTimeCheck() throws Exception {
       // codeVersion = POST_TIME_STAMP;  dbVersion = TIME_STAMP; checkVersion = true; == PASS 
@@ -119,7 +121,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_PretimeTimeCheck() throws Exception {
       // codeVersion = PRE_TIME_STAMP;  dbVersion = TIME_STAMP; checkVersion = true; == Exception
@@ -137,7 +139,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_PretimeTimeDontcheck() throws Exception {
       // codeVersion = PRE_TIME_STAMP;  dbVersion = TIME_STAMP; checkVersion = false; == PASS
@@ -149,7 +151,7 @@ public class OseeDbVersionTest extends TestCase {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.database.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
+    * {@link org.eclipse.osee.framework.db.connection.core.OseeDbVersion#ensureDatabaseCompatability(java.sql.Connection)}.
     */
    public void testEnsureDatabaseCompatability_PretimeTimeCheckParamoverride() throws Exception {
       // codeVersion = PRE_TIME_STAMP;  dbVersion = TIME_STAMP; checkVersion = true; == Exception

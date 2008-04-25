@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.database.sql.datatype.FoxProDataType;
 import org.eclipse.osee.framework.database.sql.datatype.MySqlDataType;
 import org.eclipse.osee.framework.database.sql.datatype.OracleSqlDataType;
 import org.eclipse.osee.framework.database.sql.datatype.PostgresqlDataType;
-import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 /**
  * @author Roberto E. Escobar

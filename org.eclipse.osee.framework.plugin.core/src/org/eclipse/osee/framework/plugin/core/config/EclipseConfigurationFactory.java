@@ -42,7 +42,7 @@ public class EclipseConfigurationFactory extends BaseConfigurationFactory {
    }
 
    public OSEEConfig getOseeConfig() {
-      return OSEEConfigGUI.getInstance();
+      return OSEEConfig.getInstance();
    }
 
    public Logger getLogger(Class<?> classname) {

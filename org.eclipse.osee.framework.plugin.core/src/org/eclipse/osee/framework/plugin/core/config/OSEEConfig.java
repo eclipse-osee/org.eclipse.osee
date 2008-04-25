@@ -27,9 +27,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.plugin.core.config.data.DbInformation;
-import org.eclipse.osee.framework.plugin.core.config.data.ServerConfigUtil;
-import org.eclipse.osee.framework.plugin.core.config.data.DbDetailData.ConfigField;
 import org.osgi.framework.Bundle;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -44,16 +41,12 @@ public class OSEEConfig {
 
    private String[] serviceLookups = null;
    private String[] serviceGroups = null;
-   //   private boolean bypassSecurity = false;
    private boolean disableRemoteEvents = false;
-
-   //   private String defaultWorkspace;
    private OseeRunMode runMode;
-   private DbInformation databaseService;
    private String[][] bookmarks;
-   //   private String mySqlInstallLocation;
    private String authenticationProvider;
    private String remoteHttpServer;
+   //      private DbInformation databaseService;
 
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OSEEConfig.class);
 
@@ -80,8 +73,8 @@ public class OSEEConfig {
          parseDisableRemoteEvents(rootElement);
          parseMode(rootElement);
          parseLogger(rootElement);
-         ServerConfigUtil.getInstance().parseDatabaseConfigFile(rootElement);
-         getDefaultDatabaseService();
+         //                  ServerConfigUtil.getInstance().parseDatabaseConfigFile(rootElement);
+         //                  getDefaultDatabaseService();
          parseWebServers(rootElement);
          parseAuthenticationScheme(rootElement);
          parseHttpServer(rootElement);
@@ -156,20 +149,6 @@ public class OSEEConfig {
       return null;
    }
 
-   //   private void parseMySqlInstall(Element rootElement) {
-   //      NodeList list = rootElement.getElementsByTagName("MySqlInfo");
-   //      if (list.getLength() > 0) {
-   //         Element el = (Element) list.item(0);
-   //         this.mySqlInstallLocation = el.getAttribute("InstallLocation");
-   //      } else {
-   //         this.mySqlInstallLocation = null;
-   //      }
-   //   }
-
-   //   private void parseDefaultWorkspace(Element rootElement) {
-   //      defaultWorkspace = Jaxp.getChildTextTrim(rootElement, "DefaultWorkspace");
-   //   }
-
    private void parseServiceLookup(Element rootElement) {
 
       Element serviceLookup = Jaxp.getChild(rootElement, "ServiceLookup");
@@ -181,13 +160,6 @@ public class OSEEConfig {
          }
       }
    }
-
-   //   private void parseBypassSecurity(Element rootElement) {
-   //      Element bypassSecurityElement = Jaxp.getChild(rootElement, "BypassSecurity");
-   //      if (bypassSecurityElement != null) {
-   //         bypassSecurity = true;
-   //      }
-   //   }
 
    private void parseDisableRemoteEvents(Element rootElement) {
       Element disableRemoteEventsElement = Jaxp.getChild(rootElement, "DisableRemoteEvents");
@@ -302,10 +274,7 @@ public class OSEEConfig {
       return runMode;
    }
 
-   /**
-    * Get the configured database type. If we don't have a database configured the default value returned is
-    * SupportedDatabase.oracle.
-    */
+   /*
    public SupportedDatabase getDBType() {
       if (databaseService != null && databaseService.getDatabaseDetails() != null) {
          return databaseService.getDatabaseDetails().getDbType();
@@ -314,18 +283,6 @@ public class OSEEConfig {
       }
 
    }
-
-   //   public String getPassword() {
-   //      return databaseService.getDatabaseDetails().getFieldValue(ConfigField.Password);
-   //   }
-
-   //   public String getPort() {
-   //      return databaseService.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.port);
-   //   }
-
-   //   public String getServer() {
-   //      return databaseService.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.hostAddress);
-   //   }
 
    public String getServiceID() {
       return databaseService.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
@@ -339,34 +296,16 @@ public class OSEEConfig {
       return ServerConfigUtil.getInstance().getService(servicesId);
    }
 
-   //getDefaultDatabaseService
    public DbInformation getDefaultDatabaseService() {
       if (databaseService == null) {
          databaseService = ServerConfigUtil.getInstance().getDefaultService();
       }
       return databaseService;
    }
-
-   public void setDefaultDatabaseService(String serviceName) {
-      databaseService = getDatabaseService(serviceName);
-   }
-
-   //   public DbInformation[] getAllDbInformation() {
-   //      return ServerConfigUtil.getInstance().getAllDbServices();
-   //   }
-
-   //   public void setDefaultClientData(String id) {
-   //      System.setProperty(DEFAULT_DB_CONNECTION, id);
-   //      databaseService = ServerConfigUtil.getInstance().getDefaultService();
-   //   }
-
+   */
    public boolean isDisableRemoteEvents() {
       return disableRemoteEvents;
    }
-
-   //   public void setDisableRemoteEvents(boolean disableRemoteEvents) {
-   //      this.disableRemoteEvents = disableRemoteEvents;
-   //   }
 
    public String[][] getBookmarks() {
       return bookmarks;
@@ -375,24 +314,6 @@ public class OSEEConfig {
    public String getRemoteHttpServer() {
       return remoteHttpServer != null ? remoteHttpServer : "";
    }
-
-   //   public URL getBookmark(String name) throws MalformedURLException {
-   //      URL toReturn = null;
-   //      String[][] bookmarks = getBookmarks();
-   //      if (bookmarks != null) {
-   //         for (int i = 0; i < bookmarks.length; i++) {
-   //            String id = bookmarks[i][0];
-   //            if (id.equals(name)) {
-   //               return new URL(bookmarks[i][1]);
-   //            }
-   //         }
-   //      }
-   //      return toReturn;
-   //   }
-
-   //   public String getMySqlInstallLocation() {
-   //      return mySqlInstallLocation;
-   //   }
 
    public String getAuthenticationProviderId() {
       return authenticationProvider;

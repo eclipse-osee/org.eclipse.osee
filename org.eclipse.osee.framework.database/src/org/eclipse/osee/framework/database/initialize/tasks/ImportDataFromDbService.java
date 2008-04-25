@@ -18,15 +18,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import org.eclipse.osee.framework.database.DBConnection;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.utility.DatabaseDataExtractor;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.FileUtility;
+import org.eclipse.osee.framework.db.connection.DBConnection;
+import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.plugin.core.config.data.DbInformation;
 
 public class ImportDataFromDbService implements IDbInitializationTask {
    private Map<String, SchemaData> userSpecifiedConfig;
@@ -41,8 +41,7 @@ public class ImportDataFromDbService implements IDbInitializationTask {
       for (String importFromDbService : importConnections) {
          System.out.println("Import Table Data from Db: " + importFromDbService);
 
-         DbInformation databaseService =
-               ConfigUtil.getConfigFactory().getOseeConfig().getDatabaseService(importFromDbService);
+         DbInformation databaseService = OseeDb.getDatabaseService(importFromDbService);
 
          Connection importConnection = null;
          try {

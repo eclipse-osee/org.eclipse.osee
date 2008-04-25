@@ -14,7 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import org.eclipse.osee.framework.plugin.core.config.data.DbInformation;
+import org.eclipse.osee.framework.db.connection.DBConnection;
+import org.eclipse.osee.framework.db.connection.info.DbInformation;
 
 /**
  * @author Andrew M. Finkbeiner

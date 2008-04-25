@@ -14,8 +14,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.database.DBConnection;
-import org.eclipse.osee.framework.plugin.core.config.data.DbInformation;
+import org.eclipse.osee.framework.db.connection.DBConnection;
+import org.eclipse.osee.framework.db.connection.info.DbInformation;
 
 /**
  * @author Roberto E. Escobar

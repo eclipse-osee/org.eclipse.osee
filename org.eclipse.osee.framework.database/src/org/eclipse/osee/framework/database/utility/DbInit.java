@@ -20,9 +20,9 @@ import java.util.Set;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.data.TableElement;
 import org.eclipse.osee.framework.database.initialize.DbFactory;
-import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
-import org.eclipse.osee.framework.database.schemas.View;
-import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.core.schema.View;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 public class DbInit {
 

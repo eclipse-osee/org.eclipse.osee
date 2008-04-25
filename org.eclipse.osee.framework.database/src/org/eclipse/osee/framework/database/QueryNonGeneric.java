@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.database;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
 
 /**
  * @author Robert A. Fisher

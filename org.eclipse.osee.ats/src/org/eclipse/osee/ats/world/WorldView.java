@@ -42,7 +42,9 @@ import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -318,7 +320,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    }
 
    private String getWhoAmI() {
-      return ConfigUtil.getConfigFactory().getOseeConfig().getServiceID() + ", " + ConfigUtil.getConfigFactory().getOseeConfig().getUser() + " - " + SkynetAuthentication.getInstance().getAuthenticatedUser().getName();
+      return OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(ConfigField.DatabaseName) + ", " + OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
+            ConfigField.UserName) + " - " + SkynetAuthentication.getInstance().getAuthenticatedUser().getName();
    }
 
    public class FilterLabelProvider implements ILabelProvider {

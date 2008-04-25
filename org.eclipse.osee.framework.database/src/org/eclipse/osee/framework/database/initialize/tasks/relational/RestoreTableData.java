@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTas
 import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.database.sql.SqlManager;
 import org.eclipse.osee.framework.database.utility.DatabaseDataImporter;
-import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 public class RestoreTableData implements IDbInitializationTask {
    private Set<String> schemas;

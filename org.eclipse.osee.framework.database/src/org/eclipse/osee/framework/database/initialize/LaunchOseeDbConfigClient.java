@@ -27,10 +27,11 @@ import org.eclipse.osee.framework.database.core.DatabaseNotSupportedException;
 import org.eclipse.osee.framework.database.core.DbClientThread;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
+import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.info.DbInformation;
+import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.plugin.core.config.data.DbInformation;
-import org.eclipse.osee.framework.plugin.core.config.data.DbDetailData.ConfigField;
 import org.osgi.framework.Bundle;
 
 /**
@@ -133,7 +134,7 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       Logger.getLogger("org.eclipse.osee.framework.jdk.core.sql.manager.OracleSqlManager").setLevel(Level.SEVERE);
       Logger.getLogger("org.eclipse.osee.framework.jdk.core.sql.manager.OracleSqlManager").setLevel(Level.SEVERE);
 
-      DbInformation dbInfo = ConfigUtil.getConfigFactory().getOseeConfig().getDefaultDatabaseService();
+      DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
       String dbName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
       String userName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.UserName);
 

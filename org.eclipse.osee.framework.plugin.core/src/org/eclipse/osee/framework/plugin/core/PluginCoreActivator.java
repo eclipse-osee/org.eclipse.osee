@@ -10,6 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.plugin.core;
 
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -27,5 +35,41 @@ public class PluginCoreActivator extends OseeActivator {
     */
    public static PluginCoreActivator getInstance() {
       return pluginInstance;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.plugin.core.OseeActivator#start(org.osgi.framework.BundleContext)
+    */
+   @Override
+   public void start(BundleContext context) throws Exception {
+      super.start(context);
+
+      for (Bundle bundle : context.getBundles()) {
+         checkForEarlyStartup(bundle);
+      }
+
+      context.addBundleListener(new BundleListener() {
+
+         @Override
+         public void bundleChanged(BundleEvent event) {
+            if (event.getType() == BundleEvent.INSTALLED) {
+               checkForEarlyStartup(event.getBundle());
+            }
+         }
+      });
+   }
+
+   /**
+    * @param bundle
+    */
+   private void checkForEarlyStartup(Bundle bundle) {
+      if (bundle.getHeaders().get("OseeEarlyStart") != null) {
+         try {
+            bundle.start();
+         } catch (BundleException ex) {
+            OseeLog.log(OseeActivator.class.getName(), Level.SEVERE, ex.toString(), ex);
+         }
+      }
+
    }
 }

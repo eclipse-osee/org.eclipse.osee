@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
 
 /**
  * Processes a list of strings from a column of a query.

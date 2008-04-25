@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.sql.datatype;
 
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 
 /**
  * @author Roberto E. Escobar

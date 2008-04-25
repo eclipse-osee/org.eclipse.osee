@@ -65,7 +65,7 @@ public class HeadlessEclipseConfigurationFactory extends BaseConfigurationFactor
    }
 
    public OSEEConfig getOseeConfig() {
-      return OSEEConfigGUI.getInstance();
+      return OSEEConfig.getInstance();
    }
 
    private static void createDir(File file) {

@@ -16,3 +16,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.plugin
 Eclipse-LazyStart: true
+Import-Package: org.eclipse.osee.framework.db.connection,
+ org.eclipse.osee.framework.db.connection.info

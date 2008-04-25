@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.plugin.core.config;
 
 import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.OseeDb;
 
 public abstract class BaseConfigurationFactory implements IOseeConfigurationFactory {
 
@@ -18,7 +19,7 @@ public abstract class BaseConfigurationFactory implements IOseeConfigurationFact
 
    public DbErrorCodeLevel getDbErrorCodeLevel(SQLException ex) {
       if (dbErrorHandler == null) {
-         switch (getOseeConfig().getDBType()) {
+         switch (OseeDb.getDefaultDatabaseService().getDatabaseDetails().getDbType()) {
             case oracle:
                dbErrorHandler = new DbErrorHandlerOracle();
                break;

@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.config.demo.util;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.framework.database.DatabaseActivator;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -39,7 +39,7 @@ public class DemoTeams {
 
    public TeamDefinitionArtifact getTeamDef(Team team) throws Exception {
       // Add check to keep exception from occurring for OSEE developers running against production
-      ConfigUtil.getConfigFactory().getOseeConfig().getDefaultDatabaseService();
+      OseeDb.getDefaultDatabaseService();
       if (DatabaseActivator.getInstance().isProductionDb()) return null;
       try {
          return (new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, team.name().replaceAll("_", " "),

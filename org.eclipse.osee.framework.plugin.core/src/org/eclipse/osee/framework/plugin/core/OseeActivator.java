@@ -59,4 +59,5 @@ public class OseeActivator extends Plugin {
       super.start(context);
       helper = new ActivatorHelper(context, this);
    }
+
 }

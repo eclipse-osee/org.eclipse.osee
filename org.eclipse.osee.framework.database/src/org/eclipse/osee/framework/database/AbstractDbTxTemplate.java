@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.database;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
 /**

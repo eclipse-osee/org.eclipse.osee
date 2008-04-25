@@ -11,9 +11,10 @@ Require-Bundle: org.eclipse.core.runtime,
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.framework.plugin.core,
  org.eclipse.osee.framework.plugin.core.config,
- org.eclipse.osee.framework.plugin.core.config.data,
- org.eclipse.osee.framework.plugin.core.db,
  org.eclipse.osee.framework.plugin.core.server,
  org.eclipse.osee.framework.plugin.core.server.resources,
  org.eclipse.osee.framework.plugin.core.server.task,
  org.eclipse.osee.framework.plugin.core.util
+Import-Package: org.eclipse.osee.framework.db.connection,
+ org.eclipse.osee.framework.db.connection.info,
+ org.eclipse.osee.framework.logging

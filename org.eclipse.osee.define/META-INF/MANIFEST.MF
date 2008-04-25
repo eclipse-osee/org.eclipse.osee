@@ -28,3 +28,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.database
 Eclipse-LazyStart: true
+Import-Package: org.eclipse.osee.framework.db.connection

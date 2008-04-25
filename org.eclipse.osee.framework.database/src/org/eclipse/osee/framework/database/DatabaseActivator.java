@@ -12,7 +12,8 @@ package org.eclipse.osee.framework.database;
 
 import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 
@@ -44,8 +45,8 @@ public class DatabaseActivator extends OseeUiActivator {
       List<IConfigurationElement> elements =
             ExtensionPoints.getExtensionElements(DatabaseActivator.getInstance(), "ProductionDatabase",
                   "ProductionDatabase");
-
-      String dbServiceId = ConfigUtil.getConfigFactory().getOseeConfig().getServiceID();
+      String dbServiceId =
+            OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
       for (IConfigurationElement element : elements) {
          if (dbServiceId.equals(element.getAttribute("databaseInstance"))) {
             return true;
