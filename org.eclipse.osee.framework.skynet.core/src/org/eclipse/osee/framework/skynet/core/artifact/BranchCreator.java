@@ -194,9 +194,9 @@ public class BranchCreator implements PersistenceManager {
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                                                                                                                                                                                                                                                                        * parent
-                                                                                                                                                                                                                                                                                                                                                                        * transactoin_id
-                                                                                                                                                                                                                                                                                                                                                                        */, Integer /* gamma_id */>(
+                                                                                                                                                                                                                                                                                                                                                                                              * parent
+                                                                                                                                                                                                                                                                                                                                                                                              * transactoin_id
+                                                                                                                                                                                                                                                                                                                                                                                              */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -567,10 +567,10 @@ public class BranchCreator implements PersistenceManager {
                      "Merge " + sourceBranch.getDisplayName(), "Merge " + sourceBranch.getDisplayName());
          String attributeGammas =
                "INSERT INTO OSEE_DEFINE_TXS (transaction_id, tx_type, gamma_id) SELECT ?, ?, attr1.gamma_id From osee_define_attribute attr1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in " + Collections.toString(
-                     artIds, "(", ",", ")") + " GROUP BY t6.attr_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = attr1.gamma_id and attr1.art_id = ? and attr1.attr_id = t4.attr_id order by attr1.gamma_id";
+                     artIds, "(", ",", ")") + " GROUP BY t6.attr_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = attr1.gamma_id and attr1.attr_id = t4.attr_id order by attr1.gamma_id";
          String artifactVersionGammas =
                "INSERT INTO OSEE_DEFINE_TXS (transaction_id, tx_type, gamma_id) SELECT ?, ?, art1.gamma_id From osee_define_artifact_version art1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS transaction_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_artifact_version t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in " + Collections.toString(
-                     artIds, "(", ",", ")") + " GROUP BY t6.art_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = art1.gamma_id and art1.art_id = ? order by art1.gamma_id";
+                     artIds, "(", ",", ")") + " GROUP BY t6.art_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = art1.gamma_id order by art1.gamma_id";
 
          insertGammas(attributeGammas, branchWithTransactionNumber.getValue());
          insertGammas(artifactVersionGammas, branchWithTransactionNumber.getValue());
@@ -584,8 +584,7 @@ public class BranchCreator implements PersistenceManager {
 
       private void insertGammas(String sql, int baselineTransactionNumber) throws SQLException {
          ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER, baselineTransactionNumber, SQL3DataType.INTEGER,
-               TransactionType.Branched.getId(), SQL3DataType.INTEGER, sourceBranch.getBranchId(),
-               SQL3DataType.INTEGER, sourceBranch.getBranchId());
+               TransactionType.Branched.getId(), SQL3DataType.INTEGER, sourceBranch.getBranchId());
       }
    }
 }
