@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 
 /**
  * @author Robert A. Fisher

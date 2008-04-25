@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
-import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;

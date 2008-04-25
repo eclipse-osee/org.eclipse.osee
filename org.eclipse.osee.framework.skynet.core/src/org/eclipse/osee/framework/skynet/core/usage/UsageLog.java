@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.usage;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.USAGE_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.USAGE_TABLE;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,8 +18,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;

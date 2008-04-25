@@ -12,22 +12,23 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.plugin.core.config.data.DbDetailData;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.IDbConnectionListener;
+import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.info.DbDetailData;
 import org.eclipse.osee.framework.ui.plugin.event.ConnectionEvent;
 import org.eclipse.osee.framework.ui.plugin.event.CoreEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author Jeff C. Phillips
  */
-public class SkynetConnectionContributionItem extends SkynetContributionItem {
-   private static final DbDetailData dbData =
-         ConfigUtil.getConfigFactory().getOseeConfig().getDefaultDatabaseService().getDatabaseDetails();
+public class SkynetConnectionContributionItem extends SkynetContributionItem implements IDbConnectionListener {
+   private static final DbDetailData dbData = OseeDb.getDefaultDatabaseService().getDatabaseDetails();
    private static final String dbName = dbData.getFieldValue(DbDetailData.ConfigField.DatabaseName);
    private static final String userName = dbData.getFieldValue(DbDetailData.ConfigField.UserName);
    private static final String ID = "skynet.connection";
@@ -46,7 +47,7 @@ public class SkynetConnectionContributionItem extends SkynetContributionItem {
 
    private void init() {
       updateStatus(ConnectionHandler.isOpen());
-      eventManager.register(ConnectionEvent.class, this);
+      ConnectionHandler.addListener(this);
    }
 
    public static void addTo(IStatusLineManager manager) {
@@ -67,5 +68,18 @@ public class SkynetConnectionContributionItem extends SkynetContributionItem {
 
    public boolean runOnEventInDisplayThread() {
       return true;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.database.IDbConnectionListener#onConnectionStatusUpdate(boolean)
+    */
+   @Override
+   public void onConnectionStatusUpdate(final boolean open) {
+      Display.getDefault().asyncExec(new Runnable() {
+         @Override
+         public void run() {
+            updateStatus(open);
+         }
+      });
    }
 }

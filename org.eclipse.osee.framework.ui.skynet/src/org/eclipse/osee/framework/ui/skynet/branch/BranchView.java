@@ -51,7 +51,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,8 +18,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.database.IntegerRsetProcessor;
-import org.eclipse.osee.framework.database.Query;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 

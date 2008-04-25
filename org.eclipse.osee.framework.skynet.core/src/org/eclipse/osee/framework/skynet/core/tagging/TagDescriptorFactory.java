@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.tagging;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TAG_TYPE_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TAG_TYPE_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.Query;
-import org.eclipse.osee.framework.database.RsetProcessor;
-import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.core.RsetProcessor;
+import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
 /**

@@ -15,9 +15,9 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.database.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 
 /**

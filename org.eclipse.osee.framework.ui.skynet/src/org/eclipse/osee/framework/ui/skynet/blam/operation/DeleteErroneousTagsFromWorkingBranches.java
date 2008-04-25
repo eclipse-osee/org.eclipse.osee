@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;

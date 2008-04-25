@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.sql.ResultSet;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.DbUtil;
-import org.eclipse.osee.framework.database.schemas.Table;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.core.schema.Table;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 

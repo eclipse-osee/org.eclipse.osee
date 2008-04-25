@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,8 +30,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.database.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;

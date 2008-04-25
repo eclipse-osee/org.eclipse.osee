@@ -26,6 +26,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.info.DbDetailData;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
@@ -45,7 +47,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.NetworkRenameBranchEven
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkBroadcastEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetDisconnectClientsEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.plugin.core.config.data.DbDetailData;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -94,8 +95,7 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
    private RemoteEventManager() {
       super();
 
-      DbDetailData dbData =
-            ConfigUtil.getConfigFactory().getOseeConfig().getDefaultDatabaseService().getDatabaseDetails();
+      DbDetailData dbData = OseeDb.getDefaultDatabaseService().getDatabaseDetails();
       String dbName = dbData.getFieldValue(DbDetailData.ConfigField.DatabaseName);
       String userName = dbData.getFieldValue(DbDetailData.ConfigField.UserName);
 

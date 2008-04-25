@@ -27,6 +27,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.ActivatorHelper;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
@@ -98,6 +99,9 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       if (parentPlugin == this) parentPlugin = null;
 
       helper = new ActivatorHelper(context, this);
+
+      OseeLog.registerLoggerListener(new EclipseErrorLogLogger());
+
    }
 
    /**

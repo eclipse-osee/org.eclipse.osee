@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.tagging;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TAG_ART_MAP_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TAG_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TAG_ART_MAP_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TAG_TABLE;
 import static org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor.AUTO_INDEXED;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;

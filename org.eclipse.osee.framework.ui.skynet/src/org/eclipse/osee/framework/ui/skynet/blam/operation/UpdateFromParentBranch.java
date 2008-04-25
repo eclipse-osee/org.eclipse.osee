@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;

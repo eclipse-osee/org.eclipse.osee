@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TAG_ART_MAP_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TAG_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TAG_ART_MAP_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TAG_TABLE;
 import java.sql.SQLException;
 import java.util.List;
-import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**

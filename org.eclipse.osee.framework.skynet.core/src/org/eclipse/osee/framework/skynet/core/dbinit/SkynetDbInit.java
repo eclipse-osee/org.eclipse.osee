@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.dbinit;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.PERMISSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.PERMISSION_TABLE;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -21,20 +21,20 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.OseeDbVersion;
-import org.eclipse.osee.framework.database.OseeSequenceManager;
 import org.eclipse.osee.framework.database.data.SchemaData;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
-import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
 import org.eclipse.osee.framework.database.sql.SqlFactory;
 import org.eclipse.osee.framework.database.utility.DatabaseConfigurationData;
 import org.eclipse.osee.framework.database.utility.DatabaseSchemaExtractor;
 import org.eclipse.osee.framework.database.utility.DbInit;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.core.OseeDbVersion;
+import org.eclipse.osee.framework.db.connection.core.OseeSequenceManager;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.db.DbConfigFileInformation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.config.SupportedDatabase;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.osgi.framework.Bundle;

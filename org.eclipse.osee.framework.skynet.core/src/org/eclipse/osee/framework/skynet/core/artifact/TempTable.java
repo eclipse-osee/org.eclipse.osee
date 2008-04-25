@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.schemas.Table;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.core.schema.Table;
 
 /**
  * @author Jeff C. Phillips

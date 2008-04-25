@@ -5,20 +5,20 @@
  */
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.DbUtil;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;

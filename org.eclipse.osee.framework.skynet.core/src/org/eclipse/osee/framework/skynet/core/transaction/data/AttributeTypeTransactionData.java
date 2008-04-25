@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction.data;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 
 /**

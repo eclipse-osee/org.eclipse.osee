@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.changeReport;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
@@ -44,8 +44,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.database.AbstractDbTxTemplate;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;

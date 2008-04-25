@@ -11,10 +11,10 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_ID_SEQ;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TXD_COMMENT;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_ID_SEQ;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -36,12 +36,12 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.DbUtil;
-import org.eclipse.osee.framework.database.Query;
-import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;

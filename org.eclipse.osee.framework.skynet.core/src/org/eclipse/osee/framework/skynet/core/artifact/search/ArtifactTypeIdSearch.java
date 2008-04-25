@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TYPE_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TYPE_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;

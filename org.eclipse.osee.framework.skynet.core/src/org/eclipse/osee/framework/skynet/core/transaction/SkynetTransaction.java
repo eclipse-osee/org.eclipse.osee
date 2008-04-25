@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TXD_COMMENT;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
@@ -31,10 +31,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.DbUtil;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;

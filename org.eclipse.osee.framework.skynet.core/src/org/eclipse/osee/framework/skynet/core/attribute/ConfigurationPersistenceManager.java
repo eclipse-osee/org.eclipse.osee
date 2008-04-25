@@ -11,10 +11,10 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ARTIFACT_TYPE_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTRIBUTE_BASE_TYPE_TABLE;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTR_BASE_TYPE_ID_SEQ;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.ATTR_TYPE_ID_SEQ;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TYPE_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_BASE_TYPE_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTR_BASE_TYPE_ID_SEQ;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTR_TYPE_ID_SEQ;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -32,12 +32,12 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.DbUtil;
-import org.eclipse.osee.framework.database.Query;
-import org.eclipse.osee.framework.database.schemas.SkynetDatabase;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;

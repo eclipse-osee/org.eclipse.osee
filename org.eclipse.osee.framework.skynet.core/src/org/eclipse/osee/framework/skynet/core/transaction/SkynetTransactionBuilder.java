@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.database.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;

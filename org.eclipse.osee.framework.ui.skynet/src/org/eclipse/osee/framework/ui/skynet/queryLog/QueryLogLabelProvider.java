@@ -16,7 +16,7 @@ import static org.eclipse.osee.framework.ui.skynet.queryLog.QueryLogView.TIME;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.database.QueryRecord;
+import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerLabelProvider;

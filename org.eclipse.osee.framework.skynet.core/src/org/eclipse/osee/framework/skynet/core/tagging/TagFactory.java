@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.tagging;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TAG_ID_SEQ;
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.TAG_TABLE;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TAG_ID_SEQ;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TAG_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.DbUtil;
-import org.eclipse.osee.framework.database.Query;
-import org.eclipse.osee.framework.database.schemas.LocalAliasTable;
-import org.eclipse.osee.framework.database.sql.SQL3DataType;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
+import org.eclipse.osee.framework.db.connection.core.query.Query;
+import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 
 /**
  * Controls tags and their tagId's.

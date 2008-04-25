@@ -5,14 +5,14 @@
  */
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.database.schemas.SkynetDatabase.BRANCH_DEFINITIONS;
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_DEFINITIONS;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.database.ConnectionHandler;
-import org.eclipse.osee.framework.database.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.DbUtil;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
 
 /**
  * @author Donald G. Dunne
