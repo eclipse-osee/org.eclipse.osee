@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.skynet.core.artifact.DeleteTransactionJob;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -26,11 +28,11 @@ public class DeleteTransaction extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-
       Matcher transactionIdMatcher = transactionPattern.matcher(variableMap.getString("Transaction List"));
       while (transactionIdMatcher.find()) {
-         branchManager.deleteTransaction(Integer.parseInt(transactionIdMatcher.group()));
+         Job job = new DeleteTransactionJob(Integer.parseInt(transactionIdMatcher.group()));
+         Jobs.startJob(job);
+         job.join();
       }
    }
 
