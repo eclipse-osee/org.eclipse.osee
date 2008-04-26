@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -55,7 +56,7 @@ import org.eclipse.ui.PlatformUI;
 public class RevertArtifactHandler extends AbstractHandler {
    private static final RevisionManager myRevisionManager = RevisionManager.getInstance();
    private static final AccessControlManager myAccessControlManager = AccessControlManager.getInstance();
-   private ArtifactChange artifactChange;
+   private List<ArtifactChange> artifactChanges;
 
    public RevertArtifactHandler() {
    }
@@ -70,58 +71,41 @@ public class RevertArtifactHandler extends AbstractHandler {
       // This is serious stuff, make sure the user understands the impact.
       if (MessageDialog.openConfirm(
             Display.getCurrent().getActiveShell(),
-            "Confirm Revert of " + artifactChange.getName(),
+            "Confirm Revert of " + artifactChanges.size() + " artifacts.",
             "All attribute changes for the artifact and all link changes that involve the artifact on this branch will be reverted." + "\n\nTHIS IS IRREVERSIBLE" + "\n\nOSEE must be restarted after all reverting is finished to see the results")) {
 
-         TransactionId toTransactionId =
-               artifactChange.getModType() == ModificationType.DELETE ? artifactChange.getDeletedTransactionId() : artifactChange.getToTransactionId();
-         Jobs.startJob(new RevertJob(artifactChange.getName(), artifactChange.getArtId(),
-               artifactChange.getFromTransactionId(), toTransactionId));
+         Jobs.startJob(new RevertJob());
       }
       return null;
    }
    private class RevertJob extends Job {
 
-      private final int artId;
-      private final TransactionId baseTransactionId;
-      private final TransactionId toTransactionId;
-
-      /**
-       * @param name
-       * @param artId
-       */
-      public RevertJob(String name, int artId, TransactionId baseTransactionId, TransactionId toTransactionId) {
-         super("Reverting Artifact " + name);
-         this.artId = artId;
-         this.baseTransactionId = baseTransactionId;
-         this.toTransactionId = toTransactionId;
+      public RevertJob() {
+         super("Reverting " + artifactChanges.size() + " artifacts.");
       }
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
+         IStatus toReturn;
          try {
-            new RevertDbTx(getName(), artId, baseTransactionId, toTransactionId, monitor).execute();
+            new RevertDbTx(getName(), monitor).execute();
+            toReturn = Status.OK_STATUS;
          } catch (Exception ex) {
-            OSEELog.logException(getClass(), ex, false);
+            toReturn = new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         } finally {
+            monitor.done();
          }
-         return Status.OK_STATUS;
+         return toReturn;
       }
    }
 
    private final class RevertDbTx extends AbstractDbTxTemplate {
-
       private final IProgressMonitor monitor;
-      private final int artId;
       private final String txName;
-      private final TransactionId baseTransactionId;
-      private final TransactionId toTransactionId;
 
-      public RevertDbTx(String txName, int artId, TransactionId baseTransactionId, TransactionId toTransactionId, IProgressMonitor monitor) {
+      public RevertDbTx(String txName, IProgressMonitor monitor) {
          this.monitor = monitor;
          this.txName = txName;
-         this.artId = artId;
-         this.baseTransactionId = baseTransactionId;
-         this.toTransactionId = toTransactionId;
       }
 
       /*
@@ -132,71 +116,77 @@ public class RevertArtifactHandler extends AbstractHandler {
       @Override
       protected void handleTxWork() throws Exception {
          monitor.beginTask(txName, 7);
-
          monitor.subTask("Calculating change set");
 
-         Collection<RevisionChange> revisionChanges =
-               myRevisionManager.getAllTransactionChanges(OUTGOING, baseTransactionId.getTransactionNumber(),
-                     toTransactionId.getTransactionNumber(), artId, null);
-         int worstSize = revisionChanges.size();
-         Collection<Long> attributeGammas = new ArrayList<Long>(worstSize);
-         Collection<Long> linkGammas = new ArrayList<Long>(worstSize);
-         Collection<Long> artifactGammas = new ArrayList<Long>(worstSize);
-         Collection<Long> allGammas = new ArrayList<Long>(worstSize);
+         for (ArtifactChange artifactChange : artifactChanges) {
+            int artId = artifactChange.getArtId();
+            TransactionId baseTransactionId = artifactChange.getFromTransactionId();
 
-         // Categorize all of the changes
-         for (RevisionChange change : revisionChanges) {
-            if (change instanceof AttributeChange) {
-               attributeGammas.add(change.getGammaId());
-            } else if (change instanceof RelationLinkChange) {
-               linkGammas.add(change.getGammaId());
-            } else if (change instanceof ArtifactChange) {
-               artifactGammas.add(change.getGammaId());
+            TransactionId toTransactionId =
+                  artifactChange.getModType() == ModificationType.DELETE ? artifactChange.getDeletedTransactionId() : artifactChange.getToTransactionId();
+
+            Collection<RevisionChange> revisionChanges =
+                  myRevisionManager.getAllTransactionChanges(OUTGOING, baseTransactionId.getTransactionNumber(),
+                        toTransactionId.getTransactionNumber(), artId, null);
+            int worstSize = revisionChanges.size();
+            Collection<Long> attributeGammas = new ArrayList<Long>(worstSize);
+            Collection<Long> linkGammas = new ArrayList<Long>(worstSize);
+            Collection<Long> artifactGammas = new ArrayList<Long>(worstSize);
+            Collection<Long> allGammas = new ArrayList<Long>(worstSize);
+
+            // Categorize all of the changes
+            for (RevisionChange change : revisionChanges) {
+               if (change instanceof AttributeChange) {
+                  attributeGammas.add(change.getGammaId());
+               } else if (change instanceof RelationLinkChange) {
+                  linkGammas.add(change.getGammaId());
+               } else if (change instanceof ArtifactChange) {
+                  artifactGammas.add(change.getGammaId());
+               }
+               allGammas.add(change.getGammaId());
             }
-            allGammas.add(change.getGammaId());
+
+            monitor.worked(1);
+            isCanceled();
+
+            monitor.subTask("Cleaning up bookkeeping data");
+            if (allGammas.size() > 0) {
+               ConnectionHandler.runPreparedUpdate("DELETE FROM " + TRANSACTIONS_TABLE + " WHERE " + TRANSACTIONS_TABLE.column("gamma_id") + " IN" + Collections.toString(
+                     allGammas, "(", ",", ")"));
+            }
+            monitor.worked(1);
+            isCanceled();
+
+            monitor.subTask("Reverting Artifact gammas");
+            if (artifactGammas.size() > 0) {
+               ConnectionHandler.runPreparedUpdate("DELETE FROM " + ARTIFACT_VERSION_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("gamma_id") + " IN " + Collections.toString(
+                     artifactGammas, "(", ",", ")"));
+            }
+            monitor.worked(1);
+            isCanceled();
+
+            monitor.subTask("Reverting attributes");
+            if (attributeGammas.size() > 0) {
+               ConnectionHandler.runPreparedUpdate("DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + " IN " + Collections.toString(
+                     attributeGammas, "(", ",", ")"));
+            }
+            monitor.worked(1);
+            isCanceled();
+
+            monitor.subTask("Reverting links");
+            if (linkGammas.size() > 0) {
+               ConnectionHandler.runPreparedUpdate("DELETE FROM " + RELATION_LINK_VERSION_TABLE + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " IN " + Collections.toString(
+                     linkGammas, "(", ",", ")"));
+            }
+            monitor.worked(1);
+            isCanceled();
+
+            monitor.subTask("Cleaning up empty transactions");
+            ConnectionHandler.runPreparedUpdate(
+                  "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " NOT IN " + "(SELECT " + TRANSACTIONS_TABLE.column("transaction_id") + " FROM " + TRANSACTIONS_TABLE + ")",
+                  SQL3DataType.INTEGER, baseTransactionId.getBranch().getBranchId());
+            monitor.worked(1);
          }
-
-         monitor.worked(1);
-         isCanceled();
-
-         monitor.subTask("Cleaning up bookkeeping data");
-         if (allGammas.size() > 0) {
-            ConnectionHandler.runPreparedUpdate("DELETE FROM " + TRANSACTIONS_TABLE + " WHERE " + TRANSACTIONS_TABLE.column("gamma_id") + " IN" + Collections.toString(
-                  allGammas, "(", ",", ")"));
-         }
-         monitor.worked(1);
-         isCanceled();
-
-         monitor.subTask("Reverting Artifact gammas");
-         if (artifactGammas.size() > 0) {
-            ConnectionHandler.runPreparedUpdate("DELETE FROM " + ARTIFACT_VERSION_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("gamma_id") + " IN " + Collections.toString(
-                  artifactGammas, "(", ",", ")"));
-         }
-         monitor.worked(1);
-         isCanceled();
-
-         monitor.subTask("Reverting attributes");
-         if (attributeGammas.size() > 0) {
-            ConnectionHandler.runPreparedUpdate("DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + " IN " + Collections.toString(
-                  attributeGammas, "(", ",", ")"));
-         }
-         monitor.worked(1);
-         isCanceled();
-
-         monitor.subTask("Reverting links");
-         if (linkGammas.size() > 0) {
-            ConnectionHandler.runPreparedUpdate("DELETE FROM " + RELATION_LINK_VERSION_TABLE + " WHERE " + RELATION_LINK_VERSION_TABLE.column("gamma_id") + " IN " + Collections.toString(
-                  linkGammas, "(", ",", ")"));
-         }
-         monitor.worked(1);
-         isCanceled();
-
-         monitor.subTask("Cleaning up empty transactions");
-         ConnectionHandler.runPreparedUpdate(
-               "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " NOT IN " + "(SELECT " + TRANSACTIONS_TABLE.column("transaction_id") + " FROM " + TRANSACTIONS_TABLE + ")",
-               SQL3DataType.INTEGER, baseTransactionId.getBranch().getBranchId());
-         monitor.worked(1);
-
       }
 
       private boolean isCanceled() throws Exception {
@@ -240,10 +230,15 @@ public class RevertArtifactHandler extends AbstractHandler {
                return false;
             }
 
-            artifactChange = artifactChanges.get(0);
+            this.artifactChanges = artifactChanges;
 
-            isEnabled =
-                  myAccessControlManager.checkObjectPermission(artifactChange.getArtifact(), PermissionEnum.WRITE);
+            for (ArtifactChange artifactChange : artifactChanges) {
+               isEnabled =
+                     myAccessControlManager.checkObjectPermission(artifactChange.getArtifact(), PermissionEnum.WRITE);
+               if (!isEnabled) {
+                  break;
+               }
+            }
          }
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, true);
