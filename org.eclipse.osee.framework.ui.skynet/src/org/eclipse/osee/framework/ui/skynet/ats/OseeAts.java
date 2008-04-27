@@ -21,9 +21,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -176,9 +176,7 @@ public class OseeAts {
 
    public static void openATSArtifact(String guid) {
       try {
-         Artifact art =
-               ArtifactPersistenceManager.getInstance().getArtifact(guid,
-                     BranchPersistenceManager.getInstance().getCommonBranch());
+         Artifact art = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getInstance().getCommonBranch());
          if (art.getArtifactTypeName().equals("Action"))
             atsLib.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
          else

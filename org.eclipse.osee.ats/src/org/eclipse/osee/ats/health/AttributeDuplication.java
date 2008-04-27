@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -86,8 +86,7 @@ public class AttributeDuplication extends XNavigateItemAutoRunAction implements 
          if (monitor != null) monitor.subTask("Loading " + type + "...");
          try {
             // just need to load the artifacts for them to exception out
-            ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(type,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+            ArtifactQuery.getAtrifactsFromType(type, BranchPersistenceManager.getInstance().getAtsBranch());
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
             rd.logError(ex.getLocalizedMessage());

@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
@@ -741,12 +742,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
             if (object instanceof ITreeNode && ((ITreeNode) object).getBackingData() instanceof ArtifactChange) {
                try {
                   Artifact artifact = ((ArtifactChange) ((ITreeNode) object).getBackingData()).getArtifact();
-                  Artifact headArtifact =
-                        ArtifactPersistenceManager.getInstance().getArtifact(artifact.getGuid(), artifact.getBranch());
-                  if (headArtifact != null) {
-                     artifacts.add(headArtifact);
-                  }
-               } catch (SQLException ex) {
+                  Artifact headArtifact = ArtifactQuery.getArtifactFromId(artifact.getGuid(), artifact.getBranch());
+                  artifacts.add(headArtifact);
+               } catch (Exception ex) {
                   OSEELog.logException(getClass(), ex, true);
                }
             }

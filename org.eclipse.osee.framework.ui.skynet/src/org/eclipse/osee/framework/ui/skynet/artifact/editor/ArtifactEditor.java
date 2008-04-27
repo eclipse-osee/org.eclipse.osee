@@ -23,12 +23,12 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
@@ -527,12 +527,11 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          try {
             Artifact artifact = getEditorInput().getArtifact();
             if (artifact.getBranch().equals(branchManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
-               changeToArtifact(ArtifactPersistenceManager.getInstance().getArtifact(artifact.getGuid(),
-                     branchManager.getDefaultBranch()));
+               changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), branchManager.getDefaultBranch()));
             }
             checkEnabledTooltems();
-         } catch (SQLException e) {
-            logger.log(Level.SEVERE, e.toString(), e);
+         } catch (Exception ex) {
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
       } else if (event instanceof VisitorEvent) {
          VisitorEvent visitorevent = (VisitorEvent) event;
@@ -546,9 +545,8 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       } else if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent)) {
          Artifact artifact = getEditorInput().getArtifact();
          try {
-            changeToArtifact(ArtifactPersistenceManager.getInstance().getArtifact(artifact.getGuid(),
-                  branchManager.getDefaultBranch()));
-         } catch (SQLException ex) {
+            changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), branchManager.getDefaultBranch()));
+         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
          }
       } else {

@@ -53,7 +53,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -274,12 +276,12 @@ public class SMAManager {
       return false;
    }
 
-   public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws SQLException, MultipleAttributesExist {
+   public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws SQLException, MultipleAttributesExist, IllegalStateException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return promptChangeVersion(Arrays.asList(new TeamWorkFlowArtifact[] {(TeamWorkFlowArtifact) sma}),
             versionReleaseType, persist);
    }
 
-   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws SQLException, MultipleAttributesExist {
+   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws SQLException, MultipleAttributesExist, IllegalStateException, ArtifactDoesNotExist, MultipleArtifactsExist {
       TeamDefinitionArtifact teamDefHoldingVersions = null;
       for (TeamWorkFlowArtifact teamArt : smas) {
          SMAManager smaMgr = new SMAManager(teamArt);

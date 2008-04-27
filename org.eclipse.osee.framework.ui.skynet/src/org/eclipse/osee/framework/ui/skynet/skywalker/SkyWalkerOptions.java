@@ -22,9 +22,9 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
@@ -159,12 +159,12 @@ public class SkyWalkerOptions {
          if (guid != null && !guid.equals("")) {
             String branchId = AXml.getTagData(xml, "branchId");
             Branch branch = BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(branchId));
-            Artifact art = ArtifactPersistenceManager.getInstance().getArtifact(guid, branch);
+            Artifact art = ArtifactQuery.getArtifactFromId(guid, branch);
             if (art != null) {
                setArtifact(art);
             }
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logWarning(SkynetGuiPlugin.class, "SkyWalker couldn't find stored artifact via guid", ex, false);
       }
       String artTypeStr = AXml.getTagData(xml, "artTypes");

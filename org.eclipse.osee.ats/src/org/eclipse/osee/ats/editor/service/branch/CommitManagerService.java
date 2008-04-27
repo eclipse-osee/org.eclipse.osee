@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.editor.service.branch;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
@@ -117,7 +116,7 @@ public class CommitManagerService extends WorkPageService implements IEventRecei
       try {
          enabled =
                ((smaMgr.getSma() instanceof IBranchArtifact) && ((IBranchArtifact) smaMgr.getSma()).getWorkingBranch() != null);
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          // do nothing
       }
       return enabled;

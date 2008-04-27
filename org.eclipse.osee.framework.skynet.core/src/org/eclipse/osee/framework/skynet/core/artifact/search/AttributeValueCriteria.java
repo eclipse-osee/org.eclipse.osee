@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 
 /**
@@ -34,6 +36,18 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
       super();
       this.attributeType = attributeType;
       this.value = value;
+   }
+
+   /**
+    * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
+    * given value.
+    * 
+    * @param attributeType
+    * @param value
+    * @throws SQLException
+    */
+   public AttributeValueCriteria(String attributeTypeName, String value) throws SQLException {
+      this(ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeTypeName), value);
    }
 
    /* (non-Javadoc)

@@ -23,8 +23,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
@@ -98,7 +98,7 @@ public class OrphanedTasks extends XNavigateItemAutoRunAction implements IAutoRu
    private List<TaskArtifact> runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
       final List<TaskArtifact> orphanedTasks = new ArrayList<TaskArtifact>();
       Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(TaskArtifact.ARTIFACT_NAME,
+            ArtifactQuery.getAtrifactsFromType(TaskArtifact.ARTIFACT_NAME,
                   BranchPersistenceManager.getInstance().getAtsBranch());
       int x = 0;
       for (Artifact art : arts) {

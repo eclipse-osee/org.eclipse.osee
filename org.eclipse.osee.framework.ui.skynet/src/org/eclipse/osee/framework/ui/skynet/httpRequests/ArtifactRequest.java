@@ -28,12 +28,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.IHttpServerRequest;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotManager;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -181,7 +184,7 @@ public class ArtifactRequest implements IHttpServerRequest {
       }
    }
 
-   private Artifact getLatestArtifactForBranch(String guid, String branchId, String branchName) throws SQLException {
+   private Artifact getLatestArtifactForBranch(String guid, String branchId, String branchName) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
       final Branch branch;
       if (Strings.isValid(branchId)) {
@@ -189,7 +192,7 @@ public class ArtifactRequest implements IHttpServerRequest {
       } else {
          branch = branchManager.getBranch(branchName);
       }
-      return ArtifactPersistenceManager.getInstance().getArtifact(guid, branch);
+      return ArtifactQuery.getArtifactFromId(guid, branch);
    }
 
    private Artifact getArtifactBasedOnTransactionNumber(String guid, int transactioNumber) throws Exception {

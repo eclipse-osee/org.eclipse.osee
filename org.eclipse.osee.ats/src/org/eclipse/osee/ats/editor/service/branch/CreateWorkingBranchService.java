@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.editor.service.branch;
 
-import java.sql.SQLException;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
@@ -105,7 +104,7 @@ public class CreateWorkingBranchService extends WorkPageService implements IEven
          boolean enabled = false;
          try {
             enabled = !smaMgr.getBranchMgr().isWorkingBranch() && !smaMgr.getBranchMgr().isCommittedBranch();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             // do nothing
          }
          link.setEnabled(enabled);

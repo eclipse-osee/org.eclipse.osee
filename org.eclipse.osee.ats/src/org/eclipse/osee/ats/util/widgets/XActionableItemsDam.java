@@ -20,8 +20,11 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
@@ -43,15 +46,11 @@ public class XActionableItemsDam extends XTextDam {
       return sma.getAttributeManager(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
    }
 
-   public Set<ActionableItemArtifact> getActionableItems() throws SQLException {
+   public Set<ActionableItemArtifact> getActionableItems() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
       for (Attribute attr : getDam().getAttributes()) {
-         try {
-            ais.add((ActionableItemArtifact) apm.getArtifact(attr.getStringData(),
-                  BranchPersistenceManager.getInstance().getAtsBranch()));
-         } catch (SQLException ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
-         }
+         ais.add((ActionableItemArtifact) ArtifactQuery.getArtifactFromId(attr.getStringData(),
+               BranchPersistenceManager.getInstance().getAtsBranch()));
       }
       return ais;
    }
@@ -62,7 +61,7 @@ public class XActionableItemsDam extends XTextDam {
          for (ActionableItemArtifact aia : getActionableItems())
             sb.append(aia.getDescriptiveName() + ", ");
          return sb.toString().replaceFirst(", $", "");
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return ex.getLocalizedMessage();
       }
@@ -85,7 +84,7 @@ public class XActionableItemsDam extends XTextDam {
       }
    }
 
-   public Result setActionableItems(Collection<ActionableItemArtifact> newItems) throws SQLException {
+   public Result setActionableItems(Collection<ActionableItemArtifact> newItems) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       Set<ActionableItemArtifact> existingAias = getActionableItems();
 
       // Remove non-selected items

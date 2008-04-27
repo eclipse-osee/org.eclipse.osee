@@ -24,6 +24,8 @@ import org.eclipse.osee.ats.config.ImportWorkflowAction;
 import org.eclipse.osee.ats.config.WorkflowDiagramFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
@@ -49,7 +51,7 @@ public class AtsWorkFlowFactory {
    public static String DECISION_REVIEW_WORKFLOW = "osee_ats_decisionReview_workflow";
    public static String PEERTOPEER_REVIEW_WORKFLOW = "osee_ats_peerToPeerReview_workflow";
 
-   public AtsWorkFlow getWorkflow(StateMachineArtifact sma) throws SQLException, IOException, MultipleAttributesExist {
+   public AtsWorkFlow getWorkflow(StateMachineArtifact sma) throws SQLException, IOException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (AtsPlugin.isAtsUseWorkflowFiles()) {
          String workflowId = "";
          String workflowXml = "";

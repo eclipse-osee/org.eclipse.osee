@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -90,7 +90,6 @@ public class AccessControlManager implements PersistenceManager {
    // subject, permission
    private HashCollection<Integer, PermissionEnum> subjectToPermissionCache;
 
-   private ArtifactPersistenceManager artifactManager;
    private BranchPersistenceManager branchManager;
    private SkynetEventManager eventManager;
    private SkynetAuthentication skynetAuth;
@@ -108,7 +107,6 @@ public class AccessControlManager implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#onManagerWebInit()
     */
    public void onManagerWebInit() throws Exception {
-      artifactManager = ArtifactPersistenceManager.getInstance();
       branchManager = BranchPersistenceManager.getInstance();
       eventManager = SkynetEventManager.getInstance();
       skynetAuth = SkynetAuthentication.getInstance();
@@ -480,7 +478,7 @@ public class AccessControlManager implements PersistenceManager {
 
                if (recurse) {
                   Artifact artifact =
-                        artifactManager.getArtifactFromId(artifactAccessObject.getArtId(),
+                        ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
                               branchManager.getBranch(artifactAccessObject.getBranchId()));
                   AccessControlData childAccessControlData = null;
 
@@ -517,7 +515,7 @@ public class AccessControlManager implements PersistenceManager {
                }
             }
             cacheAccessControlData(data);
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
          }
       }
@@ -562,7 +560,7 @@ public class AccessControlManager implements PersistenceManager {
          }
 
          for (int subjectId : subjects) {
-            Artifact subject = artifactManager.getArtifactFromId(subjectId, branchManager.getCommonBranch());
+            Artifact subject = ArtifactQuery.getArtifactFromId(subjectId, branchManager.getCommonBranch());
             PermissionEnum permissionEnum = accessControlListCache.get(subjectId, accessObject);
             AccessControlData accessControlData =
                   new AccessControlData(subject, accessObject, permissionEnum, false, false);
@@ -574,7 +572,7 @@ public class AccessControlManager implements PersistenceManager {
             }
             datas.add(accessControlData);
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
       return datas;

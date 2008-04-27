@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
@@ -34,6 +35,8 @@ import org.eclipse.osee.framework.skynet.core.event.LocalRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
 /**
  * @author Robert A. Fisher
@@ -284,12 +287,12 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    /**
     * @return Returns the associatedArtifact.
+    * @throws MultipleArtifactsExist
+    * @throws ArtifactDoesNotExist
     */
-   public Artifact getAssociatedArtifact() throws SQLException {
+   public Artifact getAssociatedArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (associatedArtifact == null && associatedArtifactId > 0) {
-         associatedArtifact =
-               ArtifactPersistenceManager.getInstance().getArtifactFromId(associatedArtifactId,
-                     branchManager.getCommonBranch());
+         associatedArtifact = ArtifactQuery.getArtifactFromId(associatedArtifactId, branchManager.getCommonBranch());
          // TODO: this method must get the artifact based on an art id and use the
          // right branch when doing so (the artifact is not necessarily a user artifact)
       }

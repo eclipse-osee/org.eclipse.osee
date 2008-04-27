@@ -16,9 +16,9 @@ import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
@@ -60,27 +60,19 @@ public class AtsHttpServerRequest implements IHttpServerRequest {
       String guid = httpRequest.getParameter("guid");
       try {
          final Artifact artifact =
-               ArtifactPersistenceManager.getInstance().getArtifact(guid,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
-         if (artifact == null) {
-            httpResponse.outputStandardError(400, "Artifact Can Not Be Found In OSEE");
-            // TODO Display if artifact was deleted
-            // DON Display if artifact was deleted
-         }
+               ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getInstance().getAtsBranch());
 
-         else {
-            if (artifact instanceof IATSArtifact) {
-               Display.getDefault().asyncExec(new Runnable() {
+         if (artifact instanceof IATSArtifact) {
+            Display.getDefault().asyncExec(new Runnable() {
 
-                  public void run() {
-                     AtsLib.openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
-                  }
-               });
-            }
-            String html =
-                  AHTML.simplePage("Action has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
-            httpResponse.getPrintStream().println(html);
+               public void run() {
+                  AtsLib.openAtsAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+               }
+            });
          }
+         String html =
+               AHTML.simplePage("Action has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+         httpResponse.getPrintStream().println(html);
       } catch (Exception ex) {
          httpResponse.outputStandardError(400, "Exception handling request", ex);
       }

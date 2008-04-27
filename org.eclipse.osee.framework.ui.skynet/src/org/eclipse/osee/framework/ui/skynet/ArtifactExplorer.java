@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.ArtifactVersionIncrementedEvent;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -52,6 +53,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
@@ -1218,8 +1220,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                if (object instanceof Artifact) {
                   Artifact artifact = (Artifact) object;
                   try {
-                     explore(ArtifactPersistenceManager.getInstance().getArtifact(artifact.getGuid(),
-                           branchManager.getDefaultBranch()));
+                     explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), branchManager.getDefaultBranch()));
                   } catch (IllegalArgumentException ex) {
                      logger.log(Level.SEVERE, ex.toString(), ex);
                   } catch (CoreException ex) {
@@ -1230,8 +1231,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                }
             }
          }
-      } catch (SQLException ex) {
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
    }
 
@@ -1242,8 +1243,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
       if (exploreRoot != null) {
          try {
-            candidateRoot = ArtifactPersistenceManager.getInstance().getArtifact(exploreRoot.getGuid(), defaultBranch);
-         } catch (IllegalStateException ex) {
+            candidateRoot = ArtifactQuery.getArtifactFromId(exploreRoot.getGuid(), defaultBranch);
+         } catch (OseeCoreException ex) {
             // this will happen if the previous root does not exist on this branch, so the DefaultHierarchyRootArtifact will be used if we do nothing
          }
       }
@@ -1290,26 +1291,24 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       super.init(site, memento);
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(null)) return;
+
       try {
          if (memento != null) {
 
             Artifact previousArtifact =
-                  ArtifactPersistenceManager.getInstance().getArtifact(memento.getString(ROOT_GUID),
-                        branchManager.getDefaultBranch());
-            if (previousArtifact != null) {
-               explore(previousArtifact);
-               return;
-            }
+                  ArtifactQuery.getArtifactFromId(memento.getString(ROOT_GUID), branchManager.getDefaultBranch());
+            explore(previousArtifact);
+            return;
          }
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, "Falling back to the root artifact: " + ex.getLocalizedMessage(), ex);
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
 
       try {
          explore(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
                branchManager.getDefaultBranch()));
       } catch (Exception ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 

@@ -20,12 +20,14 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch.SearchOperator;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -87,7 +89,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          }
       }
 
-      private void getMatrixItems() throws SQLException {
+      private void getMatrixItems() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
          ArtifactTypeNameSearch srch =
                new ArtifactTypeNameSearch(null, artifactName,
                      BranchPersistenceManager.getInstance().getDefaultBranch(), SearchOperator.LIKE);
@@ -114,7 +116,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                monitor.subTask(transStr);
                if (transData.getCommitArtId() > 0) {
                   Artifact assocArt =
-                        ArtifactPersistenceManager.getInstance().getArtifactFromId(transData.getCommitArtId(),
+                        ArtifactQuery.getArtifactFromId(transData.getCommitArtId(),
                               BranchPersistenceManager.getInstance().getAtsBranch());
                   if (assocArt instanceof TeamWorkFlowArtifact) {
                      sb.append(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(),

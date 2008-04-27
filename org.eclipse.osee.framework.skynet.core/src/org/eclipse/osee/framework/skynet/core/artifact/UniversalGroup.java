@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
@@ -39,7 +40,7 @@ public class UniversalGroup {
    public static Collection<Artifact> getGroups(Branch branch) {
       Collection<Artifact> artifacts = null;
       try {
-         artifacts = ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(ARTIFACT_TYPE_NAME, branch);
+         artifacts = ArtifactQuery.getAtrifactsFromType(ARTIFACT_TYPE_NAME, branch);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.getMessage(), ex);
          artifacts = new LinkedList<Artifact>();
@@ -70,7 +71,7 @@ public class UniversalGroup {
    }
 
    public static Artifact getTopUniversalGroupArtifact(Branch branch) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
-      return ArtifactPersistenceManager.getInstance().getArtifactFromTypeName(UniversalGroup.ARTIFACT_TYPE_NAME,
+      return ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
             ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
    }
 

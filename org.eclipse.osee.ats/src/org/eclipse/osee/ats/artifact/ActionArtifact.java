@@ -41,7 +41,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -82,7 +84,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       actionableItemsDam = new XActionableItemsDam(this);
    }
 
-   public void resetAttributesOffChildren() throws SQLException, MultipleAttributesExist {
+   public void resetAttributesOffChildren() throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {
       resetActionItemsOffChildren();
       resetChangeTypeOffChildren();
       resetPriorityOffChildren();
@@ -135,7 +137,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
    }
 
-   private Result resetActionItemsOffChildren() throws SQLException {
+   private Result resetActionItemsOffChildren() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts())
          if (!(new SMAManager(team)).isCancelled()) aias.addAll(team.getActionableItemsDam().getActionableItems());
@@ -333,7 +335,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             sb.append(aia.getDescriptiveName() + ", ");
          }
          return sb.toString().replaceFirst(", $", "");
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
    }

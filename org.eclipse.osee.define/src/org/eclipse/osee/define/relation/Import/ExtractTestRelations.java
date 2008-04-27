@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -93,7 +94,7 @@ public class ExtractTestRelations {
 
       // Make sure that the runtime relation type is available
       Artifact reqArtifact =
-            artifactManager.getArtifactFromTypeName(Requirements.SOFTWARE_REQUIREMENT, reqArtifactName, branch);
+            ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, reqArtifactName, branch);
 
       // Make sure we have the reqArtifact
       if (reqArtifact == null) {
@@ -125,7 +126,7 @@ public class ExtractTestRelations {
 
    private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws SQLException {
       try {
-         return artifactManager.getArtifactFromTypeName(Requirements.TEST_SCRIPT, testArtifactFile.getName(), branch);
+         return ArtifactQuery.getArtifactFromTypeAndName(Requirements.TEST_SCRIPT, testArtifactFile.getName(), branch);
       } catch (MultipleArtifactsExist ex) {
          OSEELog.logException(DefinePlugin.class, ex, false);
          return null;

@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTas
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -76,7 +77,7 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
 
    private Artifact getTemplateFolder() throws SQLException {
       try {
-         return ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Folder", "Document Templates",
+         return ArtifactQuery.getArtifactFromTypeAndName("Folder", "Document Templates",
                BranchPersistenceManager.getInstance().getCommonBranch());
       } catch (MultipleArtifactsExist ex) {
          OSEELog.logException(SimpleTemplateProviderDbTask.class, ex.getLocalizedMessage(), ex, false);

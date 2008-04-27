@@ -16,10 +16,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -125,7 +126,7 @@ public class CommitManagerView extends ViewPart implements IActionable {
          if (xCommitViewer != null && branchArtifact != null) xCommitViewer.setArtifact(branchArtifact.getArtifact(),
                "");
          setPartName("Commit Manager: " + branchArtifact.getWorkingBranch().getBranchShortestName());
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
@@ -148,15 +149,15 @@ public class CommitManagerView extends ViewPart implements IActionable {
                   if (branchId > 0) {
                      Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
                      if (branch != null) {
-                        Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, branch);
-                        if (artifact != null) explore((IBranchArtifact) artifact);
+                        Artifact artifact = ArtifactQuery.getArtifactFromId(artId, branch);
+                        explore((IBranchArtifact) artifact);
                      }
                   }
                }
             }
          }
       } catch (Exception ex) {
-         OSEELog.logWarning(getClass(), "Commit Manager error on init: " + ex.getLocalizedMessage(), false);
+         OSEELog.logWarning(SkynetActivator.class, "Commit Manager error on init: " + ex.getLocalizedMessage(), false);
       }
    }
 

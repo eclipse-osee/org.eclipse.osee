@@ -23,8 +23,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -83,7 +83,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                ArtifactSubtypeDescriptor desc = (ArtifactSubtypeDescriptor) selection.getFirstElement();
                try {
-                  artList.setInput(ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(desc.getName(),
+                  artList.setInput(ArtifactQuery.getAtrifactsFromType(desc.getName(),
                         BranchPersistenceManager.getInstance().getAtsBranch()));
                } catch (SQLException ex) {
                   OSEELog.logException(AtsPlugin.class, ex, false);

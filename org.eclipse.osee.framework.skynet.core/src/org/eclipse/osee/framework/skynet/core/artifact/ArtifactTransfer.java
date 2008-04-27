@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
@@ -168,22 +171,14 @@ public class ArtifactTransfer extends ByteArrayTransfer {
     * @return the resource
     * @throws SQLException
     * @throws IllegalArgumentException
+    * @throws MultipleArtifactsExist
+    * @throws ArtifactDoesNotExist
+    * @throws IOException
     */
-   private Artifact readArtifact(DataInputStream dataIn) throws IllegalArgumentException, SQLException {
-      int artID;
-      int tagID;
-      try {
-         artID = dataIn.readInt();
-         tagID = dataIn.readInt();
-      } catch (IOException ex) {
-         artID = -1;
-         tagID = -1;
-         ex.printStackTrace();
-      }
-
-      ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-      BranchPersistenceManager tagManager = BranchPersistenceManager.getInstance();
-      return artifactManager.getArtifactFromId(artID, tagManager.getBranch(tagID));
+   private Artifact readArtifact(DataInputStream dataIn) throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist, IOException {
+      int artID = dataIn.readInt();
+      int branchId = dataIn.readInt();
+      return ArtifactQuery.getArtifactFromId(artID, BranchPersistenceManager.getInstance().getBranch(branchId));
    }
 
    /**

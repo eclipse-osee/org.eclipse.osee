@@ -13,12 +13,14 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IBranchArtifact {
-   public Branch getWorkingBranch() throws IllegalStateException, SQLException;
+   public Branch getWorkingBranch() throws IllegalStateException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist;
 
    public Artifact getArtifact();
 }

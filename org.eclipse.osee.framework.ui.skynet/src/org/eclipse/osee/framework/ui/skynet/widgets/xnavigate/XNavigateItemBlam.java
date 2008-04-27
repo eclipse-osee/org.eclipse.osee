@@ -12,8 +12,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamWorkflow;
 import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
@@ -38,8 +38,8 @@ public class XNavigateItemBlam extends XNavigateItem {
       BlamWorkflow workflow;
       try {
          workflow =
-               (BlamWorkflow) ArtifactPersistenceManager.getInstance().getArtifactFromTypeName(
-                     BlamWorkflow.ARTIFACT_NAME, getName(), BranchPersistenceManager.getInstance().getCommonBranch());
+               (BlamWorkflow) ArtifactQuery.getArtifactFromTypeAndName(BlamWorkflow.ARTIFACT_NAME, getName(),
+                     BranchPersistenceManager.getInstance().getCommonBranch());
       } catch (Exception ex) {
          workflow = BlamWorkflow.createBlamWorkflow(blamOperation);
          workflow.setDescriptiveName(getName());

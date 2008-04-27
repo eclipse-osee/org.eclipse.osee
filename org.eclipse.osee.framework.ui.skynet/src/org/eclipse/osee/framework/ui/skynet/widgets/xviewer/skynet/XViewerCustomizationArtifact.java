@@ -15,11 +15,11 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -53,7 +53,7 @@ public class XViewerCustomizationArtifact extends BasicArtifact {
       if (xViewerCustomizationArtifact == null) {
          try {
             Collection<Artifact> arts =
-                  ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName(ARTIFACT_TYPE_NAME,
+                  ArtifactQuery.getAtrifactsFromType(ARTIFACT_TYPE_NAME,
                         BranchPersistenceManager.getInstance().getCommonBranch());
             if (arts.size() == 1) {
                xViewerCustomizationArtifact = (XViewerCustomizationArtifact) arts.iterator().next();

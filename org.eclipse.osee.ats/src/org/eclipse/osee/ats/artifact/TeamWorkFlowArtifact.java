@@ -30,16 +30,18 @@ import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -197,11 +199,11 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       this.setSoleStringAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid());
    }
 
-   public TeamDefinitionArtifact getTeamDefinition() throws SQLException, MultipleAttributesExist {
+   public TeamDefinitionArtifact getTeamDefinition() throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {
       String guid = this.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), "");
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
             "TeamWorkflow has no TeamDefinition associated.");
-      return (TeamDefinitionArtifact) ArtifactPersistenceManager.getInstance().getArtifact(guid,
+      return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromId(guid,
             BranchPersistenceManager.getInstance().getAtsBranch());
    }
 
@@ -386,7 +388,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       return toReturn;
    }
 
-   public Result convertActionableItems() throws SQLException, MultipleAttributesExist {
+   public Result convertActionableItems() throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {
       Result toReturn = Result.FalseResult;
       AICheckTreeDialog diag =
             new AICheckTreeDialog(
@@ -671,7 +673,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             return "Working";
          else if (getSmaMgr().getBranchMgr().isCommittedBranch()) return "Committed";
          return "";
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          return "Exception: " + ex.getLocalizedMessage();
       }
    }
@@ -686,8 +688,10 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact#getCommitManagerBranch()
     */
-   public Branch getWorkingBranch() throws IllegalStateException, SQLException {
-      if (getSmaMgr().getBranchMgr().getWorkingBranch() != null) return getSmaMgr().getBranchMgr().getWorkingBranch();
+   public Branch getWorkingBranch() throws SQLException {
+      if (getSmaMgr().getBranchMgr().getWorkingBranch() != null) {
+         return getSmaMgr().getBranchMgr().getWorkingBranch();
+      }
       return null;
    }
 }

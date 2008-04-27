@@ -5,18 +5,16 @@
  */
 package org.eclipse.osee.framework.skynet.core.util;
 
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
+
 /**
  * @author Donald G. Dunne
  */
-public class AttributeDoesNotExist extends Exception {
+public class AttributeDoesNotExist extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   /**
-    * @param arg0
-    */
-   public AttributeDoesNotExist(String arg0) {
-      super(arg0);
+   public AttributeDoesNotExist(String message) {
+      super(message);
    }
-
 }

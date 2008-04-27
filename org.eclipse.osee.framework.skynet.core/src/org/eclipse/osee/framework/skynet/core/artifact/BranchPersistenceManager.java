@@ -51,12 +51,14 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetArtifactEve
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetEventBase;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetRelationLinkEventBase;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -65,6 +67,8 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.WindowLocal;
@@ -137,7 +141,15 @@ public class BranchPersistenceManager implements PersistenceManager {
       ensurePopulatedCache(false);
       Set<Branch> branches = new HashSet<Branch>();
       for (Branch branch : getBranches())
-         if (branch.getAssociatedArtifact() != null && branch.getAssociatedArtifact().equals(associatedArtifact)) branches.add(branch);
+         try {
+            if (branch.getAssociatedArtifact() != null && branch.getAssociatedArtifact().equals(associatedArtifact)) {
+               branches.add(branch);
+            }
+         } catch (ArtifactDoesNotExist ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         } catch (MultipleArtifactsExist ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
       return branches;
    }
 
@@ -616,8 +628,8 @@ public class BranchPersistenceManager implements PersistenceManager {
 
       try {
          if (modType == ModificationType.DELETE.getValue()) {
-            aArtifact = artifactManager.getArtifactFromId(aArtId, parentBranch);
-            bArtifact = artifactManager.getArtifactFromId(bArtId, parentBranch);
+            aArtifact = ArtifactQuery.getArtifactFromId(aArtId, parentBranch);
+            bArtifact = ArtifactQuery.getArtifactFromId(bArtId, parentBranch);
 
             remoteRelationEvent =
                   new NetworkRelationLinkDeletedEvent(gammaId, parentBranch.getBranchId(), newTransactionNumber, relId,
@@ -626,8 +638,8 @@ public class BranchPersistenceManager implements PersistenceManager {
                         bArtifact.getFactory().getClass().getCanonicalName(),
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
          } else if (modType == ModificationType.CHANGE.getValue()) {
-            aArtifact = artifactManager.getArtifactFromId(aArtId, parentBranch);
-            bArtifact = artifactManager.getArtifactFromId(bArtId, parentBranch);
+            aArtifact = ArtifactQuery.getArtifactFromId(aArtId, parentBranch);
+            bArtifact = ArtifactQuery.getArtifactFromId(bArtId, parentBranch);
 
             remoteRelationEvent =
                   new NetworkRelationLinkModifiedEvent(gammaId, parentBranch.getBranchId(), newTransactionNumber,
@@ -637,8 +649,8 @@ public class BranchPersistenceManager implements PersistenceManager {
                         bArtifact.getFactory().getClass().getCanonicalName(),
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
          } else if (modType == ModificationType.NEW.getValue()) {
-            aArtifact = artifactManager.getArtifactFromId(aArtId, childBranch);
-            bArtifact = artifactManager.getArtifactFromId(bArtId, childBranch);
+            aArtifact = ArtifactQuery.getArtifactFromId(aArtId, childBranch);
+            bArtifact = ArtifactQuery.getArtifactFromId(bArtId, childBranch);
 
             // remoteRelationEvent = new RemoteNewRelationLinkEvent(parentBranch.getBranchId(),
             // newTransactionNumber,
@@ -649,7 +661,7 @@ public class BranchPersistenceManager implements PersistenceManager {
             // bArtifact.getGuid(),
             // aArtifact.getHumanReadableId(), bArtifact.getHumanReadableId());
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
       return remoteRelationEvent;
@@ -722,8 +734,8 @@ public class BranchPersistenceManager implements PersistenceManager {
             Artifact artifact;
 
             try {
-               artifact = artifactManager.getArtifactFromId(artId, parentBranch);
-            } catch (IllegalArgumentException ex) {
+               artifact = ArtifactQuery.getArtifactFromId(artId, parentBranch);
+            } catch (OseeCoreException ex) {
                continue;
             }
 

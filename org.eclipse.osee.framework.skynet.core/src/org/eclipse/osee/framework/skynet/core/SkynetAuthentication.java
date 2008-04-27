@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.UserIdSearch;
@@ -297,7 +298,7 @@ public class SkynetAuthentication implements PersistenceManager {
       if (user == null) {
          try {
             user =
-                  (User) artifactManager.getArtifactFromTypeName(User.ARTIFACT_NAME, name,
+                  (User) ArtifactQuery.getArtifactFromTypeAndName(User.ARTIFACT_NAME, name,
                         branchManager.getCommonBranch());
          } catch (SQLException ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
@@ -332,7 +333,7 @@ public class SkynetAuthentication implements PersistenceManager {
          user = artIdToUserCache.get(authorId);
       } else {
          try {
-            user = (User) artifactManager.getArtifactFromId(authorId, branchManager.getCommonBranch());
+            user = (User) ArtifactQuery.getArtifactFromId(authorId, branchManager.getCommonBranch());
             addUserToMap(user);
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);

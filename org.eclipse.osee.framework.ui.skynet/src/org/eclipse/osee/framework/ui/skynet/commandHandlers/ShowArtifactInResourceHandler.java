@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.ui.IWorkbenchPage;
@@ -55,7 +56,7 @@ public class ShowArtifactInResourceHandler extends AbstractHandler {
             RevisionHistoryView revisionHistoryView =
                   (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, artifact.getGuid(),
                         IWorkbenchPage.VIEW_ACTIVATE);
-            revisionHistoryView.explore(artifactPersistenceManager.getArtifact(artifact.getGuid(), artifact.getBranch()));
+            revisionHistoryView.explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), artifact.getBranch()));
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }

@@ -61,7 +61,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
@@ -87,8 +87,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
-import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -395,18 +393,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_GUID, SQL3DataType.VARCHAR, guid, -1, true);
    }
 
-   // use ArtifactQuery.getArtifactFromId() instead
-   @Deprecated
-   public Artifact getArtifact(String guid, Branch branch) throws SQLException {
-      return getArtifact(guid, transactionIdManager.getEditableTransactionId(branch));
-   }
-
    public Artifact getArtifactFromId(int artId, TransactionId transactionId) throws SQLException, IllegalArgumentException {
       return getArtifactInternal(transactionId, SELECT_ARTIFACT_BY_ID, SQL3DataType.INTEGER, null, artId, false);
-   }
-
-   public Artifact getArtifactFromId(int artId, Branch branch) throws SQLException, IllegalArgumentException {
-      return getArtifactFromId(artId, transactionIdManager.getEditableTransactionId(branch));
    }
 
    private Artifact getArtifactInternal(TransactionId transactionId, String query, SQL3DataType sqlDataType, String guid, int artId, boolean useGuid) throws SQLException {
@@ -670,10 +658,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             rSet.getInt("gamma_id")));
 
       return artifact;
-   }
-
-   public Collection<Artifact> getArtifactsFromSubtypeName(String subtypeName, Branch branch) throws SQLException {
-      return getArtifacts(new ArtifactTypeSearch(subtypeName, Operator.EQUAL), branch);
    }
 
    /**
@@ -1035,7 +1019,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    public Artifact getDefaultHierarchyRootArtifact(Branch branch, boolean createIfNecessary) throws SQLException {
-      Collection<Artifact> artifacts = getArtifactsFromSubtypeName(ROOT_ARTIFACT_TYPE_NAME, branch);
+      Collection<Artifact> artifacts = ArtifactQuery.getAtrifactsFromType(ROOT_ARTIFACT_TYPE_NAME, branch);
 
       if (artifacts.size() == 0) {
          if (createIfNecessary) {
@@ -1056,35 +1040,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    /**
-    * Return single artifact of type and name
-    * 
-    * @param artifactTypeName
-    * @param artifactName
-    * @param branch
-    * @return
-    * @throws SQLException
-    * @throws MultipleArtifactsExist if multiple artifacts found
-    * @throws ArtifactDoesNotExist if no single artifact found
-    */
-   public Artifact getArtifactFromTypeName(String artifactTypeName, String artifactName, Branch branch) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
-      List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(artifactTypeName, EQUAL));
-      criteria.add(new AttributeValueSearch("Name", artifactName, EQUAL));
-
-      Collection<Artifact> artifacts = getArtifacts(criteria, true, branch);
-
-      if (artifacts.size() == 1) return artifacts.iterator().next();
-      if (artifacts.size() > 1) {
-         throw new MultipleArtifactsExist(String.format(
-               "Multiple artifacts named \"%s\" (\"%s\") exist.  Found \"%s\"", artifactTypeName, artifactName,
-               artifacts.size()));
-      }
-      if (artifacts.size() == 0) throw new ArtifactDoesNotExist(String.format(
-            "Artifact named \"%s\" (\"%s\") does not exist.", artifactTypeName, artifactName));
-      return null;
-   }
-
-   /**
     * Updates local cache
     * 
     * @param event
@@ -1102,7 +1057,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
          if (ArtifactCache.getInstance().containsArtifact(artId, branchId)) {
             Branch branch = branchManager.getBranch(branchId);
-            Artifact oldArtifact = getArtifactFromId(artId, branch);
+            Artifact oldArtifact = ArtifactQuery.getArtifactFromId(artId, branch);
             // this forces the links to load
             oldArtifact.isDirty(true);
 
@@ -1203,26 +1158,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       root.setDescriptiveName(DEFAULT_HIERARCHY_ROOT_NAME);
       root.persistAttributes();
       return root;
-   }
-
-   /**
-    * Returns the artifact that is referenced by the token.
-    * 
-    * @param token
-    * @see ArtifactPersistenceManager#getArtifactVersionToken(Artifact)
-    */
-   public Artifact getArtifactFromToken(String token) {
-      throw new UnsupportedOperationException();
-   }
-
-   /**
-    * Returns a token that addresses the version of the artifact passed.
-    * 
-    * @param artifact
-    * @see ArtifactPersistenceManager#getArtifactFromToken(String)
-    */
-   public String getArtifactVersionToken(Artifact artifact) {
-      throw new UnsupportedOperationException();
    }
 
    /**

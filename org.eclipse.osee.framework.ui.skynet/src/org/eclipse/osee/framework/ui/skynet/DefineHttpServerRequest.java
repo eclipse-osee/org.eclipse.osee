@@ -17,9 +17,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.HttpRequest;
 import org.eclipse.osee.framework.skynet.core.linking.HttpResponse;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
@@ -70,7 +70,7 @@ public class DefineHttpServerRequest implements IHttpServerRequest {
       final Branch branch = BranchPersistenceManager.getInstance().getDefaultBranch();
       String guid = httpRequest.getParameter("guid");
       try {
-         final Artifact artifact = ArtifactPersistenceManager.getInstance().getArtifact(guid, branch);
+         final Artifact artifact = ArtifactQuery.getArtifactFromId(guid, branch);
          if (artifact == null) {
             httpResponse.outputStandardError(400, "Artifact can not be found in OSEE on branch " + branch);
             return;

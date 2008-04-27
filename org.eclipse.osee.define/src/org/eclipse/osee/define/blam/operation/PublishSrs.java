@@ -12,8 +12,8 @@ package org.eclipse.osee.define.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -33,12 +33,12 @@ public class PublishSrs extends AbstractBlam {
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
       Artifact srsMasterTemplate =
-            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Renderer Template", "srsMasterTemplate",
+            ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsMasterTemplate",
                   BranchPersistenceManager.getInstance().getCommonBranch());
       String masterTemplate = srsMasterTemplate.getSoleAttributeValue(WordAttribute.CONTENT_NAME, "");
 
       Artifact srsSlaveTemplate =
-            ArtifactPersistenceManager.getInstance().getArtifactFromTypeName("Renderer Template", "srsSlaveTemplate",
+            ArtifactQuery.getArtifactFromTypeAndName("Renderer Template", "srsSlaveTemplate",
                   BranchPersistenceManager.getInstance().getCommonBranch());
       String slaveTemplate = srsSlaveTemplate.getSoleAttributeValue(WordAttribute.CONTENT_NAME, "");
 

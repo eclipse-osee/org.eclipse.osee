@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -56,11 +57,11 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       init();
 
       monitor.subTask("Aquiring Design Artifacts"); // bulk load for performance reasons
-      artifactManager.getArtifactsFromSubtypeName("Subsystem Design", branch);
+      ArtifactQuery.getAtrifactsFromType("Subsystem Design", branch);
       monitor.worked(10);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
-      artifactManager.getArtifactsFromSubtypeName("Subsystem Requirement", branch);
+      ArtifactQuery.getAtrifactsFromType("Subsystem Requirement", branch);
       monitor.worked(60);
 
       int workIncrement = 30 / subsystems.size();

@@ -15,11 +15,11 @@ import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
@@ -213,13 +213,9 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
 
       try {
          if (memento != null) {
-            Artifact previousArtifact =
-                  ArtifactPersistenceManager.getInstance().getArtifact(memento.getString(ARTIFACT_GUID),
+            artifact =
+                  ArtifactQuery.getArtifactFromId(memento.getString(ARTIFACT_GUID),
                         BranchPersistenceManager.getInstance().getDefaultBranch());
-            if (previousArtifact != null) {
-               artifact = previousArtifact;
-               return;
-            }
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

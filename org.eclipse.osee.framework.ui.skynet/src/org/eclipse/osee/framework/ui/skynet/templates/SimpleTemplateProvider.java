@@ -17,8 +17,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -40,8 +40,7 @@ public class SimpleTemplateProvider implements ITemplateProvider {
       if (templateMap == null) {
          templateMap = new HashMap<String, Artifact>();
          Collection<Artifact> artifacts =
-               ArtifactPersistenceManager.getInstance().getArtifactsFromSubtypeName("Renderer Template",
-                     branchManager.getCommonBranch());
+               ArtifactQuery.getAtrifactsFromType("Renderer Template", branchManager.getCommonBranch());
          for (Artifact art : artifacts) {
             Collection<Attribute<String>> attrs = art.getAttributes("Template Match Criteria");
             for (Attribute<String> attr : attrs) {

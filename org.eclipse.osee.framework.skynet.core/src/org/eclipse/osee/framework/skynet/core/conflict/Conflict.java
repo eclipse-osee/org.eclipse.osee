@@ -14,11 +14,13 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.sql.SQLException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -74,11 +76,12 @@ public abstract class Conflict implements IAdaptable {
    /**
     * @return the artifact
     * @throws SQLException
-    * @throws IllegalArgumentException
+    * @throws MultipleArtifactsExist
+    * @throws ArtifactDoesNotExist
     */
-   public Artifact getArtifact() throws IllegalArgumentException, SQLException {
+   public Artifact getArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (artifact == null) {
-         artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, mergeBranch);
+         artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch);
       }
       return artifact;
    }
@@ -153,7 +156,7 @@ public abstract class Conflict implements IAdaptable {
       this.fromTransactionId = fromTransactionId;
    }
 
-   public Image getArtifactImage() throws IllegalArgumentException, SQLException {
+   public Image getArtifactImage() throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return getArtifact().getArtifactType().getImage(getChangeType(),
             TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
    }

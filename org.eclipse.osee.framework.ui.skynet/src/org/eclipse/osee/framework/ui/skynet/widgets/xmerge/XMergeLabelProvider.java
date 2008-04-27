@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -122,7 +123,7 @@ public class XMergeLabelProvider implements ITableLabelProvider {
          if (dCol == MergeColumn.Artifact_Name) {
             try {
                return conflict.getArtifactImage();
-            } catch (IllegalArgumentException ex) {
+            } catch (OseeCoreException ex) {
                OSEELog.logException(XMergeContentProvider.class, ex, true);
             } catch (SQLException ex) {
                OSEELog.logException(XMergeContentProvider.class, ex, true);

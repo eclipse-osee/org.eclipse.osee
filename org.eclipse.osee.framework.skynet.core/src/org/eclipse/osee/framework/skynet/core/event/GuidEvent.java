@@ -12,8 +12,10 @@ package org.eclipse.osee.framework.skynet.core.event;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 
 /**
@@ -33,13 +35,9 @@ public abstract class GuidEvent extends Event {
       super(sender, exception);
    }
 
-   public Artifact getArtifact() {
+   public Artifact getArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
       if (artifact == null) {
-         try {
-            artifact = ArtifactPersistenceManager.getInstance().getArtifact(getGuid(), branch);
-         } catch (SQLException ex) {
-            ex.printStackTrace();
-         }
+         artifact = ArtifactQuery.getArtifactFromId(getGuid(), branch);
       }
       return artifact;
    }

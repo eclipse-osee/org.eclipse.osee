@@ -59,11 +59,11 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
@@ -423,8 +423,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       public Artifact getArtifact() {
          try {
             return branch.getAssociatedArtifact();
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+         } catch (Exception ex) {
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
          return null;
       }
@@ -973,10 +973,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                if (ed.open() == 0) {
                   String artId = ed.getEntry();
                   Artifact associatedArtifact =
-                        ArtifactPersistenceManager.getInstance().getArtifactFromId(Integer.parseInt(artId),
+                        ArtifactQuery.getArtifactFromId(Integer.parseInt(artId),
                               BranchPersistenceManager.getInstance().getAtsBranch());
-                  if (associatedArtifact == null) throw new IllegalArgumentException(
-                        "Invalid artId for Common branch = " + artId);
                   if (MessageDialog.openConfirm(
                         Display.getCurrent().getActiveShell(),
                         "Set Associated Artifact",

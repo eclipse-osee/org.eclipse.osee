@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -67,7 +66,7 @@ public abstract class BranchableStateItem extends AtsStateItem {
       try {
          if (smaMgr.getBranchMgr().isWorkingBranch()) return new Result(
                "Working Branch exists.  Please commit or delete working branch before transition.");
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return new Result("Problem determining status of working branch.  See error log. " + ex.getLocalizedMessage());
       }

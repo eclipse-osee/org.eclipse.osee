@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service.branch;
 
+import java.sql.SQLException;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
@@ -122,7 +123,7 @@ public class ShowChangeReportService extends WorkPageService implements IEventRe
          } else {
             enabled = smaMgr.getBranchMgr().getTransactionId() != null;
          }
-      } catch (Exception ex) {
+      } catch (SQLException ex) {
          // do nothing
       }
       return enabled;
