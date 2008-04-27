@@ -1293,8 +1293,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(null)) return;
 
       try {
-         if (memento != null) {
-
+         if (memento != null && memento.getString(ROOT_GUID) != null) {
             Artifact previousArtifact =
                   ArtifactQuery.getArtifactFromId(memento.getString(ROOT_GUID), branchManager.getDefaultBranch());
             explore(previousArtifact);
