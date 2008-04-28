@@ -105,4 +105,25 @@ public class ArtifactQuery {
             ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeTypeName);
       return new ArtifactQueryBuilder(artifactType, branch, new AttributeValueCriteria(attributeType, attributeValue)).getArtifacts();
    }
+
+   /**
+    * get exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
+    * exception
+    * 
+    * @param artifactTypeName
+    * @param attributeTypeName
+    * @param attributeValue
+    * @param branch
+    * @return
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist if no artifacts are found
+    * @throws MultipleArtifactsExist if more than one artifact is found
+    */
+   public static Artifact getAtrifactFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      Collection<Artifact> artifacts =
+            getAtrifactsFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch);
+      return getSoleArtifact(
+            artifacts,
+            " with type \"" + artifactTypeName + " and \"" + attributeTypeName + " = \"" + attributeValue + "\" on branch \"" + branch + "\"");
+   }
 }
