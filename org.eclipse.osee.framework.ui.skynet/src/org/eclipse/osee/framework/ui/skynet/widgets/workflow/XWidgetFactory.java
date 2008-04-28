@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeListViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.XBranchListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBoxDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -169,8 +168,6 @@ public class XWidgetFactory {
                new XAttributeTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
       } else if (xWidgetName.equals("XRelationTypeListViewer")) {
          xWidget = new XRelationTypeListViewer();
-      } else if (xWidgetName.equals("XBranchListViewer")) {
-         xWidget = new XBranchListViewer(xWidgetLayoutData.getDefaultValue());
       } else if (xWidgetName.startsWith("XList")) {
          String values[] =
                xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
