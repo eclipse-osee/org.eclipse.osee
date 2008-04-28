@@ -171,16 +171,15 @@ public class ArtifactQueryBuilder {
          for (int i = 1; i < criteria.length; i++) {
             AbstractArtifactSearchCriteria leftCriteria = criteria[i - 1];
             AbstractArtifactSearchCriteria rightCriteria = criteria[i];
-            sql.append(" AND ");
             leftCriteria.addJoinArtId(this);
             sql.append("=");
             rightCriteria.addJoinArtId(this);
             sql.append(" AND ");
             rightCriteria.addToWhereSql(this);
+            sql.append(" AND ");
          }
-         sql.append(" AND ");
          criteria[criteria.length - 1].addJoinArtId(this);
-         sql.append("=art1.art_id");
+         sql.append("=art1.art_id AND ");
       }
 
       sql.append("art1.art_id=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND ");
@@ -210,7 +209,6 @@ public class ArtifactQueryBuilder {
    }
 
    public void addCurrentTxSql(String txsAlias, String txdAlias, Branch branch) {
-      sql.append("AND ");
       sql.append(txsAlias);
       sql.append(".tx_current=1 AND ");
       sql.append(txsAlias);
@@ -222,7 +220,7 @@ public class ArtifactQueryBuilder {
       sql.append(txdAlias);
       sql.append(".transaction_id AND ");
       sql.append(txdAlias);
-      sql.append(".branch_id=?");
+      sql.append(".branch_id=? AND ");
       dataList.add(SQL3DataType.INTEGER);
       dataList.add(branch.getBranchId());
    }

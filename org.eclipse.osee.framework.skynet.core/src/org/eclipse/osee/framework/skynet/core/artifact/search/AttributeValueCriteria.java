@@ -66,22 +66,19 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
    @Override
    public void addToWhereSql(ArtifactQueryBuilder builder) {
       if (attributeType != null) {
-         builder.append("AND ");
          builder.append(attrAlias);
-         builder.append(".attr_type_id=?");
+         builder.append(".attr_type_id=? AND ");
          builder.addParameter(SQL3DataType.INTEGER, attributeType.getAttrTypeId());
       }
       if (value != null) {
-         builder.append("AND ");
          builder.append(attrAlias);
-         builder.append(".value=?");
+         builder.append(".value=? AND ");
          builder.addParameter(SQL3DataType.VARCHAR, value);
       }
-      builder.append("AND ");
       builder.append(attrAlias);
       builder.append(".gamma_id=");
       builder.append(txsAlias);
-      builder.append(".gamma_id");
+      builder.append(".gamma_id AND ");
 
       builder.addCurrentTxSql(txsAlias, txdAlias);
    }

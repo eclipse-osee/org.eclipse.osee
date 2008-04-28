@@ -311,6 +311,13 @@
 		<Index id="OSEE_TXS_T_IDX">
 			<AppliesTo id="TX_TYPE" />
 		</Index>
+		<Index id="OSEE_TXS_C_IDX">
+			<AppliesTo id="TX_CURRENT" />
+		</Index>
+		<Index id="OSEE_TXS_C_T_IDX">
+			<AppliesTo id="TX_CURRENT" />
+			<AppliesTo id="TX_TYPE" />
+		</Index>
 		<Index id="OSEE_TXS_TX_IDX" >
 			<AppliesTo id="TRANSACTION_ID" />
 		</Index>

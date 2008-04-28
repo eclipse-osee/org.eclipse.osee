@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.UserIdSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -212,8 +211,7 @@ public class SkynetAuthentication implements PersistenceManager {
       if (activeUserCache.size() == 0) {
          try {
             Collection<Artifact> dbUsers =
-                  artifactManager.getArtifacts(new ArtifactTypeSearch(User.ARTIFACT_NAME, Operator.EQUAL),
-                        branchManager.getCommonBranch());
+                  ArtifactQuery.getAtrifactsFromType(User.ARTIFACT_NAME, branchManager.getCommonBranch());
             for (Artifact a : dbUsers) {
                User user = (User) a;
                if (user.isActive()) {
@@ -243,7 +241,8 @@ public class SkynetAuthentication implements PersistenceManager {
 
       if (user == null) {
          Collection<Artifact> users =
-               artifactManager.getArtifacts(new UserIdSearch(userId, Operator.EQUAL), branchManager.getCommonBranch());
+               ArtifactQuery.getAtrifactsFromTypeAndAttribute(User.ARTIFACT_NAME, User.userIdAttributeName, userId,
+                     branchManager.getCommonBranch());
          if (users.size() == 1) {
             user = (User) users.iterator().next();
             addUserToMap(user);
