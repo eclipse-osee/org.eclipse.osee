@@ -233,7 +233,7 @@ public class SkynetAuthentication implements PersistenceManager {
       return (ArrayList<User>) activeUserCache.clone();
    }
 
-   public User getUserByIdWithError(String userId) throws SQLException, IllegalArgumentException, MultipleAttributesExist, IllegalStateException, UserNotInDatabase {
+   public User getUserByIdWithError(String userId) throws SQLException, MultipleAttributesExist, IllegalStateException, UserNotInDatabase {
       if (userId == null || userId.equals("")) {
          throw new IllegalArgumentException("UserId can't be null or \"\"");
       }
