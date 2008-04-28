@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescript
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -152,6 +154,10 @@ public class AttributeChanged extends Change {
       } catch (IllegalArgumentException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (SQLException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (ArtifactDoesNotExist ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (MultipleArtifactsExist ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
       return null;

@@ -14,9 +14,11 @@ package org.eclipse.osee.framework.skynet.core.change;
 import java.sql.SQLException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -73,10 +75,12 @@ public abstract class Change implements IAdaptable {
     * @return the artifact
     * @throws SQLException
     * @throws IllegalArgumentException
+    * @throws MultipleArtifactsExist
+    * @throws ArtifactDoesNotExist
     */
-   public Artifact getArtifact() throws IllegalArgumentException, SQLException {
+   public Artifact getArtifact() throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (artifact == null) {
-         artifact = ArtifactPersistenceManager.getInstance().getArtifactFromId(artId, toTransactionId);
+         artifact = ArtifactQuery.getArtifactFromId(artId, toTransactionId.getBranch());
       }
       return artifact;
    }
