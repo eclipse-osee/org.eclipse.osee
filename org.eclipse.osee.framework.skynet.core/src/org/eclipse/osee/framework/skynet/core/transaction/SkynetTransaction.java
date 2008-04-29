@@ -67,7 +67,7 @@ public class SkynetTransaction {
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("transaction_id", TXD_COMMENT, "time", "author",
                "branch_id");
    private static final String INSERT_INTO_TRANSACTION_TABLE =
-         " INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id, tx_type) VALUES (?, ?, ?)";
+         " INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id, tx_type, tx_current) VALUES (?, ?, ?, 1)";
 
    private static final String DELETE_TRANSACTION_DETAIL =
          "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id =?";
@@ -202,17 +202,21 @@ public class SkynetTransaction {
    }
 
    public boolean executeTransactionDataItems() throws SQLException {
-      return executeTransactionDataItemsMap(transactionItems);
-   }
+      boolean insertTransactionDataItems = transactionItems.size() > 0;
 
-   private boolean executeTransactionDataItemsMap(Map<ITransactionData, ITransactionData> map) throws SQLException {
-      boolean insertTransactionDataItems = map.size() > 0;
+      for (ITransactionData transactionData : transactionItems.keySet()) {
+         //This must be called before adding the new transaction information, because it
+         //will update the current transaction to 0.
+         ConnectionHandler.runPreparedUpdate(transactionData.setPreviousTxNotCurrentSql(),
+               transactionData.getPreviousTxNotCurrentData().toArray());
 
-      for (ITransactionData transactionData : map.keySet()) {
+         //Add current transaction information
          ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE, SQL3DataType.INTEGER,
                transactionData.getTransactionId(), SQL3DataType.INTEGER, transactionData.getGammaId(),
                SQL3DataType.INTEGER, TransactionType.convertModificationTypeToTransactionType(
                      transactionData.getModificationType()).getId());
+
+         //Add specific object values to the their tables
          ConnectionHandler.runPreparedUpdate(transactionData.getTransactionChangeSql(),
                transactionData.getTransactionChangeData().toArray());
       }
