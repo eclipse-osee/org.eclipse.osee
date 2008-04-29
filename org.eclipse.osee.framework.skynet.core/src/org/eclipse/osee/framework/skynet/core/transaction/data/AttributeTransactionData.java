@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 
 /**
@@ -23,6 +24,10 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 public class AttributeTransactionData implements ITransactionData {
    private static final String INSERT_ATTRIBUTE =
          "INSERT INTO " + ATTRIBUTE_VERSION_TABLE + " (art_id, attr_id, attr_type_id, value, gamma_id, content, modification_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+   private static final String SET_PREVIOUS_TX_NOT_CURRENT =
+         "UPDATE osee_Define_txs tx1 set tx_current = 0 WHERE EXISTS (SELECT 'x' from osee_define_tx_details td2, osee_Define_attribute at3 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = at3.gamma_id AND at3.attr_id = ? AND tx1.tx_current = 1)";
+
    private static final int PRIME_NUMBER = 5;
 
    private int artId;
@@ -33,9 +38,11 @@ public class AttributeTransactionData implements ITransactionData {
    private int transactionId;
    private InputStream content;
    private ModificationType modificationType;
-   private List<Object> dataItems;
+   private Branch branch;
+   private List<Object> dataItems = new LinkedList<Object>();
+   private List<Object> notCurrentDataItems = new LinkedList<Object>();
 
-   public AttributeTransactionData(int artId, int attrId, int attrTypeId, String value, int gammaId, int transactionId, InputStream content, ModificationType modificationType) {
+   public AttributeTransactionData(int artId, int attrId, int attrTypeId, String value, int gammaId, int transactionId, InputStream content, ModificationType modificationType, Branch branch) {
       super();
       this.artId = artId;
       this.attrId = attrId;
@@ -45,7 +52,7 @@ public class AttributeTransactionData implements ITransactionData {
       this.transactionId = transactionId;
       this.content = content;
       this.modificationType = modificationType;
-      this.dataItems = new LinkedList<Object>();
+      this.branch = branch;
    }
 
    /* (non-Javadoc)
@@ -129,5 +136,26 @@ public class AttributeTransactionData implements ITransactionData {
     */
    public int getArtId() {
       return artId;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#getPreviousTxNotCurrentData()
+    */
+   @Override
+   public List<Object> getPreviousTxNotCurrentData() {
+      notCurrentDataItems.add(SQL3DataType.INTEGER);
+      notCurrentDataItems.add(branch.getBranchId());
+      notCurrentDataItems.add(SQL3DataType.INTEGER);
+      notCurrentDataItems.add(attrId);
+
+      return notCurrentDataItems;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#setPreviousTxNotCurrentSql()
+    */
+   @Override
+   public String setPreviousTxNotCurrentSql() {
+      return SET_PREVIOUS_TX_NOT_CURRENT;
    }
 }

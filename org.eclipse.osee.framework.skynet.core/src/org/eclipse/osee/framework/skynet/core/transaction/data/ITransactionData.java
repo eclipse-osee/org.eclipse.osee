@@ -20,6 +20,10 @@ public interface ITransactionData {
 
    public String getTransactionChangeSql();
 
+   public String setPreviousTxNotCurrentSql();
+
+   public List<Object> getPreviousTxNotCurrentData();
+
    public List<Object> getTransactionChangeData();
 
    public int getGammaId();

@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 
@@ -23,21 +24,27 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 public class RelationTransactionData implements ITransactionData {
    private static final String INSERT_INTO_RELATION_TABLE =
          "INSERT INTO " + RELATION_LINK_VERSION_TABLE + " (rel_link_id, rel_link_type_id, a_art_id, b_art_id, rationale, a_order_value, b_order_value, gamma_id, modification_id) VALUES (?,?,?,?,?,?,?,?,?)";
+
+   private static final String SET_PREVIOUS_TX_NOT_CURRENT =
+         "UPDATE osee_Define_txs tx1 set tx_current = 0 WHERE EXISTS (SELECT 'x' from osee_define_tx_details td2, osee_Define_rel_link rl3 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = rl3.gamma_id AND rl3.rel_link_id = ? AND tx1.tx_current = 1)";
+
    private static final int PRIME_NUMBER = 7;
 
    private IRelationLink link;
    private int gammaId;
    private int transactionId;
    private ModificationType modificationType;
-   private List<Object> dataItems;
+   private Branch branch;
+   private List<Object> dataItems = new LinkedList<Object>();
+   private List<Object> notCurrentDataItems = new LinkedList<Object>();
 
-   public RelationTransactionData(IRelationLink link, int gammaId, int transactionId, ModificationType modificationType) {
+   public RelationTransactionData(IRelationLink link, int gammaId, int transactionId, ModificationType modificationType, Branch branch) {
       super();
       this.link = link;
       this.gammaId = gammaId;
       this.transactionId = transactionId;
       this.modificationType = modificationType;
-      this.dataItems = new LinkedList<Object>();
+      this.branch = branch;
    }
 
    /* (non-Javadoc)
@@ -118,6 +125,27 @@ public class RelationTransactionData implements ITransactionData {
     */
    public void setModificationType(ModificationType modificationType) {
       this.modificationType = modificationType;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#getPreviousTxNotCurrentData()
+    */
+   @Override
+   public List<Object> getPreviousTxNotCurrentData() {
+      notCurrentDataItems.add(SQL3DataType.INTEGER);
+      notCurrentDataItems.add(branch.getBranchId());
+      notCurrentDataItems.add(SQL3DataType.INTEGER);
+      notCurrentDataItems.add(link.getPersistenceMemo().getLinkId());
+
+      return notCurrentDataItems;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#setPreviousTxNotCurrentSql()
+    */
+   @Override
+   public String setPreviousTxNotCurrentSql() {
+      return SET_PREVIOUS_TX_NOT_CURRENT;
    }
 
 }
