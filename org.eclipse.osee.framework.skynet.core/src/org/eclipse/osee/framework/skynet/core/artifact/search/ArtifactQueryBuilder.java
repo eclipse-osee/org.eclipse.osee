@@ -37,10 +37,19 @@ public class ArtifactQueryBuilder {
    private String guid;
    private String hrid;
    private ArtifactSubtypeDescriptor artifactType;
-   private boolean allowDeleted = false;
+   private final boolean allowDeleted;
 
-   public ArtifactQueryBuilder(int artId, Branch branch) {
-      this(artId, null, null, branch);
+   /**
+    * @param artId
+    * @param branch
+    * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
+    */
+   public ArtifactQueryBuilder(int artId, Branch branch, boolean allowDeleted) {
+      this(artId, null, null, branch, allowDeleted);
+   }
+
+   public ArtifactQueryBuilder(String guidOrHrid, Branch branch) {
+      this(0, ensureValid(guidOrHrid), null, branch, false);
    }
 
    private static String ensureValid(String str) {
@@ -50,27 +59,24 @@ public class ArtifactQueryBuilder {
       return str;
    }
 
-   public ArtifactQueryBuilder(String guidOrHrid, Branch branch) {
-      this(0, ensureValid(guidOrHrid), null, branch);
-   }
-
    public ArtifactQueryBuilder(Branch branch, AbstractArtifactSearchCriteria... criteria) {
-      this(0, null, null, branch, criteria);
+      this(0, null, null, branch, false, criteria);
    }
 
    public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch) {
-      this(0, null, artifactType, branch);
+      this(0, null, artifactType, branch, false);
    }
 
    public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch, AbstractArtifactSearchCriteria... criteria) {
-      this(0, null, artifactType, branch, criteria);
+      this(0, null, artifactType, branch, false, criteria);
    }
 
-   private ArtifactQueryBuilder(int artId, String guidOrHrid, ArtifactSubtypeDescriptor artifactType, Branch branch, AbstractArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(int artId, String guidOrHrid, ArtifactSubtypeDescriptor artifactType, Branch branch, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
       this.artifactType = artifactType;
       this.branch = branch;
       this.criteria = criteria;
       this.artId = artId;
+      this.allowDeleted = allowDeleted;
       if (guidOrHrid != null) {
          if (GUID.isValid(guidOrHrid)) {
             guid = guidOrHrid;
@@ -85,13 +91,6 @@ public class ArtifactQueryBuilder {
       nextAlias.put("osee_define_artifact_version", new NextAlias("arv"));
       nextAlias.put("osee_define_attribute", new NextAlias("att"));
       nextAlias.put("osee_define_rel_link", new NextAlias("rel"));
-   }
-
-   /**
-    * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
-    */
-   public void setAllowDeleted(boolean allowDeleted) {
-      this.allowDeleted = allowDeleted;
    }
 
    public void addTxTablesSql() {

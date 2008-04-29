@@ -65,7 +65,7 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      Collection<Artifact> artifacts = new ArtifactQueryBuilder(artId, branch).getArtifacts();
+      Collection<Artifact> artifacts = new ArtifactQueryBuilder(artId, branch, allowDeleted).getArtifacts();
       return getSoleArtifact(artifacts, " with id \"" + artId + "\" on branch \"" + branch + "\"");
    }
 
