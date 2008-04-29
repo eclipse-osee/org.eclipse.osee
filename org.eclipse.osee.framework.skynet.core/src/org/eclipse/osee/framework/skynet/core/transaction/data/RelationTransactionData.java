@@ -45,19 +45,14 @@ public class RelationTransactionData implements ITransactionData {
       this.transactionId = transactionId;
       this.modificationType = modificationType;
       this.branch = branch;
+
+      populateDataList();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#getTransactionChangeSql()
+   /**
+    * 
     */
-   public String getTransactionChangeSql() {
-      return INSERT_INTO_RELATION_TABLE;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#getTransactionChangeData()
-    */
-   public List<Object> getTransactionChangeData() {
+   private void populateDataList() {
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getPersistenceMemo().getLinkId());
       dataItems.add(SQL3DataType.INTEGER);
@@ -77,6 +72,23 @@ public class RelationTransactionData implements ITransactionData {
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(modificationType.getValue());
 
+      notCurrentDataItems.add(SQL3DataType.INTEGER);
+      notCurrentDataItems.add(branch.getBranchId());
+      notCurrentDataItems.add(SQL3DataType.INTEGER);
+      notCurrentDataItems.add(link.getPersistenceMemo().getLinkId());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#getTransactionChangeSql()
+    */
+   public String getTransactionChangeSql() {
+      return INSERT_INTO_RELATION_TABLE;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.ITransactionData#getTransactionChangeData()
+    */
+   public List<Object> getTransactionChangeData() {
       return dataItems;
    }
 
@@ -132,11 +144,6 @@ public class RelationTransactionData implements ITransactionData {
     */
    @Override
    public List<Object> getPreviousTxNotCurrentData() {
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
-      notCurrentDataItems.add(branch.getBranchId());
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
-      notCurrentDataItems.add(link.getPersistenceMemo().getLinkId());
-
       return notCurrentDataItems;
    }
 

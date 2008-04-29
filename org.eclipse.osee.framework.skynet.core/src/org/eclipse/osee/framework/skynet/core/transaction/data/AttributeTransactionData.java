@@ -53,19 +53,14 @@ public class AttributeTransactionData implements ITransactionData {
       this.content = content;
       this.modificationType = modificationType;
       this.branch = branch;
+
+      populateDataList();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.TransactionData#getTransactionChangeSql()
+   /**
+    * 
     */
-   public String getTransactionChangeSql() {
-      return INSERT_ATTRIBUTE;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.transaction.TransactionData#getTransactionChangeData()
-    */
-   public List<Object> getTransactionChangeData() {
+   private void populateDataList() {
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(artId);
       dataItems.add(SQL3DataType.INTEGER);
@@ -81,6 +76,23 @@ public class AttributeTransactionData implements ITransactionData {
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(modificationType.getValue());
 
+      notCurrentDataItems.add(SQL3DataType.INTEGER);
+      notCurrentDataItems.add(branch.getBranchId());
+      notCurrentDataItems.add(SQL3DataType.INTEGER);
+      notCurrentDataItems.add(attrId);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.TransactionData#getTransactionChangeSql()
+    */
+   public String getTransactionChangeSql() {
+      return INSERT_ATTRIBUTE;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.transaction.TransactionData#getTransactionChangeData()
+    */
+   public List<Object> getTransactionChangeData() {
       return dataItems;
    }
 
@@ -143,11 +155,6 @@ public class AttributeTransactionData implements ITransactionData {
     */
    @Override
    public List<Object> getPreviousTxNotCurrentData() {
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
-      notCurrentDataItems.add(branch.getBranchId());
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
-      notCurrentDataItems.add(attrId);
-
       return notCurrentDataItems;
    }
 

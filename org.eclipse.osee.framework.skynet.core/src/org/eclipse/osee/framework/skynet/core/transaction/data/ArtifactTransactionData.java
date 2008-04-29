@@ -45,6 +45,25 @@ public class ArtifactTransactionData implements ITransactionData {
       this.modificationType = modificationType;
       this.artifact = artifact;
       this.branch = branch;
+
+      populateDataList();
+   }
+
+   /**
+    * 
+    */
+   private void populateDataList() {
+      dataItems.add(SQL3DataType.INTEGER);
+      dataItems.add(artifact.getArtId());
+      dataItems.add(SQL3DataType.INTEGER);
+      dataItems.add(gammaId);
+      dataItems.add(SQL3DataType.INTEGER);
+      dataItems.add(modificationType.getValue());
+
+      notCurrentDataItems.add(SQL3DataType.INTEGER);
+      notCurrentDataItems.add(branch.getBranchId());
+      notCurrentDataItems.add(SQL3DataType.INTEGER);
+      notCurrentDataItems.add(artifact.getArtId());
    }
 
    /* (non-Javadoc)
@@ -60,13 +79,6 @@ public class ArtifactTransactionData implements ITransactionData {
     * @see org.eclipse.osee.framework.skynet.core.transaction.TransactionData#getTransactionChangeData()
     */
    public List<Object> getTransactionChangeData() {
-      dataItems.add(SQL3DataType.INTEGER);
-      dataItems.add(artifact.getArtId());
-      dataItems.add(SQL3DataType.INTEGER);
-      dataItems.add(gammaId);
-      dataItems.add(SQL3DataType.INTEGER);
-      dataItems.add(modificationType.getValue());
-
       return dataItems;
    }
 
@@ -137,11 +149,6 @@ public class ArtifactTransactionData implements ITransactionData {
     */
    @Override
    public List<Object> getPreviousTxNotCurrentData() {
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
-      notCurrentDataItems.add(branch.getBranchId());
-      notCurrentDataItems.add(SQL3DataType.INTEGER);
-      notCurrentDataItems.add(artifact.getArtId());
-
       return notCurrentDataItems;
    }
 }
