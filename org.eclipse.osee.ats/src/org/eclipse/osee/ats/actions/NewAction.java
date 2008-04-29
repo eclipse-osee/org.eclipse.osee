@@ -55,7 +55,7 @@ public class NewAction extends Action {
       NewActionWizard wizard = new NewActionWizard();
       try {
          if (actionableItem != null) {
-            wizard.setCheckedArtifacts(getTeamActionableItems());
+            wizard.setInitialAias(getTeamActionableItems());
          }
          if (initialDescription != null) {
             wizard.setInitialDescription(initialDescription);

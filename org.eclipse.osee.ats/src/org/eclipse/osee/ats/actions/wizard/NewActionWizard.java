@@ -41,7 +41,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
    private NewActionPage1 page1;
    private NewActionPage2 page2;
    private NewActionPage3 page3;
-   private Collection<ActionableItemArtifact> checkedArtifacts;
+   private Collection<ActionableItemArtifact> initialAias;
    private String initialDescription;
 
    /**
@@ -138,20 +138,6 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return ((XDate) page2.getXWidget("Deadline")).getDate();
    }
 
-   /**
-    * @return Returns the checkedArtifacts.
-    */
-   public Collection<ActionableItemArtifact> getCheckedArtifacts() {
-      return checkedArtifacts;
-   }
-
-   /**
-    * @param checkedArtifacts The checkedArtifacts to set.
-    */
-   public void setCheckedArtifacts(Collection<ActionableItemArtifact> checkedArtifacts) {
-      this.checkedArtifacts = checkedArtifacts;
-   }
-
    public void notifyAtsWizardItemExtensions(ActionArtifact action) {
       if (page3 != null) {
          page3.notifyAtsWizardItemExtensions(action);
@@ -180,5 +166,19 @@ public class NewActionWizard extends Wizard implements INewWizard {
     */
    public void setInitialDescription(String initialDescription) {
       this.initialDescription = initialDescription;
+   }
+
+   /**
+    * @return the initialAias
+    */
+   public Collection<ActionableItemArtifact> getInitialAias() {
+      return initialAias;
+   }
+
+   /**
+    * @param initialAias the initialAias to set
+    */
+   public void setInitialAias(Collection<ActionableItemArtifact> initialAias) {
+      this.initialAias = initialAias;
    }
 }

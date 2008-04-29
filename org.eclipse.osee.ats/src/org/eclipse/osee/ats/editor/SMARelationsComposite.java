@@ -146,9 +146,9 @@ public class SMARelationsComposite extends Composite {
       final AICheckTreeDialog diag =
             new AICheckTreeDialog("Edit Actionable Items", "Select Actionable Items for this review", Active.Active);
       try {
-         diag.setInitialSelections(reviewArt.getActionableItemsDam().getActionableItems().toArray());
+         diag.setInitialSelections(reviewArt.getActionableItemsDam().getActionableItems());
          if (diag.open() != 0) return;
-         reviewArt.getActionableItemsDam().setActionableItems(diag.getSelection());
+         reviewArt.getActionableItemsDam().setActionableItems(diag.getChecked());
          smaMgr.getEditor().onDirtied();
          refreshActionableItemsLabel();
       } catch (Exception ex) {

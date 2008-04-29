@@ -119,7 +119,7 @@ public class NewActionPage2 extends WizardPage {
 
    @Override
    public boolean isPageComplete() {
-      if (!page.isPageComplete().isTrue()) return false;
+      if (page == null || !page.isPageComplete().isTrue()) return false;
       return true;
    }
 

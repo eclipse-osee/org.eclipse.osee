@@ -364,15 +364,14 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       try {
          diag.setInput(getTeamDefinition().getArtifacts(RelationSide.TeamActionableItem_ActionableItem,
                ActionableItemArtifact.class));
-         diag.setInitialSelections(actionableItemsDam.getActionableItems().toArray(
-               new Object[actionableItemsDam.getActionableItems().size()]));
+         diag.setInitialSelections(actionableItemsDam.getActionableItems());
          if (diag.open() != 0) {
             toReturn = new Result("Add/Remove Cancelled");
-         } else if (diag.getResult().length == 0) {
+         } else if (diag.getChecked().size() == 0) {
             toReturn = new Result("At least one actionable item must remain.");
          } else {
             Set<ActionableItemArtifact> selectedAlias = new HashSet<ActionableItemArtifact>();
-            for (Object obj : diag.getResult()) {
+            for (Object obj : diag.getChecked()) {
                selectedAlias.add((ActionableItemArtifact) obj);
             }
 
@@ -399,9 +398,9 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       try {
          diag.setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Both));
          if (diag.open() != 0) return Result.FalseResult;
-         if (diag.getResult().length == 0) return new Result("At least one actionable item must must be selected.");
-         if (diag.getResult().length > 1) return new Result("Only ONE actionable item can be selected for converts");
-         ActionableItemArtifact selectedAia = (ActionableItemArtifact) diag.getResult()[0];
+         if (diag.getChecked().size() == 0) return new Result("At least one actionable item must must be selected.");
+         if (diag.getChecked().size() > 1) return new Result("Only ONE actionable item can be selected for converts");
+         ActionableItemArtifact selectedAia = (ActionableItemArtifact) diag.getChecked().iterator().next();
          Set<TeamDefinitionArtifact> teamDefs = ActionableItemArtifact.getImpactedTeamDef(selectedAia);
          if (teamDefs.size() != 1) {
             toReturn = new Result("Single team can not retrieved for " + selectedAia.getDescriptiveName());

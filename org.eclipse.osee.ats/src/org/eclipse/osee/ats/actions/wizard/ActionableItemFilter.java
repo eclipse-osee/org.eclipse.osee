@@ -12,18 +12,18 @@ package org.eclipse.osee.ats.actions.wizard;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTree;
 
 public class ActionableItemFilter extends ViewerFilter {
    private String contains = null;
-   private final CheckboxTreeViewer treeViewer;
+   private final OSEEFilteredTree treeViewer;
 
-   public ActionableItemFilter(CheckboxTreeViewer treeViewer) {
+   public ActionableItemFilter(OSEEFilteredTree treeViewer) {
       this.treeViewer = treeViewer;
    }
 
@@ -53,9 +53,9 @@ public class ActionableItemFilter extends ViewerFilter {
    public void setContains(String contains) {
       this.contains = contains;
       if (contains.equals(""))
-         treeViewer.collapseAll();
+         treeViewer.getViewer().collapseAll();
       else
-         treeViewer.expandAll();
+         treeViewer.getViewer().expandAll();
    }
 
    /**

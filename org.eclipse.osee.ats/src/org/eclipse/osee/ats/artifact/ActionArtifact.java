@@ -771,6 +771,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
                   "Add Impacted Actionable Items",
                   "Select New Impacted Actionable Items\n\n" + "Note: Un-selecting existing items will NOT remove the impact.\n" + "Team Workflow with no impact should be transitioned to Cancelled.",
                   Active.Active);
+
+      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         aias.addAll(team.getActionableItemsDam().getActionableItems());
+      }
+      diag.setInitialSelections(aias);
       if (diag.open() != 0) return Result.FalseResult;
 
       final StringBuffer sb = new StringBuffer();
@@ -779,8 +785,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
          @Override
          protected void handleTxWork() throws Exception {
-            for (Object obj : diag.getResult()) {
-               ActionableItemArtifact aia = (ActionableItemArtifact) obj;
+            for (ActionableItemArtifact aia : diag.getChecked()) {
                Result result = addActionableItemToTeamsOrAddTeams(aia);
                sb.append(result.getText());
             }
