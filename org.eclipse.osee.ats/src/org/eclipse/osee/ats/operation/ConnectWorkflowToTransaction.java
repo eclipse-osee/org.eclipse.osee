@@ -56,7 +56,7 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
    }
 
    private void updateWorkflow(String commitComment, int transactionId) throws SQLException {
-      Branch atsBranch = BranchPersistenceManager.getInstance().getCommonBranch();
+      Branch atsBranch = BranchPersistenceManager.getCommonBranch();
       Matcher hridMatcher = hridPattern.matcher(commitComment);
 
       if (hridMatcher.find()) {

@@ -38,7 +38,6 @@ public class LinkManager {
    private final Map<IRelationType, RelationLinkGroup> sideBLinks;
    private boolean inTrace;
    private static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
-   private static final RelationTypeManager relationTypeManager = RelationTypeManager.getInstance();
    private static final RelationLinkGroup[] dummyRelationLinkGroups = new RelationLinkGroup[0];
    private static final IRelationLink[] dummyRelationLinks = new IRelationLink[0];
    private boolean released;
@@ -535,8 +534,8 @@ public class LinkManager {
 
       // and validate adding argument artifact to this group
 
-      relationTypeManager.ensureSideWillSupportArtifact(relationType, sideA, otherArtifact, 1);
-      relationTypeManager.ensureSideWillSupportArtifact(relationType, !sideA, getOwningArtifact(), 1);
+      RelationTypeManager.ensureSideWillSupportArtifact(relationType, sideA, otherArtifact, 1);
+      RelationTypeManager.ensureSideWillSupportArtifact(relationType, !sideA, getOwningArtifact(), 1);
    }
 
    /**
@@ -547,7 +546,7 @@ public class LinkManager {
     */
    public void ensureHalfLinksValidity(IRelationType relationType, boolean sideA, int artifactCount) throws SQLException {
       checkReleased();
-      relationTypeManager.ensureSideWillSupportArtifact(relationType, sideA, getOwningArtifact(), artifactCount);
+      RelationTypeManager.ensureSideWillSupportArtifact(relationType, sideA, getOwningArtifact(), artifactCount);
    }
 
    /**

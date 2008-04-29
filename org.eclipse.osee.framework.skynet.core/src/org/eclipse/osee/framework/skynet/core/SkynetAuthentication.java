@@ -21,11 +21,8 @@ import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.OseeUser;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.UserIdSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -49,8 +46,6 @@ import org.eclipse.swt.widgets.Display;
 public class SkynetAuthentication implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetAuthentication.class);
    private OseeAuthentication oseeAuthentication;
-   private ArtifactPersistenceManager artifactManager;
-   private BranchPersistenceManager branchManager;
    private int noOneArtifactId;
 
    public static enum UserStatusEnum {
@@ -86,9 +81,7 @@ public class SkynetAuthentication implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#onManagerWebInit()
     */
    public void onManagerWebInit() throws Exception {
-      artifactManager = ArtifactPersistenceManager.getInstance();
       oseeAuthentication = OseeAuthentication.getInstance();
-      branchManager = BranchPersistenceManager.getInstance();
    }
 
    public boolean isAuthenticated() {
@@ -114,7 +107,7 @@ public class SkynetAuthentication implements PersistenceManager {
       });
    }
 
-   public synchronized User getAuthenticatedUser() throws IllegalStateException {
+   public synchronized User getAuthenticatedUser() {
       try {
          if (SkynetDbInit.isPreArtifactCreation()) {
             return BootStrapUser.getInstance();
@@ -140,13 +133,9 @@ public class SkynetAuthentication implements PersistenceManager {
             }
             firstTimeThrough = false; // firstTimeThrough must be set false after last use of its value
          }
-      } catch (UserNotInDatabase ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      } catch (IllegalArgumentException ex) {
+      } catch (OseeCoreException ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      } catch (MultipleAttributesExist ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
 
@@ -171,7 +160,7 @@ public class SkynetAuthentication implements PersistenceManager {
       return user;
    }
 
-   public User getUser(OseeUser userEnum) throws IllegalArgumentException, SQLException, IllegalStateException, MultipleAttributesExist, UserNotInDatabase {
+   public User getUser(OseeUser userEnum) throws SQLException, MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist {
       User user = enumeratedUserCache.get(userEnum);
       if (user == null) {
          user = getUserByIdWithError(userEnum.getUserID());
@@ -186,7 +175,7 @@ public class SkynetAuthentication implements PersistenceManager {
       try {
          user =
                (User) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(User.ARTIFACT_NAME).makeNewArtifact(
-                     branchManager.getCommonBranch());
+                     BranchPersistenceManager.getCommonBranch());
          user.setActive(active);
          user.setUserID(userID);
          user.setName(name);
@@ -211,7 +200,7 @@ public class SkynetAuthentication implements PersistenceManager {
       if (activeUserCache.size() == 0) {
          try {
             Collection<Artifact> dbUsers =
-                  ArtifactQuery.getAtrifactsFromType(User.ARTIFACT_NAME, branchManager.getCommonBranch());
+                  ArtifactQuery.getAtrifactsFromType(User.ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
             for (Artifact a : dbUsers) {
                User user = (User) a;
                if (user.isActive()) {
@@ -233,45 +222,21 @@ public class SkynetAuthentication implements PersistenceManager {
       return (ArrayList<User>) activeUserCache.clone();
    }
 
-   public User getUserByIdWithError(String userId) throws SQLException, MultipleAttributesExist, IllegalStateException, UserNotInDatabase {
+   public User getUserByIdWithError(String userId) throws SQLException, MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist {
       if (userId == null || userId.equals("")) {
          throw new IllegalArgumentException("UserId can't be null or \"\"");
       }
       User user = nameOrIdToUserCache.get(userId);
 
       if (user == null) {
-         Collection<Artifact> users =
-               ArtifactQuery.getAtrifactsFromTypeAndAttribute(User.ARTIFACT_NAME, User.userIdAttributeName, userId,
-                     branchManager.getCommonBranch());
-         if (users.size() == 1) {
-            user = (User) users.iterator().next();
+         try {
+            user =
+                  (User) ArtifactQuery.getAtrifactFromTypeAndAttribute(User.ARTIFACT_NAME, User.userIdAttributeName,
+                        userId, BranchPersistenceManager.getCommonBranch());
             addUserToMap(user);
-         } else if (users.size() > 1) {
-            for (Artifact duplicate : users) {
-               logger.log(
-                     Level.WARNING,
-                     "Duplicate User userId: \"" + userId + "\" with the name: \"" + duplicate.getDescriptiveName() + "\"");
-            }
-            throw new IllegalStateException(String.format("User name: \"%s\" userId: \"%s\" in DB more than once",
-                  users.iterator().next().getDescriptiveName(), userId));
-         } else {
+         } catch (ArtifactDoesNotExist ex) {
             // Note this is normal for the creation of this user (i.e. db init)
-            throw new UserNotInDatabase("User requested by id \"" + userId + "\" was not found.");
-         }
-      }
-      return user;
-   }
-
-   public User getUserById(String userId) throws SQLException, MultipleAttributesExist, IllegalArgumentException, IllegalStateException {
-      if (userId == null || userId.equals("")) throw new IllegalStateException("UserId can't be null or \"\"");
-      User user = nameOrIdToUserCache.get(userId);
-
-      if (user == null) {
-         Collection<Artifact> users =
-               artifactManager.getArtifacts(new UserIdSearch(userId, Operator.EQUAL), branchManager.getCommonBranch());
-         if (users.size() == 1) {
-            user = (User) users.iterator().next();
-            addUserToMap(user);
+            throw new UserNotInDatabase("User requested by id \"" + userId + "\" was not found.", ex);
          }
       }
       return user;
@@ -298,7 +263,7 @@ public class SkynetAuthentication implements PersistenceManager {
          try {
             user =
                   (User) ArtifactQuery.getArtifactFromTypeAndName(User.ARTIFACT_NAME, name,
-                        branchManager.getCommonBranch());
+                        BranchPersistenceManager.getCommonBranch());
          } catch (SQLException ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
          } catch (MultipleArtifactsExist ex) {
@@ -332,7 +297,7 @@ public class SkynetAuthentication implements PersistenceManager {
          user = artIdToUserCache.get(authorId);
       } else {
          try {
-            user = (User) ArtifactQuery.getArtifactFromId(authorId, branchManager.getCommonBranch());
+            user = (User) ArtifactQuery.getArtifactFromId(authorId, BranchPersistenceManager.getCommonBranch());
             addUserToMap(user);
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);

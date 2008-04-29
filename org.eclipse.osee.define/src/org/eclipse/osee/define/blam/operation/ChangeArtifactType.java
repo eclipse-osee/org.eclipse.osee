@@ -115,7 +115,7 @@ public class ChangeArtifactType extends AbstractBlam {
             RelationLinkBase linkBase = (RelationLinkBase) link;
 
             int sideMax =
-                  RelationTypeManager.getInstance().getRelationSideMax(linkBase.getRelationType(), artifactType,
+                  RelationTypeManager.getRelationSideMax(linkBase.getRelationType(), artifactType,
                         linkBase.getArtifactA().equals(artifact));
 
             if (sideMax == 0) {

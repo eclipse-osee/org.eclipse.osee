@@ -25,11 +25,11 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 public class ArtifactQuery {
 
    /**
-    * return exactly one artifact by one its guid or human readable id - otherwise throw an exception
+    * search for exactly one artifact by one its guid or human readable id - otherwise throw an exception
     * 
     * @param guidOrHrid either the guid or human readable id of the desired artifact
     * @param branch
-    * @return
+    * @return exactly one artifact by one its guid or human readable id - otherwise throw an exception
     * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
@@ -40,11 +40,11 @@ public class ArtifactQuery {
    }
 
    /**
-    * return exactly one artifact by one its id - otherwise throw an exception
+    * search for exactly one artifact by one its id - otherwise throw an exception
     * 
     * @param artId the id of the desired artifact
     * @param branch
-    * @return
+    * @return exactly one artifact by one its id - otherwise throw an exception
     * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
@@ -54,8 +54,12 @@ public class ArtifactQuery {
       return getSoleArtifact(artifacts, " with id \"" + artId + "\" on branch \"" + branch + "\"");
    }
 
+   public static Collection<Artifact> getArtifactsFromIdAnd(int artId, Branch branch, AbstractArtifactSearchCriteria... criteria) throws SQLException {
+      return new ArtifactQueryBuilder(artId, branch, criteria).getArtifacts();
+   }
+
    /**
-    * return exactly one artifact based on its type and name - otherwise throw an exception
+    * search for exactly one artifact based on its type and name - otherwise throw an exception
     * 
     * @param artifactType
     * @param artifactName
@@ -97,6 +101,30 @@ public class ArtifactQuery {
             artifactTypeName), branch).getArtifacts();
    }
 
+   /**
+    * search for artifacts of the given type on a particular branch with the various criteria
+    * 
+    * @param artifactTypeName
+    * @param branch
+    * @param criteria
+    * @return a collection of the artifacts found or an empty collection if none are found
+    * @throws SQLException
+    */
+   public static Collection<Artifact> getAtrifactsFromTypeAnd(String artifactTypeName, Branch branch, AbstractArtifactSearchCriteria... criteria) throws SQLException {
+      return new ArtifactQueryBuilder(ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+            artifactTypeName), branch, criteria).getArtifacts();
+   }
+
+   /**
+    * search for artifacts of the given type with an attribute of the given type and value
+    * 
+    * @param artifactTypeName
+    * @param attributeTypeName
+    * @param attributeValue
+    * @param branch
+    * @return a collection of the artifacts found or an empty collection if none are found
+    * @throws SQLException
+    */
    public static Collection<Artifact> getAtrifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
       ArtifactSubtypeDescriptor artifactType =
             ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName);
@@ -105,14 +133,14 @@ public class ArtifactQuery {
    }
 
    /**
-    * get exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
+    * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
     * exception
     * 
     * @param artifactTypeName
     * @param attributeTypeName
     * @param attributeValue
     * @param branch
-    * @return
+    * @return a collection of the artifacts found or an empty collection if none are found
     * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found

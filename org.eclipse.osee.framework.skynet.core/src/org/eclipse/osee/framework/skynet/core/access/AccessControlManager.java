@@ -90,7 +90,6 @@ public class AccessControlManager implements PersistenceManager {
    // subject, permission
    private HashCollection<Integer, PermissionEnum> subjectToPermissionCache;
 
-   private BranchPersistenceManager branchManager;
    private SkynetEventManager eventManager;
    private SkynetAuthentication skynetAuth;
 
@@ -107,7 +106,6 @@ public class AccessControlManager implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#onManagerWebInit()
     */
    public void onManagerWebInit() throws Exception {
-      branchManager = BranchPersistenceManager.getInstance();
       eventManager = SkynetEventManager.getInstance();
       skynetAuth = SkynetAuthentication.getInstance();
 
@@ -242,7 +240,7 @@ public class AccessControlManager implements PersistenceManager {
 
          ConnectionHandlerStatement chStmt =
                ConnectionHandler.runPreparedQuery(USER_GROUP_MEMBERS, SQL3DataType.INTEGER, groupId,
-                     SQL3DataType.INTEGER, RelationTypeManager.getInstance().getType("Users").getRelationTypeId());
+                     SQL3DataType.INTEGER, RelationTypeManager.getType("Users").getRelationTypeId());
 
          // get group members and populate subjectToGroupCache
          while (chStmt.next()) {
@@ -479,7 +477,7 @@ public class AccessControlManager implements PersistenceManager {
                if (recurse) {
                   Artifact artifact =
                         ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                              branchManager.getBranch(artifactAccessObject.getBranchId()));
+                              BranchPersistenceManager.getInstance().getBranch(artifactAccessObject.getBranchId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {
@@ -560,7 +558,7 @@ public class AccessControlManager implements PersistenceManager {
          }
 
          for (int subjectId : subjects) {
-            Artifact subject = ArtifactQuery.getArtifactFromId(subjectId, branchManager.getCommonBranch());
+            Artifact subject = ArtifactQuery.getArtifactFromId(subjectId, BranchPersistenceManager.getCommonBranch());
             PermissionEnum permissionEnum = accessControlListCache.get(subjectId, accessObject);
             AccessControlData accessControlData =
                   new AccessControlData(subject, accessObject, permissionEnum, false, false);

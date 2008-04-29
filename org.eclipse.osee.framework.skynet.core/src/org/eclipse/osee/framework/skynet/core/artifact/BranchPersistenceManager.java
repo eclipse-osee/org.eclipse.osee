@@ -103,7 +103,6 @@ public class BranchPersistenceManager implements PersistenceManager {
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
-   private ArtifactPersistenceManager artifactManager;
    private BranchCreator branchCreator;
    private ConfigurationPersistenceManager configurationManager;
 
@@ -132,7 +131,6 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
     */
    public void onManagerWebInit() throws Exception {
-      artifactManager = ArtifactPersistenceManager.getInstance();
       branchCreator = BranchCreator.getInstance();
       configurationManager = ConfigurationPersistenceManager.getInstance();
    }
@@ -153,15 +151,15 @@ public class BranchPersistenceManager implements PersistenceManager {
       return branches;
    }
 
-   public Branch getCommonBranch() throws SQLException {
+   public static Branch getCommonBranch() throws SQLException {
       return getKeyedBranch(Branch.COMMON_BRANCH_CONFIG_ID);
    }
 
-   public Branch getKeyedBranch(String keyname) throws SQLException {
+   public static Branch getKeyedBranch(String keyname) throws SQLException {
       return KeyedBranchCache.getInstance().getKeyedBranch(keyname);
    }
 
-   public Branch getAtsBranch() throws SQLException {
+   public static Branch getAtsBranch() throws SQLException {
       return getCommonBranch();
    }
 

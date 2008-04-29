@@ -12,42 +12,26 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 
 /**
  * @author Ryan D. Brooks
  */
-public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
-   private DynamicAttributeDescriptor attributeType;
-   private String value;
+public class RelationCriteria extends AbstractArtifactSearchCriteria {
+   private IRelationEnumeration relationSide;
    private String txsAlias;
    private String txdAlias;
-   private String attrAlias;
+   private String relAlias;
 
    /**
-    * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
-    * given value.
+    * Constructor for search criteria that follows the relation link (left to right) starting on the given side
     * 
-    * @param attributeType
+    * @param relationSide the side to start following the link from
     * @param value
     */
-   public AttributeValueCriteria(DynamicAttributeDescriptor attributeType, String value) {
+   public RelationCriteria(IRelationEnumeration relationSide) {
       super();
-      this.attributeType = attributeType;
-      this.value = value;
-   }
-
-   /**
-    * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
-    * given value.
-    * 
-    * @param attributeType
-    * @param value
-    * @throws SQLException
-    */
-   public AttributeValueCriteria(String attributeTypeName, String value) throws SQLException {
-      this(ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeTypeName), value);
+      this.relationSide = relationSide;
    }
 
    /* (non-Javadoc)
@@ -55,7 +39,7 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     */
    @Override
    public void addToTableSql(ArtifactQueryBuilder builder) {
-      attrAlias = builder.appendAliasedTable("osee_define_attribute");
+      relAlias = builder.appendAliasedTable("osee_define_rel_link");
       txsAlias = builder.appendAliasedTable("osee_define_txs");
       txdAlias = builder.appendAliasedTable("osee_define_tx_details");
    }
@@ -64,18 +48,12 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria#addToWhereSql(org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder)
     */
    @Override
-   public void addToWhereSql(ArtifactQueryBuilder builder) {
-      if (attributeType != null) {
-         builder.append(attrAlias);
-         builder.append(".attr_type_id=? AND ");
-         builder.addParameter(SQL3DataType.INTEGER, attributeType.getAttrTypeId());
-      }
-      if (value != null) {
-         builder.append(attrAlias);
-         builder.append(".value=? AND ");
-         builder.addParameter(SQL3DataType.VARCHAR, value);
-      }
-      builder.append(attrAlias);
+   public void addToWhereSql(ArtifactQueryBuilder builder) throws SQLException {
+      builder.append(relAlias);
+      builder.append(".rel_link_type_id=? AND ");
+      builder.addParameter(SQL3DataType.INTEGER, relationSide.getRelationType().getRelationTypeId());
+
+      builder.append(relAlias);
       builder.append(".gamma_id=");
       builder.append(txsAlias);
       builder.append(".gamma_id AND ");
@@ -88,7 +66,8 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     */
    @Override
    public void addJoinArtId(ArtifactQueryBuilder builder, boolean left) {
-      builder.append(attrAlias);
-      builder.append(".art_id");
+      boolean sideA = relationSide.isSideA() ^ left;
+      builder.append(relAlias);
+      builder.append(sideA ? ".a_art_id" : ".b_art_id");
    }
 }

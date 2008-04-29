@@ -24,8 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Jeff C. Phillips
  */
 public class RelationTypeContentProvider implements ITreeContentProvider {
-   private static final RelationTypeManager relationTypeManager = RelationTypeManager.getInstance();
-
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
@@ -34,7 +32,7 @@ public class RelationTypeContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Branch) {
          ArrayList<Object> descriptors = new ArrayList<Object>();
          try {
-            for (IRelationType descriptor : relationTypeManager.getValidTypes((Branch) parentElement)) {
+            for (IRelationType descriptor : RelationTypeManager.getValidTypes((Branch) parentElement)) {
                descriptors.add((Object) descriptor);
             }
             return descriptors.toArray();

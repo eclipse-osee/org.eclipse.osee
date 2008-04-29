@@ -22,4 +22,12 @@ public class OseeCoreException extends Exception {
    public OseeCoreException(String message) {
       super(message);
    }
+
+   /**
+    * @param message
+    * @param cause
+    */
+   public OseeCoreException(String message, Throwable cause) {
+      super(message, cause);
+   }
 }

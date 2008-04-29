@@ -54,7 +54,7 @@ public class ArtifactDhChildCountCache {
    private synchronized void ensurePopulated(Branch branch) throws SQLException {
       if (!populated.containsKey(branch)) {
          ConnectionHandlerStatement chStmt = null;
-         int hierarchicalTypeId = RelationTypeManager.getInstance().getType("Default Hierarchical").getRelationTypeId();
+         int hierarchicalTypeId = RelationTypeManager.getType("Default Hierarchical").getRelationTypeId();
 
          try {
             chStmt =

@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
@@ -141,7 +142,7 @@ public class BranchCreator implements PersistenceManager {
       skynetAuth = SkynetAuthentication.getInstance();
    }
 
-   private Pair<Branch, Integer> createBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName) throws SQLException, MultipleAttributesExist, IllegalArgumentException, IllegalStateException, UserNotInDatabase {
+   private Pair<Branch, Integer> createBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName) throws SQLException, MultipleAttributesExist, UserNotInDatabase, IllegalArgumentException, IllegalStateException, MultipleArtifactsExist {
       User userToBlame = skynetAuth.getAuthenticatedUser();
       Branch parentBranch = sourceTransactionId.getBranch();
       int userId = (userToBlame == null) ? skynetAuth.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
@@ -194,9 +195,9 @@ public class BranchCreator implements PersistenceManager {
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                                                                                                                                                                                                                                                                                              * parent
-                                                                                                                                                                                                                                                                                                                                                                                              * transactoin_id
-                                                                                                                                                                                                                                                                                                                                                                                              */, Integer /* gamma_id */>(
+                                                                                                                                                                                                                                                                                                                                                                                                                                          * parent
+                                                                                                                                                                                                                                                                                                                                                                                                                                          * transactoin_id
+                                                                                                                                                                                                                                                                                                                                                                                                                                          */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -376,13 +377,12 @@ public class BranchCreator implements PersistenceManager {
     * @param staticBranchName null if no static key is desired
     * @return branch object
     * @throws SQLException
-    * @throws IllegalArgumentException
     * @throws UserNotInDatabase
-    * @throws IllegalStateException
+    * @throws MultipleArtifactsExist
     * @see BranchPersistenceManager#createRootBranch(String, String, int)
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
-   public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, MultipleAttributesExist, IllegalArgumentException, IllegalStateException, UserNotInDatabase {
+   public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, MultipleAttributesExist, IllegalArgumentException, UserNotInDatabase, MultipleArtifactsExist {
       Branch branch =
             initializeBranch(shortBranchName, branchName, null, -1, GlobalTime.GreenwichMeanTimestamp(), "", null);
       if (staticBranchName != null) ConnectionHandler.runPreparedUpdate(INSERT_DEFAULT_BRANCH_NAMES,
@@ -398,9 +398,9 @@ public class BranchCreator implements PersistenceManager {
     * @return branch object that represents the newly created branch
     * @throws SQLException
     * @throws UserNotInDatabase
-    * @throws IllegalStateException
+    * @throws MultipleArtifactsExist
     */
-   private Branch initializeBranch(String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact) throws SQLException, MultipleAttributesExist, IllegalArgumentException, IllegalStateException, UserNotInDatabase {
+   private Branch initializeBranch(String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact) throws SQLException, MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist {
       ConnectionHandlerStatement chStmt =
             ConnectionHandler.runPreparedQuery(SELECT_BRANCH_BY_NAME, SQL3DataType.VARCHAR, branchName);
       ResultSet rset = chStmt.getRset();

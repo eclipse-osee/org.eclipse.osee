@@ -319,8 +319,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    }
 
    private boolean canBeOnSide(IRelationType relationType, boolean sideA) throws SQLException {
-      int sideMax =
-            RelationTypeManager.getInstance().getRelationSideMax(relationType, artifact.getArtifactType(), sideA);
+      int sideMax = RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), sideA);
       RelationLinkGroup otherSideGroup = artifact.getLinkManager().getSideGroup(relationType, !sideA);
 
       return sideMax > 0 && otherSideGroup == null;
@@ -379,8 +378,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       boolean isRelatable = false;
 
       try {
-         for (IRelationType relationDescriptor : RelationTypeManager.getInstance().getValidTypes(
-               artifact.getArtifactType(), artifact.getBranch())) {
+         for (IRelationType relationDescriptor : RelationTypeManager.getValidTypes(artifact.getArtifactType(),
+               artifact.getBranch())) {
             MenuItem mItem = new MenuItem(newMenu, SWT.PUSH);
             mItem.setData(relationDescriptor);
             mItem.setText(relationDescriptor.getTypeName());

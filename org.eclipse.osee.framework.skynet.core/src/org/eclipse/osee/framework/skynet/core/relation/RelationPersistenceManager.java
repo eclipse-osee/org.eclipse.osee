@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -71,8 +70,6 @@ public class RelationPersistenceManager implements PersistenceManager {
          "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order_value=?, b_order_value=? WHERE gamma_id=?";
    private TransactionIdManager transactionIdManager;
    private ArtifactPersistenceManager artifactManager;
-   private ConfigurationPersistenceManager configurationManager;
-   private static final RelationTypeManager relationTypeManger = RelationTypeManager.getInstance();
 
    // This must be declared here cause it can't be declared in enum RelationSide
    public static DoubleKeyHashMap<String, Boolean, IRelationEnumeration> sideHash =
@@ -108,7 +105,6 @@ public class RelationPersistenceManager implements PersistenceManager {
     */
    public void onManagerWebInit() throws Exception {
       artifactManager = ArtifactPersistenceManager.getInstance();
-      configurationManager = ConfigurationPersistenceManager.getInstance();
       transactionIdManager = TransactionIdManager.getInstance();
    }
 
@@ -386,7 +382,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                try {
                   Artifact artA = artifactManager.getArtifactFromId(aArtId, transactionId);
                   Artifact artB = artifactManager.getArtifactFromId(bArtId, transactionId);
-                  IRelationType relationType = relationTypeManger.getType(rSet.getInt("rel_link_type_id"));
+                  IRelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
 
                   link =
                         new DynamicRelationLink(artA, artB, relationType, new LinkPersistenceMemo(relId, gammaId),
@@ -422,18 +418,6 @@ public class RelationPersistenceManager implements PersistenceManager {
       } finally {
          DbUtil.close(chStmt);
       }
-   }
-
-   /**
-    * Get a particular link descriptor by its type name. If no such descriptor exists then a null reference will be
-    * returned.
-    * 
-    * @param name The type name of the relation link.
-    * @return The corresponding descriptor, null if one does not exist.
-    * @throws SQLException
-    */
-   public IRelationType getIRelationLinkDescriptor(String typeName) throws SQLException {
-      return RelationTypeManager.getInstance().getType(typeName);
    }
 
    public void cache(IRelationLink link, TransactionId transactionId) {
@@ -497,7 +481,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                   Artifact artB =
                         artifactManager.getArtifactFromId(artBId, transactionIdManager.getEditableTransactionId(branch));
 
-                  IRelationType relationType = relationTypeManger.getType(newRelationEvent.getRelTypeId());
+                  IRelationType relationType = RelationTypeManager.getType(newRelationEvent.getRelTypeId());
 
                   LinkPersistenceMemo memo = new LinkPersistenceMemo(relId, gammaId);
                   String rationale = newRelationEvent.getRationale();

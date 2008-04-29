@@ -31,7 +31,7 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
 
    public OrphanArtifactSearch(ArtifactSubtypeDescriptor aritfactType) throws SQLException {
       this.aritfactType = aritfactType;
-      this.relationTypeId = RelationTypeManager.getInstance().getType("Default Hierarchical").getRelationTypeId();
+      this.relationTypeId = RelationTypeManager.getType("Default Hierarchical").getRelationTypeId();
    }
 
    /* (non-Javadoc)

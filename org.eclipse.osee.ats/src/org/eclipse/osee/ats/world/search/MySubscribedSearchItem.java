@@ -11,17 +11,10 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.artifact.search.UserIdSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.RelationCriteria;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 
 /**
@@ -44,17 +37,7 @@ public class MySubscribedSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(User user) throws Exception {
-      FromArtifactsSearch userSearch = new FromArtifactsSearch(new UserIdSearch(user.getUserId(), Operator.EQUAL));
-
-      List<ISearchPrimitive> subscribedCriteria = new LinkedList<ISearchPrimitive>();
-      subscribedCriteria.add(new InRelationSearch(userSearch, RelationSide.SubscribedUser_Artifact));
-
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(subscribedCriteria, true,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
-
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
+      return ArtifactQuery.getArtifactsFromIdAnd(user.getArtId(), user.getBranch(), new RelationCriteria(
+            RelationSide.SubscribedUser_Artifact));
    }
-
 }

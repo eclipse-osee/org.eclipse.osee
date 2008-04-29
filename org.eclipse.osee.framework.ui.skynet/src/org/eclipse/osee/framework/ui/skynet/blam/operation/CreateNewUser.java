@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -48,7 +49,7 @@ public class CreateNewUser extends AbstractBlam {
 
       User user =
             (User) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(User.ARTIFACT_NAME).makeNewArtifact(
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
 
       String name = variableMap.getString("Name (Last, First)");
       if (name.equals("")) {
@@ -65,16 +66,14 @@ public class CreateNewUser extends AbstractBlam {
          return;
       }
       try {
-         User existingUser = SkynetAuthentication.getInstance().getUserById(userId);
+         User existingUser = SkynetAuthentication.getInstance().getUserByIdWithError(userId);
          if (existingUser != null) {
             AWorkbench.popup("ERROR", "User with userId \"" + userId + "\" already exists.");
             monitor.done();
             return;
          }
-      } catch (Exception ex) {
-         AWorkbench.popup("ERROR", "Invalid UserId - " + ex.getLocalizedMessage());
-         monitor.done();
-         return;
+      } catch (UserNotInDatabase ex) {
+         // good that is why we are creating it
       }
       user.setSoleStringAttributeValue("User Id", userId);
 

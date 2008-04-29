@@ -43,6 +43,10 @@ public class ArtifactQueryBuilder {
       this(artId, null, null, branch);
    }
 
+   public ArtifactQueryBuilder(int artId, Branch branch, AbstractArtifactSearchCriteria... criteria) {
+      this(artId, null, null, branch, criteria);
+   }
+
    private static String ensureValid(String str) {
       if (str == null) {
          throw new IllegalArgumentException("Id can not be null");
@@ -137,7 +141,7 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   public String getArtifactsSql() {
+   public String getArtifactsSql() throws SQLException {
       sql.append("SELECT art1.*, arv1.gamma_id FROM ");
       appendAliasedTable("osee_define_artifact", false);
       appendAliasedTable("osee_define_artifact_version");
@@ -171,14 +175,14 @@ public class ArtifactQueryBuilder {
          for (int i = 1; i < criteria.length; i++) {
             AbstractArtifactSearchCriteria leftCriteria = criteria[i - 1];
             AbstractArtifactSearchCriteria rightCriteria = criteria[i];
-            leftCriteria.addJoinArtId(this);
+            leftCriteria.addJoinArtId(this, true);
             sql.append("=");
-            rightCriteria.addJoinArtId(this);
+            rightCriteria.addJoinArtId(this, true);
             sql.append(" AND ");
             rightCriteria.addToWhereSql(this);
             sql.append(" AND ");
          }
-         criteria[criteria.length - 1].addJoinArtId(this);
+         criteria[criteria.length - 1].addJoinArtId(this, true);
          sql.append("=art1.art_id AND ");
       }
 

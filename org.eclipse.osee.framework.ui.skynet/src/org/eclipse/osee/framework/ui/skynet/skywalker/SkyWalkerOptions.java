@@ -126,7 +126,7 @@ public class SkyWalkerOptions {
       if (relTypes == null) {
          relTypes = new HashMap<Object, Boolean>();
          try {
-            for (IRelationType descriptor : RelationTypeManager.getInstance().getValidTypes(artifact.getBranch())) {
+            for (IRelationType descriptor : RelationTypeManager.getValidTypes(artifact.getBranch())) {
                relTypes.put(descriptor, true);
                relTypes.put(new RelTypeContentProvider.RelationLinkDescriptorSide(descriptor, true), true);
                relTypes.put(new RelTypeContentProvider.RelationLinkDescriptorSide(descriptor, false), true);

@@ -196,8 +196,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       relationSideList.setSorter(new SearchSorter());
 
       try {
-         for (IRelationType linkDescriptor : RelationTypeManager.getInstance().getValidTypes(
-               branchManager.getDefaultBranch())) {
+         for (IRelationType linkDescriptor : RelationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
             relationTypeList.add(linkDescriptor.getTypeName());
             relationTypeList.setData(linkDescriptor.getTypeName(), linkDescriptor);
          }

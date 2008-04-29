@@ -488,8 +488,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                   branchTransactions.getValue(), branchTransactions.getKey(),
                   TransactionType.getTransactionType(resultSet.getInt("tx_type")), ChangeType.OUTGOING, bArtId,
                   resultSet.getInt("rel_link_id"), resultSet.getString("rationale"), resultSet.getInt("a_order_value"),
-                  resultSet.getInt("b_order_value"), RelationTypeManager.getInstance().getType(
-                        resultSet.getInt("rel_link_type_id"))));
+                  resultSet.getInt("b_order_value"), RelationTypeManager.getType(resultSet.getInt("rel_link_type_id"))));
          }
       } finally {
          DbUtil.close(connectionHandlerStatement);

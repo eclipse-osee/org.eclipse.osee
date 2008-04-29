@@ -5,21 +5,16 @@
  */
 package org.eclipse.osee.framework.skynet.core.util;
 
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
+
 /**
  * @author Donald G. Dunne
  */
-public class MultipleAttributesExist extends Exception {
+public class MultipleAttributesExist extends OseeCoreException {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 1L;
 
-   /**
-    * @param arg0
-    */
-   public MultipleAttributesExist(String arg0) {
-      super(arg0);
+   public MultipleAttributesExist(String message) {
+      super(message);
    }
-
 }

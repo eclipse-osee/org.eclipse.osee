@@ -61,7 +61,6 @@ public class SkynetTypesImporter implements RowProcessor {
    private boolean done;
    private final boolean debugRows = false;
    private final XMLReader xmlReader;
-   private Branch branch;
 
    private static final ConfigurationPersistenceManager configurationManager =
          ConfigurationPersistenceManager.getInstance();
@@ -72,8 +71,6 @@ public class SkynetTypesImporter implements RowProcessor {
     * @throws SQLException
     */
    public SkynetTypesImporter(Branch branch) throws SQLException, SAXException, IOException {
-
-      this.branch = branch;
       excelHandler = new ExcelSaxHandler(this, true, true);
       superTypeMap = new HashMap<String, ArrayList<String>>();
       relationValidity = new RelationValidity(this, branch);
@@ -211,8 +208,8 @@ public class SkynetTypesImporter implements RowProcessor {
       generateRelationSideEnum(relationTypeName, sideAName, sideBName);
       generateNormalRelationSideEnum(relationTypeName, sideAName, sideBName);
 
-      RelationTypeManager.getInstance().createRelationType("", relationTypeName, sideAName, sideBName, abPhrasing,
-            baPhrasing, shortName);
+      RelationTypeManager.createRelationType("", relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
+            shortName);
    }
 
    private void generateRelationSideEnum(String relationTypeName, String sideAName, String sideBName) {

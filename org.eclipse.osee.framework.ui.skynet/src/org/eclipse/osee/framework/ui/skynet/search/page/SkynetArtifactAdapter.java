@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.sql.SkynetRevisionControl;
 import org.eclipse.osee.framework.skynet.core.sql.SkynetSql;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.skynet.search.page.data.ArtifactTypeNode;
 import org.eclipse.osee.framework.ui.skynet.search.page.data.AttributeTypeNode;
 import org.eclipse.osee.framework.ui.skynet.search.page.data.RelationTypeNode;
@@ -36,8 +35,6 @@ import org.eclipse.osee.framework.ui.skynet.search.page.data.RelationTypeNode;
 public class SkynetArtifactAdapter {
    private static SkynetArtifactAdapter instance = null;
    private static SkynetSql skynetSql = SkynetSql.getInstance();
-   private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
    private SkynetArtifactAdapter() {
    }
@@ -82,7 +79,7 @@ public class SkynetArtifactAdapter {
       try {
          Query.acquireCollection(relationsTypes, sql, new RsetProcessor<IRelationType>() {
             public IRelationType process(ResultSet set) throws SQLException {
-               return RelationTypeManager.getInstance().getType(set.getInt("rel_link_type_id"));
+               return RelationTypeManager.getType(set.getInt("rel_link_type_id"));
             }
 
             public boolean validate(IRelationType item) {

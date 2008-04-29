@@ -10,19 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import java.sql.SQLException;
+
 /**
  * @author Ryan D. Brooks
  */
 public abstract class AbstractArtifactSearchCriteria {
 
-   public abstract void addToTableSql(ArtifactQueryBuilder builder);
+   public abstract void addToTableSql(ArtifactQueryBuilder builder) throws SQLException;
 
-   public abstract void addToWhereSql(ArtifactQueryBuilder builder);
+   public abstract void addToWhereSql(ArtifactQueryBuilder builder) throws SQLException;
 
-   public void addJoinSql(ArtifactQueryBuilder builder, AbstractArtifactSearchCriteria rightCriteria) {
-
-   }
-
-   public void addJoinArtId(ArtifactQueryBuilder builder) {
-   }
+   public abstract void addJoinArtId(ArtifactQueryBuilder builder, boolean left) throws SQLException;
 }

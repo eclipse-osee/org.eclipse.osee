@@ -94,7 +94,6 @@ import org.osgi.framework.Bundle;
 
 public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage implements IEventReceiver {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSearchViewPage.class);
-   private static final RelationTypeManager relationTypeManager = RelationTypeManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
@@ -579,7 +578,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
 
       try {
-         for (IRelationType descriptor : relationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
+         for (IRelationType descriptor : RelationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
             final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
             addReportJobCommand(menuManager, matrixManager, reportJob);
          }
@@ -593,7 +592,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
       try {
 
-         for (IRelationType descriptor : relationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
+         for (IRelationType descriptor : RelationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
             final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
             createReportJobCommand(menuManager, matrixManager, reportJob);
          }

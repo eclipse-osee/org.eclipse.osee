@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 
 /**
  * @author Ryan D. Brooks
@@ -40,16 +39,12 @@ public class RelationTypeManager {
    private final CompositeKeyHashMap<Integer, Integer, Pair<Integer, Integer>> validityMap;
 
    private static final String SELECT_LINK_VALIDITY = "SELECT * FROM osee_define_valid_relations";
+   private static final RelationTypeManager instance = new RelationTypeManager();
 
    private RelationTypeManager() {
       this.nameToTypeMap = new HashMap<String, IRelationType>();
       this.idToTypeMap = new HashMap<Integer, IRelationType>();
       this.validityMap = new CompositeKeyHashMap<Integer, Integer, Pair<Integer, Integer>>();
-   }
-   private static final RelationTypeManager instance = new RelationTypeManager();
-
-   public static RelationTypeManager getInstance() {
-      return instance;
    }
 
    /**
@@ -58,48 +53,53 @@ public class RelationTypeManager {
     * @param branch
     * @return
     */
-   public List<IRelationType> getValidTypes(Branch branch) throws SQLException {
-      return getAllTypes();
+   public static List<IRelationType> getValidTypes(Branch branch) throws SQLException {
+      return instance.getAllTypes();
    }
 
    /**
     * @return all Relation types in the datastore
     * @throws SQLException
     */
-   public List<IRelationType> getAllTypes() throws SQLException {
+   private List<IRelationType> getAllTypes() throws SQLException {
       return new ArrayList<IRelationType>(idToTypeMap.values());
    }
 
-   public List<IRelationType> getValidTypes(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
-      return new ArrayList<IRelationType>(idToTypeMap.values());
+   public static List<IRelationType> getValidTypes(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
+      return new ArrayList<IRelationType>(instance.idToTypeMap.values());
    }
 
-   public IRelationType getType(int relationTypeId) throws SQLException {
+   public static IRelationType getType(int relationTypeId) throws SQLException {
       ensurePopulated();
-      return idToTypeMap.get(relationTypeId);
+
+      IRelationType relationType = instance.idToTypeMap.get(relationTypeId);
+      if (relationType == null) {
+         throw new IllegalArgumentException("The relation with type id: " + relationTypeId + " does not exist");
+      }
+      return relationType;
    }
 
-   public IRelationType getType(String namespace, String typeName) throws SQLException {
+   public static IRelationType getType(String namespace, String typeName) throws SQLException {
       ensurePopulated();
-      IRelationType relationType = nameToTypeMap.get(namespace + typeName);
+      IRelationType relationType = instance.nameToTypeMap.get(namespace + typeName);
       if (relationType == null) {
          throw new IllegalArgumentException("The relation type: " + namespace + typeName + " does not exist");
       }
       return relationType;
    }
 
-   public boolean typeExists(String namespace, String name) throws SQLException {
+   public static boolean typeExists(String namespace, String name) throws SQLException {
       ensurePopulated();
-      return nameToTypeMap.get(namespace + name) != null;
+      return instance.nameToTypeMap.get(namespace + name) != null;
    }
 
-   public IRelationType getType(String typeName) throws SQLException {
+   public static IRelationType getType(String typeName) throws SQLException {
       return getType("", typeName);
    }
 
-   private synchronized void ensurePopulated() throws SQLException {
-      if (idToTypeMap.size() == 0) {
-         populateCache();
+   private static synchronized void ensurePopulated() throws SQLException {
+      if (instance.idToTypeMap.size() == 0) {
+         instance.populateCache();
       }
    }
 
@@ -115,7 +115,6 @@ public class RelationTypeManager {
    }
 
    private void populateCache() throws SQLException {
-      ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
       ConnectionHandlerStatement chStmt = null;
 
       try {
@@ -136,11 +135,12 @@ public class RelationTypeManager {
       loadLinkValidities();
    }
 
-   public int getRelationSideMax(IRelationType relationType, ArtifactSubtypeDescriptor artifactType, boolean sideA) {
+   public static int getRelationSideMax(IRelationType relationType, ArtifactSubtypeDescriptor artifactType, boolean sideA) {
 
       int value = 0;
 
-      Pair<Integer, Integer> pair = validityMap.get(relationType.getRelationTypeId(), artifactType.getArtTypeId());
+      Pair<Integer, Integer> pair =
+            instance.validityMap.get(relationType.getRelationTypeId(), artifactType.getArtTypeId());
       if (pair != null) {
          if (sideA) {
             value = pair.getKey();
@@ -156,7 +156,7 @@ public class RelationTypeManager {
     * 
     * @throws SQLException
     */
-   public void ensureSideWillSupportArtifact(IRelationType relationType, boolean sideA, Artifact artifact, int artifactCount) throws SQLException {
+   public static void ensureSideWillSupportArtifact(IRelationType relationType, boolean sideA, Artifact artifact, int artifactCount) throws SQLException {
       ensurePopulated();
       int maxCount = getRelationSideMax(relationType, artifact.getArtifactType(), sideA);
       RelationLinkGroup group = artifact.getLinkManager().getSideGroup(relationType, !sideA);
@@ -168,7 +168,7 @@ public class RelationTypeManager {
                artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationType.getSideName(sideA),
                relationType.getTypeName()));
       } else if (group == null) {
-         // obvoiusly the current link count is zero, so this side will support a new link
+         // obviously the current link count is zero, so this side will support a new link
       }
       // the artifact is allowed and a group exists, so check if there is space for another link.
       else if (group.getLinkCount() + 1 > maxCount) {
@@ -215,7 +215,7 @@ public class RelationTypeManager {
     * @param shortName An abbreviated name to display for the link type.
     * @throws SQLException
     */
-   public IRelationType createRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName) throws SQLException {
+   public static IRelationType createRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName) throws SQLException {
       if (typeExists(namespace, relationTypeName)) {
          return getType(namespace, relationTypeName);
       }
@@ -242,7 +242,7 @@ public class RelationTypeManager {
       IRelationType relationType =
             new RelationType(relationTypeId, namespace, relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
                   shortName);
-      cache(relationType);
+      instance.cache(relationType);
 
       return relationType;
    }
@@ -255,18 +255,18 @@ public class RelationTypeManager {
     * @param sideBMax
     * @throws SQLException
     */
-   public void createRelationLinkValidity(Branch branch, ArtifactSubtypeDescriptor artifactType, IRelationType relationType, int sideAMax, int sideBMax) throws SQLException {
+   public static void createRelationLinkValidity(Branch branch, ArtifactSubtypeDescriptor artifactType, IRelationType relationType, int sideAMax, int sideBMax) throws SQLException {
       if (sideAMax < 0) throw new IllegalArgumentException("The sideAMax can no be negative");
       if (sideBMax < 0) throw new IllegalArgumentException("The sideBMax can no be negative");
 
       int artTypeId = artifactType.getArtTypeId();
       int relLinkTypeId = relationType.getRelationTypeId();
 
-      if (validityMap.get(relLinkTypeId, artTypeId) == null) {
+      if (instance.validityMap.get(relLinkTypeId, artTypeId) == null) {
          ConnectionHandler.runPreparedUpdate(INSERT_VALID_RELATION, SQL3DataType.INTEGER, artTypeId,
                SQL3DataType.INTEGER, relLinkTypeId, SQL3DataType.INTEGER, sideAMax, SQL3DataType.INTEGER, sideBMax,
                SQL3DataType.INTEGER, branch.getBranchId());
-         validityMap.put(relLinkTypeId, artTypeId, new Pair<Integer, Integer>(sideAMax, sideBMax));
+         instance.validityMap.put(relLinkTypeId, artTypeId, new Pair<Integer, Integer>(sideAMax, sideBMax));
       }
    }
 }
