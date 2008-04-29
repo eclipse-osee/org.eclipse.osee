@@ -39,6 +39,11 @@ public class ArtifactQuery {
       return getSoleArtifact(artifacts, " with id \"" + guidOrHrid + "\" on branch \"" + branch + "\"");
    }
 
+   public static Artifact getArtifactFromId(String guidOrHrid, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      Collection<Artifact> artifacts = new ArtifactQueryBuilder(guidOrHrid, branch, allowDeleted).getArtifacts();
+      return getSoleArtifact(artifacts, " with id \"" + guidOrHrid + "\" on branch \"" + branch + "\"");
+   }
+
    /**
     * search for exactly one artifact by one its id - otherwise throw an exception
     * 

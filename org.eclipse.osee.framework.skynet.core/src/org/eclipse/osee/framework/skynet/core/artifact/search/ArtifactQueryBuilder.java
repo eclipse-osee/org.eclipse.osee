@@ -49,7 +49,11 @@ public class ArtifactQueryBuilder {
    }
 
    public ArtifactQueryBuilder(String guidOrHrid, Branch branch) {
-      this(0, ensureValid(guidOrHrid), null, branch, false);
+      this(guidOrHrid, branch, false);
+   }
+
+   public ArtifactQueryBuilder(String guidOrHrid, Branch branch, boolean allowDeleted) {
+      this(0, ensureValid(guidOrHrid), null, branch, allowDeleted);
    }
 
    private static String ensureValid(String str) {
