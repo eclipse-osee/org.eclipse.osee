@@ -298,7 +298,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    private void processTransactionForArtifact(Artifact artifact, ModificationType modType, SkynetTransaction transaction, int artGamma) throws SQLException {
       transaction.addTransactionDataItem(new ArtifactTransactionData(artifact, artGamma,
-            transaction.getTransactionNumber(), modType));
+            transaction.getTransactionNumber(), modType, transaction.getBranch()));
    }
 
    private void addArtifactData(Artifact artifact, SkynetTransaction transaction, int gammaId) throws SQLException {
@@ -343,7 +343,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             attrModType = ModificationType.CHANGE;
          }
          transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
-               memo.getAttrTypeId(), value, memo.getGammaId(), transaction.getTransactionNumber(), stream, attrModType));
+               memo.getAttrTypeId(), value, memo.getGammaId(), transaction.getTransactionNumber(), stream, attrModType,
+               transaction.getBranch()));
 
          transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, modType, this));
       } else {
@@ -356,7 +357,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
             transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
                   memo.getAttrTypeId(), value, memo.getGammaId(), transaction.getTransactionNumber(), stream,
-                  attrModType));
+                  attrModType, transaction.getBranch()));
          } else {
             memo = attribute.getPersistenceMemo();
             transaction.addToBatch(UPDATE_TRANSACTION_TABLE, SQL3DataType.VARCHAR, transaction.getComment(),
@@ -975,7 +976,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       int gammaId = SkynetDatabase.getNextGammaId();
       transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
-            memo.getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null, ModificationType.DELETE));
+            memo.getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null, ModificationType.DELETE,
+            transaction.getBranch()));
 
       transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
    }
