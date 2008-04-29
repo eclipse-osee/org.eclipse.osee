@@ -56,7 +56,7 @@ public class ShowArtifactInResourceHandler extends AbstractHandler {
             RevisionHistoryView revisionHistoryView =
                   (RevisionHistoryView) page.showView(RevisionHistoryView.VIEW_ID, artifact.getGuid(),
                         IWorkbenchPage.VIEW_ACTIVATE);
-            revisionHistoryView.explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), artifact.getBranch()));
+            revisionHistoryView.explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), artifact.getBranch(), true));
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
