@@ -50,6 +50,21 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromId(int artId, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      return getArtifactFromId(artId, branch, false);
+   }
+
+   /**
+    * search for exactly one artifact by one its id - otherwise throw an exception
+    * 
+    * @param artId the id of the desired artifact
+    * @param branch
+    * @param allowDeleted whether to return the artifact even if it has been deleted
+    * @return exactly one artifact by one its id - otherwise throw an exception
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist if no artifacts are found
+    * @throws MultipleArtifactsExist if more than one artifact is found
+    */
+   public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       Collection<Artifact> artifacts = new ArtifactQueryBuilder(artId, branch).getArtifacts();
       return getSoleArtifact(artifacts, " with id \"" + artId + "\" on branch \"" + branch + "\"");
    }
