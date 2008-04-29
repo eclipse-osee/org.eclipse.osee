@@ -22,7 +22,6 @@ public class IOOutputThread extends Thread {
 
    private Writer output;
    private BufferedReader input;
-   private boolean verbose;
 
    /**
     * 
@@ -31,7 +30,6 @@ public class IOOutputThread extends Thread {
       super();
       this.output = output;
       this.input = input;
-      this.verbose = verbose;
    }
 
    public IOOutputThread(Writer output, BufferedReader input) {
@@ -40,7 +38,6 @@ public class IOOutputThread extends Thread {
 
    public void run() {
       try {
-    	  final char[] threadNameChars = getName().toCharArray();
     	  final char[] buffer = new char[4096];
     	  int size;
          while ((size = input.read(buffer)) != -1) {

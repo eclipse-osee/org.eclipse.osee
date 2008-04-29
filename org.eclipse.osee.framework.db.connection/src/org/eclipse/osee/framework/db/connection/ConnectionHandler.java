@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionManager;
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
@@ -74,7 +75,7 @@ public final class ConnectionHandler {
          if (manager.getConnection() == null) manager.setConnection(getPooledConnection());
          return manager.getConnection();
       } else {
-         if (connection == null) {
+         if (connection == null || connection.isClosed()) {
             try {
                connection = getNewConnection();
             } finally {
