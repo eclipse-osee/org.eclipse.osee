@@ -186,7 +186,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       }
 
       transaction.addTransactionDataItem(new RelationTransactionData(relationLink, gammaId,
-            transaction.getTransactionNumber(), modId));
+            transaction.getTransactionNumber(), modId, transaction.getBranch()));
 
       transaction.addLocalEvent(new TransactionRelationModifiedEvent(relationLink, aArtifact.getBranch(),
             relationLink.getRelationType().getTypeName(), relationLink.getASideName(), modType, this));
@@ -230,7 +230,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       int bArtTypeId = bArtifact.getArtTypeId();
 
       transaction.addTransactionDataItem(new RelationTransactionData(relationLink, gammaId,
-            transaction.getTransactionNumber(), ModificationType.DELETE));
+            transaction.getTransactionNumber(), ModificationType.DELETE, transaction.getBranch()));
 
       transaction.addRemoteEvent(new NetworkRelationLinkDeletedEvent(relationLink.getPersistenceMemo().getGammaId(),
             relationLink.getBranch().getBranchId(), transaction.getTransactionNumber(),
