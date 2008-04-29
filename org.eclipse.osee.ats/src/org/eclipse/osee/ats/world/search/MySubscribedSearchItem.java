@@ -13,8 +13,6 @@ package org.eclipse.osee.ats.world.search;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.RelationCriteria;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 
 /**
@@ -37,7 +35,6 @@ public class MySubscribedSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(User user) throws Exception {
-      return ArtifactQuery.getArtifactsFromIdAnd(user.getArtId(), user.getBranch(), new RelationCriteria(
-            RelationSide.SubscribedUser_Artifact));
+      return user.getArtifacts(RelationSide.SubscribedUser_Artifact);
    }
 }

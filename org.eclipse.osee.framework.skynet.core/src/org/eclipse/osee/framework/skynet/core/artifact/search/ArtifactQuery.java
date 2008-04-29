@@ -54,10 +54,6 @@ public class ArtifactQuery {
       return getSoleArtifact(artifacts, " with id \"" + artId + "\" on branch \"" + branch + "\"");
    }
 
-   public static Collection<Artifact> getArtifactsFromIdAnd(int artId, Branch branch, AbstractArtifactSearchCriteria... criteria) throws SQLException {
-      return new ArtifactQueryBuilder(artId, branch, criteria).getArtifacts();
-   }
-
    /**
     * search for exactly one artifact based on its type and name - otherwise throw an exception
     * 

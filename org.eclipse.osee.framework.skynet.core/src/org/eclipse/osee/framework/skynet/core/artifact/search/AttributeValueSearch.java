@@ -30,7 +30,6 @@ public class AttributeValueSearch implements ISearchPrimitive {
    private Operator operator;
    private static final LocalAliasTable ATTRIBUTE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_1");
    private static final LocalAliasTable ATTRIBUTE_ALIAS_2 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_2");
-   private static final LocalAliasTable ATTRIBUTE_ALIAS_3 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_3");
    private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_1 =
          new LocalAliasTable(ATTRIBUTE_TYPE_TABLE, "attr_type_1");
    private static final String tables = ATTRIBUTE_ALIAS_1 + "," + ATTRIBUTE_TYPE_ALIAS_1 + "," + TRANSACTIONS_TABLE;

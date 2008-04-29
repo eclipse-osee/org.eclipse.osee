@@ -43,10 +43,6 @@ public class ArtifactQueryBuilder {
       this(artId, null, null, branch);
    }
 
-   public ArtifactQueryBuilder(int artId, Branch branch, AbstractArtifactSearchCriteria... criteria) {
-      this(artId, null, null, branch, criteria);
-   }
-
    private static String ensureValid(String str) {
       if (str == null) {
          throw new IllegalArgumentException("Id can not be null");
@@ -177,12 +173,12 @@ public class ArtifactQueryBuilder {
             AbstractArtifactSearchCriteria rightCriteria = criteria[i];
             leftCriteria.addJoinArtId(this, true);
             sql.append("=");
-            rightCriteria.addJoinArtId(this, true);
+            rightCriteria.addJoinArtId(this, false);
             sql.append(" AND ");
             rightCriteria.addToWhereSql(this);
             sql.append(" AND ");
          }
-         criteria[criteria.length - 1].addJoinArtId(this, true);
+         criteria[criteria.length - 1].addJoinArtId(this, false);
          sql.append("=art1.art_id AND ");
       }
 
