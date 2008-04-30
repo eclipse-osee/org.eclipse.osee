@@ -208,10 +208,13 @@ public class ArtifactQueryBuilder {
       }
 
       sql.append("art1.art_id=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND ");
-      sql.append("txs1.tx_current=1 AND ");
-      if (!allowDeleted) {
-         sql.append("txs1.tx_type<>");
+      sql.append("txs1.tx_current=1 ");
+      if (allowDeleted) {
+         sql.append(" OR ");
+         sql.append("txs1.mod_type=");
          sql.append(TransactionType.Deleted.getId());
+         sql.append(" AND ");
+      } else {
          sql.append(" AND ");
       }
       sql.append("txs1.transaction_id=txd1.transaction_id AND txd1.branch_id=?");
@@ -236,10 +239,6 @@ public class ArtifactQueryBuilder {
    public void addCurrentTxSql(String txsAlias, String txdAlias, Branch branch) {
       sql.append(txsAlias);
       sql.append(".tx_current=1 AND ");
-      sql.append(txsAlias);
-      sql.append(".tx_type<>");
-      sql.append(TransactionType.Deleted.getId());
-      sql.append(" AND ");
       sql.append(txsAlias);
       sql.append(".transaction_id=");
       sql.append(txdAlias);

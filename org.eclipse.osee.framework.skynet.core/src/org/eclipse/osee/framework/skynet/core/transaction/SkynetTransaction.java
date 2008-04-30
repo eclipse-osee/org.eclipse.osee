@@ -67,7 +67,7 @@ public class SkynetTransaction {
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("transaction_id", TXD_COMMENT, "time", "author",
                "branch_id");
    private static final String INSERT_INTO_TRANSACTION_TABLE =
-         " INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id, tx_type, tx_current) VALUES (?, ?, ?, 1)";
+         " INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, 1)";
 
    private static final String DELETE_TRANSACTION_DETAIL =
          "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id =?";

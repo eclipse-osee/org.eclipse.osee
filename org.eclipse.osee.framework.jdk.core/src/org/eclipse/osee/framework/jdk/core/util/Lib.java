@@ -342,6 +342,17 @@ public final class Lib {
       return in;
    }
 
+   public static final Pattern numberListPattern = Pattern.compile("\\d+");
+
+   public static List<Integer> stringToIntegerList(String numberList) {
+      ArrayList<Integer> ints = new ArrayList<Integer>();
+      Matcher transactionIdMatcher = numberListPattern.matcher(numberList);
+      while (transactionIdMatcher.find()) {
+         ints.add(Integer.parseInt(transactionIdMatcher.group()));
+      }
+      return ints;
+   }
+
    public static String fileToString(File file) throws IOException {
       Reader in = new InputStreamReader(new FileInputStream(file), "UTF-8");
       char[] chars = new char[(int) file.length()];

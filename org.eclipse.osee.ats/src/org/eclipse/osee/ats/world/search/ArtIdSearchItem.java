@@ -11,19 +11,13 @@
 
 package org.eclipse.osee.ats.world.search;
 
+import java.sql.SQLException;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactIdSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -38,30 +32,9 @@ public class ArtIdSearchItem extends WorldSearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
-
-      List<ISearchPrimitive> idCriteria = new LinkedList<ISearchPrimitive>();
-      for (String str : enteredIds.split(",")) {
-         str = str.replaceAll("\\s+", "");
-         try {
-            int id = (new Integer(str)).intValue();
-            idCriteria.add(new ArtifactIdSearch(id, Operator.EQUAL));
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
-         }
-      }
-
-      if (isCancelled()) return EMPTY_SET;
-
-      if (idCriteria.size() > 0) {
-         Collection<Artifact> artifacts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(idCriteria, false,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
-         ArtifactEditor.editArtifacts(artifacts);
-         return artifacts;
-      }
-
-      return EMPTY_SET;
+   public Collection<Artifact> performSearch(SearchType searchType) throws SQLException {
+      return ArtifactQuery.getArtifactsFromIds(Lib.stringToIntegerList(enteredIds),
+            BranchPersistenceManager.getAtsBranch());
    }
 
    @Override

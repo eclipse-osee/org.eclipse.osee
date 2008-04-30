@@ -321,7 +321,7 @@
 
 	<Table name="OSEE_DEFINE_TX_DETAILS" schema="OSEE">
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="TX_TYPE" defaultValue="not null" type="INTEGER" />
+		<Column id="TX_TYPE" type="INTEGER" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="OSEE_COMMENT" limits="1000" type="VARCHAR" />
 		<Column id="TIME" defaultValue="not null" type="TIMESTAMP"/>
