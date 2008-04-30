@@ -103,11 +103,20 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromTypeAndName(ArtifactSubtypeDescriptor artifactType, String artifactName, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      AttributeValueCriteria attributeCriteria = new AttributeValueCriteria("Name", artifactName);
-      Collection<Artifact> artifacts = new ArtifactQueryBuilder(artifactType, branch, attributeCriteria).getArtifacts();
       return getSoleArtifact(
-            artifacts,
+            getArtifactsFromTypeAndName(artifactType, artifactName, branch),
             " with type \"" + artifactType.getName() + " and name \"" + artifactName + "\" on branch \"" + branch + "\"");
+   }
+
+   public static Collection<Artifact> getArtifactsFromTypeAndName(ArtifactSubtypeDescriptor artifactType, String artifactName, Branch branch) throws SQLException {
+      AttributeValueCriteria attributeCriteria = new AttributeValueCriteria("Name", artifactName);
+      return new ArtifactQueryBuilder(artifactType, branch, attributeCriteria).getArtifacts();
+   }
+
+   public static Collection<Artifact> getArtifactsFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws SQLException {
+      AttributeValueCriteria attributeCriteria = new AttributeValueCriteria("Name", artifactName);
+      return new ArtifactQueryBuilder(ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
+            artifactTypeName), branch, attributeCriteria).getArtifacts();
    }
 
    public static Artifact getArtifactFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {

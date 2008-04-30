@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -76,10 +75,10 @@ public class UniversalGroup {
    }
 
    public static Artifact createTopUniversalGroupArtifact(Branch branch) throws SQLException {
-      ArtifactTypeNameSearch srch =
-            new ArtifactTypeNameSearch(UniversalGroup.ARTIFACT_TYPE_NAME,
+      Collection<Artifact> artifacts =
+            ArtifactQuery.getArtifactsFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
                   ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
-      if (srch.getArtifacts(Artifact.class).size() == 0) {
+      if (artifacts.size() == 0) {
          Artifact art =
                ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(ARTIFACT_TYPE_NAME).makeNewArtifact(
                      branch);
@@ -87,7 +86,7 @@ public class UniversalGroup {
          art.persistAttributes();
          return art;
       }
-      return srch.getArtifacts(Artifact.class).iterator().next();
+      return artifacts.iterator().next();
    }
 
    static private final class AddGroupTx extends AbstractSkynetTxTemplate {
