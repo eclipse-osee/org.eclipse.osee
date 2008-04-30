@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class DbConnectionInformationImpl implements IDbConnectionInformation, IBind {
 

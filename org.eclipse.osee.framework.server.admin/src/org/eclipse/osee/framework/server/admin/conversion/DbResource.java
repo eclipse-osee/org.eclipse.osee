@@ -15,7 +15,7 @@ import java.util.zip.ZipInputStream;
 import org.eclipse.osee.framework.resource.management.IResource;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class DbResource implements IResource {

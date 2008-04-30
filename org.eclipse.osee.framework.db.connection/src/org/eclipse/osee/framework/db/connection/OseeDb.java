@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.db.connection;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class OseeDb {
 

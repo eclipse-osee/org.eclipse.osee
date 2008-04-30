@@ -12,7 +12,7 @@ import org.eclipse.osee.framework.db.connection.IConnection;
 import org.eclipse.osee.framework.db.connection.IDbConnectionFactory;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class DbConnectionFactory implements IDbConnectionFactory, IBind {
 

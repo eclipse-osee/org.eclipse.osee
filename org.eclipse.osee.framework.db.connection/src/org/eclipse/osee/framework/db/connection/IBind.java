@@ -6,7 +6,7 @@
 package org.eclipse.osee.framework.db.connection;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public interface IBind {
    void bind(Object obj);

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.resource.provider.attribute.internal.Utils;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class OptionsProcessor {
 

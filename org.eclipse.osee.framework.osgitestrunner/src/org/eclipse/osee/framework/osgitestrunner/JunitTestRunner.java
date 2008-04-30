@@ -18,7 +18,7 @@ import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  *
  */
 public class JunitTestRunner implements CommandProvider {

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class DataConversion {
 

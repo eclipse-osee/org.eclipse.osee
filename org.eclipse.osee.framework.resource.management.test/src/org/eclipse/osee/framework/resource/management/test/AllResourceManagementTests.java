@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.resource.management.test;
 import junit.framework.TestSuite;
 
 /**
- * @author b1528444
+ * @author Andrew M. Finkbeiner
  */
 public class AllResourceManagementTests extends TestSuite {
 
