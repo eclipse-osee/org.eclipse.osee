@@ -3,8 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Net Plug-in
 Bundle-SymbolicName: jakarta.commons.net
 Bundle-Version: 0.2.0.qualifier
-Bundle-ClassPath: net.jar,
- commons-net-1.4.0.jar
+Bundle-ClassPath: commons-net-1.4.0.jar,
+ .
 Export-Package: org.apache.commons.net,
  org.apache.commons.net.bsd,
  org.apache.commons.net.ftp,
