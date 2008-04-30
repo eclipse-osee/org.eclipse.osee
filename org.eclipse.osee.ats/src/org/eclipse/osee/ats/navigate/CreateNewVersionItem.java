@@ -79,7 +79,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          }
 
          try {
-            Branch branch = BranchPersistenceManager.getInstance().getAtsBranch();
+            Branch branch = BranchPersistenceManager.getAtsBranch();
             new CreateNewVersionItemTx(branch, teamDefHoldingVersions, newVer).execute();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
@@ -119,7 +119,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          VersionArtifact ver =
                (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
                      VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
          ver.setDescriptiveName(newVersionName);
          teamDefHoldingVersions.relate(RelationSide.TeamDefinitionToVersion_Version, ver);
          ver.persistAttributesAndLinks();

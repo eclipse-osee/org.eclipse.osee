@@ -92,7 +92,7 @@ public class TeamWorkflowsHaveZeroOrOneVersion extends XNavigateItemAutoRunActio
 
    private void runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
       SearchWorkFlowsTx searchWorkFlowsTx =
-            new SearchWorkFlowsTx(BranchPersistenceManager.getInstance().getAtsBranch(), getName(), monitor, rd);
+            new SearchWorkFlowsTx(BranchPersistenceManager.getAtsBranch(), getName(), monitor, rd);
       searchWorkFlowsTx.execute();
    }
 

@@ -119,7 +119,7 @@ public class AtsPlugin extends OseeUiActivator {
 
    public static Branch getAtsBranch() {
       try {
-         return BranchPersistenceManager.getInstance().getAtsBranch();
+         return BranchPersistenceManager.getAtsBranch();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

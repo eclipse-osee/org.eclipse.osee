@@ -39,7 +39,7 @@ public class XNavigateItemBlam extends XNavigateItem {
       try {
          workflow =
                (BlamWorkflow) ArtifactQuery.getArtifactFromTypeAndName(BlamWorkflow.ARTIFACT_NAME, getName(),
-                     BranchPersistenceManager.getInstance().getCommonBranch());
+                     BranchPersistenceManager.getCommonBranch());
       } catch (Exception ex) {
          workflow = BlamWorkflow.createBlamWorkflow(blamOperation);
          workflow.setDescriptiveName(getName());

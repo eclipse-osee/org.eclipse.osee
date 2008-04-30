@@ -443,7 +443,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       if (ed.open() == 0) {
          try {
             AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                      @Override
                      protected void handleTxWork() throws Exception {
                         for (String str : ed.getEntry().split("\n")) {
@@ -488,7 +488,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       if (delete) {
          try {
             AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                      @Override
                      protected void handleTxWork() throws Exception {
                         // Done for concurrent modification purposes
@@ -727,7 +727,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
             if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
             AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                      @Override
                      protected void handleTxWork() throws Exception {
                         for (Artifact art : artsToRelate) {

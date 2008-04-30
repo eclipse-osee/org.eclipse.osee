@@ -82,7 +82,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
          if (cancelled) return EMPTY_SET;
          Collection<Artifact> arts =
                ArtifactPersistenceManager.getInstance().getArtifacts(bothCriteria, true,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
 
          if (cancelled) return EMPTY_SET;
          return arts;
@@ -92,7 +92,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
 
          Collection<Artifact> arts =
                ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
 
          if (cancelled) return EMPTY_SET;
 

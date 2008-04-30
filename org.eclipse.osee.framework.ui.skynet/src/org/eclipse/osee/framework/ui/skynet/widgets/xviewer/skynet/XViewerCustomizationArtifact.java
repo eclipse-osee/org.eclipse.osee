@@ -54,7 +54,7 @@ public class XViewerCustomizationArtifact extends BasicArtifact {
          try {
             Collection<Artifact> arts =
                   ArtifactQuery.getAtrifactsFromType(ARTIFACT_TYPE_NAME,
-                        BranchPersistenceManager.getInstance().getCommonBranch());
+                        BranchPersistenceManager.getCommonBranch());
             if (arts.size() == 1) {
                xViewerCustomizationArtifact = (XViewerCustomizationArtifact) arts.iterator().next();
             } else if (arts.size() == 0 && create) {

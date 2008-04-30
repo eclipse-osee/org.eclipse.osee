@@ -137,12 +137,12 @@ public class ActionImportPage extends WizardDataTransferPage {
       final File file = fileSelector.getFile();
       try {
          AbstractSkynetTxTemplate txWrapper =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                   @Override
                   protected void handleTxWork() throws Exception {
                      ExcelAtsActionArtifactExtractor extractor =
-                           new ExcelAtsActionArtifactExtractor(BranchPersistenceManager.getInstance().getAtsBranch(),
+                           new ExcelAtsActionArtifactExtractor(BranchPersistenceManager.getAtsBranch(),
                                  emailPocs.getSelection());
                      extractor.discoverArtifactAndRelationData(file);
                      if (extractor.dataIsValid()) extractor.createArtifactsAndNotify();

@@ -71,7 +71,7 @@ public class BlamWorkflow extends Artifact {
    public static BlamWorkflow createBlamWorkflow(BlamOperation soleOperation) throws SQLException {
       BlamWorkflow blamWorkflow =
             (BlamWorkflow) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(ARTIFACT_NAME).makeNewArtifact(
-                  BranchPersistenceManager.getInstance().getCommonBranch());
+                  BranchPersistenceManager.getCommonBranch());
       return blamWorkflow;
    }
 

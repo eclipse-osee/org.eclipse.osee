@@ -88,7 +88,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
          for (String name : actionItemNames) {
             ArtifactTypeNameSearch srch =
                   new ArtifactTypeNameSearch(ActionableItemArtifact.ARTIFACT_NAME, name,
-                        BranchPersistenceManager.getInstance().getAtsBranch());
+                        BranchPersistenceManager.getAtsBranch());
             actionItems.add(srch.getSingletonArtifactOrException(ActionableItemArtifact.class));
          }
       }
@@ -146,7 +146,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
          if (isCancelled()) return EMPTY_SET;
          Collection<Artifact> arts =
                ArtifactPersistenceManager.getInstance().getArtifacts(allProductCriteria, true,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
          if (isCancelled()) return EMPTY_SET;
          return arts;
       }
@@ -157,7 +157,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
 
       if (isCancelled()) return EMPTY_SET;
       return arts;

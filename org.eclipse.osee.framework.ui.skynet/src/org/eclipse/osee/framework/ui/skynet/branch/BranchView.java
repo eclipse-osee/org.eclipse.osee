@@ -974,7 +974,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                   String artId = ed.getEntry();
                   Artifact associatedArtifact =
                         ArtifactQuery.getArtifactFromId(Integer.parseInt(artId),
-                              BranchPersistenceManager.getInstance().getAtsBranch());
+                              BranchPersistenceManager.getAtsBranch());
                   if (MessageDialog.openConfirm(
                         Display.getCurrent().getActiveShell(),
                         "Set Associated Artifact",

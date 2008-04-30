@@ -77,14 +77,14 @@ public class ArtifactSelectWizardPage extends WizardPage {
          gd.widthHint = 200;
          artTypeList.getControl().setLayoutData(gd);
          artTypeList.setInput(ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
-               BranchPersistenceManager.getInstance().getAtsBranch()));
+               BranchPersistenceManager.getAtsBranch()));
          artTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                ArtifactSubtypeDescriptor desc = (ArtifactSubtypeDescriptor) selection.getFirstElement();
                try {
                   artList.setInput(ArtifactQuery.getAtrifactsFromType(desc.getName(),
-                        BranchPersistenceManager.getInstance().getAtsBranch()));
+                        BranchPersistenceManager.getAtsBranch()));
                } catch (SQLException ex) {
                   OSEELog.logException(AtsPlugin.class, ex, false);
                }

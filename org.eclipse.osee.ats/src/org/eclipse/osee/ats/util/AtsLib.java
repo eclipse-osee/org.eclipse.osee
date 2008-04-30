@@ -137,7 +137,7 @@ public class AtsLib implements IAtsLib {
    public void openArtifact(String guid, OseeAts.OpenView view) {
       Artifact artifact = null;
       try {
-         artifact = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getInstance().getAtsBranch());
+         artifact = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return;

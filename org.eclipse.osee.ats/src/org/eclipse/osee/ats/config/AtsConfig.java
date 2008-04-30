@@ -93,7 +93,7 @@ public class AtsConfig {
          try {
             Artifact rootArt =
                   ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                        BranchPersistenceManager.getInstance().getAtsBranch(), true);
+                        BranchPersistenceManager.getAtsBranch(), true);
             rootArt.addChild(art);
             rootArt.persist(true);
          } catch (SQLException ex) {
@@ -109,7 +109,7 @@ public class AtsConfig {
          try {
             Artifact rootArt =
                   ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                        BranchPersistenceManager.getInstance().getAtsBranch(), true);
+                        BranchPersistenceManager.getAtsBranch(), true);
             rootArt.addChild(art);
             rootArt.persist(true);
          } catch (SQLException ex) {
@@ -123,7 +123,7 @@ public class AtsConfig {
 
       // Get if it already exists
       ArtifactTypeNameSearch srch =
-            new ArtifactTypeNameSearch(artifactTypeName, name, BranchPersistenceManager.getInstance().getAtsBranch());
+            new ArtifactTypeNameSearch(artifactTypeName, name, BranchPersistenceManager.getAtsBranch());
       Collection<NativeArtifact> arts = srch.getArtifacts(NativeArtifact.class);
       if (arts.size() == 1) return arts.iterator().next();
       if (arts.size() > 0) throw new IllegalArgumentException(
@@ -133,7 +133,7 @@ public class AtsConfig {
       try {
          rootArt =
                (Artifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName).makeNewArtifact(
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
          rootArt.setDescriptiveName(name);
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

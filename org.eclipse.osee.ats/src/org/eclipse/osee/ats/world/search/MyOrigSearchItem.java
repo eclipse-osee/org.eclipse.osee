@@ -74,7 +74,7 @@ public class MyOrigSearchItem extends UserSearchItem {
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(
                   new InRelationSearch(smaOrigSearch, RelationSide.ActionToWorkflow_Action),
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
 
       if (isCancelled()) return EMPTY_SET;
       return arts;

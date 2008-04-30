@@ -50,7 +50,7 @@ public class XActionableItemsDam extends XTextDam {
       Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
       for (Attribute attr : getDam().getAttributes()) {
          ais.add((ActionableItemArtifact) ArtifactQuery.getArtifactFromId(attr.getStringData(),
-               BranchPersistenceManager.getInstance().getAtsBranch()));
+               BranchPersistenceManager.getAtsBranch()));
       }
       return ais;
    }

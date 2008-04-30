@@ -60,7 +60,7 @@ public class AtsHttpServerRequest implements IHttpServerRequest {
       String guid = httpRequest.getParameter("guid");
       try {
          final Artifact artifact =
-               ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getInstance().getAtsBranch());
+               ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch());
 
          if (artifact instanceof IATSArtifact) {
             Display.getDefault().asyncExec(new Runnable() {

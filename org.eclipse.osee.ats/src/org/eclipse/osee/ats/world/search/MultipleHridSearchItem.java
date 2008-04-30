@@ -82,7 +82,7 @@ public class MultipleHridSearchItem extends WorldSearchItem {
       if (idCriteria.size() > 0) {
          Collection<Artifact> arts =
                ArtifactPersistenceManager.getInstance().getArtifacts(idCriteria, false,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
          if (isCancelled()) return EMPTY_SET;
          if (arts != null) resultArts.addAll(arts);
       }

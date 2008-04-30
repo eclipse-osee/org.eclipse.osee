@@ -56,7 +56,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
       List<GroupType> groupTypes = Arrays.asList(groupType);
       Set<Artifact> groupOptions = new HashSet<Artifact>();
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.Groups)) {
-         for (Artifact art : UniversalGroup.getGroups(BranchPersistenceManager.getInstance().getAtsBranch())) {
+         for (Artifact art : UniversalGroup.getGroups(BranchPersistenceManager.getAtsBranch())) {
             // Only add group if have read permissions
             if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.getInstance().checkObjectPermission(
                   art, PermissionEnum.READ)) groupOptions.add(art);
@@ -64,7 +64,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
       }
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.UserGroups)) {
          for (Artifact art : ArtifactQuery.getAtrifactsFromType("User Group",
-               BranchPersistenceManager.getInstance().getAtsBranch())) {
+               BranchPersistenceManager.getAtsBranch())) {
             // Only add group if have read permissions
             if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.getInstance().checkObjectPermission(
                   art, PermissionEnum.READ)) groupOptions.add(art);

@@ -52,7 +52,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
       if (result == 0) {
          try {
             AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                      @Override
                      protected void handleTxWork() throws Exception {
                         PeerToPeerReviewArtifact peerArt =

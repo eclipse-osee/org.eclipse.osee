@@ -365,7 +365,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    private static final String SELECT_ARTIFACT_START =
-         "SELECT art1.*, arv1.gamma_id, arv1.modification_id FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
+         "SELECT art1.*, arv1.gamma_id, txs1.* FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
    private static final String SELECT_ARTIFACT_END =
          " AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? order by txs1.transaction_id desc";
    private static final String SELECT_ARTIFACT_BY_GUID = SELECT_ARTIFACT_START + "art1.guid =?" + SELECT_ARTIFACT_END;
@@ -644,6 +644,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       Artifact artifact =
             factory.getNewArtifact(rSet.getString("guid"), rSet.getString("human_readable_id"),
                   artifactType.getFactoryKey(), transactionId.getBranch(), artifactType);
+
       artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, rSet.getInt("art_id"),
             rSet.getInt("gamma_id")));
 

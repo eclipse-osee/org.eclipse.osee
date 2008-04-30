@@ -325,7 +325,7 @@ public class SMAManager {
       try {
          if (persist) {
             AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                      @Override
                      protected void handleTxWork() throws Exception {
                         promptChangeVersionHelper(smas, vld, persist);
@@ -372,7 +372,7 @@ public class SMAManager {
          }
          if (ald.open() == 0) {
             AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                      @Override
                      protected void handleTxWork() throws Exception {
 
@@ -415,7 +415,7 @@ public class SMAManager {
          }
          if (ald.open() == 0) {
             AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                      @Override
                      protected void handleTxWork() throws Exception {
                         for (TeamWorkFlowArtifact team : teams) {
@@ -856,7 +856,7 @@ public class SMAManager {
 
          if (persist) {
             AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                      @Override
                      protected void handleTxWork() throws Exception {

@@ -99,7 +99,7 @@ public class OrphanedTasks extends XNavigateItemAutoRunAction implements IAutoRu
       final List<TaskArtifact> orphanedTasks = new ArrayList<TaskArtifact>();
       Collection<Artifact> arts =
             ArtifactQuery.getAtrifactsFromType(TaskArtifact.ARTIFACT_NAME,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
       int x = 0;
       for (Artifact art : arts) {
          TaskArtifact taskArt = (TaskArtifact) art;

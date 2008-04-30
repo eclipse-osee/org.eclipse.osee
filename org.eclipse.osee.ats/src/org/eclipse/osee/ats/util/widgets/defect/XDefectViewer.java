@@ -282,7 +282,7 @@ public class XDefectViewer extends XWidget implements IDamWidget, IEventReceiver
          try {
             if (persist) {
                AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
                         protected void handleTxWork() throws Exception {

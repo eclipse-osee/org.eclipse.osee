@@ -67,7 +67,7 @@ public class AtsUserActivelyAssignedSearch extends UserSearchItem {
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(smaCriteria, true,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
 
       arts.addAll(user.getArtifacts(RelationSide.TeamLead_Team));
       arts.addAll(user.getArtifacts(RelationSide.TeamMember_Team));

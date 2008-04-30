@@ -176,7 +176,7 @@ public class OseeAts {
 
    public static void openATSArtifact(String guid) {
       try {
-         Artifact art = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getInstance().getCommonBranch());
+         Artifact art = ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getCommonBranch());
          if (art.getArtifactTypeName().equals("Action"))
             atsLib.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
          else

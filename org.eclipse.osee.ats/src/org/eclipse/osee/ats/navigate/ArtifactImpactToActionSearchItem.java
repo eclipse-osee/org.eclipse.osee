@@ -117,7 +117,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                if (transData.getCommitArtId() > 0) {
                   Artifact assocArt =
                         ArtifactQuery.getArtifactFromId(transData.getCommitArtId(),
-                              BranchPersistenceManager.getInstance().getAtsBranch());
+                              BranchPersistenceManager.getAtsBranch());
                   if (assocArt instanceof TeamWorkFlowArtifact) {
                      sb.append(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(),
                            assocArt.getHumanReadableId(), assocArt.getDescriptiveName()}));

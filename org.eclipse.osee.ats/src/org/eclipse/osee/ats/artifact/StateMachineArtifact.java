@@ -1004,7 +1004,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
          artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
 
       return ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+            BranchPersistenceManager.getAtsBranch());
    }
 
    public static Collection<Artifact> getAllTeamWorkflowArtifacts() throws SQLException {
@@ -1013,7 +1013,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IEvent
          artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
 
       return ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+            BranchPersistenceManager.getAtsBranch());
    }
 
    /* (non-Javadoc)

@@ -226,7 +226,7 @@ public class XUserRoleViewer extends XWidget implements IDamWidget, IEventReceiv
          try {
             if (persist) {
                AbstractSkynetTxTemplate transactionWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
                         protected void handleTxWork() throws Exception {

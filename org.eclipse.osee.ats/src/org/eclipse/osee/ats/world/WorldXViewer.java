@@ -328,7 +328,7 @@ public class WorldXViewer extends XViewer {
          if (useArts.size() > 0) {
             if (persist) {
                AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
                         protected void handleTxWork() throws Exception {
@@ -712,7 +712,7 @@ public class WorldXViewer extends XViewer {
             wd.open();
             if (wd.getReturnCode() == 0) {
                AbstractSkynetTxTemplate txWrapper =
-                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+                     new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                         @Override
                         protected void handleTxWork() throws Exception {

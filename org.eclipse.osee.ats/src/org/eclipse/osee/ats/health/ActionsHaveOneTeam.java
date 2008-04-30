@@ -102,7 +102,7 @@ public class ActionsHaveOneTeam extends XNavigateItemAutoRunAction implements IA
 
       Collection<Artifact> artifacts =
             ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
 
       int x = 0;
       for (Artifact art : artifacts) {

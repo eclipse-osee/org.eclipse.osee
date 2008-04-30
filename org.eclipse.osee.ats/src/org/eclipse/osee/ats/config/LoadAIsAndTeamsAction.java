@@ -135,7 +135,7 @@ public class LoadAIsAndTeamsAction extends Action {
 
       try {
          AbstractSkynetTxTemplate txWrapper =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                   @Override
                   protected void handleTxWork() throws Exception {
@@ -221,7 +221,7 @@ public class LoadAIsAndTeamsAction extends Action {
          if (getOrCreate) {
             ArtifactTypeNameSearch srch =
                   new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, page.getName(),
-                        BranchPersistenceManager.getInstance().getAtsBranch());
+                        BranchPersistenceManager.getAtsBranch());
             teamDefArt = srch.getSingletonArtifact(TeamDefinitionArtifact.class);
 
             if (teamDefArt != null) {
@@ -241,7 +241,7 @@ public class LoadAIsAndTeamsAction extends Action {
          if (!workflowId.equals("")) {
             ArtifactTypeNameSearch srch =
                   new ArtifactTypeNameSearch(WorkflowDiagramFactory.GENERAL_DOCUMENT_ARTIFACT_NAME, workflowId,
-                        BranchPersistenceManager.getInstance().getAtsBranch());
+                        BranchPersistenceManager.getAtsBranch());
             Artifact workflowArt = srch.getSingletonArtifactOrException(Artifact.class);
             teamDefArt.relate(RelationSide.TeamDefinitionToWorkflowDiagram_WorkflowDiagram, workflowArt);
          }
@@ -280,14 +280,14 @@ public class LoadAIsAndTeamsAction extends Action {
          if (getOrCreate) {
             ArtifactTypeNameSearch srch =
                   new ArtifactTypeNameSearch(ActionableItemArtifact.ARTIFACT_NAME, page.getName(),
-                        BranchPersistenceManager.getInstance().getAtsBranch());
+                        BranchPersistenceManager.getAtsBranch());
             aia = srch.getSingletonArtifact(ActionableItemArtifact.class);
          }
          if (aia == null) {
             aia =
                   (ActionableItemArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
                         ActionableItemArtifact.ARTIFACT_NAME).makeNewArtifact(
-                        BranchPersistenceManager.getInstance().getAtsBranch());
+                        BranchPersistenceManager.getAtsBranch());
             aia.setDescriptiveName(page.getName());
             for (String staticId : staticIds) {
                aia.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setStringData(

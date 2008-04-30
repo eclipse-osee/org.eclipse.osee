@@ -75,7 +75,7 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
       if (cancelled) return EMPTY_SET;
       Collection<Artifact> artifacts =
             ArtifactPersistenceManager.getInstance().getArtifacts(bothCriteria, true,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
       if (cancelled) return EMPTY_SET;
       return artifacts;
    }

@@ -98,7 +98,7 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction imp
    private void runIt(IProgressMonitor monitor, final XResultData rd) throws Exception {
       if (fixIt) {
          AbstractSkynetTxTemplate txWrapper =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                   @Override
                   protected void handleTxWork() throws Exception {
                      getUnassignedAtsObjectHelper(rd);

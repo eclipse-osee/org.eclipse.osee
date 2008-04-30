@@ -69,7 +69,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(allCriteria, true,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
       if (isCancelled()) return EMPTY_SET;
       return arts;
    }

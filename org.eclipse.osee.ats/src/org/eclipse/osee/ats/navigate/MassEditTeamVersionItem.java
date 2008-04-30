@@ -63,7 +63,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
       if (teamDefName != null && !teamDefName.equals("")) {
          ArtifactTypeNameSearch srch =
                new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
          TeamDefinitionArtifact teamDef = srch.getSingletonArtifactOrException(TeamDefinitionArtifact.class);
          if (teamDef != null) return teamDef;
       }

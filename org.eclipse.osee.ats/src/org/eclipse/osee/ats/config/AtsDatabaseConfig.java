@@ -41,19 +41,19 @@ public class AtsDatabaseConfig extends DbInitializationTask {
       // Relate task workflow
       Artifact taskWorkflow =
             (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.DEFAULT_TASK_WORKFLOW,
-                  BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
+                  BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
       teamDef.relate(RelationSide.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram, taskWorkflow, true);
 
       // Relate peer to Peer review
       Artifact peerWorkflow =
             (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.PEERTOPEER_REVIEW_WORKFLOW,
-                  BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
+                  BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
       teamDef.relate(RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram, peerWorkflow, true);
 
       // Relate peer to Peer review
       Artifact decisionWorkflow =
             (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.DECISION_REVIEW_WORKFLOW,
-                  BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
+                  BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
       teamDef.relate(RelationSide.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram, decisionWorkflow, true);
 
       teamDef.persist(true);
@@ -69,12 +69,12 @@ public class AtsDatabaseConfig extends DbInitializationTask {
    private void createXViewerGlobalCustomization() throws SQLException {
       ArtifactTypeNameSearch srch =
             new ArtifactTypeNameSearch(XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME, "",
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
       if (srch.getArtifacts(XViewerCustomizationArtifact.class).size() == 0) {
          XViewerCustomizationArtifact art =
                (XViewerCustomizationArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
                      XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME).makeNewArtifact(
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
          art.persistAttributes();
       }
    }

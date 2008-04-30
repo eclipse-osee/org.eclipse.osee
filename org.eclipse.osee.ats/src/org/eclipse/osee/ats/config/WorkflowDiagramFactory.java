@@ -54,7 +54,7 @@ public class WorkflowDiagramFactory {
       // System.out.println("Importing diagram " + name);
       art =
             (NativeArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  GENERAL_DOCUMENT_ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getInstance().getAtsBranch());
+                  GENERAL_DOCUMENT_ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
       art.setDescriptiveName(name);
       art.setSoleStringAttributeValue("Extension", "vue");
       art.setNativeContent(inputStream);
@@ -74,14 +74,14 @@ public class WorkflowDiagramFactory {
    public NativeArtifact getAtsWorkflowArtifact(String diagramName) throws SQLException {
       ArtifactTypeNameSearch srch =
             new ArtifactTypeNameSearch(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
       return srch.getSingletonArtifactOrException(NativeArtifact.class);
    }
 
    public boolean atsWorkflowArtifactExists(String diagramName) throws SQLException {
       ArtifactTypeNameSearch srch =
             new ArtifactTypeNameSearch(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
       return srch.getArtifacts(NativeArtifact.class).size() == 1;
    }
 

@@ -70,7 +70,7 @@ public class StateWorldSearchItem extends WorldSearchItem {
 
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(baseCriteria, true,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
       if (isCancelled()) return EMPTY_SET;
       return arts;
 

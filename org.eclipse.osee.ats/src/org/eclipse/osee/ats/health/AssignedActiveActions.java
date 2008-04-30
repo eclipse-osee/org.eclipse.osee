@@ -101,7 +101,7 @@ public class AssignedActiveActions extends XNavigateItemAutoRunAction implements
    private void runIt(IProgressMonitor monitor, final XResultData rd) throws Exception {
       if (fixIt) {
          AbstractSkynetTxTemplate txWrapper =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
                   @Override
                   protected void handleTxWork() throws Exception {
                      assignedActiveActionsHelper(rd);
@@ -122,7 +122,7 @@ public class AssignedActiveActions extends XNavigateItemAutoRunAction implements
 
       Collection<Artifact> artifacts =
             ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
 
       for (Artifact art : artifacts) {
          StateMachineArtifact sma = (StateMachineArtifact) art;

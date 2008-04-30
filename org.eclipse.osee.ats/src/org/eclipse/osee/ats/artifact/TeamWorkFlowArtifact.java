@@ -204,7 +204,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
             "TeamWorkflow has no TeamDefinition associated.");
       return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromId(guid,
-            BranchPersistenceManager.getInstance().getAtsBranch());
+            BranchPersistenceManager.getAtsBranch());
    }
 
    public String getTeamTitle() {
@@ -376,7 +376,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
             }
 
             ActionableItemsTx txWrapper =
-                  new ActionableItemsTx(BranchPersistenceManager.getInstance().getAtsBranch(), selectedAlias, null);
+                  new ActionableItemsTx(BranchPersistenceManager.getAtsBranch(), selectedAlias, null);
             txWrapper.execute();
             toReturn = txWrapper.getResult();
          }
@@ -421,7 +421,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
                   Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
                   toProcess.add(selectedAia);
                   ActionableItemsTx txWrapper =
-                        new ActionableItemsTx(BranchPersistenceManager.getInstance().getAtsBranch(), toProcess,
+                        new ActionableItemsTx(BranchPersistenceManager.getAtsBranch(), toProcess,
                               newTeamDef);
                   txWrapper.execute();
                   toReturn = txWrapper.getResult();

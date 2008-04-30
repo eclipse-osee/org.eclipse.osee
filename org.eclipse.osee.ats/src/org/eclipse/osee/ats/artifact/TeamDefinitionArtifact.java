@@ -65,7 +65,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       tda =
             (TeamDefinitionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
                   TeamDefinitionArtifact.ARTIFACT_NAME).makeNewArtifact(
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
       tda.setDescriptiveName(name);
       tda.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       tda.setSoleStringAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
@@ -139,7 +139,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public static Set<TeamDefinitionArtifact> getTeamDefinitions(Active active) throws SQLException {
       ActiveArtifactTypeSearch search =
-            new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getInstance().getAtsBranch());
+            new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getAtsBranch());
       return search.getArtifacts(TeamDefinitionArtifact.class);
    }
 
@@ -152,14 +152,14 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public static TeamDefinitionArtifact getTopTeamDefinition() throws SQLException {
       return ArtifactStaticIdSearch.getSingletonArtifactOrException(TeamDefinitionArtifact.ARTIFACT_NAME,
-            TOP_TEAM_STATIC_ID, BranchPersistenceManager.getInstance().getAtsBranch(), SearchOperator.EQUAL,
+            TOP_TEAM_STATIC_ID, BranchPersistenceManager.getAtsBranch(), SearchOperator.EQUAL,
             TeamDefinitionArtifact.class);
    }
 
    public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws SQLException, MultipleAttributesExist {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       ActiveArtifactTypeSearch search =
-            new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getInstance().getAtsBranch());
+            new ActiveArtifactTypeSearch(ARTIFACT_NAME, active, BranchPersistenceManager.getAtsBranch());
       for (TeamDefinitionArtifact teamDef : search.getArtifacts(TeamDefinitionArtifact.class)) {
          if (teamDef.getVersionsArtifacts().size() > 0 && teamDef.getSoleAttributeValue(
                ATSAttributes.ACTIVE_ATTRIBUTE.getStoreName(), false)) teamDefs.add(teamDef);
@@ -219,7 +219,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public static TeamDefinitionArtifact getHeadTeamDefinition() throws SQLException {
       return (new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, AtsConfig.TEAMS_HEADING,
-            BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(TeamDefinitionArtifact.class);
+            BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(TeamDefinitionArtifact.class);
    }
 
    public double getManDayHrsFromItemAndChildren() throws SQLException {
@@ -302,7 +302,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       try {
          VersionArtifact versionArt =
                (VersionArtifact) configurationManager.getArtifactSubtypeDescriptor(VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
          versionArt.setDescriptiveName(name);
          versionArt.persistAttributes();
 

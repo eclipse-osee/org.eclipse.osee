@@ -68,7 +68,7 @@ public class NewActionJob extends Job {
    public IStatus run(final IProgressMonitor monitor) {
       try {
          AbstractSkynetTxTemplate newActionTx =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getInstance().getAtsBranch()) {
+               new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
                   @Override
                   protected void handleTxWork() throws Exception {
@@ -126,7 +126,7 @@ public class NewActionJob extends Job {
       if (monitor != null) monitor.subTask("Creating Action");
       ActionArtifact actionArt =
             (ActionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  ActionArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getInstance().getAtsBranch());
+                  ActionArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
             validationRequired, needByDate);
 

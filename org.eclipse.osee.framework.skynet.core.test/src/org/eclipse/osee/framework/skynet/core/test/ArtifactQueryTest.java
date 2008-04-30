@@ -14,7 +14,7 @@ public class ArtifactQueryTest extends TestCase {
 
    public void testGetArtifactFromId() {
       try {
-         Branch common = BranchPersistenceManager.getInstance().getCommonBranch();
+         Branch common = BranchPersistenceManager.getCommonBranch();
          Artifact root = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(common);
          Artifact artifact = ArtifactQuery.getArtifactFromId(root.getHumanReadableId(), common);
          assertEquals(root.getHumanReadableId(), artifact.getHumanReadableId());

@@ -167,7 +167,7 @@ public class TaskImportPage extends WizardDataTransferPage {
       try {
          try {
             Artifact artifact =
-                  ArtifactQuery.getArtifactFromId(hrid, BranchPersistenceManager.getInstance().getAtsBranch());
+                  ArtifactQuery.getArtifactFromId(hrid, BranchPersistenceManager.getAtsBranch());
             if (!(artifact instanceof StateMachineArtifact)) {
                setErrorMessage("Artifact retrieved is not a StateMachineArtifact");
                actionLabel.setText("");
@@ -194,9 +194,9 @@ public class TaskImportPage extends WizardDataTransferPage {
       try {
          ExcelAtsTaskArtifactExtractor extractor =
                new ExcelAtsTaskArtifactExtractor(hridText.getText(),
-                     BranchPersistenceManager.getInstance().getAtsBranch(), emailPocs.getSelection());
+                     BranchPersistenceManager.getAtsBranch(), emailPocs.getSelection());
          Jobs.startJob(new TaskImportJob(file, hridText.getText(), extractor,
-               BranchPersistenceManager.getInstance().getAtsBranch()));
+               BranchPersistenceManager.getAtsBranch()));
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
          ErrorDialog.openError(getShell(), "ATS Import Error", "An error has occured while importing document.",

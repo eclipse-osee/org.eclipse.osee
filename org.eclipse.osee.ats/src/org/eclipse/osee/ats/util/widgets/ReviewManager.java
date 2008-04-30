@@ -99,7 +99,7 @@ public class ReviewManager {
       PeerToPeerReviewArtifact peerToPeerRev =
             (PeerToPeerReviewArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
                   PeerToPeerReviewArtifact.ARTIFACT_NAME).makeNewArtifact(
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
 
       if (teamParent != null) {
          teamParent.relate(RelationSide.TeamWorkflowToReview_Review, peerToPeerRev);

@@ -12,9 +12,11 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
 /**
  * @author Donald G. Dunne
@@ -35,29 +37,20 @@ public class GlobalPreferences extends Artifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static GlobalPreferences get() throws SQLException {
+   public static GlobalPreferences get() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (instance == null) {
-         ArtifactTypeNameSearch srch =
-               new ArtifactTypeNameSearch(ARTIFACT_NAME, ARTIFACT_NAME,
-                     BranchPersistenceManager.getInstance().getCommonBranch());
-         instance = srch.getSingletonArtifactOrException(GlobalPreferences.class);
+         instance =
+               (GlobalPreferences) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, ARTIFACT_NAME,
+                     BranchPersistenceManager.getCommonBranch());
       }
       return instance;
    }
 
    public static void createGlobalPreferencesArtifact() throws SQLException {
-      ArtifactTypeNameSearch srch =
-            new ArtifactTypeNameSearch(GlobalPreferences.ARTIFACT_NAME,
-                  ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME,
-                  BranchPersistenceManager.getInstance().getCommonBranch());
-      if (srch.getArtifacts(Artifact.class).size() == 0) {
-         Artifact art =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     GlobalPreferences.ARTIFACT_NAME).makeNewArtifact(
-                     BranchPersistenceManager.getInstance().getCommonBranch());
-         art.setDescriptiveName(GlobalPreferences.ARTIFACT_NAME);
-         art.persistAttributes();
-      }
+      Artifact art =
+            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(GlobalPreferences.ARTIFACT_NAME).makeNewArtifact(
+                  BranchPersistenceManager.getCommonBranch());
+      art.setDescriptiveName(GlobalPreferences.ARTIFACT_NAME);
+      art.persistAttributes();
    }
-
 }

@@ -39,7 +39,7 @@ public class TagCommonBranchArtifacts extends DbInitializationTask {
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
    public void run(Connection connection) throws Exception {
-      Branch branch = BranchPersistenceManager.getInstance().getCommonBranch();
+      Branch branch = BranchPersistenceManager.getCommonBranch();
       List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
 
       for (ArtifactSubtypeDescriptor artifactType : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(

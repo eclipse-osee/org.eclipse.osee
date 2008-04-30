@@ -51,7 +51,7 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
       for (IExtension extension : ep.getExtensions()) {
          for (IConfigurationElement el : extension.getConfigurationElements()) {
             Artifact templateArtifact =
-                  templateDescriptor.makeNewArtifact(BranchPersistenceManager.getInstance().getCommonBranch());
+                  templateDescriptor.makeNewArtifact(BranchPersistenceManager.getCommonBranch());
             String filePath = el.getAttribute("File");
             String name = filePath.substring(filePath.lastIndexOf('/') + 1);
             name = name.substring(0, name.lastIndexOf('.'));
@@ -78,18 +78,18 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
    private Artifact getTemplateFolder() throws SQLException {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName("Folder", "Document Templates",
-               BranchPersistenceManager.getInstance().getCommonBranch());
+               BranchPersistenceManager.getCommonBranch());
       } catch (MultipleArtifactsExist ex) {
          OSEELog.logException(SimpleTemplateProviderDbTask.class, ex.getLocalizedMessage(), ex, false);
       } catch (ArtifactDoesNotExist ex) {
          Artifact rootArt =
                ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                     BranchPersistenceManager.getInstance().getCommonBranch(), true);
+                     BranchPersistenceManager.getCommonBranch(), true);
 
          ArtifactSubtypeDescriptor folderDescriptor =
                ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Folder");
          Artifact templateFolder =
-               folderDescriptor.makeNewArtifact(BranchPersistenceManager.getInstance().getCommonBranch());
+               folderDescriptor.makeNewArtifact(BranchPersistenceManager.getCommonBranch());
          templateFolder.setDescriptiveName("Document Templates");
          rootArt.addChild(templateFolder);
          rootArt.persist(true);

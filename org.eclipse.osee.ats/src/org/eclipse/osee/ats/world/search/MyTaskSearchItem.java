@@ -54,7 +54,7 @@ public class MyTaskSearchItem extends UserSearchItem {
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(teamWorkflowCriteria, true,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
       if (isCancelled()) return EMPTY_SET;
       return arts;
    }

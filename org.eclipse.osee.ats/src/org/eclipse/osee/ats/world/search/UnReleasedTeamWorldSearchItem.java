@@ -102,7 +102,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
          for (String name : teamDefNames) {
             ArtifactTypeNameSearch srch =
                   new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, name,
-                        BranchPersistenceManager.getInstance().getAtsBranch());
+                        BranchPersistenceManager.getAtsBranch());
             teamDefs.add(srch.getSingletonArtifactOrException(TeamDefinitionArtifact.class));
          }
       }
@@ -183,7 +183,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
          if (isCancelled()) return EMPTY_SET;
          Collection<Artifact> arts =
                ArtifactPersistenceManager.getInstance().getArtifacts(unReleasedAndUntargetedTeamsCriteria, false,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
          if (isCancelled()) return EMPTY_SET;
          return arts;
       }
@@ -195,7 +195,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
-                  BranchPersistenceManager.getInstance().getAtsBranch());
+                  BranchPersistenceManager.getAtsBranch());
 
       if (isCancelled()) return EMPTY_SET;
       return arts;

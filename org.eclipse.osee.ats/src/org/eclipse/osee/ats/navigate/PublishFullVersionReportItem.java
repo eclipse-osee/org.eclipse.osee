@@ -72,7 +72,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       if (useTeamDef == null && teamDefName != null) {
          ArtifactTypeNameSearch srch =
                new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName,
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     BranchPersistenceManager.getAtsBranch());
          useTeamDef = srch.getSingletonArtifactOrException(TeamDefinitionArtifact.class);
       }
       if (useTeamDef == null) {
