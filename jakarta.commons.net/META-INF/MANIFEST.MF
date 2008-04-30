@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Net Plug-in
-Bundle-SymbolicName: jakarta.commons.net
+Bundle-SymbolicName: jakarta.commons.net;singleton:=true
 Bundle-Version: 0.2.0.qualifier
 Bundle-ClassPath: commons-net-1.4.0.jar,
  .
@@ -17,5 +17,6 @@ Export-Package: org.apache.commons.net,
  org.apache.commons.net.telnet,
  org.apache.commons.net.tftp,
  org.apache.commons.net.util
-Eclipse-LazyStart: true
+Eclipse-LazyStart: false
 Bundle-Vendor: Apache Foundation
+Bundle-Localization: plugin
