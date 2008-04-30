@@ -12,12 +12,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -197,9 +197,10 @@ public class DataConversion {
       }
 
       private void runUpdateBatch(List<Object[]> batchParams) throws SQLException {
+    	  if(batchParams.size() > 0){
          ConnectionHandler.runBatchablePreparedUpdate(updateUri, true, batchParams);
-         System.out.println(Arrays.deepToString(batchParams.toArray()));
          batchParams.clear();
+    	  }
       }
 
       private Map<Long, String> buildNativeExtensionMap(Connection connection) throws SQLException {

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionManager;
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
@@ -405,8 +406,10 @@ public final class ConnectionHandler {
             boolean needExecute = false;
             int count = 0;
             for (Object[] data : datas) {
+            	count++;
                populateValuesForPreparedStatement(preparedStatement, data);
                preparedStatement.addBatch();
+               preparedStatement.clearParameters();
                needExecute = true;
                if (count > 2000) {
                   preparedStatement.executeBatch();

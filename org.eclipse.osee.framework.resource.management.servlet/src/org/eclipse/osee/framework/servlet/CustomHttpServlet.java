@@ -7,6 +7,7 @@ package org.eclipse.osee.framework.servlet;
 
 import java.io.IOException;
 import java.util.logging.Level;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ public class CustomHttpServlet extends HttpServlet {
       } finally {
          long elapsed = System.currentTimeMillis() - start;
          Activator.getInstance().getLogger().log(Level.INFO,
-               String.format("[%s] serviced in [%s] ms", request.getRequestURL(), elapsed));
+               String.format("[%s] serviced in [%s] ms", request.getQueryString(), elapsed));
       }
    }
 
