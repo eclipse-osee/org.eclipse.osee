@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -162,6 +163,11 @@ public class ArtifactQuery {
             ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName);
       return new ArtifactQueryBuilder(artifactType, branch, new AttributeValueCriteria(attributeTypeName,
             attributeValue)).getArtifacts();
+   }
+
+   public static Collection<Artifact> getAtrifactsFromHistoricalAttributeValue(String attributeValue) throws SQLException {
+      return new ArtifactQueryBuilder(new AttributeValueCriteria((DynamicAttributeDescriptor) null, attributeValue,
+            true)).getArtifacts();
    }
 
    /**

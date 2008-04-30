@@ -81,6 +81,10 @@ public class ArtifactQueryBuilder {
       return artifactIds;
    }
 
+   public ArtifactQueryBuilder(AbstractArtifactSearchCriteria... criteria) {
+      this(null, null, null, null, false, criteria);
+   }
+
    public ArtifactQueryBuilder(Branch branch, AbstractArtifactSearchCriteria... criteria) {
       this(null, null, null, branch, false, criteria);
    }
@@ -159,7 +163,7 @@ public class ArtifactQueryBuilder {
    }
 
    public String getArtifactsSql() throws SQLException {
-      sql.append("SELECT art1.*, arv1.gamma_id FROM ");
+      sql.append("SELECT art1.*, arv1.gamma_id, txs1.mod_type, txs1.transaction_id FROM ");
       appendAliasedTable("osee_define_artifact", false);
       appendAliasedTable("osee_define_artifact_version");
       addTxTablesSql();

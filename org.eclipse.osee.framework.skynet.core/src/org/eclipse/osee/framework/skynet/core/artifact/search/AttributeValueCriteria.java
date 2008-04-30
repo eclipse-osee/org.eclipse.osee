@@ -20,10 +20,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescript
  */
 public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
    private DynamicAttributeDescriptor attributeType;
-   private String value;
+   private final String value;
    private String txsAlias;
    private String txdAlias;
    private String attrAlias;
+   private final boolean multiBranchHistorical;
 
    /**
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
@@ -32,10 +33,11 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * @param attributeType
     * @param value
     */
-   public AttributeValueCriteria(DynamicAttributeDescriptor attributeType, String value) {
+   public AttributeValueCriteria(DynamicAttributeDescriptor attributeType, String value, boolean multiBranchHistorical) {
       super();
       this.attributeType = attributeType;
       this.value = value;
+      this.multiBranchHistorical = multiBranchHistorical;
    }
 
    /**
@@ -47,7 +49,21 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * @throws SQLException
     */
    public AttributeValueCriteria(String attributeTypeName, String value) throws SQLException {
-      this(ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeTypeName), value);
+      this(attributeTypeName, value, false);
+   }
+
+   /**
+    * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
+    * given value.
+    * 
+    * @param attributeTypeName
+    * @param value
+    * @param multiBranchHistorical if true will search on any branch and any attribute revision
+    * @throws SQLException
+    */
+   public AttributeValueCriteria(String attributeTypeName, String value, boolean multiBranchHistorical) throws SQLException {
+      this(ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeTypeName), value,
+            multiBranchHistorical);
    }
 
    /* (non-Javadoc)
@@ -56,8 +72,10 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
    @Override
    public void addToTableSql(ArtifactQueryBuilder builder) {
       attrAlias = builder.appendAliasedTable("osee_define_attribute");
-      txsAlias = builder.appendAliasedTable("osee_define_txs");
-      txdAlias = builder.appendAliasedTable("osee_define_tx_details");
+      if (!multiBranchHistorical) {
+         txsAlias = builder.appendAliasedTable("osee_define_txs");
+         txdAlias = builder.appendAliasedTable("osee_define_tx_details");
+      }
    }
 
    /* (non-Javadoc)
@@ -75,12 +93,14 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
          builder.append(".value=? AND ");
          builder.addParameter(SQL3DataType.VARCHAR, value);
       }
-      builder.append(attrAlias);
-      builder.append(".gamma_id=");
-      builder.append(txsAlias);
-      builder.append(".gamma_id AND ");
+      if (!multiBranchHistorical) {
+         builder.append(attrAlias);
+         builder.append(".gamma_id=");
+         builder.append(txsAlias);
+         builder.append(".gamma_id AND ");
 
-      builder.addCurrentTxSql(txsAlias, txdAlias);
+         builder.addCurrentTxSql(txsAlias, txdAlias);
+      }
    }
 
    /* (non-Javadoc)

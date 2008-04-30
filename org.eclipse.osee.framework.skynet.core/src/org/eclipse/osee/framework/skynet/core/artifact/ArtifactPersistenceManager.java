@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.core.schema.Table;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -120,16 +119,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    private static final String PURGE_ATTRIBUTE = "DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE attr_id = ?";
    private static final String PURGE_ATTRIBUTE_GAMMAS =
          "DELETE" + " FROM " + TRANSACTIONS_TABLE + " WHERE gamma_id IN" + "(SELECT gamma_id" + " FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE attr_id = ?)";
-
-   // this query implicitly filters out transactions were an artifact was deleted because those transactions will not also contain matching attribute value
-   private static final String SELECT_HISTORICAL_ARTIFACTS =
-         String.format(
-               "SELECT att1.art_id, %s FROM osee_define_attribute att1, osee_define_txs txs2, osee_define_tx_details txd3, osee_define_branch br4 WHERE att1.VALUE LIKE ? AND att1.gamma_id = txs2.gamma_id AND txs2.tx_type <> ? AND txs2.transaction_id = txd3.transaction_id AND txd3.branch_id = br4.branch_id AND br4.archived = 0 GROUP BY txd3.branch_id, att1.art_id",
-               Table.alias("MAX(txs2.transaction_id)", "tx"));
-   private static final String SELECT_HISTORICAL_ARTIFACT_DELETED =
-         String.format(
-               "SELECT tx from osee_define_txs txs3, osee_define_artifact_version arv4, (SELECT %s, arv1.art_id alpha from osee_define_artifact_version arv1, osee_define_txs txs2, osee_define_tx_details txd3 WHERE arv1.art_id = ? AND arv1.gamma_id = txs2.gamma_id and txs2.transaction_id = txd3.transaction_id and txd3.branch_id = ? group by arv1.art_id) t5 where t5.tx = txs3.transaction_id AND txs3.gamma_id = arv4.gamma_id and arv4.art_id = t5.alpha and arv4.modification_id = ?",
-               Table.alias("MAX(txd3.transaction_id)", "tx"));
 
    // 'order by transaction_id desc' clause works with the DynamicAttributeManager to ignore effectively overwritten attributes with {min,max} of {0,1} with >1 attribute instances.
    private static final String SELECT_ATTRIBUTES_FOR_ARTIFACT =
@@ -658,6 +647,10 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, rSet.getInt("art_id"),
             rSet.getInt("gamma_id")));
 
+      if (rSet.getInt("mod_type") == TransactionType.Deleted.getId()) {
+         artifact.setDeleted(rSet.getInt("transaction_id"));
+      }
+
       return artifact;
    }
 
@@ -751,14 +744,14 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    public void initializeArtifacts(Collection<Artifact> artifacts, TransactionId transactionId) throws SQLException {
-      if (artifacts.isEmpty()) return;
+      if (artifacts.isEmpty()) {
+         return;
+      }
 
       initializeArtifactsAttributes(artifacts, transactionId);
 
-      // The artifacts are fresh, so mark them as not dirty
       for (Artifact artifact : artifacts) {
-
-         artifact.setNotDirty();
+         artifact.setNotDirty(); // The artifacts are fresh, so mark them as not dirty
          artifact.onInitializationComplete();
       }
    }
@@ -925,16 +918,13 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    public void deleteTrace(Artifact artifact, SkynetTransactionBuilder builder) throws SQLException {
-
       if (!artifact.isDeleted()) {
-         // NOTE: This must be done first since the the actual deletion of an artifact
-         // clears out the link manager
+         // This must be done first since the the actual deletion of an artifact clears out the link manager
          for (Artifact childArtifact : artifact.getChildren()) {
             deleteTrace(childArtifact, builder);
          }
 
          builder.deleteArtifact(artifact);
-
          artifact.setDeleted();
       }
    }
@@ -1006,8 +996,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    public void purgeArtifact(final Artifact artifact) throws SQLException {
-      artifact.checkDeleted();
-
       purgeArtifact(artifact.getArtId());
 
       System.out.println("number of children:" + artifact.getChildren().size());
@@ -1111,47 +1099,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    public Collection<Artifact> getArtifactsFromAttribute(String attributeName, String attributeValue, Branch branch) throws SQLException {
       return getArtifacts(new AttributeValueSearch(attributeName, attributeValue, Operator.EQUAL), branch);
-   }
-
-   public Collection<Artifact> getHistoricalArtifactsFromAttribute(String attributeValue) throws SQLException {
-      Collection<Artifact> artifacts = new ArrayList<Artifact>();
-      ConnectionHandlerStatement chStmt = null;
-
-      try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_HISTORICAL_ARTIFACTS, SQL3DataType.VARCHAR, attributeValue,
-                     SQL3DataType.INTEGER, TransactionType.Branched.getId());
-
-         ResultSet rSet = chStmt.getRset();
-         while (rSet.next()) {
-            TransactionId transactionId = transactionIdManager.getPossiblyEditableTransactionId(rSet.getInt("tx"));
-            artifacts.add(getArtifactFromId(rSet.getInt("art_id"), transactionId));
-         }
-      } finally {
-         DbUtil.close(chStmt);
-      }
-      return artifacts;
-   }
-
-   public int getDeletionTransactionId(int artId, int branchId) throws SQLException {
-      int transactionId;
-      ConnectionHandlerStatement chStmt = null;
-
-      try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_HISTORICAL_ARTIFACT_DELETED, SQL3DataType.INTEGER, artId,
-                     SQL3DataType.INTEGER, branchId, SQL3DataType.INTEGER, ModificationType.DELETE.getValue());
-
-         ResultSet rSet = chStmt.getRset();
-         if (rSet.next()) {
-            transactionId = rSet.getInt("tx");
-         } else {
-            transactionId = -1;
-         }
-      } finally {
-         DbUtil.close(chStmt);
-      }
-      return transactionId;
    }
 
    private Artifact createRoot(Branch branch) throws SQLException {

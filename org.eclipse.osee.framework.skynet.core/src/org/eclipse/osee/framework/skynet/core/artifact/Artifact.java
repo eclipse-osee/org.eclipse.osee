@@ -121,6 +121,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       this.deleteCheckOveride = false;
       this.initializingAttributes = false;
       this.artifactType = artifactType;
+      this.deletionTransactionId = -1;
    }
 
    public boolean isInDb() {
@@ -249,7 +250,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * sub-class artifacts to set default attributes or do default processing.
     */
    public void onInitializationComplete() {
-      checkDeleted();
    };
 
    /**
@@ -312,7 +312,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    public String toString() {
-      checkDeleted();
       if (attributesNotLoaded()) return "<name not loaded yet>";
       return getDescriptiveName();
    }
@@ -325,7 +324,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public Collection<DynamicAttributeManager> getAttributeManagers() throws SQLException {
-      checkDeleted();
       acquireAttributes(false);
       return attributeManagers;
    }
@@ -358,7 +356,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public Set<Artifact> getChildren() throws SQLException {
-      checkDeleted();
       checkLinkManager(false);
 
       return getArtifacts(DEFAULT_HIERARCHICAL__CHILD);
@@ -375,7 +372,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    private void getDescendants(Collection<Artifact> descendants) throws SQLException {
-      checkDeleted();
       for (Artifact child : getChildren()) {
          descendants.add(child);
          child.getDescendants(descendants);
@@ -387,8 +383,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public void addChild(Artifact artifact) throws SQLException {
-      checkDeleted();
-
       relate(DEFAULT_HIERARCHICAL__CHILD, artifact);
    }
 
@@ -416,8 +410,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public boolean hasChildren() throws SQLException {
-      checkDeleted();
-
       if (isLinkManagerLoaded()) {
          return getChildren().size() > 0;
       }
@@ -426,7 +418,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    public void addChildren(List<? extends Artifact> artifacts) throws SQLException {
-      checkDeleted();
       for (Artifact artifact : artifacts) {
          addChild(artifact);
       }
@@ -448,8 +439,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public DynamicAttributeManager getAttributeManager(DynamicAttributeDescriptor attributeType) throws SQLException {
-      checkDeleted();
-
       for (DynamicAttributeManager attributeManager : getAttributeManagers()) {
          if (attributeManager.getAttributeType().equals(attributeType)) {
             return attributeManager;
@@ -694,7 +683,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public String getAttributesToString(String attributeName) throws SQLException {
-      checkDeleted();
       StringBuffer sb = new StringBuffer();
       DynamicAttributeManager dam = getAttributeManager(attributeName);
       for (Attribute attr : dam.getAttributes())
@@ -762,7 +750,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public Set<String> getAttributesToStringCollection(String attributeName) throws SQLException {
-      checkDeleted();
       Set<String> items = new HashSet<String>();
       if (!isAttributeTypeValid(attributeName)) return items;
       DynamicAttributeManager dam = getAttributeManager(attributeName);
@@ -804,11 +791,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       }
    }
 
-   public int getFactoryId() {
-      checkDeleted();
-      return parentFactory.getFactoryId();
-   }
-
    public IArtifactFactory getFactory() {
       return parentFactory;
    }
@@ -818,7 +800,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * ArtifactPersistenceManager.
     */
    public void setNotDirty() {
-      checkDeleted();
       dirty = false;
 
       if (attributeManagers != null) {
@@ -857,8 +838,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public boolean isDirty(boolean includeLinks) throws SQLException {
-      checkDeleted();
-
       boolean dirtyVal = dirty || anAttributeIsDirty();
       if (includeLinks) {
          checkLinkManager(false);
@@ -886,7 +865,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    protected void setAttributeManagers(Collection<DynamicAttributeManager> attributes) {
-      checkDeleted();
       this.attributeManagers = attributes;
    }
 
@@ -898,8 +876,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws IllegalStateException if the artifact is deleted
     */
    public void revert() throws SQLException {
-      checkDeleted();
-
       if (!isInDb()) return;
 
       acquireAttributes(true);
@@ -934,7 +910,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public void persist(boolean recurse, boolean persistAttributes) throws SQLException {
-      checkDeleted();
       if (artifactManager == null) {
          throw new IllegalStateException("The object \"" + this + "\" does not have an associated persistence manager.");
       }
@@ -950,7 +925,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @return <code>Collection</code> of <code>Artifact</code>'s that match.
     */
    public Collection<Artifact> getDescendants(String humanReadableId, boolean caseSensitive) {
-      checkDeleted();
       Collection<Artifact> descendants = new LinkedList<Artifact>();
 
       try {
@@ -972,7 +946,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * Returns all of the descendants through the primary decomposition tree that are already loaded.
     */
    public Collection<Artifact> getLoadedDescendants() {
-      checkDeleted();
       Collection<Artifact> descendants = new LinkedList<Artifact>();
 
       try {
@@ -1031,8 +1004,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public void delete() throws Exception {
-      checkDeleted();
-
       artifactManager.deleteArtifact(this);
    }
 
@@ -1042,8 +1013,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public void purge() throws SQLException {
-      checkDeleted();
-
       artifactManager.purgeArtifact(this);
    }
 
@@ -1051,16 +1020,20 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return deleted;
    }
 
-   protected void setDeleted() {
-      checkDeleted();
+   protected void setDeleted(int deletionTransactionId) {
+      this.deletionTransactionId = deletionTransactionId;
       if (isInDb()) {
          ArtifactCache.getInstance().deCache(this);
       }
       this.deleted = true;
    }
 
-   protected void checkDeleted() {
-      if (deleted && !deleteCheckOveride) throw new IllegalStateException("This artifact has been deleted");
+   /**
+    * use setDeleted(int deletionTransactionId) instead
+    */
+   @Deprecated
+   protected void setDeleted() {
+      setDeleted(-1);
    }
 
    public void setDirty() {
@@ -1593,13 +1566,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    public int getDeletionTransactionId() throws SQLException {
-      if (deletionTransactionId == 0) {
-         if (getPersistenceMemo() == null || getPersistenceMemo().getTransactionId().isHead()) {
-            deletionTransactionId = -1;
-         } else {
-            deletionTransactionId = artifactManager.getDeletionTransactionId(getArtId(), getBranch().getBranchId());
-         }
-      }
       return deletionTransactionId;
    }
 

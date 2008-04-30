@@ -156,7 +156,7 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * @return <b>true</b> if and only if this descriptor will give you the same type of artifact.
     */
    public boolean canProduceArtifact(Artifact artifact) {
-      return artifact.getArtTypeId() == artTypeId && artifact.getFactoryId() == factory.getFactoryId();
+      return artifact.getArtTypeId() == artTypeId && artifact.getFactory().getFactoryId() == factory.getFactoryId();
    }
 
    public Image getImage() {

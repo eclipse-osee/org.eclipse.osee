@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Ryan D. Brooks
@@ -30,7 +30,7 @@ public class HistoricalArtifactSearchQuery extends AbstractArtifactSearchQuery {
     */
    @Override
    public Collection<Artifact> getArtifacts() throws SQLException {
-      return ArtifactPersistenceManager.getInstance().getHistoricalArtifactsFromAttribute(attributePattern);
+      return ArtifactQuery.getAtrifactsFromHistoricalAttributeValue(attributePattern);
    }
 
    public String getCriteriaLabel() {
