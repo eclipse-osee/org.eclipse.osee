@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -25,11 +26,12 @@ import org.eclipse.osee.framework.resource.provider.attribute.internal.Utils;
  */
 public class AttributeProvider implements IResourceProvider {
 
+private static final String PROP_BASE_PATH = "org.eclipse.osee.framework.resource.provider.attribute.basepath";
    private static final String SUPPORTED_PROTOCOL = "attr";
    private static String BASE_PATH = null;
 
    public AttributeProvider() {
-      // TODO: Universal way of getting base path
+	   BASE_PATH = System.getProperty(PROP_BASE_PATH);
       if (BASE_PATH == null) {
          String userHome = System.getProperty("user.home");
          if (userHome != null && userHome.length() > 0) {
