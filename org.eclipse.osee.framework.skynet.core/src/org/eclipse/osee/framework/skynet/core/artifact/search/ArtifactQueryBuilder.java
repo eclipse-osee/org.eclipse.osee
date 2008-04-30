@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -33,7 +34,7 @@ public class ArtifactQueryBuilder {
    private final List<Object> dataList = new ArrayList<Object>();
    private AbstractArtifactSearchCriteria[] criteria;
    private final Branch branch;
-   private int artId;
+   private List<Integer> artifactIds;
    private String guid;
    private String hrid;
    private ArtifactSubtypeDescriptor artifactType;
@@ -45,7 +46,18 @@ public class ArtifactQueryBuilder {
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
    public ArtifactQueryBuilder(int artId, Branch branch, boolean allowDeleted) {
-      this(artId, null, null, branch, allowDeleted);
+      this(makeSingleList(artId), null, null, branch, allowDeleted);
+   }
+
+   /**
+    * search for artifacts with the given ids
+    * 
+    * @param artifactIds list of artifact ids
+    * @param branch
+    * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
+    */
+   public ArtifactQueryBuilder(List<Integer> artifactIds, Branch branch, boolean allowDeleted) {
+      this(artifactIds, null, null, branch, allowDeleted);
    }
 
    public ArtifactQueryBuilder(String guidOrHrid, Branch branch) {
@@ -53,7 +65,7 @@ public class ArtifactQueryBuilder {
    }
 
    public ArtifactQueryBuilder(String guidOrHrid, Branch branch, boolean allowDeleted) {
-      this(0, ensureValid(guidOrHrid), null, branch, allowDeleted);
+      this(null, ensureValid(guidOrHrid), null, branch, allowDeleted);
    }
 
    private static String ensureValid(String str) {
@@ -63,23 +75,29 @@ public class ArtifactQueryBuilder {
       return str;
    }
 
+   private static List<Integer> makeSingleList(int artId) {
+      List<Integer> artifactIds = new ArrayList<Integer>(1);
+      artifactIds.add(artId);
+      return artifactIds;
+   }
+
    public ArtifactQueryBuilder(Branch branch, AbstractArtifactSearchCriteria... criteria) {
-      this(0, null, null, branch, false, criteria);
+      this(null, null, null, branch, false, criteria);
    }
 
    public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch) {
-      this(0, null, artifactType, branch, false);
+      this(null, null, artifactType, branch, false);
    }
 
    public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch, AbstractArtifactSearchCriteria... criteria) {
-      this(0, null, artifactType, branch, false, criteria);
+      this(null, null, artifactType, branch, false, criteria);
    }
 
-   private ArtifactQueryBuilder(int artId, String guidOrHrid, ArtifactSubtypeDescriptor artifactType, Branch branch, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(List<Integer> artifactIds, String guidOrHrid, ArtifactSubtypeDescriptor artifactType, Branch branch, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
       this.artifactType = artifactType;
       this.branch = branch;
       this.criteria = criteria;
-      this.artId = artId;
+      this.artifactIds = artifactIds;
       this.allowDeleted = allowDeleted;
       if (guidOrHrid != null) {
          if (GUID.isValid(guidOrHrid)) {
@@ -156,9 +174,13 @@ public class ArtifactQueryBuilder {
          sql.append("art1.guid=? AND ");
          addParameter(SQL3DataType.VARCHAR, guid);
       }
-      if (artId != 0) {
-         sql.append("art1.art_id=? AND ");
-         addParameter(SQL3DataType.INTEGER, artId);
+      if (artifactIds != null) {
+         if (artifactIds.size() == 1) {
+            sql.append("art1.art_id=? AND ");
+            addParameter(SQL3DataType.INTEGER, artifactIds.get(0));
+         } else {
+            sql.append("art1.art_id IN " + Collections.toString(",", artifactIds) + " AND ");
+         }
       }
       if (artifactType != null) {
          sql.append("art1.art_type_id=? AND ");

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -67,6 +68,10 @@ public class ArtifactQuery {
     */
    public static Artifact getArtifactFromId(int artId, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return getArtifactFromId(artId, branch, false);
+   }
+
+   public static Collection<Artifact> getArtifactsFromIds(List<Integer> artifactIds, Branch branch) throws SQLException {
+      return new ArtifactQueryBuilder(artifactIds, branch, false).getArtifacts();
    }
 
    /**

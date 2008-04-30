@@ -295,7 +295,7 @@
 	<Table name="OSEE_DEFINE_TXS" schema="OSEE">
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
-		<Column id="TX_TYPE" defaultValue="not null" type="INTEGER" />
+		<Column id="MOD_TYPE" defaultValue="not null" type="INTEGER" />
 		<Column id="TX_CURRENT" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_TXS_G_TX_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID, TRANSACTION_ID"/>
 		<Constraint schema="OSEE" id="OSEE_TRANSACTION_ID_FK" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
@@ -308,15 +308,11 @@
 		<Index id="OSEE_TXS_G_IDX">
 			<AppliesTo id="GAMMA_ID" />
 		</Index>
-		<Index id="OSEE_TXS_T_IDX">
-			<AppliesTo id="TX_TYPE" />
+		<Index id="OSEE_TXS_M_IDX">
+			<AppliesTo id="MOD_TYPE" />
 		</Index>
 		<Index id="OSEE_TXS_C_IDX">
 			<AppliesTo id="TX_CURRENT" />
-		</Index>
-		<Index id="OSEE_TXS_C_T_IDX">
-			<AppliesTo id="TX_CURRENT" />
-			<AppliesTo id="TX_TYPE" />
 		</Index>
 		<Index id="OSEE_TXS_TX_IDX" >
 			<AppliesTo id="TRANSACTION_ID" />
@@ -325,6 +321,7 @@
 
 	<Table name="OSEE_DEFINE_TX_DETAILS" schema="OSEE">
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="TX_TYPE" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="OSEE_COMMENT" limits="1000" type="VARCHAR" />
 		<Column id="TIME" defaultValue="not null" type="TIMESTAMP"/>
@@ -344,6 +341,9 @@
 		</Index>
 		<Index id="OSEE_TX_DETAILS_B_IDX">
 			<AppliesTo id="BRANCH_ID" />
+		</Index>
+		<Index id="OSEE_TX_T_IDX">
+			<AppliesTo id="TX_TYPE" />
 		</Index>
 	</Table>
 	
