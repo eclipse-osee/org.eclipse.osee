@@ -385,7 +385,7 @@ public final class ConnectionHandler {
 
    // TODO this used to do transactions, check calling methods to ensure they get what they want
    public static void runPreparedUpdate(String query, List<Object[]> datas) throws SQLException {
-      runBatchablePreparedUpdate(query, false, datas);
+      runBatchablePreparedUpdate(query, true, datas);
    }
 
    public static void runBatchablePreparedUpdate(String query, boolean useBatching, List<Object[]> datas) throws SQLException {
