@@ -20,18 +20,12 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * HelloWorldAction is a simple example of using an action set to extend the Eclipse Workbench with a menu and toolbar
- * action that prints the "Hello World" message.
- * 
  * @author Jeff C. Phillips
  */
 public class AdminAction implements IWorkbenchWindowActionDelegate {
 
    IWorkbenchWindow activeWindow = null;
 
-   /**
-    * Run the action. Display the Hello World message
-    */
    public void run(IAction proxyAction) {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       try {
