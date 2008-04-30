@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="OsgiTestRunner">
+	<implementation class="org.eclipse.osee.framework.osgitestrunner.JunitTestRunner"/>
+	<service>
+		<provide interface="org.eclipse.osgi.framework.console.CommandProvider"/>
+	</service>
+	<reference name="TestCollector"
+		interface="junit.framework.Test"
+		bind="addTest"
+		unbind="removeTest"
+		cardinality="0..n"
+		policy="dynamic"/>
+</component>

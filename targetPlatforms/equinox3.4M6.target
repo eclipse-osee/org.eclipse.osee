@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.2"?>
+
+<target name="OSGI">
+
+   <location path="${workspace_loc}/targetPlatforms/equinox3.4M6/eclipse"/>
+
+   <content useAllPlugins="true">
+      <plugins>
+      </plugins>
+      <features>
+      </features>
+      <extraLocations>
+         <location path="${workspace_loc}/targetPlatforms/junitplugins"/>
+      </extraLocations>
+   </content>
+
+</target>

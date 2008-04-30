@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="attribute.resource.provider">
+	<implementation class="org.eclipse.osee.framework.resource.provider.attribute.AttributeProvider"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.resource.management.IResourceProvider"/>
+	</service>	
+</component>

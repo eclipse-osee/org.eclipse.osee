@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.equinox"
+      label="%featureName"
+      version="3.4.0.v20080222-7s7SEQdETu63797eQGGyGE"
+      provider-name="%providerName">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <plugin
+         id="javax.servlet.jsp"
+         download-size="0"
+         install-size="0"
+         version="2.0.0.v200803061910"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.jasper"
+         download-size="0"
+         install-size="0"
+         version="5.5.17.v200803061811"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.equinox.cm"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v20080310"
+         unpack="false"/>  
+
+   <plugin
+         id="org.apache.commons.el"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v200803061811"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.common"
+         download-size="0"
+         install-size="0"
+         version="3.4.0.v20080320"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.device"
+         download-size="0"
+         install-size="0"
+         version="1.0.1.v20080303"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.event"
+         download-size="0"
+         install-size="0"
+         version="1.1.0.v20080225"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.http"
+         download-size="0"
+         install-size="0"
+         version="1.0.200.v20071015"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.http.registry"
+         download-size="0"
+         install-size="0"
+         version="1.0.100.v20080303"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.jsp.jasper"
+         download-size="0"
+         install-size="0"
+         version="1.0.100.v20080201"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.jsp.jasper.registry"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v20080303"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.log"
+         download-size="0"
+         install-size="0"
+         version="1.1.0.v20080303"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.metatype"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v20070827"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.preferences"
+         download-size="0"
+         install-size="0"
+         version="3.2.200.v20080201"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.registry"
+         download-size="0"
+         install-size="0"
+         version="3.4.0.v20080316"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.useradmin"
+         download-size="0"
+         install-size="0"
+         version="1.1.0.v20080225"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osgi"
+         download-size="0"
+         install-size="0"
+         version="3.4.0.v20080326"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osgi.services"
+         download-size="0"
+         install-size="0"
+         version="3.1.200.v20071203"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osgi.util"
+         download-size="0"
+         install-size="0"
+         version="3.1.300.v20080303"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.app"
+         download-size="0"
+         install-size="0"
+         version="1.0.100.v20080316"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.equinox.ds"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v20080310"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.http"
+         download-size="0"
+         install-size="0"
+         version="1.0.200.v20071015"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.equinox.ip"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v20080218"
+         unpack="false"/>    
+
+   <plugin
+         id="org.eclipse.equinox.launcher"
+         download-size="0"
+         install-size="0"
+         version="1.0.100.v20080303"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.http.jetty"
+         download-size="0"
+         install-size="0"
+         version="1.0.100.v20080303"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.http.servlet"
+         download-size="0"
+         install-size="0"
+         version="1.0.100.v20080201"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.http.servletbridge"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v20070827"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.equinox.io"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v20080218"
+         unpack="false"/>    
+
+   <plugin
+         id="org.eclipse.equinox.servletbridge"
+         download-size="0"
+         install-size="0"
+         version="1.0.100.v20070913"
+         unpack="false"/>
+
+   <plugin
+         id="javax.servlet"
+         download-size="0"
+         install-size="0"
+         version="2.4.0.v200803061910"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.equinox.util"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.v20080303"
+         unpack="false"/>
+         
+   <plugin
+         id="org.eclipse.equinox.wireadmin"
+         download-size="0"
+         install-size="0"
+         version="0.1.0.v20080218"
+         unpack="false"/>    
+
+   <plugin
+         id="org.apache.commons.logging"
+         download-size="0"
+         install-size="0"
+         version="1.0.4.v200803061811"
+         unpack="false"/>
+
+   <plugin
+         id="org.mortbay.jetty"
+         download-size="0"
+         install-size="0"
+         version="5.1.11.v200803061811"
+         unpack="false"/>
+
+</feature>

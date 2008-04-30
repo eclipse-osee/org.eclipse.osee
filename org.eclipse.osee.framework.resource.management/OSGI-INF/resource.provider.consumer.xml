@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="resource.manager">
+	<implementation class="org.eclipse.osee.framework.resource.management.internal.ResourceManager"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.resource.management.IResourceManager"/>
+	</service>
+	<reference name="resource.provider"
+		interface="org.eclipse.osee.framework.resource.management.IResourceProvider"
+		bind="addResourceProvider"
+		unbind="removeResourceProvider"
+		cardinality="0..n"
+		policy="dynamic"/>
+</component>

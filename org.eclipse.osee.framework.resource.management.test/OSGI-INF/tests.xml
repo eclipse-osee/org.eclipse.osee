@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="resource.management.tests">
+	<implementation class="org.eclipse.osee.framework.resource.management.test.AllResourceManagementTests"/>
+	<service>
+		<provide interface="junit.framework.Test"/>
+	</service>	
+</component>

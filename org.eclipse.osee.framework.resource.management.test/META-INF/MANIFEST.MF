@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests Plug-in
+Bundle-SymbolicName: org.eclipse.osee.framework.resource.management.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.osee.framework.resource.management.test.Activator
+Bundle-Vendor: Boeing
+Eclipse-LazyStart: true
+Service-Component: OSGI-INF/tests.xml
+Import-Package: junit.framework;version="3.8.2",
+ org.eclipse.osee.framework.resource.management,
+ org.eclipse.osee.framework.resource.management.exception,
+ org.osgi.framework;version="1.3.0",
+ org.osgi.util.tracker;version="1.3.3"

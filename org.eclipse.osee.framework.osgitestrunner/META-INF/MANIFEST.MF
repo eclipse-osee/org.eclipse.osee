@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Osgitest Plug-in
+Bundle-SymbolicName: org.eclipse.osee.framework.osgitest
+Bundle-Version: 1.0.0
+Bundle-Activator: org.eclipse.osee.framework.osgitestrunner.Activator
+Service-Component: OSGI-INF/testRunner.xml
+Import-Package: junit.framework;version="3.8.2",
+ junit.textui;version="3.8.2",
+ org.eclipse.osgi.framework.console;version="1.0.0",
+ org.osgi.framework;version="1.3.0"
+Eclipse-LazyStart: true

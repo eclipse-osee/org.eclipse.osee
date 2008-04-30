@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.2"?>
+
+<target name="OSGI SDK">
+
+   <location path="${workspace_loc}/targetPlatforms/equinox3.4M6aSDK/eclipse"/>
+
+   <content useAllPlugins="true">
+      <plugins>
+         <plugin id="javax.servlet"/>
+         <plugin id="javax.servlet.jsp"/>
+         <plugin id="org.apache.commons.el"/>
+         <plugin id="org.apache.commons.logging"/>
+         <plugin id="org.apache.jasper"/>
+         <plugin id="org.eclipse.equinox.app"/>
+         <plugin id="org.eclipse.equinox.app.source"/>
+         <plugin id="org.eclipse.equinox.cm"/>
+         <plugin id="org.eclipse.equinox.cm.source"/>
+         <plugin id="org.eclipse.equinox.common"/>
+         <plugin id="org.eclipse.equinox.common.source"/>
+         <plugin id="org.eclipse.equinox.device"/>
+         <plugin id="org.eclipse.equinox.device.source"/>
+         <plugin id="org.eclipse.equinox.ds"/>
+         <plugin id="org.eclipse.equinox.ds.source"/>
+         <plugin id="org.eclipse.equinox.event"/>
+         <plugin id="org.eclipse.equinox.event.source"/>
+         <plugin id="org.eclipse.equinox.http"/>
+         <plugin id="org.eclipse.equinox.http.jetty"/>
+         <plugin id="org.eclipse.equinox.http.jetty.source"/>
+         <plugin id="org.eclipse.equinox.http.registry"/>
+         <plugin id="org.eclipse.equinox.http.registry.source"/>
+         <plugin id="org.eclipse.equinox.http.servlet"/>
+         <plugin id="org.eclipse.equinox.http.servlet.source"/>
+         <plugin id="org.eclipse.equinox.http.servletbridge"/>
+         <plugin id="org.eclipse.equinox.http.servletbridge.source"/>
+         <plugin id="org.eclipse.equinox.http.source"/>
+         <plugin id="org.eclipse.equinox.io"/>
+         <plugin id="org.eclipse.equinox.io.source"/>
+         <plugin id="org.eclipse.equinox.ip"/>
+         <plugin id="org.eclipse.equinox.ip.source"/>
+         <plugin id="org.eclipse.equinox.jsp.jasper"/>
+         <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
+         <plugin id="org.eclipse.equinox.jsp.jasper.registry.source"/>
+         <plugin id="org.eclipse.equinox.jsp.jasper.source"/>
+         <plugin id="org.eclipse.equinox.launcher"/>
+         <plugin id="org.eclipse.equinox.launcher.source"/>
+         <plugin id="org.eclipse.equinox.log"/>
+         <plugin id="org.eclipse.equinox.log.source"/>
+         <plugin id="org.eclipse.equinox.metatype"/>
+         <plugin id="org.eclipse.equinox.metatype.source"/>
+         <plugin id="org.eclipse.equinox.preferences"/>
+         <plugin id="org.eclipse.equinox.preferences.source"/>
+         <plugin id="org.eclipse.equinox.registry"/>
+         <plugin id="org.eclipse.equinox.registry.source"/>
+         <plugin id="org.eclipse.equinox.servletbridge"/>
+         <plugin id="org.eclipse.equinox.servletbridge.source"/>
+         <plugin id="org.eclipse.equinox.useradmin"/>
+         <plugin id="org.eclipse.equinox.useradmin.source"/>
+         <plugin id="org.eclipse.equinox.util"/>
+         <plugin id="org.eclipse.equinox.util.source"/>
+         <plugin id="org.eclipse.equinox.wireadmin"/>
+         <plugin id="org.eclipse.equinox.wireadmin.source"/>
+         <plugin id="org.eclipse.osgi"/>
+         <plugin id="org.eclipse.osgi.services"/>
+         <plugin id="org.eclipse.osgi.services.source"/>
+         <plugin id="org.eclipse.osgi.source"/>
+         <plugin id="org.eclipse.osgi.util"/>
+         <plugin id="org.eclipse.osgi.util.source"/>
+         <plugin id="org.junit"/>
+         <plugin id="org.mortbay.jetty"/>
+      </plugins>
+      <features>
+         <feature id="org.eclipse.equinox"/>
+         <feature id="org.eclipse.equinox.source"/>
+      </features>
+      <extraLocations>
+         <location path="${workspace_loc}/targetPlatforms/junitplugins"/>
+      </extraLocations>
+   </content>
+
+</target>

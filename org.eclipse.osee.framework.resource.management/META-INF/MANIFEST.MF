@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Management Plug-in (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.framework.resource.management
+Bundle-Version: 0.2.0.qualifier
+Bundle-Activator: org.eclipse.osee.framework.resource.management.Activator
+Import-Package: org.eclipse.osgi.util;version="1.1.0",
+ org.osgi.framework;version="1.3.0",
+ org.osgi.service.log;version="1.3",
+ org.osgi.util.tracker;version="1.3.1"
+Eclipse-LazyStart: true
+Bundle-Vendor: Eclipse.org
+Service-Component: OSGI-INF/resource.provider.consumer.xml, OSGI-INF/resource.locator.consumer.xml
+Export-Package: org.eclipse.osee.framework.resource.management,
+ org.eclipse.osee.framework.resource.management.exception
+Require-Bundle: org.eclipse.equinox.ds

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<component name="resource.locator.manager">
+	<implementation class="org.eclipse.osee.framework.resource.management.internal.ResourceLocatorManager"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.resource.management.IResourceLocatorManager"/>
+	</service>
+	<reference name="resource.locator"
+		interface="org.eclipse.osee.framework.resource.management.IResourceLocatorProvider"
+		bind="addResourceLocatorProvider"
+		unbind="removeResourceLocatorProvider"
+		cardinality="0..n"
+		policy="dynamic"/>
+</component>
