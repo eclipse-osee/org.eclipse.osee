@@ -59,7 +59,7 @@
 			connectsWith="postgresql"/>
 		<Server id="oracleTest2" dbInfo="LbaOracleServerTest2"
 			hostAddress="sun203.msc.az.boeing.com" port="1521"
-			connectsWith="OracleClient" isDefault="true"/>
+			connectsWith="OracleClient"/>
 	</AvailableDbServices>
 
 	<!-- This is here temporarily until we figure out how to tell the clients what to use -->
