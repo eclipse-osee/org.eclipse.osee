@@ -89,7 +89,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
       private void getMatrixItems() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
          Collection<Artifact> srchArts =
-               ArtifactQuery.getArtifactsFromName(artifactName,
+               ArtifactQuery.getArtifactsFromName("%" + artifactName + "%",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
          if (srchArts.size() == 0) return;
          int x = 1;
