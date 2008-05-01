@@ -91,10 +91,10 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
  */
 public class RevisionManager implements PersistenceManager, IEventReceiver {
    private static final String ATTRIBUTE_CHANGES =
-         "SELECT t9.value as art_name, t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value, t3.content, t1.tx_type, t8.art_type_id FROM osee_define_txs t1, osee_define_attribute t3, osee_define_artifact t8, osee_define_attribute t9, osee_Define_attribute_type t10, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6  WHERE  t4.tx_type <> -4 and t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ?   GROUP BY t6.attr_id   ORDER BY transaction_id, attr_id)t7 WHERE t8.art_id = t9.art_id and t9.attr_type_id = t10.attr_type_id and t10.name = 'Name' and t8.art_id = t3.art_id and t1.transaction_id = t7.transaction_id AND t7.attr_id = t3.attr_id and t3.gamma_id = t1.gamma_id order by t3.art_id, t3.attr_id";
+         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value, t3.content, t1.tx_type, t8.art_type_id FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
    private static final String REL_CHANGES =
-         "SELECT tx1.tx_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order_value, rl3.b_order_value, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.rel_link_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_rel_link t6  WHERE  t4.tx_type <> -4 and t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? GROUP BY t6.rel_link_id ORDER BY transaction_id, rel_link_id)t4 where td2.branch_id = ? AND tx1.transaction_id = td2.transaction_id AND td2.transaction_id = t4.transaction_id and tx1.gamma_id = rl3.gamma_id AND t4.rel_link_id = rl3.rel_link_id";
+         "SELECT tx1.tx_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order_value, rl3.b_order_value, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 where tx1.tx_current = 1 AND td2.tx_type = 0 AND td2.branch_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
 
    private static final String ARTIFACT_DELTED_CHANGES =
          "select af4.art_id, af4.art_type_id, av3.gamma_id, tx1.tx_type FROM osee_Define_txs tx1, osee_Define_tx_details td2, osee_Define_artifact_version av3, osee_Define_artifact af4 WHERE td2.branch_id = ? AND td2.transaction_id = tx1.transaction_id AND tx1.gamma_id = av3.gamma_id AND tx1.tx_type = -3 AND av3.art_id = af4.art_id";
@@ -386,10 +386,12 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       Set<Change> changeItemsNeedName = new HashSet<Change>();
       Set<Integer> artIds = new HashSet<Integer>();
 
-      loadAttributeChanges(sourceBranch, changes);
+      loadAttributeChanges(sourceBranch, artIds, changeItemsNeedName);
+      System.out.println("atts");
       loadRelationChanges(sourceBranch, artIds, changeItemsNeedName);
+      System.out.println("rels");
       loadDeletedArtifactChanges(sourceBranch, artIds, changeItemsNeedName);
-
+      System.out.println("deletes");
       setArtifactNames(sourceBranch, changeItemsNeedName, changes, artIds);
 
       return changes;
@@ -426,8 +428,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                RelationChanged relationChanged = (RelationChanged) change;
                relationChanged.setArtName(artIdsToName.get(relationChanged.getArtId()));
                relationChanged.setBArtName(artIdsToName.get(relationChanged.getBArtId()));
-            }
-            if (change instanceof ArtifactChanged) {
+            } else {
                change.setArtName(artIdsToName.get(change.getArtId()));
             }
          }
@@ -473,8 +474,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       Pair<TransactionId, TransactionId> branchTransactions = transactionIdManager.getStartEndPoint(sourceBranch);
       try {
          connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(REL_CHANGES, SQL3DataType.INTEGER, sourceBranch.getBranchId(),
-                     SQL3DataType.INTEGER, sourceBranch.getBranchId());
+               ConnectionHandler.runPreparedQuery(REL_CHANGES, SQL3DataType.INTEGER, sourceBranch.getBranchId());
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
          while (resultSet.next()) {
@@ -500,7 +500,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param changes
     * @throws SQLExceptio
     */
-   private void loadAttributeChanges(Branch sourceBranch, ArrayList<Change> changes) throws SQLException {
+   private void loadAttributeChanges(Branch sourceBranch, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
          connectionHandlerStatement =
@@ -526,12 +526,12 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             if (tempAttrId != attrId) {
                tempAttrId = attrId;
                attributeChanged =
-                     new AttributeChanged(artTypeId, resultSet.getString("art_name"), sourceGamma, artId,
-                           sourceHeadTransactionId, sourceEndTransactionId,
-                           TransactionType.getTransactionType(txTypeId), ChangeType.OUTGOING,
+                     new AttributeChanged(artTypeId, "", sourceGamma, artId, sourceHeadTransactionId,
+                           sourceEndTransactionId, TransactionType.getTransactionType(txTypeId), ChangeType.OUTGOING,
                            resultSet.getString("value"), resultSet.getBinaryStream("content"), attrId, attrTypeId);
 
-               changes.add(attributeChanged);
+               changeItemsNeedName.add(attributeChanged);
+               artIds.add(artId);
             }
          }
       } finally {

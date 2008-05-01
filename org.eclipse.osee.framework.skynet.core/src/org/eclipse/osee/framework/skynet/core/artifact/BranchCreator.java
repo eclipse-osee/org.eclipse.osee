@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
@@ -157,10 +158,11 @@ public class BranchCreator implements PersistenceManager {
       int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
       String query =
             "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
-                  "time", "author");
+                  "time", "author", "tx_type");
       ConnectionHandler.runPreparedUpdate(query, SQL3DataType.INTEGER, childBranch.getBranchId(), SQL3DataType.INTEGER,
             newTransactionNumber, SQL3DataType.VARCHAR, childBranch.getCreationComment(), SQL3DataType.TIMESTAMP,
-            childBranch.getCreationDate(), SQL3DataType.INTEGER, childBranch.getAuthorId());
+            childBranch.getCreationDate(), SQL3DataType.INTEGER, childBranch.getAuthorId(), SQL3DataType.INTEGER,
+            TransactionDetailsType.Baselined.getId());
 
       return new Pair<Branch, Integer>(childBranch, newTransactionNumber);
    }
@@ -195,9 +197,9 @@ public class BranchCreator implements PersistenceManager {
    public static void branchWithHistory(Branch newBranch, TransactionId parentTransactionId, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException {
       HashCollection<Integer, Integer> historyMap =
             new HashCollection<Integer /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     * parent
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     * transactoin_id
-                                                                                                                                                                                                                                                                                                                                                                                                                                                     */, Integer /* gamma_id */>(
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * parent
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * transactoin_id
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */, Integer /* gamma_id */>(
                   false, HashSet.class);
       ConnectionHandlerStatement chStmt = null;
       try {

@@ -65,7 +65,7 @@ public class SkynetTransaction {
          ArtifactPersistenceManager.getInstance();
    private static final String INSERT_INTO_TRANSACTION_DETAIL_TABLE =
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("transaction_id", TXD_COMMENT, "time", "author",
-               "branch_id");
+               "branch_id", "tx_type");
    private static final String INSERT_INTO_TRANSACTION_TABLE =
          " INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, 1)";
 
@@ -138,7 +138,8 @@ public class SkynetTransaction {
 
       datas.add(new Object[] {SQL3DataType.INTEGER, transactionNumber, SQL3DataType.VARCHAR, getComment(),
             SQL3DataType.TIMESTAMP, GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER, blameArtId,
-            SQL3DataType.INTEGER, branch.getBranchId()});
+            SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
+            TransactionDetailsType.NonBaselined.getId()});
       ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_DETAIL_TABLE, datas);
 
       batchToTransactionTable = new LinkedList<Object[]>();

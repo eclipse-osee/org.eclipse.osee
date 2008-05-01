@@ -59,7 +59,6 @@ public class ChangeView extends ViewPart implements IActionable {
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
                   try {
-
                      if (changes == null || changes.length == 0) {
                         AWorkbench.popup("Information", "There are no changes on this branch.");
                      } else {
