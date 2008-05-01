@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch.SearchOperator;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
@@ -463,8 +462,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + BranchPersistenceManager.getInstance().getDefaultBranch().getBranchName(),
             false);
       ArtifactTypeNameSearch srch =
-            new ArtifactTypeNameSearch(artifactType, artifactNameStr,
-                  BranchPersistenceManager.getInstance().getDefaultBranch(), SearchOperator.LIKE);
+            new ArtifactTypeNameSearch(artifactType, "%" + artifactNameStr + "%",
+                  BranchPersistenceManager.getInstance().getDefaultBranch());
       Set<Artifact> arts = srch.getArtifacts(Artifact.class);
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Found " + arts.size() + " Artifacts", false);
       return arts;
@@ -476,7 +475,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.", false);
       ArtifactTypeNameSearch srch =
             new ArtifactTypeNameSearch(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,
-                  BranchPersistenceManager.getInstance().getDefaultBranch(), SearchOperator.EQUAL);
+                  BranchPersistenceManager.getInstance().getDefaultBranch());
       return srch.getArtifacts(Artifact.class).iterator().next();
    }
 
