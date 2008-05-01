@@ -138,8 +138,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
             SawBuilds.SAW_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     VersionArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
          ver.setDescriptiveName(verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleBooleanAttributeValue(
@@ -153,8 +152,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
             CISBuilds.CIS_Bld_3.name()}) {
          VersionArtifact ver =
                (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
-                     BranchPersistenceManager.getInstance().getAtsBranch());
+                     VersionArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
          ver.setDescriptiveName(verName);
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleBooleanAttributeValue(

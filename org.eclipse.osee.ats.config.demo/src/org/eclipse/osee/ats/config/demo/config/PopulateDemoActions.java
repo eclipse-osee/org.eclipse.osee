@@ -87,28 +87,25 @@ public class PopulateDemoActions extends XNavigateItemAction {
             Display.getCurrent().getActiveShell(), getName(), getName()))) {
          try {
 
-            setDefaultBranch(BranchPersistenceManager.getInstance().getKeyedBranch(SawBuilds.SAW_Bld_1.name()));
+            setDefaultBranch(BranchPersistenceManager.getKeyedBranch(SawBuilds.SAW_Bld_1.name()));
 
             // Import all requirements on SAW_Bld_1 Branch
             ImportRequirementsTx importTx =
-                  new ImportRequirementsTx(BranchPersistenceManager.getInstance().getAtsBranch(),
-                        !SkynetDbInit.isDbInit());
+                  new ImportRequirementsTx(BranchPersistenceManager.getAtsBranch(), !SkynetDbInit.isDbInit());
             importTx.execute();
 
             sleep(5000);
 
             // Create traceability between System, Subsystem and Software requirements
             CreateTraceabilityTx traceTx =
-                  new CreateTraceabilityTx(BranchPersistenceManager.getInstance().getAtsBranch(),
-                        !SkynetDbInit.isDbInit());
+                  new CreateTraceabilityTx(BranchPersistenceManager.getAtsBranch(), !SkynetDbInit.isDbInit());
             traceTx.execute();
 
             sleep(5000);
 
             // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
             CreateMainWorkingBranchTx saw2BranchTx =
-                  new CreateMainWorkingBranchTx(BranchPersistenceManager.getInstance().getAtsBranch(),
-                        !SkynetDbInit.isDbInit());
+                  new CreateMainWorkingBranchTx(BranchPersistenceManager.getAtsBranch(), !SkynetDbInit.isDbInit());
             saw2BranchTx.execute();
 
             // Create SAW_Bld_2 Actions 
@@ -302,7 +299,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private Branch createChildMainWorkingBranch(String parentBrachName, String childBranchName) throws Exception {
-      Branch parentBranch = BranchPersistenceManager.getInstance().getKeyedBranch(parentBrachName);
+      Branch parentBranch = BranchPersistenceManager.getKeyedBranch(parentBrachName);
 
       Branch childBranch =
             BranchPersistenceManager.getInstance().createWorkingBranch(
@@ -499,7 +496,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class,
             "Importing \"" + rootArtifactName + "\" requirements on branch \"" + buildName + "\"", false);
-      Branch branch = BranchPersistenceManager.getInstance().getKeyedBranch(buildName);
+      Branch branch = BranchPersistenceManager.getKeyedBranch(buildName);
       ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch("Folder", rootArtifactName, branch);
       Artifact systemReq = srch.getSingletonArtifactOrException(Artifact.class);
       File file = OseeAtsConfigDemoPlugin.getInstance().getPluginFile(filename);
@@ -536,7 +533,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                if (versionStr != null && !versionStr.equals("")) {
                   VersionArtifact verArt =
                         ((new ArtifactTypeNameSearch(VersionArtifact.ARTIFACT_NAME, versionStr,
-                              BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(VersionArtifact.class));
+                              BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(VersionArtifact.class));
                   teamWf.relate(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt);
                   teamWf.persist(true);
                }

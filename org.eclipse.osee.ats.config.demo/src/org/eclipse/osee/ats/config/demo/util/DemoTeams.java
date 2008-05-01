@@ -43,7 +43,7 @@ public class DemoTeams {
       if (DatabaseActivator.getInstance().isProductionDb()) return null;
       try {
          return (new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, team.name().replaceAll("_", " "),
-               BranchPersistenceManager.getInstance().getAtsBranch())).getSingletonArtifactOrException(TeamDefinitionArtifact.class);
+               BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(TeamDefinitionArtifact.class);
       } catch (Exception ex) {
          OSEELog.logException(OseeAtsConfigDemoPlugin.class, ex, false);
       }
