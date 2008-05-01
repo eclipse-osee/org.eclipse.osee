@@ -22,8 +22,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch.SearchOperator;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -90,10 +88,9 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       }
 
       private void getMatrixItems() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-         ArtifactTypeNameSearch srch =
-               new ArtifactTypeNameSearch(null, artifactName,
-                     BranchPersistenceManager.getInstance().getDefaultBranch(), SearchOperator.LIKE);
-         Collection<Artifact> srchArts = srch.getArtifacts(Artifact.class);
+         Collection<Artifact> srchArts =
+               ArtifactQuery.getArtifactsFromName(artifactName,
+                     BranchPersistenceManager.getInstance().getDefaultBranch());
          if (srchArts.size() == 0) return;
          int x = 1;
          rd.log("Searching for \"" + artifactName + "\"on current default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch().getBranchName() + "\"");

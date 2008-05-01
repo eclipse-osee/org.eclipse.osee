@@ -196,17 +196,8 @@ public class ArtifactRequest implements IHttpServerRequest {
    }
 
    private Artifact getArtifactBasedOnTransactionNumber(String guid, int transactioNumber) throws Exception {
-      TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-      TransactionId transactionId = null;
-      try {
-         transactionId = transactionIdManager.getPossiblyEditableTransactionIfFromCache(transactioNumber);
-      } catch (Exception ex) {
-         try {
-            Thread.sleep(1000);
-         } catch (Exception ex1) {
-         }
-         transactionId = transactionIdManager.getPossiblyEditableTransactionId(transactioNumber);
-      }
+      TransactionId transactionId =
+            TransactionIdManager.getInstance().getPossiblyEditableTransactionId(transactioNumber);
       return ArtifactPersistenceManager.getInstance().getArtifact(guid, transactionId);
    }
 }

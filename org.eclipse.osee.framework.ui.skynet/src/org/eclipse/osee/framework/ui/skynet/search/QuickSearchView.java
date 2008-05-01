@@ -12,9 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.TagSearch;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.tagging.Tagger;
@@ -251,10 +249,9 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       if (historicalSearch.getSelection()) {
          searchQuery = new HistoricalArtifactSearchQuery(txtSearch.getText().replace('*', '%'));
       } else if (radNameSearch.getSelection()) {
-         filterList.addFilter(new FilterModel(new AttributeValueSearch("Name", txtSearch.getText().replace('*', '%'),
-               Operator.LIKE), "", "", ""), false);
          searchQuery =
-               new FilterArtifactSearchQuery(filterList, BranchPersistenceManager.getInstance().getDefaultBranch());
+               new ArtifactNameSearchQuery(txtSearch.getText().replace('*', '%'),
+                     BranchPersistenceManager.getInstance().getDefaultBranch());
       } else if (radIndexSearch.getSelection()) {
          for (String tag : Tagger.tokenizeAndSplit(txtSearch.getText())) {
             ISearchPrimitive primitive =

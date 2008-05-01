@@ -13,13 +13,10 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -27,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  */
 public class ActiveArtifactTypeSearch {
 
-   private final String artifactType;
+   private final String artifactTypeName;
    private final Active active;
    private final Branch branch;
 
@@ -36,9 +33,9 @@ public class ActiveArtifactTypeSearch {
     * 
     * @param branch TODO
     */
-   public ActiveArtifactTypeSearch(String artifactType, Active active, Branch branch) {
+   public ActiveArtifactTypeSearch(String artifactTypeName, Active active, Branch branch) {
       super();
-      this.artifactType = artifactType;
+      this.artifactTypeName = artifactTypeName;
       this.active = active;
       this.branch = branch;
    }
@@ -46,20 +43,17 @@ public class ActiveArtifactTypeSearch {
    @SuppressWarnings("unchecked")
    public <A extends Artifact> Set<A> getArtifacts(Class<A> clazz) {
       Set<A> results = new HashSet<A>();
-      List<ISearchPrimitive> activeCriteria = new LinkedList<ISearchPrimitive>();
-      activeCriteria.add(new ArtifactTypeSearch(artifactType, Operator.EQUAL));
-      if (active == Active.Active || active == Active.InActive) activeCriteria.add(new AttributeValueSearch(
-            "ats.Active", (active == Active.Active ? "yes" : "no"), Operator.EQUAL));
 
       try {
          Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, branch);
-         for (Artifact art : arts)
+               ArtifactQuery.getArtifactsFromTypeAndAttribute(artifactTypeName, "ats.Active",
+                     active == Active.Active ? "yes" : "no", branch);
+         for (Artifact art : arts) {
             results.add((A) art);
+         }
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }
       return results;
    }
-
 }

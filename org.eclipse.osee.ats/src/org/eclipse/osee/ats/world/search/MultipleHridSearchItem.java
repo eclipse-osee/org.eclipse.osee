@@ -11,9 +11,9 @@
 
 package org.eclipse.osee.ats.world.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -24,11 +24,8 @@ import org.eclipse.osee.ats.util.LegacyPCRActions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactGuidSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactHridSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -46,15 +43,14 @@ public class MultipleHridSearchItem extends WorldSearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
-
-      List<ISearchPrimitive> idCriteria = new LinkedList<ISearchPrimitive>();
+      List<String> ids = new ArrayList<String>();
       Set<String> nonHridGuids = new HashSet<String>();
       for (String str : enteredIds.split(",")) {
          str = str.replaceAll("\\s+", "");
          if (str.length() == 5)
-            idCriteria.add(new ArtifactHridSearch(str));
+            ids.add(str);
          else if (GUID.isValid(str))
-            idCriteria.add(new ArtifactGuidSearch(str));
+            ids.add(str);
          else {
             nonHridGuids.add(str);
          }
@@ -69,7 +65,6 @@ public class MultipleHridSearchItem extends WorldSearchItem {
          Collection<ActionArtifact> actionArts =
                LegacyPCRActions.getTeamsActionArtifacts(nonHridGuids, (Collection<TeamDefinitionArtifact>) null);
          if (actionArts.size() == 0) {
-            // Attempt to open off legacy PCR field
             OSEELog.logException(AtsPlugin.class,
                   "Invalid HRID/Guid/Legacy PCR Id(s): " + Lib.getCommaString(nonHridGuids), null, true);
          } else {
@@ -79,10 +74,8 @@ public class MultipleHridSearchItem extends WorldSearchItem {
          }
       }
 
-      if (idCriteria.size() > 0) {
-         Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(idCriteria, false,
-                     BranchPersistenceManager.getAtsBranch());
+      if (ids.size() > 0) {
+         Collection<Artifact> arts = ArtifactQuery.getArtifactsFromIds(ids, BranchPersistenceManager.getAtsBranch());
          if (isCancelled()) return EMPTY_SET;
          if (arts != null) resultArts.addAll(arts);
       }

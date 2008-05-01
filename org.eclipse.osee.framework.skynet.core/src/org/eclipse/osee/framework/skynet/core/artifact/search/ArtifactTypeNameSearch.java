@@ -13,13 +13,10 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
@@ -27,13 +24,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  */
 public class ArtifactTypeNameSearch {
 
-   private final String artifactType;
+   private final String artifactTypeName;
    private final String artifactName;
    private final Branch branch;
-   private final SearchOperator operator;
-   public static enum SearchOperator {
-      LIKE, EQUAL
-   };
 
    /**
     * Search for given artifactType with active attribute set as specified
@@ -43,37 +36,17 @@ public class ArtifactTypeNameSearch {
     * @param branch branch to search on
     */
    public ArtifactTypeNameSearch(String artifactType, String artifactName, Branch branch) {
-      this(artifactType, artifactName, branch, SearchOperator.EQUAL);
-   }
-
-   /**
-    * Search for given artifactType with active attribute set as specified
-    * 
-    * @param artifactType type name or null for all types
-    * @param artifactName string portion of name to search
-    * @param branch branch to search on
-    * @param operator LIKE for portion of string or EQUAL for exact match
-    */
-   public ArtifactTypeNameSearch(String artifactType, String artifactName, Branch branch, SearchOperator operator) {
-      super();
-      this.artifactType = artifactType;
+      this.artifactTypeName = artifactType;
       this.artifactName = artifactName;
       this.branch = branch;
-      this.operator = operator;
    }
 
    @SuppressWarnings("unchecked")
    public <A extends Artifact> Set<A> getArtifacts(Class<A> clazz) {
       Set<A> results = new HashSet<A>();
-      List<ISearchPrimitive> activeCriteria = new LinkedList<ISearchPrimitive>();
-      if (artifactType != null) activeCriteria.add(new ArtifactTypeSearch(artifactType, Operator.EQUAL));
-      if (operator == SearchOperator.EQUAL)
-         activeCriteria.add(new AttributeValueSearch("Name", artifactName, Operator.EQUAL));
-      else
-         activeCriteria.add(new AttributeValueSearch("Name", "%" + artifactName + "%", Operator.LIKE));
+
       try {
-         Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, branch);
+         Collection<Artifact> arts = ArtifactQuery.getArtifactsFromTypeAndName(artifactTypeName, artifactName, branch);
          for (Artifact art : arts)
             results.add((A) art);
       } catch (SQLException ex) {

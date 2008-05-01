@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search.page;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.TreeParent;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeIdSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.ui.skynet.search.page.data.ArtifactTypeNode;
 
@@ -201,9 +199,6 @@ public class OriginalArtifactSearch {
    }
 
    private ISearchPrimitive getSearchPrimative(TreeObject treeObject) {
-      if (treeObject instanceof ArtifactTypeNode) {
-         return new ArtifactTypeIdSearch(((ArtifactTypeNode) treeObject).getSubTypeDescriptor().getArtTypeId(), EQUAL);
-      }
       return null;
    }
 

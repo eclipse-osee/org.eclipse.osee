@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch.SearchOperator;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
@@ -152,8 +151,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public static TeamDefinitionArtifact getTopTeamDefinition() throws SQLException {
       return ArtifactStaticIdSearch.getSingletonArtifactOrException(TeamDefinitionArtifact.ARTIFACT_NAME,
-            TOP_TEAM_STATIC_ID, BranchPersistenceManager.getAtsBranch(), SearchOperator.EQUAL,
-            TeamDefinitionArtifact.class);
+            TOP_TEAM_STATIC_ID, BranchPersistenceManager.getAtsBranch(), TeamDefinitionArtifact.class);
    }
 
    public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws SQLException, MultipleAttributesExist {

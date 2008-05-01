@@ -42,10 +42,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnota
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactHridSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeObjectConverter;
@@ -59,7 +55,6 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -191,35 +186,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    public Artifact getFirstArtifact(IRelationEnumeration side) throws SQLException {
       Collection<Artifact> arts = this.getArtifacts(side);
       if (arts.size() > 0) return arts.iterator().next();
-      return null;
-   }
-
-   @SuppressWarnings("unchecked")
-   public <A extends Artifact> Set<A> getArtifactsViaSearch(IRelationEnumeration side, Class<A> clazz) throws SQLException {
-      if (isLinkManagerLoaded()) return getArtifacts(side, clazz);
-      LinkedList<ISearchPrimitive> thisArtCriteria = new LinkedList<ISearchPrimitive>();
-      thisArtCriteria.add(new ArtifactHridSearch(getHumanReadableId()));
-      FromArtifactsSearch thisArtSearch = new FromArtifactsSearch(thisArtCriteria, true);
-
-      LinkedList<ISearchPrimitive> relationCriteria = new LinkedList<ISearchPrimitive>();
-      relationCriteria.add(new InRelationSearch(thisArtSearch, side));
-
-      Set<A> arts = new HashSet<A>();
-      for (Artifact a : ArtifactPersistenceManager.getInstance().getArtifacts(relationCriteria, true, this.getBranch())) {
-         arts.add((A) a);
-      }
-      return arts;
-   }
-
-   @SuppressWarnings("unchecked")
-   public <A extends Artifact> A getFirstArtifactViaSearch(RelationSide side, Class<A> clazz) {
-      try {
-         if (isLinkManagerLoaded()) return (A) getFirstArtifact(side);
-         Set<A> arts = getArtifactsViaSearch(side, clazz);
-         if (arts.size() > 0) return (A) arts.iterator().next();
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
       return null;
    }
 

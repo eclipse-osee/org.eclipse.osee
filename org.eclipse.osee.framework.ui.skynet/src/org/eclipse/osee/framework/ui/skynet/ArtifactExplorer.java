@@ -67,6 +67,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -1299,6 +1300,12 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             explore(previousArtifact);
             return;
          }
+      } catch (ArtifactDoesNotExist ex) {
+         /*
+          * simply means that the previous artifact that was used as the root for the artiactExplorer does not exist
+          * because it was deleted or this workspace was last used with a different branch or database, so let the logic
+          * below get the default hierarchy root artifact
+          */
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }

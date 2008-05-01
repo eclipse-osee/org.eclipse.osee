@@ -27,6 +27,36 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 public class ArtifactQuery {
 
    /**
+    * search for exactly one artifact by one its id - otherwise throw an exception
+    * 
+    * @param artId the id of the desired artifact
+    * @param branch
+    * @return exactly one artifact by one its id - otherwise throw an exception
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist if no artifacts are found
+    * @throws MultipleArtifactsExist if more than one artifact is found
+    */
+   public static Artifact getArtifactFromId(int artId, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      return getArtifactFromId(artId, branch, false);
+   }
+
+   /**
+    * search for exactly one artifact by one its id - otherwise throw an exception
+    * 
+    * @param artId the id of the desired artifact
+    * @param branch
+    * @param allowDeleted whether to return the artifact even if it has been deleted
+    * @return exactly one artifact by one its id - otherwise throw an exception
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist if no artifacts are found
+    * @throws MultipleArtifactsExist if more than one artifact is found
+    */
+   public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      Collection<Artifact> artifacts = new ArtifactQueryBuilder(artId, branch, allowDeleted).getArtifacts();
+      return getSoleArtifact(artifacts, " with id \"" + artId + "\" on branch \"" + branch + "\"");
+   }
+
+   /**
     * search for exactly one artifact by one its guid or human readable id - otherwise throw an exception
     * 
     * @param guidOrHrid either the guid or human readable id of the desired artifact
@@ -58,43 +88,9 @@ public class ArtifactQuery {
    }
 
    /**
-    * search for exactly one artifact by one its id - otherwise throw an exception
-    * 
-    * @param artId the id of the desired artifact
-    * @param branch
-    * @return exactly one artifact by one its id - otherwise throw an exception
-    * @throws SQLException
-    * @throws ArtifactDoesNotExist if no artifacts are found
-    * @throws MultipleArtifactsExist if more than one artifact is found
-    */
-   public static Artifact getArtifactFromId(int artId, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      return getArtifactFromId(artId, branch, false);
-   }
-
-   public static Collection<Artifact> getArtifactsFromIds(List<Integer> artifactIds, Branch branch) throws SQLException {
-      return new ArtifactQueryBuilder(artifactIds, branch, false).getArtifacts();
-   }
-
-   /**
-    * search for exactly one artifact by one its id - otherwise throw an exception
-    * 
-    * @param artId the id of the desired artifact
-    * @param branch
-    * @param allowDeleted whether to return the artifact even if it has been deleted
-    * @return exactly one artifact by one its id - otherwise throw an exception
-    * @throws SQLException
-    * @throws ArtifactDoesNotExist if no artifacts are found
-    * @throws MultipleArtifactsExist if more than one artifact is found
-    */
-   public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      Collection<Artifact> artifacts = new ArtifactQueryBuilder(artId, branch, allowDeleted).getArtifacts();
-      return getSoleArtifact(artifacts, " with id \"" + artId + "\" on branch \"" + branch + "\"");
-   }
-
-   /**
     * search for exactly one artifact based on its type and name - otherwise throw an exception
     * 
-    * @param artifactType
+    * @param artifactTypeName
     * @param artifactName
     * @param branch
     * @return exactly one artifact based on its type and name - otherwise throw an exception
@@ -102,36 +98,67 @@ public class ArtifactQuery {
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromTypeAndName(ArtifactSubtypeDescriptor artifactType, String artifactName, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      return getSoleArtifact(
-            getArtifactsFromTypeAndName(artifactType, artifactName, branch),
-            " with type \"" + artifactType.getName() + " and name \"" + artifactName + "\" on branch \"" + branch + "\"");
+   public static Artifact getArtifactFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      return getSoleArtifact(getArtifactsFromTypeAndName(artifactTypeName, artifactName, branch),
+            " with type \"" + artifactTypeName + " and name \"" + artifactName + "\" on branch \"" + branch + "\"");
    }
 
-   public static Collection<Artifact> getArtifactsFromTypeAndName(ArtifactSubtypeDescriptor artifactType, String artifactName, Branch branch) throws SQLException {
-      AttributeValueCriteria attributeCriteria = new AttributeValueCriteria("Name", artifactName);
-      return new ArtifactQueryBuilder(artifactType, branch, attributeCriteria).getArtifacts();
+   /**
+    * search for artifacts with any of the given artifact ids
+    * 
+    * @param artifactIds
+    * @param branch
+    * @return
+    * @throws SQLException
+    */
+   public static Collection<Artifact> getArtifactsFromIds(List<Integer> artifactIds, Branch branch, boolean allowDeleted) throws SQLException {
+      return new ArtifactQueryBuilder(artifactIds, branch, allowDeleted).getArtifacts();
+   }
+
+   /**
+    * search for artifacts with any of the given artifact hrids or guids
+    * 
+    * @param artifactIds
+    * @param branch
+    * @return
+    * @throws SQLException
+    */
+   public static Collection<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch) throws SQLException {
+      return new ArtifactQueryBuilder(guidOrHrids, branch).getArtifacts();
+   }
+
+   public static Collection<Artifact> getArtifactsFromName(String artifactName, Branch branch) throws SQLException {
+      return new ArtifactQueryBuilder(branch, new AttributeValueCriteria("Name", artifactName)).getArtifacts();
    }
 
    public static Collection<Artifact> getArtifactsFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws SQLException {
-      AttributeValueCriteria attributeCriteria = new AttributeValueCriteria("Name", artifactName);
-      return new ArtifactQueryBuilder(ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            artifactTypeName), branch, attributeCriteria).getArtifacts();
+      return getArtifactsFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch);
    }
 
-   public static Artifact getArtifactFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      return getArtifactFromTypeAndName(ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            artifactTypeName), artifactName, branch);
+   /**
+    * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
+    * exception
+    * 
+    * @param artifactTypeName
+    * @param attributeTypeName
+    * @param attributeValue
+    * @param branch
+    * @return a collection of the artifacts found or an empty collection if none are found
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist if no artifacts are found
+    * @throws MultipleArtifactsExist if more than one artifact is found
+    */
+   public static Artifact getAtrifactFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      Collection<Artifact> artifacts =
+            getArtifactsFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch);
+      return getSoleArtifact(
+            artifacts,
+            " with type \"" + artifactTypeName + " and \"" + attributeTypeName + " = \"" + attributeValue + "\" on branch \"" + branch + "\"");
    }
 
-   private static Artifact getSoleArtifact(Collection<Artifact> artifacts, String message) throws ArtifactDoesNotExist, MultipleArtifactsExist {
-      if (artifacts.size() == 0) {
-         throw new ArtifactDoesNotExist("No artifact found" + message);
-      }
-      if (artifacts.size() > 1) {
-         throw new MultipleArtifactsExist(artifacts.size() + " artifacts found" + message);
-      }
-      return artifacts.iterator().next();
+   public static Collection<Artifact> getAtrifactsFromHistoricalAttributeValue(String attributeValue) throws SQLException {
+      return new ArtifactQueryBuilder(new AttributeValueCriteria((DynamicAttributeDescriptor) null, attributeValue,
+            true)).getArtifacts();
    }
 
    public static Collection<Artifact> getAtrifactsFromType(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
@@ -167,36 +194,20 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws SQLException
     */
-   public static Collection<Artifact> getAtrifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
+   public static Collection<Artifact> getArtifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
       ArtifactSubtypeDescriptor artifactType =
             ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName);
       return new ArtifactQueryBuilder(artifactType, branch, new AttributeValueCriteria(attributeTypeName,
             attributeValue)).getArtifacts();
    }
 
-   public static Collection<Artifact> getAtrifactsFromHistoricalAttributeValue(String attributeValue) throws SQLException {
-      return new ArtifactQueryBuilder(new AttributeValueCriteria((DynamicAttributeDescriptor) null, attributeValue,
-            true)).getArtifacts();
-   }
-
-   /**
-    * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
-    * exception
-    * 
-    * @param artifactTypeName
-    * @param attributeTypeName
-    * @param attributeValue
-    * @param branch
-    * @return a collection of the artifacts found or an empty collection if none are found
-    * @throws SQLException
-    * @throws ArtifactDoesNotExist if no artifacts are found
-    * @throws MultipleArtifactsExist if more than one artifact is found
-    */
-   public static Artifact getAtrifactFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      Collection<Artifact> artifacts =
-            getAtrifactsFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch);
-      return getSoleArtifact(
-            artifacts,
-            " with type \"" + artifactTypeName + " and \"" + attributeTypeName + " = \"" + attributeValue + "\" on branch \"" + branch + "\"");
+   private static Artifact getSoleArtifact(Collection<Artifact> artifacts, String message) throws ArtifactDoesNotExist, MultipleArtifactsExist {
+      if (artifacts.size() == 0) {
+         throw new ArtifactDoesNotExist("No artifact found" + message);
+      }
+      if (artifacts.size() > 1) {
+         throw new MultipleArtifactsExist(artifacts.size() + " artifacts found" + message);
+      }
+      return artifacts.iterator().next();
    }
 }

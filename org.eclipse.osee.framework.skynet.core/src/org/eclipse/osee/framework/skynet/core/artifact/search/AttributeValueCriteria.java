@@ -90,7 +90,13 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
       }
       if (value != null) {
          builder.append(attrAlias);
-         builder.append(".value=? AND ");
+         builder.append(".value");
+         if (value.contains("%")) {
+            builder.append(" LIKE ");
+         } else {
+            builder.append("=");
+         }
+         builder.append("? AND ");
          builder.addParameter(SQL3DataType.VARCHAR, value);
       }
       if (!multiBranchHistorical) {
