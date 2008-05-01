@@ -108,7 +108,7 @@ public class ArtifactQueryBuilder {
 
       if (artifactIds != null) {
          if (artifactIds.size() == 1) {
-            artifactId = artifactIds.get(0);
+            this.artifactId = artifactIds.get(0);
          } else {
             this.artifactIds = artifactIds;
          }
