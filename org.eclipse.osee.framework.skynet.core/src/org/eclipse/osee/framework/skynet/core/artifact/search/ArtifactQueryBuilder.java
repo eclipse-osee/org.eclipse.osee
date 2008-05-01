@@ -48,7 +48,7 @@ public class ArtifactQueryBuilder {
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
    public ArtifactQueryBuilder(int artId, Branch branch, boolean allowDeleted) {
-      this(makeSingleList(artId), 0, null, null, null, branch, allowDeleted);
+      this(null, artId, null, null, null, branch, allowDeleted);
    }
 
    /**
@@ -79,12 +79,6 @@ public class ArtifactQueryBuilder {
          throw new IllegalArgumentException("The id can not be null.");
       }
       return id;
-   }
-
-   private static List<Integer> makeSingleList(int artId) {
-      List<Integer> artifactIds = new ArrayList<Integer>(1);
-      artifactIds.add(artId);
-      return artifactIds;
    }
 
    public ArtifactQueryBuilder(AbstractArtifactSearchCriteria... criteria) {
