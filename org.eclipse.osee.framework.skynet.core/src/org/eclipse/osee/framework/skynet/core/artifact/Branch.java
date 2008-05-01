@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
  * @author Robert A. Fisher
  */
 public class Branch implements Comparable<Branch>, IAdaptable {
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final String UPDATE_BRANCH_SHORT_NAME =
          "UPDATE " + BRANCH_TABLE + " SET short_name = ? WHERE branch_id = ?";
@@ -76,7 +75,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       this.associatedArtifact = null;
 
       this.birthPlace.getStackTrace();
-      branchManager.cache(this);
+      BranchPersistenceManager.getInstance().cache(this);
    }
 
    public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact) {
@@ -163,7 +162,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public void setAssociatedArtifact(Artifact artifact) throws Exception {
       // TODO: this method should allow the artifact to be on any branch, not just common
-      if (artifact.getBranch() != branchManager.getCommonBranch()) throw new IllegalArgumentException(
+      if (artifact.getBranch() != BranchPersistenceManager.getCommonBranch()) throw new IllegalArgumentException(
             "Setting associated artifact for branch only valid for common branch artifact.");
 
       ConnectionHandler.runPreparedUpdate("UPDATE " + BRANCH_TABLE + " SET associated_art_id = ? WHERE branch_id = ?",
@@ -185,7 +184,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
 
    public Branch getParentBranch() throws SQLException {
       if (parentBranch == null && parentBranchId != NULL_PARENT_BRANCH_ID) {
-         parentBranch = branchManager.getBranch(parentBranchId);
+         parentBranch = BranchPersistenceManager.getInstance().getBranch(parentBranchId);
       }
       return parentBranch;
    }
@@ -232,7 +231,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public void archive() throws SQLException {
-      branchManager.archive(this);
+      BranchPersistenceManager.getInstance().archive(this);
    }
 
    @Override
@@ -292,7 +291,8 @@ public class Branch implements Comparable<Branch>, IAdaptable {
     */
    public Artifact getAssociatedArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (associatedArtifact == null && associatedArtifactId > 0) {
-         associatedArtifact = ArtifactQuery.getArtifactFromId(associatedArtifactId, branchManager.getCommonBranch());
+         associatedArtifact =
+               ArtifactQuery.getArtifactFromId(associatedArtifactId, BranchPersistenceManager.getCommonBranch());
          // TODO: this method must get the artifact based on an art id and use the
          // right branch when doing so (the artifact is not necessarily a user artifact)
       }
