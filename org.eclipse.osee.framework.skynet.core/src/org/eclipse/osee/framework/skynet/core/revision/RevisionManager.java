@@ -771,14 +771,17 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
    }
 
    public Collection<ArtifactChange> getDeletedArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws SQLException {
+      Collection<ArtifactChange> deletedArtifacts = new LinkedList<ArtifactChange>();
+      //This for the case where the toTransaction is the baseline transaction for a branch
+      if (fromTransactionId == null) {
+         fromTransactionId = toTransactionId;
+      }
       if (!fromTransactionId.getBranch().equals(toTransactionId.getBranch())) {
          throw new IllegalArgumentException("The fromTransactionId and toTransactionId must be on the same branch");
       }
       if (fromTransactionId.getTransactionNumber() > toTransactionId.getTransactionNumber()) {
          throw new IllegalArgumentException("The fromTransactionId can not be greater than the toTransactionId.");
       }
-
-      Collection<ArtifactChange> deletedArtifacts = new LinkedList<ArtifactChange>();
 
       Query.acquireCollection(deletedArtifacts, new ArtifactChangeProcessor(baseParentTransactionId,
             headParentTransactionId, artifactNameDescriptorCache), GET_DELETED_ARTIFACTS, SQL3DataType.VARCHAR, "Name",
@@ -817,6 +820,10 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @throws SQLException
     */
    public Collection<ArtifactChange> getNewAndModArtifactChanges(TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, ArtifactNameDescriptorCache artifactNameDescriptorCache) throws SQLException {
+      //This for the case where the toTransaction is the baseline transaction for a branch.
+      if (fromTransactionId == null) {
+         fromTransactionId = toTransactionId;
+      }
 
       Collection<Artifact> newAndModArts = getNewAndModifiedArtifacts(fromTransactionId, toTransactionId, true);
 
