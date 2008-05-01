@@ -31,7 +31,7 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * given value.
     * 
     * @param attributeType
-    * @param value
+    * @param value to search; supports % wildcard
     */
    public AttributeValueCriteria(DynamicAttributeDescriptor attributeType, String value, boolean multiBranchHistorical) {
       super();
@@ -45,7 +45,7 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * given value.
     * 
     * @param attributeType
-    * @param value
+    * @param value to search; supports % wildcard
     * @throws SQLException
     */
    public AttributeValueCriteria(String attributeTypeName, String value) throws SQLException {
@@ -57,7 +57,7 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * given value.
     * 
     * @param attributeTypeName
-    * @param value
+    * @param value to search; supports % wildcard
     * @param multiBranchHistorical if true will search on any branch and any attribute revision
     * @throws SQLException
     */
