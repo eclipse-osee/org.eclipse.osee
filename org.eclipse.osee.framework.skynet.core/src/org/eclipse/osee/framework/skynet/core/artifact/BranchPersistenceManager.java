@@ -454,14 +454,6 @@ public class BranchPersistenceManager implements PersistenceManager {
    }
 
    /**
-    * Commit the net changes from a transaction into the toBranch.
-    */
-   public void commitBranch(final TransactionId fromTransactionId, final Branch toBranch, boolean archiveFromBranch) {
-      CommitJob commitJob = new CommitJob(toBranch, fromTransactionId, archiveFromBranch);
-      Jobs.startJob(commitJob);
-   }
-
-   /**
     * Creates a working branch from the net changes of the fromBranch onto the toBranch
     * 
     * @throws SQLException
