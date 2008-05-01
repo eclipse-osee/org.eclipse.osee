@@ -781,7 +781,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
       final StringBuffer sb = new StringBuffer();
 
-      AbstractSkynetTxTemplate transaction = new AbstractSkynetTxTemplate(branchManager.getAtsBranch()) {
+      AbstractSkynetTxTemplate transaction = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
          @Override
          protected void handleTxWork() throws Exception {

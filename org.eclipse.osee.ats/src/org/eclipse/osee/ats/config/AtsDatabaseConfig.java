@@ -18,14 +18,11 @@ import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustomizationArtifact;
 
 public class AtsDatabaseConfig extends DbInitializationTask {
 
    public void run(Connection connection) throws Exception {
-      createXViewerGlobalCustomization();
       createAtsTopLevelConfigObjects();
       // Imports workflow vue diagrams as id specified in extension point
       (new ImportWorkflowAction(false)).run();
@@ -65,18 +62,4 @@ public class AtsDatabaseConfig extends DbInitializationTask {
       AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact();
       AtsConfig.getInstance().getOrCreateWorkflowDiagramsArtifact();
    }
-
-   private void createXViewerGlobalCustomization() throws SQLException {
-      ArtifactTypeNameSearch srch =
-            new ArtifactTypeNameSearch(XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME, "",
-                  BranchPersistenceManager.getAtsBranch());
-      if (srch.getArtifacts(XViewerCustomizationArtifact.class).size() == 0) {
-         XViewerCustomizationArtifact art =
-               (XViewerCustomizationArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME).makeNewArtifact(
-                     BranchPersistenceManager.getAtsBranch());
-         art.persistAttributes();
-      }
-   }
-
 }

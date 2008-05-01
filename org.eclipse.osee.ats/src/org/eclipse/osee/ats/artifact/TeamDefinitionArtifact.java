@@ -63,8 +63,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       TeamDefinitionArtifact tda = null;
       tda =
             (TeamDefinitionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  TeamDefinitionArtifact.ARTIFACT_NAME).makeNewArtifact(
-                  BranchPersistenceManager.getAtsBranch());
+                  TeamDefinitionArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
       tda.setDescriptiveName(name);
       tda.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       tda.setSoleStringAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
@@ -342,7 +341,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    public Branch getTeamBranch() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
       if (branchId != null && branchId > 0) {
-         return branchManager.getBranch(branchId);
+         return BranchPersistenceManager.getInstance().getBranch(branchId);
       } else {
          Artifact parent = getParent();
          if (parent instanceof TeamDefinitionArtifact) {

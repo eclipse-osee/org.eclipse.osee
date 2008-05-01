@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -177,7 +178,7 @@ public class User extends Artifact implements Serializable {
    public void toggleFavoriteBranch(Branch favoriteBranch) {
 
       try {
-         Collection<Branch> branches = branchManager.getBranches();
+         Collection<Branch> branches = BranchPersistenceManager.getInstance().getBranches();
          HashSet<Integer> branchIds = new HashSet<Integer>();
          for (Branch branch : branches)
             branchIds.add(branch.getBranchId());

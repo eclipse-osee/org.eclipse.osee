@@ -71,7 +71,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    protected static final ConfigurationPersistenceManager configurationManager =
          ConfigurationPersistenceManager.getInstance();
    protected static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
-   protected static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final AccessControlManager accessManager = AccessControlManager.getInstance();
    private static int count = 0;
    public final int aaaSerialId = count++;
