@@ -124,7 +124,7 @@ class CommitJob extends Job {
          User userToBlame = SkynetAuthentication.getInstance().getAuthenticatedUser();
 
          if (fromBranch != null) {
-            newTransactionNumber = branchManager.addTransactionToDatabase(toBranch, fromBranch, userToBlame);
+            newTransactionNumber = branchManager.addCommitTransactionToDatabase(toBranch, fromBranch, userToBlame);
             fromBranchId = fromBranch.getBranchId();
             Pair<TransactionId, TransactionId> transactions = transactionIdManager.getStartEndPoint(fromBranch);
             baseTransactionId = transactions.getKey(); // minimum transaction on the child branch

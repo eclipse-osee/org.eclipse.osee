@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -85,8 +86,8 @@ public class BranchPersistenceManager implements PersistenceManager {
    private static final String CHANGED_ARTIFACTS =
          "SELECT t1.gamma_id, t2.art_id, t2.modification_id FROM (SELECT tx1.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx1, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td1 WHERE tx1.transaction_id = td1.transaction_id AND td1.branch_id = ? AND tx1.gamma_id NOT IN (SELECT tx2.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td2 WHERE tx2.transaction_id = td2.transaction_id AND td2.branch_id = ?)) t1 INNER JOIN " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t2 ON (t1.gamma_id=t2.gamma_id)";
    private static final String COMMIT_TRANSACTION =
-         "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT, "time",
-               "author", "commit_art_id");
+         "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("tx_type", "branch_id", "transaction_id",
+               TXD_COMMENT, "time", "author", "commit_art_id");
 
    private static final String UPDATE_TRANSACTION_BRANCH =
          "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
@@ -572,13 +573,14 @@ public class BranchPersistenceManager implements PersistenceManager {
    /**
     * @throws SQLException
     */
-   int addTransactionToDatabase(Branch parentBranch, Branch childBranch, User userToBlame) throws SQLException {
+   int addCommitTransactionToDatabase(Branch parentBranch, Branch childBranch, User userToBlame) throws SQLException {
       int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = "Commit Branch " + childBranch.getBranchName();
       int authorId = (userToBlame == null) ? -1 : userToBlame.getArtId();
-      ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, SQL3DataType.INTEGER, parentBranch.getBranchId(),
+      ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, SQL3DataType.INTEGER,
+            TransactionDetailsType.NonBaselined.getId(), SQL3DataType.INTEGER, parentBranch.getBranchId(),
             SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, comment, SQL3DataType.TIMESTAMP,
             timestamp, SQL3DataType.INTEGER, authorId, SQL3DataType.INTEGER, childBranch.getAssociatedArtifactId());
       // Update commit artifact cache with new information
@@ -593,10 +595,11 @@ public class BranchPersistenceManager implements PersistenceManager {
    /**
     * @throws SQLException
     */
-   int addTransactionToDatabase(Branch toBranch, TransactionId fromTransactionID, User userToBlame) throws SQLException {
+   int addCommitTransactionToDatabase(Branch toBranch, TransactionId fromTransactionID, User userToBlame) throws SQLException {
       int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
 
-      ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, SQL3DataType.INTEGER, toBranch.getBranchId(),
+      ConnectionHandler.runPreparedUpdate(COMMIT_TRANSACTION, SQL3DataType.INTEGER,
+            TransactionDetailsType.NonBaselined.getId(), SQL3DataType.INTEGER, toBranch.getBranchId(),
             SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR,
             "Commit Branch " + fromTransactionID.getTransactionNumber(), SQL3DataType.TIMESTAMP,
             GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER,
