@@ -65,9 +65,7 @@ public class ResourceManagerServlet extends CustomHttpServlet {
                }
             }
             response.setContentType(mimeType);
-
-            // TODO: here this pops a dialog whether you want to save or store (Browser stuff)
-            // response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
+            response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
 
             Utils.sendInputToOutputStream(inputStream, response.getOutputStream());
          } else {
