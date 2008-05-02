@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.resource.management.Resource;
 import org.eclipse.osee.framework.resource.management.ResourceLocator;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.resource.provider.attribute.internal.Utils;
@@ -27,6 +28,8 @@ public class OptionsProcessor {
    private String extension;
    private boolean deCompressOnSave;
    private boolean shouldCompress;
+   private boolean decompressOnAcquire;
+   private boolean compressOnAcquire;
    private boolean overwrite;
 
    /**
@@ -38,6 +41,8 @@ public class OptionsProcessor {
     */
    public OptionsProcessor(URI uri, IResourceLocator locator, IResource resource, Options options) throws URISyntaxException {
       this.resource = resource;
+      decompressOnAcquire = options.getBoolean(StandardOptions.DecompressOnAquire.name());
+      compressOnAcquire = options.getBoolean(StandardOptions.CompressOnAcquire.name());
       overwrite = options.getBoolean(StandardOptions.Overwrite.name());
       shouldCompress = options.getBoolean(StandardOptions.CompressOnSave.name());
       deCompressOnSave = options.getBoolean(StandardOptions.DecompressOnSave.name());
@@ -93,6 +98,22 @@ public class OptionsProcessor {
          resourceToReturn = resource;
       }
       return resourceToReturn;
+   }
+
+   public IResource getResourceToServer() throws Exception {
+      IResource toReturn = null;
+      File testFile = new File(this.fileuri);
+      if (testFile != null && testFile.exists() != false) {
+         boolean isCompressed = Utils.isCompressed(testFile);
+         toReturn = new Resource(this.fileuri, isCompressed);
+
+         if (compressOnAcquire && !isCompressed) {
+            toReturn = Utils.compressResource(toReturn);
+         } else if (decompressOnAcquire && isCompressed) {
+            toReturn = Utils.decompressResource(toReturn);
+         }
+      }
+      return toReturn;
    }
 
    /**

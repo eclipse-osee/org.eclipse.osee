@@ -11,14 +11,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.resource.management.Resource;
-import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.framework.resource.provider.attribute.internal.Utils;
 
 /**
@@ -26,12 +23,12 @@ import org.eclipse.osee.framework.resource.provider.attribute.internal.Utils;
  */
 public class AttributeProvider implements IResourceProvider {
 
-private static final String PROP_BASE_PATH = "org.eclipse.osee.framework.resource.provider.attribute.basepath";
+   private static final String PROP_BASE_PATH = "org.eclipse.osee.framework.resource.provider.attribute.basepath";
    private static final String SUPPORTED_PROTOCOL = "attr";
    private static String BASE_PATH = null;
 
    public AttributeProvider() {
-	   BASE_PATH = System.getProperty(PROP_BASE_PATH);
+      BASE_PATH = System.getProperty(PROP_BASE_PATH);
       if (BASE_PATH == null) {
          String userHome = System.getProperty("user.home");
          if (userHome != null && userHome.length() > 0) {
@@ -76,18 +73,8 @@ private static final String PROP_BASE_PATH = "org.eclipse.osee.framework.resourc
    @Override
    public IResource acquire(IResourceLocator locator, Options options) throws Exception {
       IResource toReturn = null;
-      URI uri = resolve(locator);
-      File testFile = new File(uri);
-      if (testFile != null && testFile.exists() != false) {
-         boolean isCompressed = Utils.isCompressed(testFile);
-         toReturn = new Resource(uri, isCompressed);
-         if (options != null) {
-            boolean shouldCompress = options.getBoolean(StandardOptions.CompressOnAcquire.name());
-            if (shouldCompress != false && isCompressed != true) {
-               toReturn = Utils.compressResource(toReturn);
-            }
-         }
-      }
+      OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
+      toReturn = optionsProcessor.getResourceToServer();
       return toReturn;
    }
 
