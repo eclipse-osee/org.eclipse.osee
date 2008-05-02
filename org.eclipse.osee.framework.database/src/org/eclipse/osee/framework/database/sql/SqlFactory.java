@@ -35,7 +35,7 @@ public class SqlFactory {
             instance = new SqlManagerImpl(new OracleSqlDataType());
             break;
          case derby:
-            instance = new SqlManagerImpl(new DerbySqlDataType());
+            instance = new DerbySqlManager(new DerbySqlDataType());
             break;
          case foxpro:
             instance = new SqlManagerImpl(new FoxProDataType());
