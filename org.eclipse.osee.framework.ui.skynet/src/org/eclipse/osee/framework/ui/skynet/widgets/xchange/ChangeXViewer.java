@@ -41,7 +41,6 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
 
    private static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
    private final XChangeViewer xCommitViewer;
-   private Change[] changes;
 
    /**
     * @param parent
@@ -113,7 +112,6 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
    }
 
    public void setChanges(Change[] changes) throws SQLException {
-      this.changes = changes;
       setInput(changes);
       expandAll();
    }
@@ -144,8 +142,6 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
       try {
          // System.out.println("Column " + treeColumn.getText() + " item " +
          // treeItem);
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         ChangeColumn aCol = ChangeColumn.getAtsXColumn(xCol);
          Branch userRole = (Branch) treeItem.getData();
          boolean modified = false;
          AWorkbench.popup("ERROR", "Not handled");
@@ -168,10 +164,6 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
    public XChangeViewer getXUserRoleViewer() {
       return xCommitViewer;
    }
-
-   /**
-    * @return the workingBranch
-    */
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
