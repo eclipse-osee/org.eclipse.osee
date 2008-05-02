@@ -14,9 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -29,7 +27,6 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -48,10 +45,9 @@ import org.eclipse.swt.widgets.Tree;
 public class XChangeViewer extends XWidget implements IEventReceiver {
 
    private ChangeXViewer xChangeViewer;
-   private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
-   private Change[] changes;
+
    /**
     * @param label
     */
@@ -90,16 +86,6 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
 
       xChangeViewer.setContentProvider(new XChangeContentProvider(xChangeViewer));
       xChangeViewer.setLabelProvider(new XChangeLabelProvider(xChangeViewer));
-      xChangeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-          */
-         public void selectionChanged(SelectionChangedEvent event) {
-            refreshActionEnablement();
-         }
-      });
 
       if (toolkit != null) toolkit.adapt(xChangeViewer.getStatusLabel(), false, false);
 
@@ -139,18 +125,6 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
       ToolItem item = null;
 
       item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(SkynetGuiPlugin.getInstance().getImage("branch_change.gif"));
-      item.setToolTipText("Show Change Report");
-      item.addSelectionListener(new SelectionAdapter() {
-         public void widgetSelected(SelectionEvent e) {
-//            if (xChangeViewer.getWorkingBranch() != null)
-//               ChangeReportView.openViewUpon(xChangeViewer.getWorkingBranch());
-//            else
-//               AWorkbench.popup("ERROR", "Not implemented yet.");
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(SkynetGuiPlugin.getInstance().getImage("refresh.gif"));
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
@@ -168,19 +142,9 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
          }
       });
 
-      refreshActionEnablement();
-   }
-
-   public void refreshActionEnablement() {
    }
 
    public void loadTable() {
-//      try {
-//         if (artifact != null && (artifact instanceof IBranchArtifact)) xChangeViewer.setWorkingBranch(((IBranchArtifact) artifact).getWorkingBranch());
-//         extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
-//      } catch (Exception ex) {
-//         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-//      }
       refresh();
    }
 
@@ -215,36 +179,16 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
    public void refresh() {
       xChangeViewer.refresh();
       setLabelError();
-      refreshActionEnablement();
    }
 
    @Override
    public boolean isValid() {
-      if (isRequiredEntry() && xChangeViewer.getTree().getItemCount() == 0) {
-         extraInfoLabel.setText("At least one role entry is required");
-         return false;
-      }
-      extraInfoLabel.setText("");
       return true;
-   }
-
-   @Override
-   public void setXmlData(String str) {
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
    }
 
    @Override
    public String toHTML(String labelFont) {
       return AHTML.simplePage("Unhandled");
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
    }
 
    /**
@@ -256,7 +200,6 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
 
    public void onEvent(final Event event) {
       if (xChangeViewer == null || xChangeViewer.getTree() == null || xChangeViewer.getTree().isDisposed()) return;
-
       if (event instanceof TransactionEvent) {
          refresh();
       }
@@ -281,26 +224,32 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
       return xChangeViewer.getInput();
    }
 
-   public IDirtiableEditor getEditor() {
-      return editor;
-   }
-
-   public void setEditor(IDirtiableEditor editor) {
-      this.editor = editor;
-   }
-
-   public boolean isEditable() {
-      return editable;
-   }
-
-   public void setEditable(boolean editable) {
-      this.editable = editable;
-   }
-
    public void setChanges(Change[] changes) throws IllegalStateException, SQLException {
-	      this.changes = changes;
-	      loadTable();
-	      xChangeViewer.setChanges(changes);
+      loadTable();
+      xChangeViewer.setChanges(changes);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getReportData()
+    */
+   @Override
+   public String getReportData() {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#getXmlData()
+    */
+   @Override
+   public String getXmlData() {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#setXmlData(java.lang.String)
+    */
+   @Override
+   public void setXmlData(String str) {
    }
 
 }
