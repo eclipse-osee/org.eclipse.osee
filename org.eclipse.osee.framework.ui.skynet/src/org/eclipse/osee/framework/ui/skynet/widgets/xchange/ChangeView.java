@@ -186,15 +186,18 @@ public class ChangeView extends ViewPart implements IActionable {
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
       try {
+         Integer branchId = null;
          if (memento != null) {
             memento = memento.getChild(INPUT);
             if (memento != null) {
-               Integer branchId = memento.getInteger(BRANCH_ID);
+               branchId = memento.getInteger(BRANCH_ID);
                if (branchId != null) explore(BranchPersistenceManager.getInstance().getBranch(branchId));
             }
+            OSEELog.logWarning(SkynetGuiPlugin.class,
+                  "BranchId " + branchId + " not found.  Change Report init failed.", false);
          }
-      } catch (Exception ex) {
-         OSEELog.logWarning(getClass(), "Change report error on init: " + ex.getLocalizedMessage(), false);
+      } catch (SQLException ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, "Change report error on init", ex, false);
       }
    }
 }

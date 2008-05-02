@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
-import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeContentProvider;
@@ -44,7 +44,9 @@ public class XChangeLabelProvider implements ITableLabelProvider {
             if (xCol == null) return "Can't determine XTreeColumn";
             ChangeColumn cCol = ChangeColumn.getAtsXColumn(xCol);
             if (cCol == null) return "Can't determine ChangeColumn";
-            if (cCol == ChangeColumn.Name) {
+            if (cCol == ChangeColumn.Empty) {
+               return "";
+            } else if (cCol == ChangeColumn.Name) {
                return change.getName();
             } else if (cCol == ChangeColumn.Change_Type) {
                return change.getChangeType().toString();
@@ -54,9 +56,20 @@ public class XChangeLabelProvider implements ITableLabelProvider {
                return change.getItemTypeName();
             } else if (cCol == ChangeColumn.Value) {
                return change.getValue();
+            } else if (cCol == ChangeColumn.CSCI) {
+               Artifact art = change.getArtifact();
+               if (art != null) {
+                  if (art.isAttributeTypeValid("CSCI"))
+                     return art.getAttributesToString("CSCI");
+                  else if (art.isAttributeTypeValid("Partition"))
+                     return art.getAttributesToString("Partition");
+                  else
+                     return "";
+               } else
+                  return XViewerCells.getCellExceptionString("Artifact was null.");
             }
          }
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
       return "Unknown Column";

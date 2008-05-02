@@ -26,6 +26,8 @@ public enum ChangeColumn {
    Item_Type("Item Type", 90, SWT.LEFT, true, SortDataType.String, false),
    Item_Kind("Item Kind", 70, SWT.LEFT, true, SortDataType.String, false),
    Change_Type("Change Type", 50, SWT.LEFT, true, SortDataType.String, false),
+   // TODO Temporary column until dynamic attributes can be added
+   CSCI("CSCI", 50, SWT.LEFT, true, SortDataType.String, false),
    Value("Value", 300, SWT.LEFT, true, SortDataType.String, false);
 
    private final String name;
