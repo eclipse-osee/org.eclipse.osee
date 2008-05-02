@@ -61,8 +61,12 @@ public class ChangeView extends ViewPart implements IActionable {
    public static void open(Branch branch) throws SQLException {
       ChangeView.branch = branch;
       if (branch == null) throw new IllegalArgumentException("Branch can't be null");
-      Change[] changes = new Change[0];
-      ChangeView.openViewUpon(RevisionManager.getInstance().getChangesPerBranch(branch).toArray(changes));
+      ChangeView.openViewUpon(RevisionManager.getInstance().getChangesPerBranch(branch).toArray(new Change[] {}));
+   }
+
+   public static void open(int transactionId) throws SQLException {
+      ChangeView.openViewUpon(RevisionManager.getInstance().getChangesPerTransaction(transactionId).toArray(
+            new Change[] {}));
    }
 
    private static void openViewUpon(final Change[] changes) {
