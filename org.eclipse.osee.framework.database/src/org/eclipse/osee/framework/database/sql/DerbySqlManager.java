@@ -6,13 +6,16 @@
 package org.eclipse.osee.framework.database.sql;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.database.data.ConstraintElement;
 import org.eclipse.osee.framework.database.data.ForeignKey;
 import org.eclipse.osee.framework.database.data.ReferenceClause;
 import org.eclipse.osee.framework.database.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.framework.database.data.ReferenceClause.OnUpdateEnum;
+import org.eclipse.osee.framework.database.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.database.sql.datatype.SqlDataType;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 
 /**
  * @author Roberto E. Escobar
@@ -82,6 +85,29 @@ public class DerbySqlManager extends SqlManagerImpl {
          }
       } else {
          logger.log(Level.WARNING, "Skipping CONSTRAINT at Table: " + tableID + "\n\t " + constraint.toString());
+      }
+      return toReturn.toString();
+   }
+
+   public String columnDataToSQL(Map<ColumnFields, String> column) {
+      StringBuilder toReturn = new StringBuilder();
+
+      String columnLimits = column.get(ColumnFields.limits);
+      String defaultValue = column.get(ColumnFields.defaultValue);
+
+      SQL3DataType dataType = SQL3DataType.valueOf(column.get(ColumnFields.type));
+      columnLimits = sqlDataType.getLimit(dataType, columnLimits);
+      toReturn.append("\"");
+      toReturn.append(column.get(ColumnFields.id));
+      toReturn.append("\"");
+      toReturn.append(" ");
+      toReturn.append(sqlDataType.getType(dataType));
+
+      if (columnLimits != null && !columnLimits.equals("")) {
+         toReturn.append(" (" + columnLimits + ")");
+      }
+      if (defaultValue != null && !defaultValue.equals("")) {
+         toReturn.append(" " + defaultValue);
       }
       return toReturn.toString();
    }

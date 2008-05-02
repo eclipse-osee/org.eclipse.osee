@@ -113,9 +113,7 @@ public abstract class SqlManager {
 
       SQL3DataType dataType = SQL3DataType.valueOf(column.get(ColumnFields.type));
       columnLimits = sqlDataType.getLimit(dataType, columnLimits);
-      toReturn.append("\"");
       toReturn.append(column.get(ColumnFields.id));
-      toReturn.append("\"");
       toReturn.append(" ");
       toReturn.append(sqlDataType.getType(dataType));
 
