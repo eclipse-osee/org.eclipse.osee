@@ -339,7 +339,7 @@ public class BranchPersistenceManager implements PersistenceManager {
       Branch branch = branchCache.get(branchId);
 
       if (branch == null) {
-         throw new IllegalArgumentException("Branch could not be acquire for branch id: " + branchId);
+         throw new IllegalArgumentException("Branch could not be acquired for branch id: " + branchId);
       }
 
       return branch;
@@ -949,9 +949,10 @@ public class BranchPersistenceManager implements PersistenceManager {
             // branch to the common branch.
             catch (IllegalArgumentException ex) {
                try {
+                  logger.log(Level.WARNING,
+                        "Could not use default branch id from the prefernce store: " + ex.toString());
                   initialBranch = getCommonBranch();
                   preferenceStore.setValue(LAST_DEFAULT_BRANCH, initialBranch.getBranchId());
-                  logger.log(Level.WARNING, ex.toString(), ex);
                } catch (SQLException ex1) {
                   logger.log(Level.SEVERE, ex1.toString(), ex1);
                }
