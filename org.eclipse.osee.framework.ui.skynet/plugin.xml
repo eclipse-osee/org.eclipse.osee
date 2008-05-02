@@ -811,14 +811,6 @@
     </menuContribution>
  </extension>
  <extension
-       id="AddGammaToBaselineTransactions"
-       name="Add Gamma To Baseline Transactions"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.AddGammaToBaselineTransactions">
-    </Operation>
- </extension>
- <extension
        id="PurgeDuplicateTypeData"
        name="Purge Duplicate Type Data"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
