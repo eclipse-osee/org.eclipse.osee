@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 /**
  * @author Jeff C. Phillips
  */
-public class WordAttribute extends StringAttribute {
+public abstract class WordAttribute extends StringAttribute {
    public static final String CONTENT_NAME = "Word Formatted Content";
    public static final String OLE_DATA_NAME = "Word Ole Data";
 
@@ -36,16 +36,7 @@ public class WordAttribute extends StringAttribute {
       swagValue(value);
    }
 
-   private void swagValue(String value) {
-      StringBuilder strB = new StringBuilder(300);
-      strB.append("<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\">\n\t<w:r>\n\t\t<w:t>");
-      if (value != null) {
-         value = value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-         strB.append(value);
-      }
-      strB.append("</w:t>\n\t\t</w:r>\n\t</w:p>");
-      setValue(strB.toString());
-   }
+    protected abstract void swagValue(String value);
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()

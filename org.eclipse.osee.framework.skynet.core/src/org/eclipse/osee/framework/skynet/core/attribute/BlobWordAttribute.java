@@ -17,4 +17,11 @@ public class BlobWordAttribute extends WordAttribute {
    public BlobWordAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
       super(attributeType, defaultValue);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.WordAttribute#swagValue(java.lang.String)
+    */
+   @Override
+   protected void swagValue(String value) {
+   }
 }

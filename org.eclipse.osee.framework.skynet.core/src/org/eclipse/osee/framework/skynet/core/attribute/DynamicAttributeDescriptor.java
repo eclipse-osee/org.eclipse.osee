@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 
 /**
  * Type information for dynamic attributes.
@@ -82,9 +83,21 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
     * @throws SecurityException
     * @throws IllegalArgumentException
     */
-   protected Attribute<?> createAttribute() throws IllegalStateException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+   protected Attribute<?> createAttribute(Artifact artifact) throws IllegalStateException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+      //TODO: This should be removed when the blob attribute conversion is complete
+      Class<? extends Attribute> tempBaseAttributeClass = getBaseAttributeClass();
+
+      if (artifact instanceof WordArtifact && name.equals("Word Formatted Content")) {
+         WordArtifact wordArtifact = (WordArtifact) artifact;
+
+         if (wordArtifact.isWholeWordArtifact()) {
+            tempBaseAttributeClass = WordWholeDocumentAttribute.class;
+         } else {
+            tempBaseAttributeClass = WordTemplateAttribute.class;
+         }
+      }
       Object[] reflectionParams = new Object[] {this, defaultValue};
-      return getBaseAttributeClass().getConstructor(reflectionSignature).newInstance(reflectionParams);
+      return tempBaseAttributeClass.getConstructor(reflectionSignature).newInstance(reflectionParams);
    }
 
    /**

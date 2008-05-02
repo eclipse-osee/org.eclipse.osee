@@ -100,7 +100,7 @@ public class DynamicAttributeManager {
    }
 
    private Attribute createAttribute() throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-      Attribute attribute = descriptor.createAttribute();
+      Attribute attribute = descriptor.createAttribute(getParentArtifact());
 
       attribute.setParent(this);
       attributes.add(attribute);
