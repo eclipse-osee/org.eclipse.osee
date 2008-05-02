@@ -545,7 +545,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
    /**
     * @param sourceBranch
     * @param changes
-    * @throws SQLExceptio
+    * @throws SQLException
     */
    private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
