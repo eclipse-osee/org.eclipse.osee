@@ -56,7 +56,9 @@ public class XChangeLabelProvider implements ITableLabelProvider {
                return change.getItemTypeName();
             } else if (cCol == ChangeColumn.Value) {
                return change.getValue();
-            } else if (cCol == ChangeColumn.CSCI) {
+            }
+            // TODO Temporary column until dynamic attributes can be added
+            else if (cCol == ChangeColumn.CSCI) {
                Artifact art = change.getArtifact();
                if (art != null) {
                   if (art.isAttributeTypeValid("CSCI"))
