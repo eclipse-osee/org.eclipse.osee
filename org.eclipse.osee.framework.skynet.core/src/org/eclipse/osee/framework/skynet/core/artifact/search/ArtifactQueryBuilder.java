@@ -62,16 +62,12 @@ public class ArtifactQueryBuilder {
       this(artifactIds, 0, null, null, null, branch, allowDeleted);
    }
 
-   public ArtifactQueryBuilder(String guidOrHrid, Branch branch) {
-      this(null, 0, null, guidOrHrid, null, branch, false);
-   }
-
    public ArtifactQueryBuilder(List<String> guidOrHrids, Branch branch) {
       this(null, 0, guidOrHrids, null, null, branch, false);
    }
 
    public ArtifactQueryBuilder(String guidOrHrid, Branch branch, boolean allowDeleted) {
-      this(null, 0, null, ensureValid(guidOrHrid), null, branch, false);
+      this(null, 0, null, ensureValid(guidOrHrid), null, branch, allowDeleted);
    }
 
    private static String ensureValid(String id) {

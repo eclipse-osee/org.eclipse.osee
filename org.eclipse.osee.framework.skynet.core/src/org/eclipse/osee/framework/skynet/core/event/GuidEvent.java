@@ -37,7 +37,7 @@ public abstract class GuidEvent extends Event {
 
    public Artifact getArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
       if (artifact == null) {
-         artifact = ArtifactQuery.getArtifactFromId(getGuid(), branch);
+         artifact = ArtifactQuery.getArtifactFromId(getGuid(), branch, true);
       }
       return artifact;
    }
