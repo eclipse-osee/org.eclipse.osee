@@ -390,7 +390,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @return
     * @throws SQLException
     */
-   public Collection<Change> getChangesPerBranch(int transactionIdNumber) throws SQLException {
+   public Collection<Change> getChangesPerTransaction(int transactionIdNumber) throws SQLException {
       return getChangesPerBranch(null, transactionIdNumber);
    }
 
