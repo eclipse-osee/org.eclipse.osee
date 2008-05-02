@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.List;
@@ -66,7 +66,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
 
             TransactionId transactionId = TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
             secondArtifact =
-                  selectedArtifactChange.getModType() == DELETE ? null : artifactManager.getArtifactFromId(
+                  selectedArtifactChange.getModType() == DELETED ? null : artifactManager.getArtifactFromId(
                         selectedArtifactChange.getArtifact().getArtId(), transactionId);
 
             RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
@@ -99,7 +99,7 @@ public class WordChangesToParentHandler extends AbstractHandler {
             }
             ArtifactChange mySelectedArtifactChange = mySelectedArtifactChangeList.get(0);
 
-            if (mySelectedArtifactChange.getModType() == NEW || mySelectedArtifactChange.getModType() == DELETE) {
+            if (mySelectedArtifactChange.getModType() == NEW || mySelectedArtifactChange.getModType() == DELETED) {
                return (false);
             }
 

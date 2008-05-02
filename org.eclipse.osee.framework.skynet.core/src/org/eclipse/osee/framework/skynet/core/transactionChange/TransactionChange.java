@@ -15,8 +15,8 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -24,20 +24,20 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class TransactionChange implements IAdaptable {
    protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(TransactionChange.class);
-   private TransactionType transactionType;
+   private ModificationType modType;
    private ChangeType changeType;
    private TransactionId toTransactionId;
    private TransactionId fromTransactionId;
 
    /**
-    * @param transactionType
+    * @param modType
     * @param changeType
     * @param toTransactionId
     * @param fromTransactionId
     */
-   public TransactionChange(TransactionType transactionType, ChangeType changeType, TransactionId toTransactionId, TransactionId fromTransactionId) {
+   public TransactionChange(ModificationType modType, ChangeType changeType, TransactionId toTransactionId, TransactionId fromTransactionId) {
       super();
-      this.transactionType = transactionType;
+      this.modType = modType;
       this.changeType = changeType;
       this.toTransactionId = toTransactionId;
       this.fromTransactionId = fromTransactionId;
@@ -58,8 +58,8 @@ public abstract class TransactionChange implements IAdaptable {
    /**
     * @return the transactionType
     */
-   public TransactionType getTransactionType() {
-      return transactionType;
+   public ModificationType getModificationType() {
+      return modType;
    }
 
    /**

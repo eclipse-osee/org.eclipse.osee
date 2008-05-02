@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.swt.graphics.Image;
@@ -31,7 +30,7 @@ public abstract class Change implements IAdaptable {
    private TransactionId toTransactionId;
    private TransactionId fromTransactionId;
    private Artifact artifact;
-   private TransactionType transactionType;
+   private ModificationType modType;
    private ChangeType changeType;
    private String artName;
    protected int artTypeId;
@@ -42,26 +41,26 @@ public abstract class Change implements IAdaptable {
     * @param artId
     * @param toTransactionId
     * @param fromTransactionId
-    * @param transactionType
+    * @param modType
     * @param changeType
     */
-   public Change(int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, TransactionType transactionType, ChangeType changeType) {
+   public Change(int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
       super();
       this.sourceGamma = sourceGamma;
       this.artId = artId;
       this.toTransactionId = toTransactionId;
       this.fromTransactionId = fromTransactionId;
-      this.transactionType = transactionType;
+      this.modType = modType;
       this.changeType = changeType;
       this.artName = artName;
       this.artTypeId = artTypeId;
    }
 
    /**
-    * @return the transactionType
+    * @return the modification type (New, Modified, Deleted)
     */
-   public TransactionType getTransactionType() {
-      return transactionType;
+   public ModificationType getModificationType() {
+      return modType;
    }
 
    /**

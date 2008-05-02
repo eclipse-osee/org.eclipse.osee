@@ -227,7 +227,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
             try {
                String txt =
                      artifactChange.getName() + (showChangeType ? " (" + getChangeType(artifactChange) + ")" : "");
-               if (artifactChange.getModType() == ModificationType.DELETE && artifactChange.getChangeType() == ChangeType.INCOMING) {
+               if (artifactChange.getModType() == ModificationType.DELETED && artifactChange.getChangeType() == ChangeType.INCOMING) {
                   txt = "Artifact Deleted";
                } else {
                   if (attributeAction != null && !attributeAction.noneSelected()) {

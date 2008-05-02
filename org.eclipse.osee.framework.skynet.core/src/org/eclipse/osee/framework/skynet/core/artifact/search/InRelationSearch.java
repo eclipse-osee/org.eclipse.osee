@@ -147,7 +147,7 @@ public class InRelationSearch implements ISearchPrimitive {
       dataList.add(SQL3DataType.INTEGER);
       dataList.add(branch.getBranchId());
       dataList.add(SQL3DataType.INTEGER);
-      dataList.add(ModificationType.DELETE.getValue());
+      dataList.add(ModificationType.DELETED.getValue());
 
       return sql.toString();
    }

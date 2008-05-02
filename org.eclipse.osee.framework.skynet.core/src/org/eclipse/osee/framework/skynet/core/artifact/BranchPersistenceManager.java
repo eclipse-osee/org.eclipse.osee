@@ -620,7 +620,7 @@ public class BranchPersistenceManager implements PersistenceManager {
       Artifact bArtifact = null;
 
       try {
-         if (modType == ModificationType.DELETE.getValue()) {
+         if (modType == ModificationType.DELETED.getValue()) {
             aArtifact = ArtifactQuery.getArtifactFromId(aArtId, parentBranch);
             bArtifact = ArtifactQuery.getArtifactFromId(bArtId, parentBranch);
 
@@ -732,7 +732,7 @@ public class BranchPersistenceManager implements PersistenceManager {
                continue;
             }
 
-            if (modificationId == ModificationType.DELETE.getValue()) {
+            if (modificationId == ModificationType.DELETED.getValue()) {
                remoteEvent =
                      new NetworkArtifactDeletedEvent(parentBranch.getBranchId(), newTransactionNumber,
                            artifact.getArtId(), artifact.getArtTypeId(),

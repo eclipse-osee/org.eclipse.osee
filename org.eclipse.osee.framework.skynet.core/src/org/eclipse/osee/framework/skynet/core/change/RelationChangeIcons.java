@@ -9,7 +9,7 @@ import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTI
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -44,13 +44,13 @@ public class RelationChangeIcons {
 
          Image baseImage = plugin.getImage(BASE_IMAGE_STRING + ".gif");
 
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + DELETE, new OverlayImage(baseImage, outDeleted));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + DELETED, new OverlayImage(baseImage, outDeleted));
          plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + CHANGE, new OverlayImage(baseImage, outChange));
          plugin.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + NEW, new OverlayImage(baseImage, outNew));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + DELETE, new OverlayImage(baseImage, incDeleted));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + DELETED, new OverlayImage(baseImage, incDeleted));
          plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + CHANGE, new OverlayImage(baseImage, incChange));
          plugin.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + NEW, new OverlayImage(baseImage, incNew));
-         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + DELETE, new OverlayImage(baseImage, conDeleted));
+         plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + DELETED, new OverlayImage(baseImage, conDeleted));
          plugin.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + CHANGE, new OverlayImage(baseImage, conChange));
       }
    }

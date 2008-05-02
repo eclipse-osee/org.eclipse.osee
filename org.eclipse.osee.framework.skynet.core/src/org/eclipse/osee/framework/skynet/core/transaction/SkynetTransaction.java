@@ -15,7 +15,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class SkynetTransaction {
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("transaction_id", TXD_COMMENT, "time", "author",
                "branch_id", "tx_type");
    private static final String INSERT_INTO_TRANSACTION_TABLE =
-         " INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, 1)";
+         "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?, ?, ?, ?)";
 
    private static final String DELETE_TRANSACTION_DETAIL =
          "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id =?";
@@ -77,7 +77,6 @@ public class SkynetTransaction {
          "SELECT art_id, " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "transaction_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.join(
                TRANSACTIONS_TABLE, "gamma_id") + " AND " + TRANSACTIONS_TABLE.join(TRANSACTION_DETAIL_TABLE,
                "transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + ARTIFACT_VERSION_TABLE.column("art_id") + " in (";
-   private final List<Object[]> batchToTransactionTable;
    private final Map<String, List<Object[]>> preparedBatch;
    private String transactionName;
    private String comment;
@@ -142,16 +141,8 @@ public class SkynetTransaction {
             TransactionDetailsType.NonBaselined.getId()});
       ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_DETAIL_TABLE, datas);
 
-      batchToTransactionTable = new LinkedList<Object[]>();
       preparedBatch = new HashMap<String, List<Object[]>>();
       transactionItems = new HashMap<ITransactionData, ITransactionData>();
-   }
-
-   public void addToTransactionTableBatch(int gammaId) {
-      if (batchToTransactionTable == null) throw new IllegalArgumentException("batchToTransactionTable can not be null");
-
-      batchToTransactionTable.add(new Object[] {SQL3DataType.INTEGER, transactionNumber, SQL3DataType.BIGINT, gammaId,
-            SQL3DataType.BIGINT, 0});
    }
 
    public void addToBatch(String sql, Object... data) {
@@ -212,10 +203,11 @@ public class SkynetTransaction {
                transactionData.getPreviousTxNotCurrentData().toArray());
 
          //Add current transaction information
+         ModificationType modType = transactionData.getModificationType();
+
          ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE, SQL3DataType.INTEGER,
                transactionData.getTransactionId(), SQL3DataType.INTEGER, transactionData.getGammaId(),
-               SQL3DataType.INTEGER, TransactionType.convertModificationTypeToTransactionType(
-                     transactionData.getModificationType()).getId());
+               SQL3DataType.INTEGER, modType.getValue(), SQL3DataType.INTEGER, modType.getCurrentValue());
 
          //Add specific object values to the their tables
          ConnectionHandler.runPreparedUpdate(transactionData.getTransactionChangeSql(),
@@ -281,16 +273,9 @@ public class SkynetTransaction {
       }
    }
 
-   // Supports adding configuration information, adding new artifacts to the artifact table and
+   // Supports adding new artifacts to the artifact table and
    // updating attributes that are not versioned.
    public boolean executeBatchToTransactions(IProgressMonitor monitor) throws SQLException {
-      boolean insertIntoTxsTable = batchToTransactionTable.size() > 0;
-      boolean insertChangeInformation = preparedBatch.size() > 0;
-
-      if (insertIntoTxsTable) {
-         ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_TABLE, batchToTransactionTable);
-      }
-
       Collection<String> sqls = preparedBatch.keySet();
       int size = sqls.size();
       int count = 0;
@@ -301,7 +286,7 @@ public class SkynetTransaction {
          ConnectionHandler.runPreparedUpdate(sql, preparedBatch.get(sql));
          monitor.worked(1);
       }
-      return insertIntoTxsTable |= insertChangeInformation;
+      return preparedBatch.size() > 0;
    }
 
    public void addRemoteEvent(ISkynetEvent event) {
@@ -397,7 +382,7 @@ public class SkynetTransaction {
          if (oldDataItem.getModificationType() == NEW && dataItem.getModificationType() == CHANGE) {
             dataItem.setModificationType(NEW);
             transactionItems.put(dataItem, dataItem);
-         } else if (!(oldDataItem.getModificationType() == NEW && dataItem.getModificationType() == DELETE)) {
+         } else if (!(oldDataItem.getModificationType() == NEW && dataItem.getModificationType() == DELETED)) {
             transactionItems.put(dataItem, dataItem);
          }
       } else {

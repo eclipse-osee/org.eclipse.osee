@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -33,7 +32,7 @@ public class RelationChanged extends Change {
     * @param aArtId
     * @param toTransactionId
     * @param fromTransactionId
-    * @param transactionType
+    * @param modType
     * @param changeType
     * @param bArtId
     * @param bArtifact
@@ -42,8 +41,8 @@ public class RelationChanged extends Change {
     * @param aLinkOrder
     * @param relationType
     */
-   public RelationChanged(int aArtTypeId, String aArtName, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, TransactionType transactionType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, IRelationType relationType) {
-      super(aArtTypeId, aArtName, sourceGamma, aArtId, toTransactionId, fromTransactionId, transactionType, changeType);
+   public RelationChanged(int aArtTypeId, String aArtName, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, IRelationType relationType) {
+      super(aArtTypeId, aArtName, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
@@ -57,8 +56,7 @@ public class RelationChanged extends Change {
     */
    @Override
    public Image getItemTypeImage() {
-      return RelationChangeIcons.getImage(getChangeType(),
-            TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
+      return RelationChangeIcons.getImage(getChangeType(), getModificationType());
    }
 
    /* (non-Javadoc)

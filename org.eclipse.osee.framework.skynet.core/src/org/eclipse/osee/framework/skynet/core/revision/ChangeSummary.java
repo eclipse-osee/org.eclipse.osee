@@ -77,7 +77,7 @@ public abstract class ChangeSummary<T extends RevisionChange> implements Seriali
       ChangeType changeType = conflicted ? CONFLICTING : newestChange.getChangeType();
       ModificationType modType;
 
-      if (oldestChange.getModType() == ModificationType.NEW && newestChange.getModType() != ModificationType.DELETE)
+      if (oldestChange.getModType() == ModificationType.NEW && newestChange.getModType() != ModificationType.DELETED)
          modType = oldestChange.getModType();
       else
          modType = newestChange.getModType();

@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -24,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  */
 public class CopyTransactionDataToBaseline extends AbstractBlam {
    private static final String COPY_TX_DATA =
-         "INSERT INTO osee_define_txs (transaction_id, gamma_id, tx_type) SELECT ?, gamma_id, ? FROM osee_define_txs WHERE transaction_id = ?";
+         "INSERT INTO osee_define_txs (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, gamma_id, mod_type, tx_current FROM osee_define_txs WHERE transaction_id = ?";
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
    /* (non-Javadoc)
@@ -37,7 +36,7 @@ public class CopyTransactionDataToBaseline extends AbstractBlam {
       TransactionId baseLineTransaction = transactionIdManager.getStartEndPoint(branch).getValue();
 
       ConnectionHandler.runPreparedUpdate(COPY_TX_DATA, SQL3DataType.INTEGER, baseLineTransaction,
-            SQL3DataType.INTEGER, TransactionType.Branched, SQL3DataType.INTEGER, fromTransactionId);
+            SQL3DataType.INTEGER, fromTransactionId);
 
    }
 

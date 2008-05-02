@@ -21,7 +21,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -80,7 +80,6 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 
@@ -496,7 +495,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             artIds.add(aArtId);
             changeItemsNeedName.add(new ArtifactChanged(resultSet.getInt("art_type_id"), "",
                   resultSet.getInt("gamma_id"), aArtId, sourceHeadTransactionId, sourceHeadTransactionId,
-                  TransactionType.getTransactionType(resultSet.getInt("mod_type")), ChangeType.OUTGOING));
+                  ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING));
          }
       } finally {
          DbUtil.close(connectionHandlerStatement);
@@ -533,7 +532,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
             changeItemsNeedName.add(new RelationChanged(-1, "", resultSet.getInt("gamma_id"), aArtId,
                   branchTransactions.getValue(), branchTransactions.getKey(),
-                  TransactionType.getTransactionType(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId,
+                  ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId,
                   resultSet.getInt("rel_link_id"), resultSet.getString("rationale"), resultSet.getInt("a_order_value"),
                   resultSet.getInt("b_order_value"), RelationTypeManager.getType(resultSet.getInt("rel_link_type_id"))));
          }
@@ -575,7 +574,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             int attrId = resultSet.getInt("attr_id");
             int artId = resultSet.getInt("art_id");
             int sourceGamma = resultSet.getInt("gamma_id");
-            int txTypeId = resultSet.getInt("mod_type");
+            int modType = resultSet.getInt("mod_type");
             int attrTypeId = resultSet.getInt("attr_type_id");
             int artTypeId = resultSet.getInt("art_type_id");
 
@@ -583,7 +582,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                tempAttrId = attrId;
                attributeChanged =
                      new AttributeChanged(artTypeId, "", sourceGamma, artId, sourceHeadTransactionId,
-                           sourceEndTransactionId, TransactionType.getTransactionType(txTypeId), ChangeType.OUTGOING,
+                           sourceEndTransactionId, ModificationType.getMod(modType), ChangeType.OUTGOING,
                            resultSet.getString("value"), resultSet.getBinaryStream("content"), attrId, attrTypeId);
 
                changeItemsNeedName.add(attributeChanged);
@@ -643,7 +642,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             int artId = resultSet.getInt("art_id");
             int sourceGamma = resultSet.getInt("source_gamma");
             int destGamma = resultSet.getInt("dest_gamma");
-            int txTypeId = resultSet.getInt("tx_type");
+            int modType = resultSet.getInt("mod_type");
             int attrTypeId = resultSet.getInt("attr_type_id");
 
             // all attribute changes come back from the query ordered. Therefore, its necessary to take only the first one
@@ -651,7 +650,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                attrId = nextAttrId;
                attributeConflict =
                      new AttributeConflict(sourceGamma, destGamma, artId, baselineTransaction, sourceHeadTransactionId,
-                           TransactionType.getTransactionType(txTypeId), ChangeType.CONFLICTING,
+                           ModificationType.getMod(modType), ChangeType.CONFLICTING,
                            resultSet.getString("source_value"), resultSet.getString("dest_value"),
                            resultSet.getBinaryStream("source_content"), resultSet.getBinaryStream("dest_content"),
                            attrId, attrTypeId, mergeBranch);
@@ -843,7 +842,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             headParentTransactionId, artifactNameDescriptorCache), GET_DELETED_ARTIFACTS, SQL3DataType.VARCHAR, "Name",
             SQL3DataType.INTEGER, fromTransactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
             fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER, toTransactionId.getTransactionNumber(),
-            SQL3DataType.INTEGER, DELETE.getValue());
+            SQL3DataType.INTEGER, DELETED.getValue());
 
       return deletedArtifacts;
    }
@@ -1018,7 +1017,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
       public ArtifactChange process(ResultSet set) throws SQLException {
          ModificationType modType = ModificationType.getMod(set.getInt("modification_id"));
-         if (modType == DELETE) {
+         if (modType == DELETED) {
             int lastGoodTransactionNumber = set.getInt("last_good_transaction");
             TransactionId lastGoodTransactionId = null;
             if (!set.wasNull()) lastGoodTransactionId =
@@ -1087,7 +1086,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
       public AttributeChange process(ResultSet set) throws SQLException {
          ModificationType modType = ModificationType.getMod(set.getInt("modification_id"));
-         if (modType == DELETE) {
+         if (modType == DELETED) {
             String wasValue = set.getString("was_value");
             return new AttributeChange(changeType, set.getInt("attr_id"), set.getLong("gamma_id"),
                   set.getString("name"), wasValue == null ? "" : wasValue);
@@ -1145,7 +1144,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             artifactData = UNKNOWN_DATA;
 
          String relName = set.getString("type_name") + " (" + set.getString("side_name") + ")";
-         if (modType == DELETE) {
+         if (modType == DELETED) {
             return new RelationLinkChange(changeType, set.getInt("rel_link_id"), set.getLong("gamma_id"), relName,
                   artifactData.getKey(), artifactData.getValue());
          } else {

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                   selectedItem.getModType() == NEW ? null : artifactManager.getArtifactFromId(
                         selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
             Artifact newerArtifact =
-                  selectedItem.getModType() == DELETE ? null : artifactManager.getArtifactFromId(
+                  selectedItem.getModType() == DELETED ? null : artifactManager.getArtifactFromId(
                         selectedItem.getArtifact().getArtId(), selectedItem.getToTransactionId());
 
             baseArtifacts.add(baseArtifact);

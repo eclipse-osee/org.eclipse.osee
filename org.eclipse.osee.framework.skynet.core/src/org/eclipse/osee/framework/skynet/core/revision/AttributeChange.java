@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import java.io.InputStream;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeIcons;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
@@ -62,7 +62,7 @@ public class AttributeChange extends RevisionChange implements IAttributeChange 
     * @param gammaId
     */
    public AttributeChange(ChangeType changeType, int attrId, long gammaId, String name, String wasValue) {
-      super(changeType, DELETE, gammaId);
+      super(changeType, DELETED, gammaId);
       this.attrId = attrId;
       this.name = name;
       this.isValue = null;
@@ -74,7 +74,7 @@ public class AttributeChange extends RevisionChange implements IAttributeChange 
     */
    @Override
    public String getChange() {
-      if (getModType() == DELETE)
+      if (getModType() == DELETED)
          return "<deleted>";
       else
          return isValue;

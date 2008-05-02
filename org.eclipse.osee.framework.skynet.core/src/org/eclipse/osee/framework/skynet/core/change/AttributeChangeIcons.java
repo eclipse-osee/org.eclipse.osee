@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTI
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -50,17 +50,17 @@ public class AttributeChangeIcons {
 
          Image baseImage = skynetActivator.getImage(BASE_IMAGE_STRING + ".gif");
 
-         skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + DELETE, new OverlayImage(baseImage,
+         skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + DELETED, new OverlayImage(baseImage,
                outDeleted));
          skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + CHANGE, new OverlayImage(baseImage,
                outChange));
          skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + OUTGOING + NEW, new OverlayImage(baseImage, outNew));
-         skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + DELETE, new OverlayImage(baseImage,
+         skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + DELETED, new OverlayImage(baseImage,
                incDeleted));
          skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + CHANGE, new OverlayImage(baseImage,
                incChange));
          skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + INCOMING + NEW, new OverlayImage(baseImage, incNew));
-         skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + DELETE, new OverlayImage(baseImage,
+         skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + DELETED, new OverlayImage(baseImage,
                conDeleted));
          skynetActivator.addImageToRegistry(BASE_IMAGE_STRING + CONFLICTING + CHANGE, new OverlayImage(baseImage,
                conChange));

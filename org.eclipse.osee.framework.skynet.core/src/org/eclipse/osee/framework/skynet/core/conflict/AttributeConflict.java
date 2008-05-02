@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeIcons;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -40,7 +40,7 @@ public class AttributeConflict extends Conflict {
     * @param artId
     * @param toTransactionId
     * @param fromTransactionId
-    * @param transactionType
+    * @param modType
     * @param changeType
     * @param sourceValue
     * @param destValue
@@ -50,8 +50,8 @@ public class AttributeConflict extends Conflict {
     * @param attrId
     * @param attrTypeId
     */
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, TransactionType transactionType, ChangeType changeType, String sourceValue, String destValue, InputStream sourceContent, InputStream destContent, int attrId, int attrTypeId, Branch mergeBranch) {
-      super(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, transactionType, changeType, mergeBranch);
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String sourceValue, String destValue, InputStream sourceContent, InputStream destContent, int attrId, int attrTypeId, Branch mergeBranch) {
+      super(sourceGamma, destGamma, artId, toTransactionId, fromTransactionId, modType, changeType, mergeBranch);
       this.sourceValue = sourceValue;
       this.destValue = destValue;
       this.sourceContent = sourceContent;
@@ -72,8 +72,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public Image getImage() {
-      return AttributeChangeIcons.getImage(getChangeType(),
-            TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
+      return AttributeChangeIcons.getImage(getChangeType(), getModificationType());
    }
 
    /* (non-Javadoc)

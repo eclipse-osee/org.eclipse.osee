@@ -349,6 +349,6 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    private ModificationType getModType(boolean modified, boolean deleted) {
-      return deleted ? ModificationType.DELETE : (modified ? ModificationType.CHANGE : ModificationType.NEW);
+      return deleted ? ModificationType.DELETED : (modified ? ModificationType.CHANGE : ModificationType.NEW);
    }
 }

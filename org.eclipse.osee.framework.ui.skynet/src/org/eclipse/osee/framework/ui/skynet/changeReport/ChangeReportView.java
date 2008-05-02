@@ -17,7 +17,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -416,9 +416,9 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                   return -1;
                else if (artChg2.getModType() == ModificationType.NEW)
                   return 1;
-               else if (artChg1.getModType() == ModificationType.DELETE)
+               else if (artChg1.getModType() == ModificationType.DELETED)
                   return -1;
-               else if (artChg2.getModType() == ModificationType.DELETE)
+               else if (artChg2.getModType() == ModificationType.DELETED)
                   return 1;
                else
                   return getComparator().compare(artChg1.getName(), artChg2.getName());
@@ -469,7 +469,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                         selectedItem.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                               selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
                   Artifact secondArtifact =
-                        selectedItem.getModType() == DELETE ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                        selectedItem.getModType() == DELETED ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                               selectedItem.getArtifact().getArtId(), selectedItem.getToTransactionId());
 
                   RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
@@ -507,7 +507,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                         selectedItem.getModType() == NEW ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                               selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
                   Artifact newerArtifact =
-                        selectedItem.getModType() == DELETE ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                        selectedItem.getModType() == DELETED ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                               selectedItem.getArtifact().getArtId(), selectedItem.getToTransactionId());
 
                   baseArtifacts.add(baseArtifact);
@@ -554,7 +554,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
 
                TransactionId transactionId = TransactionIdManager.getInstance().getEditableTransactionId(parentBranch);
                secondArtifact =
-                     selectedItem.getModType() == DELETE ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
+                     selectedItem.getModType() == DELETED ? null : ArtifactPersistenceManager.getInstance().getArtifactFromId(
                            selectedItem.getArtifact().getArtId(), transactionId);
 
                RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);

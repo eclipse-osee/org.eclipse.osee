@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -71,15 +70,18 @@ public class UpdateFromParentBranch extends AbstractBlam {
       int parentBranchId = childBranch.getParentBranch().getBranchId();
 
       String INSERT_UPDATED_ARTIFACTS =
-            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + ", ?" + " FROM " + ARTIFACT_TABLE + " , " + ARTIFACT_VERSION_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_id") + " IN " + Collections.toString(
+            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, mod_type, tx_current) " + "SELECT ?, " + TRANSACTIONS_TABLE.columns(
+                  "gamma_id", "mod_type", "tx_current") + " FROM " + ARTIFACT_TABLE + " , " + ARTIFACT_VERSION_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_id") + " IN " + Collections.toString(
                   artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_TABLE.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " = " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
       String INSERT_UPDATED_ATTRIBUTES_GAMMAS =
-            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + ATTRIBUTE_ALIAS_1.columns("gamma_id") + ", ?" + " FROM " + TRANSACTIONS_TABLE + "," + ATTRIBUTE_ALIAS_1 + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + " IN " + Collections.toString(
+            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, mod_type, tx_current) " + "SELECT ?, " + TRANSACTIONS_TABLE.columns(
+                  "gamma_id", "mod_type", "tx_current") + " FROM " + TRANSACTIONS_TABLE + "," + ATTRIBUTE_ALIAS_1 + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + " IN " + Collections.toString(
                   artIdBlock, "(", ",", ")") + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("attr_id") + " = " + ATTRIBUTE_ALIAS_2.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
       String INSERT_UPDATED_LINKS_GAMMAS =
-            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, tx_type) " + "SELECT ?, " + LINK_ALIAS_1.columns("gamma_id") + ", ?" + " FROM " + TRANSACTIONS_TABLE + "," + LINK_ALIAS_1 + " WHERE (" + LINK_ALIAS_1.column("a_art_id") + " IN " + Collections.toString(
+            "INSERT INTO " + TRANSACTIONS_TABLE + "(transaction_id, gamma_id, mod_type, tx_current) " + "SELECT ?, " + TRANSACTIONS_TABLE.columns(
+                  "gamma_id", "mod_type", "tx_current") + " FROM " + TRANSACTIONS_TABLE + "," + LINK_ALIAS_1 + " WHERE (" + LINK_ALIAS_1.column("a_art_id") + " IN " + Collections.toString(
                   artIdBlock, "(", ",", ")") + " OR " + LINK_ALIAS_1.column("b_art_id") + " IN " + Collections.toString(
                   artIdBlock, "(", ",", ")") + ") AND " + LINK_ALIAS_1.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_1.column("rel_link_id") + " = " + LINK_ALIAS_2.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + " = " + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
@@ -97,20 +99,20 @@ public class UpdateFromParentBranch extends AbstractBlam {
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ARTIFACTS, SQL3DataType.INTEGER,
-                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.Branched.getId(),
-                  SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
+                  baselineTransactionNumber, SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER,
+                  parentBranchId);
       OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " artifacts", false);
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
-                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.Branched.getId(),
-                  SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
+                  baselineTransactionNumber, SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER,
+                  parentBranchId);
       OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " attributes", false);
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_UPDATED_LINKS_GAMMAS, SQL3DataType.INTEGER,
-                  baselineTransactionNumber, SQL3DataType.INTEGER, TransactionType.Branched.getId(),
-                  SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
+                  baselineTransactionNumber, SQL3DataType.INTEGER, parentTransactionNumber, SQL3DataType.INTEGER,
+                  parentBranchId);
       OSEELog.logInfo(SkynetGuiPlugin.class, "inserted " + count + " relations", false);
 
       monitor.done();

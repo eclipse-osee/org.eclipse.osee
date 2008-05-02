@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -42,7 +42,7 @@ public class TransactionArtifactChange extends TransactionChange {
    }
 
    /**
-    * @param transactionType
+    * @param modType
     * @param changeType
     * @param toTransactionId
     * @param fromTransactionId
@@ -50,8 +50,8 @@ public class TransactionArtifactChange extends TransactionChange {
     * @param sourceGammaId
     * @param destGammaId
     */
-   public TransactionArtifactChange(TransactionType transactionType, ChangeType changeType, TransactionId toTransactionId, TransactionId fromTransactionId, int artId, int sourceGammaId, int destGammaId, ArtifactSubtypeDescriptor artifactSubtypeDescriptor) {
-      super(transactionType, changeType, toTransactionId, fromTransactionId);
+   public TransactionArtifactChange(ModificationType modType, ChangeType changeType, TransactionId toTransactionId, TransactionId fromTransactionId, int artId, int sourceGammaId, int destGammaId, ArtifactSubtypeDescriptor artifactSubtypeDescriptor) {
+      super(modType, changeType, toTransactionId, fromTransactionId);
       this.artId = artId;
       this.sourceGammaId = sourceGammaId;
       this.destGammaId = destGammaId;
@@ -64,8 +64,7 @@ public class TransactionArtifactChange extends TransactionChange {
     */
    @Override
    public Image getImage() {
-      return artifactSubtypeDescriptor.getImage(getChangeType(),
-            TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
+      return artifactSubtypeDescriptor.getImage(getChangeType(), getModificationType());
    }
 
    /**

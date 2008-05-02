@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.List;
@@ -65,7 +65,7 @@ public class WordChangesMadeToHandler extends AbstractHandler {
             artifactChange.getModType() == NEW ? null : myArtifactPersistenceManager.getArtifactFromId(
                   artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
       Artifact secondArtifact =
-            artifactChange.getModType() == DELETE ? null : myArtifactPersistenceManager.getArtifactFromId(
+            artifactChange.getModType() == DELETED ? null : myArtifactPersistenceManager.getArtifactFromId(
                   artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId());
       RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
    }

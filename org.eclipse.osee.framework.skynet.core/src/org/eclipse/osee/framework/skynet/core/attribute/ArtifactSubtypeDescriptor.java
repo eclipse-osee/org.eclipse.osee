@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTI
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.OUTGOING;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -239,13 +239,13 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
          imageRegistry.put(BASE, imageDescriptor);
          imageRegistry.put(BASE + LOCKED_NO_ACCESS, new OverlayImage(imageRegistry.get(BASE), lockedNoAccess, 0, 7));
          imageRegistry.put(BASE + LOCKED_ACCESS, new OverlayImage(imageRegistry.get(BASE), lockedAccess, 0, 7));
-         imageRegistry.put(BASE + INCOMING + DELETE, new OverlayImage(imageRegistry.get(BASE), incDeleted));
+         imageRegistry.put(BASE + INCOMING + DELETED, new OverlayImage(imageRegistry.get(BASE), incDeleted));
          imageRegistry.put(BASE + INCOMING + CHANGE, new OverlayImage(imageRegistry.get(BASE), incChange));
          imageRegistry.put(BASE + INCOMING + NEW, new OverlayImage(imageRegistry.get(BASE), incNew));
-         imageRegistry.put(BASE + OUTGOING + DELETE, new OverlayImage(imageRegistry.get(BASE), outDeleted));
+         imageRegistry.put(BASE + OUTGOING + DELETED, new OverlayImage(imageRegistry.get(BASE), outDeleted));
          imageRegistry.put(BASE + OUTGOING + CHANGE, new OverlayImage(imageRegistry.get(BASE), outChange));
          imageRegistry.put(BASE + OUTGOING + NEW, new OverlayImage(imageRegistry.get(BASE), outNew));
-         imageRegistry.put(BASE + CONFLICTING + DELETE, new OverlayImage(imageRegistry.get(BASE), conDeleted));
+         imageRegistry.put(BASE + CONFLICTING + DELETED, new OverlayImage(imageRegistry.get(BASE), conDeleted));
          imageRegistry.put(BASE + CONFLICTING + CHANGE, new OverlayImage(imageRegistry.get(BASE), conChange));
          imageRegistry.put(BASE + WARNING, new OverlayImage(imageRegistry.get(BASE),
                ArtifactAnnotation.Type.Warning.getImageOverlayDescriptor(), 0, 8));

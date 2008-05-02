@@ -643,7 +643,7 @@ public class BranchExporter {
 
       public ArtifactData process(ResultSet set) throws SQLException {
          return new ArtifactData(set.getInt("art_id"), set.getString("guid"), set.getString("name"),
-               set.getString("human_readable_id"), set.getInt("modification_id") == ModificationType.DELETE.getValue());
+               set.getString("human_readable_id"), set.getInt("modification_id") == ModificationType.DELETED.getValue());
       }
 
       public boolean validate(ArtifactData item) {
@@ -713,7 +713,7 @@ public class BranchExporter {
 
          try {
             return new AttributeData(set.getInt("art_id"), set.getString("name"), set.getInt("attr_id"),
-                  set.getString("value"), byteData, set.getInt("modification_id") == ModificationType.DELETE.getValue());
+                  set.getString("value"), byteData, set.getInt("modification_id") == ModificationType.DELETED.getValue());
          } catch (UnsupportedEncodingException ex) {
             // Don't expect to ever not have UTF-8 support
             throw new IllegalStateException(ex);
@@ -793,7 +793,7 @@ public class BranchExporter {
       public LinkData process(ResultSet set) throws SQLException {
          return new LinkData(set.getString("type_name"), set.getInt("rel_link_id"), set.getString("a_guid"),
                set.getString("b_guid"), set.getInt("a_order_value"), set.getInt("b_order_value"),
-               set.getString("rationale"), set.getInt("modification_id") == ModificationType.DELETE.getValue());
+               set.getString("rationale"), set.getInt("modification_id") == ModificationType.DELETED.getValue());
       }
 
       public boolean validate(LinkData item) {

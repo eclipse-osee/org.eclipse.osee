@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 
 /**
  * @author Ryan D. Brooks
@@ -245,7 +245,7 @@ public class ArtifactQueryBuilder {
       if (allowDeleted) {
          sql.append(" OR ");
          sql.append("txs1.mod_type=");
-         sql.append(TransactionType.Deleted.getId());
+         sql.append(ModificationType.DELETED.getValue());
          sql.append(" AND ");
       } else {
          sql.append(" AND ");

@@ -12,7 +12,6 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -30,11 +29,11 @@ public class ArtifactChanged extends Change {
     * @param artId
     * @param toTransactionId
     * @param fromTransactionId
-    * @param transactionType
+    * @param modType
     * @param changeType
     */
-   public ArtifactChanged(int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, TransactionType transactionType, ChangeType changeType) {
-      super(artTypeId, artName, sourceGamma, artId, toTransactionId, fromTransactionId, transactionType, changeType);
+   public ArtifactChanged(int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
+      super(artTypeId, artName, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
    }
 
    /**
@@ -104,7 +103,7 @@ public class ArtifactChanged extends Change {
    @Override
    public Image getItemKindImage() throws IllegalArgumentException, SQLException {
       return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artTypeId).getImage(
-            getChangeType(), TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
+            getChangeType(), getModificationType());
    }
 
    /* (non-Javadoc)

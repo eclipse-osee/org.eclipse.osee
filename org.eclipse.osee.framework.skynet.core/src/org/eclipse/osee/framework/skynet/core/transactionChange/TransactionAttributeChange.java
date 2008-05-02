@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -37,7 +37,7 @@ public class TransactionAttributeChange extends TransactionChange {
    private DynamicAttributeDescriptor dynamicAttributeDescriptor;
 
    /**
-    * @param transactionType
+    * @param modType
     * @param changeType
     * @param toTransactionId
     * @param fromTransactionId
@@ -50,9 +50,8 @@ public class TransactionAttributeChange extends TransactionChange {
     * @param destContent
     * @param attrTypeId
     */
-   public TransactionAttributeChange(TransactionType transactionType, ChangeType changeType, int attrId, int sourceGammaId, String sourceValue, InputStream sourceContent, int destGammaId, String destValue, InputStream destContent, int attrTypeId, Branch sourceBranch) {
-
-      super(transactionType, changeType, null, null);
+   public TransactionAttributeChange(ModificationType modType, ChangeType changeType, int attrId, int sourceGammaId, String sourceValue, InputStream sourceContent, int destGammaId, String destValue, InputStream destContent, int attrTypeId, Branch sourceBranch) {
+      super(modType, changeType, null, null);
       this.attrId = attrId;
       this.sourceGammaId = sourceGammaId;
       this.sourceValue = sourceValue;

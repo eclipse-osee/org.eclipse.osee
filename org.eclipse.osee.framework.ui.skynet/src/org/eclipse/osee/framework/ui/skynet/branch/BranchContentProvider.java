@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -157,7 +157,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             return handleBranchChangeReportRequest(input);
          } else if (parentElement instanceof ArtifactChange) {
             ArtifactChange change = (ArtifactChange) parentElement;
-            if (change.getModType() != DELETE) {
+            if (change.getModType() != DELETED) {
                return summarize(revisionManager.getTransactionChanges(change, artifactNameDescriptorCache)).toArray();
             }
          } else if (parentElement instanceof ChangeSummary) {
@@ -358,7 +358,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          if (data.getComment() != null && data.getComment().contains(BranchPersistenceManager.NEW_BRANCH_COMMENT)) return false;
       }
 
-      return ((element instanceof Branch && accessControlManager.checkObjectPermission(element, PermissionEnum.READ)) || element instanceof TransactionData || element instanceof Pair || element instanceof SnapshotDescription || element instanceof ChangeSummary || element instanceof Collection || (element instanceof ArtifactChange && ((ArtifactChange) element).getModType() != DELETE));
+      return ((element instanceof Branch && accessControlManager.checkObjectPermission(element, PermissionEnum.READ)) || element instanceof TransactionData || element instanceof Pair || element instanceof SnapshotDescription || element instanceof ChangeSummary || element instanceof Collection || (element instanceof ArtifactChange && ((ArtifactChange) element).getModType() != DELETED));
    }
 
    public void dispose() {
@@ -395,7 +395,7 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
          } else if (change instanceof ArtifactChange) {
             ArtifactChange artifactChange = (ArtifactChange) change;
 
-            if (artifactChange.getModType() == ModificationType.DELETE) {
+            if (artifactChange.getModType() == ModificationType.DELETED) {
                summary.add(artifactChange);
             }
          } else {

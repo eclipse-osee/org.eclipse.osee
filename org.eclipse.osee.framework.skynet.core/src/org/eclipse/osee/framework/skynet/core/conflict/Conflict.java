@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.swt.graphics.Image;
@@ -34,7 +34,7 @@ public abstract class Conflict implements IAdaptable {
    private TransactionId toTransactionId;
    private TransactionId fromTransactionId;
    private Artifact artifact;
-   private TransactionType transactionType;
+   private ModificationType modType;
    private ChangeType changeType;
    private Branch mergeBranch;
 
@@ -47,14 +47,14 @@ public abstract class Conflict implements IAdaptable {
     * @param transactionType
     * @param changeType
     */
-   public Conflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, TransactionType transactionType, ChangeType changeType, Branch mergeBranch) {
+   public Conflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, Branch mergeBranch) {
       super();
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
       this.artId = artId;
       this.toTransactionId = toTransactionId;
       this.fromTransactionId = fromTransactionId;
-      this.transactionType = transactionType;
+      this.modType = modType;
       this.changeType = changeType;
       this.mergeBranch = mergeBranch;
    }
@@ -62,8 +62,8 @@ public abstract class Conflict implements IAdaptable {
    /**
     * @return the transactionType
     */
-   public TransactionType getTransactionType() {
-      return transactionType;
+   public ModificationType getModificationType() {
+      return modType;
    }
 
    /**
@@ -157,8 +157,7 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public Image getArtifactImage() throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      return getArtifact().getArtifactType().getImage(getChangeType(),
-            TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
+      return getArtifact().getArtifactType().getImage(getChangeType(), getModificationType());
    }
 
    public abstract Image getImage();

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETE;
+import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,7 +84,7 @@ public class ArtifactChange extends RevisionChange {
     * @param descriptor The descriptor for the Artifact.
     */
    public ArtifactChange(ChangeType changeType, String name, ArtifactSubtypeDescriptor descriptor, int artId, int gammaId, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId lastGoodTransactionId, TransactionId deletedTransactionId) {
-      this(changeType, DELETE, name, descriptor, null, baseParentTransactionId, headParentTransactionId,
+      this(changeType, DELETED, name, descriptor, null, baseParentTransactionId, headParentTransactionId,
             lastGoodTransactionId, lastGoodTransactionId, lastGoodTransactionId, artId, gammaId, lastGoodTransactionId);
 
       this.deletedTransactionId = deletedTransactionId;
@@ -140,7 +140,7 @@ public class ArtifactChange extends RevisionChange {
     * @throws SQLException
     */
    public Artifact getArtifact() throws SQLException {
-      TransactionId transactionId = (getModType() == ModificationType.DELETE ? lastGoodTransactionId : toTransactionId);
+      TransactionId transactionId = (getModType() == ModificationType.DELETED ? lastGoodTransactionId : toTransactionId);
 
       if (artifact == null && transactionId != null) {
          artifact = loadArtifact(transactionId, artifact, artId);

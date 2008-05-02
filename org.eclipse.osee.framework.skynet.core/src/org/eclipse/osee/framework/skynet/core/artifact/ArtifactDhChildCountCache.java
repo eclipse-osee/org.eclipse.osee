@@ -60,7 +60,7 @@ public class ArtifactDhChildCountCache {
             chStmt =
                   ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER, hierarchicalTypeId,
                         SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
-                        ModificationType.DELETE.getValue());
+                        ModificationType.DELETED.getValue());
             ResultSet rset = chStmt.getRset();
 
             while (rset.next()) {

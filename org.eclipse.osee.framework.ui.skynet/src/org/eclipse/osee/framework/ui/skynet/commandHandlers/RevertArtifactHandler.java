@@ -123,7 +123,7 @@ public class RevertArtifactHandler extends AbstractHandler {
             TransactionId baseTransactionId = artifactChange.getFromTransactionId();
 
             TransactionId toTransactionId =
-                  artifactChange.getModType() == ModificationType.DELETE ? artifactChange.getDeletedTransactionId() : artifactChange.getToTransactionId();
+                  artifactChange.getModType() == ModificationType.DELETED ? artifactChange.getDeletedTransactionId() : artifactChange.getToTransactionId();
 
             Collection<RevisionChange> revisionChanges =
                   myRevisionManager.getAllTransactionChanges(OUTGOING, baseTransactionId.getTransactionNumber(),

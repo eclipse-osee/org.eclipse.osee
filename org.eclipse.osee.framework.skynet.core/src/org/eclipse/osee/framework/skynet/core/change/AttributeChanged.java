@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionType;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.swt.graphics.Image;
@@ -42,15 +41,15 @@ public class AttributeChanged extends Change {
     * @param artId
     * @param toTransactionId
     * @param fromTransactionId
-    * @param transactionType
+    * @param modType
     * @param changeType
     * @param sourceValue
     * @param sourceContent
     * @param attrId
     * @param attrTypeId
     */
-   public AttributeChanged(int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, TransactionType transactionType, ChangeType changeType, String sourceValue, InputStream sourceContent, int attrId, int attrTypeId) {
-      super(artTypeId, artName, sourceGamma, artId, toTransactionId, fromTransactionId, transactionType, changeType);
+   public AttributeChanged(int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String sourceValue, InputStream sourceContent, int attrId, int attrTypeId) {
+      super(artTypeId, artName, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
       this.sourceValue = sourceValue;
       this.sourceContent = sourceContent;
       this.attrId = attrId;
@@ -89,8 +88,7 @@ public class AttributeChanged extends Change {
    }
 
    public Image getItemTypeImage() {
-      return AttributeChangeIcons.getImage(getChangeType(),
-            TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
+      return AttributeChangeIcons.getImage(getChangeType(), getModificationType());
    }
 
    /* (non-Javadoc)
@@ -128,9 +126,8 @@ public class AttributeChanged extends Change {
    private ArtifactChange getArtifactChange() throws SQLException {
       if (artifactChange == null) {
          artifactChange =
-               new ArtifactChange(getChangeType(), getArtId(),
-                     TransactionType.convertTransactionTypeToModificationType(getTransactionType()).getValue(),
-                     getGamma(), getToTransactionId(), getFromTransactionId(),
+               new ArtifactChange(getChangeType(), getArtId(), getModificationType().getValue(), getGamma(),
+                     getToTransactionId(), getFromTransactionId(),
                      ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(getArtTypeId()));
       }
       return artifactChange;
@@ -169,6 +166,6 @@ public class AttributeChanged extends Change {
    @Override
    public Image getItemKindImage() throws IllegalArgumentException, SQLException {
       return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artTypeId).getImage(
-            getChangeType(), TransactionType.convertTransactionTypeToModificationType(getTransactionType()));
+            getChangeType(), getModificationType());
    }
 }

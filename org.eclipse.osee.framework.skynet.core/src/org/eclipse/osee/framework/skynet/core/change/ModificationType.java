@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author Ryan D. Brooks
  */
 public enum ModificationType implements Serializable {
-   NEW("New", 1), CHANGE("Modified", 2), DELETE("Deleted", 3);
+   NEW("New", 1), CHANGE("Modified", 2), DELETED("Deleted", 3);
 
    private int value;
    private String displayName;
@@ -44,5 +44,13 @@ public enum ModificationType implements Serializable {
       for (ModificationType modtype : values())
          if (modtype.getValue() == value) return modtype;
       return null;
+   }
+
+   public TxChange getTxChange() {
+      return this == DELETED ? TxChange.NOT_CURRENT : TxChange.CURRENT;
+   }
+
+   public int getCurrentValue() {
+      return getTxChange().ordinal();
    }
 }

@@ -572,7 +572,7 @@ public class BranchManager {
 
       try {
          for (ArtifactChange artChange : RevisionManager.getInstance().getDeletedArtifactChanges(transactionId)) {
-            if (artChange.getModType() == ModificationType.DELETE) arts.add(artChange.getArtifact());
+            if (artChange.getModType() == ModificationType.DELETED) arts.add(artChange.getArtifact());
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class,
