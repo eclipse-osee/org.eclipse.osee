@@ -23,9 +23,9 @@ public enum ChangeColumn {
 
    Empty("", 0, SWT.LEFT, true, SortDataType.String, false),
    Name("Artifact name(s)", 250, SWT.LEFT, true, SortDataType.String, false),
-   Item_Type("Item Type", 150, SWT.LEFT, true, SortDataType.String, false),
-   Item_Kind("Item Kind", 80, SWT.LEFT, true, SortDataType.String, false),
-   Change_Type("Change Type", 80, SWT.LEFT, true, SortDataType.String, false),
+   Item_Type("Item Type", 90, SWT.LEFT, true, SortDataType.String, false),
+   Item_Kind("Item Kind", 70, SWT.LEFT, true, SortDataType.String, false),
+   Change_Type("Change Type", 50, SWT.LEFT, true, SortDataType.String, false),
    Value("Value", 300, SWT.LEFT, true, SortDataType.String, false);
 
    private final String name;

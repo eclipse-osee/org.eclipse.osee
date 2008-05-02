@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -32,59 +32,34 @@ public class XChangeLabelProvider implements ITableLabelProvider {
    }
 
    public String getColumnText(Object element, int columnIndex) {
-      String text = "";
-
-      if (element instanceof String) {
-         text = (String) element;
-      }
       try {
-         if (element instanceof Change) {
+         if (element instanceof String) {
+            if (columnIndex == 1)
+               return (String) element;
+            else
+               return "";
+         } else if (element instanceof Change) {
             Change change = (Change) element;
-
-            if (columnIndex == 0) {
-               text = change.getName();
-            } else if (columnIndex == 1) {
-               text = change.getItemTypeName();
-            } else if (columnIndex == 2) {
-               text = change.getItemKind();
-            } else if (columnIndex == 3) {
-               text = change.getTransactionType().toString();
-            } else if (columnIndex == 4) {
-               text = change.getValue();
+            XViewerColumn xCol = changeXViewer.getXTreeColumn(columnIndex);
+            if (xCol == null) return "Can't determine XTreeColumn";
+            ChangeColumn cCol = ChangeColumn.getAtsXColumn(xCol);
+            if (cCol == null) return "Can't determine ChangeColumn";
+            if (cCol == ChangeColumn.Name) {
+               return change.getName();
+            } else if (cCol == ChangeColumn.Change_Type) {
+               return change.getChangeType().toString();
+            } else if (cCol == ChangeColumn.Item_Kind) {
+               return change.getItemKind();
+            } else if (cCol == ChangeColumn.Item_Type) {
+               return change.getItemTypeName();
+            } else if (cCol == ChangeColumn.Value) {
+               return change.getValue();
             }
          }
-      } catch (SQLException exception) {
-
+      } catch (SQLException ex) {
+         return XViewerCells.getCellExceptionString(ex);
       }
-      return text;
-   }
-
-   /**
-    * Provided as optimization of subclassed classes so provider doesn't have to retrieve the same information that has
-    * already been retrieved
-    * 
-    * @param element
-    * @param columnIndex
-    * @param branch
-    * @param xCol
-    * @param aCol
-    * @return column string
-    * @throws SQLException
-    */
-   public String getColumnText(Object element, int columnIndex, Branch branch, XViewerColumn xCol, ChangeColumn aCol) throws SQLException {
-      if (!xCol.isShow()) return ""; // Since not shown, don't display
-      if (aCol == ChangeColumn.Name) {
-         return ChangeColumn.Name.getName();
-      } else if (aCol == ChangeColumn.Item_Type) {
-         return ChangeColumn.Item_Type.getName();
-      } else if (aCol == ChangeColumn.Value) {
-         return ChangeColumn.Value.getName();
-      } else if (aCol == ChangeColumn.Item_Kind) {
-         return ChangeColumn.Item_Kind.getName();
-      } else if (aCol == ChangeColumn.Change_Type) {
-         return ChangeColumn.Change_Type.getName();
-      }
-      return "Unhandled Column";
+      return "Unknown Column";
    }
 
    public void dispose() {
