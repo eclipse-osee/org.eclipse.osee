@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.editor.service.branch.CommitWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.CreateWorkingBranchService;
 import org.eclipse.osee.ats.editor.service.branch.DeleteWorkingBranch;
 import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
+import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportServiceNew;
 import org.eclipse.osee.ats.editor.service.branch.ShowWorkingBranchService;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -49,6 +50,7 @@ public abstract class BranchableStateItem extends AtsStateItem {
       services.add(new CommitManagerService(smaMgr));
       services.add(new ShowWorkingBranchService(smaMgr));
       services.add(new ShowChangeReportService(smaMgr));
+      services.add(new ShowChangeReportServiceNew(smaMgr));
       services.add(new CommitWorkingBranchService(smaMgr, false));
       if (AtsPlugin.isAtsAdmin()) services.add(new CommitWorkingBranchService(smaMgr, true));
       services.add(new DeleteWorkingBranch(smaMgr));

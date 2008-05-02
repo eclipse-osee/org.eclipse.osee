@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
+import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
@@ -56,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -149,6 +151,25 @@ public class BranchManager {
          } else if (isCommittedBranch()) {
             ChangeReportView.openViewUpon(new ChangeReportInput(smaMgr.getSma().getDescriptiveName(),
                   getTransactionId()));
+         } else {
+            AWorkbench.popup("ERROR", "No Branch or Committed Transaction Found.");
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, "Can't show change report.", ex, true);
+      }
+   }
+
+   /**
+    * Display change report associated with the branch, if exists, or transaction, if branch has been committed.
+    */
+   public void showChangeReportNew() {
+      try {
+         if (isWorkingBranch()) {
+            Change[] changes = new Change[0];
+            ChangeView.openViewUpon(RevisionManager.getInstance().getChangesPerBranch(getWorkingBranch()).toArray(
+                  changes));
+         } else if (isCommittedBranch()) {
+            AWorkbench.popup("ERROR", "not implemented yet.");
          } else {
             AWorkbench.popup("ERROR", "No Branch or Committed Transaction Found.");
          }
