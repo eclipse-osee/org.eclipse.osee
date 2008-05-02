@@ -90,14 +90,23 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
  * @author Jeff C. Phillips
  */
 public class RevisionManager implements PersistenceManager, IEventReceiver {
-   private static final String ATTRIBUTE_CHANGES =
+   private static final String BRANCH_ATTRIBUTE_CHANGES =
          "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value, t3.content, t1.mod_type, t8.art_type_id FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
-   private static final String REL_CHANGES =
+   private static final String TRANSACTION_ATTRIBUTE_CHANGES =
+         "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value, t3.content, t1.mod_type, t8.art_type_id FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.transaction_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
+
+   private static final String BRANCH_REL_CHANGES =
          "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order_value, rl3.b_order_value, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 where tx1.tx_current = 1 AND td2.tx_type = 0 AND td2.branch_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
 
-   private static final String ARTIFACT_DELTED_CHANGES =
+   private static final String TRANSACTION_REL_CHANGES =
+         "SELECT tx1.mod_type, rl3.gamma_id, rl3.b_art_id, rl3.a_art_id, rl3.a_order_value, rl3.b_order_value, rl3.rationale, rl3.rel_link_id, rl3.rel_link_type_id from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3 where tx1.tx_current = 1 AND td2.tx_type = 0 AND td2.transaction_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id";
+
+   private static final String BRANCH_ARTIFACT_DELTED_CHANGES =
          "select af4.art_id, af4.art_type_id, av3.gamma_id, tx1.mod_type FROM osee_Define_txs tx1, osee_Define_tx_details td2, osee_Define_artifact_version av3, osee_Define_artifact af4 WHERE td2.branch_id = ? AND td2.transaction_id = tx1.transaction_id AND tx1.gamma_id = av3.gamma_id AND tx1.mod_type = -3 AND av3.art_id = af4.art_id";
+
+   private static final String TRANSACTION_ARTIFACT_DELTED_CHANGES =
+         "select af4.art_id, af4.art_type_id, av3.gamma_id, tx1.mod_type FROM osee_Define_txs tx1, osee_Define_tx_details td2, osee_Define_artifact_version av3, osee_Define_artifact af4 WHERE td2.transaction_id = ? AND td2.transaction_id = tx1.transaction_id AND tx1.gamma_id = av3.gamma_id AND tx1.mod_type = -3 AND av3.art_id = af4.art_id";
 
    private static final String SELECT_TRANSACTIONS =
          "SELECT " + TRANSACTION_DETAIL_TABLE.columns("transaction_id", "commit_art_id", TXD_COMMENT, "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " ORDER BY transaction_id DESC";
@@ -381,17 +390,38 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @return
     * @throws SQLException
     */
+   public Collection<Change> getChangesPerBranch(int transactionIdNumber) throws SQLException {
+      return getChangesPerBranch(null, transactionIdNumber);
+   }
+
+   /**
+    * Acquires artifact, relation and attribute changes from a source branch since its creation.
+    * 
+    * @param sourceBranch
+    * @param baselineTransactionId
+    * @return
+    * @throws SQLException
+    */
    public Collection<Change> getChangesPerBranch(Branch sourceBranch) throws SQLException {
+      return getChangesPerBranch(sourceBranch, -1);
+   }
+
+   /**
+    * Acquires artifact, relation and attribute changes from a source branch since its creation.
+    * 
+    * @param sourceBranch
+    * @param baselineTransactionId
+    * @return
+    * @throws SQLException
+    */
+   private Collection<Change> getChangesPerBranch(Branch sourceBranch, int transactionIdNumber) throws SQLException {
       ArrayList<Change> changes = new ArrayList<Change>();
       Set<Change> changeItemsNeedName = new HashSet<Change>();
       Set<Integer> artIds = new HashSet<Integer>();
 
-      loadAttributeChanges(sourceBranch, artIds, changeItemsNeedName);
-      System.out.println("atts");
-      loadRelationChanges(sourceBranch, artIds, changeItemsNeedName);
-      System.out.println("rels");
-      loadDeletedArtifactChanges(sourceBranch, artIds, changeItemsNeedName);
-      System.out.println("deletes");
+      loadAttributeChanges(sourceBranch, transactionIdNumber, artIds, changeItemsNeedName);
+      loadRelationChanges(sourceBranch, transactionIdNumber, artIds, changeItemsNeedName);
+      loadDeletedArtifactChanges(sourceBranch, transactionIdNumber, artIds, changeItemsNeedName);
       setArtifactNames(sourceBranch, changeItemsNeedName, changes, artIds);
 
       return changes;
@@ -443,13 +473,22 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param changes
     * @throws SQLException
     */
-   private void loadDeletedArtifactChanges(Branch sourceBranch, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
+   private void loadDeletedArtifactChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       TransactionId sourceHeadTransactionId = transactionIdManager.getEditableTransactionId(sourceBranch);
       try {
-         connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(ARTIFACT_DELTED_CHANGES, SQL3DataType.INTEGER,
-                     sourceBranch.getBranchId());
+         //Changes per a branch
+         if (sourceBranch != null) {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(BRANCH_ARTIFACT_DELTED_CHANGES, SQL3DataType.INTEGER,
+                        sourceBranch.getBranchId());
+         }
+         //Changes per a transaction
+         else {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(TRANSACTION_ARTIFACT_DELTED_CHANGES, SQL3DataType.INTEGER,
+                        transactionNumber);
+         }
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
          while (resultSet.next()) {
@@ -469,12 +508,20 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param changes
     * @throws SQLException
     */
-   private void loadRelationChanges(Branch sourceBranch, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
+   private void loadRelationChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       Pair<TransactionId, TransactionId> branchTransactions = transactionIdManager.getStartEndPoint(sourceBranch);
       try {
-         connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(REL_CHANGES, SQL3DataType.INTEGER, sourceBranch.getBranchId());
+         //Changes per a branch
+         if (sourceBranch != null) {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(BRANCH_REL_CHANGES, SQL3DataType.INTEGER,
+                        sourceBranch.getBranchId());
+         }//Changes per a transaction
+         else {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(TRANSACTION_REL_CHANGES, SQL3DataType.INTEGER, transactionNumber);
+         }
          ResultSet resultSet = connectionHandlerStatement.getRset();
 
          while (resultSet.next()) {
@@ -500,11 +547,20 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param changes
     * @throws SQLExceptio
     */
-   private void loadAttributeChanges(Branch sourceBranch, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
+   private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
-         connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(ATTRIBUTE_CHANGES, SQL3DataType.INTEGER, sourceBranch.getBranchId());
+         //Changes per a branch
+         if (sourceBranch != null) {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_CHANGES, SQL3DataType.INTEGER,
+                        sourceBranch.getBranchId());
+         }//Changes per transaction number
+         else {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(TRANSACTION_ATTRIBUTE_CHANGES, SQL3DataType.INTEGER,
+                        transactionNumber);
+         }
 
          Pair<TransactionId, TransactionId> branchStartEndTransaction =
                transactionIdManager.getStartEndPoint(sourceBranch);
