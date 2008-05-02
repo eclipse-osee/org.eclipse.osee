@@ -307,7 +307,7 @@ public class BranchCreator implements PersistenceManager {
       for (ArtifactSubtypeDescriptor artifactType : compressArtTypes) {
          int count =
                ConnectionHandler.runPreparedUpdateReturnCount(SELECTIVELY_BRANCH_ARTIFACTS_COMPRESSED,
-                     SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER, TxChange.CURRENT,
+                     SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER, TxChange.CURRENT.ordinal(),
                      SQL3DataType.INTEGER, artifactType.getArtTypeId(), SQL3DataType.INTEGER,
                      parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                      parentTransactionId.getBranch().getBranchId());
@@ -316,14 +316,14 @@ public class BranchCreator implements PersistenceManager {
 
       int count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_ATTRIBUTES_GAMMAS, SQL3DataType.INTEGER,
-                  newTransactionNumber, SQL3DataType.INTEGER, TxChange.CURRENT, SQL3DataType.INTEGER,
+                  newTransactionNumber, SQL3DataType.INTEGER, TxChange.CURRENT.ordinal(), SQL3DataType.INTEGER,
                   newTransactionNumber, SQL3DataType.INTEGER, parentTransactionId.getTransactionNumber(),
                   SQL3DataType.INTEGER, parentTransactionId.getBranch().getBranchId());
       logger.log(Level.INFO, "inserted " + count + " attributes");
 
       count =
             ConnectionHandler.runPreparedUpdateReturnCount(INSERT_LINK_GAMMAS, SQL3DataType.INTEGER,
-                  newTransactionNumber, SQL3DataType.INTEGER, TxChange.CURRENT, SQL3DataType.INTEGER,
+                  newTransactionNumber, SQL3DataType.INTEGER, TxChange.CURRENT.ordinal(), SQL3DataType.INTEGER,
                   newTransactionNumber, SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
                   parentTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
                   parentTransactionId.getBranch().getBranchId());
@@ -573,7 +573,7 @@ public class BranchCreator implements PersistenceManager {
 
       private void insertGammas(String sql, int baselineTransactionNumber) throws SQLException {
          ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER, baselineTransactionNumber, SQL3DataType.INTEGER,
-               TxChange.CURRENT, SQL3DataType.INTEGER, sourceBranch.getBranchId());
+               TxChange.CURRENT.ordinal(), SQL3DataType.INTEGER, sourceBranch.getBranchId());
       }
    }
 }
