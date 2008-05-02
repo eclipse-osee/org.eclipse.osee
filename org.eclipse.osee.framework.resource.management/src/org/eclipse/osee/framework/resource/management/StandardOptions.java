@@ -9,5 +9,5 @@ package org.eclipse.osee.framework.resource.management;
  * @author Roberto E. Escobar
  */
 public enum StandardOptions {
-   CompressOnSave, CompressOnAcquire, DecompressOnSave, Overwrite, Extension;
+   CompressOnSave, CompressOnAcquire, DecompressOnSave, DecompressOnAquire, Overwrite, Extension;
 }
