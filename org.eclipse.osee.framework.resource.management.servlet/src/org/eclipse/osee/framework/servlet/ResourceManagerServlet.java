@@ -59,9 +59,9 @@ public class ResourceManagerServlet extends CustomHttpServlet {
             response.setCharacterEncoding("ISO-8859-1");
             String mimeType = HttpURLConnection.guessContentTypeFromStream(inputStream);
             if (mimeType == null) {
-               mimeType = request.getSession().getServletContext().getMimeType(resource.getLocation().toString());
+               mimeType = HttpURLConnection.guessContentTypeFromName(resource.getLocation().toString());
                if (mimeType == null) {
-                  mimeType = "application";
+                  mimeType = "application/*";
                }
             }
             response.setContentType(mimeType);
