@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
@@ -95,15 +95,15 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   public void getTeamDefs() throws SQLException, IllegalArgumentException {
+   public void getTeamDefs() throws Exception {
       if (teamDefNames == null) return;
       if (teamDefs == null) {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
          for (String name : teamDefNames) {
-            ArtifactTypeNameSearch srch =
-                  new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, name,
-                        BranchPersistenceManager.getAtsBranch());
-            teamDefs.add(srch.getSingletonArtifactOrException(TeamDefinitionArtifact.class));
+            TeamDefinitionArtifact teamDef =
+                  (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(
+                        TeamDefinitionArtifact.ARTIFACT_NAME, name, AtsPlugin.getAtsBranch());
+            teamDefs.add(teamDef);
          }
       }
       if (teamDefs == null) throw new IllegalArgumentException("Can't Find ProductDefinitionArtifact for " + getName());
@@ -113,7 +113,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
     * @return All directly specified teamDefs plus if recurse, will get all children
     * @throws SQLException
     */
-   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws SQLException {
+   public Set<TeamDefinitionArtifact> getSearchTeamDefs() throws Exception {
       getTeamDefs();
       Set<TeamDefinitionArtifact> srchTeamDefs = new HashSet<TeamDefinitionArtifact>();
       for (TeamDefinitionArtifact teamDef : (teamDefs != null ? teamDefs : selectedTeamDefs))

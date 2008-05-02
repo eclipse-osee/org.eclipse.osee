@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -74,10 +74,9 @@ public class TaskManager {
    public TaskArtifact createNewTask(Collection<User> assignees, String title, boolean persist) throws Exception {
       TaskArtifact taskArt = null;
       taskArt =
-            (TaskArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  TaskArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
+            (TaskArtifact) ArtifactTypeManager.addArtifact(TaskArtifact.ARTIFACT_NAME,
+                  BranchPersistenceManager.getAtsBranch(), title);
       taskArt.getLog().addLog(LogType.Originated, "", "");
-      taskArt.setDescriptiveName(title);
 
       // Set current state and POCs
       taskArt.getCurrentStateDam().setState(new SMAState("InWork", assignees));

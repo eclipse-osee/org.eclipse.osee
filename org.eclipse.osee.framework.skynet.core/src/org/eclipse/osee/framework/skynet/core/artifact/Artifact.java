@@ -626,14 +626,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       setSoleXAttributeValue(attributeTypeName, value);
    }
 
-   public void clearSoleAttributeValue(String attributeTypeName) throws IllegalStateException, SQLException {
-      Attribute<String> attribute = getSoleAttribute(attributeTypeName);
-
-      if (attribute != null) {
-         attribute.delete();
-      }
-   }
-
    public void setSoleBooleanAttributeValue(String attributeTypeName, Boolean value) throws IllegalStateException, SQLException {
       setSoleXAttributeValue(attributeTypeName, value);
    }
@@ -704,9 +696,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    }
 
    public <T> void addAttribute(String attributeTypeName, T value) throws SQLException {
-      DynamicAttributeManager attributeManager = getAttributeManager(attributeTypeName);
-      Attribute attribute = attributeManager.getNewAttribute();
-      attribute.setValue(value);
+      getAttributeManager(attributeTypeName).getNewAttribute().setValue(value);
    }
 
    /**

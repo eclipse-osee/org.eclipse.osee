@@ -166,7 +166,7 @@ public class BranchManager {
          if (isWorkingBranch()) {
             ChangeView.open(getWorkingBranch());
          } else if (isCommittedBranch()) {
-            AWorkbench.popup("ERROR", "not implemented yet.");
+            ChangeView.open(getTransactionId().getTransactionNumber());
          } else {
             AWorkbench.popup("ERROR", "No Branch or Committed Transaction Found.");
          }

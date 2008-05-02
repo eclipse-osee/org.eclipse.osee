@@ -19,12 +19,12 @@ import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
@@ -61,10 +61,7 @@ public class EveryoneGroup extends Group {
          if (searchResults != null && searchResults.size() != 0) {
             everyoneGroup = searchResults.iterator().next();
          } else {
-            ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor("User Group");
-
-            everyoneGroup = descriptor.makeNewArtifact(branchManager.getCommonBranch());
-            everyoneGroup.setDescriptiveName(GROUP_NAME);
+            everyoneGroup = ArtifactTypeManager.addArtifact("User Group", branchManager.getCommonBranch(), GROUP_NAME);
 
             boolean wasNotInDbInit = !SkynetDbInit.isDbInit();
             if (wasNotInDbInit) { // EveryoneGroup needs to be created under the special condition of the init

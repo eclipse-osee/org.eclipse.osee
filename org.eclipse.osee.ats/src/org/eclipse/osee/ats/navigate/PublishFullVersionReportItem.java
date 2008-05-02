@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,9 +20,9 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.VersionReportJob;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -60,7 +59,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run() throws SQLException {
+   public void run() throws Exception {
       String usePublishToFilename = publishToFilename;
       if (usePublishToFilename == null) {
          final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell().getShell(), SWT.SAVE);
@@ -70,10 +69,13 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       }
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
-         ArtifactTypeNameSearch srch =
-               new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName,
-                     BranchPersistenceManager.getAtsBranch());
-         useTeamDef = srch.getSingletonArtifactOrException(TeamDefinitionArtifact.class);
+         try {
+            useTeamDef =
+                  (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(
+                        TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName, AtsPlugin.getAtsBranch());
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing, going to get team below
+         }
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");

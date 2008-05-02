@@ -32,8 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -161,7 +160,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                   if (aia == null) {
                      rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + ai + "\"");
                   }
-               } catch (SQLException ex) {
+               } catch (Exception ex) {
                   rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
                   OSEELog.logException(AtsPlugin.class, ex, false);
                }
@@ -169,11 +168,9 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          }
          if (!aData.version.equals("")) {
             try {
-               ArtifactTypeNameSearch srch =
-                     new ArtifactTypeNameSearch(VersionArtifact.ARTIFACT_NAME, aData.version,
-                           BranchPersistenceManager.getAtsBranch());
-               if (srch.getSingletonArtifactOrException(VersionArtifact.class) == null) rd.logError("Row " + rowNum + ": Can't find single version \"" + aData.version + "\"");
-            } catch (SQLException ex) {
+               if (ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, aData.version,
+                     AtsPlugin.getAtsBranch()) == null) rd.logError("Row " + rowNum + ": Can't find single version \"" + aData.version + "\"");
+            } catch (Exception ex) {
                rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
                OSEELog.logException(AtsPlugin.class, ex, false);
             }
@@ -209,10 +206,10 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                         ActionableItemArtifact.getActionableItems(aData.actionableItems));
             actionArts.add(actionArt);
             if (!aData.version.equals("")) {
-               ArtifactTypeNameSearch srch =
-                     new ArtifactTypeNameSearch(VersionArtifact.ARTIFACT_NAME, aData.version,
-                           BranchPersistenceManager.getAtsBranch());
-               VersionArtifact verArt = srch.getSingletonArtifactOrException(VersionArtifact.class);
+               VersionArtifact verArt =
+                     (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
+                           aData.version, AtsPlugin.getAtsBranch());
+
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts())
                   verArt.relate(RelationSide.TeamWorkflowTargetedForVersion_Workflow, team, true);
             }

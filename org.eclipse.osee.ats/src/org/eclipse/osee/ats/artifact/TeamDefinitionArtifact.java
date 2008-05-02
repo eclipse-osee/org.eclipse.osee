@@ -23,16 +23,16 @@ import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactTypeSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
@@ -62,9 +62,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, boolean usesVersions, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef) throws SQLException {
       TeamDefinitionArtifact tda = null;
       tda =
-            (TeamDefinitionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  TeamDefinitionArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
-      tda.setDescriptiveName(name);
+            (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
+                  BranchPersistenceManager.getAtsBranch(), name);
       tda.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       tda.setSoleStringAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
@@ -214,9 +213,9 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       }
    }
 
-   public static TeamDefinitionArtifact getHeadTeamDefinition() throws SQLException {
-      return (new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, AtsConfig.TEAMS_HEADING,
-            BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(TeamDefinitionArtifact.class);
+   public static TeamDefinitionArtifact getHeadTeamDefinition() throws Exception {
+      return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
+            AtsConfig.TEAMS_HEADING, AtsPlugin.getAtsBranch());
    }
 
    public double getManDayHrsFromItemAndChildren() throws SQLException {
@@ -298,11 +297,9 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    public VersionArtifact createVersion(String name) {
       try {
          VersionArtifact versionArt =
-               (VersionArtifact) configurationManager.getArtifactSubtypeDescriptor(VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
-                     BranchPersistenceManager.getAtsBranch());
-         versionArt.setDescriptiveName(name);
+               (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
+                     BranchPersistenceManager.getAtsBranch(), name);
          versionArt.persistAttributes();
-
          relate(RelationSide.TeamDefinitionToVersion_Version, versionArt, true);
          return versionArt;
       } catch (SQLException ex) {

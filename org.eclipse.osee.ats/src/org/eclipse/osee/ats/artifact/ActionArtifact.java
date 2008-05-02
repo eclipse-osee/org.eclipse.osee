@@ -31,13 +31,13 @@ import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -866,12 +866,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       TeamWorkFlowArtifact twa = null;
       if (guid == null)
          twa =
-               (TeamWorkFlowArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     artifactName).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
+               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName,
+                     BranchPersistenceManager.getAtsBranch());
       else
          twa =
-               (TeamWorkFlowArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     artifactName).makeNewArtifact(BranchPersistenceManager.getAtsBranch(), guid, hrid);
+               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName,
+                     BranchPersistenceManager.getAtsBranch(), guid, hrid);
       setArtifactIdentifyData(this, twa);
 
       twa.getLog().addLog(LogType.Originated, "", "");

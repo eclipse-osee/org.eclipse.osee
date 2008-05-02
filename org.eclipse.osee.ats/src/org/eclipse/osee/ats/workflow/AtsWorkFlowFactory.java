@@ -51,7 +51,7 @@ public class AtsWorkFlowFactory {
    public static String DECISION_REVIEW_WORKFLOW = "osee_ats_decisionReview_workflow";
    public static String PEERTOPEER_REVIEW_WORKFLOW = "osee_ats_peerToPeerReview_workflow";
 
-   public AtsWorkFlow getWorkflow(StateMachineArtifact sma) throws SQLException, IOException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public AtsWorkFlow getWorkflow(StateMachineArtifact sma) throws Exception, IOException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (AtsPlugin.isAtsUseWorkflowFiles()) {
          String workflowId = "";
          String workflowXml = "";

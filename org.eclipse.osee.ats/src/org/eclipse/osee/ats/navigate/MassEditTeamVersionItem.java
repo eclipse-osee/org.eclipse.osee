@@ -15,9 +15,9 @@ import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -58,14 +58,17 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
       this.teamDefName = null;
    }
 
-   private TeamDefinitionArtifact getTeamDefinition() throws SQLException {
+   private TeamDefinitionArtifact getTeamDefinition() throws Exception {
       if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {
-         ArtifactTypeNameSearch srch =
-               new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName,
-                     BranchPersistenceManager.getAtsBranch());
-         TeamDefinitionArtifact teamDef = srch.getSingletonArtifactOrException(TeamDefinitionArtifact.class);
-         if (teamDef != null) return teamDef;
+         try {
+            TeamDefinitionArtifact teamDef =
+                  (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(
+                        TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName, AtsPlugin.getAtsBranch());
+            if (teamDef != null) return teamDef;
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing, going to get team below
+         }
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       try {
@@ -82,9 +85,9 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
 
    @Override
    public void run() throws SQLException {
-      TeamDefinitionArtifact teamDef = getTeamDefinition();
-      if (teamDef == null) return;
       try {
+         TeamDefinitionArtifact teamDef = getTeamDefinition();
+         if (teamDef == null) return;
          if (teamDef.getTeamDefinitionHoldingVersions() == null) {
             AWorkbench.popup("ERROR", "Team is not configured to use versions.");
             return;

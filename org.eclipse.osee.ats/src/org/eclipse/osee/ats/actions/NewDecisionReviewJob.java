@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -70,15 +70,14 @@ public class NewDecisionReviewJob extends Job {
 
    public static DecisionReviewArtifact createNewDecisionReview(StateMachineArtifact teamParent, boolean againstCurrentState) throws Exception {
       DecisionReviewArtifact decRev =
-            (DecisionReviewArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  DecisionReviewArtifact.ARTIFACT_NAME).makeNewArtifact(branchManager.getAtsBranch());
+            (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(DecisionReviewArtifact.ARTIFACT_NAME,
+                  AtsPlugin.getAtsBranch(), "Should we do this?  Yes will require followup, No will not");
 
       if (teamParent != null) teamParent.relate(RelationSide.TeamWorkflowToReview_Review, decRev);
       if (againstCurrentState) decRev.setSoleStringAttributeValue(
             ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), teamParent.getCurrentStateName());
 
       decRev.getLog().addLog(LogType.Originated, "", "");
-      decRev.setDescriptiveName("Should we do this?  Yes will require followup, No will not");
       decRev.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(),
             "Enter description of the decision, if any");
       decRev.setSoleStringAttributeValue(

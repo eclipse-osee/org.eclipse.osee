@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.navigate;
 
-import java.sql.SQLException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,9 +20,9 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.VersionReportJob;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -60,7 +59,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run() throws SQLException {
+   public void run() throws Exception {
       TeamDefinitionArtifact teamDef = getTeamDefinition();
       if (teamDef == null) return;
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
@@ -70,14 +69,17 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       job.schedule();
    }
 
-   public TeamDefinitionArtifact getTeamDefinition() throws SQLException {
+   public TeamDefinitionArtifact getTeamDefinition() throws Exception {
       if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {
-         ArtifactTypeNameSearch srch =
-               new ArtifactTypeNameSearch(TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName,
-                     BranchPersistenceManager.getAtsBranch());
-         TeamDefinitionArtifact teamDef = srch.getSingletonArtifactOrException(TeamDefinitionArtifact.class);
-         if (teamDef != null) return teamDef;
+         try {
+            TeamDefinitionArtifact teamDef =
+                  (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(
+                        TeamDefinitionArtifact.ARTIFACT_NAME, teamDefName, AtsPlugin.getAtsBranch());
+            if (teamDef != null) return teamDef;
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing, going to get team below
+         }
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       try {

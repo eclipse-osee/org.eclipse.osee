@@ -149,4 +149,54 @@ public class Collections {
          return (ArrayList<Object>) items;
       }
    }
+
+   public static enum CastOption {
+      MATCHING, ALL
+   };
+
+   /**
+    * Cast objects to clazz
+    * 
+    * @param <A>
+    * @param objects
+    * @param clazz
+    * @param castOption if ALL, cast all and throw exception if cast fails; if MATCHING, only cast those of type clazz
+    * @return
+    */
+   @SuppressWarnings("unchecked")
+   private static <A extends Object> Collection<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
+      List<A> results = new ArrayList<A>(objects.size());
+      for (Object object : objects)
+         if ((castOption == CastOption.ALL) || ((castOption == CastOption.MATCHING) && (object.getClass().isAssignableFrom(clazz)))) results.add((A) object);
+      return results;
+   }
+
+   /**
+    * Unchecked cast objects to clazz; CastClassException will occur when object sent in does not match clazz<br>
+    * <br>
+    * Use when all objects are expected to be of type class and exception is desired if not
+    * 
+    * @param <A>
+    * @param objects
+    * @param clazz
+    * @return
+    */
+   public static <A extends Object> Collection<A> castAll(Class<A> clazz, Collection<? extends Object> objects) {
+      return cast(clazz, objects, CastOption.ALL);
+   }
+
+   /**
+    * Cast objects matching class, ignore rest; no ClassCastException will occur<br>
+    * <br>
+    * Use when objects may contain classes that are not desired
+    * 
+    * @param <A>
+    * @param objects
+    * @param clazz
+    * @return
+    */
+   public static <A extends Object> Collection<A> castMatching(Class<A> clazz, Collection<? extends Object> objects) {
+      return cast(clazz, objects, CastOption.MATCHING);
+   }
+
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -83,7 +82,7 @@ public class NewAction extends Action {
       }
    }
 
-   private Collection<ActionableItemArtifact> getTeamActionableItems() throws SQLException {
+   private Collection<ActionableItemArtifact> getTeamActionableItems() throws Exception {
       Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
       if (actionableItem != null) {
          ais.add(ActionableItemArtifact.getSoleActionableItem(actionableItem));

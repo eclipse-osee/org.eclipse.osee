@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.text.tool.Find;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -132,9 +133,7 @@ public class ExtractTestRelations {
          return null;
       } catch (ArtifactDoesNotExist ex) {
          Artifact testArtifact =
-               configurationPersistenceManager.getArtifactSubtypeDescriptor(Requirements.TEST_SCRIPT).makeNewArtifact(
-                     branch);
-         testArtifact.setSoleStringAttributeValue("Name", testArtifactFile.getName());
+               ArtifactTypeManager.addArtifact(Requirements.TEST_SCRIPT, branch, testArtifactFile.getName());
          testArtifact.setSoleStringAttributeValue("Content URL", testArtifactFile.getFullPath().toString());
          testArtifact.persistAttributes();
          return testArtifact;

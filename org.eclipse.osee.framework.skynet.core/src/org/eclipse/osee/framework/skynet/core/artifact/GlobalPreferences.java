@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -48,9 +47,8 @@ public class GlobalPreferences extends Artifact {
 
    public static void createGlobalPreferencesArtifact() throws SQLException {
       Artifact art =
-            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(GlobalPreferences.ARTIFACT_NAME).makeNewArtifact(
-                  BranchPersistenceManager.getCommonBranch());
-      art.setDescriptiveName(GlobalPreferences.ARTIFACT_NAME);
+            ArtifactTypeManager.addArtifact(GlobalPreferences.ARTIFACT_NAME,
+                  BranchPersistenceManager.getCommonBranch(), GlobalPreferences.ARTIFACT_NAME);
       art.persistAttributes();
    }
 }

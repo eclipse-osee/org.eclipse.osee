@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -97,9 +97,8 @@ public class ReviewManager {
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(StateMachineArtifact teamParent, String againstState, User origUser, Date origDate) throws IllegalStateException, Exception {
       PeerToPeerReviewArtifact peerToPeerRev =
-            (PeerToPeerReviewArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  PeerToPeerReviewArtifact.ARTIFACT_NAME).makeNewArtifact(
-                  BranchPersistenceManager.getAtsBranch());
+            (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(PeerToPeerReviewArtifact.ARTIFACT_NAME,
+                  BranchPersistenceManager.getAtsBranch(), "Peer to Peer Review");
 
       if (teamParent != null) {
          teamParent.relate(RelationSide.TeamWorkflowToReview_Review, peerToPeerRev);
@@ -108,7 +107,6 @@ public class ReviewManager {
       }
 
       peerToPeerRev.getLog().addLog(LogType.Originated, "", "", origDate, origUser);
-      peerToPeerRev.setDescriptiveName("Peer to Peer Review");
       peerToPeerRev.setSoleBooleanAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
 
       // Set state
@@ -157,8 +155,7 @@ public class ReviewManager {
       Set<ReviewSMArtifact> arts = new HashSet<ReviewSMArtifact>();
       if (!smaMgr.getSma().isTaskable()) return arts;
       for (ReviewSMArtifact revArt : getReviews()) {
-         if (revArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
-               stateName)) arts.add(revArt);
+         if (revArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(stateName)) arts.add(revArt);
       }
       return arts;
    }

@@ -35,9 +35,10 @@ import org.eclipse.osee.ats.util.DefaultTeamWorkflowManager;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
@@ -191,14 +192,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
             // Create Test Script Artifacts
             Set<Artifact> verificationTests = new HashSet<Artifact>();
             Artifact verificationHeader =
-                  (new ArtifactTypeNameSearch("Folder", "Verification Tests",
-                        BranchPersistenceManager.getInstance().getDefaultBranch())).getSingletonArtifact(Artifact.class);
+                  ArtifactQuery.getArtifactFromTypeAndName("Folder", "Verification Tests",
+                        BranchPersistenceManager.getInstance().getDefaultBranch());
             if (verificationHeader == null) throw new IllegalStateException("Could not find Verification Tests header");
             for (String str : new String[] {"A", "B", "C"}) {
                Artifact newArt =
-                     ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                           Requirements.TEST_SCRIPT).makeNewArtifact(verificationHeader.getBranch());
-               newArt.setDescriptiveName("Verification Test " + str);
+                     ArtifactTypeManager.addArtifact(Requirements.TEST_SCRIPT, verificationHeader.getBranch(),
+                           "Verification Test " + str);
                verificationTests.add(newArt);
                verificationHeader.relate(RelationSide.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
                newArt.persist(true);
@@ -208,14 +208,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
             // Create Validation Test Procedure Artifacts
             Set<Artifact> validationTests = new HashSet<Artifact>();
             Artifact validationHeader =
-                  (new ArtifactTypeNameSearch("Folder", "Validation Tests",
-                        BranchPersistenceManager.getInstance().getDefaultBranch())).getSingletonArtifact(Artifact.class);
+                  ArtifactQuery.getArtifactFromTypeAndName("Folder", "Validation Tests",
+                        BranchPersistenceManager.getInstance().getDefaultBranch());
             if (validationHeader == null) throw new IllegalStateException("Could not find Validation Tests header");
             for (String str : new String[] {"1", "2", "3"}) {
                Artifact newArt =
-                     ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                           Requirements.TEST_PROCEDURE).makeNewArtifact(validationHeader.getBranch());
-               newArt.setDescriptiveName("Validation Test " + str);
+                     ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, validationHeader.getBranch(),
+                           "Validation Test " + str);
                validationTests.add(newArt);
                validationHeader.relate(RelationSide.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
                newArt.persist(true);
@@ -225,14 +224,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
             // Create Integration Test Procedure Artifacts
             Set<Artifact> integrationTests = new HashSet<Artifact>();
             Artifact integrationHeader =
-                  (new ArtifactTypeNameSearch("Folder", "Integration Tests",
-                        BranchPersistenceManager.getInstance().getDefaultBranch())).getSingletonArtifact(Artifact.class);
+                  ArtifactQuery.getArtifactFromTypeAndName("Folder", "Integration Tests",
+                        BranchPersistenceManager.getInstance().getDefaultBranch());
             if (integrationHeader == null) throw new IllegalStateException("Could not find integration Tests header");
             for (String str : new String[] {"X", "Y", "Z"}) {
                Artifact newArt =
-                     ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                           Requirements.TEST_PROCEDURE).makeNewArtifact(integrationHeader.getBranch());
-               newArt.setDescriptiveName("integration Test " + str);
+                     ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, integrationHeader.getBranch(),
+                           "integration Test " + str);
                integrationTests.add(newArt);
                integrationHeader.relate(RelationSide.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
                newArt.persist(true);
@@ -331,10 +329,10 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleStringAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Navigation.name());
          art.setSoleStringAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "A");
          art.setSoleStringAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Navigation.name());
-         ArtifactTypeNameSearch srch =
-               new ArtifactTypeNameSearch(Requirements.COMPONENT, "Navigation",
+         Artifact navArt =
+               ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Navigation",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
-         art.relate(RelationSide.ALLOCATION__COMPONENT, srch.getSingletonArtifactOrException(Artifact.class));
+         art.relate(RelationSide.ALLOCATION__COMPONENT, navArt);
          art.persist(true);
       }
 
@@ -344,10 +342,10 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleStringAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Interface.name());
          art.setSoleStringAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          art.setSoleStringAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
-         ArtifactTypeNameSearch srch =
-               new ArtifactTypeNameSearch(Requirements.COMPONENT, "Robot API",
+         Artifact robotArt =
+               ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
-         art.relate(RelationSide.ALLOCATION__COMPONENT, srch.getSingletonArtifactOrException(Artifact.class));
+         art.relate(RelationSide.ALLOCATION__COMPONENT, robotArt);
          art.persist(true);
       }
 
@@ -364,9 +362,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          String name = "Robot Interface Init " + x;
          OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Adding artifact => " + name, false);
          Artifact newArt =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     Requirements.SOFTWARE_REQUIREMENT).makeNewArtifact(parentArt.getBranch());
-         newArt.setDescriptiveName(name);
+               ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
          newArt.setSoleStringAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          newArt.setSoleStringAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
          newArt.persist(true);
@@ -413,10 +409,11 @@ public class PopulateDemoActions extends XNavigateItemAction {
          art.setSoleStringAttributeValue(ProgramAttributes.CSCI.name(), Cscis.Interface.name());
          art.setSoleStringAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          art.setSoleStringAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
-         ArtifactTypeNameSearch srch =
-               new ArtifactTypeNameSearch(Requirements.COMPONENT, "Robot API",
+         Artifact comArt =
+               ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
-         art.relate(RelationSide.ALLOCATION__COMPONENT, srch.getSingletonArtifactOrException(Artifact.class));
+
+         art.relate(RelationSide.ALLOCATION__COMPONENT, comArt);
          art.persist(true);
       }
 
@@ -433,9 +430,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          String name = "Claw Interface Init " + x;
          OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Adding artifact => " + name, false);
          Artifact newArt =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     Requirements.SOFTWARE_REQUIREMENT).makeNewArtifact(parentArt.getBranch());
-         newArt.setDescriptiveName(name);
+               ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
          newArt.setSoleStringAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          newArt.setSoleStringAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
          newArt.persist(true);
@@ -449,31 +444,29 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Robot, CISST, daVinci, Functional, Event
    };
 
-   private Set<Artifact> getSoftwareRequirements(SoftwareRequirementStrs str) {
+   private Collection<Artifact> getSoftwareRequirements(SoftwareRequirementStrs str) throws Exception {
       return getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, str.name());
    }
 
-   private Set<Artifact> getArtTypeRequirements(String artifactType, String artifactNameStr) {
+   private Collection<Artifact> getArtTypeRequirements(String artifactType, String artifactNameStr) throws Exception {
       OSEELog.logInfo(
             OseeAtsConfigDemoPlugin.class,
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + BranchPersistenceManager.getInstance().getDefaultBranch().getBranchName(),
             false);
-      ArtifactTypeNameSearch srch =
-            new ArtifactTypeNameSearch(artifactType, "%" + artifactNameStr + "%",
+      Collection<Artifact> arts =
+            ArtifactQuery.getArtifactsFromTypeAndName(artifactType, "%" + artifactNameStr + "%",
                   BranchPersistenceManager.getInstance().getDefaultBranch());
-      Set<Artifact> arts = srch.getArtifacts(Artifact.class);
+
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Found " + arts.size() + " Artifacts", false);
       return arts;
    }
-
    private static String INTERFACE_INITIALIZATION = "Interface Initialization";
 
-   private Artifact getInterfaceInitializationSoftwareRequirement() {
+   private Artifact getInterfaceInitializationSoftwareRequirement() throws Exception {
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.", false);
-      ArtifactTypeNameSearch srch =
-            new ArtifactTypeNameSearch(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,
-                  BranchPersistenceManager.getInstance().getDefaultBranch());
-      return srch.getArtifacts(Artifact.class).iterator().next();
+      return ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, INTERFACE_INITIALIZATION,
+            BranchPersistenceManager.getInstance().getDefaultBranch());
+
    }
 
    private void createNonReqChangeDemoActions() throws Exception {
@@ -497,8 +490,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class,
             "Importing \"" + rootArtifactName + "\" requirements on branch \"" + buildName + "\"", false);
       Branch branch = BranchPersistenceManager.getKeyedBranch(buildName);
-      ArtifactTypeNameSearch srch = new ArtifactTypeNameSearch("Folder", rootArtifactName, branch);
-      Artifact systemReq = srch.getSingletonArtifactOrException(Artifact.class);
+      Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName("Folder", rootArtifactName, branch);
+
       File file = OseeAtsConfigDemoPlugin.getInstance().getPluginFile(filename);
       IArtifactImportResolver artifactResolver = new NewArtifactImportResolver();
       ArtifactSubtypeDescriptor mainDescriptor =
@@ -532,8 +525,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
                teamWf.persist(true);
                if (versionStr != null && !versionStr.equals("")) {
                   VersionArtifact verArt =
-                        ((new ArtifactTypeNameSearch(VersionArtifact.ARTIFACT_NAME, versionStr,
-                              BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(VersionArtifact.class));
+                        (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
+                              versionStr, AtsPlugin.getAtsBranch());
                   teamWf.relate(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt);
                   teamWf.persist(true);
                }

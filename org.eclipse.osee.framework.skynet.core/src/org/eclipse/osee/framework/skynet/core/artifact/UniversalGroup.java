@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -80,9 +79,8 @@ public class UniversalGroup {
                   ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME, branch);
       if (artifacts.size() == 0) {
          Artifact art =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(ARTIFACT_TYPE_NAME).makeNewArtifact(
-                     branch);
-         art.setDescriptiveName(ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME);
+               ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME, branch,
+                     ArtifactPersistenceManager.ROOT_ARTIFACT_TYPE_NAME);
          art.persistAttributes();
          return art;
       }
@@ -104,10 +102,7 @@ public class UniversalGroup {
        */
       @Override
       protected void handleTxWork() throws Exception {
-         Artifact groupArt =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     UniversalGroup.ARTIFACT_TYPE_NAME).makeNewArtifact(getTxBranch());
-         groupArt.setDescriptiveName(name);
+         Artifact groupArt = ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, getTxBranch(), name);
          groupArt.persistAttributes();
          Artifact groupRoot = getTopUniversalGroupArtifact(getTxBranch());
          if (groupRoot == null) {

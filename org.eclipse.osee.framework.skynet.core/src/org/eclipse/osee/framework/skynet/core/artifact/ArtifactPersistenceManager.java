@@ -1102,9 +1102,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    private Artifact createRoot(Branch branch) throws SQLException {
-      ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor(ROOT_ARTIFACT_TYPE_NAME);
-      Artifact root = descriptor.makeNewArtifact(branch);
-      root.setDescriptiveName(DEFAULT_HIERARCHY_ROOT_NAME);
+      Artifact root = ArtifactTypeManager.addArtifact(ROOT_ARTIFACT_TYPE_NAME, branch, DEFAULT_HIERARCHY_ROOT_NAME);
       root.persistAttributes();
       return root;
    }

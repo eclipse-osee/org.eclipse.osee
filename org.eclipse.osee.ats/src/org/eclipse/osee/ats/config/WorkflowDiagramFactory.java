@@ -16,14 +16,15 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.AtsWorkFlow;
 import org.eclipse.osee.ats.workflow.VueWorkFlow;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -53,9 +54,8 @@ public class WorkflowDiagramFactory {
       NativeArtifact art = null;
       // System.out.println("Importing diagram " + name);
       art =
-            (NativeArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  GENERAL_DOCUMENT_ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
-      art.setDescriptiveName(name);
+            (NativeArtifact) ArtifactTypeManager.addArtifact(GENERAL_DOCUMENT_ARTIFACT_NAME,
+                  BranchPersistenceManager.getAtsBranch(), name);
       art.setSoleStringAttributeValue("Extension", "vue");
       art.setNativeContent(inputStream);
       art.persistAttributes();
@@ -66,23 +66,20 @@ public class WorkflowDiagramFactory {
       return art;
    }
 
-   public AtsWorkFlow getAtsWorkflowFromSkynet(String diagramName) throws IOException, SQLException {
+   public AtsWorkFlow getAtsWorkflowFromSkynet(String diagramName) throws Exception {
       Artifact workflowDiagArt = getAtsWorkflowArtifact(diagramName);
       return getAtsWorkflowFromArtifact(workflowDiagArt);
    }
 
-   public NativeArtifact getAtsWorkflowArtifact(String diagramName) throws SQLException {
-      ArtifactTypeNameSearch srch =
-            new ArtifactTypeNameSearch(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
-                  BranchPersistenceManager.getAtsBranch());
-      return srch.getSingletonArtifactOrException(NativeArtifact.class);
+   public NativeArtifact getAtsWorkflowArtifact(String diagramName) throws Exception {
+      return (NativeArtifact) ArtifactQuery.getArtifactFromTypeAndName(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
+            AtsPlugin.getAtsBranch());
+
    }
 
    public boolean atsWorkflowArtifactExists(String diagramName) throws SQLException {
-      ArtifactTypeNameSearch srch =
-            new ArtifactTypeNameSearch(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
-                  BranchPersistenceManager.getAtsBranch());
-      return srch.getArtifacts(NativeArtifact.class).size() == 1;
+      return ArtifactQuery.getArtifactsFromTypeAndName(GENERAL_DOCUMENT_ARTIFACT_NAME, diagramName,
+            AtsPlugin.getAtsBranch()).size() == 1;
    }
 
    public AtsWorkFlow getAtsWorkflowFromArtifact(Artifact artifact) throws IOException, SQLException {

@@ -12,17 +12,17 @@
 package org.eclipse.osee.ats.config;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -50,8 +50,7 @@ public class AtsConfig {
       Artifact art = getOrCreateHeadingArtifact(ActionableItemArtifact.ARTIFACT_NAME, ACTIONABLE_ITEMS_HEADING);
       if (!art.getAttributesToStringCollection(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
             ActionableItemArtifact.TOP_AI_STATIC_ID)) {
-         art.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setStringData(
-               ActionableItemArtifact.TOP_AI_STATIC_ID);
+         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, ActionableItemArtifact.TOP_AI_STATIC_ID);
       }
       validateATSHeadingParent(art);
       return (ActionableItemArtifact) art;
@@ -61,8 +60,7 @@ public class AtsConfig {
       Artifact art = getOrCreateHeadingArtifact(TeamDefinitionArtifact.ARTIFACT_NAME, TEAMS_HEADING);
       if (!art.getAttributesToStringCollection(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
             TeamDefinitionArtifact.TOP_TEAM_STATIC_ID)) {
-         art.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setStringData(
-               TeamDefinitionArtifact.TOP_TEAM_STATIC_ID);
+         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, TeamDefinitionArtifact.TOP_TEAM_STATIC_ID);
       }
       validateATSHeadingParent(art);
       return (TeamDefinitionArtifact) art;
@@ -121,25 +119,19 @@ public class AtsConfig {
 
    private static Artifact getOrCreateHeadingArtifact(String artifactTypeName, String name) throws SQLException {
 
-      // Get if it already exists
-      ArtifactTypeNameSearch srch =
-            new ArtifactTypeNameSearch(artifactTypeName, name, BranchPersistenceManager.getAtsBranch());
-      Collection<NativeArtifact> arts = srch.getArtifacts(NativeArtifact.class);
-      if (arts.size() == 1) return arts.iterator().next();
-      if (arts.size() > 0) throw new IllegalArgumentException(
-            "Should be 1 \"" + name + "\" heading artifact.  Found " + arts.size());
-
-      Artifact rootArt = null;
       try {
-         rootArt =
-               (Artifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName).makeNewArtifact(
-                     BranchPersistenceManager.getAtsBranch());
-         rootArt.setDescriptiveName(name);
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+         return ArtifactQuery.getArtifactFromTypeAndName(artifactTypeName, name, AtsPlugin.getAtsBranch());
+      } catch (MultipleArtifactsExist ex) {
+         OSEELog.logException(AtsPlugin.class, "Found multiple heading artifact \"" + name + "\".  Should only be 1.",
+               ex, false);
+      } catch (ArtifactDoesNotExist ex) {
+         try {
+            return ArtifactTypeManager.addArtifact(artifactTypeName, BranchPersistenceManager.getAtsBranch(), name);
+         } catch (SQLException ex2) {
+            OSEELog.logException(AtsPlugin.class, ex2, true);
+         }
       }
-
-      return rootArt;
+      return null;
    }
 
 }

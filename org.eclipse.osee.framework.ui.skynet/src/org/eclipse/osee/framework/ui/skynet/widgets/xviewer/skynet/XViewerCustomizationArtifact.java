@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -59,10 +60,7 @@ public class XViewerCustomizationArtifact extends BasicArtifact {
                xViewerCustomizationArtifact = (XViewerCustomizationArtifact) arts.iterator().next();
             } else if (arts.size() == 0 && create) {
                xViewerCustomizationArtifact =
-                     (XViewerCustomizationArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                           ARTIFACT_TYPE_NAME).makeNewArtifact(BranchPersistenceManager.getCommonBranch());
-
-               xViewerCustomizationArtifact.setDescriptiveName(ARTIFACT_TYPE_NAME);
+                     (XViewerCustomizationArtifact) ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME,BranchPersistenceManager.getCommonBranch(),ARTIFACT_TYPE_NAME);
                xViewerCustomizationArtifact.persistAttributes();
             } else if (arts.size() != 1) throw new IllegalArgumentException(
                   "Should only be one " + ARTIFACT_TYPE_NAME + ".  Found " + arts.size() + ".  ATS not configured in OSEE?.");

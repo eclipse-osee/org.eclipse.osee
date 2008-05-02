@@ -17,10 +17,10 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -117,10 +117,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       @Override
       protected void handleTxWork() throws Exception {
          VersionArtifact ver =
-               (VersionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                     VersionArtifact.ARTIFACT_NAME).makeNewArtifact(
-                     BranchPersistenceManager.getAtsBranch());
-         ver.setDescriptiveName(newVersionName);
+               (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
+                     BranchPersistenceManager.getAtsBranch(), newVersionName);
          teamDefHoldingVersions.relate(RelationSide.TeamDefinitionToVersion_Version, ver);
          ver.persistAttributesAndLinks();
          ArtifactEditor.editArtifact(ver);

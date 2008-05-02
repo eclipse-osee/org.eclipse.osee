@@ -119,7 +119,7 @@ public class ArtifactPromptChange {
       if (diag.open() == 0) {
          for (Artifact artifact : artifacts) {
             if (diag.isNoneSelected())
-               artifact.clearSoleAttributeValue(attributeName);
+               artifact.deleteSoleAttribute(attributeName);
             else
                artifact.setSoleDateAttributeValue(attributeName, diag.getSelectedDate());
             if (persist) artifact.persistAttributes();

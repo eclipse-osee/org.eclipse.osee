@@ -21,9 +21,9 @@ import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.OseeUser;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
@@ -174,11 +174,10 @@ public class SkynetAuthentication implements PersistenceManager {
       User user = null;
       try {
          user =
-               (User) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(User.ARTIFACT_NAME).makeNewArtifact(
-                     BranchPersistenceManager.getCommonBranch());
+               (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch(),
+                     name);
          user.setActive(active);
          user.setUserID(userID);
-         user.setName(name);
          user.setEmail(email);
          addUserToMap(user);
          // this is here in case a user is created at an unexpected time

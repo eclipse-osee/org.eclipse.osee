@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
@@ -81,15 +82,15 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   public void getActionableItems() throws SQLException, IllegalArgumentException {
+   public void getActionableItems() throws Exception {
       if (actionItemNames == null) return;
       if (actionItems == null) {
          actionItems = new HashSet<ActionableItemArtifact>();
          for (String name : actionItemNames) {
-            ArtifactTypeNameSearch srch =
-                  new ArtifactTypeNameSearch(ActionableItemArtifact.ARTIFACT_NAME, name,
-                        BranchPersistenceManager.getAtsBranch());
-            actionItems.add(srch.getSingletonArtifactOrException(ActionableItemArtifact.class));
+            ActionableItemArtifact aia =
+                  (ActionableItemArtifact) ArtifactQuery.getArtifactFromTypeAndName(
+                        ActionableItemArtifact.ARTIFACT_NAME, name, AtsPlugin.getAtsBranch());
+            actionItems.add(aia);
          }
       }
       if (actionItems == null) throw new IllegalArgumentException(
@@ -100,7 +101,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
     * @return All directly specified teamDefs plus if recurse, will get all children
     * @throws SQLException
     */
-   private Set<ActionableItemArtifact> getSearchActionableItems() throws SQLException {
+   private Set<ActionableItemArtifact> getSearchActionableItems() throws Exception {
       getActionableItems();
       Set<ActionableItemArtifact> srchTeamDefs = new HashSet<ActionableItemArtifact>();
       for (ActionableItemArtifact actionableItem : (actionItems != null ? actionItems : selectedActionItems))

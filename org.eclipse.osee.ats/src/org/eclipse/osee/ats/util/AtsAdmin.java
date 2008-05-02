@@ -16,36 +16,40 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsAdmin {
 
-   private static ArtifactTypeNameSearch search =
-         new ArtifactTypeNameSearch("General Document", "AtsAdmin", AtsPlugin.getAtsBranch());
    private static Artifact atsAdminArtifact;
    private static boolean searched = false;
 
    public static boolean isAtsAdmin() {
       boolean atsAdmin = false;
-      if (System.getProperty("AtsAdmin") != null) {
-         atsAdmin = true;
-      }
-      if (!atsAdmin) {
-         if (!searched) {
-            atsAdminArtifact = search.getSingletonArtifact(Artifact.class);
-            searched = true;
+      try {
+         if (System.getProperty("AtsAdmin") != null) {
+            atsAdmin = true;
          }
-         if (atsAdminArtifact != null) {
-            atsAdmin =
-                  AccessControlManager.getInstance().checkObjectPermission(
-                        SkynetAuthentication.getInstance().getAuthenticatedUser(), atsAdminArtifact,
-                        PermissionEnum.FULLACCESS);
+         if (!atsAdmin) {
+            if (!searched) {
+               atsAdminArtifact =
+                     ArtifactQuery.getArtifactFromTypeAndName("General Document", "AtsAdmin", AtsPlugin.getAtsBranch());
+               searched = true;
+            }
+            if (atsAdminArtifact != null) {
+               atsAdmin =
+                     AccessControlManager.getInstance().checkObjectPermission(
+                           SkynetAuthentication.getInstance().getAuthenticatedUser(), atsAdminArtifact,
+                           PermissionEnum.FULLACCESS);
+            }
          }
+         OseeProperties.getInstance().setDeveloper(atsAdmin);
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
       }
-      OseeProperties.getInstance().setDeveloper(atsAdmin);
       return atsAdmin;
    }
 }

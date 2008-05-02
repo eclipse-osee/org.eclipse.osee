@@ -12,12 +12,12 @@ package org.eclipse.osee.ats.config;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.workflow.AtsWorkFlowFactory;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 
 public class AtsDatabaseConfig extends DbInitializationTask {
@@ -32,25 +32,25 @@ public class AtsDatabaseConfig extends DbInitializationTask {
       linkHeadTeamDefinitionWithReviewsAndTaskWorkflowDiagrams();
    }
 
-   public static void linkHeadTeamDefinitionWithReviewsAndTaskWorkflowDiagrams() throws SQLException {
+   public static void linkHeadTeamDefinitionWithReviewsAndTaskWorkflowDiagrams() throws Exception {
       TeamDefinitionArtifact teamDef = TeamDefinitionArtifact.getHeadTeamDefinition();
 
       // Relate task workflow
       Artifact taskWorkflow =
-            (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.DEFAULT_TASK_WORKFLOW,
-                  BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
+            ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.DEFAULT_TASK_WORKFLOW,
+                  AtsPlugin.getAtsBranch());
       teamDef.relate(RelationSide.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram, taskWorkflow, true);
 
       // Relate peer to Peer review
       Artifact peerWorkflow =
-            (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.PEERTOPEER_REVIEW_WORKFLOW,
-                  BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
+            ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.PEERTOPEER_REVIEW_WORKFLOW,
+                  AtsPlugin.getAtsBranch());
       teamDef.relate(RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram, peerWorkflow, true);
 
       // Relate peer to Peer review
       Artifact decisionWorkflow =
-            (new ArtifactTypeNameSearch("General Document", AtsWorkFlowFactory.DECISION_REVIEW_WORKFLOW,
-                  BranchPersistenceManager.getAtsBranch())).getSingletonArtifactOrException(Artifact.class);
+            ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.DECISION_REVIEW_WORKFLOW,
+                  AtsPlugin.getAtsBranch());
       teamDef.relate(RelationSide.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram, decisionWorkflow, true);
 
       teamDef.persist(true);

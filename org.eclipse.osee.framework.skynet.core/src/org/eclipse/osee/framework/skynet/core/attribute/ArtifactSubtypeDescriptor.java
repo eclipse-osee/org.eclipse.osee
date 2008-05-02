@@ -26,6 +26,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
@@ -102,7 +103,9 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * @return Return artifact reference
     * @throws SQLException
     * @see IArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor)
+    * @use {@link ArtifactTypeManager}.addArtifact
     */
+   @Deprecated
    public Artifact makeNewArtifact(Branch branch) throws SQLException {
       return factory.makeNewArtifact(branch, this);
    }
@@ -116,7 +119,9 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * @return Return artifact reference
     * @throws SQLException
     * @see IArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String)
+    * @use {@link ArtifactTypeManager}.addArtifact
     */
+   @Deprecated
    public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws SQLException {
       return factory.makeNewArtifact(branch, this, guid, humandReadableId);
    }

@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -42,16 +43,13 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
 
    private void processTemplatesForDBInit() throws SQLException, IllegalStateException, IOException {
 
-      ArtifactSubtypeDescriptor templateDescriptor =
-            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Renderer Template");
       Artifact templateFolder = getTemplateFolder();
       IExtensionPoint ep =
             Platform.getExtensionRegistry().getExtensionPoint(
                   "org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTemplate");
       for (IExtension extension : ep.getExtensions()) {
          for (IConfigurationElement el : extension.getConfigurationElements()) {
-            Artifact templateArtifact =
-                  templateDescriptor.makeNewArtifact(BranchPersistenceManager.getCommonBranch());
+            Artifact templateArtifact = ArtifactTypeManager.addArtifact("Renderer Template",BranchPersistenceManager.getCommonBranch());
             String filePath = el.getAttribute("File");
             String name = filePath.substring(filePath.lastIndexOf('/') + 1);
             name = name.substring(0, name.lastIndexOf('.'));
@@ -86,11 +84,9 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
                ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
                      BranchPersistenceManager.getCommonBranch(), true);
 
-         ArtifactSubtypeDescriptor folderDescriptor =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor("Folder");
          Artifact templateFolder =
-               folderDescriptor.makeNewArtifact(BranchPersistenceManager.getCommonBranch());
-         templateFolder.setDescriptiveName("Document Templates");
+               ArtifactTypeManager.addArtifact("Folder", BranchPersistenceManager.getCommonBranch(),
+                     "Document Templates");
          rootArt.addChild(templateFolder);
          rootArt.persist(true);
          return templateFolder;

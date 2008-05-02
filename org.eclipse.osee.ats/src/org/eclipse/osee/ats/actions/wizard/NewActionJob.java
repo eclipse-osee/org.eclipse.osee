@@ -26,8 +26,8 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -67,21 +67,20 @@ public class NewActionJob extends Job {
 
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         AbstractSkynetTxTemplate newActionTx =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+         AbstractSkynetTxTemplate newActionTx = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     if (title.equals("tt")) title += " " + getAtsDeveloperTTNum();
-                     actionArt =
-                           createAction(monitor, title, desc, changeType, priority, userComms, validationRequired,
-                                 needByDate, actionableItems);
+            @Override
+            protected void handleTxWork() throws Exception {
+               if (title.equals("tt")) title += " " + getAtsDeveloperTTNum();
+               actionArt =
+                     createAction(monitor, title, desc, changeType, priority, userComms, validationRequired,
+                           needByDate, actionableItems);
 
-                     if (wizard != null) wizard.notifyAtsWizardItemExtensions(actionArt);
+               if (wizard != null) wizard.notifyAtsWizardItemExtensions(actionArt);
 
-                     monitor.subTask("Persisting");
-                  }
-               };
+               monitor.subTask("Persisting");
+            }
+         };
          newActionTx.execute();
 
          // Because this is a job, it will automatically kill any popups that are created during.
@@ -125,8 +124,8 @@ public class NewActionJob extends Job {
 
       if (monitor != null) monitor.subTask("Creating Action");
       ActionArtifact actionArt =
-            (ActionArtifact) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-                  ActionArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
+            (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME,
+                  BranchPersistenceManager.getAtsBranch());
       ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
             validationRequired, needByDate);
 

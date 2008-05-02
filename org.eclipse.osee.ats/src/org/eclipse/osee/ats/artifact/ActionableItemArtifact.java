@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -23,8 +24,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactTypeSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeNameSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
@@ -74,12 +75,11 @@ public class ActionableItemArtifact extends Artifact {
 
    public static Set<ActionableItemArtifact> getActionableItems() throws SQLException {
       ActiveArtifactTypeSearch search =
-            new ActiveArtifactTypeSearch(ARTIFACT_NAME, Active.Active,
-                  BranchPersistenceManager.getAtsBranch());
+            new ActiveArtifactTypeSearch(ARTIFACT_NAME, Active.Active, BranchPersistenceManager.getAtsBranch());
       return search.getArtifacts(ActionableItemArtifact.class);
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> aiaStrs) throws SQLException {
+   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> aiaStrs) throws Exception {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String aia : aiaStrs) {
          aias.add(getSoleActionableItem(aia));
@@ -94,10 +94,9 @@ public class ActionableItemArtifact extends Artifact {
     * @return
     * @throws SQLException
     */
-   public static ActionableItemArtifact getSoleActionableItem(String name) throws SQLException {
-      ArtifactTypeNameSearch search =
-            new ArtifactTypeNameSearch(ARTIFACT_NAME, name, BranchPersistenceManager.getAtsBranch());
-      return search.getSingletonArtifactOrException(ActionableItemArtifact.class);
+   public static ActionableItemArtifact getSoleActionableItem(String name) throws Exception {
+      return (ActionableItemArtifact) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, name,
+            AtsPlugin.getAtsBranch());
    }
 
    public static Set<TeamDefinitionArtifact> getImpactedTeamDefs(Set<ActionableItemArtifact> aias) throws SQLException {

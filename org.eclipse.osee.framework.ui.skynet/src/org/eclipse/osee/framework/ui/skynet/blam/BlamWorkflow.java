@@ -24,11 +24,11 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
@@ -70,8 +70,7 @@ public class BlamWorkflow extends Artifact {
 
    public static BlamWorkflow createBlamWorkflow(BlamOperation soleOperation) throws SQLException {
       BlamWorkflow blamWorkflow =
-            (BlamWorkflow) ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(ARTIFACT_NAME).makeNewArtifact(
-                  BranchPersistenceManager.getCommonBranch());
+            (BlamWorkflow) ArtifactTypeManager.addArtifact(ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
       return blamWorkflow;
    }
 
