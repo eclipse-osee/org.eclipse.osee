@@ -64,7 +64,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
@@ -495,15 +494,10 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
             try {
-               if (selectedBranch != null) {
-                  Change[] changes = new Change[0];
-                  ChangeView.openViewUpon(RevisionManager.getInstance().getChangesPerBranch(selectedBranch).toArray(
-                        changes));
-               }
+               ChangeView.open(selectedBranch);
             } catch (Exception ex) {
-               logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
-
             return null;
          }
 

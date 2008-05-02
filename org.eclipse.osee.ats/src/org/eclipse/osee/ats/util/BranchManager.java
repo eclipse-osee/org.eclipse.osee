@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
-import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
@@ -165,9 +164,7 @@ public class BranchManager {
    public void showChangeReportNew() {
       try {
          if (isWorkingBranch()) {
-            Change[] changes = new Change[0];
-            ChangeView.openViewUpon(RevisionManager.getInstance().getChangesPerBranch(getWorkingBranch()).toArray(
-                  changes));
+            ChangeView.open(getWorkingBranch());
          } else if (isCommittedBranch()) {
             AWorkbench.popup("ERROR", "not implemented yet.");
          } else {
