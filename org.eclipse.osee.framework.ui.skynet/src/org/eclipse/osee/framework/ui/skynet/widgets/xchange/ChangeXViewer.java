@@ -18,6 +18,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
@@ -25,8 +26,9 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
@@ -49,11 +51,34 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
    public ChangeXViewer(Composite parent, int style, XChangeViewer xViewer) {
       this(parent, style, NAMESPACE, new ChangeXViewerFactory(), xViewer);
       SkynetEventManager.getInstance().register(BranchEvent.class, this);
+      this.addDoubleClickListener(new IDoubleClickListener() {
+         public void doubleClick(org.eclipse.jface.viewers.DoubleClickEvent event) {
+            try {
+               handleDoubleClick();
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
+         };
+      });
+   }
+
+   public void handleDoubleClick() throws Exception {
+      if (getSelectedChanges().size() == 0) return;
+      Change change = getSelectedChanges().iterator().next();
+      ArtifactEditor.editArtifact(change.getArtifact(), change.getFromTransactionId().getTransactionNumber());
    }
 
    public ChangeXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XChangeViewer xRoleViewer) {
       super(parent, style, nameSpace, xViewerFactory);
       this.xCommitViewer = xRoleViewer;
+   }
+
+   public ArrayList<Change> getSelectedChanges() {
+      ArrayList<Change> arts = new ArrayList<Change>();
+      TreeItem items[] = getTree().getSelection();
+      if (items.length > 0) for (TreeItem item : items)
+         arts.add((Change) item.getData());
+      return arts;
    }
 
    @Override
@@ -129,40 +154,6 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
       if (items.length > 0) for (TreeItem item : items)
          arts.add((Branch) item.getData());
       return arts;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.viewer.XViewer#handleAltLeftClick(org.eclipse.swt.widgets.TreeColumn,
-    *      org.eclipse.swt.widgets.TreeItem)
-    */
-   @Override
-   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      try {
-         // System.out.println("Column " + treeColumn.getText() + " item " +
-         // treeItem);
-         Branch userRole = (Branch) treeItem.getData();
-         boolean modified = false;
-         AWorkbench.popup("ERROR", "Not handled");
-
-         if (modified) {
-            //            xUserRoleViewer.getReviewArt().getUserRoleManager().addOrUpdateUserRole(userRole, false);
-            xCommitViewer.notifyXModifiedListeners();
-            update(userRole, null);
-            return true;
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiDebug.class, ex, true);
-      }
-      return false;
-   }
-
-   /**
-    * @return the xUserRoleViewer
-    */
-   public XChangeViewer getXUserRoleViewer() {
-      return xCommitViewer;
    }
 
    /* (non-Javadoc)

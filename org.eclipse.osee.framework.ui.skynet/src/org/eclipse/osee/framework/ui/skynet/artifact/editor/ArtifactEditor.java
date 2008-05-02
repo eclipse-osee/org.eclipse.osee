@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
@@ -40,6 +41,8 @@ import org.eclipse.osee.framework.skynet.core.event.VisitorEvent;
 import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -124,6 +127,18 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             }
          }
       });
+   }
+
+   public static void editArtifact(final Artifact artifact, int transId) {
+      try {
+         TransactionId transactionId =
+               TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(transId);
+         Artifact historicalArt =
+               ArtifactPersistenceManager.getInstance().getArtifactFromId(artifact.getArtId(), transactionId);
+         ArtifactEditor.editArtifact(historicalArt);
+      } catch (SQLException ex) {
+         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
    }
 
    public static void editArtifact(final Artifact artifact) {

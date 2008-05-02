@@ -182,8 +182,6 @@ public class XViewer extends TreeViewer {
       return false;
    }
 
-   private static int num = 0;
-
    /**
     * Will be called when click is within the first 18 pixels of the cell rectangle where the icon would be. This method
     * will be called in addition to handleLeftClick since both are true.
@@ -197,7 +195,7 @@ public class XViewer extends TreeViewer {
    }
 
    /**
-    * Will be called when cell is obtains a mouse left-click. This method will be called in addition to
+    * Will be called when a cell obtains a mouse left-click. This method will be called in addition to
     * handleLeftClickInIconArea if both are true
     * 
     * @param treeColumn
