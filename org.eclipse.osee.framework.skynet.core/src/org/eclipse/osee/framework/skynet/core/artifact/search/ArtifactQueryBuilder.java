@@ -236,16 +236,13 @@ public class ArtifactQueryBuilder {
       }
 
       sql.append("art1.art_id=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND ");
-      sql.append("txs1.tx_current=1");
+      sql.append("(txs1.tx_current=1");
 
       if (allowDeleted) {
-         sql.append(" OR ");
-         sql.append("txs1.mod_type=");
+         sql.append(" OR txs1.mod_type=");
          sql.append(ModificationType.DELETED.getValue());
-         sql.append(" AND ");
-      } else {
-         sql.append(" AND ");
       }
+      sql.append(") AND ");
 
       sql.append("txs1.transaction_id=txd1.transaction_id");
       if (branch != null) {
