@@ -47,6 +47,7 @@ public class SkynetAuthentication implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetAuthentication.class);
    private OseeAuthentication oseeAuthentication;
    private int noOneArtifactId;
+   private boolean createUserWhenNotInDatabase = false;
 
    public static enum UserStatusEnum {
       Active, InActive, Both
@@ -124,10 +125,13 @@ public class SkynetAuthentication implements PersistenceManager {
                   try {
                      currentUser = getUserByIdWithError(userId);
                   } catch (UserNotInDatabase ex) {
-                     currentUser =
-                           createUser(oseeAuthentication.getCredentials().getField(UserCredentialEnum.Name),
-                                 "spawnedBySkynet", userId, true);
-                     persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
+                     if (createUserWhenNotInDatabase) {
+                        currentUser =
+                              createUser(oseeAuthentication.getCredentials().getField(UserCredentialEnum.Name),
+                                    "spawnedBySkynet", userId, true);
+                        persistUser(currentUser); // this is done outside of the crateUser call to avoid recursion
+                     } else
+                        currentUser = getUser(UserEnum.Guest);
                   }
                }
             }
