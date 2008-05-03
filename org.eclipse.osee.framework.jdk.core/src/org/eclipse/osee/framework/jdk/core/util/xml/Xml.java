@@ -240,8 +240,9 @@ public class Xml {
             for (int i = 0; i < textInstances.length; i++) {
                newElements[i] = parentElementName.getOwnerDocument().createElement(newElementsTagName);
                parentElementName.appendChild(newElements[i]);
-               Node newTextNode = parentElementName.getOwnerDocument().createTextNode(textInstances[i]);
-               newElements[i].appendChild(newTextNode);
+               String textInstance = (textInstances[i] == null) ? "null" : textInstances[i];
+               textInstance = (textInstance.length() == 0) ? "null" : textInstance;
+               newElements[i].appendChild(parentElementName.getOwnerDocument().createTextNode(textInstance));
             }
          }
       } catch (Exception e) {
@@ -408,7 +409,7 @@ public class Xml {
    public static final Element makeTable(Element parentDivElement, String caption, String[][] columnDescriptors) {
       Element newTableElement =
             appendNewElementWithTextAndAttributes(parentDivElement, "table", null, new String[][] { {"border", "1"},
-                  {"cellpadding", "3"}, {"cellspacing", "0"}, {"width", "95%"}});
+                  {"cellpadding", "3"}, {"cellspacing", "0"}, {"width", "100%"}});
       appendNewElementWithText(newTableElement, "caption", caption);
       Element columnGroupElement =
             appendNewElementWithTextAndAttributes(newTableElement, "colgroup", null, new String[][] {{"align", "left"}});
@@ -436,7 +437,7 @@ public class Xml {
       return devAndTableElements;
    }
 
-   public static final Element[] makeTableRow(Element[] devAndTableElements, String[][] cellContentsAndStyle) {
+   public static final Element makeTableRow(Element[] devAndTableElements, String[][] cellContentsAndStyle) {
       Element nextRow = Xml.appendNewElementWithText(devAndTableElements[2], "tr", null);
       for (String[] cellContentsAndStyleArray : cellContentsAndStyle) {
          if (cellContentsAndStyleArray.length > 1) {
@@ -446,7 +447,7 @@ public class Xml {
             appendNewElementsWithText(nextRow, "td", new String[] {cellContentsAndStyleArray[0]});
          }
       }
-      return devAndTableElements;
+      return nextRow;
    }
 
 }
