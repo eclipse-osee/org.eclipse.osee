@@ -164,10 +164,12 @@ public class Collections {
     * @return
     */
    @SuppressWarnings("unchecked")
-   private static <A extends Object> Collection<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
+   private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
       List<A> results = new ArrayList<A>(objects.size());
       for (Object object : objects)
-         if ((castOption == CastOption.ALL) || ((castOption == CastOption.MATCHING) && (object.getClass().isAssignableFrom(clazz)))) results.add((A) object);
+         if ((castOption == CastOption.ALL) || ((castOption == CastOption.MATCHING) && (object.getClass().isAssignableFrom(clazz)))) {
+            results.add((A) object);
+         }
       return results;
    }
 
@@ -181,7 +183,7 @@ public class Collections {
     * @param clazz
     * @return
     */
-   public static <A extends Object> Collection<A> castAll(Class<A> clazz, Collection<? extends Object> objects) {
+   public static <A extends Object> List<A> castAll(Class<A> clazz, Collection<? extends Object> objects) {
       return cast(clazz, objects, CastOption.ALL);
    }
 
@@ -195,7 +197,7 @@ public class Collections {
     * @param clazz
     * @return
     */
-   public static <A extends Object> Collection<A> castMatching(Class<A> clazz, Collection<? extends Object> objects) {
+   public static <A extends Object> List<A> castMatching(Class<A> clazz, Collection<? extends Object> objects) {
       return cast(clazz, objects, CastOption.MATCHING);
    }
 

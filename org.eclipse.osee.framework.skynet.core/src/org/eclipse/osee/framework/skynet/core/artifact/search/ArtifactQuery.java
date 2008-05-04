@@ -184,6 +184,20 @@ public class ArtifactQuery {
    }
 
    /**
+    * search for artifacts of the given type on a particular branch with the various criteria
+    * 
+    * @param artifactTypeName
+    * @param branch
+    * @param criteria
+    * @return
+    * @throws SQLException
+    */
+   public static Collection<Artifact> getAtrifactsFromTypeAnd(String artifactTypeName, Branch branch, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
+      return getAtrifactsFromTypeAnd(artifactTypeName, branch,
+            criteria.toArray(new AbstractArtifactSearchCriteria[criteria.size()]));
+   }
+
+   /**
     * search for artifacts of the given type with an attribute of the given type and value
     * 
     * @param artifactTypeName

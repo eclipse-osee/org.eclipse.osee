@@ -34,10 +34,8 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
@@ -581,25 +579,6 @@ public class BranchManager {
                "Error getting deleted artifacts " + smaMgr.getSma().getHumanReadableId(), ex, true);
       }
       return arts;
-   }
-
-   /**
-    * Return the head of artifacts modified via transaction of branch commit during implementation state. NOTE: The
-    * returned artifacts are NOT the old versions at the time of the commit. They are the head versions of the artifacts
-    * and CAN be used for relating
-    * 
-    * @return head of artifacts modified
-    * @throws SQLException
-    */
-   public Collection<Artifact> getArtifactsModifiedHead() throws SQLException {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      if (isWorkingBranch() && !isChangesOnWorkingBranch()) return arts;
-      TransactionId transactionId = getTransactionId();
-      if (transactionId == null) return arts;
-      Collection<Artifact> transArts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(new ArtifactInTransactionSearch(transactionId),
-                  transactionId.getBranch());
-      return transArts;
    }
 
    /**
