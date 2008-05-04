@@ -93,7 +93,7 @@ public class BranchPersistenceManager implements PersistenceManager {
          "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
 
    private static final String SELECT_BRANCH_FOR_TRANSACTION =
-         "SELECT branch_id FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id = ?";
+         "SELECT branch_id FROM osee_define_tx_details WHERE transaction_id = ?";
    public static final String NEW_BRANCH_COMMENT = "New Branch from ";
    private static final String ARCHIVE_BRANCH = "UPDATE " + BRANCH_TABLE + " set archived = 1 WHERE branch_id = ?";
    private static final String UPDATE_ASSOCIATED_ART_BRANCH =

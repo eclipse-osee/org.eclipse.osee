@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
@@ -134,49 +135,6 @@ public class ArtifactQueryBuilder {
       nextAlias.put("osee_define_rel_link", new NextAlias("rel"));
    }
 
-   public void addTxTablesSql() {
-      appendAliasedTables("osee_define_txs", "osee_define_tx_details");
-   }
-
-   public String appendAliasedTable(String table, boolean comma) {
-      String alias = getNextAlias(table);
-      if (comma) {
-         sql.append(',');
-      }
-      sql.append(table);
-      sql.append(' ');
-      sql.append(alias);
-      return alias;
-   }
-
-   public String appendAliasedTable(String table) {
-      return appendAliasedTable(table, true);
-   }
-
-   private void appendAliasedTables(String... tables) {
-      for (String table : tables) {
-         appendAliasedTable(table, true);
-      }
-   }
-
-   public String getNextAlias(String table) {
-      return nextAlias.get(table).getNextAlias();
-   }
-
-   private class NextAlias {
-      String aliasPrefix;
-      int aliasSuffix;
-
-      public NextAlias(String aliasPrefix) {
-         this.aliasPrefix = aliasPrefix;
-         this.aliasSuffix = 1;
-      }
-
-      public String getNextAlias() {
-         return aliasPrefix + aliasSuffix++;
-      }
-   }
-
    public String getArtifactsSql() throws SQLException {
       sql.append("SELECT art1.*, arv1.gamma_id, txs1.* FROM ");
       appendAliasedTable("osee_define_artifact", false);
@@ -236,15 +194,19 @@ public class ArtifactQueryBuilder {
       }
 
       sql.append("art1.art_id=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND ");
-      sql.append("(txs1.tx_current=1");
+      if (allowDeleted) {
+         sql.append("(");
+      }
+      sql.append("txs1.tx_current=");
+      sql.append(TxChange.CURRENT.ordinal());
 
       if (allowDeleted) {
          sql.append(" OR txs1.mod_type=");
          sql.append(ModificationType.DELETED.getValue());
+         sql.append(")");
       }
-      sql.append(") AND ");
 
-      sql.append("txs1.transaction_id=txd1.transaction_id");
+      sql.append(" AND txs1.transaction_id=txd1.transaction_id");
       if (branch != null) {
          sql.append(" AND txd1.branch_id=?");
          addParameter(SQL3DataType.INTEGER, branch.getBranchId());
@@ -277,6 +239,49 @@ public class ArtifactQueryBuilder {
       sql.append(".branch_id=? AND ");
       dataList.add(SQL3DataType.INTEGER);
       dataList.add(branch.getBranchId());
+   }
+
+   public void addTxTablesSql() {
+      appendAliasedTables("osee_define_txs", "osee_define_tx_details");
+   }
+
+   public String appendAliasedTable(String table, boolean comma) {
+      String alias = getNextAlias(table);
+      if (comma) {
+         sql.append(',');
+      }
+      sql.append(table);
+      sql.append(' ');
+      sql.append(alias);
+      return alias;
+   }
+
+   public String appendAliasedTable(String table) {
+      return appendAliasedTable(table, true);
+   }
+
+   private void appendAliasedTables(String... tables) {
+      for (String table : tables) {
+         appendAliasedTable(table, true);
+      }
+   }
+
+   public String getNextAlias(String table) {
+      return nextAlias.get(table).getNextAlias();
+   }
+
+   private class NextAlias {
+      String aliasPrefix;
+      int aliasSuffix;
+
+      public NextAlias(String aliasPrefix) {
+         this.aliasPrefix = aliasPrefix;
+         this.aliasSuffix = 1;
+      }
+
+      public String getNextAlias() {
+         return aliasPrefix + aliasSuffix++;
+      }
    }
 
    public Collection<Artifact> getArtifacts() throws SQLException {
