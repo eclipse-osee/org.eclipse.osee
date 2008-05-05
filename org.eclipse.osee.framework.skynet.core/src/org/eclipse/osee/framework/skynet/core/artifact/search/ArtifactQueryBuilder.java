@@ -39,7 +39,7 @@ public class ArtifactQueryBuilder {
    private AbstractArtifactSearchCriteria[] criteria;
    private final Branch branch;
    private int artifactId;
-   private List<Integer> artifactIds;
+   private Collection<Integer> artifactIds;
    private ArtifactSubtypeDescriptor artifactType;
    private final boolean allowDeleted;
 
@@ -59,7 +59,7 @@ public class ArtifactQueryBuilder {
     * @param branch
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
     */
-   public ArtifactQueryBuilder(List<Integer> artifactIds, Branch branch, boolean allowDeleted) {
+   public ArtifactQueryBuilder(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted) {
       this(artifactIds, 0, null, null, null, branch, allowDeleted);
    }
 
@@ -71,11 +71,19 @@ public class ArtifactQueryBuilder {
       this(null, 0, null, ensureValid(guidOrHrid), null, branch, allowDeleted);
    }
 
+   public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch) {
+      this(null, 0, null, null, artifactType, branch, false);
+   }
+
    private static String ensureValid(String id) {
       if (id == null) {
          throw new IllegalArgumentException("The id can not be null.");
       }
       return id;
+   }
+
+   private static AbstractArtifactSearchCriteria[] toArray(List<AbstractArtifactSearchCriteria> criteria) {
+      return criteria.toArray(new AbstractArtifactSearchCriteria[criteria.size()]);
    }
 
    public ArtifactQueryBuilder(AbstractArtifactSearchCriteria... criteria) {
@@ -86,15 +94,19 @@ public class ArtifactQueryBuilder {
       this(null, 0, null, null, null, branch, false, criteria);
    }
 
-   public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch) {
-      this(null, 0, null, null, artifactType, branch, false);
+   public ArtifactQueryBuilder(Branch branch, List<AbstractArtifactSearchCriteria> criteria) {
+      this(null, 0, null, null, null, branch, false, toArray(criteria));
    }
 
    public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch, AbstractArtifactSearchCriteria... criteria) {
       this(null, 0, null, null, artifactType, branch, false, criteria);
    }
 
-   private ArtifactQueryBuilder(List<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, ArtifactSubtypeDescriptor artifactType, Branch branch, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
+   public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch, List<AbstractArtifactSearchCriteria> criteria) {
+      this(null, 0, null, null, artifactType, branch, false, toArray(criteria));
+   }
+
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, ArtifactSubtypeDescriptor artifactType, Branch branch, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
       this.artifactType = artifactType;
       this.branch = branch;
       this.criteria = criteria;
@@ -105,7 +117,7 @@ public class ArtifactQueryBuilder {
 
       if (artifactIds != null) {
          if (artifactIds.size() == 1) {
-            this.artifactId = artifactIds.get(0);
+            this.artifactId = artifactIds.iterator().next();
          } else {
             this.artifactIds = artifactIds;
          }
@@ -136,7 +148,7 @@ public class ArtifactQueryBuilder {
    }
 
    public String getArtifactsSql() throws SQLException {
-      sql.append("SELECT art1.*, arv1.gamma_id, txs1.* FROM ");
+      sql.append("SELECT art1.*, txs1.* FROM ");
       appendAliasedTable("osee_define_artifact", false);
       appendAliasedTable("osee_define_artifact_version");
       addTxTablesSql();
@@ -154,7 +166,7 @@ public class ArtifactQueryBuilder {
       }
 
       if (artifactIds != null) {
-         sql.append("art1.art_id IN " + Collections.toString(",", artifactIds) + " AND ");
+         sql.append("art1.art_id IN (" + Collections.toString(",", artifactIds) + ") AND ");
       }
       if (artifactType != null) {
          sql.append("art1.art_type_id=? AND ");
@@ -171,10 +183,10 @@ public class ArtifactQueryBuilder {
       }
 
       if (guids != null && guids.size() > 0) {
-         sql.append("art1.guid IN " + Collections.toString(",", guids) + " AND ");
+         sql.append("art1.guid IN (" + Collections.toString(",", guids) + ") AND ");
       }
       if (hrids != null && hrids.size() > 0) {
-         sql.append("art1.human_readable_id IN " + Collections.toString(",", hrids) + " AND ");
+         sql.append("art1.human_readable_id IN (" + Collections.toString(",", hrids) + ") AND ");
       }
 
       if (criteria.length > 0) {

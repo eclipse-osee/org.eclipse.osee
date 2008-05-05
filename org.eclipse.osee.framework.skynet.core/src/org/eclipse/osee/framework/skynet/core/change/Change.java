@@ -79,7 +79,7 @@ public abstract class Change implements IAdaptable {
     */
    public Artifact getArtifact() throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (artifact == null) {
-         artifact = ArtifactQuery.getArtifactFromId(artId, toTransactionId.getBranch());
+         artifact = ArtifactQuery.getArtifactFromId(artId, toTransactionId.getBranch(), true);
       }
       return artifact;
    }

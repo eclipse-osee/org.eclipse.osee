@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 
@@ -20,25 +22,12 @@ import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescript
  */
 public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
    private DynamicAttributeDescriptor attributeType;
-   private final String value;
+   private String value;
+   private Collection<String> values;
    private String txsAlias;
    private String txdAlias;
    private String attrAlias;
    private final boolean multiBranchHistorical;
-
-   /**
-    * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
-    * given value.
-    * 
-    * @param attributeType
-    * @param value to search; supports % wildcard
-    */
-   public AttributeValueCriteria(DynamicAttributeDescriptor attributeType, String value, boolean multiBranchHistorical) {
-      super();
-      this.attributeType = attributeType;
-      this.value = value;
-      this.multiBranchHistorical = multiBranchHistorical;
-   }
 
    /**
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
@@ -53,6 +42,19 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
    }
 
    /**
+    * Constructor for search criteria that finds an attribute of the given type with its current value exactly equal to
+    * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
+    * if the single value constructor was called. This search does not support the wildcard for multiple values.
+    * 
+    * @param attributeTypeName
+    * @param values
+    * @throws SQLException
+    */
+   public AttributeValueCriteria(String attributeTypeName, Collection<String> values) throws SQLException {
+      this(attributeTypeName, null, values, false);
+   }
+
+   /**
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
     * given value.
     * 
@@ -62,8 +64,25 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * @throws SQLException
     */
    public AttributeValueCriteria(String attributeTypeName, String value, boolean multiBranchHistorical) throws SQLException {
-      this(ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeTypeName), value,
-            multiBranchHistorical);
+      this(attributeTypeName, value, null, multiBranchHistorical);
+   }
+
+   private AttributeValueCriteria(String attributeTypeName, String value, Collection<String> values, boolean multiBranchHistorical) throws SQLException {
+      if (attributeTypeName != null) {
+         this.attributeType = ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeTypeName);
+      }
+
+      if (values == null) {
+         this.value = value;
+      } else {
+         if (values.size() == 1) {
+            this.value = values.iterator().next();
+         } else {
+            this.values = values;
+         }
+      }
+
+      this.multiBranchHistorical = multiBranchHistorical;
    }
 
    /* (non-Javadoc)
@@ -99,6 +118,12 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
          builder.append("? AND ");
          builder.addParameter(SQL3DataType.VARCHAR, value);
       }
+
+      if (values != null && values.size() > 0) {
+         builder.append(attrAlias);
+         builder.append(".value IN (" + Collections.toString(",", values) + ") AND ");
+      }
+
       if (!multiBranchHistorical) {
          builder.append(attrAlias);
          builder.append(".gamma_id=");

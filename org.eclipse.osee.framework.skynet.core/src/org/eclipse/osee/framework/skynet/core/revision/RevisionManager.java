@@ -421,6 +421,9 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       loadAttributeChanges(sourceBranch, transactionIdNumber, artIds, changeItemsNeedName);
       loadRelationChanges(sourceBranch, transactionIdNumber, artIds, changeItemsNeedName);
       loadDeletedArtifactChanges(sourceBranch, transactionIdNumber, artIds, changeItemsNeedName);
+
+      //ArtifactQuery.getArtifactsFromIds(artIds, sourceBranch, true);
+
       setArtifactNames(sourceBranch, changeItemsNeedName, changes, artIds);
 
       return changes;

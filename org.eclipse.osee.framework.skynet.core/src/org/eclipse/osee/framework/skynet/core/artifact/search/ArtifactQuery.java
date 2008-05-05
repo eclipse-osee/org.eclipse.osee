@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -110,7 +109,7 @@ public class ArtifactQuery {
     * @return
     * @throws SQLException
     */
-   public static Collection<Artifact> getArtifactsFromIds(List<Integer> artifactIds, Branch branch, boolean allowDeleted) throws SQLException {
+   public static Collection<Artifact> getArtifactsFromIds(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted) throws SQLException {
       return new ArtifactQueryBuilder(artifactIds, branch, allowDeleted).getArtifacts();
    }
 
@@ -156,8 +155,7 @@ public class ArtifactQuery {
    }
 
    public static Collection<Artifact> getAtrifactsFromHistoricalAttributeValue(String attributeValue) throws SQLException {
-      return new ArtifactQueryBuilder(new AttributeValueCriteria((DynamicAttributeDescriptor) null, attributeValue,
-            true)).getArtifacts();
+      return new ArtifactQueryBuilder(new AttributeValueCriteria(null, attributeValue, true)).getArtifacts();
    }
 
    public static Collection<Artifact> getAtrifactsFromType(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
@@ -170,7 +168,7 @@ public class ArtifactQuery {
    }
 
    /**
-    * search for artifacts of the given type on a particular branch with the various criteria
+    * search for artifacts of the given type on a particular branch that satisfy the given criteria
     * 
     * @param artifactTypeName
     * @param branch
@@ -178,23 +176,21 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws SQLException
     */
-   public static Collection<Artifact> getAtrifactsFromTypeAnd(String artifactTypeName, Branch branch, AbstractArtifactSearchCriteria... criteria) throws SQLException {
+   public static Collection<Artifact> getAtrifactsFromTypeAnd(String artifactTypeName, Branch branch, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
       return new ArtifactQueryBuilder(ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
             artifactTypeName), branch, criteria).getArtifacts();
    }
 
    /**
-    * search for artifacts of the given type on a particular branch with the various criteria
+    * search for artifacts on a particular branch that satisfy the given criteria
     * 
-    * @param artifactTypeName
     * @param branch
     * @param criteria
     * @return
     * @throws SQLException
     */
-   public static Collection<Artifact> getAtrifactsFromTypeAnd(String artifactTypeName, Branch branch, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
-      return getAtrifactsFromTypeAnd(artifactTypeName, branch,
-            criteria.toArray(new AbstractArtifactSearchCriteria[criteria.size()]));
+   public static Collection<Artifact> getArtifacts(Branch branch, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
+      return new ArtifactQueryBuilder(branch, criteria).getArtifacts();
    }
 
    /**
