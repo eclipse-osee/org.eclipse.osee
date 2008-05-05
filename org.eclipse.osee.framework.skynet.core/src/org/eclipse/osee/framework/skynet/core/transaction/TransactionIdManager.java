@@ -45,7 +45,7 @@ public class TransactionIdManager {
    private static final String SELECT_COMMENT =
          "SELECT " + TRANSACTION_DETAIL_TABLE.column(TXD_COMMENT) + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " = ?";
    private static final String SELECT_MAX_MIN_TX =
-         "SELECT min(transaction_id) AS max_id, min(transaction_id) AS min_id FROM osee_define_tx_details WHERE branch_id = ?";
+         "SELECT max(transaction_id) AS max_id, min(transaction_id) AS min_id FROM osee_define_tx_details WHERE branch_id = ?";
    private static final String SELECT_TX_GAMMAS =
          "SELECT " + TRANSACTIONS_TABLE.columns("transaction_id", "gamma_id") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.join(
                TRANSACTIONS_TABLE, "transaction_id") + " ORDER BY " + TRANSACTIONS_TABLE.columns("transaction_id",
