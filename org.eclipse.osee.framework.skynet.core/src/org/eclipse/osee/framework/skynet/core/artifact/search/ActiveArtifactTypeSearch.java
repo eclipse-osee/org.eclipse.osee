@@ -31,7 +31,9 @@ public class ActiveArtifactTypeSearch {
    /**
     * Search for given artifactType with active attribute set as specified
     * 
-    * @param branch TODO
+    * @param artifactTypeName
+    * @param active
+    * @param branch
     */
    public ActiveArtifactTypeSearch(String artifactTypeName, Active active, Branch branch) {
       super();
