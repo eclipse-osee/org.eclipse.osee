@@ -194,12 +194,11 @@ public class ArtifactQueryBuilder {
          for (int i = 1; i < criteria.length; i++) {
             AbstractArtifactSearchCriteria leftCriteria = criteria[i - 1];
             AbstractArtifactSearchCriteria rightCriteria = criteria[i];
-            leftCriteria.addJoinArtId(this, true);
+            leftCriteria.addJoinArtId(this, false);
             sql.append("=");
-            rightCriteria.addJoinArtId(this, false);
+            rightCriteria.addJoinArtId(this, true);
             sql.append(" AND ");
             rightCriteria.addToWhereSql(this);
-            sql.append(" AND ");
          }
          criteria[criteria.length - 1].addJoinArtId(this, false);
          sql.append("=art1.art_id AND ");

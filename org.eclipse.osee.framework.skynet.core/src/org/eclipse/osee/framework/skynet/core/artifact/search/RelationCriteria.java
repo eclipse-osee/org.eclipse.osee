@@ -24,7 +24,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
    private String relAlias;
 
    /**
-    * Constructor for search criteria that follows the relation link (left to right) starting on the given side
+    * Constructor for search criteria that follows the relation link ending on the given side
     * 
     * @param relationSide the side to start following the link from
     * @param value
@@ -66,8 +66,8 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
     */
    @Override
    public void addJoinArtId(ArtifactQueryBuilder builder, boolean left) {
-      boolean sideA = relationSide.isSideA() ^ left;
+      boolean useArtA = relationSide.isSideA() ^ left;
       builder.append(relAlias);
-      builder.append(sideA ? ".a_art_id" : ".b_art_id");
+      builder.append(useArtA ? ".a_art_id" : ".b_art_id");
    }
 }

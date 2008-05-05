@@ -10,102 +10,61 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.RelationCriteria;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 
 /**
  * @author Donald G. Dunne
  */
 public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
-
-   private boolean returnTeams = false;
+   private boolean returnActions;
    private final Collection<String> pcrIds;
    private final Collection<TeamDefinitionArtifact> teamDefs;
 
-   public LegacyPCRActionsWorldSearchItem(String name, String pcrId, Collection<TeamDefinitionArtifact> teamDefs) {
-      this(name, pcrId != null ? Arrays.asList(new String[] {pcrId}) : null, teamDefs);
-   }
-
-   public LegacyPCRActionsWorldSearchItem(String name, Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) {
-      super(name);
+   public LegacyPCRActionsWorldSearchItem(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs, boolean returnActions) {
+      super("");
       this.pcrIds = pcrIds;
       this.teamDefs = teamDefs;
+      this.returnActions = returnActions;
    }
 
-   public LegacyPCRActionsWorldSearchItem(String name, Collection<TeamDefinitionArtifact> teamDefs) {
-      this(name, (String) null, teamDefs);
+   public LegacyPCRActionsWorldSearchItem(Collection<TeamDefinitionArtifact> teamDefs, boolean returnActions) {
+      this(null, teamDefs, returnActions);
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
-      List<ISearchPrimitive> prodCriteria = new LinkedList<ISearchPrimitive>();
+      List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>(4);
+
       if (pcrIds != null && pcrIds.size() > 0) {
-         for (String pcrId : pcrIds) {
-            prodCriteria.add(new AttributeValueSearch(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), pcrId,
-                  Operator.EQUAL));
-         }
-      } else if (pcrIds == null || pcrIds.size() == 0) {
-         prodCriteria.add(new AttributeValueSearch(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "%",
-               Operator.LIKE));
-      }
-      FromArtifactsSearch prodSearch = new FromArtifactsSearch(prodCriteria, false);
-
-      List<ISearchPrimitive> teamDefCriteria = new LinkedList<ISearchPrimitive>();
-      boolean teamDefsSpecified = (teamDefs != null && teamDefs.size() > 0);
-      if (teamDefsSpecified) {
-         for (TeamDefinitionArtifact pcrId : teamDefs) {
-            teamDefCriteria.add(new AttributeValueSearch(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
-                  pcrId.getGuid(), Operator.EQUAL));
-         }
-      }
-      FromArtifactsSearch teamDefSearch = new FromArtifactsSearch(teamDefCriteria, false);
-
-      List<ISearchPrimitive> bothCriteria = new LinkedList<ISearchPrimitive>();
-      bothCriteria.add(prodSearch);
-      if (teamDefsSpecified) bothCriteria.add(teamDefSearch);
-      FromArtifactsSearch bothSearch = new FromArtifactsSearch(bothCriteria, true);
-
-      if (isReturnTeams()) {
-         if (cancelled) return EMPTY_SET;
-         Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(bothCriteria, true,
-                     BranchPersistenceManager.getAtsBranch());
-
-         if (cancelled) return EMPTY_SET;
-         return arts;
+         criteria.add(new AttributeValueCriteria(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), pcrIds));
       } else {
-         List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
-         actionCriteria.add(new InRelationSearch(bothSearch, RelationSide.ActionToWorkflow_Action));
-
-         Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(actionCriteria, true,
-                     BranchPersistenceManager.getAtsBranch());
-
-         if (cancelled) return EMPTY_SET;
-
-         return arts;
+         criteria.add(new AttributeValueCriteria(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName()));
       }
-   }
 
-   public boolean isReturnTeams() {
-      return returnTeams;
-   }
+      if (teamDefs != null && teamDefs.size() > 0) {
+         List<String> teamDefGuids = new ArrayList<String>(teamDefs.size());
+         for (TeamDefinitionArtifact teamDef : teamDefs) {
+            teamDefGuids.add(teamDef.getGuid());
+         }
+         criteria.add(new AttributeValueCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
+               teamDefGuids));
+      }
 
-   public void setReturnTeams(boolean returnTeams) {
-      this.returnTeams = returnTeams;
-   }
+      if (returnActions) {
+         criteria.add(new RelationCriteria(RelationSide.ActionToWorkflow_Action));
+      }
 
+      return ArtifactQuery.getArtifacts(BranchPersistenceManager.getAtsBranch(), criteria);
+   }
 }

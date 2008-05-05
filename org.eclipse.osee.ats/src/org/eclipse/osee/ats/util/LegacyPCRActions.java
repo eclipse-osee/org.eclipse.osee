@@ -31,8 +31,7 @@ public class LegacyPCRActions {
    }
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
-      LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem("", teamDefs);
-      search.setReturnTeams(true);
+      LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(teamDefs, false);
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
          teamArts.add((TeamWorkFlowArtifact) art);
@@ -55,8 +54,7 @@ public class LegacyPCRActions {
    }
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
-      LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem("", pcrIds, teamDefs);
-      search.setReturnTeams(true);
+      LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(pcrIds, teamDefs, false);
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
          teamArts.add((TeamWorkFlowArtifact) art);
@@ -69,7 +67,7 @@ public class LegacyPCRActions {
    }
 
    public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
-      LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem("", teamDefs);
+      LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(teamDefs, true);
       Set<ActionArtifact> actArts = new HashSet<ActionArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
          actArts.add((ActionArtifact) art);
@@ -82,7 +80,7 @@ public class LegacyPCRActions {
    }
 
    public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<String> pcrIds, Collection<TeamDefinitionArtifact> teamDefs) throws Exception {
-      LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem("", pcrIds, teamDefs);
+      LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(pcrIds, teamDefs, true);
       Set<ActionArtifact> actArts = new HashSet<ActionArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
          actArts.add((ActionArtifact) art);

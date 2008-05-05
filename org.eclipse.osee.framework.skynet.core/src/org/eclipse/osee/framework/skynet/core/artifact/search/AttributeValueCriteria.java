@@ -42,6 +42,18 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
    }
 
    /**
+    * Constructor for search criteria that finds an attribute of the given type and any value (i.e. checks for
+    * existence)
+    * 
+    * @param attributeTypeName
+    * @param value
+    * @throws SQLException
+    */
+   public AttributeValueCriteria(String attributeTypeName) throws SQLException {
+      this(attributeTypeName, null, false);
+   }
+
+   /**
     * Constructor for search criteria that finds an attribute of the given type with its current value exactly equal to
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the wildcard for multiple values.
