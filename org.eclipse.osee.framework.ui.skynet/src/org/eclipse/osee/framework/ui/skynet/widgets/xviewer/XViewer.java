@@ -95,6 +95,9 @@ public class XViewer extends TreeViewer {
       toolbarManager.add(customizeAction);
    }
 
+   private TreeColumn rightClickSelectedColumn = null;
+   private TreeItem rightClickSelectedItem = null;
+
    protected void createSupportWidgets(Composite parent) {
 
       Composite comp = new Composite(parent, SWT.NONE);
@@ -107,6 +110,24 @@ public class XViewer extends TreeViewer {
       Display.getCurrent().addFilter(SWT.KeyDown, displayKeysListener);
       Display.getCurrent().addFilter(SWT.KeyUp, displayKeysListener);
 
+      getTree().addListener(SWT.MouseDown, new Listener() {
+         public void handleEvent(Event event) {
+            if (event.button == 3) {
+               rightClickSelectedColumn = null;
+               rightClickSelectedItem = null;
+               Point pt = new Point(event.x, event.y);
+               rightClickSelectedItem = getTree().getItem(pt);
+               if (rightClickSelectedItem == null) return;
+               for (int colNum = 0; colNum < getTree().getColumnCount(); colNum++) {
+                  Rectangle rect = rightClickSelectedItem.getBounds(colNum);
+                  if (rect.contains(pt)) {
+                     rightClickSelectedColumn = getTree().getColumn(colNum);
+                  }
+               }
+            }
+            updateStatusLabel();
+         }
+      });
       getTree().addListener(SWT.MouseUp, new Listener() {
          public void handleEvent(Event event) {
             if (event.button == 1 && ((event.stateMask & SWT.MODIFIER_MASK) == SWT.ALT)) {
@@ -440,6 +461,20 @@ public class XViewer extends TreeViewer {
 
    public void setColumnMultiEditEnabled(boolean columnMultiEditEnabled) {
       this.columnMultiEditEnabled = columnMultiEditEnabled;
+   }
+
+   /**
+    * @return the rightClickSelectedColumn
+    */
+   public TreeColumn getRightClickSelectedColumn() {
+      return rightClickSelectedColumn;
+   }
+
+   /**
+    * @return the rightClickSelectedItem
+    */
+   public TreeItem getRightClickSelectedItem() {
+      return rightClickSelectedItem;
    }
 
 }

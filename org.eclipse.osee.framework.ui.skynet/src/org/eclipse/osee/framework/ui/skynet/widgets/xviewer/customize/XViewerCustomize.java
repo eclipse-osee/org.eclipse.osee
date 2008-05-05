@@ -36,6 +36,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.TreeViewerReport;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerSorter;
@@ -71,6 +72,7 @@ public class XViewerCustomize {
    protected Action columnMultiEdit;
    protected Action copySelected;
    protected Action copySelectedCell;
+   protected Action viewSelectedCell;
 
    /**
     * @param factory
@@ -132,6 +134,7 @@ public class XViewerCustomize {
       mm.add(viewTableReport);
       if (xViewer.isColumnMultiEditEnabled()) mm.add(columnMultiEdit);
       mm.add(copySelected);
+      mm.add(viewSelectedCell);
       mm.add(copySelectedCell);
       mm.add(new GroupMarker(XViewer.MENU_GROUP_POST));
    }
@@ -140,6 +143,11 @@ public class XViewerCustomize {
       copySelected = new Action("Copy Selected Row(s)- Ctrl-C") {
          public void run() {
             performCopy();
+         };
+      };
+      viewSelectedCell = new Action("View Selected Cell Data") {
+         public void run() {
+            performViewCell();
          };
       };
       copySelectedCell = new Action("Copy Selected Cell - Ctrl-Shift-C") {
@@ -201,6 +209,18 @@ public class XViewerCustomize {
       }
 
       public void keyReleased(KeyEvent e) {
+      }
+   }
+
+   private void performViewCell() {
+      TreeColumn treeCol = xViewer.getRightClickSelectedColumn();
+      TreeItem treeItem = xViewer.getRightClickSelectedItem();
+      if (treeCol != null) {
+         XViewerColumn xCol = xViewer.getXTreeColumn(treeCol.getText());
+         String data =
+               ((ITableLabelProvider) xViewer.getLabelProvider()).getColumnText(treeItem.getData(), xCol.getColumnNum());
+         if (data != null && !data.equals("")) new HtmlDialog(treeCol.getText() + " Data", treeCol.getText() + " Data",
+               data).open();
       }
    }
 
