@@ -146,7 +146,7 @@ public class ArtifactQuery {
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getAtrifactFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static Artifact getArtifactFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       Collection<Artifact> artifacts =
             getArtifactsFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch);
       return getSoleArtifact(
@@ -154,15 +154,15 @@ public class ArtifactQuery {
             " with type \"" + artifactTypeName + " and \"" + attributeTypeName + " = \"" + attributeValue + "\" on branch \"" + branch + "\"");
    }
 
-   public static Collection<Artifact> getAtrifactsFromHistoricalAttributeValue(String attributeValue) throws SQLException {
+   public static Collection<Artifact> getArtifactsFromHistoricalAttributeValue(String attributeValue) throws SQLException {
       return new ArtifactQueryBuilder(new AttributeValueCriteria(null, attributeValue, true)).getArtifacts();
    }
 
-   public static Collection<Artifact> getAtrifactsFromType(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
+   public static Collection<Artifact> getArtifactsFromType(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
       return new ArtifactQueryBuilder(artifactType, branch).getArtifacts();
    }
 
-   public static Collection<Artifact> getAtrifactsFromType(String artifactTypeName, Branch branch) throws SQLException {
+   public static Collection<Artifact> getArtifactsFromType(String artifactTypeName, Branch branch) throws SQLException {
       return new ArtifactQueryBuilder(ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
             artifactTypeName), branch).getArtifacts();
    }
@@ -176,7 +176,7 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws SQLException
     */
-   public static Collection<Artifact> getAtrifactsFromTypeAnd(String artifactTypeName, Branch branch, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
+   public static Collection<Artifact> getArtifactsFromTypeAnd(String artifactTypeName, Branch branch, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
       return new ArtifactQueryBuilder(ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
             artifactTypeName), branch, criteria).getArtifacts();
    }

@@ -1008,7 +1008,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    public Artifact getDefaultHierarchyRootArtifact(Branch branch, boolean createIfNecessary) throws SQLException {
-      Collection<Artifact> artifacts = ArtifactQuery.getAtrifactsFromType(ROOT_ARTIFACT_TYPE_NAME, branch);
+      Collection<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(ROOT_ARTIFACT_TYPE_NAME, branch);
 
       if (artifacts.size() == 0) {
          if (createIfNecessary) {

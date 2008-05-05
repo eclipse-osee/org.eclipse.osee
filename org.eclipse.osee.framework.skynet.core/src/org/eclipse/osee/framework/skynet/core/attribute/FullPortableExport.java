@@ -126,7 +126,7 @@ public class FullPortableExport {
 
    public void createArtifactSheets(Branch branch) throws IOException, SQLException {
       for (ArtifactSubtypeDescriptor artifactType : configurationManager.getValidArtifactTypes(branch)) {
-         createArtifactSheet(artifactType, ArtifactQuery.getAtrifactsFromType(artifactType, branch));
+         createArtifactSheet(artifactType, ArtifactQuery.getArtifactsFromType(artifactType, branch));
       }
    }
 

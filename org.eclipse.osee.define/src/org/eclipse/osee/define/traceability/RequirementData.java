@@ -61,14 +61,14 @@ public class RequirementData {
          reset();
          monitor.subTask(String.format("Loading Software Requirements from: [%s]", getBranch().getBranchShortestName()));
 
-         directSwRequirements.addAll(ArtifactQuery.getAtrifactsFromType(Requirements.SOFTWARE_REQUIREMENT, getBranch()));
+         directSwRequirements.addAll(ArtifactQuery.getArtifactsFromType(Requirements.SOFTWARE_REQUIREMENT, getBranch()));
          populateTraceMap(monitor, directSwRequirements, directMap);
          monitor.worked(30);
 
          if (monitor.isCanceled() != true) {
             monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
                   getBranch().getBranchShortestName()));
-            inDirectSwRequirements.addAll(ArtifactQuery.getAtrifactsFromType(
+            inDirectSwRequirements.addAll(ArtifactQuery.getArtifactsFromType(
                   Requirements.INDIRECT_SOFTWARE_REQUIREMENT, getBranch()));
             populateTraceMap(monitor, inDirectSwRequirements, indirectMap);
             monitor.worked(7);

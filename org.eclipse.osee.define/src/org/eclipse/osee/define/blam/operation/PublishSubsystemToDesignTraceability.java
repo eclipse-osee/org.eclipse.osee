@@ -57,11 +57,11 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       init();
 
       monitor.subTask("Aquiring Design Artifacts"); // bulk load for performance reasons
-      ArtifactQuery.getAtrifactsFromType("Subsystem Design", branch);
+      ArtifactQuery.getArtifactsFromType("Subsystem Design", branch);
       monitor.worked(10);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
-      ArtifactQuery.getAtrifactsFromType("Subsystem Requirement", branch);
+      ArtifactQuery.getArtifactsFromType("Subsystem Requirement", branch);
       monitor.worked(60);
 
       int workIncrement = 30 / subsystems.size();

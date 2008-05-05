@@ -38,7 +38,7 @@ public class UniversalGroup {
    public static Collection<Artifact> getGroups(Branch branch) {
       Collection<Artifact> artifacts = null;
       try {
-         artifacts = ArtifactQuery.getAtrifactsFromType(ARTIFACT_TYPE_NAME, branch);
+         artifacts = ArtifactQuery.getArtifactsFromType(ARTIFACT_TYPE_NAME, branch);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.getMessage(), ex);
          artifacts = new LinkedList<Artifact>();

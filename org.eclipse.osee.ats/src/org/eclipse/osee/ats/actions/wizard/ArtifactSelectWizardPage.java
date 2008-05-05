@@ -83,7 +83,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                ArtifactSubtypeDescriptor desc = (ArtifactSubtypeDescriptor) selection.getFirstElement();
                try {
-                  artList.setInput(ArtifactQuery.getAtrifactsFromType(desc.getName(),
+                  artList.setInput(ArtifactQuery.getArtifactsFromType(desc.getName(),
                         BranchPersistenceManager.getAtsBranch()));
                } catch (SQLException ex) {
                   OSEELog.logException(AtsPlugin.class, ex, false);

@@ -40,7 +40,7 @@ public class ArtifactSnapshotAllItems extends AbstractBlam {
          ArtifactSnapshotManager artifactSnapshotManager = ArtifactSnapshotManager.getInstance();
          for (ArtifactSubtypeDescriptor artifactType : descriptors) {
             monitor.subTask(String.format("Loading artifacts of type [%s]", artifactType.getName()));
-            Collection<Artifact> artifacts = ArtifactQuery.getAtrifactsFromType(artifactType, branch);
+            Collection<Artifact> artifacts = ArtifactQuery.getArtifactsFromType(artifactType, branch);
             int count = 0;
             int total = artifacts.size();
             for (Artifact artifact : artifacts) {

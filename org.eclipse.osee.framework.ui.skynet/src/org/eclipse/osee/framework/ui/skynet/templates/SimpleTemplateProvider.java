@@ -40,7 +40,7 @@ public class SimpleTemplateProvider implements ITemplateProvider {
       if (templateMap == null) {
          templateMap = new HashMap<String, Artifact>();
          Collection<Artifact> artifacts =
-               ArtifactQuery.getAtrifactsFromType("Renderer Template", branchManager.getCommonBranch());
+               ArtifactQuery.getArtifactsFromType("Renderer Template", branchManager.getCommonBranch());
          for (Artifact art : artifacts) {
             Collection<Attribute<String>> attrs = art.getAttributes("Template Match Criteria");
             for (Attribute<String> attr : attrs) {

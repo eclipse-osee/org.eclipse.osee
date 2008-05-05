@@ -50,7 +50,7 @@ public class ActiveArtifactTypeSearch {
          Collection<Artifact> arts = null;
          if (active == Active.Both) {
             // Since both, just do a type search
-            arts = ArtifactQuery.getAtrifactsFromType(artifactTypeName, branch);
+            arts = ArtifactQuery.getArtifactsFromType(artifactTypeName, branch);
          } else {
             arts =
                   ArtifactQuery.getArtifactsFromTypeAndAttribute(artifactTypeName, "ats.Active",

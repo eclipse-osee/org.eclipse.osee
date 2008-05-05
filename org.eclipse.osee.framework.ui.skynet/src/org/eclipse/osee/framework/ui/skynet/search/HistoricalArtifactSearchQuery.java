@@ -30,7 +30,7 @@ public class HistoricalArtifactSearchQuery extends AbstractArtifactSearchQuery {
     */
    @Override
    public Collection<Artifact> getArtifacts() throws SQLException {
-      return ArtifactQuery.getAtrifactsFromHistoricalAttributeValue(attributePattern);
+      return ArtifactQuery.getArtifactsFromHistoricalAttributeValue(attributePattern);
    }
 
    public String getCriteriaLabel() {

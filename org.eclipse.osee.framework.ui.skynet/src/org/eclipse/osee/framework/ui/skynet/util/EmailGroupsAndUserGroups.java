@@ -63,7 +63,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
          }
       }
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.UserGroups)) {
-         for (Artifact art : ArtifactQuery.getAtrifactsFromType("User Group",
+         for (Artifact art : ArtifactQuery.getArtifactsFromType("User Group",
                BranchPersistenceManager.getAtsBranch())) {
             // Only add group if have read permissions
             if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.getInstance().checkObjectPermission(

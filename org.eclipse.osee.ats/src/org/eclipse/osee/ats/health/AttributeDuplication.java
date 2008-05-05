@@ -86,7 +86,7 @@ public class AttributeDuplication extends XNavigateItemAutoRunAction implements 
          if (monitor != null) monitor.subTask("Loading " + type + "...");
          try {
             // just need to load the artifacts for them to exception out
-            ArtifactQuery.getAtrifactsFromType(type, BranchPersistenceManager.getAtsBranch());
+            ArtifactQuery.getArtifactsFromType(type, BranchPersistenceManager.getAtsBranch());
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, false);
             rd.logError(ex.getLocalizedMessage());

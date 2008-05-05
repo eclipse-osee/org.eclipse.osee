@@ -212,7 +212,7 @@ public class SkynetAuthentication implements PersistenceManager {
       if (activeUserCache.size() == 0) {
          try {
             Collection<Artifact> dbUsers =
-                  ArtifactQuery.getAtrifactsFromType(User.ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
+                  ArtifactQuery.getArtifactsFromType(User.ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
             for (Artifact a : dbUsers) {
                User user = (User) a;
                if (user.isActive()) {
@@ -243,7 +243,7 @@ public class SkynetAuthentication implements PersistenceManager {
       if (user == null) {
          try {
             user =
-                  (User) ArtifactQuery.getAtrifactFromTypeAndAttribute(User.ARTIFACT_NAME, User.userIdAttributeName,
+                  (User) ArtifactQuery.getArtifactFromTypeAndAttribute(User.ARTIFACT_NAME, User.userIdAttributeName,
                         userId, BranchPersistenceManager.getCommonBranch());
             addUserToMap(user);
          } catch (ArtifactDoesNotExist ex) {

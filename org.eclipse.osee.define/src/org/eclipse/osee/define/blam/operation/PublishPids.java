@@ -39,7 +39,7 @@ public class PublishPids extends AbstractBlam {
       Artifact subsysTopFolder = root.getChild(Requirements.SUBSYSTEM_REQUIREMENTS);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
-      ArtifactQuery.getAtrifactsFromType(Requirements.SUBSYSTEM_REQUIREMENT, branch);
+      ArtifactQuery.getArtifactsFromType(Requirements.SUBSYSTEM_REQUIREMENT, branch);
 
       for (Artifact subsystem : subsysTopFolder.getChildren()) {
          if (monitor.isCanceled()) {

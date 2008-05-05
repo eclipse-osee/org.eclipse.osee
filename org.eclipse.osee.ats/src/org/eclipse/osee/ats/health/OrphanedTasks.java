@@ -98,7 +98,7 @@ public class OrphanedTasks extends XNavigateItemAutoRunAction implements IAutoRu
    private List<TaskArtifact> runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
       final List<TaskArtifact> orphanedTasks = new ArrayList<TaskArtifact>();
       Collection<Artifact> arts =
-            ArtifactQuery.getAtrifactsFromType(TaskArtifact.ARTIFACT_NAME,
+            ArtifactQuery.getArtifactsFromType(TaskArtifact.ARTIFACT_NAME,
                   BranchPersistenceManager.getAtsBranch());
       int x = 0;
       for (Artifact art : arts) {
