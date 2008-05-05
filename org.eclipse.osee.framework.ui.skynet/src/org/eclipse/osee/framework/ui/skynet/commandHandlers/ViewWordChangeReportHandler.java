@@ -20,6 +20,10 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -28,7 +32,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.ui.PlatformUI;
@@ -73,17 +80,29 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             OSEELog.logException(getClass(), e1, true);
          }
       }
-
-      WordRenderer renderer =
-            (WordRenderer) RendererManager.getInstance().getRendererById("org.eclipse.osee.framework.ui.skynet.word");
-
-      try {
-         renderer.compareArtifacts(baseArtifacts, newerArtifacts, DIFF_ARTIFACT, null,
-               selectedItem.getBaselineTransactionId().getBranch());
-      } catch (CoreException ex) {
-         OSEELog.logException(getClass(), ex, true);
-      } catch (Exception ex) {
-         OSEELog.logException(getClass(), ex, true);
+      if (newerArtifacts.size() == 0 || (baseArtifacts.size() != newerArtifacts.size())) {
+         throw new IllegalArgumentException(
+               "base artifacts size: " + baseArtifacts.size() + " must match newer artifacts size: " + newerArtifacts.size() + ".");
+      } else {
+         IRenderer myIRenderer =
+               RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, baseArtifacts.get(0));
+         if (myIRenderer instanceof WholeDocumentRenderer) {
+            JobFamily aFamilyMember =
+                  new JobFamily(baseArtifacts.get(0), newerArtifacts.get(newerArtifacts.size() - 1), DIFF_ARTIFACT,
+                        "Diff", newerArtifacts.get(newerArtifacts.size() - 1).getDescriptiveName());
+            aFamilyMember.schedule();
+         } else if (myIRenderer instanceof WordRenderer) {
+            WordRenderer renderer =
+                  (WordRenderer) RendererManager.getInstance().getRendererById(WordRenderer.WORD_RENDERER_EXTENSION);
+            try {
+               renderer.compareArtifacts(baseArtifacts, newerArtifacts, DIFF_ARTIFACT, null,
+                     selectedItem.getBaselineTransactionId().getBranch());
+            } catch (CoreException ex) {
+               OSEELog.logException(getClass(), ex, true);
+            } catch (Exception ex) {
+               OSEELog.logException(getClass(), ex, true);
+            }
+         }
       }
       return null;
    }
@@ -116,4 +135,88 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
       return isEnabled;
    }
+   public class FamilyMember extends Job {
+      private String lastName;
+      private Artifact firstArtifact;
+      private Artifact secondArtifact;;
+      private String diffOption;
+      private IProgressMonitor monitor;
+      private List<String> JournalList = new ArrayList<String>();
+
+      public FamilyMember(Artifact firstArtifact, Artifact secondArtifact, String diffOption, String firstName, String lastName) {
+         super(firstName + " " + lastName);
+         this.lastName = lastName;
+         this.firstArtifact = firstArtifact;
+         this.secondArtifact = secondArtifact;
+         this.diffOption = diffOption;
+         this.diffOption = diffOption;
+      }
+
+      protected IStatus run(IProgressMonitor monitor) {
+         this.monitor = monitor;
+         try {
+            IRenderer myIRenderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, firstArtifact);
+            myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor);
+         } catch (Exception e) {
+            JournalList.add(e.getMessage());
+            //         e.printStackTrace();
+         }
+         return Status.OK_STATUS;
+      }
+
+      public IProgressMonitor getIProgressMonitor() {
+         return monitor;
+      }
+
+      public boolean belongsTo(Object family) {
+         return lastName.equals(family);
+      }
+
+      public List<String> getJounalList() {
+         return JournalList;
+      }
+
+   }
+   public class JobFamily extends Job {
+      private String lastName;
+      private Artifact firstArtifact;
+      private Artifact secondArtifact;;
+      private String diffOption;
+      private IProgressMonitor monitor;
+      private List<String> JournalList = new ArrayList<String>();
+
+      public JobFamily(Artifact firstArtifact, Artifact secondArtifact, String diffOption, String firstName, String lastName) {
+         super(firstName + " " + lastName);
+         this.lastName = lastName;
+         this.firstArtifact = firstArtifact;
+         this.secondArtifact = secondArtifact;
+         this.diffOption = diffOption;
+      }
+
+      protected IStatus run(IProgressMonitor monitor) {
+         this.monitor = monitor;
+         try {
+            IRenderer myIRenderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, firstArtifact);
+            myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor);
+         } catch (Exception ex) {
+            OSEELog.logException(getClass(), ex, true);
+            JournalList.add(ex.getMessage());
+         }
+         return Status.OK_STATUS;
+      }
+
+      public IProgressMonitor getIProgressMonitor() {
+         return monitor;
+      }
+
+      public boolean belongsTo(Object family) {
+         return lastName.equals(family);
+      }
+
+      public List<String> getJounalList() {
+         return JournalList;
+      }
+
+   }
+
 }
