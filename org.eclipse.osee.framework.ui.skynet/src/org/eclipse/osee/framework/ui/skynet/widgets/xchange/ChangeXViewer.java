@@ -65,7 +65,7 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
    public void handleDoubleClick() throws Exception {
       if (getSelectedChanges().size() == 0) return;
       Change change = getSelectedChanges().iterator().next();
-      ArtifactEditor.editArtifact(change.getArtifact(), change.getFromTransactionId().getTransactionNumber());
+      ArtifactEditor.editArtifact(change.getArtifact());
    }
 
    public ChangeXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XChangeViewer xRoleViewer) {
