@@ -64,7 +64,7 @@ public class XComboBooleanDam extends XCombo implements IDamWidget {
    public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       this.artifact = artifact;
       this.attrName = attrName;
-      Boolean result = artifact.getSoleAttributeValue(attrName);
+      Boolean result = artifact.getSoleAttributeValue(attrName, null);
       if (result == null)
          super.set("");
       else
@@ -95,7 +95,7 @@ public class XComboBooleanDam extends XCombo implements IDamWidget {
    @Override
    public boolean isDirty() {
       try {
-         Boolean result = artifact.getSoleAttributeValue(attrName);
+         Boolean result = artifact.getSoleAttributeValue(attrName, null);
          if (result == null && (get() != null || !get().equals("")))
             return true;
          else if ((get() != null || !get().equals("")) && result != null)
