@@ -18,3 +18,4 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Import-Package: org.eclipse.osee.framework.db.connection,
  org.eclipse.osee.framework.db.connection.info
+OseeEarlyStart: true
