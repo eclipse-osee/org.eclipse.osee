@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -110,6 +111,17 @@ public class UserRoleManager {
       Set<User> assignees = new HashSet<User>();
       for (UserRole uRole : getUserRoles()) {
          if (!uRole.isCompleted() && uRole.getUser() != null) assignees.add(uRole.getUser());
+      }
+      // If roles are all completed, then still need to select a user to assign to SMA
+      if (assignees.size() == 0) {
+         if (getUserRoles(Role.Author).size() > 0)
+            for (UserRole role : getUserRoles(Role.Author))
+               assignees.add(role.getUser());
+         else if (getUserRoles(Role.Moderator).size() > 0)
+            for (UserRole role : getUserRoles(Role.Moderator))
+               assignees.add(role.getUser());
+         else
+            assignees.add(SkynetAuthentication.getInstance().getAuthenticatedUser());
       }
       // Set assigness based on roles
       artifact.getSmaMgr().setAssignees(assignees);

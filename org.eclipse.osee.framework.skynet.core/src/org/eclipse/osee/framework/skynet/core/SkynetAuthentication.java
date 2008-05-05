@@ -108,6 +108,15 @@ public class SkynetAuthentication implements PersistenceManager {
       });
    }
 
+   /**
+    * Returns the currently authenticated user
+    * 
+    * @return
+    */
+   public static User getUser() {
+      return instance.getAuthenticatedUser();
+   }
+
    public synchronized User getAuthenticatedUser() {
       try {
          if (SkynetDbInit.isPreArtifactCreation()) {
