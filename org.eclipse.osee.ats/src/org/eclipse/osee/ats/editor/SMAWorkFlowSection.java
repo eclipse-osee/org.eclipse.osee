@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.LogItem;
-import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -106,7 +105,7 @@ public class SMAWorkFlowSection extends SectionPart {
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
       mainComp.layout();
 
-      createStateNotesHeader(smaMgr, mainComp, toolkit, 2);
+      SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, smaMgr, 2, page.getName());
 
       Composite rightComp = toolkit.createContainer(mainComp, 1);
       rightComp.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
@@ -124,18 +123,6 @@ public class SMAWorkFlowSection extends SectionPart {
       section.layout();
       section.setExpanded(smaMgr.isCurrentSectionExpanded(page));
       return section;
-   }
-
-   public static void createStateNotesHeader(SMAManager smaMgr, Composite comp, XFormToolkit toolkit, int horizontalSpan) {
-      // Display global Notes
-      for (NoteItem noteItem : smaMgr.getSma().getNotes().getNoteItems()) {
-         if (noteItem.getState().equals(smaMgr.getCurrentStateName())) {
-            Label label = toolkit.createLabel(comp, noteItem.toHTML());
-            GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-            gd.horizontalSpan = horizontalSpan;
-            label.setLayoutData(gd);
-         }
-      }
    }
 
    private String getCurrentStateTitle() {

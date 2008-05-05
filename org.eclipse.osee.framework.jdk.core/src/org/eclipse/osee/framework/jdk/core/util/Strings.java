@@ -16,6 +16,13 @@ package org.eclipse.osee.framework.jdk.core.util;
  */
 public class Strings {
 
+   /**
+    * Return string truncated if size > length, otherwise return string
+    * 
+    * @param string
+    * @param length
+    * @return
+    */
    public static String truncate(String string, int length) {
 
       if (string.length() > length) {

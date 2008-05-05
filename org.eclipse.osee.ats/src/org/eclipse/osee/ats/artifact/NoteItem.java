@@ -79,7 +79,7 @@ public class NoteItem {
    }
 
    public String toHTML() {
-      return "Note: (" + type + "): " + msg + " - (" + user.getName() + ")" + (state.equals("") ? "" : " for \"" + state + "\" state") + " - " + getDate(XDate.MMDDYYHHMM);
+      return "Note: \"" + type + "\" from \"" + user.getName() + "\"" + (state.equals("") ? "" : " for \"" + state + "\" state") + " on " + getDate(XDate.MMDDYYHHMM) + " - " + msg;
    }
 
    public String getState() {

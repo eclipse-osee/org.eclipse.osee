@@ -28,7 +28,9 @@ import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
@@ -46,7 +48,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -163,7 +167,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          createTopLineHeader(headerComp, toolkit);
          createLatestHeader(headerComp, toolkit);
          createTeamWorkflowHeader(headerComp, toolkit);
-         createNotesHeader(headerComp, toolkit);
+         createSMANotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS);
+         createStateNotesHeader(headerComp, toolkit, smaMgr, HEADER_COMP_COLUMNS, null);
          createAnnotationsHeader(headerComp, toolkit);
 
          sections.clear();
@@ -413,23 +418,45 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createNotesHeader(Composite comp, XFormToolkit toolkit) throws SQLException, MultipleAttributesExist {
+   public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, SMAManager smaMgr, int horizontalSpan) throws SQLException, MultipleAttributesExist {
       // Display SMA Note
       String note = smaMgr.getSma().getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
       if (!note.equals("")) {
-         Label label = toolkit.createLabel(comp, "Note: " + note);
-         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.horizontalSpan = HEADER_COMP_COLUMNS;
-         label.setLayoutData(gd);
+         createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note, false);
       }
+   }
+
+   public static void createStateNotesHeader(Composite comp, XFormToolkit toolkit, SMAManager smaMgr, int horizontalSpan, String forStateName) throws SQLException, MultipleAttributesExist {
       // Display global Notes
       for (NoteItem noteItem : smaMgr.getSma().getNotes().getNoteItems()) {
-         if (noteItem.getState().equals("")) {
-            Label label = toolkit.createLabel(comp, noteItem.toHTML());
-            GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-            gd.horizontalSpan = HEADER_COMP_COLUMNS;
-            label.setLayoutData(gd);
+         if (forStateName == null || noteItem.getState().equals(forStateName)) {
+            createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toHTML(), false);
          }
+      }
+   }
+
+   private static void createLabelOrHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final String str, boolean onlyState) {
+      if (str.length() > 150) {
+         Hyperlink label = toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
+         label.setToolTipText("click to view all");
+         label.addListener(SWT.MouseUp, new Listener() {
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+             */
+            public void handleEvent(Event event) {
+               AWorkbench.popup("Note", str);
+            }
+         });
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+         gd.horizontalSpan = horizontalSpan;
+         label.setLayoutData(gd);
+      } else {
+         Label label = toolkit.createLabel(comp, str);
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+         gd.horizontalSpan = horizontalSpan;
+         label.setLayoutData(gd);
       }
    }
 
