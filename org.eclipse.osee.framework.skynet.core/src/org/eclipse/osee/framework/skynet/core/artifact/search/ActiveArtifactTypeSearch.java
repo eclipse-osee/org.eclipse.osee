@@ -47,9 +47,15 @@ public class ActiveArtifactTypeSearch {
       Set<A> results = new HashSet<A>();
 
       try {
-         Collection<Artifact> arts =
-               ArtifactQuery.getArtifactsFromTypeAndAttribute(artifactTypeName, "ats.Active",
-                     active == Active.Active ? "yes" : "no", branch);
+         Collection<Artifact> arts = null;
+         if (active == Active.Both) {
+            // Since both, just do a type search
+            arts = ArtifactQuery.getAtrifactsFromType(artifactTypeName, branch);
+         } else {
+            arts =
+                  ArtifactQuery.getArtifactsFromTypeAndAttribute(artifactTypeName, "ats.Active",
+                        active == Active.Active ? "yes" : "no", branch);
+         }
          for (Artifact art : arts) {
             results.add((A) art);
          }
