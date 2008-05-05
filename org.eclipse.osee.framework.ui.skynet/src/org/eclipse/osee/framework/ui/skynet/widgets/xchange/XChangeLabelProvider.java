@@ -49,7 +49,7 @@ public class XChangeLabelProvider implements ITableLabelProvider {
             } else if (cCol == ChangeColumn.Name) {
                return change.getName();
             } else if (cCol == ChangeColumn.Change_Type) {
-               return change.getChangeType().toString();
+               return change.getModificationType().getDisplayName();
             } else if (cCol == ChangeColumn.Item_Kind) {
                return change.getItemKind();
             } else if (cCol == ChangeColumn.Item_Type) {

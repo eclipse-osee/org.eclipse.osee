@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
@@ -48,8 +49,8 @@ public class AttributeChanged extends Change {
     * @param attrId
     * @param attrTypeId
     */
-   public AttributeChanged(int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String sourceValue, InputStream sourceContent, int attrId, int attrTypeId) {
-      super(artTypeId, artName, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
+   public AttributeChanged(Branch branch, int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String sourceValue, InputStream sourceContent, int attrId, int attrTypeId) {
+      super(branch, artTypeId, artName, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
       this.sourceValue = sourceValue;
       this.sourceContent = sourceContent;
       this.attrId = attrId;
@@ -123,12 +124,15 @@ public class AttributeChanged extends Change {
       return sourceValue != null ? sourceValue : "Stream data";
    }
 
-   private ArtifactChange getArtifactChange() throws SQLException {
+   private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (artifactChange == null) {
          artifactChange =
-               new ArtifactChange(getChangeType(), getArtId(), getModificationType().getValue(), getGamma(),
-                     getToTransactionId(), getFromTransactionId(),
-                     ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(getArtTypeId()));
+               new ArtifactChange(getChangeType(), getModificationType(), getArtifactName(),
+                     ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(getArtTypeId()),
+                     getArtifact(), null, null, getFromTransactionId(), getFromTransactionId(), getToTransactionId(),
+                     getArtId(), getGamma(), null);
+         //         new ArtifactChange(getChangeType(), getArtId(), getModificationType().getValue(), getGamma(), null, null,
+         //               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(getArtTypeId()));
       }
       return artifactChange;
    }

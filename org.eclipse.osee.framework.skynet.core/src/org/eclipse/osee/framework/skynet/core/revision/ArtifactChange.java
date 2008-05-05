@@ -113,7 +113,7 @@ public class ArtifactChange extends RevisionChange {
     * @param artId
     * @param lastGoodTransactionId TODO
     */
-   private ArtifactChange(ChangeType changeType, ModificationType modtype, String name, ArtifactSubtypeDescriptor descriptor, Artifact artifact, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId baselineTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, int gammaId, TransactionId lastGoodTransactionId) {
+   public ArtifactChange(ChangeType changeType, ModificationType modtype, String name, ArtifactSubtypeDescriptor descriptor, Artifact artifact, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId baselineTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, int gammaId, TransactionId lastGoodTransactionId) {
       super(changeType, modtype, gammaId);
 
       this.name = name;
@@ -140,7 +140,8 @@ public class ArtifactChange extends RevisionChange {
     * @throws SQLException
     */
    public Artifact getArtifact() throws SQLException {
-      TransactionId transactionId = (getModType() == ModificationType.DELETED ? lastGoodTransactionId : toTransactionId);
+      TransactionId transactionId =
+            (getModType() == ModificationType.DELETED ? lastGoodTransactionId : toTransactionId);
 
       if (artifact == null && transactionId != null) {
          artifact = loadArtifact(transactionId, artifact, artId);

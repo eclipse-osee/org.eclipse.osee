@@ -477,7 +477,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     */
    private void loadDeletedArtifactChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
-      TransactionId sourceHeadTransactionId = transactionIdManager.getEditableTransactionId(sourceBranch);
+
       try {
          //Changes per a branch
          if (sourceBranch != null) {
@@ -496,8 +496,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
          while (resultSet.next()) {
             int aArtId = resultSet.getInt("art_id");
             artIds.add(aArtId);
-            changeItemsNeedName.add(new ArtifactChanged(resultSet.getInt("art_type_id"), "",
-                  resultSet.getInt("gamma_id"), aArtId, sourceHeadTransactionId, sourceHeadTransactionId,
+            changeItemsNeedName.add(new ArtifactChanged(sourceBranch, resultSet.getInt("art_type_id"), "Name not set",
+                  resultSet.getInt("gamma_id"), aArtId, null, null,
                   ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING));
          }
       } finally {
@@ -512,7 +512,6 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     */
    private void loadRelationChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
-      Pair<TransactionId, TransactionId> branchTransactions = transactionIdManager.getStartEndPoint(sourceBranch);
       try {
          //Changes per a branch
          if (sourceBranch != null) {
@@ -533,11 +532,11 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             artIds.add(aArtId);
             artIds.add(bArtId);
 
-            changeItemsNeedName.add(new RelationChanged(-1, "", resultSet.getInt("gamma_id"), aArtId,
-                  branchTransactions.getValue(), branchTransactions.getKey(),
-                  ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId,
-                  resultSet.getInt("rel_link_id"), resultSet.getString("rationale"), resultSet.getInt("a_order_value"),
-                  resultSet.getInt("b_order_value"), RelationTypeManager.getType(resultSet.getInt("rel_link_type_id"))));
+            changeItemsNeedName.add(new RelationChanged(sourceBranch, -1, "Name not set", resultSet.getInt("gamma_id"),
+                  aArtId, null, null, ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING,
+                  bArtId, resultSet.getInt("rel_link_id"), resultSet.getString("rationale"),
+                  resultSet.getInt("a_order_value"), resultSet.getInt("b_order_value"),
+                  RelationTypeManager.getType(resultSet.getInt("rel_link_type_id"))));
          }
       } finally {
          DbUtil.close(connectionHandlerStatement);
@@ -551,24 +550,30 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     */
    private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, Set<Change> changeItemsNeedName) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
+      TransactionId sourceHeadTransactionId;
+      TransactionId sourceEndTransactionId;
       try {
          //Changes per a branch
          if (sourceBranch != null) {
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(BRANCH_ATTRIBUTE_CHANGES, SQL3DataType.INTEGER,
                         sourceBranch.getBranchId());
+
+            Pair<TransactionId, TransactionId> branchStartEndTransaction =
+                  transactionIdManager.getStartEndPoint(sourceBranch);
+
+            sourceHeadTransactionId = branchStartEndTransaction.getKey();
+            sourceEndTransactionId = branchStartEndTransaction.getValue();
          }//Changes per transaction number
          else {
             connectionHandlerStatement =
                   ConnectionHandler.runPreparedQuery(TRANSACTION_ATTRIBUTE_CHANGES, SQL3DataType.INTEGER,
                         transactionNumber);
+
+            sourceHeadTransactionId = transactionIdManager.getPossiblyEditableTransactionId(transactionNumber);
+            sourceEndTransactionId = transactionIdManager.getPossiblyEditableTransactionId(transactionNumber);
          }
 
-         Pair<TransactionId, TransactionId> branchStartEndTransaction =
-               transactionIdManager.getStartEndPoint(sourceBranch);
-
-         TransactionId sourceHeadTransactionId = branchStartEndTransaction.getKey();
-         TransactionId sourceEndTransactionId = branchStartEndTransaction.getValue();
          ResultSet resultSet = connectionHandlerStatement.getRset();
          AttributeChanged attributeChanged;
          int tempAttrId = -1;
@@ -584,9 +589,10 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             if (tempAttrId != attrId) {
                tempAttrId = attrId;
                attributeChanged =
-                     new AttributeChanged(artTypeId, "", sourceGamma, artId, sourceHeadTransactionId,
-                           sourceEndTransactionId, ModificationType.getMod(modType), ChangeType.OUTGOING,
-                           resultSet.getString("value"), resultSet.getBinaryStream("content"), attrId, attrTypeId);
+                     new AttributeChanged(sourceBranch, artTypeId, "Name not set", sourceGamma, artId,
+                           sourceEndTransactionId, sourceHeadTransactionId, ModificationType.getMod(modType),
+                           ChangeType.OUTGOING, resultSet.getString("value"), resultSet.getBinaryStream("content"),
+                           attrId, attrTypeId);
 
                changeItemsNeedName.add(attributeChanged);
                artIds.add(artId);

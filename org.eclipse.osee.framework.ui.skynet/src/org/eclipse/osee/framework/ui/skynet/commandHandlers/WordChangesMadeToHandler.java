@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -65,8 +66,9 @@ public class WordChangesMadeToHandler extends AbstractHandler {
             artifactChange.getModType() == NEW ? null : myArtifactPersistenceManager.getArtifactFromId(
                   artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
       Artifact secondArtifact =
-            artifactChange.getModType() == DELETED ? null : myArtifactPersistenceManager.getArtifactFromId(
-                  artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId());
+            artifactChange.getModType() == DELETED ? null : ArtifactQuery.getArtifactFromId(
+                  artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId().getBranch());
+
       RendererManager.getInstance().compareInJob(firstArtifact, secondArtifact, DIFF_ARTIFACT);
    }
 

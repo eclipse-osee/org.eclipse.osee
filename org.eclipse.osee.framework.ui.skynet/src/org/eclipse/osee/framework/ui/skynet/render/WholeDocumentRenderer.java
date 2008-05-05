@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
@@ -70,11 +71,16 @@ public class WholeDocumentRenderer extends FileRenderer {
     */
    @Override
    public InputStream getRenderInputStream(IProgressMonitor monitor, Artifact artifact, String option, PresentationType presentationType) throws Exception {
-      String content = artifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME);
-      String myGuid = artifact.getGuid();
-      content = WordUtil.addGUIDToDocument(myGuid, content);
+      InputStream stream =
+            Streams.convertStringToInputStream(WordWholeDocumentAttribute.getEmptyDocumentContent(), "UTF-8");
 
-      return Streams.convertStringToInputStream(content, "UTF-8");
+      if (artifact != null) {
+         String content = artifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME);
+         String myGuid = artifact.getGuid();
+         content = WordUtil.addGUIDToDocument(myGuid, content);
+         stream = Streams.convertStringToInputStream(content, "UTF-8");
+      }
+      return stream;
    }
 
    /* (non-Javadoc)

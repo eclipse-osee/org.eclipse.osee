@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -32,8 +33,8 @@ public class ArtifactChanged extends Change {
     * @param modType
     * @param changeType
     */
-   public ArtifactChanged(int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
-      super(artTypeId, artName, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
+   public ArtifactChanged(Branch branch, int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
+      super(branch, artTypeId, artName, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
    }
 
    /**

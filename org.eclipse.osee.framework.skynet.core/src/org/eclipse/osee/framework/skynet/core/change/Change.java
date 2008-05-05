@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 import java.sql.SQLException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -33,6 +34,7 @@ public abstract class Change implements IAdaptable {
    private ModificationType modType;
    private ChangeType changeType;
    private String artName;
+   private Branch branch;
    protected int artTypeId;
 
    /**
@@ -44,8 +46,9 @@ public abstract class Change implements IAdaptable {
     * @param modType
     * @param changeType
     */
-   public Change(int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
+   public Change(Branch branch, int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
       super();
+      this.branch = branch;
       this.sourceGamma = sourceGamma;
       this.artId = artId;
       this.toTransactionId = toTransactionId;
@@ -79,7 +82,7 @@ public abstract class Change implements IAdaptable {
     */
    public Artifact getArtifact() throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (artifact == null) {
-         artifact = ArtifactQuery.getArtifactFromId(artId, toTransactionId.getBranch(), true);
+         artifact = ArtifactQuery.getArtifactFromId(artId, branch, true);
       }
       return artifact;
    }
@@ -147,5 +150,12 @@ public abstract class Change implements IAdaptable {
     */
    public int getArtTypeId() {
       return artTypeId;
+   }
+
+   /**
+    * @return the branch
+    */
+   public Branch getBranch() {
+      return branch;
    }
 }
