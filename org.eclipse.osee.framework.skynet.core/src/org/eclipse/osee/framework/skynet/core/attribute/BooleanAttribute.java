@@ -10,33 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
  * @author Ryan D. Brooks
  */
-public class BooleanAttribute extends Attribute<Boolean> {
+public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    public static final String[] booleanChoices = new String[] {"yes", "no"};
+   private ICharacterAttributeDataProvider dataProvider;
 
-   public BooleanAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+   public BooleanAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType);
-      setRawStringValue(defaultValue);
+      this.dataProvider = dataProvider;
+      dataProvider.setValue(attributeType.getDefaultValue());
    }
 
    public Boolean getValue() {
-      return getRawStringValue().equals(booleanChoices[0]);
+      return dataProvider.getValueAsString().equals(booleanChoices[0]);
    }
 
    public void setValue(Boolean value) {
-      setRawStringValue(value ? booleanChoices[0] : booleanChoices[1]);
+      dataProvider.setValue(value ? booleanChoices[0] : booleanChoices[1]);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
     */
    @Override
-   public void setValueFromInputStream(InputStream value) throws IOException {
-      throw new UnsupportedOperationException();
+   public String getDisplayableString() {
+      String toDisplay = dataProvider.getDisplayableString();
+      return Boolean.parseBoolean(toDisplay) ? "yes" : "no";
    }
 }

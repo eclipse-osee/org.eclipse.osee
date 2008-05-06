@@ -22,13 +22,13 @@ public class SkynetAttributeChange implements SkynetChange {
    private final String name;
    private final int attributeId;
    private final int gammaId;
-   private final String value;
+   private final Object value;
 
    /**
     * @param name
     * @param value
     */
-   public SkynetAttributeChange(String name, String value, int attributeId, int gammaId) {
+   public SkynetAttributeChange(String name, Object value, int attributeId, int gammaId) {
       super();
       this.name = name;
       this.value = value;
@@ -46,7 +46,7 @@ public class SkynetAttributeChange implements SkynetChange {
    /**
     * @return Returns the value.
     */
-   public String getValue() {
+   public Object getValue() {
       return value;
    }
 

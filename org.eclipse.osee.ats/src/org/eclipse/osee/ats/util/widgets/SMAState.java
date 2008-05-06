@@ -145,7 +145,7 @@ public class SMAState {
    public static Pattern userPattern = Pattern.compile("<(.*?)>");
 
    public void setFromXml(String xml) throws Exception {
-      if (xml.equals("")) {
+      if (xml == null || xml.equals("")) {
          name = "Unknown";
          return;
       }

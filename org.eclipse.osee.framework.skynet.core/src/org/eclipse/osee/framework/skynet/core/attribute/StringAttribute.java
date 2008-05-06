@@ -10,19 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
  * @author Ryan D. Brooks
  */
-public class StringAttribute extends Attribute<String> {
-   public StringAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+public class StringAttribute extends CharacterBackedAttribute<String> {
+
+   private ICharacterAttributeDataProvider dataProvider;
+
+   public StringAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType);
-      setRawStringValue(defaultValue);
+      this.dataProvider = dataProvider;
+      String defaultValue = attributeType.getDefaultValue();
+      if (defaultValue == null) {
+         defaultValue = "";
+      }
+      dataProvider.setValue(defaultValue);
    }
 
    /* (non-Javadoc)
@@ -30,13 +34,7 @@ public class StringAttribute extends Attribute<String> {
     */
    @Override
    public String getValue() {
-      byte[] rawContent = getRawContent();
-      try {
-         return rawContent == null ? getRawStringValue() : new String(rawContent, "UTF-8");
-      } catch (UnsupportedEncodingException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
-         return null;
-      }
+      return dataProvider.getValueAsString();
    }
 
    /* (non-Javadoc)
@@ -44,14 +42,14 @@ public class StringAttribute extends Attribute<String> {
     */
    @Override
    public void setValue(String value) {
-      setRawStringValue(value);
+      dataProvider.setValue(value);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
     */
    @Override
-   public void setValueFromInputStream(InputStream value) throws IOException {
-      throw new UnsupportedOperationException();
+   public String getDisplayableString() {
+      return dataProvider.getDisplayableString();
    }
 }

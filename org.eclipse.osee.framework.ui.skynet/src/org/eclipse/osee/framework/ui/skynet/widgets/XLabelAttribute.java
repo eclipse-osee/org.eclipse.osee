@@ -79,7 +79,7 @@ public class XLabelAttribute extends XWidget {
 
    public void setAttribute(Attribute attribute) {
       this.attribute = attribute;
-      set(attribute.getStringData());
+      set(attribute.getDisplayableString());
    }
 
    public void setFromXml(String xml) {
@@ -103,7 +103,7 @@ public class XLabelAttribute extends XWidget {
 
    public void refresh() {
       if (valueLabel != null && !valueLabel.isDisposed()) {
-         if (attribute != null && data != attribute.getStringData()) data = attribute.getStringData();
+         if (attribute != null && data != attribute.getDisplayableString()) data = attribute.getDisplayableString();
          valueLabel.setText(data);
          valueLabel.getParent().layout();
       }
@@ -136,7 +136,7 @@ public class XLabelAttribute extends XWidget {
 
    public void set(String data) {
       this.data = data;
-      attribute.setStringData(data);
+      attribute.setValue(data);
       refresh();
    }
 

@@ -11,16 +11,13 @@
 
 package org.eclipse.osee.framework.skynet.core.dbinit;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
@@ -30,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.importing.SkynetTypesImporter;
 import org.osgi.framework.Bundle;
-import org.xml.sax.SAXException;
 
 /**
  * This class provides necessary functionality for branches to be loaded with SkynetDbTypes through their extension
@@ -94,12 +90,9 @@ public class MasterSkynetTypesImport {
     * @param skynetDbTypesExtensions
     * @param branch
     * @param connection
-    * @throws SQLException
-    * @throws SAXException
-    * @throws IOException
-    * @throws CoreException
+    * @throws Exception
     */
-   private void runSkynetDbTypesImport(Connection connection, List<IExtension> skynetDbTypesExtensions, Branch branch) throws SQLException, SAXException, IOException, CoreException {
+   private void runSkynetDbTypesImport(Connection connection, List<IExtension> skynetDbTypesExtensions, Branch branch) throws Exception {
 
       SkynetTypesImporter importer = new SkynetTypesImporter(branch);
       logger.log(Level.INFO, "Importing into [" + branch.getBranchName() + "]");

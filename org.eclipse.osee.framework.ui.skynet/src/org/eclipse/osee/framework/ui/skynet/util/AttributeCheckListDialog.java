@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -110,7 +109,7 @@ public class AttributeCheckListDialog extends SelectionDialog {
          treeViewer.setInput(ConfigurationPersistenceManager.getInstance().getDynamicAttributeDescriptors(
                BranchPersistenceManager.getInstance().getDefaultBranch()));
          treeViewer.setCheckedElements(objs.toArray(new Object[objs.size()]));
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }
       return container;

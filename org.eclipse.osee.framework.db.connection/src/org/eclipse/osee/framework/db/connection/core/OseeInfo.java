@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core;
 
+import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.OSEE_INFO_TABLE;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -21,9 +22,10 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
  * @author Donald G. Dunne
  */
 public class OseeInfo {
-   private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM OSEE_INFO where OSEE_KEY = ?";
-   private static final String INSERT_KEY_VALUE_SQL = "INSERT INTO OSEE_INFO(OSEE_VALUE, OSEE_KEY) VALUES (?, ?)";
-   private static final String DELETE_KEY_SQL = "DELETE FROM OSEE_INFO WHERE OSEE_KEY = ?";
+   private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM " + OSEE_INFO_TABLE + " where OSEE_KEY = ?";
+   private static final String INSERT_KEY_VALUE_SQL =
+         "INSERT INTO " + OSEE_INFO_TABLE + "(OSEE_KEY, OSEE_VALUE) VALUES (?, ?)";
+   private static final String DELETE_KEY_SQL = "DELETE FROM " + OSEE_INFO_TABLE + " WHERE OSEE_KEY = ?";
    public static final String SAVE_OUTFILE_IN_DB = "SAVE_OUTFILE_IN_DB";
 
    public static String getValue(String key) throws SQLException {

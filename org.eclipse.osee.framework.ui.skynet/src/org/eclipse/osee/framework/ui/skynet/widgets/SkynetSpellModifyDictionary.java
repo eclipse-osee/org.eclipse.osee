@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -90,15 +91,21 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       if (!force && dictionary != null) return;
       try {
          dictionary = new HashSet<String>();
-         for (String str : SkynetAuthentication.getInstance().getAuthenticatedUser().getSoleAttributeValue(
-               ATTRIBUTE_NAME, "").split(";")) {
-            if (debug) System.out.println("Adding Local => \"" + str + "\"");
-            if (str != null && !str.equals("")) dictionary.add(str);
-         }
-         if (GlobalPreferences.get() != null) {
-            for (String str : GlobalPreferences.get().getSoleAttributeValue(ATTRIBUTE_NAME, "").split(";")) {
-               if (debug) System.out.println("Adding Global => \"" + str + "\"");
-               if (str != null && !str.equals("")) dictionary.add(str);
+         User user = SkynetAuthentication.getInstance().getAuthenticatedUser();
+         if (user != null) {
+            String value = user.getSoleAttributeValue(ATTRIBUTE_NAME, "");
+            if (value != null) {
+               String[] entries = value.split(";");
+               for (String str : entries) {
+                  if (debug) System.out.println("Adding Local => \"" + str + "\"");
+                  if (str != null && !str.equals("")) dictionary.add(str);
+               }
+               if (GlobalPreferences.get() != null) {
+                  for (String str : GlobalPreferences.get().getSoleAttributeValue(ATTRIBUTE_NAME, "").split(";")) {
+                     if (debug) System.out.println("Adding Global => \"" + str + "\"");
+                     if (str != null && !str.equals("")) dictionary.add(str);
+                  }
+               }
             }
          }
       } catch (Exception ex) {

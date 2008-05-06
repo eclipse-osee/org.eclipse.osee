@@ -215,7 +215,7 @@ public class LinkManager {
       }
    }
 
-   public void traceLinks(boolean recurse, SkynetTransactionBuilder builder) throws SQLException {
+   public void traceLinks(boolean recurse, SkynetTransactionBuilder builder) throws Exception {
       checkReleased();
       if (!inTrace) {
          inTrace = true;

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ISearchAttribute;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 public class SearchArtifact extends BasicArtifact implements WorkflowStep {
    public final static String ALL_FILTERS = "Match All Filters";
@@ -82,7 +83,7 @@ public class SearchArtifact extends BasicArtifact implements WorkflowStep {
 
    }
 
-   public boolean getMatchAll() throws SQLException {
+   public boolean getMatchAll() throws SQLException, MultipleAttributesExist {
       Attribute attr = getAttributeManager(ALL_FILTERS).getSoleAttribute();
 
       if (attr instanceof BooleanAttribute) {
@@ -92,7 +93,7 @@ public class SearchArtifact extends BasicArtifact implements WorkflowStep {
       }
    }
 
-   public void setMatchAll(boolean all) throws SQLException {
+   public void setMatchAll(boolean all) throws SQLException, MultipleAttributesExist {
       Attribute attr = getAttributeManager(ALL_FILTERS).getSoleAttribute();
 
       if (attr instanceof BooleanAttribute) {
@@ -106,9 +107,10 @@ public class SearchArtifact extends BasicArtifact implements WorkflowStep {
     * Convenience method to perform the search with the <code>ArtifactPersistenceManager</code> based on the
     * information stored in this <code>SearchArtifact</code>.
     * 
+    * @throws MultipleAttributesExist
     * @see ArtifactPersistenceManager#getArtifacts(List, boolean, Branch)
     */
-   public Collection<Artifact> getArtifacts() throws SQLException {
+   public Collection<Artifact> getArtifacts() throws SQLException, MultipleAttributesExist {
       return ArtifactPersistenceManager.getInstance().getArtifacts(getCriteria(), getMatchAll(), getBranch());
    }
 

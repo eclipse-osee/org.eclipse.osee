@@ -75,7 +75,7 @@ public class XListDam extends XList implements IDamWidget {
       ArrayList<String> storedNames = new ArrayList<String>();
       try {
          for (Attribute attr : getUdat().getAttributes()) {
-            storedNames.add(attr.getStringData());
+            storedNames.add(attr.getDisplayableString());
          }
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

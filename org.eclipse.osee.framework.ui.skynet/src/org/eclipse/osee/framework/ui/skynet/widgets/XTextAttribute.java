@@ -26,7 +26,7 @@ public class XTextAttribute extends XText {
 
    public void setAttribute(Attribute attribute) {
       this.attribute = attribute;
-      super.set(attribute.getStringData());
+      super.set(attribute.getDisplayableString());
    }
 
    @Override
@@ -37,13 +37,13 @@ public class XTextAttribute extends XText {
    @Override
    public void save() {
       if (isDirty()) {
-         attribute.setStringData(text);
+         attribute.setValue(text);
       }
    }
 
    @Override
    public boolean isDirty() {
-      if (attribute == null || attribute.getStringData() == null) return false;
-      return (!attribute.getStringData().equals(get()));
+      if (attribute == null || attribute.getDisplayableString() == null) return false;
+      return (!attribute.getDisplayableString().equals(get()));
    }
 }

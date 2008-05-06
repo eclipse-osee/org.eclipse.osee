@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+
 /**
  * @author Jeff C. Phillips
  */
@@ -20,15 +22,12 @@ public class WordWholeDocumentAttribute extends WordAttribute {
     * @param attributeType
     * @param value
     */
-   public WordWholeDocumentAttribute(DynamicAttributeDescriptor attributeType, String value) {
-      super(attributeType, value);
+   public WordWholeDocumentAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+      super(attributeType, dataProvider);
+      setDefaultValue(attributeType.getDefaultValue());
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.WordAttribute#swagValue(java.lang.String)
-    */
-   @Override
-   protected void swagValue(String value) {
+   protected void setDefaultValue(String value) {
       if (value == null || value.matches("")) {
          value = getEmptyDocumentContent();
       }

@@ -65,19 +65,19 @@ public class NativeArtifact extends Artifact {
       return getSoleAttributeValue("Extension", "");
    }
 
-   public InputStream getNativeContent() throws IOException, SQLException {
+   public InputStream getNativeContent() throws IOException, SQLException, MultipleAttributesExist {
       return getCompressedContentAttribute().getValue();
    }
 
-   public void setNativeContent(File importFile) throws IOException, SQLException {
+   public void setNativeContent(File importFile) throws IOException, SQLException, MultipleAttributesExist {
       setNativeContent(new FileInputStream(importFile));
    }
 
-   public void setNativeContent(InputStream inputStream) throws IOException, SQLException {
+   public void setNativeContent(InputStream inputStream) throws IOException, SQLException, MultipleAttributesExist {
       getCompressedContentAttribute().setValue(inputStream);
    }
 
-   private CompressedContentAttribute getCompressedContentAttribute() throws SQLException {
+   private CompressedContentAttribute getCompressedContentAttribute() throws SQLException, MultipleAttributesExist {
       return (CompressedContentAttribute) getAttributeManager(CONTENT_NAME).getSoleAttribute();
    }
 }

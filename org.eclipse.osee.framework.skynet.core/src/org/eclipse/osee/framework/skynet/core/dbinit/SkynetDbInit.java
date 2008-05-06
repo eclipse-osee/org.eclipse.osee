@@ -67,6 +67,7 @@ public class SkynetDbInit extends DbInitializationTask {
       DbInit.addIndeces(schemas, userSpecifiedConfig, connection, databaseType);
       DbInit.addViews(connection, databaseType);
       OseeDbVersion.initializeDbVersion(connection);
+      ResourceServers.initialize();
       populateSequenceTable();
       addDefaultPermissions();
    }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +41,7 @@ public class AttributeContentProvider implements ITreeContentProvider {
             for (DynamicAttributeDescriptor descriptor : configurationPersistenceManager.getDynamicAttributeDescriptors((Branch) parentElement)) {
                descriptors.add((Object) descriptor);
             }
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
          }
          return descriptors.toArray();

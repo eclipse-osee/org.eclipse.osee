@@ -37,23 +37,27 @@ public class XDateAttribute extends XDate {
    @Override
    public void setDate(Date date) {
       super.setDate(date);
-      attribute.setStringData("" + date.getTime());
+      attribute.setValue(date);
    }
 
    @Override
    public void setDateToNow() {
       super.setDateToNow();
-      attribute.setStringData("" + getDate().getTime());
+      attribute.setValue(getDate());
    }
 
    @Override
    public void save() {
-      if (isDirty()) attribute.setStringData(get(DateAttribute.MMDDYY));
+      if (isDirty()) {
+         attribute.setValue(getDate());
+      }
    }
 
    @Override
    public boolean isDirty() {
-      return (!attribute.getStringData().equals(getDate().getTime() + ""));
+      Date date1 = attribute.getValue();
+      Date date2 = getDate();
+      return date1 != date2;
    }
 
 }

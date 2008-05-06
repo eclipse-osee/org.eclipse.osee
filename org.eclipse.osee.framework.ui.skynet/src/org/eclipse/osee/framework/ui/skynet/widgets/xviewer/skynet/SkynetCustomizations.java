@@ -67,14 +67,14 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       boolean found = false;
       DynamicAttributeManager dam = saveArt.getAttributeManager(CUSTOMIZATION_ATTRIBUTE_NAME);
       for (Attribute attr : dam.getAttributes()) {
-         if (attr.getStringData().contains("namespace=\"" + custData.getNameSpace() + "\"") && attr.getStringData().contains(
+         if (attr.getDisplayableString().contains("namespace=\"" + custData.getNameSpace() + "\"") && attr.getDisplayableString().contains(
                "name=\"" + custData.getName() + "\"")) {
-            attr.setStringData(custData.getXml());
+            attr.setValue(custData.getXml());
             found = true;
             break;
          }
       }
-      if (!found) dam.getNewAttribute().setStringData(custData.getXml());
+      if (!found) dam.getNewAttribute().setValue(custData.getXml());
       saveArt.persistAttributes();
    }
 
@@ -130,7 +130,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    public void deleteCustomization(CustomizeData custData, Artifact deleteArt) throws SQLException {
       DynamicAttributeManager dam = deleteArt.getAttributeManager(CUSTOMIZATION_ATTRIBUTE_NAME);
       for (Attribute attr : dam.getAttributes()) {
-         String str = attr.getStringData();
+         String str = attr.getDisplayableString();
          Matcher m = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"").matcher(str);
          if (m.find() && m.group(1).equals(custData.getName())) {
             attr.delete();
@@ -171,7 +171,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
          try {
             DynamicAttributeManager dam = customizationArtifact.getAttributeManager(CUSTOMIZATION_ATTRIBUTE_NAME);
             for (Attribute attr : dam.getAttributes()) {
-               String str = attr.getStringData();
+               String str = attr.getDisplayableString();
                Matcher m =
                      Pattern.compile("name=\"(.*?)\".*?namespace=\"" + xViewer.getViewerNamespace() + "\"").matcher(str);
                if (m.find()) {

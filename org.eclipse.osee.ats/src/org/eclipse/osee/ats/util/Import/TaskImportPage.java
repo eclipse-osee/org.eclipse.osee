@@ -142,8 +142,8 @@ public class TaskImportPage extends WizardDataTransferPage {
       if (currentResourceSelection != null) fileSelector.setText(currentResourceSelection.getLocation().toString());
       setPageComplete(determinePageCompletion());
    } /*
-                       * @see WizardPage#becomesVisible
-                       */
+                         * @see WizardPage#becomesVisible
+                         */
 
    public void setVisible(boolean visible) {
       super.setVisible(visible);

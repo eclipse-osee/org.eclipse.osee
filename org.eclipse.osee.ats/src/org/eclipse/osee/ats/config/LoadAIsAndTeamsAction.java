@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -292,8 +293,9 @@ public class LoadAIsAndTeamsAction extends Action {
                         ActionableItemArtifact.ARTIFACT_NAME).makeNewArtifact(BranchPersistenceManager.getAtsBranch());
             aia.setDescriptiveName(page.getName());
             for (String staticId : staticIds) {
-               aia.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute().setStringData(
-                     staticId);
+               Attribute<String> attribute =
+                     aia.getAttributeManager(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).getNewAttribute();
+               attribute.setValue(staticId);
             }
             for (User user : leads) {
                aia.relate(RelationSide.TeamLead_Lead, user);

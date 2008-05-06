@@ -64,7 +64,7 @@ public class AttributeConflict extends Conflict {
     * @return the dynamicAttributeDescriptor
     * @throws SQLException
     */
-   public DynamicAttributeDescriptor getDynamicAttributeDescriptor() throws SQLException {
+   public DynamicAttributeDescriptor getDynamicAttributeDescriptor() throws Exception {
       if (dynamicAttributeDescriptor == null) {
          dynamicAttributeDescriptor = ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attrTypeId);
       }

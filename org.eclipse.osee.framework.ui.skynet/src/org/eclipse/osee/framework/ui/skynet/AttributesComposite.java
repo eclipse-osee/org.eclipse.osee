@@ -159,7 +159,7 @@ public class AttributesComposite extends Composite {
 
             if (selected instanceof Attribute) {
                Attribute attribute = (Attribute) selected;
-               DynamicAttributeDescriptor descriptor = attribute.getManager().getAttributeType();
+               DynamicAttributeDescriptor descriptor = attribute.getAttributeManager().getAttributeType();
                if (descriptor.getTipText() != null && !descriptor.getTipText().equals("null"))
                   helpText.setText(descriptor.getTipText());
                else
@@ -300,7 +300,7 @@ public class AttributesComposite extends Composite {
          if (attribute == null) {
             deleteItem.setText("Delete - No Attribute Selected");
             deleteItem.setEnabled(false);
-         } else if (!attribute.getManager().canDelete()) {
+         } else if (!attribute.getAttributeManager().canDelete()) {
             deleteItem.setText("Delete - Lower Limit Met");
             deleteItem.setEnabled(false);
          } else {

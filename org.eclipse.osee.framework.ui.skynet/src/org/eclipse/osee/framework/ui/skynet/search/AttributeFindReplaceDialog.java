@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -180,7 +182,12 @@ public class AttributeFindReplaceDialog extends Dialog {
                      for (Artifact artifact : artifacts) {
                         monitor.subTask("Modifying " + artifact.getDescriptiveName());
                         for (Attribute attribute : artifact.getAttributeManager(attributeName).getAttributes()) {
-                           attribute.replaceAll(pattern, replaceText);
+                           if (attribute instanceof StringAttribute) {
+                              StringAttribute stringAttribute = (StringAttribute) attribute;
+                              Matcher matcher = pattern.matcher(stringAttribute.getValue());
+                              String result = matcher.replaceAll(replaceText);
+                              stringAttribute.setValue(result);
+                           }
                         }
                         artifact.persistAttributes();
                         monitor.worked(1);
@@ -208,7 +215,6 @@ public class AttributeFindReplaceDialog extends Dialog {
       Jobs.startJob(job);
       super.okPressed();
    }
-
    private static class ArtifactTypeLabelProvider implements ILabelProvider {
 
       public Image getImage(Object element) {

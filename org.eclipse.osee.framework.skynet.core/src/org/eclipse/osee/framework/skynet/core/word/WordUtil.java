@@ -95,9 +95,9 @@ public class WordUtil {
     * Analyzes all successive versions of 'Word Formatted Content' for useful differences and removes versions that do
     * not provide and difference from the prior version.
     * 
-    * @throws SQLException
     * @throws IllegalArgumentException if branch is null
     * @return returns true if some addressing was removed, otherwise false
+    * @throws Exception
     */
    public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws SQLException {
       if (branch == null) throw new IllegalArgumentException("branch can not be null");

@@ -809,15 +809,15 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                         for (String partition : partitions) {
                            boolean found = false;
                            for (Attribute attr : dam.getAttributes()) {
-                              if (attr.getStringData().equals(partition)) {
+                              if (attr.getDisplayableString().equals(partition)) {
                                  found = true;
                                  break;
                               }
                            }
-                           if (!found) dam.getNewAttribute().setStringData(partition);
+                           if (!found) dam.getNewAttribute().setValue(partition);
                         }
                         for (Attribute attr : dam.getAttributes()) {
-                           if (attr.getStringData().equals("Unspecified")) attr.delete();
+                           if (attr.getDisplayableString().equals("Unspecified")) attr.delete();
                         }
 
                         art.persistAttributes();

@@ -137,7 +137,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       }
    }
 
-   public void trace(IRelationLink relationLink, boolean recurse, SkynetTransactionBuilder builder) throws SQLException {
+   public void trace(IRelationLink relationLink, boolean recurse, SkynetTransactionBuilder builder) throws Exception {
       if (relationLink.isDirty()) {
          builder.addLink(relationLink);
 

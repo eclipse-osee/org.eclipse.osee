@@ -19,6 +19,8 @@
    <extension-point id="AttributeSaveListener" name="AttributeSaveListener" schema="schema/AttributeSaveListener.exsd"/>
    <extension-point id="AutoRunTask" name="AutoRunTask" schema="schema/AutoRunTask.exsd"/>
    <extension-point id="ArtifactCheck" name="ArtifactCheck" schema="schema/ArtifactCheck.exsd"/>
+   <extension-point id="AttributeType" name="AttributeType" schema="schema/AttributeType.exsd"/>
+   <extension-point id="AttributeDataProvider" name="AttributeDataProvider" schema="schema/AttributeDataProvider.exsd"/>
    
       <extension
             id="SkynetDbInit"
@@ -221,6 +223,158 @@
          <initializer
                class="org.eclipse.osee.framework.skynet.core.preferences.PreferenceInitializer">
          </initializer>
+      </extension>
+      <extension
+            id="BooleanAttribute"
+            name="BooleanAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+      <extension
+            id="DateAttribute"
+            name="DateAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.DateAttribute">
+         </CharacterBackedAttributeType>
+      </extension>  
+      <extension
+            id="SimpleDateAttribute"
+            name="SimpleDateAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.SimpleDateAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+      <extension
+            id="EnumeratedAttribute"
+            name="EnumeratedAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+      <extension
+            id="FloatingPointAttribute"
+            name="FloatingPointAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+      <extension
+            id="IntegerAttribute"
+            name="IntegerAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute">
+         </CharacterBackedAttributeType>
+      </extension>                        
+      <extension
+            id="StringAttribute"
+            name="StringAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.StringAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+      <extension
+            id="WordAttribute"
+            name="WordAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.WordAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+      <extension
+            id="WordTemplateAttribute"
+            name="WordTemplateAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.WordTemplateAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+      <extension
+            id="WordWholeDocumentAttribute"
+            name="WordWholeDocumentAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+      <extension
+            id="BlobWordAttribute"
+            name="BlobWordAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.BlobWordAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+       <extension
+            id="ArtifactTypeSearchAttribute"
+            name="ArtifactTypeSearchAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.ArtifactTypeSearchAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+       <extension
+            id="AttributeValueSearchAttribute"
+            name="AttributeValueSearchAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.AttributeValueSearchAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+       <extension
+            id="InRelationSearchAttribute"
+            name="InRelationSearchAttribute"
+            point="org.eclipse.osee.framework.skynet.core.AttributeType">
+         <CharacterBackedAttributeType
+               class="org.eclipse.osee.framework.skynet.core.attribute.InRelationSearchAttribute">
+         </CharacterBackedAttributeType>
+      </extension>
+       <extension
+             id="JavaObjectAttribute"
+             name="JavaObjectAttribute"
+             point="org.eclipse.osee.framework.skynet.core.AttributeType">
+          <BinaryBackedAttributeType
+                class="org.eclipse.osee.framework.skynet.core.attribute.JavaObjectAttribute">
+          </BinaryBackedAttributeType>
+       </extension>
+       <extension
+             id="CompressedContentAttribute"
+             name="CompressedContentAttribute"
+             point="org.eclipse.osee.framework.skynet.core.AttributeType">
+          <BinaryBackedAttributeType
+                class="org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute">
+          </BinaryBackedAttributeType>
+       </extension>  
+      <extension
+            id="DefaultAttributeDataProvider"
+            name="DefaultAttributeDataProvider"
+            point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">
+         <BinaryAttributeDataProvider
+               class="org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider">
+         </BinaryAttributeDataProvider>
+      </extension>                     
+      <extension
+            id="UriAttributeDataProvider"
+            name="UriAttributeDataProvider"
+            point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">
+         <BinaryAttributeDataProvider
+               class="org.eclipse.osee.framework.skynet.core.attribute.providers.UriAttributeDataProvider">
+         </BinaryAttributeDataProvider>
+      </extension>
+      <extension
+            id="ClobAttributeDataProvider"
+            name="ClobAttributeDataProvider"
+            point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">
+         <CharacterAttributeDataProvider
+               class="org.eclipse.osee.framework.skynet.core.attribute.providers.ClobAttributeDataProvider">
+         </CharacterAttributeDataProvider>
       </extension>
    
 </plugin>

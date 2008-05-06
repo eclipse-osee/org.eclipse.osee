@@ -24,12 +24,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -88,7 +86,7 @@ public class SkynetTypesImporter implements RowProcessor {
       xmlReader.parse(new InputSource(importFile));
    }
 
-   public void finish() throws SQLException, CoreException, IOException {
+   public void finish() throws Exception {
       for (AttributeMapRow attributeRow : attributeMapRows) {
          attributeRow.persist();
       }
@@ -171,26 +169,25 @@ public class SkynetTypesImporter implements RowProcessor {
 
    /**
     * @param row
-    * @throws ClassNotFoundException
-    * @throws SQLException
+    * @throws Exception
     */
-   private void addAttributeType(String[] row) throws ClassNotFoundException, SQLException {
+   private void addAttributeType(String[] row) throws Exception {
       if (debugRows) System.out.println("   addAttributeType => " + row[0] + "," + row[1]);
       String attrBaseType = row[0];
-      String attributeName = row[1];
-      String defaultValue = row[2];
-      String validityXml = row[3];
-      int minOccurrence = getQuantity(row[4]);
-      int maxOccurrence = getQuantity(row[5]);
-      String tipText = row[6];
+      String attrProviderType = row[1];
+      String attributeName = row[2];
+      String fileTypeExtension = row[3];
+      String defaultValue = row[4];
+      String validityXml = row[5];
+      int minOccurrence = getQuantity(row[6]);
+      int maxOccurrence = getQuantity(row[7]);
+      String tipText = row[8];
 
-      String basePackageName = Attribute.class.getPackage().getName();
-      Class<? extends Attribute> baseAttributeClass =
-            Class.forName(basePackageName + "." + attrBaseType, true, Attribute.class.getClassLoader()).asSubclass(
-                  Attribute.class);
-
-      configurationManager.makePersistent(baseAttributeClass, "", attributeName, defaultValue, validityXml,
-            minOccurrence, maxOccurrence, tipText);
+      if (fileTypeExtension == null) {
+         fileTypeExtension = "";
+      }
+      configurationManager.makePersistent(attrBaseType, attrProviderType, fileTypeExtension, "", attributeName,
+            defaultValue, validityXml, minOccurrence, maxOccurrence, tipText);
    }
 
    /**

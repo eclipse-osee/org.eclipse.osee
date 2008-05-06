@@ -10,15 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+
 /**
  * @author Ryan D. Brooks
  */
-public class SimpleDateAttribute extends DateAttribute {
+public final class SimpleDateAttribute extends DateAttribute {
 
-   /**
-    * @param name
-    */
-   public SimpleDateAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
-      super(attributeType, defaultValue);
+   public SimpleDateAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+      super(attributeType, dataProvider);
    }
 }

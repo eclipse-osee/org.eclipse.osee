@@ -11,26 +11,22 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
  * @author Robert A. Fisher
  */
 public class InRelationSearchAttribute extends StringAttribute implements ISearchAttribute<InRelationSearch> {
-   /**
-    * @param name
-    */
-   public InRelationSearchAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
-      super(attributeType, defaultValue);
+
+   public InRelationSearchAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+      super(attributeType, dataProvider);
    }
 
-   /**
-    * @param value
-    */
    public void setSearchPrimitive(InRelationSearch value) {
-      setStringData(value.getStorageString());
+      setValue(value.getStorageString());
    }
 
    public InRelationSearch getSearchPrimitive() {
-      return InRelationSearch.getPrimitive(getStringData());
+      return InRelationSearch.getPrimitive(getValue());
    }
 }

@@ -61,11 +61,11 @@ public class SkynetTransactionBuilder {
       ConnectionHandler.startTransactionLevel(transactionKey);
    }
 
-   public void addArtifact(Artifact artifact) throws SQLException {
+   public void addArtifact(Artifact artifact) throws Exception {
       artifactManager.doSave(artifact, getTransaction(artifact.isVersionControlled()), true);
    }
 
-   public void addArtifacts(Collection<Artifact> artifacts) throws SQLException {
+   public void addArtifacts(Collection<Artifact> artifacts) throws Exception {
       for (Artifact artifact : artifacts)
          addArtifact(artifact);
    }
@@ -79,7 +79,7 @@ public class SkynetTransactionBuilder {
          addLink(link);
    }
 
-   public void deleteArtifact(Artifact artifact) throws SQLException {
+   public void deleteArtifact(Artifact artifact) throws Exception {
       // No work is recorded since this reports children, and the number of children
       // to the bottom of the tree can not be calculated with out incurring a lot of
       // work

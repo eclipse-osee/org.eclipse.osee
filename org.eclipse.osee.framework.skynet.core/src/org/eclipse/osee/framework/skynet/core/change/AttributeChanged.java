@@ -81,7 +81,7 @@ public class AttributeChanged extends Change {
    /**
     * @return the dynamicAttributeDescriptor
     */
-   public DynamicAttributeDescriptor getDynamicAttributeDescriptor() throws SQLException {
+   public DynamicAttributeDescriptor getDynamicAttributeDescriptor() throws Exception {
       if (dynamicAttributeDescriptor == null) {
          dynamicAttributeDescriptor = ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attrTypeId);
       }
@@ -104,7 +104,7 @@ public class AttributeChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getTypeName()
     */
    @Override
-   public String getItemTypeName() throws SQLException {
+   public String getItemTypeName() throws Exception {
       return getDynamicAttributeDescriptor().getName();
    }
 

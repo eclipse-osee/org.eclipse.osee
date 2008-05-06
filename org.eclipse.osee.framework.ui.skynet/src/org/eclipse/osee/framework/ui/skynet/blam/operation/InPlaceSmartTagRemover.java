@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -19,7 +20,6 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -45,9 +45,9 @@ public class InPlaceSmartTagRemover extends AbstractBlam {
       for (Artifact artifactTemp : artifacts) {
          Artifact artifact = artifactManager.getArtifactFromId(artifactTemp.getArtId(), transactionId);
 
-         DynamicAttributeManager attributeManager = artifact.getAttributeManager(WordAttribute.CONTENT_NAME);
-         for (Attribute attribute : attributeManager.getAttributes()) {
-            String currentValue = attribute.getStringData();
+         Collection<Attribute<String>> attributes = artifact.getAttributes(WordAttribute.CONTENT_NAME);
+         for (Attribute<String> attribute : attributes) {
+            String currentValue = attribute.getValue();
             String cleanValue = WordUtil.removeWordMarkupSmartTags(currentValue);
             if (!currentValue.equals(cleanValue)) {
                InputStream in = new ByteArrayInputStream(cleanValue.getBytes());

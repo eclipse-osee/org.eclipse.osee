@@ -10,10 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
  * Type information for dynamic attributes.
@@ -23,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDescriptor> {
    public static final DynamicAttributeDescriptor[] EMPTY_ARRAY = new DynamicAttributeDescriptor[0];
    private Class<? extends Attribute> baseAttributeClass;
+   private Class<? extends AbstractAttributeDataProvider> providerAttributeClass;
    private int attrTypeId;
    private String namespace;
    private String name;
@@ -31,10 +38,10 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
    private int maxOccurrences;
    private int minOccurrences;
    private String tipText;
+   private String fileTypeExtension;
 
    // These arrays are going to be used for reflection
-   private static final Class<?>[] reflectionSignature =
-         new Class<?>[] {DynamicAttributeDescriptor.class, String.class};
+   private static final Class<?>[] attributeDataProviderSignature = new Class<?>[] {AttributeStateManager.class};
 
    /**
     * Create a dynamic attribute descriptor. Descriptors can be acquired for application use from the
@@ -49,7 +56,7 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
     * @param tipText
     * @throws SQLException
     */
-   public DynamicAttributeDescriptor(DynamicAttributeDescriptorCache cache, int attrTypeId, Class<? extends Attribute> baseAttributeClass, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
+   public DynamicAttributeDescriptor(int attrTypeId, Class<? extends Attribute> baseAttributeClass, Class<? extends AbstractAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
       if (minOccurrences < 0) {
          throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
       }
@@ -59,6 +66,7 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
 
       this.attrTypeId = attrTypeId;
       this.baseAttributeClass = baseAttributeClass;
+      this.providerAttributeClass = providerAttributeClass;
       this.namespace = namespace == null ? "" : namespace;
       this.name = name;
       this.defaultValue = defaultValue;
@@ -66,38 +74,11 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
       this.maxOccurrences = maxOccurrences;
       this.minOccurrences = minOccurrences;
       this.tipText = tipText;
-      cache.cache(this);
+      this.fileTypeExtension = fileTypeExtension != null ? fileTypeExtension : "";
    }
 
    public DynamicAttributeManager createAttributeManager(Artifact parentArtifact, boolean initialized) {
       return new DynamicAttributeManager(parentArtifact, this, initialized);
-   }
-
-   /**
-    * Creates a new <code>Attribute</code> that is consistent with this descriptor.
-    * 
-    * @throws NoSuchMethodException
-    * @throws InvocationTargetException
-    * @throws IllegalAccessException
-    * @throws InstantiationException
-    * @throws SecurityException
-    * @throws IllegalArgumentException
-    */
-   protected Attribute<?> createAttribute(Artifact artifact) throws IllegalStateException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-      //TODO: This should be removed when the blob attribute conversion is complete
-      Class<? extends Attribute> tempBaseAttributeClass = getBaseAttributeClass();
-
-      if (artifact instanceof WordArtifact && name.equals("Word Formatted Content")) {
-         WordArtifact wordArtifact = (WordArtifact) artifact;
-
-         if (wordArtifact.isWholeWordArtifact()) {
-            tempBaseAttributeClass = WordWholeDocumentAttribute.class;
-         } else {
-            tempBaseAttributeClass = WordTemplateAttribute.class;
-         }
-      }
-      Object[] reflectionParams = new Object[] {this, defaultValue};
-      return tempBaseAttributeClass.getConstructor(reflectionSignature).newInstance(reflectionParams);
    }
 
    /**
@@ -112,6 +93,13 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
     */
    public Class<? extends Attribute> getBaseAttributeClass() {
       return baseAttributeClass;
+   }
+
+   /**
+    * @return Returns the AttributeDataProviderClass.
+    */
+   private Class<? extends AbstractAttributeDataProvider> getAttributeDataProviderClass() {
+      return providerAttributeClass;
    }
 
    /**
@@ -167,6 +155,10 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
       return name;
    }
 
+   public String getFileTypeExtension() {
+      return fileTypeExtension;
+   }
+
    /* (non-Javadoc)
     * @see java.lang.Object#hashCode()
     */
@@ -208,4 +200,64 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
       }
       return name.compareTo(attributeType.name);
    }
+
+   /**
+    * Creates a new <code>AttributeDataProvider</code> that is consistent with this descriptor.
+    * 
+    * @throws Exception
+    */
+   protected AbstractAttributeDataProvider createAttributeDataProvider(AttributeStateManager stateManager) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+      return getAttributeDataProviderClass().getConstructor(attributeDataProviderSignature).newInstance(
+            new Object[] {stateManager});
+   }
+
+   /**
+    * Creates a new <code>Attribute</code> that is consistent with this descriptor.
+    * 
+    * @param artifact
+    * @param attributeDataProvider
+    * @return new attribute instance
+    * @throws Exception
+    */
+   protected Attribute<?> createAttribute(Artifact artifact, IAttributeDataProvider attributeDataProvider) throws Exception {
+      Attribute<?> toReturn = null;
+      Object[] params = new Object[] {this, attributeDataProvider};
+      try {
+         Constructor<? extends Attribute> constructor = getAttributeConstructor(artifact);
+         toReturn = constructor.newInstance(params);
+      } catch (Exception ex) {
+         throw new Exception(String.format("Error creating attribute:\n Class: [%s] Params: [%s]",
+               getBaseAttributeClass(), Arrays.deepToString(params)), ex);
+      }
+      return toReturn;
+   }
+
+   private Constructor<? extends Attribute> getAttributeConstructor(Artifact artifact) throws SecurityException, NoSuchMethodException {
+      Constructor<? extends Attribute> constructor = null;
+      Class<? extends Attribute> attributeClass = getBaseAttributeClass();
+
+      //TODO: JPhillips - This should be removed when the blob attribute conversion is complete
+      if (artifact instanceof WordArtifact && name.equals("Word Formatted Content")) {
+         WordArtifact wordArtifact = (WordArtifact) artifact;
+
+         if (wordArtifact.isWholeWordArtifact()) {
+            attributeClass = WordWholeDocumentAttribute.class;
+         } else {
+            attributeClass = WordTemplateAttribute.class;
+         }
+      }
+
+      try {
+         constructor =
+               attributeClass.getConstructor(new Class[] {DynamicAttributeDescriptor.class,
+                     ICharacterAttributeDataProvider.class});
+
+      } catch (Exception ex) {
+         constructor =
+               attributeClass.getConstructor(new Class[] {DynamicAttributeDescriptor.class,
+                     IBinaryAttributeDataProvider.class});
+      }
+      return constructor;
+   }
+
 }

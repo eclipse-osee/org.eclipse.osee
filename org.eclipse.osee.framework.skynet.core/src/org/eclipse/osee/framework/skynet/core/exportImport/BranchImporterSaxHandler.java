@@ -266,7 +266,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processAttribute(String attributeGuid, String attributeType, String stringValue, byte[] contentValue, boolean deleted) throws SQLException {
+   protected void processAttribute(String attributeGuid, String attributeType, String stringValue, byte[] contentValue, boolean deleted) throws Exception {
       // Skip this attribute if the artifact is not being included
       if (currentArtifactId == null || monitor.isCanceled()) {
          return;

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Composite;
@@ -40,8 +40,8 @@ public class XFloatDam extends XFloat implements IDamWidget {
       super(displayLabel, xmlRoot);
    }
 
-   public DynamicAttributeManager getUdat() throws SQLException {
-      return artifact.getAttributeManager(attrName);
+   private Attribute<Double> getAttribute() throws Exception {
+      return artifact.getAttributeManager(attrName).getSoleAttribute();
    }
 
    public void setArtifact(Artifact artifact, String attrName) throws SQLException {
@@ -55,8 +55,8 @@ public class XFloatDam extends XFloat implements IDamWidget {
    public void set(String text) {
       super.set(text);
       try {
-         getUdat().setSoleAttributeValue(text);
-      } catch (SQLException ex) {
+         getAttribute().setValue(new Double(text));
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
@@ -70,7 +70,7 @@ public class XFloatDam extends XFloat implements IDamWidget {
       public void widgetModified(XWidget widget) {
          try {
             save();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
@@ -86,9 +86,13 @@ public class XFloatDam extends XFloat implements IDamWidget {
    }
 
    public String getUdatStringValue() throws SQLException {
-      DynamicAttributeManager udat = getUdat();
-      if (udat == null) return "";
-      return udat.getSoleAttributeValue();
+      String toReturn = null;
+      try {
+         toReturn = getAttribute().getValue().toString();
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
+      return toReturn != null ? toReturn : "";
    }
 
    @Override
@@ -97,10 +101,9 @@ public class XFloatDam extends XFloat implements IDamWidget {
    }
 
    @Override
-   public void save() throws SQLException {
+   public void save() throws Exception {
       if (isDirty()) {
-         DynamicAttributeManager udat = getUdat();
-         udat.setSoleAttributeValue(get());
+         getAttribute().setValue(new Double(get()));
       }
    }
 

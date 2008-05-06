@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -73,8 +72,10 @@ public class ArtifactClipboard {
 
    /**
     * This method must be called from the display thread
+    * 
+    * @throws Exception
     */
-   public void pasteArtifactsFromClipboard(Artifact parent) throws SQLException {
+   public void pasteArtifactsFromClipboard(Artifact parent) throws Exception {
       if (parent == null) throw new IllegalArgumentException("Parent can not be null.");
 
       Object object = clipboard.getContents(ArtifactTransfer.getInstance());

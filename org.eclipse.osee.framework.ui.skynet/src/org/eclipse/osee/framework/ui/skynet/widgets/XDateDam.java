@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
+import java.util.Date;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
@@ -29,22 +30,21 @@ public class XDateDam extends XDate implements IDamWidget {
       super(displayLabel);
    }
 
-   public DynamicAttributeManager getUdat() throws SQLException {
+   private DateAttribute getAttribute() throws Exception {
+      return (DateAttribute) artifact.getSoleAttributeValue(attrName);
+   }
+
+   private DynamicAttributeManager getAttributeManager() throws Exception {
       return artifact.getAttributeManager(attrName);
    }
 
-   public String getUdatStringFormattedValue() throws SQLException {
-      DynamicAttributeManager udat = getUdat();
-      if (udat == null) return "";
-      String dateStr = getUdatStringValue();
-      if (!dateStr.equals("")) return ((DateAttribute) udat.getSoleAttribute()).getAsFormattedString(DateAttribute.MMDDYY);
-      return "";
-   }
-
-   public String getUdatStringValue() throws SQLException {
-      DynamicAttributeManager udat = getUdat();
-      if (udat == null) return "";
-      return udat.getSoleAttributeValue();
+   public String getUdatStringValue() {
+      String toReturn = null;
+      try {
+         toReturn = getAttribute().getAsFormattedString(DateAttribute.MMDDYY);
+      } catch (Exception ex) {
+      }
+      return toReturn != null ? toReturn : "";
    }
 
    /*
@@ -67,23 +67,24 @@ public class XDateDam extends XDate implements IDamWidget {
       public void widgetModified(XWidget widget) {
          try {
             save();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
    };
 
    @Override
-   public void save() throws SQLException {
+   public void save() throws Exception {
       if (isDirty()) {
          if (get().equals("")) {
-            if (getUdat() != null) {
-               for (Attribute attr : getUdat().getAttributes())
+            DynamicAttributeManager attrManager = getAttributeManager();
+            if (attrManager != null) {
+               for (Attribute attr : attrManager.getAttributes()) {
                   attr.delete();
+               }
             }
          } else {
-            DynamicAttributeManager udat = getUdat();
-            udat.setSoleAttributeValue(getDate().getTime() + "");
+            artifact.setSoleDateAttributeValue(attrName, getDate());
          }
       }
    }
@@ -93,11 +94,13 @@ public class XDateDam extends XDate implements IDamWidget {
       this.attrName = attrName;
 
       if (!getUdatStringValue().equals("")) {
-         DynamicAttributeManager udat = getUdat();
-         if (udat == null)
-            super.setDate(null);
-         else
-            super.setDate(((DateAttribute) udat.getSoleAttribute()).getValue());
+         Date date = null;
+         try {
+            date = getAttribute().getValue();
+         } catch (Exception ex) {
+            // Do Nothing
+         }
+         super.setDate(date);
       }
 
       this.addModifyListener(new ModifyListener() {
@@ -105,16 +108,16 @@ public class XDateDam extends XDate implements IDamWidget {
             try {
                String date = get(DateAttribute.MMDDYY);
                if (date.equals("")) {
-                  DynamicAttributeManager udat = getUdat();
+                  DynamicAttributeManager udat = getAttributeManager();
                   if (udat != null) {
                      if (udat.getAttributes().size() > 0) {
                         udat.removeAttribute(udat.getAttributes().iterator().next());
                      }
                   }
                } else {
-                  getUdat().setSoleAttributeValue(getDate().getTime() + "");
+                  getAttribute().setValue(getDate());
                }
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          };
@@ -122,11 +125,10 @@ public class XDateDam extends XDate implements IDamWidget {
    }
 
    @Override
-   public boolean isDirty() throws SQLException {
-      // System.out.println("Stored "+getUdatStringValue()+" Selected "+getDate().getTime());
+   public boolean isDirty() throws Exception {
       if (getDate() == null && getUdatStringValue().equals("")) return false;
       if (getDate() == null && !getUdatStringValue().equals("")) return true;
-      return (!getUdatStringValue().equals(getDate().getTime() + ""));
+      return (!getAttribute().getValue().equals(getDate()));
    }
 
 }

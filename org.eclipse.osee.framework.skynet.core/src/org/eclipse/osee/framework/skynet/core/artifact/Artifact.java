@@ -44,10 +44,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnot
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeObjectConverter;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.IStreamSetableAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeObjectConverter;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
@@ -390,7 +391,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
    public void setAttribute(SkynetAttributeChange attrChange) throws SQLException {
       DynamicAttributeManager userAttr = getAttributeManager(attrChange.getName());
-      userAttr.getAttribute(attrChange).setStringData(attrChange.getValue());
+      userAttr.getAttribute(attrChange).setValue(attrChange.getValue());
    }
 
    /**
@@ -611,7 +612,11 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
    public void setSoleAttributeFromStream(String attributeTypeName, InputStream stream) throws IllegalStateException, SQLException, IOException {
       Attribute<Object> attribute = getSoleAttributeForSet(attributeTypeName);
-      attribute.setValueFromInputStream(stream);
+      if (attribute instanceof IStreamSetableAttribute) {
+         ((IStreamSetableAttribute) attribute).setValueFromInputStream(stream);
+      } else {
+         throw new UnsupportedOperationException();
+      }
    }
 
    /**
@@ -636,14 +641,15 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
    /**
     * @param attributeName
-    * @return comma delimited represenatation of all the attributes of the type attributeName
+    * @return comma delimited representation of all the attributes of the type attributeName
     * @throws SQLException
     */
    public String getAttributesToString(String attributeName) throws SQLException {
       StringBuffer sb = new StringBuffer();
-      DynamicAttributeManager dam = getAttributeManager(attributeName);
-      for (Attribute attr : dam.getAttributes())
-         sb.append(attr.getStringData() + ", ");
+      for (Attribute attr : getAttributes(attributeName)) {
+         sb.append(attr);
+         sb.append(", ");
+      }
       return sb.toString().replaceFirst(", $", "");
    }
 
@@ -660,8 +666,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       DynamicAttributeManager dam = getAttributeManager(attributeName);
       int minOccur = dam.getAttributeType().getMinOccurrences();
       int maxOccur = dam.getAttributeType().getMaxOccurrences();
-      for (Attribute attr : getAttributeManager(attributeName).getAttributes()) {
-         storedNames.add(attr.getStringData());
+      for (Attribute attr : getAttributes(attributeName)) {
+         storedNames.add(attr.toString());
       }
 
       if (dataStrs.size() > maxOccur) throw new IllegalStateException(
@@ -674,15 +680,19 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       if (dataStrs.size() == maxOccur && !storedNames.equals(dataStrs)) {
          String[] dataStrsArr = dataStrs.toArray(new String[dataStrs.size()]);
          int x = 0;
-         for (Attribute attr : getAttributeManager(attributeName).getAttributes())
-            attr.setStringData(dataStrsArr[x++]);
+         for (Attribute attr : getAttributeManager(attributeName).getAttributes()) {
+            Object value = AttributeObjectConverter.stringToObject(attr, dataStrsArr[x++]);
+            attr.setValue(value);
+         }
          return;
       }
 
       // Add items that are newly selected
       for (String sel : dataStrs) {
          if (!storedNames.contains(sel)) {
-            getAttributeManager(attributeName).getNewAttribute().setStringData(sel);
+            Attribute attr = getAttributeManager(attributeName).getNewAttribute();
+            Object value = AttributeObjectConverter.stringToObject(attr, sel);
+            attr.setValue(value);
          }
       }
 
@@ -690,7 +700,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       for (String stored : storedNames) {
          if (!dataStrs.contains(stored)) {
             for (Attribute attr : getAttributeManager(attributeName).getAttributes())
-               if (attr.getStringData().equals(stored)) attr.delete();
+               if (attr.toString().equals(stored)) attr.delete();
          }
       }
    }
@@ -709,7 +719,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       if (!isAttributeTypeValid(attributeName)) return items;
       DynamicAttributeManager dam = getAttributeManager(attributeName);
       for (Attribute attr : dam.getAttributes())
-         items.add(attr.getStringData());
+         items.add(attr.toString());
       return items;
    }
 
@@ -758,11 +768,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       dirty = false;
 
       if (attributeManagers != null) {
-         for (DynamicAttributeManager userAttr : attributeManagers) {
-            for (Attribute attr : userAttr.getAttributes()) {
-               attr.setNotDirty();
-            }
-            userAttr.setDirty(false);
+         for (DynamicAttributeManager attrManager : attributeManagers) {
+            attrManager.setDirty(false);
          }
       }
    }
@@ -1273,10 +1280,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    /**
     * Creates a new artifact and duplicates all of its attribute data.
     * 
-    * @throws CloneNotSupportedException
-    * @throws SQLException
+    * @throws Exception
     */
-   public Artifact duplicate(Branch branch) throws CloneNotSupportedException, SQLException {
+   public Artifact duplicate(Branch branch) throws Exception {
       Artifact newArtifact = artifactType.makeNewArtifact(branch);
 
       if (newArtifact.attributesNotLoaded()) {
@@ -1290,11 +1296,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return newArtifact;
    }
 
-   private void copyAttributes(Artifact artifact) throws IllegalStateException, SQLException {
+   private void copyAttributes(Artifact artifact) throws Exception {
       for (DynamicAttributeManager attrManager : getAttributeManagers()) {
-         for (Attribute attribute : attrManager.getAttributes()) {
-            attribute.copyTo(artifact);
-         }
+         attrManager.copyTo(artifact);
       }
    }
 
@@ -1352,7 +1356,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          for (Attribute attribute : attributeManager.getAttributes()) {
             if (attribute.isDirty()) {
                dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(),
-                     attribute.getStringData(), attribute.getPersistenceMemo().getAttrId(),
+                     attribute.getValue(), attribute.getPersistenceMemo().getAttrId(),
                      attribute.getPersistenceMemo().getGammaId()));
             }
          }
@@ -1362,9 +1366,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
 
    public void setAttributesNotDirty() throws SQLException {
       for (DynamicAttributeManager attributeManager : getAttributeManagers()) {
-         for (Attribute attribute : attributeManager.getAttributes()) {
-            attribute.setNotDirty();
-         }
+         attributeManager.setDirty(false);
       }
    }
 

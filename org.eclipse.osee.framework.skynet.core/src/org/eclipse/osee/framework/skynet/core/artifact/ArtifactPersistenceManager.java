@@ -16,9 +16,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
-import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -38,12 +36,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
-import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetArtifactEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactModifiedEvent;
@@ -67,6 +63,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
@@ -84,7 +81,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionManag
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -99,12 +95,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    private static final String INSERT_ARTIFACT =
          "INSERT INTO " + ARTIFACT_TABLE + " (art_id, art_type_id, guid, human_readable_id) VALUES (?, ?, ?, ?)";
-
-   private static final String UPDATE_ATTRIBUTE =
-         "UPDATE " + ATTRIBUTE_VERSION_TABLE + " SET value = ?, content = ? WHERE art_id = ? and attr_id = ? and gamma_id = ?";
-
-   private static final String UPDATE_TRANSACTION_TABLE =
-         " UPDATE " + TRANSACTION_DETAIL_TABLE + " SET " + TRANSACTION_DETAIL_TABLE.column(TXD_COMMENT) + " = ?, TIME = ? WHERE transaction_id = (SELECT transaction_id FROM " + TRANSACTIONS_TABLE + " WHERE gamma_id = ? AND branch_id = ?)";
 
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_1 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t1");
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_2 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t2");
@@ -121,7 +111,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    // 'order by transaction_id desc' clause works with the DynamicAttributeManager to ignore effectively overwritten attributes with {min,max} of {0,1} with >1 attribute instances.
    private static final String SELECT_ATTRIBUTES_FOR_ARTIFACT =
-         "SELECT " + ATTRIBUTE_ALIAS_1.columns("attr_id", "attr_type_id", "gamma_id", "value", "content") + " FROM " + ATTRIBUTE_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + "=?" + " AND " + ATTRIBUTE_ALIAS_1.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")" + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " <= ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)" + " ORDER BY " + TRANSACTIONS_TABLE.column("transaction_id") + " DESC";
+         "SELECT " + ATTRIBUTE_ALIAS_1.columns("attr_id", "attr_type_id", "gamma_id", "value", "uri") + " FROM " + ATTRIBUTE_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + "=?" + " AND " + ATTRIBUTE_ALIAS_1.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")" + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " <= ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)" + " ORDER BY " + TRANSACTIONS_TABLE.column("transaction_id") + " DESC";
 
    private static final String UPDATE_ARTIFACT_TYPE = "UPDATE osee_define_artifact SET art_type_id = ? WHERE art_id =?";
 
@@ -212,7 +202,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       }
    }
 
-   public void saveTrace(Artifact artifact, boolean recurse, SkynetTransactionBuilder builder) throws SQLException {
+   public void saveTrace(Artifact artifact, boolean recurse, SkynetTransactionBuilder builder) throws Exception {
       if (artifact.isInAttributeInitialization()) throw new IllegalArgumentException(
             "The artifact is in attribute initialization still");
       if (!accessControlManager.checkObjectPermission(artifact.getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
@@ -238,7 +228,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       }
    }
 
-   public void doSave(Artifact artifact, SkynetTransaction transaction, boolean persistAttributes) throws SQLException {
+   public void doSave(Artifact artifact, SkynetTransaction transaction, boolean persistAttributes) throws Exception {
       workingOn(artifact.getDescriptiveName());
       boolean newArtifact = artifact.getPersistenceMemo() == null;
       ModificationType modType;
@@ -260,19 +250,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       if (persistAttributes) {
          notifyOnAttributeSave(artifact);
 
-         Collection<DynamicAttributeManager> userAttributes = artifact.getAttributeManagers();
-
-         for (DynamicAttributeManager attributeManager : userAttributes) {
-            for (Attribute attribute : attributeManager.getAttributes()) {
-               if (attribute.isDirty()) {
-                  addAttributeData(attribute, artifact, transaction, artGamma);
-               }
-            }
-
-            for (AttributeMemo memo : attributeManager.getDeletedAttributes()) {
-               deleteAttribute(memo, transaction, artifact);
-            }
-         }
+         // Add Attributes to Transaction
+         AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, transaction);
+         operation.execute();
 
          if (modType == ModificationType.NEW ? false : true) {
             transaction.addRemoteEvent(RemoteArtifactEventFactory.makeEvent(artifact,
@@ -297,69 +277,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       TransactionId transactionId = transactionIdManager.getEditableTransactionId(artifact.getBranch());
       artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, artId, gammaId));
-   }
-
-   /**
-    * Persist an attribute for a particular artifact. Upon completion the attribute will be marked as not dirty.
-    * 
-    * @param attribute The attribute to persist.
-    * @param artifact The artifact that the attribute is attached to.
-    * @throws SQLException
-    */
-   protected void addAttributeData(Attribute attribute, Artifact artifact, SkynetTransaction transaction, int artGamma) throws SQLException {
-      String value = attribute.getRawStringValue();
-      InputStream stream = attribute.getRawContentStream();
-      AttributeMemo memo;
-      ModType modType;
-      ModificationType attrModType;
-
-      if (artifact.isVersionControlled()) {
-         if (attribute.getPersistenceMemo() == null) {
-            memo =
-                  createAttributeMemo(attribute.getManager().getAttributeType().getAttrTypeId(),
-                        SkynetDatabase.getNextGammaId());
-            attribute.setPersistenceMemo(memo);
-            modType = ModType.Added;
-            attrModType = ModificationType.NEW;
-
-         } else {
-            memo = attribute.getPersistenceMemo();
-            memo = new AttributeMemo(memo.getAttrId(), memo.getAttrTypeId(), SkynetDatabase.getNextGammaId());
-            attribute.setPersistenceMemo(memo);
-            modType = ModType.Changed;
-            attrModType = ModificationType.CHANGE;
-         }
-         transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
-               memo.getAttrTypeId(), value, memo.getGammaId(), transaction.getTransactionNumber(), stream, attrModType,
-               transaction.getBranch()));
-
-         transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, modType, this));
-      } else {
-         if (attribute.getPersistenceMemo() == null) {
-            memo =
-                  createAttributeMemo(attribute.getManager().getAttributeType().getAttrTypeId(),
-                        SkynetDatabase.getNextGammaId());
-            attribute.setPersistenceMemo(memo);
-            attrModType = ModificationType.NEW;
-
-            transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
-                  memo.getAttrTypeId(), value, memo.getGammaId(), transaction.getTransactionNumber(), stream,
-                  attrModType, transaction.getBranch()));
-         } else {
-            memo = attribute.getPersistenceMemo();
-            transaction.addToBatch(UPDATE_TRANSACTION_TABLE, SQL3DataType.VARCHAR, transaction.getComment(),
-                  SQL3DataType.TIMESTAMP, GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER,
-                  attribute.getPersistenceMemo().getGammaId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
-
-            transaction.addToBatch(UPDATE_ATTRIBUTE, SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-                  memo.getAttrId(), SQL3DataType.INTEGER, memo.getAttrTypeId(), SQL3DataType.VARCHAR, value,
-                  SQL3DataType.INTEGER, memo.getGammaId(), SQL3DataType.BLOB, stream);
-         }
-      }
-   }
-
-   private AttributeMemo createAttributeMemo(int attrTypeId, int gammaId) throws SQLException {
-      return new AttributeMemo(Query.getNextSeqVal(null, SkynetDatabase.ATTR_ID_SEQ), attrTypeId, gammaId);
    }
 
    private static final String SELECT_ARTIFACT_START =
@@ -642,7 +559,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       Artifact artifact =
             factory.getNewArtifact(rSet.getString("guid"), rSet.getString("human_readable_id"),
                   artifactType.getFactoryKey(), transactionId.getBranch(), artifactType);
-
       artifact.setPersistenceMemo(new ArtifactPersistenceMemo(transactionId, rSet.getInt("art_id"),
             rSet.getInt("gamma_id")));
 
@@ -712,7 +628,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
                   try {
                      String varchar = chStmt.getRset().getString("value");
-                     attribute = type.injectFromDb(chStmt.getRset().getBinaryStream("content"), varchar);
+                     attribute = type.injectFromDb(varchar, chStmt.getRset().getString("uri"));
 
                   } catch (SQLException e) {
                      throw new RuntimeException(e);
@@ -782,7 +698,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          ConnectionHandlerStatement chStmt =
                ConnectionHandler.runPreparedQuery(
                      "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("art_id", "attr_id", "attr_type_id", "gamma_id",
-                           "value", "content") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE
+                           "value", "uri") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE
 
                      + ", (SELECT " + ATTRIBUTE_VERSION_TABLE.column("attr_id") + ", MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ") AS last_transaction_id FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN (" + artIdList + ") " + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + EQUAL + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + EQUAL + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY attr_id) t1 " + " WHERE " + TRANSACTIONS_TABLE.column("transaction_id") + "= t1.last_transaction_id" + " AND " + ATTRIBUTE_VERSION_TABLE.column("attr_id") + "= t1.attr_id" + " AND " + ATTRIBUTE_VERSION_TABLE.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN (" + artIdList + ")" + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " ORDER BY " + TRANSACTIONS_TABLE.column("transaction_id") + " DESC",
                      SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
@@ -814,8 +730,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                attributeManager.setupForInitialization(false);
             }
 
-            //                                        change this to be the URI
-            attribute = attributeManager.injectFromDb(rSet.getBinaryStream("content"), rSet.getString("value"));
+            attribute = attributeManager.injectFromDb(rSet.getString("value"), rSet.getString("uri"));
             attribute.setPersistenceMemo(new AttributeMemo(rSet.getInt("attr_id"), attrTypeId, rSet.getInt("gamma_id")));
 
          }
@@ -914,9 +829,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    /**
     * @param artifact
     * @param builder
-    * @throws SQLException
+    * @throws Exception
     */
-   public void deleteTrace(Artifact artifact, SkynetTransactionBuilder builder) throws SQLException {
+   public void deleteTrace(Artifact artifact, SkynetTransactionBuilder builder) throws Exception {
       if (!artifact.isDeleted()) {
          // This must be done first since the the actual deletion of an artifact clears out the link manager
          for (Artifact childArtifact : artifact.getChildren()) {
@@ -924,6 +839,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          }
 
          builder.deleteArtifact(artifact);
+
          artifact.setDeleted();
       }
    }
@@ -931,9 +847,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    /**
     * @param artifact
     * @param transaction
-    * @throws SQLException
+    * @throws Exception
     */
-   public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws SQLException {
+   public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws Exception {
       if (!artifact.isInDb()) return;
 
       LinkManager linkManager = artifact.getLinkManager();
@@ -950,25 +866,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       linkManager.deleteAllLinks();
       linkManager.traceLinks(false, builder);
       tagManager.clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
-   }
-
-   /**
-    * Remove an attribute from the database that is represented by a particular persistence memo that the persistence
-    * layer marked it with. The persistence memo is used for this since it is the identifying information the
-    * persistence layer needs, allowing the attribute to be destroyed and released back to the system.
-    * 
-    * @throws SQLException
-    */
-   private void deleteAttribute(AttributeMemo memo, SkynetTransaction transaction, Artifact artifact) throws SQLException {
-      // If the memo is null, the attribute was never saved to the database, so we can ignore it
-      if (memo == null) return;
-
-      int gammaId = SkynetDatabase.getNextGammaId();
-      transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
-            memo.getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null, ModificationType.DELETED,
-            transaction.getBranch()));
-
-      transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
    }
 
    /**
@@ -1101,7 +998,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    private Artifact createRoot(Branch branch) throws SQLException {
-      Artifact root = ArtifactTypeManager.addArtifact(ROOT_ARTIFACT_TYPE_NAME, branch, DEFAULT_HIERARCHY_ROOT_NAME);
+      ArtifactSubtypeDescriptor descriptor = configurationManager.getArtifactSubtypeDescriptor(ROOT_ARTIFACT_TYPE_NAME);
+      Artifact root = descriptor.makeNewArtifact(branch);
+      root.setDescriptiveName(DEFAULT_HIERARCHY_ROOT_NAME);
       root.persistAttributes();
       return root;
    }

@@ -512,7 +512,7 @@ public class WordTemplateProcessor {
       if (!allAttrs && (attributeTypeName.equals(Requirements.PARTITION) || attributeTypeName.equals("Safety Criticality"))) {
          if (artifact.isAttributeTypeValid(Requirements.PARTITION)) {
             for (Attribute partition : artifact.getAttributeManager(Requirements.PARTITION).getAttributes()) {
-               if (partition.getStringData().equals("Unspecified")) {
+               if (partition.getValue().equals("Unspecified")) {
                   return;
                }
             }
@@ -542,11 +542,13 @@ public class WordTemplateProcessor {
             if (attributeElement.label.length() > 0) {
                wordMl.addParagraph(attributeElement.label);
             }
-            Object val = attribute.getValue();
-            if (val != null) {
-               String wordContent = WordUtil.stripSpellCheck(attribute.toString());//TODO what is the best way to get at unknown attribute types? (because this isn't it)
+
+            Object value = attribute.getValue();
+            if (value != null && value instanceof String) {
+               String data = (String) value;
+               String wordContent = WordUtil.stripSpellCheck(data);//TODO what is the best way to get at unknown attribute types? (because this isn't it)
                if (isEditMode) {
-                  DynamicAttributeDescriptor attributeDescriptor = attribute.getManager().getAttributeType();
+                  DynamicAttributeDescriptor attributeDescriptor = attribute.getAttributeManager().getAttributeType();
                   writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeDescriptor.getName()),
                         "ns0:guid=\"" + artifact.getGuid() + "\"",
                         "ns0:attrId=\"" + attributeDescriptor.getAttrTypeId() + "\"", wordContent);

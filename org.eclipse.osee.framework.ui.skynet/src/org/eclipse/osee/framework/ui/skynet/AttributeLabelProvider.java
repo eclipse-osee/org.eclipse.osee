@@ -13,9 +13,6 @@ package org.eclipse.osee.framework.ui.skynet;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -49,16 +46,7 @@ public class AttributeLabelProvider implements ITableLabelProvider {
       if (columnIndex == 0) {
          return attribute.getAttributeType().getName();
       }
-      if ((attribute instanceof EnumeratedAttribute) && attribute.toString() == null) {
-         return "<Select>";
-      }
-      if (attribute instanceof BooleanAttribute) {
-         return ((BooleanAttribute) attribute).getValue() ? "yes" : "no";
-      }
-      if (attribute instanceof DateAttribute) {
-         return ((DateAttribute) attribute).getAsFormattedString(DateAttribute.MMDDYY);
-      }
-      return attribute.toString();
+      return attribute.getDisplayableString();
    }
 
    /*

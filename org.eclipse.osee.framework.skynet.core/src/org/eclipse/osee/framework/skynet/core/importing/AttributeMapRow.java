@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
@@ -30,7 +29,7 @@ public class AttributeMapRow {
       attributeName = row[1];
    }
 
-   public void persist() throws SQLException {
+   public void persist() throws Exception {
       ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
       DynamicAttributeDescriptor attributeType = configurationManager.getDynamicAttributeType(attributeName);
 

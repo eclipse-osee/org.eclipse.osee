@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -31,8 +31,8 @@ public class XIntegerDam extends XInteger implements IDamWidget {
       super(displayLabel);
    }
 
-   public DynamicAttributeManager getUdat() throws SQLException {
-      return artifact.getAttributeManager(attrName);
+   private Attribute<Integer> getAttribute() throws Exception {
+      return artifact.getSoleAttributeValue(attrName);
    }
 
    public void setArtifact(Artifact artifact, String attrName) throws SQLException {
@@ -42,20 +42,28 @@ public class XIntegerDam extends XInteger implements IDamWidget {
       super.set(getUdatStringValue());
    }
 
-   @Override
-   public void set(String text) {
-      super.set(text);
+   private void setFromString(String value) {
       try {
-         getUdat().setSoleAttributeValue(text);
-      } catch (SQLException ex) {
+         getAttribute().setValue(new Integer(text));
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 
+   @Override
+   public void set(String text) {
+      super.set(text);
+      setFromString(text);
+   }
+
    public String getUdatStringValue() throws SQLException {
-      DynamicAttributeManager udat = getUdat();
-      if (udat == null) return "";
-      return udat.getSoleAttributeValue();
+      String toReturn = null;
+      try {
+         toReturn = getAttribute().toString();
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
+      return toReturn != null ? toReturn : "";
    }
 
    public void setMinValue(int minValue) {
@@ -86,8 +94,7 @@ public class XIntegerDam extends XInteger implements IDamWidget {
    @Override
    public void save() throws SQLException {
       if (isDirty()) {
-         DynamicAttributeManager udat = getUdat();
-         udat.setSoleAttributeValue(get());
+         setFromString(get());
       }
    }
 

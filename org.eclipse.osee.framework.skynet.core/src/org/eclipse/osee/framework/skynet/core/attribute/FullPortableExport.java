@@ -124,13 +124,13 @@ public class FullPortableExport {
       excelWriter.writeRow(row);
    }
 
-   public void createArtifactSheets(Branch branch) throws IOException, SQLException {
+   public void createArtifactSheets(Branch branch) throws Exception {
       for (ArtifactSubtypeDescriptor artifactType : configurationManager.getValidArtifactTypes(branch)) {
          createArtifactSheet(artifactType, ArtifactQuery.getArtifactsFromType(artifactType, branch));
       }
    }
 
-   public void createArtifactSheets(Collection<Artifact> artifacts) throws IOException, SQLException {
+   public void createArtifactSheets(Collection<Artifact> artifacts) throws Exception {
       HashCollection<String, Artifact> hash = new HashCollection<String, Artifact>();
       for (Artifact artifact : artifacts) {
          hash.put(artifact.getArtifactTypeName(), artifact);
@@ -142,7 +142,7 @@ public class FullPortableExport {
       }
    }
 
-   private void createArtifactSheet(ArtifactSubtypeDescriptor descriptor, Collection<Artifact> artifacts) throws IOException, SQLException {
+   private void createArtifactSheet(ArtifactSubtypeDescriptor descriptor, Collection<Artifact> artifacts) throws Exception {
       if (artifacts.size() > 0) {
          Artifact sampleArtifact = artifacts.iterator().next();
          int columnNum = sampleArtifact.getAttributeManagers().size();
@@ -155,7 +155,7 @@ public class FullPortableExport {
       }
    }
 
-   private void writeArtifactHeader(ArtifactSubtypeDescriptor descriptor, Branch branch) throws IOException, SQLException {
+   private void writeArtifactHeader(ArtifactSubtypeDescriptor descriptor, Branch branch) throws Exception {
       Collection<DynamicAttributeDescriptor> allAttributeTypes =
             configurationManager.getAttributeTypesFromArtifactType(descriptor, branch);
 
@@ -188,11 +188,11 @@ public class FullPortableExport {
       if (attributes.size() == 0) {
          return null;
       } else if (attributes.size() == 1) {
-         return attributes.iterator().next().getStringData();
+         return attributes.iterator().next().toString();
       } else {
          StringBuilder strB = new StringBuilder(200);
          for (Attribute attribute : attributes) {
-            strB.append(attribute.getStringData());
+            strB.append(attribute.getValue());
             strB.append(ATTRIBUTE_VALUE_DELIMITER);
          }
          return strB.toString();

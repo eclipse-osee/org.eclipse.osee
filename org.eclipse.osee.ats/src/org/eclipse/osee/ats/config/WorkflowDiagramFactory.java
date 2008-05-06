@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * @author Donald G. Dunne
@@ -49,8 +50,9 @@ public class WorkflowDiagramFactory {
     * @param pluginVueFilename
     * @param name
     * @return NativeArtifact created
+    * @throws MultipleAttributesExist
     */
-   public NativeArtifact importWorkflowDiagramToSkynet(InputStream inputStream, String name) throws SQLException, IOException {
+   public NativeArtifact importWorkflowDiagramToSkynet(InputStream inputStream, String name) throws SQLException, IOException, MultipleAttributesExist {
       NativeArtifact art = null;
       // System.out.println("Importing diagram " + name);
       art =
@@ -82,7 +84,7 @@ public class WorkflowDiagramFactory {
             AtsPlugin.getAtsBranch()).size() == 1;
    }
 
-   public AtsWorkFlow getAtsWorkflowFromArtifact(Artifact artifact) throws IOException, SQLException {
+   public AtsWorkFlow getAtsWorkflowFromArtifact(Artifact artifact) throws IOException, SQLException, MultipleAttributesExist {
       if (!objToAtsWorkFlowXml.containsKey(artifact)) {
          NativeArtifact nativeArtifact = (NativeArtifact) artifact;
          InputStream is = nativeArtifact.getNativeContent();

@@ -1,15 +1,31 @@
-/*
- * Created on Apr 4, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
-package org.eclipse.osee.framework.skynet.core.attribute;
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.skynet.core.attribute.utils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.BlobWordAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.JavaObjectAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.SimpleDateAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 
 /**
  * @author Theron Virgin
@@ -37,11 +53,10 @@ public class AttributeObjectConverter {
       }
       if (clas.equals(SimpleDateAttribute.class)) {
          if (value.equals("")) return new Date(1);
-         try{
+         try {
             return DateFormat.getDateInstance().parse(value);
-         }catch (ParseException ex){
-            SkynetActivator.getLogger().log(Level.SEVERE,
-                  "Could not parse the string value: " + value + " into a date");
+         } catch (ParseException ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, "Could not parse the string value: " + value + " into a date");
          }
       }
       if (clas.equals(EnumeratedAttribute.class)) {
@@ -64,5 +79,4 @@ public class AttributeObjectConverter {
             "The Attribute Object Creator for the " + clas + " is not implemented yet");
       return value;
    }
-
 }

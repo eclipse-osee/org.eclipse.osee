@@ -150,12 +150,11 @@ public class HtmlReportJob extends Job {
                      if (!dam.getAttributeType().getName().equals("Name") && !dam.getAttributeType().getName().equals(
                            WordAttribute.CONTENT_NAME)) {
                         sb.append(AHTML.addRowMultiColumnTable(new String[] {dam.getAttributeType().getName(),
-                              attr.getStringData()}));
+                              attr.getDisplayableString()}));
                      } else if (dam.getAttributeType().getName().equals(WordAttribute.CONTENT_NAME)) {
                         try {
                            ByteArrayInputStream wordMl =
-                                 new ByteArrayInputStream(
-                                       ("<body>" + attr.getStringData() + "</body>").getBytes("UTF-8"));
+                                 new ByteArrayInputStream(("<body>" + attr.getValue() + "</body>").getBytes("UTF-8"));
                            wordHtml = WordConverter.getInstance().toHtml(wordMl);
                         } catch (UnsupportedEncodingException ex) {
                            wordHtml = ex.getLocalizedMessage();

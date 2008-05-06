@@ -16,37 +16,49 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttributeDataProvider;
 
-public class CompressedContentAttribute extends BinaryAttribute<InputStream> {
+public final class CompressedContentAttribute extends BinaryAttribute<InputStream> implements IStreamSetableAttribute {
 
-   public CompressedContentAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
-      super(attributeType);
-   }
-
-   public void setValue(InputStream value) {
-      try {
-         setRawContent(Lib.compressFile(value, getAttributeType().getName()));
-
-      } catch (IOException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-   }
-
-   public InputStream getValue() {
-      try {
-         return new ByteArrayInputStream(Lib.decompressBytes(getRawContentStream()));
-
-      } catch (IOException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-      return null;
+   public CompressedContentAttribute(DynamicAttributeDescriptor attributeType, IBinaryAttributeDataProvider dataProvider) {
+      super(attributeType, dataProvider);
+      dataProvider.setDisplayableString(getAttributeType().getName());
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
+    */
+   @Override
+   public String getDisplayableString() {
+      return dataProvider.getDisplayableString();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
+    */
+   @Override
+   public InputStream getValue() {
+      return new ByteArrayInputStream(dataProvider.getValueAsBytes());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
+    */
+   @Override
+   public void setValue(InputStream value) {
+      try {
+         setValueFromInputStream(value);
+      } catch (IOException ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.IStreamableAttribute#setValueFromInputStream(java.io.InputStream)
     */
    @Override
    public void setValueFromInputStream(InputStream value) throws IOException {
-      setRawContent(Lib.compressFile(value, getAttributeType().getName()));
+      byte[] data = Lib.inputStreamToBytes(value);
+      dataProvider.setValue(data);
    }
 }

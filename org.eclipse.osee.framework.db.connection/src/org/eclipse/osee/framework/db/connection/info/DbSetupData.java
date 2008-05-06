@@ -24,7 +24,7 @@ public class DbSetupData {
    }
 
    public enum ServerInfoFields {
-      id, dbInfo, hostAddress, port, connectsWith, isDefault, serverConfig;
+      id, dbInfo, hostAddress, port, connectsWith, isDefault, serverConfig, resourceServer;
    }
 
    Map<ServerInfoFields, String> serverFieldMap;

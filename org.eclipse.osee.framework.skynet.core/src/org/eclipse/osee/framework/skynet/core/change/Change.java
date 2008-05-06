@@ -132,7 +132,7 @@ public abstract class Change implements IAdaptable {
 
    public abstract String getValue();
 
-   public abstract String getItemTypeName() throws SQLException;
+   public abstract String getItemTypeName() throws Exception;
 
    public abstract String getName();
 

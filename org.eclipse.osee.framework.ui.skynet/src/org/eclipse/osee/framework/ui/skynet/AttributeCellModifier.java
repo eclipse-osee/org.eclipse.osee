@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.StringValue;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Item;
-import java.util.GregorianCalendar;
 
 /**
  * @author Ryan D. Brooks
@@ -41,9 +41,6 @@ public class AttributeCellModifier implements ICellModifier {
 
    private AttributesComposite attrComp;
 
-   /**
-    * 
-    */
    public AttributeCellModifier(IDirtiableEditor editor, TableViewer tableViewer, AttributesComposite attrComp) {
       super();
       this.tableViewer = tableViewer;
@@ -80,7 +77,7 @@ public class AttributeCellModifier implements ICellModifier {
          return enumeratedValue;
       }
       if (attribute instanceof EnumeratedAttribute) {
-         enumeratedValue.setValue(attribute.getStringData());
+         enumeratedValue.setValue(((EnumeratedAttribute) attribute).getValue());
          enumeratedValue.setChocies(((EnumeratedAttribute) attribute).getChoices());
          return enumeratedValue;
       }
@@ -116,26 +113,24 @@ public class AttributeCellModifier implements ICellModifier {
     */
    public void modify(Object element, String property, Object value) {
       // Note that it is possible for an SWT Item to be passed instead of the model element.
-//      if (element == null ) return;
+      //      if (element == null ) return;
       if (element instanceof Item) {
          element = ((Item) element).getData();
       }
-      Attribute<?> attribute = (Attribute<?>) element;
+      Attribute attribute = (Attribute) element;
 
       if (attribute instanceof DateAttribute) {
-         if (value instanceof GregorianCalendar){
-            ((DateAttribute) attribute).setValue(new Date (((GregorianCalendar) value).getTimeInMillis()));
+         if (value instanceof GregorianCalendar) {
+            ((DateAttribute) attribute).setValue(new Date(((GregorianCalendar) value).getTimeInMillis()));
 
          } else {
-         ((DateAttribute) attribute).setValue((Date) value);
+            ((DateAttribute) attribute).setValue((Date) value);
          }
-      }
-      else if (attribute instanceof BooleanAttribute) {
+      } else if (attribute instanceof BooleanAttribute) {
          ((BooleanAttribute) attribute).setValue(value.equals("yes"));
-      }
-      //binary attributes should not be changed.
-      else if (!(attribute instanceof BinaryAttribute)) {
-         attribute.setStringData(value.toString());
+      } else if (!(attribute instanceof BinaryAttribute)) {
+         //binary attributes should not be changed.
+         attribute.setValue(value);
       }
       tableViewer.update(element, null);
       editor.onDirtied();

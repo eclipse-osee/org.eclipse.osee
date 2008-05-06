@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -35,21 +34,24 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 public class XActionableItemsDam extends XTextDam {
 
    protected final Artifact sma;
-   private static ArtifactPersistenceManager apm = ArtifactPersistenceManager.getInstance();
 
    public XActionableItemsDam(Artifact sma) {
       super(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
       this.sma = sma;
    }
 
-   public DynamicAttributeManager getDam() throws SQLException {
+   private DynamicAttributeManager getDam() throws SQLException {
       return sma.getAttributeManager(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
+   }
+
+   private Collection<Attribute<String>> getAttributes() throws SQLException {
+      return this.sma.getAttributes(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
    }
 
    public Set<ActionableItemArtifact> getActionableItems() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
-      for (Attribute attr : getDam().getAttributes()) {
-         ais.add((ActionableItemArtifact) ArtifactQuery.getArtifactFromId(attr.getStringData(),
+      for (Attribute<String> attr : getAttributes()) {
+         ais.add((ActionableItemArtifact) ArtifactQuery.getArtifactFromId(attr.getValue(),
                BranchPersistenceManager.getAtsBranch()));
       }
       return ais;
@@ -69,18 +71,22 @@ public class XActionableItemsDam extends XTextDam {
 
    public Set<String> getActionableItemGuids() throws SQLException {
       Set<String> ais = new HashSet<String>();
-      for (Attribute attr : getDam().getAttributes())
-         ais.add(attr.getStringData());
+      for (Attribute<String> attr : getAttributes()) {
+         ais.add(attr.getValue());
+      }
       return ais;
    }
 
    public void addActionableItem(ActionableItemArtifact aia) throws SQLException {
-      if (!getActionableItemGuids().contains(aia.getGuid())) getDam().getNewAttribute().setStringData(aia.getGuid());
+      if (!getActionableItemGuids().contains(aia.getGuid())) {
+         Attribute<String> attribute = getDam().getNewAttribute();
+         attribute.setValue(aia.getGuid());
+      }
    }
 
    public void removeActionableItem(ActionableItemArtifact aia) throws SQLException {
-      for (Attribute attr : getDam().getAttributes()) {
-         if (aia.getGuid().equals(attr.getStringData())) attr.delete();
+      for (Attribute<String> attr : getAttributes()) {
+         if (aia.getGuid().equals(attr.getValue())) attr.delete();
       }
    }
 

@@ -45,16 +45,18 @@ public class OseeInfoDbItem extends DbItem {
    }
 
    public boolean exists(String key) {
+      boolean toReturn = false;
+      ConnectionHandlerStatement chStmt = null;
       try {
          String query = "SELECT * FROM " + getTableName() + " WHERE KEY = " + returnTic(key);
-         ConnectionHandlerStatement chStmt = ConnectionHandler.runPreparedQuery(query);
-         boolean b = chStmt.next();
-         DbUtil.close(chStmt);
-         return b;
+         chStmt = ConnectionHandler.runPreparedQuery(query);
+         toReturn = chStmt.next();
       } catch (SQLException ex) {
          OSEELog.logException(AdminPlugin.class, ex, true);
+      } finally {
+         DbUtil.close(chStmt);
       }
-      return false;
+      return toReturn;
    }
 
    @Override

@@ -10,33 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class DateAttribute extends Attribute<Date> {
+public class DateAttribute extends CharacterBackedAttribute<Date> {
    public static final SimpleDateFormat MMDDYY = new SimpleDateFormat("MM/dd/yyyy");
    public static final SimpleDateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
    public static final SimpleDateFormat HHMM = new SimpleDateFormat("hh:mm");
+
+   private ICharacterAttributeDataProvider dataProvider;
 
    /**
     * Create a date attribute with a given type, initialized to the current date and time.
     * 
     * @param attributeType The type of the attribute
     */
-   // TODO: handle default String value
-   public DateAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) throws IllegalArgumentException {
+   public DateAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType);
-      if (defaultValue == null || defaultValue.equals("")) {
-         setRawStringValue("");
-      } else {
-         setRawStringValue(defaultValue);
+      this.dataProvider = dataProvider;
+      String defaultValue = attributeType.getDefaultValue();
+      if (Strings.isValid(defaultValue) != true) {
+         defaultValue = "";
       }
+      dataProvider.setValue(defaultValue);
    }
 
    /**
@@ -44,12 +46,9 @@ public class DateAttribute extends Attribute<Date> {
     * 
     * @param value value or null to clear
     */
-   public void setValue(Date value) throws IllegalArgumentException {
-      if (value.equals("")) throw new IllegalArgumentException("defaultValue can not be \"\"");
-      if (value == null)
-         setRawStringValue("");
-      else
-         setRawStringValue(Long.toString(value.getTime()));
+   public void setValue(Date value) {
+      String toSet = value != null ? Long.toString(value.getTime()) : "";
+      dataProvider.setValue(toSet);
    }
 
    /**
@@ -58,8 +57,16 @@ public class DateAttribute extends Attribute<Date> {
     * @return date or null if not set
     */
    public Date getValue() {
-      if (getRawStringValue().equals("")) return null;
-      return new Date(Long.parseLong(getRawStringValue()));
+      String value = dataProvider.getValueAsString();
+      return Strings.isValid(value) ? new Date(Long.parseLong(value)) : null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
+    */
+   @Override
+   public String getDisplayableString() {
+      return getAsFormattedString(DateAttribute.MMDDYY);
    }
 
    /**
@@ -69,15 +76,8 @@ public class DateAttribute extends Attribute<Date> {
     * @return formated date
     */
    public String getAsFormattedString(SimpleDateFormat dateFormat) {
-      if (getValue() == null) return "";
-      return dateFormat.format(getValue());
+      Date date = getValue();
+      return date != null ? dateFormat.format(getValue()) : "";
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
-    */
-   @Override
-   public void setValueFromInputStream(InputStream value) throws IOException {
-      throw new UnsupportedOperationException();
-   }
 }

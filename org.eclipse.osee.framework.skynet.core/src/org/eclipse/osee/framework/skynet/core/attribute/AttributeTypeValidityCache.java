@@ -113,7 +113,7 @@ public class AttributeTypeValidityCache {
       return artifactTypes;
    }
 
-   public boolean isValid(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws SQLException {
+   public boolean isValid(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws Exception {
       ensurePopulated();
       Collection<DynamicAttributeDescriptor> attributeTypes = artifactToAttributeMap.getValues(artifactType);
       if (attributeTypes != null) {
@@ -129,9 +129,9 @@ public class AttributeTypeValidityCache {
    /**
     * @param attributeType
     * @param artifactType
-    * @throws SQLException
+    * @throws Exception
     */
-   public void add(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws SQLException {
+   public void add(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws Exception {
       ensurePopulated();
       artifactToAttributeMap.put(artifactType, attributeType);
       attributeToartifactMap.put(attributeType, artifactType);

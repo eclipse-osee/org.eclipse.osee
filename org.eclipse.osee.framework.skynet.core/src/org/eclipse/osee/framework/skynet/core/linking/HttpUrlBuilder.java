@@ -13,12 +13,14 @@ package org.eclipse.osee.framework.skynet.core.linking;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeResourceServer;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 
 /**
@@ -39,18 +41,11 @@ public class HttpUrlBuilder {
       return instance;
    }
 
-   private String encode(String value) {
-      String toReturn;
-      try {
-         toReturn = URLEncoder.encode(value, "UTF-8");
-      } catch (UnsupportedEncodingException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-         toReturn = "";
-      }
-      return toReturn;
+   private String encode(String value) throws UnsupportedEncodingException {
+      return URLEncoder.encode(value, "UTF-8");
    }
 
-   public String getParametersAsEncodedUrl(Map<String, String> keyValues) {
+   public String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
       StringBuilder sb = new StringBuilder();
       for (String key : keyValues.keySet()) {
          sb.append(encode(key));
@@ -83,41 +78,48 @@ public class HttpUrlBuilder {
       return remoteAddress;
    }
 
-   private String buildUrl(String prefix, String command, String parameters) {
+   private String buildUrl(String prefix, String context, String parameters) {
       StringBuilder sb = new StringBuilder();
       sb.append(prefix);
-      sb.append(command);
+      sb.append(context);
       sb.append("?");
       sb.append(parameters);
       return sb.toString();
    }
 
-   public String getUrlForLocalSkynetHttpServer(String command, Map<String, String> parameters) {
-      return buildUrl(getSkynetHttpLocalServerPrefix(), command, getParametersAsEncodedUrl(parameters));
+   public String getUrlForLocalSkynetHttpServer(String context, Map<String, String> parameters) {
+      // TODO clean exception handling
+      try {
+         return buildUrl(getSkynetHttpLocalServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+      } catch (UnsupportedEncodingException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
+      return null;
    }
 
-   public String getUrlForRemoteSkynetHttpServer(String command, Map<String, String> parameters) {
-      return buildUrl(getRemoteServerPrefix(), command, getParametersAsEncodedUrl(parameters));
+   public String getUrlForRemoteSkynetHttpServer(String context, Map<String, String> parameters) {
+      // TODO clean exception handling
+      try {
+         return buildUrl(getRemoteServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+      } catch (UnsupportedEncodingException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
+      return null;
    }
 
    public String getSkynetHttpLocalServerPrefix() {
       return getLocalServerPrefix(HttpServer.DEFAULT_SERVICE_NAME);
    }
 
-   //   public static String getUrl(IHttpServerRequest serverRequest, Map<String, String> keyValues) {
-   //      return getUrlForService(HttpServer.DEFAULT_SERVICE_NAME, serverRequest, keyValues);
-   //   }
+   public String getResourceServerPrefix() throws SQLException {
+      String address = OseeResourceServer.getOseeServer();
+      if (address.endsWith("/") != true) {
+         address += "/";
+      }
+      return address;
+   }
 
-   //   public String getRemoteHttpServerUrl(IHttpServerRequest serverRequest, Map<String, String> keyValues) {
-   //      return getRemoteServerPrefix()
-   //   }
-   //
-   //   public static String getDefaultServiceUrlPrefix() {
-   //      return getUrlPrefixForService(HttpServer.DEFAULT_SERVICE_NAME);
-   //   }
-   //
-   //   public static String getUrlForService(String serviceName, IHttpServerRequest serverRequest, Map<String, String> keyValues) {
-   //      return sb.toString();
-   //   }
-
+   public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws SQLException, UnsupportedEncodingException {
+      return buildUrl(getResourceServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+   }
 }

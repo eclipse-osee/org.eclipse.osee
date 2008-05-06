@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.annotation;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,7 +33,11 @@ public class AttributeAnnotationManager {
       this.artifact = artifact;
    }
 
-   public DynamicAttributeManager getDam() throws SQLException {
+   private Collection<Attribute<String>> getAttributes() throws SQLException {
+      return artifact.getAttributes(ANNOTATION_ATTRIBUTE);
+   }
+
+   private DynamicAttributeManager getAttributeManager() throws SQLException {
       return artifact.getAttributeManager(ANNOTATION_ATTRIBUTE);
    }
 
@@ -43,8 +48,8 @@ public class AttributeAnnotationManager {
     */
    public Set<ArtifactAnnotation> getAnnotations() throws SQLException {
       Set<ArtifactAnnotation> annotations = new HashSet<ArtifactAnnotation>();
-      for (Attribute attr : getDam().getAttributes()) {
-         ArtifactAnnotation annotation = new ArtifactAnnotation(attr.getStringData());
+      for (Attribute<String> attr : getAttributes()) {
+         ArtifactAnnotation annotation = new ArtifactAnnotation(attr.getValue());
          annotations.add(annotation);
       }
       return annotations;
@@ -58,15 +63,16 @@ public class AttributeAnnotationManager {
     */
    public void addAnnotation(ArtifactAnnotation newAnnotation) throws SQLException {
       // Update attribute if it already exists
-      for (Attribute attr : getDam().getAttributes()) {
-         ArtifactAnnotation annotation = new ArtifactAnnotation(attr.getStringData());
+      for (Attribute<String> attr : getAttributes()) {
+         ArtifactAnnotation annotation = new ArtifactAnnotation(attr.getValue());
          if (newAnnotation.equals(annotation)) {
-            attr.setStringData(newAnnotation.toXml());
+            attr.setValue(newAnnotation.toXml());
             return;
          }
       }
       // Else, doesn't exist yet, create
-      getDam().getNewAttribute().setStringData(newAnnotation.toXml());
+      Attribute<String> attribute = getAttributeManager().getNewAttribute();
+      attribute.setValue(newAnnotation.toXml());
    }
 
    /**
@@ -77,8 +83,8 @@ public class AttributeAnnotationManager {
     */
    public void removeAnnotation(ArtifactAnnotation annotation) throws SQLException {
       // Update attribute if it already exists
-      for (Attribute attr : getDam().getAttributes()) {
-         ArtifactAnnotation attrAnnotation = new ArtifactAnnotation(attr.getStringData());
+      for (Attribute<String> attr : getAttributes()) {
+         ArtifactAnnotation attrAnnotation = new ArtifactAnnotation(attr.getValue());
          if (annotation.equals(attrAnnotation)) {
             attr.delete();
             return;

@@ -11,12 +11,13 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.ref.WeakReference;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
@@ -24,6 +25,9 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * Manages attributes to enforce dynamic constraints.
@@ -33,6 +37,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
 public class DynamicAttributeManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(DynamicAttributeManager.class);
    private final DynamicAttributeDescriptor descriptor;
+
+   private Map<Attribute<?>, WeakReference<IDataAccessObject>> attributeToProviderMap;
+
    private int remainingOccurrences;
    private ArrayList<Attribute<?>> attributes;
    private Collection<AttributeMemo> deletedAttributes;
@@ -46,19 +53,18 @@ public class DynamicAttributeManager {
     * Create a manager that is tied to a particular artifact.
     */
    protected DynamicAttributeManager(Artifact parentArtifact, DynamicAttributeDescriptor descriptor, boolean initialized) {
+      this.attributeToProviderMap = new WeakHashMap<Attribute<?>, WeakReference<IDataAccessObject>>();
+      this.deletedAttributes = new LinkedList<AttributeMemo>();
       this.parentArtifact = parentArtifact;
       this.descriptor = descriptor;
       this.initialized = initialized;
 
       this.inDbInitialize = false;
       this.dirty = false;
-
       this.remainingOccurrences = descriptor.getMaxOccurrences();
-
-      this.deletedAttributes = new LinkedList<AttributeMemo>();
    }
 
-   protected Attribute getAttributeForSet() {
+   protected Attribute<?> getAttributeForSet() {
       if (inDbInitialize) throw new IllegalStateException(
             "This object is in progress of being initialized from the datastore");
       if (!initialized) throw new IllegalStateException("This object has not been initialized");
@@ -99,11 +105,17 @@ public class DynamicAttributeManager {
       return attribute;
    }
 
-   private Attribute createAttribute() throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-      Attribute attribute = descriptor.createAttribute(getParentArtifact());
+   private Attribute createAttribute() throws Exception {
+      AttributeStateManager stateManager = new AttributeStateManager();
+      stateManager.setAttributeManager(this);
 
-      attribute.setParent(this);
+      AbstractAttributeDataProvider dataProvider = descriptor.createAttributeDataProvider(stateManager);
+      Attribute attribute = descriptor.createAttribute(getParentArtifact(), dataProvider);
+
+      attribute.setStateManager(stateManager);
       attributes.add(attribute);
+
+      this.attributeToProviderMap.put(attribute, new WeakReference<IDataAccessObject>(dataProvider));
 
       remainingOccurrences--;
       return attribute;
@@ -129,8 +141,9 @@ public class DynamicAttributeManager {
 
       if (attributes.remove(attribute)) {
          remainingOccurrences++;
+         this.attributeToProviderMap.remove(attribute);
          addAttributeToDeleteList(attribute);
-         attribute.setDirty();
+         attribute.getStateManager().setDirty();
          dirty = true;
 
       } else {
@@ -170,33 +183,33 @@ public class DynamicAttributeManager {
       return attributesCopy;
    }
 
-   /**
-    * This method is only to be called on attributes that are allowed min = 0 or min = 1 If an attribute instance
-    * exists, it's value set Else the attribute is created and it's value set
-    * 
-    * @param value
-    */
-   public void setSoleAttributeValue(String value) {
-      if (getAttributes().size() == 1)
-         getSoleAttribute().setStringData(value);
-      else
-         getNewAttribute().setStringData(value);
-   }
+   //   /**
+   //    * This method is only to be called on attributes that are allowed min = 0 or min = 1 If an attribute instance
+   //    * exists, it's value set Else the attribute is created and it's value set
+   //    * 
+   //    * @param value
+   //    */
+   //   public void setSoleAttributeValue(String value) {
+   //      if (getAttributes().size() == 1)
+   //         getSoleAttribute().setStringData(value);
+   //      else
+   //         getNewAttribute().setStringData(value);
+   //   }
+   //
+   //   /**
+   //    * This method is only to be called on attributes that are allowed min = 0 or min = 1 If an attribute instance
+   //    * exists, it's string value is returned Else an empty string is returned
+   //    */
+   //   public String getSoleAttributeValue() {
+   //      if (getAttributes().size() == 1)
+   //         return getSoleAttribute().getStringData();
+   //      else
+   //         return "";
+   //   }
 
-   /**
-    * This method is only to be called on attributes that are allowed min = 0 or min = 1 If an attribute instance
-    * exists, it's string value is returned Else an empty string is returned
-    */
-   public String getSoleAttributeValue() {
-      if (getAttributes().size() == 1)
-         return getSoleAttribute().getStringData();
-      else
-         return "";
-   }
-
-   public Attribute getSoleAttribute() {
+   public Attribute getSoleAttribute() throws MultipleAttributesExist {
       // Return the single attribute
-      if (attributes.size() > 1) throw new IllegalArgumentException(
+      if (attributes.size() > 1) throw new MultipleAttributesExist(
             "Attribute \"" + getAttributeType().getName() + "\" Must have exactly one instance.  It currently has " + attributes.size() + ".");
 
       if (attributes.isEmpty()) {
@@ -204,48 +217,6 @@ public class DynamicAttributeManager {
       }
       return attributes.get(0);
    }
-
-   // /**
-   // * @return Returns the defaultValue.
-   // */
-   // public String getDefaultValue() {
-   // return defaultValue;
-   // }
-   //
-   // /**
-   // * @return Returns the defaultValue.
-   // */
-   // public String getTipText() {
-   // return tipText;
-   // }
-   //
-   // /**
-   // * @return Returns the userViewable.
-   // */
-   // public boolean isUserViewable() {
-   // return userViewable;
-   // }
-   //
-   // /**
-   // * @return Returns the maxOccurrences.
-   // */
-   // public int getMaxOccurrences() {
-   // return maxOccurrences;
-   // }
-   //
-   // /**
-   // * @return Returns the minOccurrences.
-   // */
-   // public int getMinOccurrences() {
-   // return minOccurrences;
-   // }
-   //
-   // /**
-   // * @return Returns the name.
-   // */
-   // public String getName() {
-   // return name;
-   // }
 
    /**
     * @return Returns the remainingOccurrences.
@@ -263,25 +234,11 @@ public class DynamicAttributeManager {
       return remainingOccurrences;
    }
 
-   // /**
-   // * @return Returns the typeId.
-   // */
-   // public int getAttrTypeId() {
-   // return attrTypeId;
-   // }
-   //
-   // /**
-   // * @return Returns the validityXml.
-   // */
-   // public String getValidityXml() {
-   // return validityXml;
-   // }
-
    /**
-    * Reports if there are remaining occurences. This call is equivalent to <code>(getRemainingOccurences() > 0)</code>,
+    * Reports if there are remaining occurrences. This call is equivalent to <code>(getRemainingOccurences() > 0)</code>,
     * and provided simply for convenience.
     * 
-    * @return <code>true</code> if there are remaining occurences.
+    * @return <code>true</code> if there are remaining occurrences.
     * @throws IllegalStateException if any of the following conditions are true:
     *            <ul>
     *            <li>This object is in progress of being initialized from the database.</li>
@@ -313,34 +270,6 @@ public class DynamicAttributeManager {
       if (!initialized) throw new IllegalStateException("This object has not been initialized");
 
       return attributes.size() > descriptor.getMinOccurrences();
-   }
-
-   // /**
-   // * This should never be called from the application software.
-   // */
-   // public void setAttrTypeId(int attrTypeId) {
-   // this.attrTypeId = attrTypeId;
-   // }
-
-   /**
-    * This should never be called from the application software.
-    */
-   public Attribute injectFromDb(InputStream stream, String varchar) {
-      Attribute attribute;
-      try {
-         attribute = createAttribute();
-      } catch (Exception ex) {
-         throw new IllegalStateException(
-               "Failed to create an attribute on the collection for injection of database data", ex);
-      }
-
-      attribute.injectFromDb(stream, varchar);
-
-      // It is fresh from the database, so mark it as not dirty
-      attribute.getManager().setDirty(false);
-      attribute.setNotDirty();
-
-      return attribute;
    }
 
    /**
@@ -400,7 +329,9 @@ public class DynamicAttributeManager {
       if (!isDirty) {
          for (Attribute attr : getAttributes()) {
             isDirty |= attr.isDirty();
-            if (isDirty) break;
+            if (isDirty) {
+               break;
+            }
          }
       }
       return isDirty;
@@ -417,6 +348,14 @@ public class DynamicAttributeManager {
          deletedAttributes.clear();
       }
       this.dirty = dirty;
+      for (Attribute attr : getAttributes()) {
+         AttributeStateManager attributeState = attr.getStateManager();
+         if (dirty) {
+            attributeState.setDirty();
+         } else {
+            attributeState.setNotDirty();
+         }
+      }
    }
 
    /**
@@ -448,6 +387,27 @@ public class DynamicAttributeManager {
       return parentArtifact;
    }
 
+   /**
+    * This should never be called from the application software.
+    */
+   public Attribute injectFromDb(String value, String uri) {
+      Attribute attribute;
+      try {
+         attribute = createAttribute();
+         IDataAccessObject dao = getDataAccessObjectFor(attribute);
+         if (dao != null) {
+            dao.loadData(value, uri);
+            // It is fresh from the database, so mark it as not dirty
+            attribute.getAttributeManager().setDirty(false);
+            attribute.getStateManager().setNotDirty();
+         }
+      } catch (Exception ex) {
+         throw new IllegalStateException(
+               "Failed to create an attribute on the collection for injection of database data", ex);
+      }
+      return attribute;
+   }
+
    public Object clone(Artifact artifact) throws CloneNotSupportedException {
       DynamicAttributeManager attributeManager = getAttributeType().createAttributeManager(artifact, false);
       AttributeMemo memo;
@@ -456,7 +416,7 @@ public class DynamicAttributeManager {
       attributeManager.setupForInitialization(false);
 
       for (Attribute attribute : getAttributes()) {
-         newAttribute = attributeManager.injectFromDb(attribute.getRawContentStream(), attribute.getRawStringValue());
+         newAttribute = attributeManager.injectFromDb("", "");
 
          memo = attribute.getPersistenceMemo();
 
@@ -496,6 +456,26 @@ public class DynamicAttributeManager {
    }
 
    /**
+    * Copies this attribute onto the specified artifact. Can not handle attribute types with multiple instances
+    * 
+    * @throws Exception
+    */
+   public void copyTo(Artifact artifact) throws Exception {
+      for (Attribute originalAttribute : getAttributes()) {
+         DynamicAttributeManager otherManager = artifact.getAttributeManager(descriptor);
+         Attribute<?> attributeCopy = null;
+         if (artifact.isInAttributeInitialization()) {
+            attributeCopy = otherManager.getNewAttribute();
+         } else {
+            attributeCopy = otherManager.getAttributeForSet();
+         }
+         IDataAccessObject otherDao = otherManager.getDataAccessObjectFor(attributeCopy);
+         IDataAccessObject originalDao = this.getDataAccessObjectFor(originalAttribute);
+         otherDao.loadData(originalDao.getData());
+      }
+   }
+
+   /**
     * Purge attribute from parent artifact.
     * 
     * @param attribute
@@ -506,5 +486,10 @@ public class DynamicAttributeManager {
 
    public int size() {
       return attributes.size();
+   }
+
+   protected IDataAccessObject getDataAccessObjectFor(Attribute attribute) {
+      WeakReference<IDataAccessObject> reference = attributeToProviderMap.get(attribute);
+      return reference.get();
    }
 }

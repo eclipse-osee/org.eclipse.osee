@@ -10,18 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @author Jeff C. Phillips
  */
-public abstract class WordAttribute extends StringAttribute {
+public abstract class WordAttribute extends StringAttribute implements IStreamSetableAttribute {
    public static final String CONTENT_NAME = "Word Formatted Content";
    public static final String OLE_DATA_NAME = "Word Ole Data";
 
@@ -31,38 +29,16 @@ public abstract class WordAttribute extends StringAttribute {
     * @param attributeType
     * @param value
     */
-   public WordAttribute(DynamicAttributeDescriptor attributeType, String value) {
-      super(attributeType, value);
-      swagValue(value);
+   public WordAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+      super(attributeType, dataProvider);
    }
 
-    protected abstract void swagValue(String value);
-
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
     */
    @Override
-   public String getValue() {
-      return getValue(getRawContentStream(), getRawContent());
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
-    */
-   public static String getValue(ByteArrayInputStream rawContentStream, byte[] bytes) {
-      try {
-         if (rawContentStream != null) {
-            byte[] local_bytes = Lib.decompressBytes(rawContentStream);
-            if (local_bytes.length == 0) {
-               //assume decompression failed because the content was not compress originally (do this to be backwards compatible for now)
-               local_bytes = bytes;
-            }
-            return WordUtil.reassignBinDataID(new String(local_bytes, "UTF-8"));
-         }
-      } catch (IOException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-      return null;
+   public String getDisplayableString() {
+      return super.getDisplayableString();
    }
 
    /* (non-Javadoc)
@@ -70,50 +46,15 @@ public abstract class WordAttribute extends StringAttribute {
     */
    @Override
    public void setValue(String value) {
-      try {
-         value = WordUtil.removeWordMarkupSmartTags(value);
-         if (false) {
-            setRawContent(Lib.compressFile(new ByteArrayInputStream(value.getBytes("UTF-8")),
-                  getAttributeType().getName()));
-         } else {
-            setRawContent(value.getBytes("UTF-8"));
-         }
-      } catch (IOException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
+      value = WordUtil.removeWordMarkupSmartTags(value);
+      super.setValue(value);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.IStreamableAttribute#setValueFromInputStream(java.io.InputStream)
     */
    @Override
    public void setValueFromInputStream(InputStream value) throws IOException {
-      if (false) {
-         setRawContent(Lib.compressFile(value, getAttributeType().getName()));
-      } else {
-         setRawContent(Lib.inputStreamToBytes(value));
-      }
-   }
-
-   public static String convertStreamToString(ByteArrayInputStream stream, byte[] rawContent) {
-      try {
-         if (stream != null) {
-            byte[] bytes = Lib.decompressBytes(stream);
-            if (bytes.length == 0) {
-               //assume decompression failed because the content was not compress originally (do this to be backwards compatible for now)
-               bytes = rawContent;
-            }
-            return WordUtil.reassignBinDataID(new String(bytes, "UTF-8"));
-         }
-      } catch (IOException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-      return null;
-
-   }
-
-   @Override
-   public void setRawContent(byte[] value) {
-      super.setRawContent(value);
+      setValue(Lib.inputStreamToString(value));
    }
 }

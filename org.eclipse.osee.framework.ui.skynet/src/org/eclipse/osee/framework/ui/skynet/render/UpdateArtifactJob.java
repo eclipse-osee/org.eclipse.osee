@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.VisitorEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.w3c.dom.Document;
@@ -115,7 +116,7 @@ public class UpdateArtifactJob extends UpdateJob {
       }
    }
 
-   private void updateNativeArtifact(NativeArtifact artifact) throws IllegalStateException, SQLException, IOException {
+   private void updateNativeArtifact(NativeArtifact artifact) throws IllegalStateException, SQLException, IOException, MultipleAttributesExist {
       artifact.setNativeContent(workingFile);
       artifact.persistAttributes();
       eventManager.kick(new VisitorEvent(artifact, this));

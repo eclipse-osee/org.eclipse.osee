@@ -10,21 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
  * @author Ryan D. Brooks
  */
-public class FloatingPointAttribute extends Attribute<Double> {
+public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
 
-   public FloatingPointAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
+   private ICharacterAttributeDataProvider dataProvider;
+
+   public FloatingPointAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType);
-      if (defaultValue == null || defaultValue.equals("")) {
-         setRawStringValue("0");
-      } else {
-         setRawStringValue(defaultValue);
+      this.dataProvider = dataProvider;
+      String defaultValue = attributeType.getDefaultValue();
+      if (Strings.isValid(defaultValue) != true) {
+         defaultValue = "0.0";
       }
+      dataProvider.setValue(defaultValue);
    }
 
    /* (non-Javadoc)
@@ -32,11 +35,8 @@ public class FloatingPointAttribute extends Attribute<Double> {
     */
    @Override
    public Double getValue() {
-      String doubleString = getRawStringValue();
-      if (doubleString == null || doubleString.equals("")) {
-         return null;
-      }
-      return Double.valueOf(doubleString);
+      String doubleString = dataProvider.getValueAsString();
+      return Strings.isValid(doubleString) ? Double.valueOf(doubleString) : null;
    }
 
    /* (non-Javadoc)
@@ -44,14 +44,14 @@ public class FloatingPointAttribute extends Attribute<Double> {
     */
    @Override
    public void setValue(Double value) {
-      setRawStringValue(String.valueOf(value));
+      dataProvider.setValue(String.valueOf(value));
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValueFromInputStream(java.io.InputStream)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
     */
    @Override
-   public void setValueFromInputStream(InputStream value) throws IOException {
-      throw new UnsupportedOperationException();
+   public String getDisplayableString() {
+      return dataProvider.getDisplayableString();
    }
 }

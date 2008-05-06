@@ -47,6 +47,7 @@ public class SkynetDatabase {
    public static final Table TRANSACTION_DETAIL_TABLE = new Table("OSEE_DEFINE_TX_DETAILS");
    public static final Table ARTIFACT_TYPE_TABLE = new Table("OSEE_DEFINE_ARTIFACT_TYPE");
    public static final Table ARTIFACT_TYPE_TABLE_ACL = new Table("OSEE_DEFINE_ARTIFACT_TYPE_ACL");
+   public static final Table ATTRIBUTE_PROVIDER_TYPE_TABLE = new Table("OSEE_DEFINE_ATTR_PROVIDER_TYPE");
    public static final Table ATTRIBUTE_BASE_TYPE_TABLE = new Table("OSEE_DEFINE_ATTR_BASE_TYPE");
    public static final Table ATTRIBUTE_TABLE = new Table("OSEE_ATTRIBUTE"); // NEW TABLE WITH GUID AND ATTR_ID ONLY
    public static final Table ATTRIBUTE_VERSION_TABLE = new Table("OSEE_DEFINE_ATTRIBUTE");
@@ -94,6 +95,7 @@ public class SkynetDatabase {
    public static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
    public static final String ART_TYPE_ID_SEQ = "SKYNET_ART_TYPE_ID_SEQ";
    public static final String ATTR_BASE_TYPE_ID_SEQ = "SKYNET_ATTR_BASE_TYPE_ID_SEQ";
+   public static final String ATTR_PROVIDER_TYPE_ID_SEQ = "SKYNET_ATTR_PROVIDER_TYPE_ID_SEQ";
    public static final String ATTR_ID_SEQ = "SKYNET_ATTR_ID_SEQ";
    public static final String ATTR_TYPE_ID_SEQ = "SKYNET_ATTR_TYPE_ID_SEQ";
    public static final String FACTORY_ID_SEQ = "SKYNET_FACTORY_ID_SEQ";
@@ -111,9 +113,9 @@ public class SkynetDatabase {
    public static final String TTE_SESSION_SEQ = "TTE_SESSION_SEQ";
 
    public static final String[] sequences =
-         new String[] {ART_ID_SEQ, ART_TYPE_ID_SEQ, ATTR_BASE_TYPE_ID_SEQ, ATTR_ID_SEQ, ATTR_TYPE_ID_SEQ,
-               FACTORY_ID_SEQ, BRANCH_ID_SEQ, REL_LINK_TYPE_ID_SEQ, REL_LINK_ID_SEQ, GAMMA_ID_SEQ, TRANSACTION_ID_SEQ,
-               TAG_ID_SEQ, TAG_TYPE_ID_SEQ, CLOUD_ID_SEQ, CLOUD_TYPE_ID_SEQ, TTE_SESSION_SEQ};
+         new String[] {ART_ID_SEQ, ART_TYPE_ID_SEQ, ATTR_BASE_TYPE_ID_SEQ, ATTR_PROVIDER_TYPE_ID_SEQ, ATTR_ID_SEQ,
+               ATTR_TYPE_ID_SEQ, FACTORY_ID_SEQ, BRANCH_ID_SEQ, REL_LINK_TYPE_ID_SEQ, REL_LINK_ID_SEQ, GAMMA_ID_SEQ,
+               TRANSACTION_ID_SEQ, TAG_ID_SEQ, TAG_TYPE_ID_SEQ, CLOUD_ID_SEQ, CLOUD_TYPE_ID_SEQ, TTE_SESSION_SEQ};
 
    public static View[] getSkynetViews() {
       return skynetViews;

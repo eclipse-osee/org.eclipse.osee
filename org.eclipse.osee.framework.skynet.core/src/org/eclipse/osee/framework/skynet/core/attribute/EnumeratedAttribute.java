@@ -11,8 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -20,14 +22,18 @@ import org.w3c.dom.NodeList;
 /**
  * @author Ryan D. Brooks
  */
-public class EnumeratedAttribute extends StringAttribute {
+public class EnumeratedAttribute extends CharacterBackedAttribute<String> {
    private String[] choices;
    // When an enumerated attribute is required for an artifact, yet doesn't exist yet, it is created upon
    // init of the artifact and given the "Unspecified" value
    public static String UNSPECIFIED_VALUE = "Unspecified";
 
-   public EnumeratedAttribute(DynamicAttributeDescriptor attributeType, String defaultValue) {
-      super(attributeType, defaultValue);
+   private ICharacterAttributeDataProvider dataProvider;
+
+   public EnumeratedAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+      super(attributeType);
+      this.dataProvider = dataProvider;
+      dataProvider.setValue(attributeType.getDefaultValue());
 
       try {
          Document document = Jaxp.readXmlDocument(attributeType.getValidityXml());
@@ -46,5 +52,30 @@ public class EnumeratedAttribute extends StringAttribute {
 
    public String[] getChoices() {
       return choices;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
+    */
+   @Override
+   public String getValue() {
+      return dataProvider.getValueAsString();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
+    */
+   @Override
+   public void setValue(String value) {
+      dataProvider.setValue(value);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
+    */
+   @Override
+   public String getDisplayableString() {
+      String toDisplay = dataProvider.getDisplayableString();
+      return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
    }
 }

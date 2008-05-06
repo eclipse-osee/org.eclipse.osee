@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.transaction.data;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -23,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
  */
 public class AttributeTransactionData implements ITransactionData {
    private static final String INSERT_ATTRIBUTE =
-         "INSERT INTO " + ATTRIBUTE_VERSION_TABLE + " (art_id, attr_id, attr_type_id, value, gamma_id, content, modification_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+         "INSERT INTO " + ATTRIBUTE_VERSION_TABLE + " (art_id, attr_id, attr_type_id, value, gamma_id, uri, modification_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private static final String SET_PREVIOUS_TX_NOT_CURRENT =
          "UPDATE osee_Define_txs tx1 set tx_current = 0 WHERE EXISTS (SELECT 'x' from osee_define_tx_details td2, osee_Define_attribute at3 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = at3.gamma_id AND at3.attr_id = ? AND tx1.tx_current = 1)";
@@ -36,13 +35,13 @@ public class AttributeTransactionData implements ITransactionData {
    private String value;
    private int gammaId;
    private int transactionId;
-   private InputStream content;
+   private String uri;
    private ModificationType modificationType;
    private Branch branch;
    private List<Object> dataItems = new LinkedList<Object>();
    private List<Object> notCurrentDataItems = new LinkedList<Object>();
 
-   public AttributeTransactionData(int artId, int attrId, int attrTypeId, String value, int gammaId, int transactionId, InputStream content, ModificationType modificationType, Branch branch) {
+   public AttributeTransactionData(int artId, int attrId, int attrTypeId, String value, int gammaId, int transactionId, String uri, ModificationType modificationType, Branch branch) {
       super();
       this.artId = artId;
       this.attrId = attrId;
@@ -50,7 +49,7 @@ public class AttributeTransactionData implements ITransactionData {
       this.value = value;
       this.gammaId = gammaId;
       this.transactionId = transactionId;
-      this.content = content;
+      this.uri = uri;
       this.modificationType = modificationType;
       this.branch = branch;
 
@@ -71,8 +70,8 @@ public class AttributeTransactionData implements ITransactionData {
       dataItems.add(value);
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(gammaId);
-      dataItems.add(SQL3DataType.BLOB);
-      dataItems.add(content);
+      dataItems.add(SQL3DataType.VARCHAR);
+      dataItems.add(uri);
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(modificationType.getValue());
 

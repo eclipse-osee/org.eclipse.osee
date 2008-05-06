@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -36,9 +37,7 @@ public class XComboBooleanDam extends XCombo implements IDamWidget {
       public void widgetModified(XWidget widget) {
          try {
             save();
-         } catch (IllegalStateException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
@@ -71,24 +70,33 @@ public class XComboBooleanDam extends XCombo implements IDamWidget {
          super.set(result ? "yes" : "no");
    }
 
+   private Attribute<Boolean> getAttribute() throws Exception {
+      return artifact.getSoleAttributeValue(attrName);
+   }
+
    @Override
    public void set(String text) throws IllegalStateException, SQLException {
-      if (text == null || text.equals("")) {
-         super.set("");
-         artifact.getAttributeManager(attrName).getSoleAttribute().delete();
-      } else {
-         super.set(text);
-         artifact.setSoleBooleanAttributeValue(attrName, text.equals("yes"));
+      try {
+         if (text == null || text.equals("")) {
+            super.set("");
+            artifact.getAttributeManager(attrName).getSoleAttribute().delete();
+         } else {
+            super.set(text);
+            getAttribute().setValue(new Boolean(text.equals("yes")));
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 
    @Override
-   public void save() throws IllegalStateException, SQLException {
+   public void save() throws Exception {
       if (isDirty()) {
-         if (get() == null || get().equals(""))
+         if (get() == null || get().equals("")) {
             artifact.getAttributeManager(attrName).getSoleAttribute().delete();
-         else
-            artifact.setSoleBooleanAttributeValue(attrName, get().equals("yes"));
+         } else {
+            getAttribute().setValue(get().equals("yes"));
+         }
       }
    }
 

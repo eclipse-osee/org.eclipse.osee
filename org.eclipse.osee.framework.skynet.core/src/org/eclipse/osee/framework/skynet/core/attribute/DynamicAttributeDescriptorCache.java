@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
 
 /**
  * Caches all attribute descriptors during persistence manager startup.
@@ -29,14 +30,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  */
 public class DynamicAttributeDescriptorCache {
    private static final String SELECT_ATTRIBUTE_TYPES =
-         "SELECT * FROM osee_define_attribute_type aty1, osee_define_attr_base_type aby2 WHERE aty1.attr_base_type_id = aby2.attr_base_type_id";
+         "SELECT * FROM osee_define_attribute_type x1, osee_define_attr_base_type x2, osee_define_attr_provider_type x3 WHERE x1.attr_base_type_id = x2.attr_base_type_id AND x1.attr_provider_type_id = x3.attr_provider_type_id";
 
    private final HashMap<String, DynamicAttributeDescriptor> nameToTypeMap;
    private final HashMap<Integer, DynamicAttributeDescriptor> idToTypeMap;
 
    protected DynamicAttributeDescriptorCache() {
-      nameToTypeMap = new HashMap<String, DynamicAttributeDescriptor>();
-      idToTypeMap = new HashMap<Integer, DynamicAttributeDescriptor>();
+      this.nameToTypeMap = new HashMap<String, DynamicAttributeDescriptor>();
+      this.idToTypeMap = new HashMap<Integer, DynamicAttributeDescriptor>();
    }
 
    private synchronized void ensurePopulated() throws SQLException {
@@ -54,13 +55,20 @@ public class DynamicAttributeDescriptorCache {
          ResultSet rSet = chStmt.getRset();
          while (rSet.next()) {
             String baseClassString = rSet.getString("attribute_class");
-
+            String baseProviderClassString = rSet.getString("attribute_provider_class");
             try {
-               Class<? extends Attribute> baseClass = Class.forName(baseClassString).asSubclass(Attribute.class);
-               new DynamicAttributeDescriptor(this, rSet.getInt("attr_type_id"), baseClass,
-                     rSet.getString("namespace"), rSet.getString("name"), rSet.getString("default_value"),
-                     rSet.getString("validity_xml"), rSet.getInt("min_occurence"), rSet.getInt("max_occurence"),
-                     rSet.getString("tip_text"));
+               AttributeExtensionManager extensionManager = AttributeExtensionManager.getInstance();
+
+               Class<? extends Attribute> baseAttributeClass = extensionManager.getAttributeClassFor(baseClassString);
+               Class<? extends AbstractAttributeDataProvider> providerAttributeClass =
+                     extensionManager.getAttributeProviderClassFor(baseProviderClassString);
+
+               DynamicAttributeDescriptor descriptor =
+                     new DynamicAttributeDescriptor(rSet.getInt("attr_type_id"), baseAttributeClass,
+                           providerAttributeClass, rSet.getString("file_type_extension"), rSet.getString("namespace"),
+                           rSet.getString("name"), rSet.getString("default_value"), rSet.getString("validity_xml"),
+                           rSet.getInt("min_occurence"), rSet.getInt("max_occurence"), rSet.getString("tip_text"));
+               this.cache(descriptor);
 
             } catch (IllegalStateException ex) {
                SkynetActivator.getLogger().log(Level.WARNING, ex.getLocalizedMessage(), ex);
@@ -75,7 +83,7 @@ public class DynamicAttributeDescriptorCache {
 
    /**
     * @return Returns all of the descriptors.
-    * @throws SQLException
+    * @throws Exception
     */
    @Deprecated
    //use attribute validitiy to get attributes by branch
@@ -84,14 +92,14 @@ public class DynamicAttributeDescriptorCache {
       return idToTypeMap.values();
    }
 
-   public boolean descriptorExists(String namespace, String name) throws SQLException {
+   public boolean descriptorExists(String namespace, String name) throws Exception {
       ensurePopulated();
       return nameToTypeMap.get(namespace + name) != null;
    }
 
    /**
     * @return Returns the descriptor with a particular namespace and name, null if it does not exist.
-    * @throws SQLException
+    * @throws Exception
     */
    public DynamicAttributeDescriptor getDescriptor(String namespace, String name) throws SQLException {
       ensurePopulated();
@@ -105,7 +113,7 @@ public class DynamicAttributeDescriptorCache {
 
    /**
     * @return Returns the descriptor with a particular name, null if it does not exist.
-    * @throws SQLException
+    * @throws Exception
     */
    public DynamicAttributeDescriptor getDescriptor(int attrTypeId) throws SQLException {
       ensurePopulated();
@@ -118,7 +126,7 @@ public class DynamicAttributeDescriptorCache {
 
    /**
     * @return Returns the descriptor with a particular name, null if it does not exist.
-    * @throws SQLException
+    * @throws Exception
     */
    public DynamicAttributeDescriptor getDescriptor(String name) throws SQLException {
       return getDescriptor("", name);

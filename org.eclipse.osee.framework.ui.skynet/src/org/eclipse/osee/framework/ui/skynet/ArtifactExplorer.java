@@ -929,7 +929,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          if (object instanceof Artifact) {
             try {
                artifactClipboard.pasteArtifactsFromClipboard((Artifact) object);
-            } catch (SQLException ex) {
+            } catch (Exception ex) {
                OSEELog.logException(getClass(), ex, true);
             }
          }

@@ -15,15 +15,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.linking.HttpRequest.HttpMethod;
 
 /**
  * @author Roberto E. Escobar
@@ -42,6 +41,7 @@ public class HttpUploader {
    private String encoding;
    private String remoteLocation;
    private String lastUploaded;
+   private String uploadResponse;
 
    public HttpUploader(String urlRequest, InputStream inputStream, String dataType, String encoding) {
       this.urlRequest = urlRequest;
@@ -50,21 +50,26 @@ public class HttpUploader {
       this.encoding = encoding;
       this.remoteLocation = "";
       this.lastUploaded = "";
+      this.uploadResponse = "";
    }
 
-   private HttpURLConnection setupConnection() throws Exception {
+   private HttpURLConnection setupConnection() throws IOException {
       URL url = new URL(urlRequest);
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setRequestProperty(CONTENT_LENGTH, Integer.toString(inputStream.available()));
       connection.setRequestProperty(CONTENT_TYPE, dataType);
       connection.setRequestProperty(CONTENT_ENCODING, encoding);
-      connection.setRequestMethod(HttpMethod.PUT.name());
+      connection.setRequestMethod("PUT");
       connection.setAllowUserInteraction(true);
       connection.setDoOutput(true);
       connection.setDoInput(true);
       connection.setReadTimeout(CONNECTION_READ_TIMEOUT);
       connection.setConnectTimeout(CONNECTION_TIMEOUT);
       return connection;
+   }
+
+   public String getUploadResponse() {
+      return uploadResponse;
    }
 
    public IStatus execute(IProgressMonitor monitor) throws Exception {
@@ -79,7 +84,7 @@ public class HttpUploader {
          connection.connect();
 
          if (monitor.isCanceled() != true) {
-            sendInputStream(monitor, inputStream, connection.getOutputStream());
+            inputStreamToOutputStream(monitor, inputStream, connection.getOutputStream());
             if (monitor.isCanceled() != true) {
                toReturn = handleResponse(connection);
             }
@@ -103,21 +108,32 @@ public class HttpUploader {
    }
 
    private IStatus handleResponse(HttpURLConnection connection) throws Exception {
+      InputStream inputStream = null;
       IStatus toReturn = Status.CANCEL_STATUS;
-      int response = HttpURLConnection.HTTP_CLIENT_TIMEOUT;
-      response = connection.getResponseCode();
-      if (response == HttpURLConnection.HTTP_CREATED) {
-         lastUploaded = connection.getHeaderField("Last-Modified");
-         remoteLocation = connection.getHeaderField("Content-Location");
-         toReturn = new Status(Status.OK, SkynetActivator.PLUGIN_ID, HttpResponse.getStatus(response));
-      }
-      if (response != HttpURLConnection.HTTP_CREATED) {
-         toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, HttpResponse.getStatus(response));
+      try {
+         int responseCode = HttpURLConnection.HTTP_CLIENT_TIMEOUT;
+         responseCode = connection.getResponseCode();
+         if (responseCode == HttpURLConnection.HTTP_CREATED) {
+            lastUploaded = connection.getHeaderField("Last-Modified");
+            remoteLocation = connection.getHeaderField("Content-Location");
+
+            inputStream = (InputStream) connection.getContent();
+            this.uploadResponse = Lib.inputStreamToString(inputStream);
+
+            toReturn = new Status(Status.OK, SkynetActivator.PLUGIN_ID, HttpResponse.getStatus(responseCode));
+         }
+         if (responseCode != HttpURLConnection.HTTP_CREATED) {
+            toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, HttpResponse.getStatus(responseCode));
+         }
+      } finally {
+         if (inputStream != null) {
+            inputStream.close();
+         }
       }
       return toReturn;
    }
 
-   private void sendInputStream(IProgressMonitor monitor, InputStream inputStream, OutputStream outputStream) throws IOException {
+   private void inputStreamToOutputStream(IProgressMonitor monitor, InputStream inputStream, OutputStream outputStream) throws IOException {
       byte[] buf = new byte[8092];
       int total = inputStream.available();
       int count = -1;
@@ -130,7 +146,7 @@ public class HttpUploader {
             break;
          }
       }
-      logger.log(Level.INFO, String.format("Uploaded: [%s of %s]", tracker, total));
+      //      logger.log(Level.INFO, String.format("Uploaded: [%s of %s]", tracker, total));
       inputStream.close();
       outputStream.flush();
       outputStream.close();
