@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 
@@ -119,8 +118,8 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
 
       if (!cacheDynamicAttributeDescriptors.descriptorExists(namespace, name)) {
          int attrTypeId = Query.getNextSeqVal(null, ATTR_TYPE_ID_SEQ);
-         int attrBaseTypeId = getOrCreateAttributeBaseType(baseAttributeClass);
-         int attrProviderTypeId = getOrCreateAttributeProviderType(providerAttributeClass);
+         int attrBaseTypeId = getOrCreateAttributeBaseType(attributeTypeName);
+         int attrProviderTypeId = getOrCreateAttributeProviderType(attributeProviderTypeName);
          ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrTypeId,
                SQL3DataType.INTEGER, attrBaseTypeId, SQL3DataType.INTEGER, attrProviderTypeId, SQL3DataType.VARCHAR,
                fileTypeExtension, SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, name, SQL3DataType.VARCHAR,
@@ -135,18 +134,13 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       }
    }
 
-   private int getOrCreateAttributeProviderType(Class<? extends IAttributeDataProvider> baseClass) throws SQLException {
+   private int getOrCreateAttributeProviderType(String attrProviderExtension) throws SQLException {
       int attrBaseTypeId = -1;
-      String attributeClass = baseClass.getCanonicalName();
-      if (attributeClass == null) {
-         throw new IllegalArgumentException(
-               "The baseClass argument must have a canonical name; it must be directly instantiable");
-      }
-
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_PROVIDER_TYPE, SQL3DataType.VARCHAR, attributeClass);
+               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_PROVIDER_TYPE, SQL3DataType.VARCHAR,
+                     attrProviderExtension);
          ResultSet rSet = chStmt.getRset();
          if (rSet.next()) {
             attrBaseTypeId = rSet.getInt("attr_provider_type_id");
@@ -154,7 +148,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
             attrBaseTypeId = Query.getNextSeqVal(null, ATTR_PROVIDER_TYPE_ID_SEQ);
 
             ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_PROVIDER_TYPE, SQL3DataType.INTEGER, attrBaseTypeId,
-                  SQL3DataType.VARCHAR, attributeClass);
+                  SQL3DataType.VARCHAR, attrProviderExtension);
          }
       } finally {
          DbUtil.close(chStmt);
@@ -162,17 +156,12 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return attrBaseTypeId;
    }
 
-   private int getOrCreateAttributeBaseType(Class<? extends Attribute> baseClass) throws SQLException {
+   private int getOrCreateAttributeBaseType(String attrBaseExtension) throws SQLException {
       int attrBaseTypeId = -1;
-      String attributeClass = baseClass.getCanonicalName();
-      if (attributeClass == null) {
-         throw new IllegalArgumentException(
-               "The baseClass argument must have a canonical name; it must be directly instantiable");
-      }
-
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_BASE_TYPE, SQL3DataType.VARCHAR, attributeClass);
+         chStmt =
+               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_BASE_TYPE, SQL3DataType.VARCHAR, attrBaseExtension);
          ResultSet rSet = chStmt.getRset();
          if (rSet.next()) {
             attrBaseTypeId = rSet.getInt("attr_base_type_id");
@@ -180,7 +169,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
             attrBaseTypeId = Query.getNextSeqVal(null, ATTR_BASE_TYPE_ID_SEQ);
 
             ConnectionHandler.runPreparedUpdate(INSERT_BASE_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrBaseTypeId,
-                  SQL3DataType.VARCHAR, attributeClass);
+                  SQL3DataType.VARCHAR, attrBaseExtension);
          }
       } finally {
          DbUtil.close(chStmt);
