@@ -31,7 +31,7 @@ public class XDateDam extends XDate implements IDamWidget {
    }
 
    private DateAttribute getAttribute() throws Exception {
-      return (DateAttribute) artifact.getSoleAttributeValue(attrName);
+      return (DateAttribute) getAttributeManager().getSoleAttribute();
    }
 
    private DynamicAttributeManager getAttributeManager() throws Exception {
@@ -128,7 +128,8 @@ public class XDateDam extends XDate implements IDamWidget {
    public boolean isDirty() throws Exception {
       if (getDate() == null && getUdatStringValue().equals("")) return false;
       if (getDate() == null && !getUdatStringValue().equals("")) return true;
-      return (!getAttribute().getValue().equals(getDate()));
+      if (getDate() == null && getAttribute() != null && getAttribute().getValue() != null) return true;
+      return getAttribute() != null && getDate().equals(getAttribute().getValue());
    }
 
 }

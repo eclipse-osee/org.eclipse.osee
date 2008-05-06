@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Andrew M. Finkbeiner
  */
 public class OseeResourceServer {
-   private static final String key = "osee_server";
+   private static final String key = "osee.resource.server";
    private static String oseeServer = null;
 
    /**
