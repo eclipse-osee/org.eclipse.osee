@@ -139,18 +139,12 @@
 		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTRIBUTE_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ATTR_BASE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_BASE_TYPE_ID" />
-		<Index id="OSEE_ATTR_BASE_TYPE_AC_IDX" type="UNIQUE">
-			<AppliesTo id="ATTRIBUTE_CLASS"/>
-		</Index>
 	</Table>
 	
 	<Table name="OSEE_DEFINE_ATTR_PROVIDER_TYPE" schema="OSEE">
 		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTRIBUTE_PROVIDER_CLASS" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ATTR_PROVIDER_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_PROVIDER_TYPE_ID" />
-		<Index id="OSEE_ATTR_PROVIDER_TYPE_AC_IDX" type="UNIQUE">
-			<AppliesTo id="ATTRIBUTE_PROVIDER_CLASS"/>
-		</Index>
 	</Table>
 	
 	<Table name="OSEE_DEFINE_FACTORY" schema="OSEE">
