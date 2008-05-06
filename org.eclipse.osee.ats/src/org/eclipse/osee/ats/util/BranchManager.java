@@ -102,16 +102,18 @@ public class BranchManager {
       try {
          Branch branch = getWorkingBranch();
          if (branch.hasChanges()) {
-            AWorkbench.popup("ERROR", "Working branch has changes.  Can't delete through Action.");
-            return;
-         }
-         if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+            if (!MessageDialog.openQuestion(
+                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  "Delete Branch with Changes",
+                  "Warning: Changes have been made on this branch.\n\nAre you sure you want to delete the branch: " + branch)) return;
+         } else if (!MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                "Delete Branch", "Are you sure you want to delete the branch: " + branch)) {
-            Job job = BranchPersistenceManager.getInstance().deleteBranch(branch);
-            job.join();
-
-            AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
          }
+         Job job = BranchPersistenceManager.getInstance().deleteBranch(branch);
+         job.join();
+
+         AWorkbench.popup("Delete Complete", "Deleted Branch Successfully");
+
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't delete change report.", ex, true);
       }
