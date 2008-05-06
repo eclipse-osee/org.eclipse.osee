@@ -344,9 +344,6 @@ public class RelationPersistenceManager implements PersistenceManager {
 
    public void populateArtifactRelations(Artifact artifact) throws SQLException {
       int previousRelationId = -1;
-      if (artifact.getPersistenceMemo() == null) {
-         return;
-      }
       int branchId = artifact.getBranch().getBranchId();
       TransactionId transactionId = artifact.getPersistenceMemo().getTransactionId();
       ConnectionHandlerStatement chStmt = null;

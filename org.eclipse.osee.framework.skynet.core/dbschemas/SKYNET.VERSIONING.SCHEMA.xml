@@ -355,7 +355,8 @@
 		<Index id="OSEE_TX_DETAILS_B_IDX">
 			<AppliesTo id="BRANCH_ID" />
 		</Index>
-		<Index id="OSEE_TX_T_IDX">
+		<Index id="OSEE_TX_DETAILS_B_T_IDX">
+			<AppliesTo id="BRANCH_ID" />
 			<AppliesTo id="TX_TYPE" />
 		</Index>
 	</Table>

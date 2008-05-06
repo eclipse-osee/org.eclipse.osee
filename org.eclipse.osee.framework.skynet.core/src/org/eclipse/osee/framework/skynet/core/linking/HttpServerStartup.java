@@ -21,6 +21,6 @@ public class HttpServerStartup implements IStartup {
     * @see org.eclipse.ui.IStartup#earlyStartup()
     */
    public void earlyStartup() {
-      HttpServer.startServers();
+      HttpServer.startServers(1);
    }
 }

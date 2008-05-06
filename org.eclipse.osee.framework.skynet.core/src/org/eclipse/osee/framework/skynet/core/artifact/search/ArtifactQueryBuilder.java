@@ -152,6 +152,7 @@ public class ArtifactQueryBuilder {
       appendAliasedTable("osee_define_artifact", false);
       appendAliasedTable("osee_define_artifact_version");
       addTxTablesSql();
+      sql.append("\n");
 
       if (criteria.length > 0) {
          for (AbstractArtifactSearchCriteria x : criteria) {
@@ -189,8 +190,10 @@ public class ArtifactQueryBuilder {
          sql.append("art1.human_readable_id IN (" + Collections.toString(",", hrids) + ") AND ");
       }
 
+      sql.append("\n");
       if (criteria.length > 0) {
          criteria[0].addToWhereSql(this);
+         sql.append("\n");
          for (int i = 1; i < criteria.length; i++) {
             AbstractArtifactSearchCriteria leftCriteria = criteria[i - 1];
             AbstractArtifactSearchCriteria rightCriteria = criteria[i];
@@ -199,6 +202,7 @@ public class ArtifactQueryBuilder {
             rightCriteria.addJoinArtId(this, true);
             sql.append(" AND ");
             rightCriteria.addToWhereSql(this);
+            sql.append("\n");
          }
          criteria[criteria.length - 1].addJoinArtId(this, false);
          sql.append("=art1.art_id AND ");

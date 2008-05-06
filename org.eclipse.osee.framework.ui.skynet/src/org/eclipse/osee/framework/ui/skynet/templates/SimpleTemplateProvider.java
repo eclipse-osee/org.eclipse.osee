@@ -29,18 +29,17 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  *         concatenating the getTemplate parameters together
  */
 public class SimpleTemplateProvider implements ITemplateProvider {
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private HashMap<String, Artifact> templateMap;
 
    public SimpleTemplateProvider() {
 
    }
 
-   private void ensureTemplateCachePopulated() throws SQLException {
+   private synchronized void ensureTemplateCachePopulated() throws SQLException {
       if (templateMap == null) {
          templateMap = new HashMap<String, Artifact>();
          Collection<Artifact> artifacts =
-               ArtifactQuery.getArtifactsFromType("Renderer Template", branchManager.getCommonBranch());
+               ArtifactQuery.getArtifactsFromType("Renderer Template", BranchPersistenceManager.getCommonBranch());
          for (Artifact art : artifacts) {
             Collection<Attribute<String>> attrs = art.getAttributes("Template Match Criteria");
             for (Attribute<String> attr : attrs) {

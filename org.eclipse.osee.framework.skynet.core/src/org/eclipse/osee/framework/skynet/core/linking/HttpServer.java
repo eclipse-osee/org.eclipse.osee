@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 
 public class HttpServer implements Runnable {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HttpServer.class);
-   private static final int MAX_THREADS_PER_SERVERS = 10;
    private static final String DEFAULT_SERVER_ADDRESS = "127.0.0.1";
    private static final int DEFAULT_HTTP_PRODUCTION_PORT = 8010;
    private static final int DEFAULT_HTTP_DEVELOPMENT_PORT = 8011;
@@ -50,7 +49,7 @@ public class HttpServer implements Runnable {
    private static final Map<String, HttpServer> availableServers = new HashMap<String, HttpServer>();
 
    public static void remoteServerStartup() {
-      startServers();
+      startServers(10);
       isRemoteServer = true;
    }
 
@@ -84,14 +83,16 @@ public class HttpServer implements Runnable {
     * org.eclipse.osee.framework.skynet.core.HttpServerPort extension point defined. If no such extension point is
     * defined, then skynet will use the osee.http.port system property. Finally if a port has still not been specified,
     * the DEFAULT_HTTP_SERVER_PORT will be used.
+    * 
+    * @param maxThreads TODO
     */
-   public static void startServers() {
+   public static void startServers(int maxThreads) {
       if (neverRun) {
          neverRun = false;
          Map<String, Integer> serversToRun = determineRequestedPorts();
          for (String key : serversToRun.keySet()) {
             int port = serversToRun.get(key);
-            HttpServer server = new HttpServer(key, port, MAX_THREADS_PER_SERVERS);
+            HttpServer server = new HttpServer(key, port, maxThreads);
             availableServers.put(key, server);
             Thread thread = new Thread(server);
             thread.setName(String.format("%s:%s", key, port));
