@@ -17,6 +17,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.resource.common.io.Streams;
 
 /**
  * @author Roberto E. Escobar
@@ -69,15 +70,6 @@ public class HttpTestUtils {
       return bos.toByteArray();
    }
 
-   private static void inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {
-      byte[] buf = new byte[10000];
-      int count = -1;
-      while ((count = inputStream.read(buf)) != -1) {
-         outputStream.write(buf, 0, count);
-      }
-      inputStream.close();
-   }
-
    public static String sendData(String request, String contentType, String encoding, InputStream payload) throws Exception {
       ByteArrayOutputStream output = new ByteArrayOutputStream();
       OutputStream outputStream = null;
@@ -100,7 +92,7 @@ public class HttpTestUtils {
          outputStream = connection.getOutputStream();
          TestCase.assertNotNull(outputStream);
 
-         inputStreamToOutputStream(payload, outputStream);
+         Streams.inputStreamToOutputStream(payload, outputStream);
 
          // Wait for response
          int code = connection.getResponseCode();
@@ -108,7 +100,7 @@ public class HttpTestUtils {
          TestCase.assertTrue(connection.getContentType().contains("text/plain"));
 
          inputStream = (InputStream) connection.getContent();
-         inputStreamToOutputStream(inputStream, output);
+         Streams.inputStreamToOutputStream(inputStream, output);
          TestCase.assertTrue("Got Data", output.size() > 0);
       } finally {
          if (outputStream != null) {
@@ -135,7 +127,7 @@ public class HttpTestUtils {
          TestCase.assertEquals(HttpURLConnection.HTTP_OK, code);
          TestCase.assertTrue(connection.getContentType().contains(contentType));
          inputStream = (InputStream) connection.getContent();
-         inputStreamToOutputStream(inputStream, output);
+         Streams.inputStreamToOutputStream(inputStream, output);
          TestCase.assertTrue("Got Data", output.size() > 0);
       } finally {
          if (inputStream != null) {

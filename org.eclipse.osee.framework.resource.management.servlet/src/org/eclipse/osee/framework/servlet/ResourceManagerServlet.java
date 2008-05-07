@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.resource.common.io.Streams;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -19,7 +20,6 @@ import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 import org.eclipse.osee.framework.servlet.data.HttpRequestDecoder;
 import org.eclipse.osee.framework.servlet.data.ServletResourceBridge;
-import org.eclipse.osee.framework.servlet.utils.Utils;
 
 /**
  * This class is responsible for managing server-side resources. The class accepts http requests to perform uploads,
@@ -67,7 +67,7 @@ public class ResourceManagerServlet extends CustomHttpServlet {
             response.setContentType(mimeType);
             response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
 
-            Utils.sendInputToOutputStream(inputStream, response.getOutputStream());
+            Streams.inputStreamToOutputStream(inputStream, response.getOutputStream());
          } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             response.flushBuffer();

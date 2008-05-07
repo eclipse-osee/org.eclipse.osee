@@ -19,11 +19,11 @@ import org.eclipse.osee.framework.resource.management.StandardOptions;
  */
 public class HttpRequestDecoder {
 
-   private static String URI = "uri";
-   private static String PROTOCOL = "protocol";
-   private static String SEED = "seed";
-   private static String NAME = "name";
-   private static String EXTENSION = "extension";
+   private static final String URI = "uri";
+   private static final String PROTOCOL = "protocol";
+   private static final String SEED = "seed";
+   private static final String NAME = "name";
+   private static final String EXTENSION = "extension";
 
    // Whether data should be compressed
    private static String COMPRESS_ON_ACQUIRE = "compress.before.sending";

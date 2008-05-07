@@ -23,8 +23,8 @@ public class TestResourceLocatorSnapshot extends TestCase {
 
    public void testIsValid() {
       SnapshotLocatorProvider provider = new SnapshotLocatorProvider();
-      String[] data = new String[] {"a", "", null, "attr://", "attr"};
-      boolean[] expected = new boolean[] {false, false, false, false, true};
+      String[] data = new String[] {"a", "", null, "attr://", "attr", "snapshot"};
+      boolean[] expected = new boolean[] {false, false, false, false, false, true};
 
       for (int index = 0; index < 0; index++) {
          boolean result = provider.isValid(data[index]);
@@ -39,9 +39,11 @@ public class TestResourceLocatorSnapshot extends TestCase {
       cases.add(new TestData("3", null, "", true, null));
       cases.add(new TestData("4", "", "", true, null));
       cases.add(new TestData("5", "123", "", true, null));
-      cases.add(new TestData("6", "123", "hello.txt", false, "attr://123/hello.txt"));
-      cases.add(new TestData("7", "1234", "hello.txt", false, "attr://123/4/hello.txt"));
-      cases.add(new TestData("8", "1", "hello", false, "attr://1/hello"));
+      cases.add(new TestData("6", "123", "hello.txt", false, "snapshot://123/hello.txt"));
+      cases.add(new TestData("7", "1234", "hello.txt", false, "snapshot://123/4/hello.txt"));
+      cases.add(new TestData("8", "1", "hello", false, "snapshot://1/hello"));
+      cases.add(new TestData("9", "AAABE9X4bfoAeUF7UKx8MABRANCH293", "hello", false,
+            "snapshot://AAA/BE9/X4b/foA/eUF/7UK/x8M/A/293/hello"));
       return cases;
    }
 
@@ -66,9 +68,9 @@ public class TestResourceLocatorSnapshot extends TestCase {
       cases.add(new TestData("3", "$%#", true, null));
       cases.add(new TestData("4", "x://", true, null));
       cases.add(new TestData("5", "x:1234/4", true, null));
-      cases.add(new TestData("6", "attr:123", true, null));
-      cases.add(new TestData("7", "attr://123", false, "attr://123"));
-      cases.add(new TestData("8", "attr://123/hello.txt", false, "attr://123/hello.txt"));
+      cases.add(new TestData("6", "attr://123", true, null));
+      cases.add(new TestData("7", "snapshot://123", false, "snapshot://123"));
+      cases.add(new TestData("8", "snapshot://123/hello.txt", false, "snapshot://123/hello.txt"));
       return cases;
    }
 

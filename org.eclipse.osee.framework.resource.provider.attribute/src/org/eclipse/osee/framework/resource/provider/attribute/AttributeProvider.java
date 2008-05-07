@@ -11,12 +11,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.eclipse.osee.framework.resource.common.io.Files;
+import org.eclipse.osee.framework.resource.common.io.Streams;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.resource.provider.attribute.internal.Utils;
 
 /**
  * @author Roberto E. Escobar
@@ -53,7 +54,7 @@ public class AttributeProvider implements IResourceProvider {
       if (file == null || file.exists() != true) {
          toReturn = IResourceManager.RESOURCE_NOT_FOUND;
       } else if (file.exists() == true && file.canWrite() == true) {
-         boolean result = Utils.deleteFileAndEmptyParents(BASE_PATH, file);
+         boolean result = Files.deleteFileAndEmptyParents(BASE_PATH, file);
          if (result) {
             toReturn = IResourceManager.OK;
          }
@@ -93,7 +94,7 @@ public class AttributeProvider implements IResourceProvider {
 
          outputStream = new FileOutputStream(storageFile);
          inputStream = resourceToStore.getContent();
-         Utils.inputStreamToOutputStream(inputStream, outputStream);
+         Streams.inputStreamToOutputStream(inputStream, outputStream);
          toReturn = optionsProcessor.getActualResouceLocator();
       } finally {
          if (outputStream != null) {

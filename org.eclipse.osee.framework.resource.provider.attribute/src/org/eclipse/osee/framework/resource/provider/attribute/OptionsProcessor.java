@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.eclipse.osee.framework.resource.common.io.Files;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -104,7 +105,7 @@ public class OptionsProcessor {
       IResource toReturn = null;
       File testFile = new File(this.fileuri);
       if (testFile != null && testFile.exists() != false) {
-         boolean isCompressed = Utils.isCompressed(testFile);
+         boolean isCompressed = Files.isCompressed(testFile);
          toReturn = new Resource(this.fileuri, isCompressed);
 
          if (compressOnAcquire && !isCompressed) {
