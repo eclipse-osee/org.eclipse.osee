@@ -41,4 +41,13 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
       String toDisplay = dataProvider.getDisplayableString();
       return Boolean.parseBoolean(toDisplay) ? "yes" : "no";
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setFromString(java.lang.String)
+    */
+   @Override
+   public void setFromString(String value) throws Exception {
+      boolean result = value != null && value.equalsIgnoreCase(BooleanAttribute.booleanChoices[0]);
+      setValue(Boolean.valueOf(result));
+   }
 }

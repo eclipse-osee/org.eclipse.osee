@@ -44,11 +44,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnot
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.IStreamSetableAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeObjectConverter;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
@@ -607,7 +607,17 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    @SuppressWarnings("unchecked")
    public <T> void setSoleXAttributeValue(String attributeTypeName, String value) throws IllegalStateException, SQLException {
       Attribute<T> attribute = getSoleAttributeForSet(attributeTypeName);
-      attribute.setValue((T) AttributeObjectConverter.stringToObject(attribute, value));
+      if (attribute instanceof CharacterBackedAttribute) {
+         try {
+            ((CharacterBackedAttribute) attribute).setFromString(value);
+         } catch (Exception ex) {
+            throw new IllegalStateException(String.format("Unable to set attribute [%s] to [%s]",
+                  attribute.getAttributeType(), value));
+         }
+      } else {
+         throw new IllegalStateException(String.format("Attribute [%s] does not support this operation.",
+               attribute.getAttributeType()));
+      }
    }
 
    public void setSoleAttributeFromStream(String attributeTypeName, InputStream stream) throws IllegalStateException, SQLException, IOException {
@@ -661,7 +671,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @param dataStrs
     * @throws SQLException
     */
-   public void setDamAttributes(String attributeName, Collection<String> dataStrs) throws SQLException {
+   public void setDamAttributes(String attributeName, Collection<String> dataStrs) throws Exception {
       ArrayList<String> storedNames = new ArrayList<String>();
       DynamicAttributeManager dam = getAttributeManager(attributeName);
       int minOccur = dam.getAttributeType().getMinOccurrences();
@@ -681,8 +691,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
          String[] dataStrsArr = dataStrs.toArray(new String[dataStrs.size()]);
          int x = 0;
          for (Attribute attr : getAttributeManager(attributeName).getAttributes()) {
-            Object value = AttributeObjectConverter.stringToObject(attr, dataStrsArr[x++]);
-            attr.setValue(value);
+            if (attr instanceof CharacterBackedAttribute) {
+               ((CharacterBackedAttribute) attr).setFromString(dataStrsArr[x++]);
+            }
          }
          return;
       }
@@ -691,8 +702,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       for (String sel : dataStrs) {
          if (!storedNames.contains(sel)) {
             Attribute attr = getAttributeManager(attributeName).getNewAttribute();
-            Object value = AttributeObjectConverter.stringToObject(attr, sel);
-            attr.setValue(value);
+            if (attr instanceof CharacterBackedAttribute) {
+               ((CharacterBackedAttribute) attr).setFromString(sel);
+            }
          }
       }
 

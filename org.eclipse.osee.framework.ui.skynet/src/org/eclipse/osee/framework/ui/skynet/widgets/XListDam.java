@@ -54,14 +54,14 @@ public class XListDam extends XList implements IDamWidget {
       public void widgetModified(XWidget widget) {
          try {
             save();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
    };
 
    @Override
-   public void save() throws SQLException {
+   public void save() throws Exception {
       if (isDirty()) {
          ArrayList<String> selectedNames = new ArrayList<String>();
          for (XListItem item : getSelected())

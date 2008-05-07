@@ -52,4 +52,12 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
    public String getDisplayableString() {
       return dataProvider.getDisplayableString();
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute#setFromString(java.lang.String)
+    */
+   @Override
+   public void setFromString(String value) throws Exception {
+      setValue(value);
+   }
 }

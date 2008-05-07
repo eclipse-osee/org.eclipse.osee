@@ -19,10 +19,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.DateValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.StringValue;
@@ -71,36 +67,26 @@ public class AttributeCellModifier implements ICellModifier {
     */
    public Object getValue(Object element, String property) {
       Attribute<?> attribute = (Attribute<?>) element;
-      if (attribute instanceof BooleanAttribute) {
-         enumeratedValue.setValue(((BooleanAttribute) attribute).getValue() ? "yes" : "no");
-         enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
-         return enumeratedValue;
-      }
+      Object object = attribute.getValue();
       if (attribute instanceof EnumeratedAttribute) {
-         enumeratedValue.setValue(((EnumeratedAttribute) attribute).getValue());
+         enumeratedValue.setValue(attribute.getDisplayableString());
          enumeratedValue.setChocies(((EnumeratedAttribute) attribute).getChoices());
-         return enumeratedValue;
-      }
-      if (attribute instanceof StringAttribute || attribute instanceof IntegerAttribute || attribute instanceof FloatingPointAttribute) {
-         stringValue.setValue(String.valueOf(attribute.getValue()));
-         return stringValue;
-      }
-      if (attribute instanceof DateAttribute) {
-         dateValue.setValue(((DateAttribute) attribute).getValue());
-         return dateValue;
-      }
-      if (attribute instanceof WordAttribute) {
-         stringValue.setValue(((WordAttribute) attribute).getValue());
-         return stringValue;
-      }
-      if (attribute instanceof BooleanAttribute) {
-         stringValue.setValue(((BooleanAttribute) attribute).getValue().toString());
-         return stringValue;
-      }
-      if (attribute instanceof BinaryAttribute) {
-         StringValue val = new StringValue();
-         val.setValue("Binary Content");
-         return val;
+      } else {
+         if (object instanceof Boolean) {
+            enumeratedValue.setValue(attribute.getDisplayableString());
+            enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
+            return enumeratedValue;
+         } else if (object instanceof Date) {
+            dateValue.setValue((Date) object);
+            return dateValue;
+         } else if (object instanceof String || object instanceof Integer || object instanceof Double) {
+            stringValue.setValue(attribute.getDisplayableString());
+            return stringValue;
+         } else {
+            StringValue val = new StringValue();
+            val.setValue(attribute.getDisplayableString());
+            return val;
+         }
       }
       throw new IllegalArgumentException("unexpected element type: " + element.getClass().getName());
    }

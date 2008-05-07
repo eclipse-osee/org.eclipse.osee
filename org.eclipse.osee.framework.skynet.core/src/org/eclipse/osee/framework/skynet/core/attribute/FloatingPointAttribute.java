@@ -54,4 +54,18 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
    public String getDisplayableString() {
       return dataProvider.getDisplayableString();
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setFromString(java.lang.String)
+    */
+   @Override
+   public void setFromString(String value) throws Exception {
+      Double toSet = null;
+      if (value == null || value.equals("")) {
+         toSet = new Double(0);
+      } else {
+         toSet = new Double(value);
+      }
+      setValue(toSet);
+   }
 }

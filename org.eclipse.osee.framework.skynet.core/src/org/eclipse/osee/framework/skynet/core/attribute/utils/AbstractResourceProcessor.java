@@ -14,11 +14,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUploader;
+import org.eclipse.osee.framework.skynet.core.linking.ResourceProcessor;
+import org.eclipse.osee.framework.skynet.core.linking.ResourceProcessor.AcquireResult;
 
 /**
  * @author Roberto E. Escobar
@@ -36,21 +34,10 @@ public abstract class AbstractResourceProcessor {
       try {
          URL url = getStorageURL(dataStore);
          inputStream = dataStore.getInputStream();
-         HttpUploader uploader =
-               new HttpUploader(url.toString(), inputStream, dataStore.getContentType(), dataStore.getEncoding());
-         IStatus status = uploader.execute(new NullProgressMonitor());
-         if (status.getSeverity() == IStatus.OK) {
-            String locator = uploader.getUploadResponse();
-            if (locator == null) {
-               throw new Exception(status.getMessage(), status.getException());
-            } else {
-               URI uri = new URI(locator);
-               if (uri != null) {
-                  dataStore.setLocator(uri.toASCIIString());
-               }
-            }
-         } else {
-            throw new Exception(status.getMessage(), status.getException());
+         URI uri =
+               ResourceProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
+         if (uri != null) {
+            dataStore.setLocator(uri.toASCIIString());
          }
       } catch (Exception ex) {
          throw new Exception("Error saving resource", ex);
@@ -63,52 +50,30 @@ public abstract class AbstractResourceProcessor {
 
    public void acquire(DataStore dataStore) throws Exception {
       int code = -1;
-      InputStream inputStream = null;
       try {
          URL url = getAcquireURL(dataStore);
-         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-         connection.connect();
-         // Wait for response
-         code = connection.getResponseCode();
+         AcquireResult result = ResourceProcessor.acquire(url);
+         code = result.getCode();
          if (code == HttpURLConnection.HTTP_OK) {
-            inputStream = (InputStream) connection.getContent();
-            byte[] bytes = Lib.inputStreamToBytes(inputStream);
-            dataStore.setContent(bytes, "", connection.getContentType(), connection.getContentEncoding());
+            dataStore.setContent(result.getData(), "", result.getContentType(), result.getEncoding());
          }
       } catch (Exception ex) {
          throw new Exception(String.format("Error acquiring resource: [%s] - status code: [%s]",
                dataStore.getLocator(), code), ex);
-      } finally {
-         if (inputStream == null) {
-            inputStream.close();
-         }
       }
    }
 
    public void purge(DataStore dataStore) throws Exception {
       int code = -1;
-      InputStream inputStream = null;
       try {
          URL url = getDeleteURL(dataStore);
-         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-         connection.setRequestMethod("DELETE");
-         connection.connect();
-         // Wait for response
-         code = connection.getResponseCode();
-         if (code == HttpURLConnection.HTTP_ACCEPTED) {
-            inputStream = (InputStream) connection.getContent();
-            String response = Lib.inputStreamToString(inputStream);
-            if (response != null && response.equals("Deleted: " + dataStore.getLocator())) {
-               dataStore.clear();
-            }
+         String response = ResourceProcessor.delete(url);
+         if (response != null && response.equals("Deleted: " + dataStore.getLocator())) {
+            dataStore.clear();
          }
       } catch (Exception ex) {
          throw new Exception(String.format("Error deleting resource: [%s] - status code: [%s]", dataStore.getLocator(),
                code), ex);
-      } finally {
-         if (inputStream == null) {
-            inputStream.close();
-         }
       }
    }
 }

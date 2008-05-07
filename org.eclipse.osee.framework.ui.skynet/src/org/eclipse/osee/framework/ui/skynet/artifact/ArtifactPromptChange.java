@@ -128,12 +128,12 @@ public class ArtifactPromptChange {
       return true;
    }
 
-   public static boolean promptChangeEnumeratedAttribute(String attributeName, String displayName, Artifact artifact, boolean persist) throws SQLException {
+   public static boolean promptChangeEnumeratedAttribute(String attributeName, String displayName, Artifact artifact, boolean persist) throws Exception {
       return promptChangeEnumeratedAttribute(attributeName, displayName, Arrays.asList(new Artifact[] {artifact}),
             persist);
    }
 
-   public static boolean promptChangeEnumeratedAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws SQLException {
+   public static boolean promptChangeEnumeratedAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws Exception {
       String type = artifacts.iterator().next().getArtifactTypeName();
       for (Artifact art : artifacts) {
          if (!type.equals(art.getArtifactTypeName())) {

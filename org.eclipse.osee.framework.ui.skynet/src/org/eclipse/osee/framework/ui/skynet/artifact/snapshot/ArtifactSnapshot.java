@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 /**
  * @author Roberto E. Escobar
  */
-public final class ArtifactSnapshot implements Serializable {
+final class ArtifactSnapshot implements Serializable {
    private static final long serialVersionUID = -8702924997281390156L;
 
    private String namespace;

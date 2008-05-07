@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.text.DateFormat;
+import java.util.Date;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
@@ -20,4 +22,16 @@ public final class SimpleDateAttribute extends DateAttribute {
    public SimpleDateAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType, dataProvider);
    }
+
+   @Override
+   public void setFromString(String value) throws Exception {
+      Date toSet = null;
+      if (value == null || value.equals("")) {
+         toSet = new Date(1);
+      } else {
+         toSet = DateFormat.getDateInstance().parse(value);
+      }
+      setValue(toSet);
+   }
+
 }

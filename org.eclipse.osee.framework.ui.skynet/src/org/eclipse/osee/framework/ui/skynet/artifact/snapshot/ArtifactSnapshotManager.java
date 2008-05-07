@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -26,11 +25,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.SnapshotPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
-import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotFactory.KeyGenerator;
 import org.osgi.framework.Bundle;
 
 /**
@@ -41,20 +38,19 @@ import org.osgi.framework.Bundle;
  */
 public class ArtifactSnapshotManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSnapshotManager.class);
-   private static final String PREVIEW_DATA = "artifact.preview.data";
    private static ArtifactSnapshotManager instance = null;
 
-   private SnapshotPersistenceManager snapshotRemoteRepository;
    private ArtifactSnapshotFactory snapshotFactory;
+   private RemoteSnapshotManager remoteSnapshotManager;
    private KeyGenerator keyGenerator;
    private Map<String, ArtifactSnapshot> snapshotLocalCache;
    private ExecutorService executorService;
 
    private ArtifactSnapshotManager() {
       this.snapshotLocalCache = Collections.synchronizedMap(new HashMap<String, ArtifactSnapshot>());
-      this.snapshotFactory = ArtifactSnapshotFactory.getInstance();
+      this.snapshotFactory = new ArtifactSnapshotFactory();
+      this.remoteSnapshotManager = new RemoteSnapshotManager();
       this.keyGenerator = snapshotFactory.getKeyGenerator();
-      this.snapshotRemoteRepository = SnapshotPersistenceManager.getInstance();
       this.executorService = Executors.newSingleThreadExecutor();
    }
 
@@ -141,7 +137,7 @@ public class ArtifactSnapshotManager {
       if (isSavingAllowed() != false) {
          snapshot = snapshotFactory.createSnapshot(artifact);
          if (snapshot.isDataValid() != false) {
-            executorService.execute(new PersistSnapshot(snapshot));
+            executorService.execute(new ArtifactSnapshotPersistOperation(remoteSnapshotManager, snapshot));
          }
       }
       return snapshot;
@@ -210,17 +206,7 @@ public class ArtifactSnapshotManager {
     * @throws UnsupportedEncodingException
     */
    private ArtifactSnapshot getSnapshotFromRemoteStorage(Pair<String, String> key) throws UnsupportedEncodingException {
-      ArtifactSnapshot toReturn = null;
-      Pair<Object, Date> data = snapshotRemoteRepository.getSnapshot(key.getKey(), PREVIEW_DATA);
-      if (data != null) {
-         Object object = data.getKey();
-         if (object != null) {
-            if (object instanceof ArtifactSnapshot) {
-               toReturn = (ArtifactSnapshot) data.getKey();
-            }
-         }
-      }
-      return toReturn;
+      return remoteSnapshotManager.getSnapshot(key);
    }
 
    /**
@@ -265,42 +251,6 @@ public class ArtifactSnapshotManager {
          data = getSnapshotFromLocalCacheAndUpdateIfNeeded(artifact);
       }
       return data;
-   }
-
-   private class PersistSnapshot implements Runnable {
-      private final ArtifactSnapshot snapshot;
-
-      public PersistSnapshot(final ArtifactSnapshot snapshot) {
-         this.snapshot = snapshot;
-      }
-
-      public void run() {
-         long start = System.currentTimeMillis();
-         try {
-            if (true == isDeleteRequired(snapshot)) {
-               snapshotRemoteRepository.deleteAll(snapshot.getNamespace());
-            }
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
-         }
-         snapshotRemoteRepository.persistSnapshot(snapshot.getNamespace(), PREVIEW_DATA, snapshot);
-         logger.log(Level.INFO, String.format("Artifact Snapshot Commit to DB Time: [%s] ms.",
-               System.currentTimeMillis() - start));
-      }
-
-      /**
-       * Determine whether a delete in the remote storage is needed.
-       * 
-       * @param snapshot to store
-       * @return <b>true</b> if deletion is needed, otherwise <b>false</b>
-       * @throws SQLException
-       */
-      private boolean isDeleteRequired(ArtifactSnapshot snapshot) throws SQLException {
-         boolean oneOrMoreExists = snapshotRemoteRepository.getKeys(snapshot.getNamespace()).size() > 0;
-         boolean snapshotIsNotOneOfThem =
-               snapshotRemoteRepository.getSnapshot(snapshot.getNamespace(), snapshot.getKey()) == null;
-         return oneOrMoreExists && snapshotIsNotOneOfThem;
-      }
    }
 
 }

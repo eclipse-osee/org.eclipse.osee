@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpImageProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.ui.skynet.httpRequests.HttpImageRequest;
@@ -37,22 +35,17 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  * 
  * @author Roberto E. Escobar
  */
-public class ArtifactSnapshotFactory {
+class ArtifactSnapshotFactory {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactSnapshotFactory.class);
-   private static final ArtifactSnapshotFactory instance = new ArtifactSnapshotFactory();
 
    private HttpImageRequest httpImageRequest;
    private HttpImageProcessor httpImageProcessor;
    private KeyGenerator keyGenerator;
 
-   private ArtifactSnapshotFactory() {
+   protected ArtifactSnapshotFactory() {
       this.keyGenerator = new KeyGenerator();
       this.httpImageRequest = HttpImageRequest.getInstance();
       this.httpImageProcessor = HttpImageProcessor.getInstance();
-   }
-
-   protected static ArtifactSnapshotFactory getInstance() {
-      return ArtifactSnapshotFactory.instance;
    }
 
    /**
@@ -171,75 +164,6 @@ public class ArtifactSnapshotFactory {
             }
          }
          snapshotData.setRenderedData(changeSet.applyChangesToSelf().toString());
-      }
-   }
-
-   protected final class KeyGenerator {
-
-      /**
-       * Creates namespace/key pair object from an artifact and branch;
-       * 
-       * @param artifact source
-       * @param branch source
-       * @return key pair
-       * @throws UnsupportedEncodingException
-       */
-      public Pair<String, String> getKeyPair(Artifact artifact, Branch branch) throws UnsupportedEncodingException {
-         String namespace = getNamespace(artifact, branch);
-         String key = "GAMMA" + artifact.getPersistenceMemo().getGammaId();
-         return new Pair<String, String>(namespace, encode(key));
-      }
-
-      /**
-       * Creates namespace/key pair object from an artifact
-       * 
-       * @param artifact source
-       * @return key pair
-       * @throws UnsupportedEncodingException
-       */
-      public Pair<String, String> getKeyPair(Artifact artifact) throws UnsupportedEncodingException {
-         return getKeyPair(artifact, artifact.getBranch());
-      }
-
-      /**
-       * Generates a namespace key for an artifact
-       * 
-       * @param artifact artifact to use when generating the namespace
-       * @param branch branch to use when generating the namespace
-       * @return namespace
-       * @throws UnsupportedEncodingException
-       */
-      private String getNamespace(Artifact artifact, Branch branch) throws UnsupportedEncodingException {
-         StringBuffer namespace = new StringBuffer();
-         namespace.append(artifact.getGuid());
-         namespace.append("BRANCH");
-         namespace.append(branch.getBranchId());
-         return encode(namespace.toString());
-      }
-
-      /**
-       * Convert key pair into a local cache key
-       * 
-       * @param key Pair containing namespace and key information
-       * @return local cache key
-       */
-      public String toLocalCacheKey(Pair<String, String> key) {
-         return key.getKey() + "&" + key.getValue();
-      }
-
-      /**
-       * Convert key pair into a local cache key
-       * 
-       * @param namespace to use
-       * @param key to use
-       * @return local cache key
-       */
-      public String toLocalCacheKey(String namespace, String key) {
-         return namespace + "&" + key;
-      }
-
-      private String encode(String value) throws UnsupportedEncodingException {
-         return URLEncoder.encode(value, "UTF-8");
       }
    }
 }

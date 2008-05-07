@@ -53,4 +53,18 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
    public String getDisplayableString() {
       return dataProvider.getDisplayableString();
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setFromString(java.lang.String)
+    */
+   @Override
+   public void setFromString(String value) throws Exception {
+      Integer toSet = null;
+      if (value == null || value.equals("")) {
+         toSet = new Integer(0);
+      } else {
+         toSet = new Integer(value);
+      }
+      setValue(toSet);
+   }
 }

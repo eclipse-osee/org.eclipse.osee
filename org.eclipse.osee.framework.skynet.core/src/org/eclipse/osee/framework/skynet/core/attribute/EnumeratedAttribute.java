@@ -78,4 +78,21 @@ public class EnumeratedAttribute extends CharacterBackedAttribute<String> {
       String toDisplay = dataProvider.getDisplayableString();
       return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setFromString(java.lang.String)
+    */
+   @Override
+   public void setFromString(String value) throws Exception {
+      String toSet = value;
+      if (value != null) {
+         for (String choice : choices) {
+            if (value.equals(choice)) {
+               toSet = choice;
+               break;
+            }
+         }
+      }
+      setValue(toSet);
+   }
 }

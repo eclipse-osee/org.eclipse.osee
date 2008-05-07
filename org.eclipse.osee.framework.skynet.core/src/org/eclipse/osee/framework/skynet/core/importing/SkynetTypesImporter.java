@@ -24,12 +24,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -62,6 +64,7 @@ public class SkynetTypesImporter implements RowProcessor {
 
    private static final ConfigurationPersistenceManager configurationManager =
          ConfigurationPersistenceManager.getInstance();
+   private SkynetTransaction transaction;
 
    /**
     * @throws SAXException
@@ -77,7 +80,9 @@ public class SkynetTypesImporter implements RowProcessor {
       xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(excelHandler);
 
-      configurationManager.startBatch(branch);
+      // Start Batch
+      ConnectionHandler.startTransactionLevel(this);
+      transaction = new SkynetTransaction(branch);
    }
 
    public void extractTypesFromSheet(InputStream importFile) throws IOException, SAXException {
@@ -100,7 +105,15 @@ public class SkynetTypesImporter implements RowProcessor {
          out.write(relSideStr);
          out.close();
 
-         configurationManager.executeBatch();
+         if (transaction == null) throw new RuntimeException("Batch has not been started");
+         try {
+            transaction.execute();
+            ConnectionHandler.setTransactionLevelAsSuccessful(this);
+         } finally {
+            ConnectionHandler.endTransactionLevel(this);
+            transaction = null;
+         }
+
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }

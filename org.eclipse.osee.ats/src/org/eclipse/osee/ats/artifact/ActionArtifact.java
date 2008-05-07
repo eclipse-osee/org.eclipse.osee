@@ -182,9 +182,16 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    private void resetUserCommunityOffChildren() throws SQLException {
       Set<String> userComs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts())
-         if (!(new SMAManager(team)).isCancelled()) userComs.addAll(team.getAttributesToStringCollection(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()));
-      setDamAttributes(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComs);
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!(new SMAManager(team)).isCancelled()) {
+            userComs.addAll(team.getAttributesToStringCollection(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()));
+         }
+      }
+      try {
+         setDamAttributes(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComs);
+      } catch (Exception ex) {
+         throw new SQLException(ex);
+      }
    }
 
    public void setChangeType(ChangeType type) throws IllegalStateException, SQLException {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+
 /**
  * @author Roberto E. Escobar
  */
@@ -18,4 +19,6 @@ public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
    protected CharacterBackedAttribute(DynamicAttributeDescriptor attributeType) {
       super(attributeType);
    }
+
+   public abstract void setFromString(String value) throws Exception;
 }

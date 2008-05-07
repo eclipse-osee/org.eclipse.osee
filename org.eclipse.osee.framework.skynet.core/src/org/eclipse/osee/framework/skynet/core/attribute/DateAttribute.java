@@ -80,4 +80,18 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
       return date != null ? dateFormat.format(getValue()) : "";
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setFromString(java.lang.String)
+    */
+   @Override
+   public void setFromString(String value) throws Exception {
+      Date toSet = null;
+      if (value == null || value.equals("")) {
+         toSet = new Date(1);
+      } else {
+         toSet = new Date(Long.parseLong(value));
+      }
+      setValue(toSet);
+   }
+
 }

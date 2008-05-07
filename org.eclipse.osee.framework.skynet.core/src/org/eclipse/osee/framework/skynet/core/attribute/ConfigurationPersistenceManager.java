@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 
 /**
@@ -80,7 +79,6 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    private final ArtifactTypeValidityCache artifactTypeValidityCache;
 
    private ArtifactFactoryCache artifactFactoryCache;
-   private SkynetTransaction transaction;
    private HashMap<String, Pair<String, String>> imageMap;
    private static Pair<String, String> defaultIconLocation =
          new Pair<String, String>("org.eclipse.osee.framework.skynet.core", "images/laser_16_16.gif");
@@ -335,32 +333,6 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
          SkynetActivator.getLogger().log(Level.SEVERE, "Error getting valid enumeration values", ex);
       }
       return names;
-   }
-
-   public void startBatch(Branch branch) throws SQLException {
-      // NOTE: the transaction level must be started before getting a SkynetTransaction since it may
-      // perform SQL
-      ConnectionHandler.startTransactionLevel(this);
-      transaction = new SkynetTransaction(branch);
-   }
-
-   /**
-    * Executes the transaction and then resets the transaction.
-    */
-   public void executeBatch() throws SQLException {
-      checkTransaction();
-
-      try {
-         transaction.execute();
-         ConnectionHandler.setTransactionLevelAsSuccessful(this);
-      } finally {
-         ConnectionHandler.endTransactionLevel(this);
-         transaction = null;
-      }
-   }
-
-   private void checkTransaction() {
-      if (transaction == null) throw new RuntimeException("Batch has not been started");
    }
 
    public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(int artTypeId) throws SQLException {
