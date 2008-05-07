@@ -339,7 +339,7 @@ public class RelationPersistenceManager implements PersistenceManager {
          data.add(new Object[] {SQL3DataType.INTEGER, link.getAOrder(), SQL3DataType.INTEGER, link.getBOrder(),
                SQL3DataType.INTEGER, link.getPersistenceMemo().getGammaId()});
       }
-      ConnectionHandler.runBatchablePreparedUpdate(UPDATE_RELATION_ORDERS, true, data);
+      ConnectionHandler.runPreparedUpdateBatch(UPDATE_RELATION_ORDERS, data);
    }
 
    public void populateArtifactRelations(Artifact artifact) throws SQLException {

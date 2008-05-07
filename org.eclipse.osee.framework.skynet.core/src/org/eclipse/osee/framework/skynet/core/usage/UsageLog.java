@@ -88,7 +88,7 @@ public class UsageLog {
       }
 
       log.clear();
-      ConnectionHandler.runBatchablePreparedUpdate(INSERT_TO_LOG, true, data);
+      ConnectionHandler.runPreparedUpdateBatch(INSERT_TO_LOG, data);
    }
 
    private static class Kicker extends Thread {

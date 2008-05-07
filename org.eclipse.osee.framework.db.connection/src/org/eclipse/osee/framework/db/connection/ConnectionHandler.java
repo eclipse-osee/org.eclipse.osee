@@ -14,16 +14,13 @@ package org.eclipse.osee.framework.db.connection;
 import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.db.connection.core.query.QueryRecord;
 import org.eclipse.osee.framework.db.connection.core.transaction.DbTransactionManager;
 import org.eclipse.osee.framework.db.connection.core.transaction.IDbTransactionListener;
@@ -176,56 +173,57 @@ public final class ConnectionHandler {
       }
    }
 
-   /**
-    * @param query - String query
-    * @param size - int size of statement fetch size
-    * @return ConnectionHandlerStatement contains a Resultset and a Statement
-    * @throws SQLException
-    */
-   @Deprecated
-   public static ConnectionHandlerStatement runQuery(String query, int size) throws SQLException {
-      QueryRecord record = new QueryRecord(query);
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      Statement statement = null;
-      ResultSet rset = null;
-
-      // curentTime = System.currentTimeMillis();
-
-      try {
-         statement = getConnection().createStatement();
-
-         if (size > 0) statement.setFetchSize(size);
-
-         record.markStart();
-         rset = statement.executeQuery(query);
-         record.markEnd();
-         chStmt.setRset(rset);
-         chStmt.setStatement(statement);
-      } catch (SQLException ex) {
-         record.setSqlException(ex);
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, "Query: *" + query + "*", ex);
-
-         reGetConnection(false);
-
-         statement = getConnection().createStatement();
-         if (size > 0) statement.setFetchSize(size);
-
-         rset = statement.executeQuery(query);
-         chStmt.setRset(rset);
-         chStmt.setStatement(statement);
-      }
-      return chStmt;
-   }
-
-   /**
-    * @param query - String query
-    * @return ConnectionHandlerStatement that contains a Resultset and a Statement
-    * @throws SQLException
-    */
-   @Deprecated
-   public static ConnectionHandlerStatement runQuery(String query) throws SQLException {
-      return runQuery(query, 0);
-   }
+   // TODO: Not USED! REMOVE!
+   //   /**
+   //    * @param query - String query
+   //    * @param size - int size of statement fetch size
+   //    * @return ConnectionHandlerStatement contains a Resultset and a Statement
+   //    * @throws SQLException
+   //    */
+   //   @Deprecated
+   //   public static ConnectionHandlerStatement runQuery(String query, int size) throws SQLException {
+   //      QueryRecord record = new QueryRecord(query);
+   //      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+   //      Statement statement = null;
+   //      ResultSet rset = null;
+   //
+   //      // curentTime = System.currentTimeMillis();
+   //
+   //      try {
+   //         statement = getConnection().createStatement();
+   //
+   //         if (size > 0) statement.setFetchSize(size);
+   //
+   //         record.markStart();
+   //         rset = statement.executeQuery(query);
+   //         record.markEnd();
+   //         chStmt.setRset(rset);
+   //         chStmt.setStatement(statement);
+   //      } catch (SQLException ex) {
+   //         record.setSqlException(ex);
+   //         OseeLog.log(Activator.class.getName(), Level.SEVERE, "Query: *" + query + "*", ex);
+   //
+   //         reGetConnection(false);
+   //
+   //         statement = getConnection().createStatement();
+   //         if (size > 0) statement.setFetchSize(size);
+   //
+   //         rset = statement.executeQuery(query);
+   //         chStmt.setRset(rset);
+   //         chStmt.setStatement(statement);
+   //      }
+   //      return chStmt;
+   //   }
+   //
+   //   /**
+   //    * @param query - String query
+   //    * @return ConnectionHandlerStatement that contains a Resultset and a Statement
+   //    * @throws SQLException
+   //    */
+   //   @Deprecated
+   //   public static ConnectionHandlerStatement runQuery(String query) throws SQLException {
+   //      return runQuery(query, 0);
+   //   }
 
    public static void runPreparedUpdate(boolean overrideTransaction, String query, Object... data) throws SQLException {
       ConnectionHandlerStatement chStmt = null;
@@ -253,9 +251,9 @@ public final class ConnectionHandler {
       return updateCount;
    }
 
-   public static ConnectionHandlerStatement runPreparedUpdateReturnStmt(String query, Object... data) throws SQLException {
-      return runPreparedUpdateReturnStmt(false, query, data);
-   }
+   //   public static ConnectionHandlerStatement runPreparedUpdateReturnStmt(String query, Object... data) throws SQLException {
+   //      return runPreparedUpdateReturnStmt(false, query, data);
+   //   }
 
    public static ConnectionHandlerStatement runPreparedUpdateReturnStmt(boolean overrideTransaction, String query, Object... data) throws SQLException {
       QueryRecord record = new QueryRecord(query, data);
@@ -316,7 +314,7 @@ public final class ConnectionHandler {
       }
    }
 
-   public static ConnectionHandlerStatement runPreparedQuery(int fetchSize, boolean overrideTranaction, String query, Object... data) throws SQLException {
+   private static ConnectionHandlerStatement runPreparedQuery(int fetchSize, boolean overrideTranaction, String query, Object... data) throws SQLException {
       QueryRecord record = new QueryRecord(query, data);
       PreparedStatement preparedStatement = null;
 
@@ -379,16 +377,11 @@ public final class ConnectionHandler {
       }
    }
 
-   // ************* WARNING-BATCHING HAD TO BE REMOVED BECAUSE IT IS FREEZING ON LARGE BLOB OBJECTS
-   // **************
-   // ************************************************************************************************************
-
-   // TODO this used to do transactions, check calling methods to ensure they get what they want
-   public static void runPreparedUpdate(String query, List<Object[]> datas) throws SQLException {
+   public static void runPreparedUpdateBatch(String query, List<Object[]> datas) throws SQLException {
       runBatchablePreparedUpdate(query, true, datas);
    }
 
-   public static void runBatchablePreparedUpdate(String query, boolean useBatching, List<Object[]> datas) throws SQLException {
+   private static void runBatchablePreparedUpdate(String query, boolean useBatching, List<Object[]> datas) throws SQLException {
       QueryRecord record =
             new QueryRecord("<batchable: " + (useBatching ? "" : "not ") + "batched> " + query, SQL3DataType.INTEGER,
                   datas.size());
@@ -406,7 +399,7 @@ public final class ConnectionHandler {
             boolean needExecute = false;
             int count = 0;
             for (Object[] data : datas) {
-            	count++;
+               count++;
                populateValuesForPreparedStatement(preparedStatement, data);
                preparedStatement.addBatch();
                preparedStatement.clearParameters();

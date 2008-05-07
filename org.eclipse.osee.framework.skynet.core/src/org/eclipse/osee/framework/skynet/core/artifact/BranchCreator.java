@@ -236,7 +236,7 @@ public class BranchCreator implements PersistenceManager {
                   gammaAndMod.getKey(), SQL3DataType.INTEGER, modType.getValue(), SQL3DataType.INTEGER,
                   modType.getCurrentValue()});
          }
-         ConnectionHandler.runBatchablePreparedUpdate(INSERT_TX_FOR_HISTORY, true, txAddressData);
+         ConnectionHandler.runPreparedUpdateBatch(INSERT_TX_FOR_HISTORY, txAddressData);
          txAddressData.clear();
       }
    }

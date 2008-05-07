@@ -129,7 +129,7 @@ public class TagManager implements PersistenceManager, IAttributeSaveListener {
                      SQL3DataType.INTEGER, tagId});
             }
          }
-         ConnectionHandler.runBatchablePreparedUpdate(ADD_TAG_TO_ARTIFACT, true, tagData);
+         ConnectionHandler.runPreparedUpdateBatch(ADD_TAG_TO_ARTIFACT, tagData);
       }
    }
 

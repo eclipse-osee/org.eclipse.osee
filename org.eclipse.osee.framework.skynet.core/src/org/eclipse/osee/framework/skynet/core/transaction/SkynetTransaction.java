@@ -139,7 +139,7 @@ public class SkynetTransaction {
             SQL3DataType.TIMESTAMP, GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER, blameArtId,
             SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
             TransactionDetailsType.NonBaselined.getId()});
-      ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_DETAIL_TABLE, datas);
+      ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_TRANSACTION_DETAIL_TABLE, datas);
 
       preparedBatch = new HashMap<String, List<Object[]>>();
       transactionItems = new HashMap<ITransactionData, ITransactionData>();
@@ -283,7 +283,7 @@ public class SkynetTransaction {
       while (iter.hasNext()) {
          monitor.subTask("Processing Prepared SQL set " + (++count) + "/" + size);
          String sql = iter.next();
-         ConnectionHandler.runPreparedUpdate(sql, preparedBatch.get(sql));
+         ConnectionHandler.runPreparedUpdateBatch(sql, preparedBatch.get(sql));
          monitor.worked(1);
       }
       return preparedBatch.size() > 0;

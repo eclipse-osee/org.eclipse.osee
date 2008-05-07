@@ -109,7 +109,7 @@ public class GuidCache {
 
    public void finalizeCachedGuids() throws SQLException {
       if (newGuids != null && !newGuids.isEmpty()) {
-         ConnectionHandler.runPreparedUpdate("INSERT INTO " + table + " (guid, " + idColumn + ") VALUES (?,?)",
+         ConnectionHandler.runPreparedUpdateBatch("INSERT INTO " + table + " (guid, " + idColumn + ") VALUES (?,?)",
                newGuids);
       }
    }
