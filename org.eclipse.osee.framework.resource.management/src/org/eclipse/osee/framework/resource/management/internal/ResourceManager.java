@@ -7,7 +7,6 @@ package org.eclipse.osee.framework.resource.management.internal;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceListener;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -122,7 +121,6 @@ public class ResourceManager implements IResourceManager {
    }
 
    public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws Exception {
-      int toReturn = IResourceManager.FAIL;
       IResourceProvider provider = getProvider(locator);
       notifyPreOnSave(locator, resource, options);
       IResourceLocator actualLocator = provider.save(locator, resource, options);
@@ -139,12 +137,12 @@ public class ResourceManager implements IResourceManager {
       return toReturn;
    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.osee.framework.resource.management.IResourceManager#exists(org.eclipse.osee.framework.resource.management.IResourceLocator)
-	 */
-	@Override
-	public boolean exists(IResourceLocator locator) throws Exception {
-	    IResourceProvider provider = getProvider(locator);
-	    return provider.exists(locator);
-	}
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.resource.management.IResourceManager#exists(org.eclipse.osee.framework.resource.management.IResourceLocator)
+    */
+   @Override
+   public boolean exists(IResourceLocator locator) throws Exception {
+      IResourceProvider provider = getProvider(locator);
+      return provider.exists(locator);
+   }
 }

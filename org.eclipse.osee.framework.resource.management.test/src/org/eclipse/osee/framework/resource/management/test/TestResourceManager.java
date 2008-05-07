@@ -128,7 +128,6 @@ public class TestResourceManager extends TestCase {
    }
 
    public void testForFailOnOverwriteOfFile() throws Exception {
-      InputStream inputStream = null;
       IResourceLocator fileLocation = null;
       IResourceLocator actual = null;
       IResourceManager rm = Activator.getActivator().getResourceManager();
