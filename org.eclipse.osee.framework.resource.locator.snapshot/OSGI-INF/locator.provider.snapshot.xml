@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="resource.locator.snapshot">
+	<implementation class="org.eclipse.osee.framework.resource.locator.snapshot.SnapshotLocatorProvider"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.resource.management.IResourceLocatorProvider"/>
+	</service>	
+</component>

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Snapshot Locator Plug-in
+Bundle-SymbolicName: org.eclipse.osee.framework.resource.locator.snapshot
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.osee.framework.resource.locator.snapshot.Activator
+Import-Package: org.eclipse.osee.framework.resource.management,
+ org.eclipse.osee.framework.resource.management.exception,
+ org.osgi.framework;version="1.3.0"
+Eclipse-LazyStart: true
+Service-Component: OSGI-INF/locator.provider.snapshot.xml
+Bundle-Vendor: Boeing
+Export-Package: org.eclipse.osee.framework.resource.locator.snapshot
