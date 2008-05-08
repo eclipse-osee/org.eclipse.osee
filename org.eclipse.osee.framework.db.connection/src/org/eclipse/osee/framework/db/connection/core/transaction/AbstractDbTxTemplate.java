@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database;
+package org.eclipse.osee.framework.db.connection.core.transaction;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.eclipse.osee.framework.db.connection.Activator;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * This abstract class provides a uniform way of executing database transactions. It handles exceptions ensuring that
@@ -22,8 +22,6 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractDbTxTemplate {
-
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AbstractDbTxTemplate.class);
 
    /**
     * Transaction Constructor
@@ -51,14 +49,14 @@ public abstract class AbstractDbTxTemplate {
    public void execute() throws Exception {
       try {
          ConnectionHandler.startTransactionLevel(this);
-         logger.log(Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
+         OseeLog.log(Activator.class.getName(), Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
 
          handleTxWork();
 
          ConnectionHandler.setTransactionLevelAsSuccessful(this);
-         logger.log(Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
+         OseeLog.log(Activator.class.getName(), Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
       } catch (Exception ex) {
-         logger.log(Level.FINEST, ex.getLocalizedMessage(), ex);
+         OseeLog.log(Activator.class.getName(), Level.FINEST, ex.getLocalizedMessage(), ex);
          handleTxException(ex);
       } finally {
          ConnectionHandler.endTransactionLevel(this);
