@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.database;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
@@ -107,8 +109,14 @@ public class GenerateTypeEnumAction implements IActionDelegate {
       resourceDialog.setMessage("Select where Auto-Generated classes should be stored.");
       resourceDialog.setTitle("Select Destination");
       resourceDialog.setEmptyListMessage("No Projects Available");
-      resourceDialog.setInitialSelection(resource.getParent());
-      resourceDialog.setExpandedElements(new Object[] {resource.getParent()});
+      IContainer container = resource.getParent();
+      resourceDialog.setInitialSelection(container);
+      List<Object> expand = new ArrayList<Object>();
+      expand.add(container);
+      if (container.getParent() != null) {
+         expand.add(container.getParent());
+      }
+      resourceDialog.setExpandedElements(expand.toArray(new Object[expand.size()]));
       int result = resourceDialog.open();
       return result != Window.CANCEL ? resourceDialog.getFirstResult() : null;
    }
