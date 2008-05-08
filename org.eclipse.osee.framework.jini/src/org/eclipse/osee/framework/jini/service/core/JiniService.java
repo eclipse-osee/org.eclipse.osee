@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jini.discovery.RelaxedSecurity;
 import org.eclipse.osee.framework.jini.service.interfaces.IService;
 import org.eclipse.osee.framework.plugin.core.server.ClassServer;
-import org.eclipse.osee.framework.ui.plugin.server.PathResourceFinder;
+import org.eclipse.osee.framework.plugin.core.server.PathResourceFinder;
 
 public abstract class JiniService implements IService {
    protected JiniJoinManager joinManager;

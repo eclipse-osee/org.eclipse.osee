@@ -32,6 +32,7 @@ import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceRegistration;
 import org.eclipse.osee.framework.jini.discovery.IRegistrarListener;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
+import org.eclipse.osee.framework.jini.service.interfaces.IService;
 import org.eclipse.osee.framework.jini.util.OseeJini;
 
 /**
@@ -58,6 +59,17 @@ public class JiniJoinManager implements IRegistrarListener {
 
    public JiniJoinManager(ServiceID serviceID, JiniService js, Entry[] entry) throws IOException {
       proxy = OseeJini.getRemoteReference(js);
+      this.entry = entry;
+      this.serviceID = serviceID;
+      registrations = new ArrayList<ServiceRegistration>();
+      idToReggie = new HashMap<ServiceID, ServiceRegistrar>();
+      renewTimer = new Timer();
+      serviceDataStore = ServiceDataStore.getNonEclipseInstance();
+      serviceDataStore.addListener(this);
+   }
+
+   public JiniJoinManager(ServiceID serviceID, IService service, Entry[] entry) throws IOException {
+      proxy = service;
       this.entry = entry;
       this.serviceID = serviceID;
       registrations = new ArrayList<ServiceRegistration>();

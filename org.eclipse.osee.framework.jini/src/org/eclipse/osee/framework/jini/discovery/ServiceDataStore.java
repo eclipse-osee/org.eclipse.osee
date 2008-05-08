@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import net.jini.config.ConfigurationException;
 import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
@@ -41,6 +40,7 @@ import net.jini.lookup.LookupCache;
 import net.jini.lookup.ServiceDiscoveryEvent;
 import net.jini.lookup.ServiceDiscoveryListener;
 import net.jini.lookup.ServiceDiscoveryManager;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryListener {
 
@@ -684,9 +684,9 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    }
 
    public void addLookupLocators(String[] lookups) {
-	   if (lookups == null) {
-		   throw new IllegalArgumentException("looks should not be null");
-	   }
+      if (lookups == null) {
+         throw new IllegalArgumentException("lookups should not be null");
+      }
       addLookupLocators(Arrays.asList(lookups), true);
    }
 
