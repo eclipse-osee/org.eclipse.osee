@@ -19,15 +19,15 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
  * @author Ryan D. Brooks
  */
 public class PurgeDuplicateTypeData extends AbstractBlam {
-   ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
    private static final String UPDATE_RELATION_VALIDITY_TXS =
          "UPDATE osee_define_txs txs1 SET txs1.gamma_id = ? WHERE txs1.gamma_id IN (SELECT var2.gamma_id FROM osee_define_valid_relations var2 WHERE var2.rel_link_type_id = ? AND var2.art_type_id = ? AND var2.gamma_id <> ? AND NOT EXISTS (SELECT 'x' FROM osee_define_txs txs3 WHERE txs1.transaction_id = txs3.transaction_id AND txs3.gamma_id = ?))";
    private static final String DELETE_RELATION_VALIDITY =
@@ -42,12 +42,12 @@ public class PurgeDuplicateTypeData extends AbstractBlam {
       purgeRelationValidityAndGammas();
 
       for (ArtifactSubtypeDescriptor artifactType : new HashSet<ArtifactSubtypeDescriptor>(
-            configurationManager.getArtifactSubtypeDescriptors())) {
+            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors())) {
          purgeArtifactTypeAndGammas(artifactType.getName());
       }
 
-      for (DynamicAttributeDescriptor attributeType : new HashSet<DynamicAttributeDescriptor>(
-            configurationManager.getDynamicAttributeDescriptors(null))) {
+      for (AttributeType attributeType : new HashSet<AttributeType>(
+            AttributeTypeManager.getTypes(null))) {
          purgeAttributeTypeAndGammas(attributeType.getName());
       }
    }

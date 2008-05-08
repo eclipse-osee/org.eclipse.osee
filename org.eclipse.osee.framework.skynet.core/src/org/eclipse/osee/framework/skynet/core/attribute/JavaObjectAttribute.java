@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttribu
 
 public final class JavaObjectAttribute extends BinaryAttribute<Object> {
 
-   public JavaObjectAttribute(DynamicAttributeDescriptor attributeType, IBinaryAttributeDataProvider dataProvider) {
+   public JavaObjectAttribute(AttributeType attributeType, IBinaryAttributeDataProvider dataProvider) {
       super(attributeType, dataProvider);
    }
 

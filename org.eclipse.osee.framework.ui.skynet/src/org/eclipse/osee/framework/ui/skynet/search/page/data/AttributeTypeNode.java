@@ -11,21 +11,21 @@
 package org.eclipse.osee.framework.ui.skynet.search.page.data;
 
 import org.eclipse.osee.framework.jdk.core.type.TreeObject;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
 /**
  * @author Roberto E. Escobar
  */
 public class AttributeTypeNode extends TreeObject implements Comparable<AttributeTypeNode> {
 
-   private DynamicAttributeDescriptor attributeType;
+   private AttributeType attributeType;
 
-   public AttributeTypeNode(DynamicAttributeDescriptor attributeType) {
+   public AttributeTypeNode(AttributeType attributeType) {
       super(attributeType.getName());
       this.attributeType = attributeType;
    }
 
-   public DynamicAttributeDescriptor getAttributeType() {
+   public AttributeType getAttributeType() {
       return attributeType;
    }
 

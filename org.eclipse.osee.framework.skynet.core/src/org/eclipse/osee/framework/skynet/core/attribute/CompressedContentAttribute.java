@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttribu
 
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> implements IStreamSetableAttribute {
 
-   public CompressedContentAttribute(DynamicAttributeDescriptor attributeType, IBinaryAttributeDataProvider dataProvider) {
+   public CompressedContentAttribute(AttributeType attributeType, IBinaryAttributeDataProvider dataProvider) {
       super(attributeType, dataProvider);
       dataProvider.setDisplayableString(getAttributeType().getName());
    }

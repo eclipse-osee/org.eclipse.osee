@@ -22,7 +22,7 @@ public class WordWholeDocumentAttribute extends WordAttribute {
     * @param attributeType
     * @param value
     */
-   public WordWholeDocumentAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public WordWholeDocumentAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType, dataProvider);
       setDefaultValue(attributeType.getDefaultValue());
    }

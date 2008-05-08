@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.part.ViewPart;
 
@@ -60,11 +60,11 @@ public class ShowAttributeAction extends Action {
       return attributeDialog.noneSelected();
    }
 
-   public Collection<DynamicAttributeDescriptor> getSelectedAttributes() {
+   public Collection<AttributeType> getSelectedAttributes() {
       return attributeDialog.getSelectedAttributes();
    }
 
-   public void setValidAttributeTypes(Collection<DynamicAttributeDescriptor> attrTypes) {
+   public void setValidAttributeTypes(Collection<AttributeType> attrTypes) {
       attributeDialog = new AttributeCheckListDialog(viewPart.getSite().getShell(), attrTypes, preferenceKey);
    }
 }

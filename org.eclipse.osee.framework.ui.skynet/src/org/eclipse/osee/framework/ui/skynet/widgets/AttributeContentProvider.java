@@ -17,16 +17,13 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
 /**
  * @author Jeff C. Phillips
  */
 public class AttributeContentProvider implements ITreeContentProvider {
-
-   private static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
    protected static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AttributeContentProvider.class);
 
    public Object[] getElements(Object inputElement) {
@@ -38,7 +35,7 @@ public class AttributeContentProvider implements ITreeContentProvider {
          ArrayList<Object> descriptors = new ArrayList<Object>();
 
          try {
-            for (DynamicAttributeDescriptor descriptor : configurationPersistenceManager.getDynamicAttributeDescriptors((Branch) parentElement)) {
+            for (AttributeType descriptor : AttributeTypeManager.getTypes((Branch) parentElement)) {
                descriptors.add((Object) descriptor);
             }
          } catch (Exception ex) {

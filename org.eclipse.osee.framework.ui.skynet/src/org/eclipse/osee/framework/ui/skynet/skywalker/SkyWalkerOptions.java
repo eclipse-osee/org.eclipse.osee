@@ -26,8 +26,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -54,7 +55,7 @@ public class SkyWalkerOptions {
    private AbstractLayoutAlgorithm layout;
    protected AbstractLayoutAlgorithm defaultLayout;
    private Map<ArtifactSubtypeDescriptor, Boolean> artTypes;
-   private Map<DynamicAttributeDescriptor, Boolean> showAttributes;
+   private Map<AttributeType, Boolean> showAttributes;
    // IRelationLinkDescriptor and RelationLinkDescriptorSide
    private Map<Object, Boolean> relTypes;
    private boolean filterEnabled = true;
@@ -84,7 +85,7 @@ public class SkyWalkerOptions {
          return "";
       else {
          StringBuffer sb = new StringBuffer();
-         for (DynamicAttributeDescriptor desc : getSelectedShowAttributeTypes()) {
+         for (AttributeType desc : getSelectedShowAttributeTypes()) {
             if (artifact.isAttributeTypeValid(desc.getName()) && artifact.getAttributeManager(desc).getAttributes().size() > 0) {
                sb.append("\n");
                sb.append(Collections.toString(", ", artifact.getAttributes(desc)));
@@ -110,10 +111,9 @@ public class SkyWalkerOptions {
 
    private void loadAttributeTypes() {
       if (showAttributes == null) {
-         showAttributes = new HashMap<DynamicAttributeDescriptor, Boolean>();
+         showAttributes = new HashMap<AttributeType, Boolean>();
          try {
-            for (DynamicAttributeDescriptor descriptor : ConfigurationPersistenceManager.getInstance().getDynamicAttributeDescriptors(
-                  artifact.getBranch())) {
+            for (AttributeType descriptor : AttributeTypeManager.getTypes(artifact.getBranch())) {
                showAttributes.put(descriptor, false);
             }
          } catch (Exception ex) {
@@ -197,11 +197,11 @@ public class SkyWalkerOptions {
       }
       String showAttrString = AXml.getTagData(xml, "showAttributes");
       if (showAttrString != null && !showAttrString.equals("")) {
-         for (Entry<DynamicAttributeDescriptor, Boolean> desc : showAttributes.entrySet()) {
+         for (Entry<AttributeType, Boolean> desc : showAttributes.entrySet()) {
             desc.setValue(false);
          }
          for (String name : showAttrString.split(",")) {
-            for (Entry<DynamicAttributeDescriptor, Boolean> desc : showAttributes.entrySet()) {
+            for (Entry<AttributeType, Boolean> desc : showAttributes.entrySet()) {
                if (desc.getKey().getName().equals(name)) {
                   desc.setValue(true);
                   break;
@@ -357,7 +357,7 @@ public class SkyWalkerOptions {
       List<Object> selList = new ArrayList<Object>();
       for (Object obj : selected)
          selList.add(obj);
-      for (Entry<DynamicAttributeDescriptor, Boolean> entry : showAttributes.entrySet()) {
+      for (Entry<AttributeType, Boolean> entry : showAttributes.entrySet()) {
          entry.setValue(selList.contains(entry.getKey()));
       }
       notifyListeners(ModType.Show_Attribute);
@@ -386,10 +386,10 @@ public class SkyWalkerOptions {
       return selected;
    }
 
-   public Set<DynamicAttributeDescriptor> getSelectedShowAttributeTypes() {
-      Set<DynamicAttributeDescriptor> selected = new HashSet<DynamicAttributeDescriptor>();
+   public Set<AttributeType> getSelectedShowAttributeTypes() {
+      Set<AttributeType> selected = new HashSet<AttributeType>();
       if (showAttributes == null) return selected;
-      for (DynamicAttributeDescriptor desc : showAttributes.keySet())
+      for (AttributeType desc : showAttributes.keySet())
          if (showAttributes.get(desc)) selected.add(desc);
       return selected;
    }
@@ -404,8 +404,8 @@ public class SkyWalkerOptions {
       return relTypes.keySet();
    }
 
-   public Set<DynamicAttributeDescriptor> getAllShowAttributes() {
-      if (showAttributes == null) return new HashSet<DynamicAttributeDescriptor>();
+   public Set<AttributeType> getAllShowAttributes() {
+      if (showAttributes == null) return new HashSet<AttributeType>();
       return showAttributes.keySet();
    }
 

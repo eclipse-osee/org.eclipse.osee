@@ -16,30 +16,26 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Jeff C. Phillips
  */
 public class SkynetViews {
-   private static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
-
    /**
     * @param memento
     * @return Returns a collection of <code>DynamicAttributeDescriptor</code> stored in a memento.
     * @throws SQLException
     */
-   public static List<DynamicAttributeDescriptor> loadAttrTypesFromPreferenceStore(String preferenceKey, Branch branch) throws SQLException {
-      List<DynamicAttributeDescriptor> attributeDescriptors = new LinkedList<DynamicAttributeDescriptor>();
-      Collection<DynamicAttributeDescriptor> descriptors =
-            configurationPersistenceManager.getDynamicAttributeDescriptors(branch);
+   public static List<AttributeType> loadAttrTypesFromPreferenceStore(String preferenceKey, Branch branch) throws SQLException {
+      List<AttributeType> attributeDescriptors = new LinkedList<AttributeType>();
+      Collection<AttributeType> descriptors = AttributeTypeManager.getTypes(branch);
 
       IPreferenceStore preferenceStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
       for (String attributeType : preferenceStore.getString(preferenceKey).split("\\|")) {
-         for (DynamicAttributeDescriptor descriptor : descriptors) {
+         for (AttributeType descriptor : descriptors) {
             if (attributeType.equals(descriptor.getName())) {
                attributeDescriptors.add(descriptor);
                break;

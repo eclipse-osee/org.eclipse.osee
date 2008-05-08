@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttr
  */
 public final class SimpleDateAttribute extends DateAttribute {
 
-   public SimpleDateAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public SimpleDateAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType, dataProvider);
    }
 

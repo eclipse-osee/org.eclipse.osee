@@ -25,8 +25,9 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage;
@@ -60,8 +61,6 @@ import org.eclipse.swt.widgets.Text;
  * @author Michael S. Rodgers
  */
 public class ArtifactSearchPage extends DialogPage implements ISearchPage, IReplacePage {
-   private static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static ISearchPageContainer aContainer;
 
@@ -160,7 +159,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       artifactTypeList.setSorter(new SearchSorter());
 
       try {
-         for (ArtifactSubtypeDescriptor descriptor : configurationPersistenceManager.getValidArtifactTypes(branchManager.getDefaultBranch())) {
+         for (ArtifactSubtypeDescriptor descriptor : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
+               branchManager.getDefaultBranch())) {
             artifactTypeList.add(descriptor.getName());
             artifactTypeList.setData(descriptor.getName(), descriptor);
          }
@@ -273,7 +273,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       attributeValue.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       try {
-         for (DynamicAttributeDescriptor type : configurationPersistenceManager.getDynamicAttributeDescriptors(branchManager.getDefaultBranch())) {
+         for (AttributeType type : AttributeTypeManager.getTypes(branchManager.getDefaultBranch())) {
             attributeTypeList.add(type.getName());
             attributeTypeList.setData(type.getName(), type);
          }

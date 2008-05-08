@@ -156,7 +156,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
             if (artifact.isDeleted()) return false;
 
             try {
-               return artifact.hasChildren();
+               return artifact.getChildren().size() > 0;
             } catch (SQLException ex) {
                logger.log(Level.SEVERE, ex.toString(), ex);
                // Assume it has children if an error happens

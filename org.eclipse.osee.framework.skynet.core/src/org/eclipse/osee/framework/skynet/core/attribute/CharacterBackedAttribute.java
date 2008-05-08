@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
  */
 public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
 
-   protected CharacterBackedAttribute(DynamicAttributeDescriptor attributeType) {
+   protected CharacterBackedAttribute(AttributeType attributeType) {
       super(attributeType);
    }
 

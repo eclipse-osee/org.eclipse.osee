@@ -156,7 +156,7 @@ public class FullPortableExport {
    }
 
    private void writeArtifactHeader(ArtifactSubtypeDescriptor descriptor, Branch branch) throws Exception {
-      Collection<DynamicAttributeDescriptor> allAttributeTypes =
+      Collection<AttributeType> allAttributeTypes =
             configurationManager.getAttributeTypesFromArtifactType(descriptor, branch);
 
       int columnIndex = 0;
@@ -164,7 +164,7 @@ public class FullPortableExport {
       row[columnIndex++] = "GUID";
       row[columnIndex++] = "Human Readable Id";
 
-      for (DynamicAttributeDescriptor attributeType : allAttributeTypes) {
+      for (AttributeType attributeType : allAttributeTypes) {
          row[columnIndex] = attributeType.getName();
          columnIndexHash.put(row[columnIndex], columnIndex++);
       }

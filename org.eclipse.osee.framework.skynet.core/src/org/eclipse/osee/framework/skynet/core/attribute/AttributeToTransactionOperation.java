@@ -64,8 +64,8 @@ public class AttributeToTransactionOperation {
             }
          }
 
-         for (AttributeMemo memo : attributeManager.getDeletedAttributes()) {
-            deleteAttribute(memo, transaction, artifact);
+         for (Attribute<?> attribute : attributeManager.getDeletedAttributes()) {
+            deleteAttribute(attribute, transaction, artifact);
          }
       }
    }
@@ -88,7 +88,7 @@ public class AttributeToTransactionOperation {
          modType = ModType.Added;
       } else {
          memo = attribute.getPersistenceMemo();
-         memo = new AttributeMemo(memo.getAttrId(), memo.getAttrTypeId(), SkynetDatabase.getNextGammaId());
+         memo = new AttributeMemo(memo.getAttrId(), SkynetDatabase.getNextGammaId());
          attribute.setPersistenceMemo(memo);
 
          modType = ModType.Changed;
@@ -117,23 +117,22 @@ public class AttributeToTransactionOperation {
                attribute.getPersistenceMemo().getGammaId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
 
          transaction.addToBatch(UPDATE_ATTRIBUTE, SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-               memo.getAttrId(), SQL3DataType.INTEGER, memo.getAttrTypeId(), SQL3DataType.INTEGER, memo.getGammaId(),
+               memo.getAttrId(), SQL3DataType.INTEGER, attribute.getTypeId(), SQL3DataType.INTEGER, memo.getGammaId(),
                SQL3DataType.VARCHAR, daoToSql.getValue(), SQL3DataType.VARCHAR, daoToSql.getUri());
       }
    }
 
    private AttributeTransactionData createAttributeTxData(Artifact artifact, Attribute attribute, DAOToSQL dao, SkynetTransaction transaction, ModificationType attrModType) throws Exception {
       AttributeMemo memo = attribute.getPersistenceMemo();
-      return new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(), memo.getAttrTypeId(), dao.getValue(),
+      return new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(), attribute.getTypeId(), dao.getValue(),
             memo.getGammaId(), transaction.getTransactionNumber(), dao.getUri(), attrModType, transaction.getBranch());
    }
 
-   private AttributeMemo createNewAttributeMemo(Attribute attribute) throws SQLException {
-      int attrTypeId = attribute.getAttributeManager().getAttributeType().getAttrTypeId();
+   private AttributeMemo createNewAttributeMemo(Attribute<?> attribute) throws SQLException {
       int gammaId = SkynetDatabase.getNextGammaId();
       int attrId = Query.getNextSeqVal(null, SkynetDatabase.ATTR_ID_SEQ);
 
-      AttributeMemo memo = new AttributeMemo(attrId, attrTypeId, gammaId);
+      AttributeMemo memo = new AttributeMemo(attrId, gammaId);
       attribute.setPersistenceMemo(memo);
       return memo;
    }
@@ -145,14 +144,15 @@ public class AttributeToTransactionOperation {
     * 
     * @throws SQLException
     */
-   private void deleteAttribute(AttributeMemo memo, SkynetTransaction transaction, Artifact artifact) throws SQLException {
+   private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws SQLException {
       // If the memo is null, the attribute was never saved to the database, so we can ignore it
+      AttributeMemo memo = attribute.getPersistenceMemo();
       if (memo == null) return;
 
       int gammaId = SkynetDatabase.getNextGammaId();
       transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
-            memo.getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null, ModificationType.DELETED,
-            transaction.getBranch()));
+            attribute.getAttributeType().getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null,
+            ModificationType.DELETED, transaction.getBranch()));
 
       transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
    }

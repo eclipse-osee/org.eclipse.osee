@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
@@ -531,7 +531,7 @@ public class WordTemplateProcessor {
 
       if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();
-         DynamicAttributeDescriptor attributeType = attribute.getAttributeType();
+         AttributeType attributeType = attribute.getAttributeType();
 
          // check if the attribute descriptor name is in the ignore list.
          if (ignoreAttributeExtensions.contains(attributeType.getName())) {
@@ -548,7 +548,7 @@ public class WordTemplateProcessor {
                String data = (String) value;
                String wordContent = WordUtil.stripSpellCheck(data);//TODO what is the best way to get at unknown attribute types? (because this isn't it)
                if (isEditMode) {
-                  DynamicAttributeDescriptor attributeDescriptor = attribute.getAttributeManager().getAttributeType();
+                  AttributeType attributeDescriptor = attribute.getAttributeManager().getAttributeType();
                   writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeDescriptor.getName()),
                         "ns0:guid=\"" + artifact.getGuid() + "\"",
                         "ns0:attrId=\"" + attributeDescriptor.getAttrTypeId() + "\"", wordContent);

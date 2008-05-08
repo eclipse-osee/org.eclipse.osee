@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
 /**
  * @author Ryan D. Brooks
@@ -89,8 +89,8 @@ public class BlamVariableMap {
       return getSingleCollectionValue(ArtifactSubtypeDescriptor.class, parameterName);
    }
 
-   public DynamicAttributeDescriptor getAttributeDescriptor(String parameterName) {
-      return getSingleCollectionValue(DynamicAttributeDescriptor.class, parameterName);
+   public AttributeType getAttributeDescriptor(String parameterName) {
+      return getSingleCollectionValue(AttributeType.class, parameterName);
    }
 
    public String getString(String parameterName) {

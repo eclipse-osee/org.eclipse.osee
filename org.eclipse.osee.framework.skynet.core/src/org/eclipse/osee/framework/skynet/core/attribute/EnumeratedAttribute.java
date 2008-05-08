@@ -30,7 +30,7 @@ public class EnumeratedAttribute extends CharacterBackedAttribute<String> {
 
    private ICharacterAttributeDataProvider dataProvider;
 
-   public EnumeratedAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public EnumeratedAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType);
       this.dataProvider = dataProvider;
       dataProvider.setValue(attributeType.getDefaultValue());

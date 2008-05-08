@@ -20,7 +20,7 @@ public abstract class BinaryAttribute<T> extends BinaryBackedAttribute<T> {
 
    protected IBinaryAttributeDataProvider dataProvider;
 
-   public BinaryAttribute(DynamicAttributeDescriptor attributeType, IBinaryAttributeDataProvider dataProvider) {
+   public BinaryAttribute(AttributeType attributeType, IBinaryAttributeDataProvider dataProvider) {
       super(attributeType);
       this.dataProvider = dataProvider;
    }

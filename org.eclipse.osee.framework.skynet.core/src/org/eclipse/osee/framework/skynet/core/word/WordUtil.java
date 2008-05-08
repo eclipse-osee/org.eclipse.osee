@@ -39,8 +39,8 @@ import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 /**
@@ -102,8 +102,7 @@ public class WordUtil {
    public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws SQLException {
       if (branch == null) throw new IllegalArgumentException("branch can not be null");
 
-      ConfigurationPersistenceManager manager = ConfigurationPersistenceManager.getInstance();
-      DynamicAttributeDescriptor attributeDescriptor = manager.getDynamicAttributeType(WordAttribute.CONTENT_NAME);
+      AttributeType attributeDescriptor = AttributeTypeManager.getType(WordAttribute.CONTENT_NAME);
 
       ConnectionHandlerStatement chStmt = null;
       try {

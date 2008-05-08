@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttr
  */
 public class AttributeValueSearchAttribute extends StringAttribute implements ISearchAttribute<AttributeValueSearch> {
 
-   public AttributeValueSearchAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public AttributeValueSearchAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType, dataProvider);
    }
 

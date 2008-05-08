@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.Mod
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
@@ -88,7 +88,7 @@ public class ChangeArtifactType extends AbstractBlam {
    private void processAttributes(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws SQLException {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
-      Collection<DynamicAttributeDescriptor> descriptorAttrTypes =
+      Collection<AttributeType> descriptorAttrTypes =
             configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor, artifact.getBranch());
 
       for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {

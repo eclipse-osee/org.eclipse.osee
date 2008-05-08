@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
@@ -22,8 +23,9 @@ public class ArtifactCache {
          new DoubleKeyHashMap<Integer, TransactionId, Artifact>();
    private final DoubleKeyHashMap<String, TransactionId, Artifact> artifactGuidCache =
          new DoubleKeyHashMap<String, TransactionId, Artifact>();
-   private final DoubleKeyHashMap<Integer, Integer, Artifact> artifactBranchCache =
-         new DoubleKeyHashMap<Integer, Integer, Artifact>();
+
+   private final CompositeKeyHashMap<Integer, Branch, Artifact> artifactBranchCache =
+         new CompositeKeyHashMap<Integer, Branch, Artifact>(2000);
 
    private static final ArtifactCache instance = new ArtifactCache();
 
@@ -40,15 +42,18 @@ public class ArtifactCache {
     * @param artifact
     */
    public void cache(Artifact artifact) {
-      artifactIdCache.put(artifact.getArtId(), artifact.getPersistenceMemo().getTransactionId(), artifact);
-      artifactGuidCache.put(artifact.getGuid(), artifact.getPersistenceMemo().getTransactionId(), artifact);
-      artifactBranchCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), null);
+      if (artifact.getPersistenceMemo().getTransactionId() == null) {
+         artifactBranchCache.put(artifact.getArtId(), artifact.getBranch(), artifact);
+      } else {
+         artifactIdCache.put(artifact.getArtId(), artifact.getPersistenceMemo().getTransactionId(), artifact);
+         artifactGuidCache.put(artifact.getGuid(), artifact.getPersistenceMemo().getTransactionId(), artifact);
+      }
    }
 
    public void deCache(Artifact artifact) {
       artifactIdCache.remove(artifact.getArtId(), artifact.getPersistenceMemo().getTransactionId());
       artifactGuidCache.remove(artifact.getGuid(), artifact.getPersistenceMemo().getTransactionId());
-      artifactBranchCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
+      artifactBranchCache.remove(artifact.getArtId(), artifact.getBranch());
    }
 
    public Artifact getArtifactFromCache(int artId, TransactionId transactionId) {
@@ -59,7 +64,7 @@ public class ArtifactCache {
       return artifactGuidCache.get(guid, transactionId);
    }
 
-   public boolean containsArtifact(int artId, int branchId) {
-      return artifactBranchCache.containsKey(artId, branchId);
+   public static Artifact getArtifact(int artId, Branch branch) {
+      return instance.artifactBranchCache.get(artId, branch);
    }
 }

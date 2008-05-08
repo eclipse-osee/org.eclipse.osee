@@ -65,6 +65,6 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
          criteria.add(new RelationCriteria(RelationSide.ActionToWorkflow_Action));
       }
 
-      return ArtifactQuery.getArtifacts(BranchPersistenceManager.getAtsBranch(), criteria);
+      return ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), criteria);
    }
 }

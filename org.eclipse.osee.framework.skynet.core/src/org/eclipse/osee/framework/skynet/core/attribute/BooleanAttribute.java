@@ -19,7 +19,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    public static final String[] booleanChoices = new String[] {"yes", "no"};
    private ICharacterAttributeDataProvider dataProvider;
 
-   public BooleanAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public BooleanAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType);
       this.dataProvider = dataProvider;
       dataProvider.setValue(attributeType.getDefaultValue());

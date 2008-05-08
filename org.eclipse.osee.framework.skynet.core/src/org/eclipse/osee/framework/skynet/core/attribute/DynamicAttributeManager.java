@@ -36,13 +36,13 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
  */
 public class DynamicAttributeManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(DynamicAttributeManager.class);
-   private final DynamicAttributeDescriptor descriptor;
+   private final AttributeType descriptor;
 
    private Map<Attribute<?>, WeakReference<IDataAccessObject>> attributeToProviderMap;
 
    private int remainingOccurrences;
    private ArrayList<Attribute<?>> attributes;
-   private Collection<AttributeMemo> deletedAttributes;
+   private Collection<Attribute<?>> deletedAttributes;
    private boolean initialized;
    private boolean inDbInitialize;
    private Artifact parentArtifact;
@@ -52,9 +52,9 @@ public class DynamicAttributeManager {
    /**
     * Create a manager that is tied to a particular artifact.
     */
-   protected DynamicAttributeManager(Artifact parentArtifact, DynamicAttributeDescriptor descriptor, boolean initialized) {
+   protected DynamicAttributeManager(Artifact parentArtifact, AttributeType descriptor, boolean initialized) {
       this.attributeToProviderMap = new WeakHashMap<Attribute<?>, WeakReference<IDataAccessObject>>();
-      this.deletedAttributes = new LinkedList<AttributeMemo>();
+      this.deletedAttributes = new LinkedList<Attribute<?>>();
       this.parentArtifact = parentArtifact;
       this.descriptor = descriptor;
       this.initialized = initialized;
@@ -110,7 +110,7 @@ public class DynamicAttributeManager {
       stateManager.setAttributeManager(this);
 
       AbstractAttributeDataProvider dataProvider = descriptor.createAttributeDataProvider(stateManager);
-      Attribute attribute = descriptor.createAttribute(getParentArtifact(), dataProvider);
+      Attribute<?> attribute = descriptor.createAttribute(getParentArtifact(), dataProvider);
 
       attribute.setStateManager(stateManager);
       attributes.add(attribute);
@@ -154,7 +154,7 @@ public class DynamicAttributeManager {
    /**
     * @return Returns the descriptor.
     */
-   public DynamicAttributeDescriptor getAttributeType() {
+   public AttributeType getAttributeType() {
       return descriptor;
    }
 
@@ -295,15 +295,14 @@ public class DynamicAttributeManager {
             SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
          }
 
-      occurences = attributes.size(); // this may have changed since createAttribute() may have
-      // been called
+      occurences = attributes.size(); // this may have changed since createAttribute() may have been last called
       remainingOccurrences = descriptor.getMaxOccurrences() - occurences;
       if (remainingOccurrences < 0) {
 
          StringBuilder errorBuilder = new StringBuilder();
          errorBuilder.append(getAttributeType().getName() + " setup with too many attributes from the database, acquired " + occurences + " expected no more than " + descriptor.getMaxOccurrences() + "; hrid " + parentArtifact.getHumanReadableId() + " guid " + parentArtifact.getGuid() + ".");
 
-         Attribute removedAttribute;
+         Attribute<?> removedAttribute;
          while (remainingOccurrences < 0) {
             removedAttribute = attributes.remove(attributes.size() - 1);
             remainingOccurrences++;
@@ -364,13 +363,12 @@ public class DynamicAttributeManager {
     * 
     * @return Return a reference to deleted attributes
     */
-   public Collection<AttributeMemo> getDeletedAttributes() {
-      // Give out a new collection so that our internal data can not be modified
-      return new ArrayList<AttributeMemo>(deletedAttributes);
+   public Collection<Attribute<?>> getDeletedAttributes() {
+      return deletedAttributes;
    }
 
-   private void addAttributeToDeleteList(Attribute attribute) {
-      deletedAttributes.add(attribute.getPersistenceMemo());
+   private void addAttributeToDeleteList(Attribute<?> attribute) {
+      deletedAttributes.add(attribute);
    }
 
    /*
@@ -435,8 +433,7 @@ public class DynamicAttributeManager {
       for (Attribute attribute : attributes) {
 
          if (attribute.getPersistenceMemo() == null) {
-            attribute.setPersistenceMemo(new AttributeMemo(attrChange.getAttributeId(),
-                  getAttributeType().getAttrTypeId(), attrChange.getGammaId()));
+            attribute.setPersistenceMemo(new AttributeMemo(attrChange.getAttributeId(), attrChange.getGammaId()));
             foundAttribute = attribute;
             break;
          }
@@ -448,8 +445,7 @@ public class DynamicAttributeManager {
       }
       if (foundAttribute == null) {
          foundAttribute = getNewAttribute();
-         foundAttribute.setPersistenceMemo(new AttributeMemo(attrChange.getAttributeId(),
-               getAttributeType().getAttrTypeId(), attrChange.getGammaId()));
+         foundAttribute.setPersistenceMemo(new AttributeMemo(attrChange.getAttributeId(), attrChange.getGammaId()));
       }
 
       return foundAttribute;

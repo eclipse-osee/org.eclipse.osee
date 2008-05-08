@@ -89,17 +89,6 @@ public class AttributeStateManager {
       this.deleted = isDeleted;
    }
 
-   //   /**
-   //    * @param deletable The deletable to set.
-   //    */
-   //   public void setDeletable(boolean deletable) {
-   //      checkDeleted();
-   //      this.deletable = deletable;
-   //   }
-   //   public boolean isDeleted() {
-   //      return deleted;
-   //   }
-
    protected void checkDeleted() {
       if (deleted) throw new IllegalStateException("This artifact has been deleted");
    }

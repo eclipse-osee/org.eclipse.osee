@@ -11,8 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.importing;
 
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
 /**
  * @author Ryan D. Brooks
@@ -31,7 +32,7 @@ public class AttributeMapRow {
 
    public void persist() throws Exception {
       ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
-      DynamicAttributeDescriptor attributeType = configurationManager.getDynamicAttributeType(attributeName);
+      AttributeType attributeType = AttributeTypeManager.getType(attributeName);
 
       for (String artifactTypeName : importer.determineConcreateTypes(artifactSuperTypeName)) {
          ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(artifactTypeName);

@@ -12,7 +12,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttr
  */
 public class WordTemplateAttribute extends WordAttribute {
 
-   public WordTemplateAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public WordTemplateAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType, dataProvider);
       setDefaultValue(attributeType.getDefaultValue());
    }

@@ -14,14 +14,14 @@ import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
 /**
  * @author Ryan D. Brooks
  */
 public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
-   private DynamicAttributeDescriptor attributeType;
+   private AttributeType attributeType;
    private String value;
    private Collection<String> values;
    private String txsAlias;
@@ -81,7 +81,7 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
 
    private AttributeValueCriteria(String attributeTypeName, String value, Collection<String> values, boolean multiBranchHistorical) throws SQLException {
       if (attributeTypeName != null) {
-         this.attributeType = ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeTypeName);
+         this.attributeType = AttributeTypeManager.getType(attributeTypeName);
       }
 
       if (values == null) {

@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -22,9 +22,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  */
 public class XAttributeTypeListViewer extends XTypeListViewer {
    private static final String NAME = "XAttributeTypeListViewer";
-
-   private static final ConfigurationPersistenceManager configurationManager =
-         ConfigurationPersistenceManager.getInstance();
 
    /**
     * @param name
@@ -41,7 +38,7 @@ public class XAttributeTypeListViewer extends XTypeListViewer {
 
       if (defaultValue != null) {
          try {
-            DynamicAttributeDescriptor attributeType = configurationManager.getDynamicAttributeType(defaultValue);
+            AttributeType attributeType = AttributeTypeManager.getType(defaultValue);
             setDefaultSelected(attributeType);
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);

@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.UniversalCellEditor;
@@ -159,7 +159,7 @@ public class AttributesComposite extends Composite {
 
             if (selected instanceof Attribute) {
                Attribute attribute = (Attribute) selected;
-               DynamicAttributeDescriptor descriptor = attribute.getAttributeManager().getAttributeType();
+               AttributeType descriptor = attribute.getAttributeManager().getAttributeType();
                if (descriptor.getTipText() != null && !descriptor.getTipText().equals("null"))
                   helpText.setText(descriptor.getTipText());
                else
@@ -242,7 +242,7 @@ public class AttributesComposite extends Composite {
       try {
          SelectionAdapter listener = new AttributeMenuSelectionListener(this, tableViewer, editor);
          for (DynamicAttributeManager type : attributeContentProvider.populateAttributeTypes(artifact)) {
-            DynamicAttributeDescriptor descriptor = type.getAttributeType();
+            AttributeType descriptor = type.getAttributeType();
             // TODO ADD BACK WHEN ACCESS CONTROL IS PUT IN -- Only let the user add attributes intended for them
             MenuItem item = new MenuItem(attributesMenu, SWT.CASCADE);
             item.setText(descriptor.getName() + " Attribute");

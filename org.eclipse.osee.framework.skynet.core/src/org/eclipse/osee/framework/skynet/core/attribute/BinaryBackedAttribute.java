@@ -18,7 +18,7 @@ public abstract class BinaryBackedAttribute<T> extends Attribute<T> {
    /**
     * @param attributeType
     */
-   protected BinaryBackedAttribute(DynamicAttributeDescriptor attributeType) {
+   protected BinaryBackedAttribute(AttributeType attributeType) {
       super(attributeType);
    }
 }

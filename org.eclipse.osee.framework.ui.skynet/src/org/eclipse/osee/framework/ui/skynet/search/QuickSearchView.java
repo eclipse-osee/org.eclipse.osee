@@ -247,7 +247,9 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
       AbstractArtifactSearchQuery searchQuery;
       if (historicalSearch.getSelection()) {
-         searchQuery = new HistoricalArtifactSearchQuery(txtSearch.getText().replace('*', '%'));
+         searchQuery =
+               new HistoricalArtifactSearchQuery(txtSearch.getText().replace('*', '%'),
+                     BranchPersistenceManager.getInstance().getDefaultBranch());
       } else if (radNameSearch.getSelection()) {
          searchQuery =
                new ArtifactNameSearchQuery(txtSearch.getText().replace('*', '%'),

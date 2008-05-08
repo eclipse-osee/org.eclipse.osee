@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -27,7 +27,7 @@ public class DeleteExtraneousUnspecifiedAttributes extends AbstractBlam {
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       List<Artifact> artifacts = variableMap.getArtifacts("Artifacts");
-      DynamicAttributeDescriptor attributeDescriptor = variableMap.getAttributeDescriptor("Attribute Type");
+      AttributeType attributeDescriptor = variableMap.getAttributeDescriptor("Attribute Type");
 
       monitor.beginTask("Delete Unspecified " + attributeDescriptor.getName() + " attributes", artifacts.size());
 

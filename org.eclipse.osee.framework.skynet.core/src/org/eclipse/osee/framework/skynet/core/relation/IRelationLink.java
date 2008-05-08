@@ -11,11 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.jdk.core.util.PersistenceObject;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
-public interface IRelationLink extends PersistenceObject {
+public interface IRelationLink {
 
    public static final IRelationLink[] EMPTY_ARRAY = new IRelationLink[0];
 
@@ -84,4 +83,6 @@ public interface IRelationLink extends PersistenceObject {
    public boolean isVersionControlled();
 
    public Branch getBranch();
+
+   public void setPersistenceMemo(LinkPersistenceMemo memo);
 }

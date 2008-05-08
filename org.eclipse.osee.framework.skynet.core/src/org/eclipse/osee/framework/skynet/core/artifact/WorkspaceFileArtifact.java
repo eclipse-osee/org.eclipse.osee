@@ -18,6 +18,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -58,7 +60,8 @@ public class WorkspaceFileArtifact extends Artifact {
       else if (artifacts.isEmpty()) {
          try {
             Collection<ArtifactSubtypeDescriptor> descriptors =
-                  configurationManager.getArtifactTypesFromAttributeType(configurationManager.getDynamicAttributeType("Content URL"));
+                  ConfigurationPersistenceManager.getInstance().getArtifactTypesFromAttributeType(
+                        AttributeTypeManager.getType("Content URL"));
             dialog =
                   new ArtifactDescriptorDialog(
                         shell,

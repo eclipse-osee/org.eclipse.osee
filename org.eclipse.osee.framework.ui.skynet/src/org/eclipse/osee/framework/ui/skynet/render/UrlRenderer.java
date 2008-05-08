@@ -13,13 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
@@ -27,21 +25,16 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
  * @author Ryan D. Brooks
  */
 public class UrlRenderer extends Renderer {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UrlRenderer.class);
-   private static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
    private Collection<ArtifactSubtypeDescriptor> descriptors;
 
    /**
     * @param applicableArtifactTypes
+    * @throws SQLException
     */
-   public UrlRenderer() {
-      try {
-         descriptors =
-               configurationPersistenceManager.getArtifactTypesFromAttributeType(configurationPersistenceManager.getDynamicAttributeType("Content URL"));
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, "", ex);
-      }
+   public UrlRenderer() throws SQLException {
+      descriptors =
+            ConfigurationPersistenceManager.getInstance().getArtifactTypesFromAttributeType(
+                  AttributeTypeManager.getType("Content URL"));
    }
 
    @Override

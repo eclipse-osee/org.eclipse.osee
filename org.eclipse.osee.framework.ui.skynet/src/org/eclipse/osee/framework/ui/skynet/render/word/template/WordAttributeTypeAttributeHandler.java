@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -39,7 +39,7 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
 //if(true)return;
       if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();
-         DynamicAttributeDescriptor attributeType = attribute.getAttributeType();
+         AttributeType attributeType = attribute.getAttributeType();
 
          // check if the attribute descriptor name is in the ignore list.
          if (ignoreAttributeExtensions.contains(attributeType.getName())) {

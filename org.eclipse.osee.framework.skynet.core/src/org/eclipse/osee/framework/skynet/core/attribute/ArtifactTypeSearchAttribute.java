@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttr
  */
 public class ArtifactTypeSearchAttribute extends StringAttribute implements ISearchAttribute<ArtifactTypeSearch> {
 
-   public ArtifactTypeSearchAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public ArtifactTypeSearchAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType, dataProvider);
    }
 

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -73,7 +73,7 @@ public class WordTemplateManager {
          Pattern.compile("<((\\w+:)?(Label|Outline|Name|Format|Editable|ParagraphWrap))>(.*?)</\\1>",
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
-   enum AttributeType {
+   enum XmlAttributeType {
       Label, Outline, Name, Format, Editable, ParagraphWrap
    }
 
@@ -137,7 +137,7 @@ public class WordTemplateManager {
          internalAttributeElementsMatcher.reset(internal);
          while (internalAttributeElementsMatcher.find()) {
             String type = internalAttributeElementsMatcher.group(3);
-            switch (AttributeType.valueOf(type)) {
+            switch (XmlAttributeType.valueOf(type)) {
                case Label:
                   processAttribute.addLabel(internalAttributeElementsMatcher.group(4));
                   break;
@@ -292,8 +292,8 @@ public class WordTemplateManager {
       for (ITemplateTask task : tasks) {
          if (task instanceof TemplateAttribute && ((TemplateAttribute) task).isTypeNameWildcard()) {
             TemplateAttribute attributeTask = (TemplateAttribute) task;
-            Collection<DynamicAttributeDescriptor> attributeTypes = artifact.getAttributeTypes();
-            for (DynamicAttributeDescriptor attributeType : attributeTypes) {
+            Collection<AttributeType> attributeTypes = artifact.getAttributeTypes();
+            for (AttributeType attributeType : attributeTypes) {
                newTasks.add(new TemplateAttribute(attributeTask, attributeType.getName()));
             }
          } else {

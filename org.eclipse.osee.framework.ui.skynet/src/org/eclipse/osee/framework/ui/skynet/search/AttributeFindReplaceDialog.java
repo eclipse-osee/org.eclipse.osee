@@ -35,8 +35,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -61,11 +61,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Robert A. Fisher
  */
 public class AttributeFindReplaceDialog extends Dialog {
-
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(AttributeFindReplaceDialog.class);
-   private static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
-
    private ComboViewer cmbAttributeDescriptors;
    private Text txtFindRegEx;
    private Text txtReplaceStr;
@@ -104,9 +100,9 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void setInputs() {
       try {
-         cmbAttributeDescriptors.setInput(configurationPersistenceManager.getDynamicAttributeDescriptors(
+         cmbAttributeDescriptors.setInput(AttributeTypeManager.getTypes(
                BranchPersistenceManager.getInstance().getDefaultBranch()).toArray(
-               DynamicAttributeDescriptor.EMPTY_ARRAY));
+               AttributeType.EMPTY_ARRAY));
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (SQLException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});
@@ -135,8 +131,8 @@ public class AttributeFindReplaceDialog extends Dialog {
          @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare(((DynamicAttributeDescriptor) e1).getName(),
-                  ((DynamicAttributeDescriptor) e2).getName());
+            return getComparator().compare(((AttributeType) e1).getName(),
+                  ((AttributeType) e2).getName());
          }
       });
 
@@ -154,7 +150,7 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void checkEnabled() {
       boolean enable =
-            (cmbAttributeDescriptors.getInput() instanceof DynamicAttributeDescriptor[]) && (txtFindRegEx.getText().length() > 0) && (artifacts.length > 0);
+            (cmbAttributeDescriptors.getInput() instanceof AttributeType[]) && (txtFindRegEx.getText().length() > 0) && (artifacts.length > 0);
 
       getButton(IDialogConstants.OK_ID).setEnabled(enable);
    }
@@ -164,7 +160,7 @@ public class AttributeFindReplaceDialog extends Dialog {
       final Pattern pattern = Pattern.compile(txtFindRegEx.getText());
       final String replaceText = txtReplaceStr.getText();
       final String attributeName =
-            ((DynamicAttributeDescriptor) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement()).getName();
+            ((AttributeType) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement()).getName();
 
       Job job = new Job("Find/Replace") {
 
@@ -222,8 +218,8 @@ public class AttributeFindReplaceDialog extends Dialog {
       }
 
       public String getText(Object element) {
-         if (element instanceof DynamicAttributeDescriptor)
-            return ((DynamicAttributeDescriptor) element).getName();
+         if (element instanceof AttributeType)
+            return ((AttributeType) element).getName();
          else
             return element.toString();
       }

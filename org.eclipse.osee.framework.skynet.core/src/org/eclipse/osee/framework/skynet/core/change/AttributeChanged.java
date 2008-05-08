@@ -17,8 +17,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -34,7 +35,7 @@ public class AttributeChanged extends Change {
    private InputStream sourceContent;
    private int attrId;
    private int attrTypeId;
-   private DynamicAttributeDescriptor dynamicAttributeDescriptor;
+   private AttributeType dynamicAttributeDescriptor;
    private ArtifactChange artifactChange;
 
    /**
@@ -81,9 +82,9 @@ public class AttributeChanged extends Change {
    /**
     * @return the dynamicAttributeDescriptor
     */
-   public DynamicAttributeDescriptor getDynamicAttributeDescriptor() throws Exception {
+   public AttributeType getDynamicAttributeDescriptor() throws Exception {
       if (dynamicAttributeDescriptor == null) {
-         dynamicAttributeDescriptor = ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attrTypeId);
+         dynamicAttributeDescriptor = AttributeTypeManager.getType(attrTypeId);
       }
       return dynamicAttributeDescriptor;
    }

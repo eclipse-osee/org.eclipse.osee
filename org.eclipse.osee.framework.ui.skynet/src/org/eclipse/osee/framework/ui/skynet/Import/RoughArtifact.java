@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.FullPortableExport;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -119,7 +119,7 @@ public class RoughArtifact {
          if (fullValue != null) {
             try {
                DynamicAttributeManager attributeManager = artifact.getAttributeManager(attributeTypeName);
-               DynamicAttributeDescriptor descriptor = attributeManager.getAttributeType();
+               AttributeType descriptor = attributeManager.getAttributeType();
                if (descriptor.getMinOccurrences() == 1 && descriptor.getMaxOccurrences() == 1) {
                   artifact.setSoleXAttributeValue(attributeTypeName, fullValue);
                } else {

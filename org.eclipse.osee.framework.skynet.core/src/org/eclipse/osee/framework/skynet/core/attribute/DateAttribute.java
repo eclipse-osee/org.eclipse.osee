@@ -31,7 +31,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * 
     * @param attributeType The type of the attribute
     */
-   public DateAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public DateAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType);
       this.dataProvider = dataProvider;
       String defaultValue = attributeType.getDefaultValue();

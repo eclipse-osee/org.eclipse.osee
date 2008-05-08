@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.skynet.core.transactionChange;
 import java.io.InputStream;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;
@@ -34,7 +34,7 @@ public class TransactionAttributeChange extends TransactionChange {
    private InputStream destContent;
    private int attrTypeId;
    private Branch sourceBranch;
-   private DynamicAttributeDescriptor dynamicAttributeDescriptor;
+   private AttributeType dynamicAttributeDescriptor;
 
    /**
     * @param modType
@@ -139,9 +139,9 @@ public class TransactionAttributeChange extends TransactionChange {
     * @return the dynamicAttributeDescriptor
     * @throws SQLException
     */
-   public DynamicAttributeDescriptor getDynamicAttributeDescriptor() throws Exception {
+   public AttributeType getDynamicAttributeDescriptor() throws Exception {
       if (dynamicAttributeDescriptor == null) {
-         dynamicAttributeDescriptor = ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attrTypeId);
+         dynamicAttributeDescriptor = AttributeTypeManager.getType(attrTypeId);
       }
       return dynamicAttributeDescriptor;
    }

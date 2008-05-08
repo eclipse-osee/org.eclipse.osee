@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.utils;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 
 /**
@@ -36,7 +36,7 @@ public class BinaryContentUtils {
    }
 
    public static String generateFileName(DynamicAttributeManager attributeManager) {
-      DynamicAttributeDescriptor attributeDescriptor = attributeManager.getAttributeType();
+      AttributeType attributeDescriptor = attributeManager.getAttributeType();
       StringBuilder builder = new StringBuilder();
       try {
          builder.append(URLEncoder.encode(attributeDescriptor.getName(), "UTF-8"));

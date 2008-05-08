@@ -20,7 +20,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
 
    private ICharacterAttributeDataProvider dataProvider;
 
-   public FloatingPointAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public FloatingPointAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType);
       this.dataProvider = dataProvider;
       String defaultValue = attributeType.getDefaultValue();

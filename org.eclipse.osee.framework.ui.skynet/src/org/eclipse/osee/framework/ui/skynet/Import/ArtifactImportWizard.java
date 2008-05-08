@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
@@ -73,7 +73,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       if (reuseArtifactRoot == null) {
          artifactResolver = new NewArtifactImportResolver();
       } else { // only non-null when reuse artifacts is checked
-         Collection<DynamicAttributeDescriptor> identifyingAttributes =
+         Collection<AttributeType> identifyingAttributes =
                attributeTypePage.getSelectedAttributeDescriptors();
          artifactResolver = new RootAndAttributeBasedArtifactResolver(identifyingAttributes, false);
       }
@@ -149,16 +149,16 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
             ArtifactSubtypeDescriptor rootDescriptor = mainPage.getReuseArtifactRoot().getArtifactType();
             ArtifactSubtypeDescriptor importDescriptor = mainPage.getSelectedType();
 
-            HashSet<DynamicAttributeDescriptor> rootAttributes =
-                  new HashSet<DynamicAttributeDescriptor>(manager.getAttributeTypesFromArtifactType(rootDescriptor,
+            HashSet<AttributeType> rootAttributes =
+                  new HashSet<AttributeType>(manager.getAttributeTypesFromArtifactType(rootDescriptor,
                         mainPage.getSelectedBranch()));
 
             if (rootDescriptor == importDescriptor) {
                attributeTypePage.setDescription("Identifying attributes for " + rootDescriptor.getName() + " artifacts");
                attributeTypePage.setDescriptors(rootAttributes);
             } else {
-               HashSet<DynamicAttributeDescriptor> importAttributes =
-                     new HashSet<DynamicAttributeDescriptor>(manager.getAttributeTypesFromArtifactType(
+               HashSet<AttributeType> importAttributes =
+                     new HashSet<AttributeType>(manager.getAttributeTypesFromArtifactType(
                            importDescriptor, mainPage.getSelectedBranch()));
 
                attributeTypePage.setDescription("Identifying attributes common to " + rootDescriptor.getName() + " and " + importDescriptor.getName() + " artifacts");

@@ -62,7 +62,7 @@ public class AttributeExtensionManager {
       return SkynetActivator.PLUGIN_ID + "." + name;
    }
 
-   public Class<? extends Attribute> getAttributeClassFor(String name) throws ClassNotFoundException {
+   public Class<? extends Attribute<?>> getAttributeClassFor(String name) throws ClassNotFoundException {
       if (attributeTypeClasses == null) {
          attributeTypeClasses = loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
       }

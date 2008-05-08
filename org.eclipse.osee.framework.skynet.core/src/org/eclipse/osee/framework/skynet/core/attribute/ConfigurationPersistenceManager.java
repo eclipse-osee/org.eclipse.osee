@@ -12,14 +12,8 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TYPE_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_BASE_TYPE_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_PROVIDER_TYPE_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTR_BASE_TYPE_ID_SEQ;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTR_PROVIDER_TYPE_ID_SEQ;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTR_TYPE_ID_SEQ;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,8 +29,6 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -49,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeValidityCache
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 
 /**
@@ -57,24 +48,13 @@ import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
  */
 public class ConfigurationPersistenceManager implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ConfigurationPersistenceManager.class);
-   private static final String SELECT_ATTRIBUTE_BASE_TYPE =
-         "SELECT attr_base_type_id FROM " + ATTRIBUTE_BASE_TYPE_TABLE + " WHERE attribute_class = ?";
-   private static final String SELECT_ATTRIBUTE_PROVIDER_TYPE =
-         "SELECT attr_provider_type_id FROM " + ATTRIBUTE_PROVIDER_TYPE_TABLE + " WHERE attribute_provider_class = ?";
 
    private static final String INSERT_ARTIFACT_TYPE =
          "INSERT INTO osee_define_artifact_type (art_type_id, factory_id, namespace, name, factory_key, image) VALUES (?,?,?,?,?,?)";
    private static final String INSERT_VALID_ATTRIBUTE =
          "INSERT INTO osee_define_valid_attributes (art_type_id, attr_type_id) VALUES (?, ?)";
-   private static final String INSERT_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_define_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, validity_xml, min_occurence, max_occurence, tip_text) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-   private static final String INSERT_BASE_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_define_attr_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
-   private static final String INSERT_ATTRIBUTE_PROVIDER_TYPE =
-         "INSERT INTO osee_define_attr_provider_type (attr_provider_type_id, attribute_provider_class) VALUES (?, ?)";
 
    private final ArtifactSubtypeDescriptorCache cacheArtifactSubtypeDescriptors;
-   private final DynamicAttributeDescriptorCache cacheDynamicAttributeDescriptors;
    private final AttributeTypeValidityCache cacheAttributeTypeValidity;
    private final ArtifactTypeValidityCache artifactTypeValidityCache;
 
@@ -88,7 +68,6 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    private ConfigurationPersistenceManager() {
       super();
       cacheArtifactSubtypeDescriptors = new ArtifactSubtypeDescriptorCache();
-      cacheDynamicAttributeDescriptors = new DynamicAttributeDescriptorCache();
       cacheAttributeTypeValidity = new AttributeTypeValidityCache();
       artifactTypeValidityCache = new ArtifactTypeValidityCache();
    }
@@ -105,75 +84,6 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
     */
    public void onManagerWebInit() throws Exception {
       artifactFactoryCache = ArtifactFactoryCache.getInstance();
-   }
-
-   public void makePersistent(String attributeTypeName, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws Exception {
-      AttributeExtensionManager extensionManager = AttributeExtensionManager.getInstance();
-
-      Class<? extends Attribute> baseAttributeClass = extensionManager.getAttributeClassFor(attributeTypeName);
-      Class<? extends AbstractAttributeDataProvider> providerAttributeClass =
-            extensionManager.getAttributeProviderClassFor(attributeProviderTypeName);
-
-      if (!cacheDynamicAttributeDescriptors.descriptorExists(namespace, name)) {
-         int attrTypeId = Query.getNextSeqVal(null, ATTR_TYPE_ID_SEQ);
-         int attrBaseTypeId = getOrCreateAttributeBaseType(attributeTypeName);
-         int attrProviderTypeId = getOrCreateAttributeProviderType(attributeProviderTypeName);
-         ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrTypeId,
-               SQL3DataType.INTEGER, attrBaseTypeId, SQL3DataType.INTEGER, attrProviderTypeId, SQL3DataType.VARCHAR,
-               fileTypeExtension, SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR, name, SQL3DataType.VARCHAR,
-               defaultValue, SQL3DataType.VARCHAR, validityXml, SQL3DataType.INTEGER, minOccurrences,
-               SQL3DataType.INTEGER, maxOccurrences, SQL3DataType.VARCHAR, tipText);
-
-         DynamicAttributeDescriptor descriptor =
-               new DynamicAttributeDescriptor(attrTypeId, baseAttributeClass, providerAttributeClass,
-                     fileTypeExtension, namespace, name, defaultValue, validityXml, minOccurrences, maxOccurrences,
-                     tipText);
-         cacheDynamicAttributeDescriptors.cache(descriptor);
-      }
-   }
-
-   private int getOrCreateAttributeProviderType(String attrProviderExtension) throws SQLException {
-      int attrBaseTypeId = -1;
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_PROVIDER_TYPE, SQL3DataType.VARCHAR,
-                     attrProviderExtension);
-         ResultSet rSet = chStmt.getRset();
-         if (rSet.next()) {
-            attrBaseTypeId = rSet.getInt("attr_provider_type_id");
-         } else {
-            attrBaseTypeId = Query.getNextSeqVal(null, ATTR_PROVIDER_TYPE_ID_SEQ);
-
-            ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_PROVIDER_TYPE, SQL3DataType.INTEGER, attrBaseTypeId,
-                  SQL3DataType.VARCHAR, attrProviderExtension);
-         }
-      } finally {
-         DbUtil.close(chStmt);
-      }
-      return attrBaseTypeId;
-   }
-
-   private int getOrCreateAttributeBaseType(String attrBaseExtension) throws SQLException {
-      int attrBaseTypeId = -1;
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTE_BASE_TYPE, SQL3DataType.VARCHAR, attrBaseExtension);
-         ResultSet rSet = chStmt.getRset();
-         if (rSet.next()) {
-            attrBaseTypeId = rSet.getInt("attr_base_type_id");
-         } else {
-            attrBaseTypeId = Query.getNextSeqVal(null, ATTR_BASE_TYPE_ID_SEQ);
-
-            ConnectionHandler.runPreparedUpdate(INSERT_BASE_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrBaseTypeId,
-                  SQL3DataType.VARCHAR, attrBaseExtension);
-         }
-      } finally {
-         DbUtil.close(chStmt);
-      }
-
-      return attrBaseTypeId;
    }
 
    public void makeSubtypePersistent(String factoryName, String namespace, String artifactTypeName, String factoryKey) throws SQLException {
@@ -269,7 +179,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
     * @param artifactType
     * @throws Exception
     */
-   public void persistAttributeValidity(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws Exception {
+   public void persistAttributeValidity(ArtifactSubtypeDescriptor artifactType, AttributeType attributeType) throws Exception {
       if (!cacheAttributeTypeValidity.isValid(artifactType, attributeType)) {
          ConnectionHandler.runPreparedUpdate(INSERT_VALID_ATTRIBUTE, SQL3DataType.INTEGER, artifactType.getArtTypeId(),
                SQL3DataType.INTEGER, attributeType.getAttrTypeId());
@@ -278,16 +188,16 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       }
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getArtifactTypesFromAttributeType(DynamicAttributeDescriptor attributeType) throws SQLException {
+   public Collection<ArtifactSubtypeDescriptor> getArtifactTypesFromAttributeType(AttributeType attributeType) throws SQLException {
       return cacheAttributeTypeValidity.getArtifactTypesFromAttributeType(attributeType);
    }
 
-   public Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactType(String artifactTypeName, Branch branch) throws SQLException {
+   public Collection<AttributeType> getAttributeTypesFromArtifactType(String artifactTypeName, Branch branch) throws SQLException {
       return cacheAttributeTypeValidity.getAttributeTypesFromArtifactType(
             getArtifactSubtypeDescriptor(artifactTypeName), branch);
    }
 
-   public Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor descriptor, Branch branch) throws SQLException {
+   public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor descriptor, Branch branch) throws SQLException {
       return cacheAttributeTypeValidity.getAttributeTypesFromArtifactType(descriptor, branch);
    }
 
@@ -308,23 +218,10 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return cacheArtifactSubtypeDescriptors.getAllDescriptors();
    }
 
-   public DynamicAttributeDescriptor getDynamicAttributeType(int attrTypeId) throws SQLException {
-      return cacheDynamicAttributeDescriptors.getDescriptor(attrTypeId);
-   }
-
-   public DynamicAttributeDescriptor getDynamicAttributeType(String attributeName) throws SQLException {
-      return cacheDynamicAttributeDescriptors.getDescriptor(attributeName);
-   }
-
-   public Collection<DynamicAttributeDescriptor> getDynamicAttributeDescriptors(Branch branch) throws SQLException {
-      return cacheDynamicAttributeDescriptors.getAllDescriptors(branch);
-   }
-
    public Set<String> getValidEnumerationAttributeValues(String attributeName, Branch branch) {
       Set<String> names = new HashSet<String>();
       try {
-         DynamicAttributeDescriptor dad =
-               ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attributeName);
+         AttributeType dad = AttributeTypeManager.getType(attributeName);
          String str = dad.getValidityXml();
          Matcher m = Pattern.compile("<Enum>(.*?)</Enum>").matcher(str);
          while (m.find())

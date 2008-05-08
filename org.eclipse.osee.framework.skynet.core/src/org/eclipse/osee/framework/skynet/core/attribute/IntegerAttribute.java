@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttr
 public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
    private ICharacterAttributeDataProvider dataProvider;
 
-   public IntegerAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public IntegerAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType);
       this.dataProvider = dataProvider;
       String defaultValue = attributeType.getDefaultValue();

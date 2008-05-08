@@ -62,4 +62,11 @@ public class ArtifactTypeManager {
             branch, guid, humandReadableId);
    }
 
+   public static ArtifactSubtypeDescriptor getType(int artifactTypeId) throws SQLException {
+      return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeId);
+   }
+
+   public static ArtifactSubtypeDescriptor getType(String artifactTypeName) throws SQLException {
+      return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName);
+   }
 }

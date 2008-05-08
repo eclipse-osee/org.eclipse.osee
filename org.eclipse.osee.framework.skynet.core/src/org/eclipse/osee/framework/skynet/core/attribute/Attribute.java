@@ -11,20 +11,18 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.jdk.core.util.PersistenceMemo;
-import org.eclipse.osee.framework.jdk.core.util.PersistenceObject;
 import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class Attribute<T> implements PersistenceObject {
+public abstract class Attribute<T> {
 
-   private final DynamicAttributeDescriptor attributeType;
+   private final AttributeType attributeType;
    private AttributeStateManager stateManager;
    private AttributeMemo memo;
 
-   protected Attribute(DynamicAttributeDescriptor attributeType) {
+   protected Attribute(AttributeType attributeType) {
       this.attributeType = attributeType;
       this.stateManager = null;
       this.memo = null;
@@ -55,8 +53,12 @@ public abstract class Attribute<T> implements PersistenceObject {
    /**
     * @return attributeType Attribute Type Information
     */
-   public DynamicAttributeDescriptor getAttributeType() {
+   public AttributeType getAttributeType() {
       return attributeType;
+   }
+
+   public int getTypeId() {
+      return attributeType.getAttrTypeId();
    }
 
    /**
@@ -79,15 +81,9 @@ public abstract class Attribute<T> implements PersistenceObject {
    /*
     * (non-Javadoc)
     * 
-    * @see osee.plugin.core.util.PersistenceObject#setPersistenceMemo(osee.plugin.core.util.PersistenceMemo)
     */
-   public void setPersistenceMemo(PersistenceMemo memo) {
-      stateManager.checkDeleted();
-      if (memo instanceof AttributeMemo) {
-         this.memo = (AttributeMemo) memo;
-      } else {
-         throw new IllegalArgumentException("Invalid memo type");
-      }
+   public void setPersistenceMemo(AttributeMemo memo) {
+      this.memo = memo;
    }
 
    /**

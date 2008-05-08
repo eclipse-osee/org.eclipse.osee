@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttr
  * 
  * @author Robert A. Fisher
  */
-public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDescriptor> {
-   public static final DynamicAttributeDescriptor[] EMPTY_ARRAY = new DynamicAttributeDescriptor[0];
-   private Class<? extends Attribute> baseAttributeClass;
+public class AttributeType implements Comparable<AttributeType> {
+   public static final AttributeType[] EMPTY_ARRAY = new AttributeType[0];
+   private Class<? extends Attribute<?>> baseAttributeClass;
    private Class<? extends AbstractAttributeDataProvider> providerAttributeClass;
    private int attrTypeId;
    private String namespace;
@@ -56,7 +56,7 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
     * @param tipText
     * @throws SQLException
     */
-   public DynamicAttributeDescriptor(int attrTypeId, Class<? extends Attribute> baseAttributeClass, Class<? extends AbstractAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
+   public AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends AbstractAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
       if (minOccurrences < 0) {
          throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
       }
@@ -91,7 +91,7 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
    /**
     * @return Returns the baseAttributeClass.
     */
-   public Class<? extends Attribute> getBaseAttributeClass() {
+   public Class<? extends Attribute<?>> getBaseAttributeClass() {
       return baseAttributeClass;
    }
 
@@ -179,7 +179,7 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
       if (this == obj) return true;
       if (obj == null) return false;
       if (getClass() != obj.getClass()) return false;
-      final DynamicAttributeDescriptor other = (DynamicAttributeDescriptor) obj;
+      final AttributeType other = (AttributeType) obj;
       if (name == null) {
          if (other.name != null) return false;
       } else if (!name.equals(other.name)) return false;
@@ -194,7 +194,7 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
     * 
     * @see java.lang.Comparable#compareTo(T)
     */
-   public int compareTo(DynamicAttributeDescriptor attributeType) {
+   public int compareTo(AttributeType attributeType) {
       if (attributeType == null) {
          return -1;
       }
@@ -223,7 +223,7 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
       Attribute<?> toReturn = null;
       Object[] params = new Object[] {this, attributeDataProvider};
       try {
-         Constructor<? extends Attribute> constructor = getAttributeConstructor(artifact);
+         Constructor<? extends Attribute<?>> constructor = getAttributeConstructor(artifact);
          toReturn = constructor.newInstance(params);
       } catch (Exception ex) {
          throw new Exception(String.format("Error creating attribute:\n Class: [%s] Params: [%s]",
@@ -232,9 +232,9 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
       return toReturn;
    }
 
-   private Constructor<? extends Attribute> getAttributeConstructor(Artifact artifact) throws SecurityException, NoSuchMethodException {
-      Constructor<? extends Attribute> constructor = null;
-      Class<? extends Attribute> attributeClass = getBaseAttributeClass();
+   private Constructor<? extends Attribute<?>> getAttributeConstructor(Artifact artifact) throws SecurityException, NoSuchMethodException {
+      Constructor<? extends Attribute<?>> constructor = null;
+      Class<? extends Attribute<?>> attributeClass = getBaseAttributeClass();
 
       //TODO: JPhillips - This should be removed when the blob attribute conversion is complete
       if (artifact instanceof WordArtifact && name.equals("Word Formatted Content")) {
@@ -249,13 +249,11 @@ public class DynamicAttributeDescriptor implements Comparable<DynamicAttributeDe
 
       try {
          constructor =
-               attributeClass.getConstructor(new Class[] {DynamicAttributeDescriptor.class,
-                     ICharacterAttributeDataProvider.class});
+               attributeClass.getConstructor(new Class[] {AttributeType.class, ICharacterAttributeDataProvider.class});
 
       } catch (Exception ex) {
          constructor =
-               attributeClass.getConstructor(new Class[] {DynamicAttributeDescriptor.class,
-                     IBinaryAttributeDataProvider.class});
+               attributeClass.getConstructor(new Class[] {AttributeType.class, IBinaryAttributeDataProvider.class});
       }
       return constructor;
    }

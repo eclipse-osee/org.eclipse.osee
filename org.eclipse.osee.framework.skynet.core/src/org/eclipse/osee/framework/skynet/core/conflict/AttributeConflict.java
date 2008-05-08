@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.io.InputStream;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeIcons;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -32,7 +32,7 @@ public class AttributeConflict extends Conflict {
    private InputStream destContent;
    private int attrId;
    private int attrTypeId;
-   private DynamicAttributeDescriptor dynamicAttributeDescriptor;
+   private AttributeType dynamicAttributeDescriptor;
 
    /**
     * @param sourceGamma
@@ -64,9 +64,9 @@ public class AttributeConflict extends Conflict {
     * @return the dynamicAttributeDescriptor
     * @throws SQLException
     */
-   public DynamicAttributeDescriptor getDynamicAttributeDescriptor() throws Exception {
+   public AttributeType getDynamicAttributeDescriptor() throws Exception {
       if (dynamicAttributeDescriptor == null) {
-         dynamicAttributeDescriptor = ConfigurationPersistenceManager.getInstance().getDynamicAttributeType(attrTypeId);
+         dynamicAttributeDescriptor = AttributeTypeManager.getType(attrTypeId);
       }
       return dynamicAttributeDescriptor;
    }

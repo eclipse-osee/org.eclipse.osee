@@ -39,10 +39,11 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -54,8 +55,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 public class BranchImporterSaxHandler extends BranchSaxHandler {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchImporterSaxHandler.class);
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationManager =
-         ConfigurationPersistenceManager.getInstance();
    private static final TransactionIdManager transactionManager = TransactionIdManager.getInstance();
 
    private static final String INSERT_ARTIFACT_VERSION =
@@ -224,7 +223,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processArtifact(String guid, String type, String hrid, boolean deleted) throws SQLException {
+   protected void processArtifact(String guid, String artifactTypeName, String hrid, boolean deleted) throws SQLException {
       if (monitor.isCanceled()) {
          return;
       }
@@ -245,7 +244,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          }
          currentArtifactId = Query.getNextSeqVal(null, ART_ID_SEQ);
 
-         ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(type);
+         ArtifactSubtypeDescriptor artifactType = ArtifactTypeManager.getType(artifactTypeName);
          int artTypeId = artifactType.getArtTypeId();
          artifactGuidCache.map(currentArtifactId, guid);
          ConnectionHandler.runPreparedUpdate(INSERT_NEW_ARTIFACT, SQL3DataType.INTEGER, currentArtifactId,
@@ -266,7 +265,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processAttribute(String attributeGuid, String attributeType, String stringValue, byte[] contentValue, boolean deleted) throws Exception {
+   protected void processAttribute(String attributeGuid, String attributeTypeName, String stringValue, byte[] contentValue, boolean deleted) throws Exception {
       // Skip this attribute if the artifact is not being included
       if (currentArtifactId == null || monitor.isCanceled()) {
          return;
@@ -283,7 +282,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
                attributeGuid);
       }
 
-      int attrTypeId = configurationManager.getDynamicAttributeType(attributeType).getAttrTypeId();
+      int attrTypeId = AttributeTypeManager.getType(attributeTypeName).getAttrTypeId();
       int gammaId = Query.getNextSeqVal(null, GAMMA_ID_SEQ);
       ModificationType modificationType = getModType(modified, deleted);
 

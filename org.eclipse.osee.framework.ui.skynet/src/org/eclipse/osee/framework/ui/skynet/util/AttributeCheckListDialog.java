@@ -24,8 +24,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTreeContentProvider;
@@ -42,18 +42,18 @@ import org.eclipse.ui.dialogs.SelectionDialog;
  */
 public class AttributeCheckListDialog extends SelectionDialog {
    private CheckboxTreeViewer treeViewer;
-   private final ArrayList<DynamicAttributeDescriptor> selectedAttributes;
+   private final ArrayList<AttributeType> selectedAttributes;
    private String preferenceKey;
 
    public AttributeCheckListDialog(Shell parent, String preferenceKey) {
       this(parent, null, preferenceKey);
    }
 
-   public AttributeCheckListDialog(Shell parent, Collection<DynamicAttributeDescriptor> attrTypes, String preferenceKey) {
+   public AttributeCheckListDialog(Shell parent, Collection<AttributeType> attrTypes, String preferenceKey) {
       super(parent);
       setTitle("Select Attributes");
       setMessage("Select Attributes");
-      this.selectedAttributes = new ArrayList<DynamicAttributeDescriptor>();
+      this.selectedAttributes = new ArrayList<AttributeType>();
       this.preferenceKey = preferenceKey;
 
       if (attrTypes != null && !attrTypes.isEmpty()) {
@@ -96,7 +96,7 @@ public class AttributeCheckListDialog extends SelectionDialog {
          public void selectionChanged(SelectionChangedEvent event) {
             selectedAttributes.clear();
             for (Object obj : treeViewer.getCheckedElements())
-               selectedAttributes.add((DynamicAttributeDescriptor) obj);
+               selectedAttributes.add((AttributeType) obj);
          };
       });
       treeViewer.setLabelProvider(new LabelProvider() {
@@ -106,8 +106,7 @@ public class AttributeCheckListDialog extends SelectionDialog {
          }
       });
       try {
-         treeViewer.setInput(ConfigurationPersistenceManager.getInstance().getDynamicAttributeDescriptors(
-               BranchPersistenceManager.getInstance().getDefaultBranch()));
+         treeViewer.setInput(AttributeTypeManager.getTypes(BranchPersistenceManager.getInstance().getDefaultBranch()));
          treeViewer.setCheckedElements(objs.toArray(new Object[objs.size()]));
       } catch (Exception ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.toString(), ex);
@@ -122,8 +121,8 @@ public class AttributeCheckListDialog extends SelectionDialog {
 
       @SuppressWarnings("unchecked")
       public int compare(Viewer viewer, Object o1, Object o2) {
-         return getComparator().compare(((DynamicAttributeDescriptor) o1).getName(),
-               ((DynamicAttributeDescriptor) o2).getName());
+         return getComparator().compare(((AttributeType) o1).getName(),
+               ((AttributeType) o2).getName());
       }
    }
 
@@ -134,7 +133,7 @@ public class AttributeCheckListDialog extends SelectionDialog {
    /**
     * @return the selectedAttributes
     */
-   public Collection<DynamicAttributeDescriptor> getSelectedAttributes() {
+   public Collection<AttributeType> getSelectedAttributes() {
       return selectedAttributes;
    }
 

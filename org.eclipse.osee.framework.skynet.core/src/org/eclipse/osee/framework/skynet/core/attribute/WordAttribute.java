@@ -29,7 +29,7 @@ public abstract class WordAttribute extends StringAttribute implements IStreamSe
     * @param attributeType
     * @param value
     */
-   public WordAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public WordAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType, dataProvider);
    }
 

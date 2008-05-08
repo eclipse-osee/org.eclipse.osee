@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -199,7 +200,7 @@ public class SkynetTypesImporter implements RowProcessor {
       if (fileTypeExtension == null) {
          fileTypeExtension = "";
       }
-      configurationManager.makePersistent(attrBaseType, attrProviderType, fileTypeExtension, "", attributeName,
+      AttributeTypeManager.createType(attrBaseType, attrProviderType, fileTypeExtension, "", attributeName,
             defaultValue, validityXml, minOccurrence, maxOccurrence, tipText);
    }
 

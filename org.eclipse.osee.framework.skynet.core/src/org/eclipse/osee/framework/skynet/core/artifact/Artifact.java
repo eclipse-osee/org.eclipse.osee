@@ -31,8 +31,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.PersistenceMemo;
-import org.eclipse.osee.framework.jdk.core.util.PersistenceObject;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -44,9 +42,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnot
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.IStreamSetableAttribute;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -63,14 +62,12 @@ import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 
-public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artifact> {
+public class Artifact implements IAdaptable, Comparable<Artifact> {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    public static final Artifact[] EMPTY_ARRAY = new Artifact[0];
    protected static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   protected static final ConfigurationPersistenceManager configurationManager =
-         ConfigurationPersistenceManager.getInstance();
    protected static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
    private static final AccessControlManager accessManager = AccessControlManager.getInstance();
    private static int count = 0;
@@ -367,22 +364,6 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       child.getLinkManager().persistLinks();
    }
 
-   /**
-    * A lightweight method for acquiring if this artifact has children. This works by not acquiring the full relation
-    * from the database to just count the children. Instead, if the relation is not available, an alternative database
-    * call is made.
-    * 
-    * @return Whether this <code>Artifact</code> has children.
-    * @throws SQLException
-    */
-   public boolean hasChildren() throws SQLException {
-      if (isLinkManagerLoaded()) {
-         return getChildren().size() > 0;
-      }
-
-      return artifactManager.getArtifactDhChildCount(memo.getArtId(), getBranch()) > 0;
-   }
-
    public void addChildren(List<? extends Artifact> artifacts) throws SQLException {
       for (Artifact artifact : artifacts) {
          addChild(artifact);
@@ -404,7 +385,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     * @throws SQLException
     */
-   public DynamicAttributeManager getAttributeManager(DynamicAttributeDescriptor attributeType) throws SQLException {
+   public DynamicAttributeManager getAttributeManager(AttributeType attributeType) throws SQLException {
       for (DynamicAttributeManager attributeManager : getAttributeManagers()) {
          if (attributeManager.getAttributeType().equals(attributeType)) {
             return attributeManager;
@@ -427,7 +408,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public DynamicAttributeManager getAttributeManager(String attributeName) throws SQLException {
-      return getAttributeManager(configurationManager.getDynamicAttributeType(attributeName));
+      return getAttributeManager(AttributeTypeManager.getType(attributeName));
    }
 
    /**
@@ -436,9 +417,10 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
     * @throws SQLException
     */
    public boolean isAttributeTypeValid(String attributeName) throws SQLException {
-      Collection<DynamicAttributeDescriptor> attributeTypes =
-            configurationManager.getAttributeTypesFromArtifactType(getArtifactTypeName(), branch);
-      for (DynamicAttributeDescriptor attributeType : attributeTypes) {
+      Collection<AttributeType> attributeTypes =
+            ConfigurationPersistenceManager.getInstance().getAttributeTypesFromArtifactType(getArtifactTypeName(),
+                  branch);
+      for (AttributeType attributeType : attributeTypes) {
          if (attributeType.getName().equals(attributeName)) {
             return true;
          }
@@ -450,11 +432,12 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return getAttributeManager(attributeTypeName).getAttributes();
    }
 
-   public Collection<DynamicAttributeDescriptor> getAttributeTypes() throws SQLException {
-      return configurationManager.getAttributeTypesFromArtifactType(getArtifactTypeName(), branch);
+   public Collection<AttributeType> getAttributeTypes() throws SQLException {
+      return ConfigurationPersistenceManager.getInstance().getAttributeTypesFromArtifactType(getArtifactTypeName(),
+            branch);
    }
 
-   public <T> Collection<Attribute<T>> getAttributes(DynamicAttributeDescriptor attributeType) throws SQLException {
+   public <T> Collection<Attribute<T>> getAttributes(AttributeType attributeType) throws SQLException {
       return getAttributeManager(attributeType).getAttributes();
    }
 
@@ -462,7 +445,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return getSoleAttribute(getAttributeManager(attributeTypeName));
    }
 
-   private <T> Attribute<T> getSoleAttribute(DynamicAttributeDescriptor attributeType) throws IllegalStateException, SQLException {
+   private <T> Attribute<T> getSoleAttribute(AttributeType attributeType) throws IllegalStateException, SQLException {
       return getSoleAttribute(getAttributeManager(attributeType));
    }
 
@@ -482,7 +465,7 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return getSoleAttributeForSet(getAttributeManager(attributeTypeName));
    }
 
-   private <T> Attribute<T> getSoleAttributeForSet(DynamicAttributeDescriptor attributeType) throws IllegalStateException, SQLException {
+   private <T> Attribute<T> getSoleAttributeForSet(AttributeType attributeType) throws IllegalStateException, SQLException {
       return getSoleAttributeForSet(getAttributeManager(attributeType));
    }
 
@@ -788,9 +771,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       if (attributeManagers != null) {
          for (DynamicAttributeManager attrManager : attributeManagers) {
             attrManager.setDirty(false);
-            }
          }
       }
+   }
 
    /**
     * Not supported in the public API for internal use only.
@@ -1000,11 +983,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return deleted;
    }
 
-   protected void setDeleted(int deletionTransactionId) {
+   public void setDeleted(int deletionTransactionId) {
       this.deletionTransactionId = deletionTransactionId;
-      if (isInDb()) {
-         ArtifactCache.getInstance().deCache(this);
-      }
       this.deleted = true;
    }
 
@@ -1168,13 +1148,10 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       return memo;
    }
 
-   public void setPersistenceMemo(PersistenceMemo memo) {
-      if (memo != null && memo instanceof ArtifactPersistenceMemo) {
-         this.memo = (ArtifactPersistenceMemo) memo;
-         ArtifactCache.getInstance().cache(this);
-         dirty = true;
-      } else
-         throw new IllegalArgumentException("Invalid memo type");
+   public void setPersistenceMemo(ArtifactPersistenceMemo memo) {
+      this.memo = memo;
+      ArtifactCache.getInstance().cache(this);
+      dirty = true;
    }
 
    /**
@@ -1317,8 +1294,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    private void copyAttributes(Artifact artifact) throws Exception {
       for (DynamicAttributeManager attrManager : getAttributeManagers()) {
          attrManager.copyTo(artifact);
-         }
       }
+   }
 
    /*
     * (non-Javadoc)
@@ -1499,13 +1476,13 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       if (!attributesNotLoaded()) throw new IllegalStateException(
             "Can't perform attribute initialization on artifacts with loaded attributes");
 
-      Collection<DynamicAttributeDescriptor> attributeTypeDescriptors =
-            configurationManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
+      Collection<AttributeType> attributeTypeDescriptors =
+            ConfigurationPersistenceManager.getInstance().getAttributeTypesFromArtifactType(getArtifactType(), branch);
       Collection<DynamicAttributeManager> attributes =
             new ArrayList<DynamicAttributeManager>(attributeTypeDescriptors.size());
 
       DynamicAttributeManager attribute;
-      for (DynamicAttributeDescriptor attributeType : attributeTypeDescriptors) {
+      for (AttributeType attributeType : attributeTypeDescriptors) {
          attribute = attributeType.createAttributeManager(this, true);
 
          attribute.setupForInitialization(true);

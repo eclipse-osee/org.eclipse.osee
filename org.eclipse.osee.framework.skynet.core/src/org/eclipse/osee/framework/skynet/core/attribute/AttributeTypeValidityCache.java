@@ -31,20 +31,20 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 public class AttributeTypeValidityCache {
    private static final String attributeValiditySql =
          "SELECT art_type_id, attr_type_id FROM osee_define_valid_attributes";
-   private final HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor> artifactToAttributeMap;
-   private final HashCollection<DynamicAttributeDescriptor, ArtifactSubtypeDescriptor> attributeToartifactMap;
+   private final HashCollection<ArtifactSubtypeDescriptor, AttributeType> artifactToAttributeMap;
+   private final HashCollection<AttributeType, ArtifactSubtypeDescriptor> attributeToartifactMap;
 
    public AttributeTypeValidityCache() {
       artifactToAttributeMap =
-            new HashCollection<ArtifactSubtypeDescriptor, DynamicAttributeDescriptor>(false, TreeSet.class);
+            new HashCollection<ArtifactSubtypeDescriptor, AttributeType>(false, TreeSet.class);
       attributeToartifactMap =
-            new HashCollection<DynamicAttributeDescriptor, ArtifactSubtypeDescriptor>(false, TreeSet.class);
+            new HashCollection<AttributeType, ArtifactSubtypeDescriptor>(false, TreeSet.class);
    }
 
-   public Collection<DynamicAttributeDescriptor> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
+   public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
       ensurePopulated();
 
-      Collection<DynamicAttributeDescriptor> attributeTypes = artifactToAttributeMap.getValues(artifactType);
+      Collection<AttributeType> attributeTypes = artifactToAttributeMap.getValues(artifactType);
       if (attributeTypes == null) {
          throw new IllegalArgumentException(
                "There are no valid attribute types available for the artifact type \"" + artifactType + "\"");
@@ -60,8 +60,8 @@ public class AttributeTypeValidityCache {
       return attributeTypes;
    }
 
-   private void removeAttributeType(Collection<DynamicAttributeDescriptor> attributeTypes, int attributeTypeId) {
-      for (DynamicAttributeDescriptor attributeType : attributeTypes) {
+   private void removeAttributeType(Collection<AttributeType> attributeTypes, int attributeTypeId) {
+      for (AttributeType attributeType : attributeTypes) {
          if (attributeType.getAttrTypeId() == attributeTypeId) {
             attributeTypes.remove(attributeType);
             return;
@@ -87,8 +87,7 @@ public class AttributeTypeValidityCache {
             try {
                ArtifactSubtypeDescriptor artifactType =
                      configurationManager.getArtifactSubtypeDescriptor(rSet.getInt("art_type_id"));
-               DynamicAttributeDescriptor attributeType =
-                     configurationManager.getDynamicAttributeType(rSet.getInt("attr_type_id"));
+               AttributeType attributeType = AttributeTypeManager.getType(rSet.getInt("attr_type_id"));
 
                artifactToAttributeMap.put(artifactType, attributeType);
                attributeToartifactMap.put(attributeType, artifactType);
@@ -101,7 +100,7 @@ public class AttributeTypeValidityCache {
       }
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getArtifactTypesFromAttributeType(DynamicAttributeDescriptor requestedAttributeType) throws SQLException {
+   public Collection<ArtifactSubtypeDescriptor> getArtifactTypesFromAttributeType(AttributeType requestedAttributeType) throws SQLException {
       ensurePopulated();
 
       Collection<ArtifactSubtypeDescriptor> artifactTypes = attributeToartifactMap.getValues(requestedAttributeType);
@@ -113,11 +112,11 @@ public class AttributeTypeValidityCache {
       return artifactTypes;
    }
 
-   public boolean isValid(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws Exception {
+   public boolean isValid(ArtifactSubtypeDescriptor artifactType, AttributeType attributeType) throws Exception {
       ensurePopulated();
-      Collection<DynamicAttributeDescriptor> attributeTypes = artifactToAttributeMap.getValues(artifactType);
+      Collection<AttributeType> attributeTypes = artifactToAttributeMap.getValues(artifactType);
       if (attributeTypes != null) {
-         for (DynamicAttributeDescriptor otherAttributeType : attributeTypes) {
+         for (AttributeType otherAttributeType : attributeTypes) {
             if (attributeType.equals(otherAttributeType)) {
                return true;
             }
@@ -131,7 +130,7 @@ public class AttributeTypeValidityCache {
     * @param artifactType
     * @throws Exception
     */
-   public void add(ArtifactSubtypeDescriptor artifactType, DynamicAttributeDescriptor attributeType) throws Exception {
+   public void add(ArtifactSubtypeDescriptor artifactType, AttributeType attributeType) throws Exception {
       ensurePopulated();
       artifactToAttributeMap.put(artifactType, attributeType);
       attributeToartifactMap.put(attributeType, artifactType);

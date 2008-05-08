@@ -471,13 +471,10 @@ public class RelationPersistenceManager implements PersistenceManager {
             NetworkNewRelationLinkEvent newRelationEvent = (NetworkNewRelationLinkEvent) event;
 
             try {
-               if (ArtifactCache.getInstance().containsArtifact(artAId, branch.getBranchId()) || ArtifactCache.getInstance().containsArtifact(
-                     artBId, branch.getBranchId())) {
-                  Artifact artA =
-                        artifactManager.getArtifactFromId(artAId, transactionIdManager.getEditableTransactionId(branch));
-                  Artifact artB =
-                        artifactManager.getArtifactFromId(artBId, transactionIdManager.getEditableTransactionId(branch));
+               Artifact artA = ArtifactCache.getArtifact(artAId, branch);
+               Artifact artB = ArtifactCache.getArtifact(artBId, branch);
 
+               if (artA != null && artB != null) {
                   IRelationType relationType = RelationTypeManager.getType(newRelationEvent.getRelTypeId());
 
                   LinkPersistenceMemo memo = new LinkPersistenceMemo(relId, gammaId);

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.sql.SkynetRevisionControl;
@@ -106,7 +106,7 @@ public class SkynetArtifactAdapter {
    // Filter parent relations unless "" or null is passed in.
    public ArtifactTypeNode createArtifactTypeNode(ArtifactSubtypeDescriptor artifactType, String parentRelationName, int branchId, int revision) {
       ArtifactTypeNode artifactTypeNode = new ArtifactTypeNode(artifactType);
-      Collection<DynamicAttributeDescriptor> attributeTypes = null;
+      Collection<AttributeType> attributeTypes = null;
       Collection<IRelationType> relationsTypes = null;
       int artTypeid = artifactType.getArtTypeId();
       if (parentRelationName == null) {
@@ -120,7 +120,7 @@ public class SkynetArtifactAdapter {
       } catch (SQLException ex) {
          ex.printStackTrace();
       }
-      for (DynamicAttributeDescriptor descriptor : attributeTypes) {
+      for (AttributeType descriptor : attributeTypes) {
          artifactTypeNode.addChild(new AttributeTypeNode(descriptor));
       }
       for (IRelationType relationType : relationsTypes) {

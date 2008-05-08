@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.util.PersistenceMemo;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -285,11 +284,8 @@ public abstract class RelationLinkBase implements IRelationLink {
       return memo;
    }
 
-   public void setPersistenceMemo(PersistenceMemo memo) {
+   public void setPersistenceMemo(LinkPersistenceMemo memo) {
       checkDeleted();
-      if (!(memo instanceof LinkPersistenceMemo)) throw new IllegalArgumentException(
-            "memo must be of type " + LinkPersistenceMemo.class);
-
       this.memo = (LinkPersistenceMemo) memo;
    }
 

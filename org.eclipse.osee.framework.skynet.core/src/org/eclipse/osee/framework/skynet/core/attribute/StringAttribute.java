@@ -19,7 +19,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
 
    private ICharacterAttributeDataProvider dataProvider;
 
-   public StringAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public StringAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType);
       this.dataProvider = dataProvider;
       String defaultValue = attributeType.getDefaultValue();

@@ -20,7 +20,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact.NameAndVal;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -28,21 +28,21 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Robert A. Fisher
  */
 public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportResolver {
-   private final LinkedList<DynamicAttributeDescriptor> identifyingAttributeDescriptors;
+   private final LinkedList<AttributeType> identifyingAttributeDescriptors;
    private final Collection<String> EMPTY = new ArrayList<String>(0);
    private final boolean createNewIfNotExist;
 
    /**
     * @param identifyingAttributeDescriptors
     */
-   public RootAndAttributeBasedArtifactResolver(Collection<DynamicAttributeDescriptor> identifyingAttributeDescriptors, boolean createNewIfNotExist) {
+   public RootAndAttributeBasedArtifactResolver(Collection<AttributeType> identifyingAttributeDescriptors, boolean createNewIfNotExist) {
       if (identifyingAttributeDescriptors == null) throw new IllegalArgumentException(
             "identifyingAttributeDescriptors can not be null");
       if (identifyingAttributeDescriptors.isEmpty()) throw new IllegalArgumentException(
             "identifyingAttributeDescriptors can not be empty");
 
       this.identifyingAttributeDescriptors =
-            new LinkedList<DynamicAttributeDescriptor>(identifyingAttributeDescriptors);
+            new LinkedList<AttributeType>(identifyingAttributeDescriptors);
       this.createNewIfNotExist = createNewIfNotExist;
    }
 
@@ -54,7 +54,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
          roughAttributeMap.put(roughAttribute.getName(), roughAttribute.getValue());
       }
 
-      for (DynamicAttributeDescriptor descriptor : identifyingAttributeDescriptors) {
+      for (AttributeType descriptor : identifyingAttributeDescriptors) {
          Collection<Attribute<String>> attributes = artifact.getAttributeManager(descriptor).getAttributes();
          Collection<String> roughAttributes = roughAttributeMap.getValues(descriptor.getName());
 

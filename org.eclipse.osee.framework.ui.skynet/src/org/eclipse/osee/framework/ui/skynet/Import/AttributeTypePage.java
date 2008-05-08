@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -99,11 +99,11 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
    /**
     * @param descriptors the descriptors to set
     */
-   public void setDescriptors(Collection<DynamicAttributeDescriptor> descriptors) {
-      java.util.List<DynamicAttributeDescriptor> sortedDescriptors =
-            new ArrayList<DynamicAttributeDescriptor>(descriptors);
-      Collections.sort(sortedDescriptors, new Comparator<DynamicAttributeDescriptor>() {
-         public int compare(DynamicAttributeDescriptor o1, DynamicAttributeDescriptor o2) {
+   public void setDescriptors(Collection<AttributeType> descriptors) {
+      java.util.List<AttributeType> sortedDescriptors =
+            new ArrayList<AttributeType>(descriptors);
+      Collections.sort(sortedDescriptors, new Comparator<AttributeType>() {
+         public int compare(AttributeType o1, AttributeType o2) {
             return o1.getName().compareToIgnoreCase(o2.getName());
          }
       });
@@ -113,7 +113,7 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
 
       hasDescriptors = !sortedDescriptors.isEmpty();
       if (hasDescriptors) {
-         for (DynamicAttributeDescriptor descriptor : sortedDescriptors) {
+         for (AttributeType descriptor : sortedDescriptors) {
             typeList.add(descriptor.getName());
             typeList.setData(descriptor.getName(), descriptor);
          }
@@ -131,13 +131,13 @@ public class AttributeTypePage extends WizardDataTransferPage implements Listene
       return false;
    }
 
-   public Collection<DynamicAttributeDescriptor> getSelectedAttributeDescriptors() {
-      Collection<DynamicAttributeDescriptor> selectedAttributeDescriptors =
-            new ArrayList<DynamicAttributeDescriptor>(typeList.getSelectionCount());
+   public Collection<AttributeType> getSelectedAttributeDescriptors() {
+      Collection<AttributeType> selectedAttributeDescriptors =
+            new ArrayList<AttributeType>(typeList.getSelectionCount());
 
       if (hasDescriptors) {
          for (String attributeName : typeList.getSelection()) {
-            selectedAttributeDescriptors.add((DynamicAttributeDescriptor) typeList.getData(attributeName));
+            selectedAttributeDescriptors.add((AttributeType) typeList.getData(attributeName));
          }
       }
 

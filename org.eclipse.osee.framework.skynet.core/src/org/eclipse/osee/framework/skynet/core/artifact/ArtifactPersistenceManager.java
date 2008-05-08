@@ -64,8 +64,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -124,7 +125,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    private BranchPersistenceManager branchManager;
    private ExtensionDefinedObjects<IAttributeSaveListener> attributeSaveListeners;
 
-   private final ArtifactDhChildCountCache artifactDhChildCountCache;
    private IProgressMonitor monitor;
    public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
    public static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
@@ -134,7 +134,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    public static boolean initFinished = false;
 
    private ArtifactPersistenceManager() {
-      this.artifactDhChildCountCache = new ArtifactDhChildCountCache();
       this.attributeSaveListeners =
             new ExtensionDefinedObjects<IAttributeSaveListener>(
                   "org.eclipse.osee.framework.skynet.core.AttributeSaveListener", "AttributeSaveListener", "classname");
@@ -495,10 +494,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return count;
    }
 
-   public int getArtifactDhChildCount(int artId, Branch branch) throws SQLException {
-      return artifactDhChildCountCache.getChildCount(artId, branch);
-   }
-
    public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
       return getArtifacts(searchCriteria, transactionIdManager.getEditableTransactionId(branch));
    }
@@ -588,9 +583,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       DynamicAttributeManager attributeManager;
 
-      Collection<DynamicAttributeDescriptor> attributeTypeDescriptors =
+      Collection<AttributeType> attributeTypeDescriptors =
             configurationManager.getAttributeTypesFromArtifactType(artifact.getArtifactType(), artifact.getBranch());
-      for (DynamicAttributeDescriptor attributeType : attributeTypeDescriptors) {
+      for (AttributeType attributeType : attributeTypeDescriptors) {
          attributeManager = attributeType.createAttributeManager(artifact, false);
          attributeManager.setupForInitialization(false);
          typeHash.put(attributeType.getAttrTypeId(), attributeManager);
@@ -619,9 +614,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                   // currently
                   // defined in the schema as being appropriate for this Artifact.
                   if (type == null) {
-                     type =
-                           configurationManager.getDynamicAttributeType(attrTypeId).createAttributeManager(artifact,
-                                 false);
+                     type = AttributeTypeManager.getType(attrTypeId).createAttributeManager(artifact, false);
                      type.setupForInitialization(false);
                      typeHash.put(attrTypeId, type);
                   }
@@ -634,7 +627,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                      throw new RuntimeException(e);
                   }
 
-                  attribute.setPersistenceMemo(new AttributeMemo(chStmt.getRset().getInt("attr_id"), attrTypeId,
+                  attribute.setPersistenceMemo(new AttributeMemo(chStmt.getRset().getInt("attr_id"),
                         chStmt.getRset().getInt("gamma_id")));
                } while (chStmt.next());
             }
@@ -677,7 +670,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       DynamicAttributeManager attributeManager;
 
       for (Artifact artifact : artifacts) {
-         for (DynamicAttributeDescriptor attributeType : configurationManager.getAttributeTypesFromArtifactType(
+         for (AttributeType attributeType : configurationManager.getAttributeTypesFromArtifactType(
                artifact.getArtifactType(), artifact.getBranch())) {
             attributeManager = attributeType.createAttributeManager(artifact, false);
             attributeManager.setupForInitialization(false);
@@ -724,14 +717,13 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             attrTypeId = rSet.getInt("attr_type_id");
             attributeManager = typeHash.get(artId, attrTypeId);
             if (attributeManager == null) {
-               attributeManager =
-                     configurationManager.getDynamicAttributeType(attrTypeId).createAttributeManager(artifact, false);
+               attributeManager = AttributeTypeManager.getType(attrTypeId).createAttributeManager(artifact, false);
                typeHash.put(artId, attrTypeId, attributeManager);
                attributeManager.setupForInitialization(false);
             }
 
             attribute = attributeManager.injectFromDb(rSet.getString("value"), rSet.getString("uri"));
-            attribute.setPersistenceMemo(new AttributeMemo(rSet.getInt("attr_id"), attrTypeId, rSet.getInt("gamma_id")));
+            attribute.setPersistenceMemo(new AttributeMemo(rSet.getInt("attr_id"), rSet.getInt("gamma_id")));
 
          }
          DbUtil.close(chStmt);
@@ -941,9 +933,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          if (factory == null) throw new IllegalArgumentException(
                "The factory for this artifact remote event could not be determined.");
 
-         if (ArtifactCache.getInstance().containsArtifact(artId, branchId)) {
-            Branch branch = branchManager.getBranch(branchId);
-            Artifact oldArtifact = ArtifactQuery.getArtifactFromId(artId, branch);
+         Artifact oldArtifact = ArtifactCache.getArtifact(artId, branchManager.getBranch(branchId));
+         if (oldArtifact != null) {
+
             // this forces the links to load
             oldArtifact.isDirty(true);
 

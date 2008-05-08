@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttr
  */
 public class InRelationSearchAttribute extends StringAttribute implements ISearchAttribute<InRelationSearch> {
 
-   public InRelationSearchAttribute(DynamicAttributeDescriptor attributeType, ICharacterAttributeDataProvider dataProvider) {
+   public InRelationSearchAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
       super(attributeType, dataProvider);
    }
 
