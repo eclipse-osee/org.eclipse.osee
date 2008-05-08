@@ -106,8 +106,8 @@ public class ArtifactDragDropSupport {
 
          try {
             artifact = WorkspaceFileArtifact.getArtifactFromWorkspaceFile(location, shell);
-         } catch (RuntimeException e) {
-            window.addInvalid(location, "Runtime exception: " + e.getMessage());
+         } catch (Exception ex) {
+            window.addInvalid(location, "Runtime exception: " + ex.getMessage());
             continue;
          }
 
@@ -139,8 +139,8 @@ public class ArtifactDragDropSupport {
 
       try {
          artifact = WorkspaceFileArtifact.getArtifactFromWorkspaceFile(location, shell);
-      } catch (RuntimeException e) {
-         window.addInvalid(location, "Runtime exception: " + e.getMessage());
+      } catch (Exception ex) {
+         window.addInvalid(location, "Runtime exception: " + ex.getMessage());
          return;
       }
 

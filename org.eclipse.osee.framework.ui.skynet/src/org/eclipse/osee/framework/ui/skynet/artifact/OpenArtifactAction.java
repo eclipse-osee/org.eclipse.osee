@@ -17,7 +17,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
@@ -45,7 +47,11 @@ public class OpenArtifactAction implements IObjectActionDelegate {
 
       if (object instanceof IFile) {
          iFile = (IFile) object;
-         artifact = WorkspaceFileArtifact.getArtifactFromWorkspaceFile(WorkspaceURL.getURL(iFile), shell);
+         try {
+            artifact = WorkspaceFileArtifact.getArtifactFromWorkspaceFile(WorkspaceURL.getURL(iFile), shell);
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
 
          if (artifact != null) {
             ArtifactEditor.editArtifact(artifact);

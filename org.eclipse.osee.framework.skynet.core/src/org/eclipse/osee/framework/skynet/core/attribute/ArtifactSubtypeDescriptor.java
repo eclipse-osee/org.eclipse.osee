@@ -102,7 +102,6 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * @see IArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
-   @Deprecated
    public Artifact makeNewArtifact(Branch branch) throws SQLException {
       return factory.makeNewArtifact(branch, this);
    }
@@ -118,7 +117,6 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * @see IArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
-   @Deprecated
    public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws SQLException {
       return factory.makeNewArtifact(branch, this, guid, humandReadableId);
    }

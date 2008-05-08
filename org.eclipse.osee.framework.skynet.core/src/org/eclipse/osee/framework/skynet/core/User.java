@@ -22,8 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
@@ -74,12 +72,9 @@ public class User extends Artifact implements Serializable {
    public boolean equals(Object obj) {
       User otherUser = null;
       try {
-         deleteCheckOveride = true;
-
          if (obj == null) return false;
          if (obj instanceof User) {
             otherUser = (User) obj;
-            otherUser.deleteCheckOveride = true;
             if (otherUser.getUserId().equals(getUserId())) {
                return true;
             } else {
@@ -91,9 +86,6 @@ public class User extends Artifact implements Serializable {
 
       } catch (Exception ex) {
          // do nothing
-      } finally {
-         deleteCheckOveride = false;
-         if (otherUser != null) otherUser.deleteCheckOveride = false;
       }
       return false;
    }
@@ -115,12 +107,7 @@ public class User extends Artifact implements Serializable {
 
    public int hashCode() {
       try {
-         try {
-            deleteCheckOveride = true;
-            return getUserId().hashCode();
-         } finally {
-            deleteCheckOveride = false;
-         }
+         return getUserId().hashCode();
       } catch (Exception ex) {
          // do nothing
       }
@@ -183,15 +170,13 @@ public class User extends Artifact implements Serializable {
          for (Branch branch : branches)
             branchIds.add(branch.getBranchId());
 
-         DynamicAttributeManager attributeManager = getAttributeManager(favoriteBranchAttributeName);
-         IntegerAttribute branchAttr;
          boolean found = false;
-         for (Attribute attribute : attributeManager.getAttributes()) {
-            branchAttr = (IntegerAttribute) attribute;
+         Collection<Attribute<Integer>> attributes = getAttributes(favoriteBranchAttributeName);
+         for (Attribute<Integer> attribute : attributes) {
             // Remove attributes that are no longer valid
-            if (!branchIds.contains(branchAttr.getValue())) {
+            if (!branchIds.contains(attribute.getValue())) {
                attribute.delete();
-            } else if (favoriteBranch.getBranchId() == branchAttr.getValue()) {
+            } else if (favoriteBranch.getBranchId() == attribute.getValue()) {
                attribute.delete();
                found = true;
                break;
@@ -199,7 +184,7 @@ public class User extends Artifact implements Serializable {
          }
 
          if (!found) {
-            attributeManager.getNewAttribute().setValue(favoriteBranch.getBranchId());
+            addAttribute(favoriteBranchAttributeName, favoriteBranch.getBranchId());
          }
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -208,11 +193,9 @@ public class User extends Artifact implements Serializable {
 
    public boolean isFavoriteBranch(Branch branch) {
       try {
-         DynamicAttributeManager attributeManager = getAttributeManager(favoriteBranchAttributeName);
-         IntegerAttribute branchAttr;
-         for (Attribute attribute : attributeManager.getAttributes()) {
-            branchAttr = (IntegerAttribute) attribute;
-            if (branch.getBranchId() == branchAttr.getValue()) {
+         Collection<Attribute<Integer>> attributes = getAttributes(favoriteBranchAttributeName);
+         for (Attribute<Integer> attribute : attributes) {
+            if (branch.getBranchId() == attribute.getValue()) {
                return true;
             }
          }

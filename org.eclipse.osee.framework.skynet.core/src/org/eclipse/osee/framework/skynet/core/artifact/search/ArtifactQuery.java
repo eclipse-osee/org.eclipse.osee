@@ -148,6 +148,22 @@ public class ArtifactQuery {
       return queryFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch).getArtifact();
    }
 
+   /**
+    * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
+    * exception
+    * 
+    * @param attributeTypeName
+    * @param attributeValue
+    * @param branch
+    * @return a collection of the artifacts found or an empty collection if none are found
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist if no artifacts are found
+    * @throws MultipleArtifactsExist if more than one artifact is found
+    */
+   public static Artifact getArtifactFromAttribute(String attributeTypeName, String attributeValue, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      return new ArtifactQueryBuilder(branch, FULL, new AttributeValueCriteria(attributeTypeName, attributeValue)).getArtifact();
+   }
+
    public static Collection<Artifact> getArtifactsFromType(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
       return new ArtifactQueryBuilder(artifactType, branch, FULL).getArtifacts(null);
    }

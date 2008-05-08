@@ -42,10 +42,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnot
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.IStreamSetableAttribute;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -67,14 +66,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
    public static final Artifact[] EMPTY_ARRAY = new Artifact[0];
-   protected static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   protected static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
-   private static final AccessControlManager accessManager = AccessControlManager.getInstance();
+   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static int count = 0;
    public final int aaaSerialId = count++;
    private final Branch branch;
    private final String guid;
-   protected boolean deleteCheckOveride;
    protected boolean dirty;
    protected boolean inTransaction;
    private Collection<DynamicAttributeManager> attributeManagers;
@@ -110,7 +106,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       this.inTransaction = false;
       this.deleted = false;
       this.memo = null;
-      this.deleteCheckOveride = false;
       this.initializingAttributes = false;
       this.artifactType = artifactType;
       this.deletionTransactionId = -1;
@@ -145,8 +140,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public Image getImage() {
-      if (accessManager.hasLock(this)) {
-         return artifactType.getLockedImage(accessManager.hasLockAccess(this));
+      if (AccessControlManager.getInstance().hasLock(this)) {
+         return artifactType.getLockedImage(AccessControlManager.getInstance().hasLockAccess(this));
       }
 
       try {
@@ -810,8 +805,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public boolean isReadOnly() {
-      return (memo != null && !memo.getTransactionId().isEditable()) || !accessManager.checkObjectPermission(this,
-            PermissionEnum.WRITE);
+      return (memo != null && !memo.getTransactionId().isEditable()) || !AccessControlManager.getInstance().checkObjectPermission(
+            this, PermissionEnum.WRITE);
    }
 
    private boolean anAttributeIsDirty() {
