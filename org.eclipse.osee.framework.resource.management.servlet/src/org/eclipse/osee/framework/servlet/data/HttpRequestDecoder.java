@@ -26,14 +26,16 @@ public class HttpRequestDecoder {
    private static final String EXTENSION = "extension";
 
    // Whether data should be compressed
-   private static String COMPRESS_ON_ACQUIRE = "compress.before.sending";
-   private static String COMPRESS_ON_SAVE = "compress.before.saving";
+   private static final String COMPRESS_ON_ACQUIRE = "compress.before.sending";
+   private static final String COMPRESS_ON_SAVE = "compress.before.saving";
 
    // Whether data should be decompressed
-   private static String DECOMPRESS_ON_ACQUIRE = "decompress.before.sending";
+   private static final String DECOMPRESS_ON_ACQUIRE = "decompress.before.sending";
 
    // Whether data has already been compressed
-   private static String IS_COMPRESSED = "is.compressed";
+   private static final String IS_COMPRESSED = "is.compressed";
+
+   private static final String IS_OVERWRITE_ALLOWED = "is.overwrite.allowed";
 
    private HttpRequestDecoder() {
    }
@@ -62,6 +64,7 @@ public class HttpRequestDecoder {
       options.put(StandardOptions.CompressOnSave.name(), request.getParameter(COMPRESS_ON_SAVE));
       options.put(StandardOptions.CompressOnAcquire.name(), request.getParameter(COMPRESS_ON_ACQUIRE));
       options.put(StandardOptions.DecompressOnAquire.name(), request.getParameter(DECOMPRESS_ON_ACQUIRE));
+      options.put(StandardOptions.Overwrite.name(), request.getParameter(IS_OVERWRITE_ALLOWED));
       return options;
    }
 
