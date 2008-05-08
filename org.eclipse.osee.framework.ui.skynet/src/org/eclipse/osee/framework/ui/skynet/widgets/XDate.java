@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -238,7 +239,7 @@ public class XDate extends XWidget {
       return get(new SimpleDateFormat(pattern));
    }
 
-   public String get(SimpleDateFormat dateFormat) {
+   public String get(DateFormat dateFormat) {
       if (date == null) return "";
       String result = dateFormat.format(date);
       return result;
