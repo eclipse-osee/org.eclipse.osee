@@ -78,8 +78,8 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
       this.map = map;
    }
 
-   public CompositeKeyHashMap(int count) {
-      map = new HashMap<CompositeKey<KeyOne, KeyTwo>, Value>(count);
+   public CompositeKeyHashMap(int initialCapacity) {
+      map = new HashMap<CompositeKey<KeyOne, KeyTwo>, Value>(initialCapacity);
    }
 
    public void clear() {
