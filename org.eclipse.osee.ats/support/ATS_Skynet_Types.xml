@@ -447,7 +447,7 @@
    </Row>
    <Row>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.StringAttribute</Data></Cell>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider</Data></Cell>
+    <Cell><Data ss:Type="String">org.eclipse.osee.framework.skynet.core.ClobAttributeDataProvider</Data></Cell>
     <Cell><Data ss:Type="String">ats.Log</Data></Cell>
     <Cell><Data ss:Type="String">xml</Data></Cell>
     <Cell ss:Index="7"><Data ss:Type="Number">0</Data></Cell>
@@ -1508,11 +1508,12 @@
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
    <Zoom>90</Zoom>
    <Selected/>
-   <TopRowVisible>39</TopRowVisible>
+   <TopRowVisible>7</TopRowVisible>
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>83</ActiveRow>
+     <ActiveRow>47</ActiveRow>
+     <ActiveCol>1</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
