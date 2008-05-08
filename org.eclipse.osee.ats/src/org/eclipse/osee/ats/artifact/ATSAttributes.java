@@ -116,9 +116,6 @@ public class ATSAttributes {
    public static final ATSAttributes ESTIMATED_RELEASE_DATE_ATTRIBUTE = new ATSAttributes("Estimated Release Date");
    public static final ATSAttributes RELEASE_DATE_ATTRIBUTE = new ATSAttributes("Release Date");
    public static final ATSAttributes MAN_DAYS_NEEDED_ATTRIBUTE = new ATSAttributes("Man Days Needed");
-   public static final ATSAttributes METRICS_FROM_TASKS_ATTRIBUTE =
-         new ATSAttributes("Metrics from Tasks",
-               "True if hour estimate, hours spent and percent complete should be determined from related tasks.");
 
    protected ATSAttributes(String displayName, String storeName, String description) {
       this.displayName = displayName;

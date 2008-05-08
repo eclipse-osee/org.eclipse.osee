@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.world;
 import java.util.regex.Pattern;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class WorldCompletedFilter extends ViewerFilter {
 
@@ -24,10 +26,14 @@ public class WorldCompletedFilter extends ViewerFilter {
 
    @Override
    public boolean select(Viewer viewer, Object parentElement, Object element) {
-      WorldArtifactItem item = (WorldArtifactItem) element;
-      Artifact art = item.getArtifact();
-      if (art instanceof IWorldViewArtifact) {
-         return !p.matcher(((IWorldViewArtifact) art).getWorldViewState()).find();
+      try {
+         WorldArtifactItem item = (WorldArtifactItem) element;
+         Artifact art = item.getArtifact();
+         if (art instanceof IWorldViewArtifact) {
+            return !p.matcher(((IWorldViewArtifact) art).getWorldViewState()).find();
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return true;
    }

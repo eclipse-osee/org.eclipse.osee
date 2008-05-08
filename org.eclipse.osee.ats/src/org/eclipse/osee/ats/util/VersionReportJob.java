@@ -30,9 +30,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -140,7 +138,7 @@ public class VersionReportJob extends Job {
       return released;
    }
 
-   public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamArts, Integer backgroundColor, IProgressMonitor monitor) throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamArts, Integer backgroundColor, IProgressMonitor monitor) throws Exception {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1, backgroundColor));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Team", "Priority", "Change", "Title", "HRID"}));

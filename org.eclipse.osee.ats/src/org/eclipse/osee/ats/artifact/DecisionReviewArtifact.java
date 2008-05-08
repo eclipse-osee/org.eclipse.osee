@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
@@ -29,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 
 /**
  * @author Donald G. Dunne
@@ -77,7 +75,8 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
       // Always expand the decision state
       if (page.getName().endsWith(StateNames.Decision.name())) return true;
       // If current state is decision and this is prepare state, don't expand the Prepare state
-      if (getCurrentStateName().equals(StateNames.Decision.name()) && page.getName().contains(StateNames.Prepare.name())) return false;
+      if (smaMgr.getStateMgr().getCurrentStateName().equals(StateNames.Decision.name()) && page.getName().contains(
+            StateNames.Prepare.name())) return false;
       return super.isCurrentSectionExpanded(page);
    }
 
@@ -86,7 +85,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
       return "decisionReview";
    }
 
-   public String getWorldViewVersion() {
+   public String getWorldViewVersion() throws Exception {
       return "";
    }
 
@@ -101,14 +100,6 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
          }
       }
       return users;
-   }
-
-   public int getWorldViewTotalPercentComplete() {
-      if (smaMgr.isCompleted()) return 100;
-      if (smaMgr.isCancelled()) return 0;
-      SMAState state = smaMgr.getSMAState(StateNames.Decision.name(), false);
-      if (state != null) return state.getPercentComplete();
-      return 0;
    }
 
    /*
@@ -131,7 +122,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewTeam()
     */
-   public String getWorldViewTeam() {
+   public String getWorldViewTeam() throws Exception {
       return "";
    }
 
@@ -150,12 +141,8 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDecision()
     */
-   public String getWorldViewDecision() {
-      try {
-         return getSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), "");
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+   public String getWorldViewDecision() throws Exception {
+      return getSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), "");
    }
 
    /*
@@ -163,23 +150,19 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
-   public String getWorldViewDescription() {
-      try {
-         return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+   public String getWorldViewDescription() throws Exception {
+      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
-   public String getWorldViewCategory() {
+   public String getWorldViewCategory() throws Exception {
       return "";
    }
 
-   public String getWorldViewCategory2() {
+   public String getWorldViewCategory2() throws Exception {
       return "";
    }
 
-   public String getWorldViewCategory3() {
+   public String getWorldViewCategory3() throws Exception {
       return "";
    }
 
@@ -210,10 +193,8 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
-   public String getWorldViewImplementer() {
-      SMAState state = getStateDam().getState(StateNames.Decision.name(), false);
-      if (state != null) Artifacts.commaArts(state.getAssignees());
-      return "";
+   public String getWorldViewImplementer() throws Exception {
+      return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees(StateNames.Decision.name()));
    }
 
    /*
@@ -230,7 +211,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
-   public String getWorldViewDeadlineDateStr() {
+   public String getWorldViewDeadlineDateStr() throws Exception {
       return "";
    }
 
@@ -248,17 +229,8 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewWorkPackage()
     */
-   public String getWorldViewWorkPackage() {
+   public String getWorldViewWorkPackage() throws Exception {
       return "";
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.world.IWorldViewArtifact#isMetricsFromTasks()
-    */
-   public boolean isMetricsFromTasks() {
-      return false;
    }
 
    /*
@@ -273,30 +245,28 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
     */
-   public String getWorldViewReviewAuthor() {
+   public String getWorldViewReviewAuthor() throws Exception {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
     */
-   public String getWorldViewReviewDecider() {
-      SMAState state = getStateDam().getState(StateNames.Decision.name(), false);
-      if (state != null) return Artifacts.commaArts(state.getAssignees());
-      return "";
+   public String getWorldViewReviewDecider() throws Exception {
+      return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees(StateNames.Decision.name()));
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
     */
-   public String getWorldViewReviewModerator() {
+   public String getWorldViewReviewModerator() throws Exception {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
     */
-   public String getWorldViewReviewReviewer() {
+   public String getWorldViewReviewReviewer() throws Exception {
       return "";
    }
 

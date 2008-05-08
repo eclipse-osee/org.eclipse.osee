@@ -100,13 +100,12 @@ public class AssignedActiveActions extends XNavigateItemAutoRunAction implements
 
    private void runIt(IProgressMonitor monitor, final XResultData rd) throws Exception {
       if (fixIt) {
-         AbstractSkynetTxTemplate txWrapper =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     assignedActiveActionsHelper(rd);
-                  }
-               };
+         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            @Override
+            protected void handleTxWork() throws Exception {
+               assignedActiveActionsHelper(rd);
+            }
+         };
          txWrapper.execute();
       } else {
          assignedActiveActionsHelper(rd);
@@ -127,14 +126,14 @@ public class AssignedActiveActions extends XNavigateItemAutoRunAction implements
       for (Artifact art : artifacts) {
          StateMachineArtifact sma = (StateMachineArtifact) art;
          SMAManager smaMgr = new SMAManager(sma);
-         if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && smaMgr.getAssignees().size() > 0) {
+         if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() > 0) {
             rd.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " cancel/complete with assignees");
             if (fixIt) {
-               smaMgr.clearAssignees();
+               smaMgr.getStateMgr().clearAssignees();
                smaMgr.getSma().persistAttributes();
                rd.log("Fixed");
             }
-         } else if ((!smaMgr.isCompleted() && !smaMgr.isCancelled()) && smaMgr.getAssignees().size() == 0) {
+         } else if ((!smaMgr.isCompleted() && !smaMgr.isCancelled()) && smaMgr.getStateMgr().getAssignees().size() == 0) {
             rd.logError(sma.getArtifactTypeName() + " " + sma.getHumanReadableId() + " In Work without assignees");
          }
       }

@@ -18,8 +18,10 @@ import java.util.Map;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -78,16 +80,20 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
          objs.add(obj);
       resolutionCombo.setInput(objs);
       resolutionCombo.createWidgets(parent, 2);
-      if (smas.size() == 1) {
-         String selOption = smas.iterator().next().getWorldViewResolution();
-         if (selOption != null && !selOption.equals("")) {
-            selectedOption = nameToResDef.get(selOption);
-            if (selectedOption != null) {
-               ArrayList<Object> sel = new ArrayList<Object>();
-               sel.add(selectedOption);
-               resolutionCombo.setSelected(sel);
+      try {
+         if (smas.size() == 1) {
+            String selOption = smas.iterator().next().getWorldViewResolution();
+            if (selOption != null && !selOption.equals("")) {
+               selectedOption = nameToResDef.get(selOption);
+               if (selectedOption != null) {
+                  ArrayList<Object> sel = new ArrayList<Object>();
+                  sel.add(selectedOption);
+                  resolutionCombo.setSelected(sel);
+               }
             }
          }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
       resolutionCombo.getCombo().setVisibleItemCount(20);
       resolutionCombo.addSelectionListener(new SelectionListener() {

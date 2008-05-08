@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.graphics.Image;
 
 public class ActionHyperItem extends HyperViewItem {
@@ -50,7 +52,11 @@ public class ActionHyperItem extends HyperViewItem {
    @Override
    public Image getMarkImage() {
       if (artifact.isDeleted()) return null;
-      if (artifact instanceof IHyperArtifact) return ((IHyperArtifact) artifact).getHyperAssigneeImage();
+      try {
+         if (artifact instanceof IHyperArtifact) return ((IHyperArtifact) artifact).getHyperAssigneeImage();
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
       return super.getMarkImage();
    }
 

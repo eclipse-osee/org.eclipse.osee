@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.widgets.SMAState;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -49,8 +49,6 @@ import org.eclipse.swt.program.Program;
  * @author Ryan D. Brooks
  */
 public class TaskMetrics extends AbstractBlam {
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private final CountingMap<User> metrics;
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
@@ -76,7 +74,7 @@ public class TaskMetrics extends AbstractBlam {
       relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, RelationSide.SmaToTask_Task));
 
       Collection<Artifact> artifacts =
-            artifactManager.getArtifacts(relatedCriteria, true, branchManager.getAtsBranch());
+            ArtifactPersistenceManager.getInstance().getArtifacts(relatedCriteria, true, AtsPlugin.getAtsBranch());
       for (Artifact artifact : artifacts) {
          tallyState((TaskArtifact) artifact);
       }

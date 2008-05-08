@@ -134,16 +134,16 @@ public class Overview {
          startBorderTable(100, false, "");
          addTable(getLabelValue("Title", sma.getDescriptiveName()));
          this.html.append(AHTML.multiColumnTable(new String[] {
-               AHTML.getLabelStr(labelFont, "State: ") + smaMgr.getCurrentStateName(),
+               AHTML.getLabelStr(labelFont, "State: ") + smaMgr.getStateMgr().getCurrentStateName(),
                AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
                AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
          addTable(getLabelValue("Originator", smaMgr.getOriginator().getDescriptiveName()), getLabelValue(
                "Creation Date", XDate.getDateStr(smaMgr.getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM)));
          if (smaMgr.getSma() instanceof TeamWorkFlowArtifact)
             addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName()), getLabelValue(
-                  "Assignees", smaMgr.getAssigneesStr()));
+                  "Assignees", Artifacts.commaArts(smaMgr.getStateMgr().getAssignees())));
          else
-            addTable(getLabelValue("Assignees", smaMgr.getAssigneesStr()));
+            addTable(getLabelValue("Assignees", Artifacts.commaArts(smaMgr.getStateMgr().getAssignees())));
          addTable(getLabelValue("Description", smaMgr.getSma().getDescription()));
          if (smaMgr.isCancelled()) {
             LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
@@ -154,11 +154,11 @@ public class Overview {
             StateMachineArtifact parentArt = ((TaskArtifact) sma).getParentSMA();
             if (parentArt != null) {
                this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getDescriptiveName()}));
-               this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getCurrentStateName()}));
+               this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getSmaMgr().getStateMgr().getCurrentStateName()}));
             }
 
             SMAManager taskSmaMgr = new SMAManager(sma);
-            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + taskSmaMgr.getAssigneesStr()}));
+            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + Artifacts.commaArts(taskSmaMgr.getStateMgr().getAssignees())}));
          }
          endBorderTable();
       } catch (SQLException ex) {
@@ -244,7 +244,7 @@ public class Overview {
       ArrayList<CellItem> cells = new ArrayList<CellItem>();
       for (TeamWorkFlowArtifact team : teams) {
          cells.add(new AHTML.CellItem(team.getHyperlinkHtml()));
-         cells.add(new AHTML.CellItem(team.getCurrentStateName()));
+         cells.add(new AHTML.CellItem(team.getSmaMgr().getStateMgr().getCurrentStateName()));
          s += AHTML.addRowMultiColumnTable(cells);
          cells.clear();
       }
@@ -272,13 +272,6 @@ public class Overview {
             hrid), name);
    }
 
-   public static String getOpenHyperlinkHtml(Artifact art, int transId) {
-      String str =
-            AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openTransAction,
-                  String.format("%s,%s", art.getGuid(), transId + "")), art.getDescriptiveName());
-      return str;
-   }
-
    public static String getOpenHyperlinkHtml(String name, String guidOrHrid, int branchId) {
       return XResultHtml.getOpenHyperlinkHtml(name, guidOrHrid, branchId);
    }
@@ -296,7 +289,7 @@ public class Overview {
    public void startStateBorderTable(SMAManager smaMgr, SMAState state) {
       String caption = state.getName();
       String assgn = Artifacts.commaArts(state.getAssignees());
-      startStateBorderTable(smaMgr.getCurrentStateName().equals(state.getName()), caption, assgn);
+      startStateBorderTable(smaMgr.getStateMgr().getCurrentStateName().equals(state.getName()), caption, assgn);
    }
 
    public void startStateBorderTable(boolean active, String name, String assignee) {

@@ -56,7 +56,7 @@ public class CommitWorkingBranchService extends WorkPageService implements IEven
     */
    @Override
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      if (smaMgr.getCurrentStateName().equals(page.getName())) {
+      if (smaMgr.getStateMgr().getCurrentStateName().equals(page.getName())) {
          link =
                toolkit.createHyperlink(workGroup,
                      getName() + (overrideStateValidation ? "\nOverride State Validation" : ""), SWT.NONE);

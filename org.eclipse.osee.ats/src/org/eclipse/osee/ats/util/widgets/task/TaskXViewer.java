@@ -347,11 +347,11 @@ public class TaskXViewer extends WorldXViewer {
             modified = taskSmaMgr.promptChangeAttribute(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, false);
          } else if (isSelectedTaskArtifactsAreInWork() && aCol == AtsXColumn.Assignees_Col) {
             modified = taskSmaMgr.promptChangeAssignees();
-         } else if (isUsingTaskResolutionOptions && (aCol == AtsXColumn.Total_Hours_Spent_Col || aCol == AtsXColumn.Total_Percent_Complete_Col)) {
+         } else if (isUsingTaskResolutionOptions && (aCol == AtsXColumn.Hours_Spent_State_Col || aCol == AtsXColumn.Hours_Spent_Total_Col || aCol == AtsXColumn.Percent_Complete_State_Col || aCol == AtsXColumn.Percent_Complete_Total_Col)) {
             modified = handleChangeResolution();
          } else if (isSelectedTaskArtifactsAreInWork() && aCol == AtsXColumn.Resolution_Col) {
             modified = handleChangeResolution();
-         } else if ((aCol == AtsXColumn.Total_Hours_Spent_Col || aCol == AtsXColumn.Total_Percent_Complete_Col)) {
+         } else if (aCol == AtsXColumn.Hours_Spent_State_Col || aCol == AtsXColumn.Hours_Spent_Total_Col || aCol == AtsXColumn.Percent_Complete_State_Col || aCol == AtsXColumn.Percent_Complete_Total_Col) {
             modified = taskSmaMgr.promptChangeStatus(false);
          } else
             modified = super.handleAltLeftClick(treeColumn, treeItem, false);

@@ -356,12 +356,12 @@ public class BranchManager {
             if (branch != null) {
                for (AccessControlData acd : AccessControlManager.getInstance().getAccessControlList(branch)) {
                   // If subject is NOT an assignee, remove access control
-                  if (!smaMgr.getAssignees().contains(acd.getSubject())) {
+                  if (!smaMgr.getStateMgr().getAssignees().contains(acd.getSubject())) {
                      AccessControlManager.getInstance().removeAccessControlData(acd);
                   }
                }
                // If subject doesn't have access, add it
-               for (User user : smaMgr.getAssignees())
+               for (User user : smaMgr.getStateMgr().getAssignees())
                   AccessControlManager.getInstance().setPermission(user, branch, PermissionEnum.FULLACCESS);
             }
          }

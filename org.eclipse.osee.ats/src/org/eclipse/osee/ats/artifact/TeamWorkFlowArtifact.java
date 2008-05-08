@@ -19,10 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
-import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
@@ -123,13 +121,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    @Override
-   public int getWorldViewPercentRework() {
-      try {
-         return getSoleAttributeValue(ATSAttributes.PERCENT_REWORK_ATTRIBUTE.getStoreName());
-      } catch (Exception ex) {
-         // do nothing
-      }
-      return 0;
+   public int getWorldViewPercentRework() throws Exception {
+      return getSoleAttributeValue(ATSAttributes.PERCENT_REWORK_ATTRIBUTE.getStoreName(), 0);
    }
 
    @Override
@@ -203,8 +196,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       String guid = this.getSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), "");
       if (guid == null || guid.equals("")) throw new IllegalArgumentException(
             "TeamWorkflow has no TeamDefinition associated.");
-      return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromId(guid,
-            BranchPersistenceManager.getAtsBranch());
+      return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch());
    }
 
    public String getTeamTitle() {
@@ -220,57 +212,23 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       }
    }
 
-   public String getWorldViewType() {
+   public String getWorldViewType() throws Exception {
       return getTeamName() + " Workflow";
-   }
-
-   public int getWorldViewTotalPercentComplete() {
-      try {
-         if (smaMgr.isCompleted()) return 100;
-         if (smaMgr.isCancelled()) return 0;
-         if (isMetricsFromTasks()) {
-            Collection<TaskArtifact> taskArts = smaMgr.getTaskMgr().getTaskArtifacts(DefaultTeamState.Implement.name());
-            if (taskArts.size() == 0) return 0;
-            int numTasks = taskArts.size();
-            int percent = 0;
-            for (TaskArtifact taskArt : taskArts) {
-               percent += taskArt.getWorldViewTotalPercentComplete();
-            }
-            if (percent == 0) return 0;
-            return (new Double(percent / numTasks)).intValue();
-         } else {
-            SMAState state = smaMgr.getSMAState(DefaultTeamState.Implement.name(), false);
-            if (state != null) return state.getPercentComplete();
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
-      return 0;
    }
 
    public ChangeType getWorldViewChangeType() throws SQLException, MultipleAttributesExist {
       return ChangeType.getChangeType(getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
-   public String getWorldViewPriority() {
-      try {
-         return PriorityType.getPriority(
-               getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "")).getShortName();
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+   public String getWorldViewPriority() throws Exception {
+      return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "")).getShortName();
    }
 
-   public String getWorldViewUserCommunity() {
-      try {
-         return getAttributesToString(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-         return ex.getLocalizedMessage();
-      }
+   public String getWorldViewUserCommunity() throws Exception {
+      return getAttributesToString(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
    }
 
-   public String getWorldViewActionableItems() {
+   public String getWorldViewActionableItems() throws Exception {
       return getActionableItemsDam().getActionableItemsStr();
    }
 
@@ -283,7 +241,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
          reviewArt.atsDelete(deleteArts, allRelated);
    }
 
-   public String getWorldViewTeam() {
+   public String getWorldViewTeam() throws Exception {
       return getTeamName();
    }
 
@@ -304,30 +262,24 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
          taskArt.parentWorkFlowTransitioned(fromPage, toPage, toAssignees, persist);
    }
 
-   public String getWorldViewVersion() {
-      try {
-         Collection<VersionArtifact> verArts =
-               getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
-         if (verArts.size() == 0) return "";
-         if (verArts.size() > 1) {
-            String errStr =
-                  "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
-            OSEELog.logException(AtsPlugin.class, errStr, null, false);
-            return XViewerCells.getCellExceptionString(errStr);
-         }
-         VersionArtifact verArt = verArts.iterator().next();
-         if (!smaMgr.isCompleted() && verArt.getSoleAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(),
-               false)) {
-            String errStr =
-                  "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
-            OSEELog.logException(AtsPlugin.class, errStr, null, false);
-            return XViewerCells.getCellExceptionString(errStr);
-         }
-         return verArt.getDescriptiveName();
-      } catch (Exception ex) {
-         // Do nothing
+   public String getWorldViewVersion() throws Exception {
+      Collection<VersionArtifact> verArts =
+            getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+      if (verArts.size() == 0) return "";
+      if (verArts.size() > 1) {
+         String errStr =
+               "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
+         OSEELog.logException(AtsPlugin.class, errStr, null, false);
+         return XViewerCells.getCellExceptionString(errStr);
       }
-      return "";
+      VersionArtifact verArt = verArts.iterator().next();
+      if (!smaMgr.isCompleted() && verArt.getSoleAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), false)) {
+         String errStr =
+               "Workflow " + smaMgr.getSma().getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
+         OSEELog.logException(AtsPlugin.class, errStr, null, false);
+         return XViewerCells.getCellExceptionString(errStr);
+      }
+      return verArt.getDescriptiveName();
    }
 
    public void setTargetedForVersion(VersionArtifact version, boolean persist) throws SQLException {
@@ -387,13 +339,33 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       return toReturn;
    }
 
-   public Result convertActionableItems() throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public Result convertActionableItems() throws Exception {
       Result toReturn = Result.FalseResult;
       AICheckTreeDialog diag =
-            new AICheckTreeDialog(
-                  "Convert Impacted Actionable Items",
-                  "NOTE: This should NOT be the normal path to changing actionable items.\n\nIf a team has determined " + "that there is NO impact and that another actionable items IS impacted:\n" + "   1) Cancel this operation\n" + "   2) Select \"Edit Actionable Items\" to add/remove impacted items \n" + "      which will create new teams as needed.\n" + "   3) Then cancel the team that has no impacts.\n" + "   Doing this will show that the original team analyzed the impact\n" + "   and determined that there was no change.\n\n" + "However, there are some cases where an impacted item was incorrectly chosen\n" + "and the original team does not need to do anything, this dialog will purge the\n" + "team from the DB as if it was never chosen.\n\n" + "Current Actionable Item(s): " + getWorldViewActionableItems() + "\n" + "Current Team: " + getTeamDefinition().getDescriptiveName() + "\n" + "Select SINGLE Actionable Item below to convert this workflow to.\n\n" + "You will be prompted to confirm this conversion.",
-                  Active.Both);
+            new AICheckTreeDialog("Convert Impacted Actionable Items",
+                  "NOTE: This should NOT be the normal path to changing actionable items.\n\nIf a team has " +
+                  //
+                  "determined " + "that there is NO impact and that another actionable items IS impacted:\n" +
+                  //
+                  "   1) Cancel this operation\n" + "   2) Select \"Edit Actionable Items\" to add/remove " +
+                  //
+                  "impacted items \n" + "      which will create new teams as needed.\n" +
+                  //
+                  "   3) Then cancel the team that has no impacts.\n   Doing this will show that the original " +
+                  //
+                  "team analyzed the impact\n" + "   and determined that there was no change.\n\n" + "However, " +
+                  //
+                  "there are some cases where an impacted item was incorrectly chosen\n" + "and the original team " +
+                  //
+                  "does not need to do anything, this dialog will purge the\n" + "team from the DB as if it was " +
+                  //
+                  "never chosen.\n\n" + "Current Actionable Item(s): " + getWorldViewActionableItems() + "\n" +
+                  //
+                  "Current Team: " + getTeamDefinition().getDescriptiveName() + "\n" +
+                  //
+                  "Select SINGLE Actionable Item below to convert this workflow to.\n\n" +
+                  //
+                  "You will be prompted to confirm this conversion.", Active.Both);
 
       try {
          diag.setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Both));
@@ -421,8 +393,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
                   Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
                   toProcess.add(selectedAia);
                   ActionableItemsTx txWrapper =
-                        new ActionableItemsTx(BranchPersistenceManager.getAtsBranch(), toProcess,
-                              newTeamDef);
+                        new ActionableItemsTx(BranchPersistenceManager.getAtsBranch(), toProcess, newTeamDef);
                   txWrapper.execute();
                   toReturn = txWrapper.getResult();
                }
@@ -450,12 +421,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
-   public String getWorldViewDescription() {
-      try {
-         return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+   public String getWorldViewDescription() throws Exception {
+      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
    /**
@@ -474,56 +441,6 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       } else
          date = getSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
       return date;
-   }
-
-   @Override
-   public double getWorldViewRemainHours() {
-      try {
-         if (isMetricsFromTasks()) {
-            SMAManager smaMgr = new SMAManager(this);
-
-            Collection<TaskArtifact> taskArts = smaMgr.getTaskMgr().getTaskArtifacts(DefaultTeamState.Implement.name());
-            double remainHrs = 0;
-            for (TaskArtifact taskArt : taskArts) {
-               remainHrs += taskArt.getWorldViewRemainHours();
-            }
-            return remainHrs;
-
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
-      return super.getWorldViewRemainHours();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isWorldViewRemainHoursValid()
-    */
-   @Override
-   public Result isWorldViewRemainHoursValid() {
-      try {
-         if (isMetricsFromTasks()) {
-            SMAManager smaMgr = new SMAManager(this);
-            Collection<TaskArtifact> taskArts = smaMgr.getTaskMgr().getTaskArtifacts(DefaultTeamState.Implement.name());
-            if (taskArts.size() == 0) return new Result("No tasks assigned for Implement state");
-            for (TaskArtifact taskArt : taskArts) {
-               Double value = taskArt.getSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
-               if (value == null || value == 0.0) return new Result("Task Estimated Hours not set.");
-               try {
-                  new Float(value).doubleValue();
-               } catch (NumberFormatException ex) {
-                  OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, true);
-                  return new Result("Estimated Hours value is invalid double \"" + value + "\"");
-               }
-            }
-            return Result.TrueResult;
-         }
-      } catch (Exception ex) {
-         return new Result("Exception: " + ex.getLocalizedMessage());
-      }
-      return super.isWorldViewRemainHoursValid();
    }
 
    /**
@@ -549,10 +466,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
-   public String getWorldViewImplementer() {
-      SMAState state = getStateDam().getState(DefaultTeamState.Implement.name(), false);
-      if (state != null) return Artifacts.commaArts(state.getAssignees());
-      return "";
+   public String getWorldViewImplementer() throws Exception {
+      return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees(DefaultTeamState.Implement.name()));
    }
 
    /*
@@ -560,13 +475,9 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
-   public String getWorldViewDeadlineDateStr() {
-      try {
-         Date date = getWorldViewDeadlineDate();
-         if (date != null) return new XDate(date).getMMDDYY();
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+   public String getWorldViewDeadlineDateStr() throws Exception {
+      Date date = getWorldViewDeadlineDate();
+      if (date != null) return new XDate(date).getMMDDYY();
       return "";
    }
 
@@ -584,15 +495,11 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
     */
-   public double getWorldViewWeeklyBenefit() {
-      try {
-         String value = getSoleAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName(), "");
-         if (value == null || value.equals("")) return 0;
-         return new Float(value).doubleValue();
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, "HRID " + getHumanReadableId(), ex, false);
-      }
-      return 0;
+   public double getWorldViewWeeklyBenefit() throws Exception {
+      if (isAttributeTypeValid(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName())) return 0;
+      String value = getSoleAttributeValue(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE.getStoreName(), "");
+      if (value == null || value.equals("")) return 0;
+      return new Float(value).doubleValue();
    }
 
    /*
@@ -600,24 +507,10 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewAnnualCostAvoidance()
     */
-   public double getWorldViewAnnualCostAvoidance() {
+   public double getWorldViewAnnualCostAvoidance() throws Exception {
       double benefit = getWorldViewWeeklyBenefit();
-      double remainHrs = getWorldViewRemainHours();
+      double remainHrs = getRemainHoursTotal();
       return (benefit * 52) - remainHrs;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isMetricsFromTasks()
-    */
-   public boolean isMetricsFromTasks() {
-      try {
-         return getSoleAttributeValue(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE.getStoreName(), false);
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
-      return false;
    }
 
    /*
@@ -666,7 +559,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
     */
-   public String getWorldViewBranchStatus() {
+   public String getWorldViewBranchStatus() throws Exception {
       try {
          if (getSmaMgr().getBranchMgr().isWorkingBranch())
             return "Working";

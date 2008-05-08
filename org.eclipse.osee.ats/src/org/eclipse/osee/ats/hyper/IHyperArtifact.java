@@ -32,7 +32,7 @@ public interface IHyperArtifact {
 
    public Image getHyperImage();
 
-   public Image getHyperAssigneeImage();
+   public Image getHyperAssigneeImage() throws Exception;
 
    public Artifact getHyperArtifact();
 

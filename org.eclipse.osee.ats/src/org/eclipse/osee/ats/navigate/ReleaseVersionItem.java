@@ -77,7 +77,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                SMAManager smaMgr = new SMAManager(team);
                if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
                   errorStr =
-                        "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getCurrentStateName() + "\" state.";
+                        "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getSmaMgr().getStateMgr().getCurrentStateName() + "\" state.";
                }
             }
             if (errorStr != null) AWorkbench.popup("ERROR", errorStr);

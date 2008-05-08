@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor.service;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -24,11 +23,11 @@ import org.eclipse.swt.widgets.Label;
 /**
  * @author Donald G. Dunne
  */
-public class TotalHoursSpentStat extends WorkPageService {
+public class TotalEstimatedHoursStat extends WorkPageService {
 
    private Label label;
 
-   public TotalHoursSpentStat(SMAManager smaMgr) {
+   public TotalEstimatedHoursStat(SMAManager smaMgr) {
       super(smaMgr);
    }
 
@@ -46,6 +45,7 @@ public class TotalHoursSpentStat extends WorkPageService {
    @Override
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
       label = toolkit.createLabel(workGroup, "", SWT.NONE);
+      label.setToolTipText("Calculation: sum estimated hours for workflow and all tasks and reviews");
       refresh();
    }
 
@@ -54,7 +54,7 @@ public class TotalHoursSpentStat extends WorkPageService {
     */
    @Override
    public String getName() {
-      return "Hours Spent";
+      return "Total Estimated Hours";
    }
 
    /* (non-Javadoc)
@@ -73,7 +73,7 @@ public class TotalHoursSpentStat extends WorkPageService {
    @Override
    public void refresh() {
       try {
-         if (label != null && !label.isDisposed()) label.setText("Total Hours Spent: " + AtsLib.doubleToStrString(smaMgr.getSma().getHoursSpentSMATotal()));
+         if (label != null && !label.isDisposed()) label.setText("Total Estimated Hours: " + smaMgr.getSma().getEstimatedHoursTotal());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }

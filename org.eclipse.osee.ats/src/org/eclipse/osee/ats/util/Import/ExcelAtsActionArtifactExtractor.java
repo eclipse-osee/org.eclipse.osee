@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsPriority;
 import org.eclipse.osee.ats.util.NotifyUsersJob;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
@@ -215,8 +214,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
             }
             if (aData.assigneeStrs.size() > 0) {
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-                  SMAManager smaMgr = new SMAManager(team);
-                  smaMgr.setAssignees(aData.assignees);
+                  team.getSmaMgr().getStateMgr().setAssignees(aData.assignees);
                }
             }
             for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {

@@ -11,13 +11,10 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.hyper.IHyperArtifact;
 import org.eclipse.osee.ats.util.Overview;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
@@ -63,13 +60,6 @@ public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IA
       for (RelationLinkGroup group : getLinkManager().getGroups())
          for (Artifact art : group.getArtifacts())
             allRelated.put(art, this);
-   }
-
-   public Collection<User> convertToUserCollection(Collection<Artifact> coll) {
-      ArrayList<User> arts = new ArrayList<User>();
-      for (Artifact art : coll)
-         arts.add((User) art);
-      return arts;
    }
 
 }

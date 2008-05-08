@@ -71,7 +71,7 @@ public class NotifyUsersJob extends Job {
       this.types.add(type);
       if (types != null) for (NotifyType nt : types)
          this.types.add(nt);
-      stateName = sma.getCurrentStateName();
+      stateName = sma.getSmaMgr().getStateMgr().getCurrentStateName();
       smaMgr = new SMAManager(sma);
    }
 
@@ -243,7 +243,7 @@ public class NotifyUsersJob extends Job {
    }
 
    private String getActiveEmails() throws SQLException, MultipleAttributesExist {
-      Collection<User> emails = smaMgr.getAssignees();
+      Collection<User> emails = smaMgr.getStateMgr().getAssignees();
       // Never email current user
       emails.remove(skynetAuth.getAuthenticatedUser());
       return getEmails(emails);
@@ -286,7 +286,7 @@ public class NotifyUsersJob extends Job {
                      skynetAuth.getAuthenticatedUser().getEmail(),
                      "ATS Subscription Alert: " + sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"\n");
          String notifyStr =
-               sma.getArtifactTypeName() + " Transitioned to \"" + sma.getCurrentStateName() + "\"<br><br>";
+               sma.getArtifactTypeName() + " Transitioned to \"" + sma.getSmaMgr().getStateMgr().getCurrentStateName() + "\"<br><br>";
          String unsubscribeStr =
                "<br><br>You are subscribed to receive notification of transition for this " + sma.getArtifactTypeName() + ".  <br>Enter OSEE ATS to un-subscribe.";
 

@@ -143,7 +143,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       StringBuffer sb = new StringBuffer();
       for (WorkPage wPage : pages) {
          AtsWorkPage page = (AtsWorkPage) wPage;
-         if (smaMgr.isCurrentState(page) || smaMgr.isStateVisited(page.getName())) {
+         if (smaMgr.isCurrentState(page) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
             sb.append(page.getHtml(smaMgr.isCurrentState(page) ? activeColor : normalColor));
             sb.append(AHTML.newline());
          }
@@ -185,7 +185,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Only display current or past states
       for (WorkPage wPage : smaMgr.getSma().getWorkFlow().getPagesOrdered()) {
          AtsWorkPage page = (AtsWorkPage) wPage;
-         if (smaMgr.isCurrentState(page) || smaMgr.isStateVisited(page.getName())) {
+         if (smaMgr.isCurrentState(page) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
             // Don't show completed or cancelled state if not currently those state
             if (page.isCompletePage() && !smaMgr.isCompleted()) continue;
             if (page.isCancelledPage() && !smaMgr.isCancelled()) continue;
@@ -501,7 +501,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public void updateOrigLabel() {
+   public void updateOrigLabel() throws Exception {
       origLabel.setText(smaMgr.getOriginator().getName());
       origLabel.getParent().layout();
       if (teamWf != null) {
@@ -510,7 +510,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public void refresh() {
+   public void refresh() throws Exception {
       for (SMAWorkFlowSection section : sections)
          section.refresh();
       if (smaRelationsComposite != null) smaRelationsComposite.refresh();

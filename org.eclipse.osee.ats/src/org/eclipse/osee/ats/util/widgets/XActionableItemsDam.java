@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -23,9 +22,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 
 /**
@@ -50,44 +49,27 @@ public class XActionableItemsDam extends XTextDam {
 
    public Set<ActionableItemArtifact> getActionableItems() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       Set<ActionableItemArtifact> ais = new HashSet<ActionableItemArtifact>();
-      for (Attribute<String> attr : getAttributes()) {
-         ais.add((ActionableItemArtifact) ArtifactQuery.getArtifactFromId(attr.getValue(),
-               BranchPersistenceManager.getAtsBranch()));
+      for (String guid : getActionableItemGuids()) {
+         ais.add((ActionableItemArtifact) ArtifactQuery.getArtifactFromId(guid, BranchPersistenceManager.getAtsBranch()));
       }
       return ais;
    }
 
-   public String getActionableItemsStr() {
-      try {
-         StringBuffer sb = new StringBuffer();
-         for (ActionableItemArtifact aia : getActionableItems())
-            sb.append(aia.getDescriptiveName() + ", ");
-         return sb.toString().replaceFirst(", $", "");
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-         return ex.getLocalizedMessage();
-      }
+   public String getActionableItemsStr() throws Exception {
+      return Artifacts.commaArts(getActionableItems());
    }
 
    public Set<String> getActionableItemGuids() throws SQLException {
-      Set<String> ais = new HashSet<String>();
-      for (Attribute<String> attr : getAttributes()) {
-         ais.add(attr.getValue());
-      }
-      return ais;
+      return sma.getAttributesToStringCollection(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
    }
 
    public void addActionableItem(ActionableItemArtifact aia) throws SQLException {
-      if (!getActionableItemGuids().contains(aia.getGuid())) {
-         Attribute<String> attribute = getDam().getNewAttribute();
-         attribute.setValue(aia.getGuid());
-      }
+      if (!getActionableItemGuids().contains(aia.getGuid())) sma.addAttribute(
+            ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
    }
 
    public void removeActionableItem(ActionableItemArtifact aia) throws SQLException {
-      for (Attribute<String> attr : getAttributes()) {
-         if (aia.getGuid().equals(attr.getValue())) attr.delete();
-      }
+      sma.deleteAttribute(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName(), aia.getGuid());
    }
 
    public Result setActionableItems(Collection<ActionableItemArtifact> newItems) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {

@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.service;
 
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -43,6 +45,7 @@ public class TotalPercentCompleteStat extends WorkPageService {
    @Override
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
       label = toolkit.createLabel(workGroup, "", SWT.NONE);
+      label.setToolTipText("Calculation: sum of percent for all states (including all tasks and reviews) / # statusable states");
       refresh();
    }
 
@@ -65,11 +68,15 @@ public class TotalPercentCompleteStat extends WorkPageService {
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.ats.editor.statistic.WorkPageStatistic#refresh()
+    * @see org.eclipse.osee.ats.editor.statistic.WorkPageService#refresh()
     */
    @Override
    public void refresh() {
-      if (label != null && !label.isDisposed()) label.setText("Total Percent: " + smaMgr.getSma().getWorldViewTotalPercentComplete());
+      try {
+         if (label != null && !label.isDisposed()) label.setText("Total Percent: " + smaMgr.getSma().getPercentCompleteSMATotal());
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
    }
 
 }

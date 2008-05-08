@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -177,7 +178,7 @@ public class SMAState {
    }
 
    public String getHoursSpentStr() {
-      return String.format("%4.2f", hoursSpent);
+      return AtsLib.doubleToStrString(hoursSpent);
    }
 
    /**

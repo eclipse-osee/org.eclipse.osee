@@ -47,7 +47,7 @@ public class TaskManager {
    }
 
    public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws SQLException, MultipleAttributesExist {
-      return getTaskArtifacts(smaMgr.getSma().getCurrentStateName());
+      return getTaskArtifacts(smaMgr.getStateMgr().getCurrentStateName());
    }
 
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws SQLException, MultipleAttributesExist {
@@ -78,13 +78,13 @@ public class TaskManager {
                   BranchPersistenceManager.getAtsBranch(), title);
       taskArt.getLog().addLog(LogType.Originated, "", "");
 
-      // Set current state and POCs
-      taskArt.getCurrentStateDam().setState(new SMAState("InWork", assignees));
+      // Initialize state machine
+      taskArt.getSmaMgr().getStateMgr().initializeStateMachine(TaskArtifact.INWORK_STATE, assignees);
       taskArt.getLog().addLog(LogType.StateEntered, "InWork", "");
 
       // Set parent state task is related to
       taskArt.setSoleStringAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
-            smaMgr.getSma().getCurrentStateName());
+            smaMgr.getStateMgr().getCurrentStateName());
 
       if (persist) taskArt.persistAttributes();
       smaMgr.getSma().relate(RelationSide.SmaToTask_Task, taskArt, persist);
@@ -106,6 +106,88 @@ public class TaskManager {
          OSEELog.logException(AtsPlugin.class, ex, false);
       }
       return Result.TrueResult;
+   }
+
+   /**
+    * Return Estimated Task Hours of "Related to State" stateName
+    * 
+    * @param relatedToStateName state name of parent workflow's state
+    * @return Returns the Estimated Hours
+    */
+   public double getEstimatedHours(String relatedToStateName) throws Exception {
+      double hours = 0;
+      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName))
+         hours += taskArt.getEstimatedHoursTotal();
+      return hours;
+   }
+
+   /**
+    * Return Estimated Hours for all tasks
+    * 
+    * @return
+    * @throws Exception
+    */
+   public double getEstimatedHours() throws Exception {
+      double hours = 0;
+      for (TaskArtifact taskArt : getTaskArtifacts())
+         hours += taskArt.getEstimatedHoursFromArtifact();
+      return hours;
+
+   }
+
+   /**
+    * Return Remain Task Hours of "Related to State" stateName
+    * 
+    * @param relatedToStateName state name of parent workflow's state
+    * @return Returns the Remain Hours
+    */
+   public double getRemainHours(String relatedToStateName) throws Exception {
+      double hours = 0;
+      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName))
+         hours += taskArt.getRemainHoursFromArtifact();
+      return hours;
+   }
+
+   /**
+    * Return Remain Hours for all tasks
+    * 
+    * @return
+    * @throws Exception
+    */
+   public double getRemainHours() throws Exception {
+      double hours = 0;
+      for (TaskArtifact taskArt : getTaskArtifacts())
+         hours += taskArt.getRemainHoursFromArtifact();
+      return hours;
+
+   }
+
+   /**
+    * Return Hours Spent for Tasks of "Related to State" stateName
+    * 
+    * @param relatedToStateName state name of parent workflow's state
+    * @return Returns the Hours Spent
+    */
+   public double getHoursSpent(String relatedToStateName) throws Exception {
+      double spent = 0;
+      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName))
+         spent += taskArt.getHoursSpentSMATotal();
+      return spent;
+   }
+
+   /**
+    * Return Total Percent Complete / # Tasks for "Related to State" stateName
+    * 
+    * @param relatedToStateName state name of parent workflow's state
+    * @return Returns the Percent Complete.
+    */
+   public int getPercentComplete(String relatedToStateName) throws Exception {
+      int spent = 0;
+      Collection<TaskArtifact> taskArts = getTaskArtifacts(relatedToStateName);
+      for (TaskArtifact taskArt : taskArts)
+         spent += taskArt.getPercentCompleteSMATotal();
+      if (spent == 0) return 0;
+      return spent / taskArts.size();
    }
 
 }

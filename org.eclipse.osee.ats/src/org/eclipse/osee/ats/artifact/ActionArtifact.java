@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
-import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
@@ -188,7 +187,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          }
       }
       try {
-         setDamAttributes(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComs);
+      setDamAttributes(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComs);
       } catch (Exception ex) {
          throw new SQLException(ex);
       }
@@ -221,11 +220,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return getArtifacts(RelationSide.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class);
    }
 
-   public String getWorldViewType() {
+   public String getWorldViewType() throws Exception {
       return ARTIFACT_NAME;
    }
 
-   public String getWorldViewTitle() {
+   public String getWorldViewTitle() throws Exception {
       return getDescriptiveName();
    }
 
@@ -236,7 +235,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewBranchStatus()
     */
-   public String getWorldViewBranchStatus() {
+   public String getWorldViewBranchStatus() throws Exception {
       try {
          StringBuffer sb = new StringBuffer();
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -248,7 +247,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
    }
 
-   public String getWorldViewNumberOfTasks() {
+   public String getWorldViewNumberOfTasks() throws Exception {
       try {
          StringBuffer sb = new StringBuffer();
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -260,7 +259,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
    }
 
-   public String getWorldViewState() {
+   public String getWorldViewState() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -275,12 +274,12 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return str;
    }
 
-   public String getWorldViewActivePoc() {
+   public String getWorldViewActivePoc() throws Exception {
       Set<User> pocs = new HashSet<User>();
       try {
          // Roll up all assignees
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            pocs.addAll(team.getCurrentState().getAssignees());
+            pocs.addAll(team.getSmaMgr().getStateMgr().getAssignees());
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
@@ -288,7 +287,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Artifacts.commaArts(pocs);
    }
 
-   public String getWorldViewCreatedDateStr() {
+   public String getWorldViewCreatedDateStr() throws Exception {
       try {
          Date date = getWorldViewCreatedDate();
          if (date == null) return XViewerCells.getCellExceptionString("No Creation Date Found");
@@ -302,11 +301,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return getTeamWorkFlowArtifacts().iterator().next().getWorldViewCreatedDate();
    }
 
-   public String getWorldViewID() {
+   public String getWorldViewID() throws Exception {
       return getHumanReadableId();
    }
 
-   public String getWorldViewPriority() {
+   public String getWorldViewPriority() throws Exception {
       try {
          return PriorityType.getPriority(
                getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "")).getShortName();
@@ -315,7 +314,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
    }
 
-   public Image getAssigneeImage() {
+   public Image getAssigneeImage() throws Exception {
       try {
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
             Image image = team.getAssigneeImage();
@@ -327,7 +326,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return null;
    }
 
-   public String getWorldViewUserCommunity() {
+   public String getWorldViewUserCommunity() throws Exception {
       try {
          return getAttributesToString(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
       } catch (SQLException ex) {
@@ -335,7 +334,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
    }
 
-   public String getWorldViewActionableItems() {
+   public String getWorldViewActionableItems() throws Exception {
       try {
          StringBuffer sb = new StringBuffer();
          for (ActionableItemArtifact aia : getActionableItemsDam().getActionableItems()) {
@@ -355,7 +354,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          art.atsDelete(deleteArts, allRelated);
    }
 
-   public String getWorldViewTeam() {
+   public String getWorldViewTeam() throws Exception {
       Set<TeamDefinitionArtifact> teams = new HashSet<TeamDefinitionArtifact>();
       try {
          // Roll up if same for all children
@@ -368,7 +367,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Artifacts.commaArts(teams);
    }
 
-   public String getWorldViewOriginator() {
+   public String getWorldViewOriginator() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -421,7 +420,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return null;
    }
 
-   public String getWorldViewResolution() {
+   public String getWorldViewResolution() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -441,15 +440,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewRemainHours()
     */
-   public double getWorldViewRemainHours() {
+   public double getWorldViewRemainHours() throws Exception {
       double hours = 0;
-      try {
-         // Add up hours for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            hours += team.getWorldViewRemainHours();
-         }
-      } catch (SQLException ex) {
-         // Do nothing
+      // Add up hours for all children
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         hours += team.getWorldViewRemainHours();
       }
       return hours;
    }
@@ -459,15 +454,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewManDaysNeeded()
     */
-   public double getWorldViewManDaysNeeded() {
+   public double getWorldViewManDaysNeeded() throws Exception {
       double hours = 0;
-      try {
-         // Add up hours for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            hours += team.getWorldViewManDaysNeeded();
-         }
-      } catch (SQLException ex) {
-         // Do nothing
+      // Add up hours for all children
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         hours += team.getWorldViewManDaysNeeded();
       }
       return hours;
    }
@@ -477,15 +468,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewEstimatedHours()
     */
-   public double getWorldViewEstimatedHours() {
+   public double getWorldViewEstimatedHours() throws Exception {
       double hours = 0;
-      try {
-         // Add up hours for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            hours += team.getWorldViewEstimatedHours();
-         }
-      } catch (SQLException ex) {
-         // Do nothing
+      // Add up hours for all children
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         hours += team.getWorldViewEstimatedHours();
       }
       return hours;
    }
@@ -495,91 +482,25 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewStatePercentComplete()
     */
-   public int getWorldViewStatePercentComplete() {
-      try {
-         if (getTeamWorkFlowArtifacts().size() == 1)
-            return getTeamWorkFlowArtifacts().iterator().next().getWorldViewStatePercentComplete();
-         else {
-            double percent = 0;
-            int items = 0;
-            for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-               SMAManager smaMgr = new SMAManager(team);
-               if (!smaMgr.isCancelled()) {
-                  percent += team.getWorldViewStatePercentComplete();
-                  items++;
-               }
-            }
-            if (items > 0) {
-               Double rollPercent = percent / items;
-               return rollPercent.intValue();
-            }
-         }
-      } catch (SQLException ex) {
-         // Do nothing
-      }
-      return 0;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewStateHoursSpent()
-    */
-   public double getWorldViewStateHoursSpent() {
-      try {
-         if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts().iterator().next().getWorldViewStateHoursSpent();
-      } catch (SQLException ex) {
-         // Do nothing
-      }
-      return 0;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewTotalPercentComplete()
-    */
-   public int getWorldViewTotalPercentComplete() {
-      try {
-         if (getTeamWorkFlowArtifacts().size() == 1)
-            return getTeamWorkFlowArtifacts().iterator().next().getWorldViewTotalPercentComplete();
-         else {
-            double percent = 0;
-            int items = 0;
-            for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-               SMAManager smaMgr = new SMAManager(team);
-               if (!smaMgr.isCancelled()) {
-                  percent += team.getWorldViewTotalPercentComplete();
-                  items++;
-               }
-            }
-            if (items > 0) {
-               Double rollPercent = percent / items;
-               return rollPercent.intValue();
-            }
-         }
-      } catch (SQLException ex) {
-         // Do nothing
-      }
-      return 0;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewTotalHoursSpent()
-    */
-   public double getWorldViewTotalHoursSpent() {
-      double hours = 0;
-      try {
-         // Add up hours for all children
+   public int getWorldViewStatePercentComplete() throws Exception {
+      if (getTeamWorkFlowArtifacts().size() == 1)
+         return getTeamWorkFlowArtifacts().iterator().next().getWorldViewStatePercentComplete();
+      else {
+         double percent = 0;
+         int items = 0;
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            hours += team.getWorldViewTotalHoursSpent();
+            SMAManager smaMgr = new SMAManager(team);
+            if (!smaMgr.isCancelled()) {
+               percent += team.getWorldViewStatePercentComplete();
+               items++;
+            }
          }
-      } catch (SQLException ex) {
-         // Do nothing
+         if (items > 0) {
+            Double rollPercent = percent / items;
+            return rollPercent.intValue();
+         }
       }
-      return hours;
+      return 0;
    }
 
    /*
@@ -587,7 +508,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewRelatedToState()
     */
-   public String getWorldViewRelatedToState() {
+   public String getWorldViewRelatedToState() throws Exception {
       return "";
    }
 
@@ -596,17 +517,13 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewNotes()
     */
-   public String getWorldViewNotes() {
+   public String getWorldViewNotes() throws Exception {
       String str = "";
-      try {
-         // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (str.equals(""))
-               str = team.getWorldViewNotes();
-            else if (!str.equals(team.getWorldViewNotes())) return "";
-         }
-      } catch (SQLException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      // Roll up if same for all children
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (str.equals(""))
+            str = team.getWorldViewNotes();
+         else if (!str.equals(team.getWorldViewNotes())) return "";
       }
       return str;
    }
@@ -616,7 +533,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewCategory()
     */
-   public String getWorldViewCategory() {
+   public String getWorldViewCategory() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -631,7 +548,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return str;
    }
 
-   public String getWorldViewWorkPackage() {
+   public String getWorldViewWorkPackage() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -646,7 +563,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return str;
    }
 
-   public String getWorldViewCategory2() {
+   public String getWorldViewCategory2() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -661,7 +578,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return str;
    }
 
-   public String getWorldViewCategory3() {
+   public String getWorldViewCategory3() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -681,7 +598,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewVersion()
     */
-   public String getWorldViewVersion() {
+   public String getWorldViewVersion() throws Exception {
       Set<String> versions = new HashSet<String>();
       try {
          // Roll up version if same for all children
@@ -754,7 +671,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.hyper.IHyperArtifact#getHyperAssigneeImage()
     */
-   public Image getHyperAssigneeImage() {
+   public Image getHyperAssigneeImage() throws Exception {
       try {
          if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts().iterator().next().getHyperAssigneeImage();
       } catch (SQLException ex) {
@@ -870,39 +787,39 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
                   "Team \"" + teamDef + "\" already exists for Action " + getHumanReadableId());
          }
       }
-      TeamWorkFlowArtifact twa = null;
+      TeamWorkFlowArtifact teamArt = null;
       if (guid == null)
-         twa =
+         teamArt =
                (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName,
                      BranchPersistenceManager.getAtsBranch());
       else
-         twa =
+         teamArt =
                (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName,
                      BranchPersistenceManager.getAtsBranch(), guid, hrid);
-      setArtifactIdentifyData(this, twa);
+      setArtifactIdentifyData(this, teamArt);
 
-      twa.getLog().addLog(LogType.Originated, "", "");
+      teamArt.getLog().addLog(LogType.Originated, "", "");
 
       // Relate Workflow to ActionableItems (by guid) if team is responsible
       // for that AI
       for (ActionableItemArtifact aia : actionableItems)
-         if (aia.getImpactedTeamDefs().contains(teamDef)) twa.getActionableItemsDam().addActionableItem(aia);
+         if (aia.getImpactedTeamDefs().contains(teamDef)) teamArt.getActionableItemsDam().addActionableItem(aia);
 
-      // Set current state and POCs
-      twa.getCurrentStateDam().setState(new SMAState(DefaultTeamState.Endorse.name(), assignees));
-      twa.getLog().addLog(LogType.StateEntered, DefaultTeamState.Endorse.name(), "");
+      // Initialize state machine
+      teamArt.getSmaMgr().getStateMgr().initializeStateMachine(DefaultTeamState.Endorse.name());
+      teamArt.getLog().addLog(LogType.StateEntered, DefaultTeamState.Endorse.name(), "");
 
       // Relate WorkFlow to Team Definition (by guid due to relation loading
       // issues)
-      twa.setTeamDefinition(teamDef);
+      teamArt.setTeamDefinition(teamDef);
 
       // Relate Action to WorkFlow
-      relate(RelationSide.ActionToWorkflow_WorkFlow, twa);
+      relate(RelationSide.ActionToWorkflow_WorkFlow, teamArt);
 
       // Persist
-      twa.persist(true);
+      teamArt.persist(true);
 
-      return twa;
+      return teamArt;
    }
 
    /**
@@ -956,7 +873,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDecision()
     */
-   public String getWorldViewDecision() {
+   public String getWorldViewDecision() throws Exception {
       return "";
    }
 
@@ -974,7 +891,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
-   public String getWorldViewDescription() {
+   public String getWorldViewDescription() throws Exception {
       try {
          return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
       } catch (Exception ex) {
@@ -987,7 +904,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewValidationRequired()
     */
-   public String getWorldViewValidationRequiredStr() {
+   public String getWorldViewValidationRequiredStr() throws Exception {
       try {
          return String.valueOf(getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false));
       } catch (Exception ex) {
@@ -1005,7 +922,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewCancelledDateStr()
     */
-   public String getWorldViewCancelledDateStr() {
+   public String getWorldViewCancelledDateStr() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -1020,7 +937,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
    }
 
-   public String getWorldViewReleaseDateStr() {
+   public String getWorldViewReleaseDateStr() throws Exception {
       try {
          Date date = getWorldViewReleaseDate();
          if (date == null) return "";
@@ -1054,7 +971,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewCompletedDateStr()
     */
-   public String getWorldViewCompletedDateStr() {
+   public String getWorldViewCompletedDateStr() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -1074,7 +991,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewEstimatedReleaseDateStr()
     */
-   public String getWorldViewEstimatedReleaseDateStr() {
+   public String getWorldViewEstimatedReleaseDateStr() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -1094,7 +1011,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewRemainHoursValid()
     */
-   public Result isWorldViewRemainHoursValid() {
+   public Result isWorldViewRemainHoursValid() throws Exception {
       try {
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts())
             if (team.isWorldViewRemainHoursValid().isFalse()) return team.isWorldViewRemainHoursValid();
@@ -1109,7 +1026,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewManDaysNeededValid()
     */
-   public Result isWorldViewManDaysNeededValid() {
+   public Result isWorldViewManDaysNeededValid() throws Exception {
       try {
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts())
             if (team.isWorldViewManDaysNeededValid().isFalse()) return team.isWorldViewManDaysNeededValid();
@@ -1124,7 +1041,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewChangeTypeStr()
     */
-   public String getWorldViewChangeTypeStr() {
+   public String getWorldViewChangeTypeStr() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -1144,7 +1061,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
-   public String getWorldViewImplementer() {
+   public String getWorldViewImplementer() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -1188,7 +1105,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
-   public String getWorldViewDeadlineDateStr() {
+   public String getWorldViewDeadlineDateStr() throws Exception {
       try {
          Date date = getWorldViewDeadlineDate();
          if (date == null) return "";
@@ -1203,19 +1120,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
     */
-   public double getWorldViewWeeklyBenefit() {
+   public double getWorldViewWeeklyBenefit() throws Exception {
       double hours = 0;
-      try {
-         // Add up hours for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            SMAManager smaMgr = new SMAManager(team);
-            if (!smaMgr.isCompleted() && !smaMgr.isCancelled()) hours += team.getWorldViewWeeklyBenefit();
-         }
-         return hours;
-      } catch (SQLException ex) {
-         // Do nothing
+      // Add up hours for all children
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         SMAManager smaMgr = new SMAManager(team);
+         if (!smaMgr.isCompleted() && !smaMgr.isCancelled()) hours += team.getWorldViewWeeklyBenefit();
       }
-      return 0;
+      return hours;
    }
 
    /*
@@ -1223,19 +1135,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewAnnualCostAvoidance()
     */
-   public double getWorldViewAnnualCostAvoidance() {
+   public double getWorldViewAnnualCostAvoidance() throws Exception {
       double hours = 0;
-      try {
-         // Add up hours for all children
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            SMAManager smaMgr = new SMAManager(team);
-            if (!smaMgr.isCompleted() && !smaMgr.isCancelled()) hours += team.getWorldViewAnnualCostAvoidance();
-         }
-         return hours;
-      } catch (SQLException ex) {
-         // Do nothing
+      // Add up hours for all children
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         SMAManager smaMgr = new SMAManager(team);
+         if (!smaMgr.isCompleted() && !smaMgr.isCancelled()) hours += team.getWorldViewAnnualCostAvoidance();
       }
-      return 0;
+      return hours;
    }
 
    /*
@@ -1243,7 +1150,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewAnnualCostAvoidanceValid()
     */
-   public Result isWorldViewAnnualCostAvoidanceValid() {
+   public Result isWorldViewAnnualCostAvoidanceValid() throws Exception {
       try {
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
             Result result = team.isWorldViewAnnualCostAvoidanceValid();
@@ -1273,7 +1180,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isWorldViewDeadlineAlerting()
     */
-   public Result isWorldViewDeadlineAlerting() {
+   public Result isWorldViewDeadlineAlerting() throws Exception {
       try {
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
             Result result = team.isWorldViewDeadlineAlerting();
@@ -1288,27 +1195,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#isMetricsFromTasks()
-    */
-   public boolean isMetricsFromTasks() {
-      boolean metricsFromTasks = false;
-      try {
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (team.getSoleAttributeValue(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE.getStoreName(), false)) metricsFromTasks =
-                  true;
-         }
-      } catch (Exception ex) {
-         // do nothing
-      }
-      return metricsFromTasks;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewLegacyPCR()
     */
-   public String getWorldViewLegacyPCR() {
+   public String getWorldViewLegacyPCR() throws Exception {
       String str = "";
       try {
          // Roll up if same for all children
@@ -1328,7 +1217,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentReworkStr()
     */
-   public String getWorldViewPercentReworkStr() {
+   public String getWorldViewPercentReworkStr() throws Exception {
       Set<String> reworks = new HashSet<String>();
       try {
          // Roll up version if same for all children
@@ -1346,36 +1235,156 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentRework()
     */
-   public int getWorldViewPercentRework() {
+   public int getWorldViewPercentRework() throws Exception {
       return 0;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
     */
-   public String getWorldViewReviewAuthor() {
+   public String getWorldViewReviewAuthor() throws Exception {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
     */
-   public String getWorldViewReviewDecider() {
+   public String getWorldViewReviewDecider() throws Exception {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
     */
-   public String getWorldViewReviewModerator() {
+   public String getWorldViewReviewModerator() throws Exception {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
     */
-   public String getWorldViewReviewReviewer() {
+   public String getWorldViewReviewReviewer() throws Exception {
       return "";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentState()
+    */
+   @Override
+   public double getWorldViewHoursSpentState() throws Exception {
+      double hours = 0;
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getSmaMgr().isCancelled()) {
+            hours += team.getWorldViewHoursSpentState();
+         }
+      }
+      return hours;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentStateReview()
+    */
+   @Override
+   public double getWorldViewHoursSpentStateReview() throws Exception {
+      double hours = 0;
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getSmaMgr().isCancelled()) {
+            hours += team.getWorldViewHoursSpentStateReview();
+         }
+      }
+      return hours;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentStateTask()
+    */
+   @Override
+   public double getWorldViewHoursSpentStateTask() throws Exception {
+      double hours = 0;
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getSmaMgr().isCancelled()) {
+            hours += team.getWorldViewHoursSpentStateTask();
+         }
+      }
+      return hours;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewHoursSpentTotal()
+    */
+   @Override
+   public double getWorldViewHoursSpentTotal() throws Exception {
+      double hours = 0;
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getSmaMgr().isCancelled()) {
+            hours += team.getWorldViewHoursSpentTotal();
+         }
+      }
+      return hours;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteState()
+    */
+   @Override
+   public int getWorldViewPercentCompleteState() throws Exception {
+      double percent = 0;
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getSmaMgr().isCancelled()) {
+            percent += team.getWorldViewPercentCompleteState();
+         }
+      }
+      if (percent == 0) return 0;
+      Double rollPercent = percent / getTeamWorkFlowArtifacts().size();
+      return rollPercent.intValue();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteStateReview()
+    */
+   @Override
+   public int getWorldViewPercentCompleteStateReview() throws Exception {
+      double percent = 0;
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getSmaMgr().isCancelled()) {
+            percent += team.getWorldViewPercentCompleteStateReview();
+         }
+      }
+      if (percent == 0) return 0;
+      Double rollPercent = percent / getTeamWorkFlowArtifacts().size();
+      return rollPercent.intValue();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteStateTask()
+    */
+   @Override
+   public int getWorldViewPercentCompleteStateTask() throws Exception {
+      double percent = 0;
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getSmaMgr().isCancelled()) {
+            percent += team.getWorldViewPercentCompleteStateTask();
+         }
+      }
+      if (percent == 0) return 0;
+      Double rollPercent = percent / getTeamWorkFlowArtifacts().size();
+      return rollPercent.intValue();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewPercentCompleteTotal()
+    */
+   @Override
+   public int getWorldViewPercentCompleteTotal() throws Exception {
+      double percent = 0;
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (!team.getSmaMgr().isCancelled()) {
+            percent += team.getWorldViewPercentCompleteTotal();
+         }
+      }
+      if (percent == 0) return 0;
+      Double rollPercent = percent / getTeamWorkFlowArtifacts().size();
+      return rollPercent.intValue();
    }
 
 }

@@ -127,7 +127,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   u = skyAuth.getUserByName(userName, false);
                if (u == null) throw new IllegalArgumentException(String.format("Invalid Assignee \"%s\" for row %d",
                      userName, rowNum));
-               taskArt.getCurrentState().setAssignee(u);
+               taskArt.getSmaMgr().getStateMgr().setAssignee(u);
             } else if (headerRow[i].equalsIgnoreCase(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName())) {
                String str = row[i];
                if (str != null && !str.equals("")) {
@@ -153,7 +153,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                            str, rowNum));
                   }
                   int percentInt = percent.intValue();
-                  taskArt.getCurrentStateDam().setPercentComplete(percentInt);
+                  taskArt.getSmaMgr().getStateMgr().setPercentComplete(percentInt);
                }
             } else if (headerRow[i].equalsIgnoreCase(ATSAttributes.HOURS_SPENT_ATTRIBUTE.getStoreName())) {
                String str = row[i];
@@ -165,7 +165,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                      throw new IllegalArgumentException(String.format("Invalid Hours Spent \"%s\" for row %d", str,
                            rowNum));
                   }
-                  taskArt.getCurrentStateDam().setHoursSpent(hours);
+                  taskArt.getSmaMgr().getStateMgr().setHoursSpent(hours);
                }
             } else if (headerRow[i].equalsIgnoreCase("group")) {
                System.out.println("groups not handled yet");

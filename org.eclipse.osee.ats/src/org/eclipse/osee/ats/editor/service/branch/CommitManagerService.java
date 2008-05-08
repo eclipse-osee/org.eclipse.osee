@@ -54,7 +54,7 @@ public class CommitManagerService extends WorkPageService implements IEventRecei
     */
    @Override
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, SMAWorkFlowSection section) {
-      if (smaMgr.getCurrentStateName().equals(page.getName()) && isEnabled()) {
+      if (smaMgr.getStateMgr().getCurrentStateName().equals(page.getName()) && isEnabled()) {
          link = toolkit.createHyperlink(workGroup, getName(), SWT.NONE);
          if (smaMgr.getSma().isReadOnly())
             link.addHyperlinkListener(readOnlyHyperlinkListener);

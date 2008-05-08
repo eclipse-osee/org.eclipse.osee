@@ -22,10 +22,8 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -34,7 +32,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
  * @author Donald G. Dunne
  */
 public class NewDecisionReviewJob extends Job {
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private final TeamWorkFlowArtifact teamParent;
    private final boolean againstCurrentState;
    private DecisionReviewArtifact decisionReviewArtifact;
@@ -48,7 +45,7 @@ public class NewDecisionReviewJob extends Job {
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         AbstractSkynetTxTemplate newDecisionReviewTx = new AbstractSkynetTxTemplate(branchManager.getAtsBranch()) {
+         AbstractSkynetTxTemplate newDecisionReviewTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
 
             @Override
             protected void handleTxWork() throws Exception {
@@ -75,7 +72,8 @@ public class NewDecisionReviewJob extends Job {
 
       if (teamParent != null) teamParent.relate(RelationSide.TeamWorkflowToReview_Review, decRev);
       if (againstCurrentState) decRev.setSoleStringAttributeValue(
-            ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), teamParent.getCurrentStateName());
+            ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
+            teamParent.getSmaMgr().getStateMgr().getCurrentStateName());
 
       decRev.getLog().addLog(LogType.Originated, "", "");
       decRev.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(),
@@ -84,11 +82,8 @@ public class NewDecisionReviewJob extends Job {
             ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
             "Yes;Followup;<" + SkynetAuthentication.getInstance().getAuthenticatedUser().getUserId() + ">\n" + "No;Completed;");
 
-      // Set state
-      // Set current state and POCs
-      decRev.getCurrentStateDam().setState(
-            new SMAState(DecisionReviewArtifact.StateNames.Prepare.name(),
-                  SkynetAuthentication.getInstance().getAuthenticatedUser()));
+      // Initialize state machine
+      decRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());
       decRev.getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.StateNames.Prepare.name(), "");
 
       return decRev;

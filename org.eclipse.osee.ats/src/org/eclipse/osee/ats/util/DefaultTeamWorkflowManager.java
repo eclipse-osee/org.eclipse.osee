@@ -51,7 +51,7 @@ public class DefaultTeamWorkflowManager {
       }
       result =
             smaMgr.transition(DefaultTeamState.Analyze.name(),
-                  (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
+                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), false);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -65,7 +65,7 @@ public class DefaultTeamWorkflowManager {
       }
       result =
             smaMgr.transition(DefaultTeamState.Authorize.name(),
-                  (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
+                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), false);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -80,7 +80,7 @@ public class DefaultTeamWorkflowManager {
 
       result =
             smaMgr.transition(DefaultTeamState.Implement.name(),
-                  (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
+                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), false);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -89,7 +89,7 @@ public class DefaultTeamWorkflowManager {
 
       result =
             smaMgr.transition(DefaultTeamState.Completed.name(),
-                  (user != null ? user : smaMgr.getAssignees().iterator().next()), false);
+                  (user != null ? user : smaMgr.getStateMgr().getAssignees().iterator().next()), false);
       if (result.isFalse()) {
          if (popup) result.popup();
          return result;
@@ -99,18 +99,20 @@ public class DefaultTeamWorkflowManager {
    }
 
    public Result setEndorseData(String propRes, int statePercentComplete, double stateHoursSpent) throws Exception {
-      if (!smaMgr.getCurrentStateName().equals("Endorse")) return new Result("Action not in Endorse state");
+      if (!smaMgr.getStateMgr().getCurrentStateName().equals("Endorse")) return new Result(
+            "Action not in Endorse state");
       if (propRes == null || propRes.equals(""))
          teamArt.setSoleBooleanAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleStringAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
-      smaMgr.getCurrentStateDam().setHoursSpent(stateHoursSpent);
-      smaMgr.getCurrentStateDam().setPercentComplete(statePercentComplete);
+      smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
+      smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
       return Result.TrueResult;
    }
 
    public Result setAnalyzeData(String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws Exception {
-      if (!smaMgr.getCurrentStateName().equals("Analyze")) return new Result("Action not in Analyze state");
+      if (!smaMgr.getStateMgr().getCurrentStateName().equals("Analyze")) return new Result(
+            "Action not in Analyze state");
       if (problem == null || problem.equals(""))
          teamArt.setSoleBooleanAttributeValue(ATSAttributes.PROBLEM_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
@@ -120,26 +122,28 @@ public class DefaultTeamWorkflowManager {
       else
          teamArt.setSoleStringAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
       teamArt.setSoleXAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate);
-      smaMgr.getCurrentStateDam().setHoursSpent(stateHoursSpent);
-      smaMgr.getCurrentStateDam().setPercentComplete(statePercentComplete);
+      smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
+      smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
       return Result.TrueResult;
    }
 
    public Result setAuthorizeData(int statePercentComplete, double stateHoursSpent) throws Exception {
-      if (!smaMgr.getCurrentStateName().equals("Authorize")) return new Result("Action not in Authorize state");
-      smaMgr.getCurrentStateDam().setHoursSpent(stateHoursSpent);
-      smaMgr.getCurrentStateDam().setPercentComplete(statePercentComplete);
+      if (!smaMgr.getStateMgr().getCurrentStateName().equals("Authorize")) return new Result(
+            "Action not in Authorize state");
+      smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
+      smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
       return Result.TrueResult;
    }
 
    public Result setImplementData(String resolution, int statePercentComplete, double stateHoursSpent) throws Exception {
-      if (!smaMgr.getCurrentStateName().equals("Implement")) return new Result("Action not in Implement state");
+      if (!smaMgr.getStateMgr().getCurrentStateName().equals("Implement")) return new Result(
+            "Action not in Implement state");
       if (resolution == null || resolution.equals(""))
          teamArt.setSoleBooleanAttributeValue(ATSAttributes.RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleStringAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), resolution);
-      smaMgr.getCurrentStateDam().setHoursSpent(stateHoursSpent);
-      smaMgr.getCurrentStateDam().setPercentComplete(statePercentComplete);
+      smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
+      smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
       return Result.TrueResult;
    }
 

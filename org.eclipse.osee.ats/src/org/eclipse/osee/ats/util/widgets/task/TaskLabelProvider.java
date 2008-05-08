@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.task;
 
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
@@ -17,6 +18,7 @@ import org.eclipse.osee.ats.world.AtsXColumn;
 import org.eclipse.osee.ats.world.WorldArtifactItem;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -84,19 +86,24 @@ public class TaskLabelProvider extends WorldLabelProvider {
     */
    @Override
    public Color getForeground(Object element, int columnIndex) {
-      if (!taskXViewer.isUsingTaskResolutionOptions()) return null;
-      XViewerColumn xCol = taskXViewer.getXTreeColumn(columnIndex);
-      if (xCol != null) {
-         AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
-         if (aCol != null && aCol == AtsXColumn.Resolution_Col) {
-            TaskArtifact taskArt = (TaskArtifact) ((WorldArtifactItem) element).getArtifact();
-            if (taskArt != null) {
-               TaskResOptionDefinition def = taskXViewer.getTaskResOptionDefinition(taskArt.getWorldViewResolution());
-               if (def != null) {
-                  return Display.getCurrent().getSystemColor(def.getColorInt());
+      try {
+         if (!taskXViewer.isUsingTaskResolutionOptions()) return null;
+         XViewerColumn xCol = taskXViewer.getXTreeColumn(columnIndex);
+         if (xCol != null) {
+            AtsXColumn aCol = AtsXColumn.getAtsXColumn(xCol);
+            if (aCol != null && aCol == AtsXColumn.Resolution_Col) {
+               TaskArtifact taskArt = (TaskArtifact) ((WorldArtifactItem) element).getArtifact();
+               if (taskArt != null) {
+                  TaskResOptionDefinition def =
+                        taskXViewer.getTaskResOptionDefinition(taskArt.getWorldViewResolution());
+                  if (def != null) {
+                     return Display.getCurrent().getSystemColor(def.getColorInt());
+                  }
                }
             }
          }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return super.getForeground(element, columnIndex);
    }

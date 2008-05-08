@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
@@ -48,8 +47,6 @@ import org.eclipse.ui.dialogs.ListDialog;
  * @author Donald G. Dunne
  */
 public class AtsLib implements IAtsLib {
-
-   private static ArtifactPersistenceManager apm = ArtifactPersistenceManager.getInstance();
 
    public AtsLib() {
       super();

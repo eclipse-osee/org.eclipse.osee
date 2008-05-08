@@ -16,10 +16,7 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.stateItem.AtsDebugWorkPage;
 import org.eclipse.osee.ats.editor.stateItem.AtsLogWorkPage;
-import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -71,11 +68,7 @@ public class StateHoursSpentStat extends WorkPageService {
 
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     if (smaMgr.getCurrentStateName().equals(DefaultTeamState.Implement.name()) && smaMgr.getSma().isMetricsFromTasks()) {
-                        AWorkbench.popup("ERROR",
-                              "Hours Spent is rollup of task(s) hours spent " + "and can not be edited here.");
-                        return;
-                     } else if (smaMgr.promptChangeStatus(false)) section.refreshStateServices();
+                     if (smaMgr.promptChangeStatus(false)) section.refreshStateServices();
                   } catch (Exception ex) {
                      OSEELog.logException(AtsPlugin.class, ex, true);
                   }
@@ -109,13 +102,47 @@ public class StateHoursSpentStat extends WorkPageService {
     */
    @Override
    public void refresh() {
-      if (page != null && link != null && !link.isDisposed())
-         link.setText("State Hours Spent: " + AtsLib.doubleToStrString(smaMgr.getSma().getStateHoursSpent(
-               page.getName())));
-      else if (page != null && label != null && !label.isDisposed())
-         label.setText("State Hours Spent: " + AtsLib.doubleToStrString(smaMgr.getSma().getStateHoursSpent(
-               page.getName())));
-      else if (label != null && !label.isDisposed()) label.setText("State Hours Spent Error: page == null");
+      if (page == null && link != null && !link.isDisposed()) {
+         link.setText("State Hours Error: page == null");
+         return;
+      } else if (page == null && label != null && !label.isDisposed()) {
+         label.setText("State Hours Error: page == null");
+         return;
+      } else if (page == null) return;
+      try {
+         StringBuffer sb =
+               new StringBuffer(String.format("        State Hours: %5.2f", smaMgr.getStateMgr().getHoursSpent(
+                     page.getName())));
+         boolean breakoutNeeded = false;
+         if (smaMgr.getTaskMgr().hasTaskArtifacts()) {
+            sb.append(String.format("\n        Task  Hours: %5.2f", smaMgr.getTaskMgr().getHoursSpent(page.getName())));
+            breakoutNeeded = true;
+         }
+         if (smaMgr.getReviewManager().hasReviews()) {
+            sb.append(String.format("\n     Review Hours: %5.2f", smaMgr.getReviewManager().getHoursSpent(
+                  page.getName())));
+            breakoutNeeded = true;
+         }
+         if (breakoutNeeded) {
+            sb.append(String.format("\nTotal State Hours: %5.2f", smaMgr.getSma().getHoursSpentSMAStateTotal(
+                  page.getName())));
+            setString(sb.toString());
+         } else {
+            setString(String.format("State Hours Spent: %5.2f", smaMgr.getStateMgr().getHoursSpent(page.getName())));
+         }
+
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, false);
+      }
    }
 
+   private void setString(String str) {
+      if (page != null && link != null && !link.isDisposed())
+         link.setText(str);
+      else if (page != null && label != null && !label.isDisposed())
+         label.setText(str);
+      else if (label != null && !label.isDisposed())
+         label.setText("State Hours Spent Error: page == null");
+      else if (link != null && !link.isDisposed()) link.setText("State Hours Spent Error: page == null");
+   }
 }

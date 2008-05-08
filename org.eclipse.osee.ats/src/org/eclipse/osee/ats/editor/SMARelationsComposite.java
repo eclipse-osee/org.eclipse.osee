@@ -56,23 +56,19 @@ public class SMARelationsComposite extends Composite {
       this.toolkit = toolkit;
    }
 
-   public void create(SMAManager smaMgr) {
+   public void create(SMAManager smaMgr) throws Exception {
       this.smaMgr = smaMgr;
-      try {
-         setLayout(ALayout.getZeroMarginLayout(2, false));
-         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.widthHint = 500;
-         setLayoutData(gd);
-         toolkit.adapt(this);
+      setLayout(ALayout.getZeroMarginLayout(2, false));
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.widthHint = 500;
+      setLayoutData(gd);
+      toolkit.adapt(this);
 
-         processArtifact("This", smaMgr.getSma());
-         if (smaMgr.getSma() instanceof ReviewSMArtifact) processReviewArtifact((ReviewSMArtifact) smaMgr.getSma());
+      processArtifact("This", smaMgr.getSma());
+      if (smaMgr.getSma() instanceof ReviewSMArtifact) processReviewArtifact((ReviewSMArtifact) smaMgr.getSma());
 
-         if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && ((TeamWorkFlowArtifact) smaMgr.getSma()).getParentActionArtifact() != null) {
-            processArtifact("Parent ", ((TeamWorkFlowArtifact) smaMgr.getSma()).getParentActionArtifact());
-         }
-      } catch (SQLException ex) {
-         // Do nothing
+      if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && ((TeamWorkFlowArtifact) smaMgr.getSma()).getParentActionArtifact() != null) {
+         processArtifact("Parent ", ((TeamWorkFlowArtifact) smaMgr.getSma()).getParentActionArtifact());
       }
    }
 
@@ -115,7 +111,7 @@ public class SMARelationsComposite extends Composite {
       }
    }
 
-   private void processReviewArtifact(final ReviewSMArtifact reviewArt) throws SQLException {
+   private void processReviewArtifact(final ReviewSMArtifact reviewArt) throws Exception {
       if (reviewArt.getActionableItemsDam().getActionableItemGuids().size() == 0) return;
       actionableItemsLabel = toolkit.createLabel(this, "");
       Hyperlink link = toolkit.createHyperlink(this, "(Edit)", SWT.NONE);
@@ -134,11 +130,11 @@ public class SMARelationsComposite extends Composite {
       refreshActionableItemsLabel();
    }
 
-   private void refreshActionableItemsLabel() {
+   private void refreshActionableItemsLabel() throws Exception {
       if ((actionableItemsLabel != null) && smaMgr.getSma() instanceof ReviewSMArtifact) actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) smaMgr.getSma()).getArtifactTypeNameSuppressException() + "\" is review of Actionable Items  \"" + ((ReviewSMArtifact) smaMgr.getSma()).getActionableItemsDam().getActionableItemsStr() + "\" ");
    }
 
-   public void refresh() {
+   public void refresh() throws Exception {
       refreshActionableItemsLabel();
    }
 

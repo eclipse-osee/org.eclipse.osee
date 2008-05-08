@@ -124,7 +124,7 @@ public class UserRoleManager {
             assignees.add(SkynetAuthentication.getInstance().getAuthenticatedUser());
       }
       // Set assigness based on roles
-      artifact.getSmaMgr().setAssignees(assignees);
+      artifact.getSmaMgr().getStateMgr().setAssignees(assignees);
    }
 
    public void removeUserRole(UserRole userRole, boolean persist) throws SQLException, MultipleAttributesExist {
@@ -196,7 +196,7 @@ public class UserRoleManager {
       for (UserRole role : getUserRoles())
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       SMAManager smaMgr = new SMAManager((StateMachineArtifact) artifact);
-      smaMgr.getCurrentStateDam().setHoursSpent(hoursSpent);
+      smaMgr.getStateMgr().setHoursSpent(hoursSpent);
       if (artifact.isDirty() && persist) artifact.persistAttributes();
    }
 

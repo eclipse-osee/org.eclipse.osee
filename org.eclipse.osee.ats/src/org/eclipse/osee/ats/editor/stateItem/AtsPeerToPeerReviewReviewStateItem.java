@@ -10,17 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -51,14 +48,10 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
       PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) smaMgr.getSma();
       for (UserRole uRole : peerArt.getUserRoleManager().getUserRoles())
          assignees.add(uRole.getUser());
-      assignees.addAll(smaMgr.getAssignees());
+      assignees.addAll(smaMgr.getStateMgr().getAssignees());
 
-      try {
-         smaMgr.setAssignees(assignees);
-         if (smaMgr.getSma().isDirty()) smaMgr.getSma().persistAttributes();
-      } catch (SQLException ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
+      smaMgr.getStateMgr().setAssignees(assignees);
+      if (smaMgr.getSma().isDirty()) smaMgr.getSma().persistAttributes();
    }
 
    /* (non-Javadoc)

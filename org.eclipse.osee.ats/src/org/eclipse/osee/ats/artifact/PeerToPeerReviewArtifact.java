@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 
 /**
  * @author Donald G. Dunne
@@ -78,7 +76,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       if (getUserRoleManager().getUserRoles(Role.Reviewer).size() <= 0) return new Result(
             "Must have at least one Reviewer");
       // If in review state, all roles must have hours spent entered
-      if (getCurrentStateName().equals(PeerToPeerReviewArtifact.State.Review.name())) {
+      if (smaMgr.getStateMgr().getCurrentStateName().equals(PeerToPeerReviewArtifact.State.Review.name())) {
          for (UserRole uRole : userRoleManager.getUserRoles()) {
             if (uRole.getHoursSpent() == null) return new Result("Hours spent must be entered for each role.");
          }
@@ -91,7 +89,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       return "peerToPeerReview";
    }
 
-   public String getWorldViewVersion() {
+   public String getWorldViewVersion() throws Exception {
       return "";
    }
 
@@ -106,14 +104,6 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
          }
       }
       return users;
-   }
-
-   public int getWorldViewTotalPercentComplete() {
-      if (smaMgr.isCompleted()) return 100;
-      if (smaMgr.isCancelled()) return 0;
-      SMAState state = smaMgr.getSMAState(State.Review.name(), false);
-      if (state != null) return state.getPercentComplete();
-      return 0;
    }
 
    /*
@@ -136,7 +126,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewTeam()
     */
-   public String getWorldViewTeam() {
+   public String getWorldViewTeam() throws Exception {
       return "";
    }
 
@@ -155,23 +145,19 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
     */
-   public String getWorldViewDescription() {
-      try {
-         return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+   public String getWorldViewDescription() throws Exception {
+      return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
-   public String getWorldViewCategory() {
+   public String getWorldViewCategory() throws Exception {
       return "";
    }
 
-   public String getWorldViewCategory2() {
+   public String getWorldViewCategory2() throws Exception {
       return "";
    }
 
-   public String getWorldViewCategory3() {
+   public String getWorldViewCategory3() throws Exception {
       return "";
    }
 
@@ -203,10 +189,8 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
     */
-   public String getWorldViewImplementer() {
-      SMAState state = getStateDam().getState(State.Review.name(), false);
-      if (state != null) Artifacts.commaArts(state.getAssignees());
-      return "";
+   public String getWorldViewImplementer() throws Exception {
+      return Artifacts.commaArts(smaMgr.getStateMgr().getAssignees(State.Review.name()));
    }
 
    /*
@@ -223,7 +207,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
     */
-   public String getWorldViewDeadlineDateStr() {
+   public String getWorldViewDeadlineDateStr() throws Exception {
       return "";
    }
 
@@ -241,17 +225,8 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * 
     * @see osee.ats.world.IWorldViewArtifact#getWorldViewWorkPackage()
     */
-   public String getWorldViewWorkPackage() {
+   public String getWorldViewWorkPackage() throws Exception {
       return "";
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.world.IWorldViewArtifact#isMetricsFromTasks()
-    */
-   public boolean isMetricsFromTasks() {
-      return false;
    }
 
    /*
@@ -266,41 +241,29 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewAuthor()
     */
-   public String getWorldViewReviewAuthor() {
-      try {
-         return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Author));
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+   public String getWorldViewReviewAuthor() throws Exception {
+      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Author));
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewDecider()
     */
-   public String getWorldViewReviewDecider() {
+   public String getWorldViewReviewDecider() throws Exception {
       return "";
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewModerator()
     */
-   public String getWorldViewReviewModerator() {
-      try {
-         return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Moderator));
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+   public String getWorldViewReviewModerator() throws Exception {
+      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Moderator));
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewReviewReviewer()
     */
-   public String getWorldViewReviewReviewer() {
-      try {
-         return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Reviewer));
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
+   public String getWorldViewReviewReviewer() throws Exception {
+      return Artifacts.commaArts(getUserRoleManager().getRoleUsers(Role.Reviewer));
    }
 
 }

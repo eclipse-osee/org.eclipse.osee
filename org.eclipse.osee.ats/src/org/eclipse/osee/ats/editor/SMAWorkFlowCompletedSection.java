@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAEditor.PriviledgedEditMode;
-import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -65,12 +64,11 @@ public class SMAWorkFlowCompletedSection extends SMAWorkFlowSection {
    private void handleUnComplete(String toStateName) {
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Return to \"" + toStateName + "\"",
             "Return to \"" + toStateName + "\"?")) {
-         SMAState toSmaState = smaMgr.getStateDam().getState(toStateName, false);
-         if (toSmaState == null) {
+         if (!smaMgr.getStateMgr().isStateVisited(toStateName)) {
             AWorkbench.popup("ERROR", "Return to state doesn't exist");
             throw new IllegalArgumentException("Invalid return-to state \"" + toStateName + "\"");
          }
-         Result result = smaMgr.transition(toStateName, toSmaState.getAssignees(), true, true);
+         Result result = smaMgr.transition(toStateName, smaMgr.getStateMgr().getAssignees(toStateName), true, true);
          if (result.isFalse()) result.popup();
       }
    }

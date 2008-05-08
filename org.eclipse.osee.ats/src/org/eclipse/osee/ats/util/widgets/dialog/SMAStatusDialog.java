@@ -12,9 +12,11 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XPercent;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton;
@@ -79,7 +81,11 @@ public class SMAStatusDialog extends MessageDialog {
          percent.setRequiredEntry(true);
          percent.setToolTip("Enter total percent complete.");
          percent.createWidgets(parent, 2);
-         if (smas.size() == 1) percent.set(smas.iterator().next().getStatePercentComplete());
+         try {
+            if (smas.size() == 1) percent.set(smas.iterator().next().getSmaMgr().getStateMgr().getPercentComplete());
+         } catch (Exception ex) {
+            OSEELog.logException(AtsPlugin.class, ex, true);
+         }
          percent.addModifyListener(new ModifyListener() {
             public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
                updateButtons();

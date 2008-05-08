@@ -45,7 +45,6 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.Favorites;
 import org.eclipse.osee.ats.util.Subscribe;
-import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
@@ -811,15 +810,9 @@ public class WorldXViewer extends XViewer {
             modified = smaMgr.promptChangeAttribute(ATSAttributes.SMA_NOTE_ATTRIBUTE, persist);
          else if (aCol == AtsXColumn.Percent_Rework_Col)
             modified = smaMgr.promptChangePercentAttribute(ATSAttributes.PERCENT_REWORK_ATTRIBUTE, persist);
-         else if (aCol == AtsXColumn.Estimated_Hours_Col) {
-            if (smaMgr.getSma().isMetricsFromTasks()) {
-               AWorkbench.popup(
-                     "ERROR",
-                     "Estimated Hours for this " + smaMgr.getSma().getArtifactTypeName() + " are" + " determined from Implement Tasks.\n\nSet Estimated Hours through Tasks.");
-               return false;
-            }
+         else if (aCol == AtsXColumn.Estimated_Hours_Col)
             modified = smaMgr.promptChangeFloatAttribute(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, persist);
-         } else if (aCol == AtsXColumn.Weekly_Benefit_Hrs_Col)
+         else if (aCol == AtsXColumn.Weekly_Benefit_Hrs_Col)
             modified = smaMgr.promptChangeFloatAttribute(ATSAttributes.WEEKLY_BENEFIT_ATTRIBUTE, persist);
          else if (aCol == AtsXColumn.Estimated_Release_Date_Col)
             modified = smaMgr.promptChangeEstimatedReleaseDate();
@@ -846,14 +839,7 @@ public class WorldXViewer extends XViewer {
             modified = smaMgr.promptChangeAttribute(ATSAttributes.CATEGORY3_ATTRIBUTE, persist);
          else if (aCol == AtsXColumn.Change_Type_Col)
             modified = smaMgr.promptChangeType(persist);
-         else if (aCol == AtsXColumn.Priority_Col)
-            modified = smaMgr.promptChangePriority(persist);
-         else if (aCol == AtsXColumn.Metrics_from_Tasks_Col) {
-            modified =
-                  smaMgr.promptChangeBoolean(ATSAttributes.METRICS_FROM_TASKS_ATTRIBUTE,
-                        AtsXColumn.Metrics_from_Tasks_Col.getDesc(), persist);
-            if (modified) handleMetricsFromTasksToggle(smaMgr.getSma());
-         }
+         else if (aCol == AtsXColumn.Priority_Col) modified = smaMgr.promptChangePriority(persist);
          if (modified) {
             update(wai, null);
             return true;
@@ -862,37 +848,6 @@ public class WorldXViewer extends XViewer {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       return false;
-   }
-
-   /**
-    * When metrics from tasks is chosen, confirm that implement's hours spent and percent complete change to 0. Prompt
-    * the user as such.
-    */
-   public static void handleMetricsFromTasksToggle(StateMachineArtifact sma) {
-      try {
-         if (sma.isMetricsFromTasks()) {
-            SMAManager smaMgr = new SMAManager(sma);
-            SMAState implementState = smaMgr.getSMAState(DefaultTeamState.Implement.name(), false);
-            if (implementState != null && (implementState.getPercentComplete() > 0 || implementState.getHoursSpent() > 0)) {
-               StringBuffer sb = new StringBuffer();
-               if (implementState.getPercentComplete() > 0) {
-                  sb.append("Implement State Percent Complete was " + implementState.getPercentComplete() + "\n");
-                  implementState.setPercentComplete(0);
-               }
-               if (implementState.getHoursSpent() > 0) {
-                  sb.append("Implement State Hours Spent was " + implementState.getHoursSpentStr() + "\n");
-                  implementState.setHoursSpent(0);
-               }
-               sb.append("\nSince metrics from tasks, values above have been cleared.");
-               AWorkbench.popup("INFO", sb.toString());
-
-               smaMgr.setState(implementState);
-               smaMgr.getSma().persistAttributes();
-            }
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
    }
 
    /**

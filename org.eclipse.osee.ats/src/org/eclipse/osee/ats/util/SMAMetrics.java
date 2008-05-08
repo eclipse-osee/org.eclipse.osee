@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -56,9 +55,9 @@ public class SMAMetrics {
          for (StateMachineArtifact team : smas) {
             hrsRemain += team.getWorldViewRemainHours();
             estHours += team.getWorldViewEstimatedHours();
-            hrsSpent += team.getWorldViewTotalHoursSpent();
+            hrsSpent += team.getWorldViewHoursSpentTotal();
             manDaysNeeded += team.getWorldViewManDaysNeeded();
-            totalPercentComplete += team.getWorldViewTotalPercentComplete();
+            totalPercentComplete += team.getWorldViewPercentCompleteTotal();
          }
          double percentComplete = 0;
          if (numObjects > 0 && totalPercentComplete > 0) percentComplete = totalPercentComplete / numObjects;
@@ -66,7 +65,7 @@ public class SMAMetrics {
                (numTeamWfs > 0 ? "TeamWFs: " + numTeamWfs : ""), (numTasks > 0 ? "Tasks: " + numTasks : ""), estHours,
                "%", percentComplete, hrsRemain, hrsSpent, (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ",
                      manDaysNeeded) : ""));
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
          return "Exception occurred - see log";
       }
@@ -93,7 +92,7 @@ public class SMAMetrics {
                for (TeamWorkFlowArtifact team : teams) {
                   hrsRemain += team.getWorldViewRemainHours();
                   estHours += team.getWorldViewEstimatedHours();
-                  hrsSpent += team.getWorldViewTotalHoursSpent();
+                  hrsSpent += team.getHoursSpentSMATotal();
                }
                Date estRelDate = verArt.getEstimatedReleaseDate();
                double manDaysNeeded = 0;

@@ -599,6 +599,12 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       }
    }
 
+   public void deleteAttribute(String attributeTypeName, Object value) throws IllegalStateException, SQLException {
+      for (Attribute<Object> attribute : getAttributes(attributeTypeName)) {
+         if (attribute.getValue().equals(value)) attribute.delete();
+      }
+   }
+
    public <T> void setSoleXAttributeValue(String attributeTypeName, T value) throws IllegalStateException, SQLException {
       Attribute<T> attribute = getSoleAttributeForSet(attributeTypeName);
       attribute.setValue(value);
@@ -782,9 +788,9 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
       if (attributeManagers != null) {
          for (DynamicAttributeManager attrManager : attributeManagers) {
             attrManager.setDirty(false);
+            }
          }
       }
-   }
 
    /**
     * Not supported in the public API for internal use only.
@@ -1311,8 +1317,8 @@ public class Artifact implements PersistenceObject, IAdaptable, Comparable<Artif
    private void copyAttributes(Artifact artifact) throws Exception {
       for (DynamicAttributeManager attrManager : getAttributeManagers()) {
          attrManager.copyTo(artifact);
+         }
       }
-   }
 
    /*
     * (non-Javadoc)

@@ -130,8 +130,6 @@
          point="org.eclipse.osee.ats.AtsStateItem">
       <AtsStateItem classname="org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItem"/>
       <AtsStateItem classname="org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewDecisionStateItem"/>
-      <AtsStateItem classname="org.eclipse.osee.ats.editor.stateItem.AtsTeamAnalyzeStateItem"/>
-      <AtsStateItem classname="org.eclipse.osee.ats.editor.stateItem.AtsTeamEndorseStateItem"/>
       <AtsStateItem
             classname="org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItem">
       </AtsStateItem>

@@ -64,8 +64,6 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
          SkynetActivator.getInstance().getImageDescriptor("yellowN_8_8.gif");
    private static final ImageDescriptor releasedImageDesc =
          SkynetActivator.getInstance().getImageDescriptor("orangeR_8_8.gif");
-   private static final ImageDescriptor metricsFromTasks =
-         SkynetActivator.getInstance().getImageDescriptor("yellowT_8_8.gif");
    private static final String LOCKED_ACCESS = "locked access";
    private static final String LOCKED_NO_ACCESS = "locked No access";
    private static final String SUBSCRIBED = "subscribed";
@@ -74,7 +72,6 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
    private static final String RELEASED = "released";
    private static final String WARNING = "warning";
    private static final String ERROR = "error";
-   private static final String METRICS_FROM_TASKS = "metricsFromTasks";
    private static final String BASE = "base";
    private final int artTypeId;
    private final String factoryKey;
@@ -191,10 +188,10 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
 
    }
 
-   public Image getImage(boolean isSubscribed, boolean isFavorite, ArtifactAnnotation.Type notifyType, boolean isMetricsFromTasks) {
+   public Image getImage(boolean isSubscribed, boolean isFavorite, ArtifactAnnotation.Type notifyType) {
       checkImageRegistry();
       String hashKey =
-            BASE + (isSubscribed ? SUBSCRIBED : "") + (isFavorite ? FAVORITE : "") + ((notifyType == null || notifyType == ArtifactAnnotation.Type.None) ? "" : (notifyType == ArtifactAnnotation.Type.Error ? ERROR : WARNING) + (isMetricsFromTasks ? METRICS_FROM_TASKS : ""));
+            BASE + (isSubscribed ? SUBSCRIBED : "") + (isFavorite ? FAVORITE : "") + ((notifyType == null || notifyType == ArtifactAnnotation.Type.None) ? "" : (notifyType == ArtifactAnnotation.Type.Error ? ERROR : WARNING));
       Image image = imageRegistry.get(hashKey);
       if (image == null) {
 
@@ -208,7 +205,6 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
          else if (notifyType == ArtifactAnnotation.Type.Warning) imageDesc =
                new OverlayImage(imageDesc.createImage(), ArtifactAnnotation.Type.Warning.getImageOverlayDescriptor(),
                      0, 8);
-         if (isMetricsFromTasks) imageDesc = new OverlayImage(imageDesc.createImage(), metricsFromTasks, 0, 0);
          imageRegistry.put(hashKey, imageDesc);
          image = imageRegistry.get(hashKey);
       }

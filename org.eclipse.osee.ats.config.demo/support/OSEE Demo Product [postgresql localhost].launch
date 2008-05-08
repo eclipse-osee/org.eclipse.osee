@@ -20,7 +20,7 @@
 <stringAttribute key="location4" value="C:\UserData\runtime-workspace"/>
 <stringAttribute key="location5" value="C:\UserData\runtime-workspace1"/>
 <booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-console"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-NOconsole"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DDefaultDbConnection=postgresqlLocalhost  -XX:MaxPermSize=256m -Xmx1024M -DAtsAdmin -DDeveloper -DNOTAtsUseWorkflowFiles  -DOseeAuthenticationProviderId=org.eclipse.osee.ats.config.demo.DemoAuthentication"/>
 <stringAttribute key="pde.version" value="3.3"/>

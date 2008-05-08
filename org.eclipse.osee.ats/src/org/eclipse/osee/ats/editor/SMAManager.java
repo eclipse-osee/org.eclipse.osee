@@ -33,11 +33,9 @@ import org.eclipse.osee.ats.util.BranchManager;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.NotifyUsersJob;
+import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
-import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.TaskManager;
-import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
-import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsPriorityDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
@@ -82,6 +80,7 @@ public class SMAManager {
    private TaskManager taskMgr;
    private ReviewManager reviewMgr;
    private BranchManager branchMgr;
+   private StateManager stateMgr;
    private DeadlineManager deadlineMgr;
    private SMAEditor editor;
    private AtsStateItems stateItems;
@@ -91,6 +90,7 @@ public class SMAManager {
       super();
       this.sma = sma;
       this.editor = editor;
+      stateMgr = new StateManager(this);
       reviewMgr = new ReviewManager(this);
       taskMgr = new TaskManager(this);
       branchMgr = new BranchManager(this);
@@ -120,27 +120,22 @@ public class SMAManager {
    public String getEditorHeaderString() {
       if (sma instanceof TeamWorkFlowArtifact)
          return String.format("Current State: %s        Team: %s       Assignee(s): %s        Created: %s",
-               getCurrentStateName(), ((TeamWorkFlowArtifact) sma).getTeamName(), getAssigneesStr(), XDate.getDateStr(
-                     getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM));
+               stateMgr.getCurrentStateName(), ((TeamWorkFlowArtifact) sma).getTeamName(),
+               Artifacts.commaArts(stateMgr.getAssignees()), XDate.getDateStr(getSma().getLog().getCreationDate(),
+                     XDate.MMDDYYHHMM));
       else
-         return String.format("Current State: %s        Assignee(s): %s        Created: %s", getCurrentStateName(),
-               getAssigneesStr(), XDate.getDateStr(getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM));
+         return String.format("Current State: %s        Assignee(s): %s        Created: %s",
+               stateMgr.getCurrentStateName(), Artifacts.commaArts(stateMgr.getAssignees()), XDate.getDateStr(
+                     getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM));
    }
 
    public Result getUserInputNeeded() {
       return Result.FalseResult;
    }
 
-   public void setState(SMAState state) throws Exception {
-      if (getCurrentStateName().equals(state.getName()))
-         getCurrentStateDam().setState(state);
-      else
-         getStateDam().setState(state);
-   }
-
    public AtsWorkPage getWorkPage() {
       try {
-         return (AtsWorkPage) sma.getWorkFlow().getPage(sma.getCurrentStateName());
+         return (AtsWorkPage) sma.getWorkFlow().getPage(getStateMgr().getCurrentStateName());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
@@ -203,25 +198,6 @@ public class SMAManager {
       return sma.getTargetedForVersion();
    }
 
-   public SMAState getSMAState() {
-      return sma.getCurrentStateDam().getState();
-   }
-
-   /**
-    * Return current or past state from name
-    * 
-    * @param name
-    * @param create TODO
-    * @return state matching name
-    * @throws SQLException
-    */
-   public SMAState getSMAState(String name, boolean create) {
-      if (sma.getCurrentStateDam().getState().getName().equals(name))
-         return sma.getCurrentStateDam().getState();
-      else
-         return (sma.getStateDam().getState(name, create));
-   }
-
    public boolean promptChangeAssignees() throws Exception {
       return promptChangeAssignees(Arrays.asList(new StateMachineArtifact[] {sma}));
    }
@@ -243,7 +219,7 @@ public class SMAManager {
       uld.setMessage("Select to assign.\nDeSelect to un-assign.");
       if (smas.size() == 1) {
          SMAManager smaMgr = new SMAManager(smas.iterator().next());
-         uld.setInitialSelections(smaMgr.getAssignees());
+         uld.setInitialSelections(smaMgr.getStateMgr().getAssignees());
       }
       if (uld.open() != 0) return false;
       Collection<User> users = uld.getUsersSelected();
@@ -252,8 +228,7 @@ public class SMAManager {
          return false;
       }
       for (StateMachineArtifact sma : smas) {
-         SMAManager smaMgr = new SMAManager(sma);
-         smaMgr.setAssignees(users);
+         sma.getSmaMgr().getStateMgr().setAssignees(users);
       }
       return true;
    }
@@ -324,13 +299,12 @@ public class SMAManager {
       }
       try {
          if (persist) {
-            AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-                     @Override
-                     protected void handleTxWork() throws Exception {
-                        promptChangeVersionHelper(smas, vld, persist);
-                     }
-                  };
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+               @Override
+               protected void handleTxWork() throws Exception {
+                  promptChangeVersionHelper(smas, vld, persist);
+               }
+            };
             txWrapper.execute();
          } else {
             promptChangeVersionHelper(smas, vld, persist);
@@ -371,19 +345,18 @@ public class SMAManager {
             ald.setSelected(teams.iterator().next().getChangeType());
          }
          if (ald.open() == 0) {
-            AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-                     @Override
-                     protected void handleTxWork() throws Exception {
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+               @Override
+               protected void handleTxWork() throws Exception {
 
-                        for (TeamWorkFlowArtifact team : teams) {
-                           if (team.getChangeType() != ald.getSelection()) {
-                              team.setChangeType(ald.getSelection());
-                              team.saveSMA();
-                           }
-                        }
+                  for (TeamWorkFlowArtifact team : teams) {
+                     if (team.getChangeType() != ald.getSelection()) {
+                        team.setChangeType(ald.getSelection());
+                        team.saveSMA();
                      }
-                  };
+                  }
+               }
+            };
             txWrapper.execute();
          }
          return true;
@@ -414,18 +387,17 @@ public class SMAManager {
             ald.setSelected(teams.iterator().next().getPriority());
          }
          if (ald.open() == 0) {
-            AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-                     @Override
-                     protected void handleTxWork() throws Exception {
-                        for (TeamWorkFlowArtifact team : teams) {
-                           if (team.getPriority() != ald.getSelection()) {
-                              team.setPriority(ald.getSelection());
-                              team.saveSMA();
-                           }
-                        }
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+               @Override
+               protected void handleTxWork() throws Exception {
+                  for (TeamWorkFlowArtifact team : teams) {
+                     if (team.getPriority() != ald.getSelection()) {
+                        team.setPriority(ald.getSelection());
+                        team.saveSMA();
                      }
-                  };
+                  }
+               }
+            };
             txWrapper.execute();
          }
          return true;
@@ -466,8 +438,8 @@ public class SMAManager {
                   hours = hours / smas.size();
                }
                for (StateMachineArtifact sma : smas) {
-                  sma.getCurrentStateDam().setHoursSpent(hours + sma.getCurrentStateDam().getState().getHoursSpent());
-                  sma.getCurrentStateDam().setPercentComplete(tsd.getPercent().getInt());
+                  sma.getSmaMgr().getStateMgr().setHoursSpent(hours + sma.getSmaMgr().getStateMgr().getHoursSpent());
+                  sma.getSmaMgr().getStateMgr().setPercentComplete(tsd.getPercent().getInt());
                   sma.setSoleStringAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
                         tsd.getSelectedOptionDef().getName());
                   sma.statusChanged();
@@ -486,8 +458,8 @@ public class SMAManager {
                   hours = hours / smas.size();
                }
                for (StateMachineArtifact sma : smas) {
-                  sma.getCurrentStateDam().setHoursSpent(hours + sma.getCurrentStateDam().getState().getHoursSpent());
-                  sma.getCurrentStateDam().setPercentComplete(tsd.getPercent().getInt());
+                  sma.getSmaMgr().getStateMgr().setHoursSpent(hours + sma.getSmaMgr().getStateMgr().getHoursSpent());
+                  sma.getSmaMgr().getStateMgr().setPercentComplete(tsd.getPercent().getInt());
                   sma.statusChanged();
                }
                return true;
@@ -663,24 +635,12 @@ public class SMAManager {
       return sma.getWorkFlow();
    }
 
-   public boolean isStateVisited(String name) {
-      return sma.getStateDam().getState(name, false) != null;
-   }
-
-   public XCurrentStateDam getCurrentStateDam() {
-      return sma.getCurrentStateDam();
-   }
-
-   public XStateDam getStateDam() {
-      return sma.getStateDam();
-   }
-
    public boolean isCompleted() {
-      return (getCurrentStateName().equals(DefaultTeamState.Completed.name()));
+      return (stateMgr.getCurrentStateName().equals(DefaultTeamState.Completed.name()));
    }
 
    public boolean isCancelled() {
-      return (getCurrentStateName().equals(DefaultTeamState.Cancelled.name()));
+      return (stateMgr.getCurrentStateName().equals(DefaultTeamState.Cancelled.name()));
    }
 
    public boolean isCurrentSectionExpanded(AtsWorkPage page) {
@@ -688,7 +648,7 @@ public class SMAManager {
    }
 
    public boolean isCurrentState(WorkPage page) {
-      return sma.getCurrentStateDam().getState(page.getName(), false) != null;
+      return page.getName().equals(stateMgr.getCurrentStateName());
    }
 
    public void setTransitionAssignees(Collection<User> assignees) {
@@ -697,51 +657,12 @@ public class SMAManager {
    }
 
    public boolean isAssigneeMe() {
-      return getAssignees().contains(SkynetAuthentication.getInstance().getAuthenticatedUser());
-   }
-
-   /**
-    * Sets the assignees AND writes to SMA. Does not persist.
-    * 
-    * @param assignees
-    * @throws Exception
-    */
-   public void setAssignees(Collection<User> assignees) throws Exception {
-      SMAState currState = getSMAState();
-      currState.setAssignees(assignees);
-      sma.getCurrentStateDam().setState(currState);
-   }
-
-   /**
-    * Sets the assignee AND writes to SMA. Does not persist.
-    * 
-    * @param assignee
-    * @throws Exception
-    */
-   public void setAssignee(User assignee) throws Exception {
-      SMAState currState = getSMAState();
-      currState.setAssignee(assignee);
-      sma.getCurrentStateDam().setState(currState);
-   }
-
-   public void clearAssignees() throws Exception {
-      SMAState currState = getSMAState();
-      currState.clearAssignees();
-      sma.getCurrentStateDam().setState(currState);
+      return stateMgr.getAssignees().contains(SkynetAuthentication.getInstance().getAuthenticatedUser());
    }
 
    public Set<User> getTransitionAssignees() {
-      if (transitionAssignees.size() == 0) transitionAssignees.addAll(getAssignees());
+      if (transitionAssignees.size() == 0) transitionAssignees.addAll(stateMgr.getAssignees());
       return transitionAssignees;
-   }
-
-   public String getCurrentStateName() {
-      try {
-         return sma.getCurrentStateDam().getState().getName();
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-         return ex.getLocalizedMessage();
-      }
    }
 
    public String getTransitionAssigneesStr() {
@@ -752,29 +673,12 @@ public class SMAManager {
       return sb.toString().replaceFirst(SEPERATOR + "$", "");
    }
 
-   /**
-    * @return Returns the assignees.
-    * @throws SQLException
-    */
-   public Collection<User> getAssignees() {
-      return getSMAState().getAssignees();
-   }
-
-   public String getAssigneesStr() {
-      StringBuffer sb = new StringBuffer();
-      for (User u : getAssignees()) {
-         sb.append(u.getName() + SEPERATOR);
-      }
-      return sb.toString().replaceFirst(SEPERATOR + "$", "");
-   }
-
    public String getAssigneesWasIsStr() {
-      if (isCompleted() || isCancelled()) return "(" + Artifacts.commaArts(getStateDam().getState(
-            TaskArtifact.INWORK_STATE, false).getAssignees()) + ")";
-      return getAssigneesStr();
+      if (isCompleted() || isCancelled()) return "(" + Artifacts.commaArts(stateMgr.getAssignees(TaskArtifact.INWORK_STATE)) + ")";
+      return Artifacts.commaArts(stateMgr.getAssignees());
    }
 
-   public Image getAssigneeImage() {
+   public Image getAssigneeImage() throws Exception {
       return getSma().getAssigneeImage();
    }
 
@@ -855,15 +759,14 @@ public class SMAManager {
          }
 
          if (persist) {
-            AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
 
-                     @Override
-                     protected void handleTxWork() throws Exception {
-                        transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
-                     }
+               @Override
+               protected void handleTxWork() throws Exception {
+                  transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
+               }
 
-                  };
+            };
             txWrapper.execute();
          } else {
             transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
@@ -878,25 +781,13 @@ public class SMAManager {
    private void transitionHelper(Collection<User> toAssignees, boolean persist, AtsWorkPage fromPage, AtsWorkPage toPage, String toStateName, String cancelReason) throws Exception {
       // Log transition
       if (toPage.isCancelledPage()) {
-         getSma().getLog().addLog(LogType.StateCancelled, getCurrentStateName(), cancelReason);
+         getSma().getLog().addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), cancelReason);
       } else {
-         getSma().getLog().addLog(LogType.StateComplete, getCurrentStateName(), "");
+         getSma().getLog().addLog(LogType.StateComplete, stateMgr.getCurrentStateName(), "");
       }
       getSma().getLog().addLog(LogType.StateEntered, toStateName, "");
 
-      // Set XCurrentState info to XState
-      getSma().getStateDam().setState(getSma().getCurrentStateDam().getState());
-
-      // Set XCurrentState; If been to this state, copy state info from
-      // prev state; else create
-      // new
-      SMAState previousState = getSma().getStateDam().getState(toStateName, false);
-      if (previousState != null) {
-         if (toAssignees.size() > 0) previousState.setAssignees(toAssignees);
-         getSma().getCurrentStateDam().setState(previousState);
-      } else {
-         getSma().getCurrentStateDam().setState(new SMAState(toStateName, toAssignees));
-      }
+      stateMgr.transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, cancelReason);
 
       if (getSma().isValidationRequired()) {
          getReviewManager().createValidateReview(false);
@@ -980,4 +871,12 @@ public class SMAManager {
    public DeadlineManager getDeadlineMgr() {
       return deadlineMgr;
    }
+
+   /**
+    * @return the stateMgr
+    */
+   public StateManager getStateMgr() {
+      return stateMgr;
+   }
+
 }

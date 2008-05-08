@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.report;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,7 +25,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -75,7 +74,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    }
 
-   public String getStatusReport() throws SQLException, MultipleAttributesExist {
+   public String getStatusReport() throws Exception {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
       sb.append(getStatusReportBody());
@@ -111,7 +110,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    };
 
-   public String getStatusReportBody() throws SQLException, MultipleAttributesExist {
+   public String getStatusReportBody() throws Exception {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Columns.getColumnNames()));
@@ -136,7 +135,7 @@ public class ExtendedStatusReportJob extends Job {
       return sb.toString();
    }
 
-   public void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws SQLException, MultipleAttributesExist {
+   public void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws Exception {
       List<String> values = new ArrayList<String>();
       SMAManager smaMgr = new SMAManager(sma);
       for (Columns col : Columns.values()) {
@@ -185,9 +184,9 @@ public class ExtendedStatusReportJob extends Job {
             } else
                values.add(smaMgr.getOriginator().getName());
          } else if (col == Columns.Assignees)
-            values.add(smaMgr.getAssigneesStr());
+            values.add(Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
          else if (col == Columns.Status_State)
-            values.add(smaMgr.getCurrentStateName());
+            values.add(smaMgr.getStateMgr().getCurrentStateName());
          else if (col == Columns.Date_Created)
             values.add(sma.getWorldViewCreatedDateStr());
          else if (col == Columns.Version) {

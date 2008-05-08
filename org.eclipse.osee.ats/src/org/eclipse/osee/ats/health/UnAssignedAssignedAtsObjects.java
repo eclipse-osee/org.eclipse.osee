@@ -21,7 +21,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -97,13 +96,12 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction imp
 
    private void runIt(IProgressMonitor monitor, final XResultData rd) throws Exception {
       if (fixIt) {
-         AbstractSkynetTxTemplate txWrapper =
-               new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     getUnassignedAtsObjectHelper(rd);
-                  }
-               };
+         AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+            @Override
+            protected void handleTxWork() throws Exception {
+               getUnassignedAtsObjectHelper(rd);
+            }
+         };
          txWrapper.execute();
 
       } else {
@@ -119,26 +117,24 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction imp
       for (Artifact art : arts) {
          StateMachineArtifact sma = (StateMachineArtifact) art;
          SMAManager smaMgr = new SMAManager(sma);
-         if (smaMgr.getAssignees().size() > 1) {
-            if (smaMgr.getAssignees().contains(unAssignedUser)) {
-               rd.logError(art.getHumanReadableId() + " is unassigned and assigned => " + Artifacts.commaArts(smaMgr.getAssignees()));
+         if (smaMgr.getStateMgr().getAssignees().size() > 1) {
+            if (smaMgr.getStateMgr().getAssignees().contains(unAssignedUser)) {
+               rd.logError(art.getHumanReadableId() + " is unassigned and assigned => " + Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
                if (fixIt) {
-                  SMAState state = smaMgr.getSMAState();
-                  state.removeAssignee(unAssignedUser);
-                  smaMgr.getCurrentStateDam().setState(state);
+                  smaMgr.getStateMgr().removeAssignee(unAssignedUser);
                }
             }
          }
-         for (SMAState state : smaMgr.getStateDam().getStates()) {
-            if (state.getAssignees().size() > 1 && state.getAssignees().contains(unAssignedUser)) {
-               rd.logError(art.getHumanReadableId() + " state " + state.getName() + " is unassigned and assigned => " + Artifacts.commaArts(state.getAssignees()));
+         for (String stateName : smaMgr.getStateMgr().getVisitedStateNames()) {
+            Collection<User> assignees = smaMgr.getStateMgr().getAssignees(stateName);
+            if (assignees.size() > 1 && assignees.contains(unAssignedUser)) {
+               rd.logError(art.getHumanReadableId() + " state " + stateName + " is unassigned and assigned => " + Artifacts.commaArts(assignees));
                if (fixIt) {
-                  state.removeAssignee(unAssignedUser);
-                  smaMgr.getStateDam().setState(state);
+                  smaMgr.getStateMgr().removeAssignee(stateName, unAssignedUser);
                }
             }
          }
-         if (smaMgr.getAssignees().contains(noOneUser)) {
+         if (smaMgr.getStateMgr().getAssignees().contains(noOneUser)) {
             rd.logError(art.getHumanReadableId() + " is assigned to NoOne; invalid assignment - MANUAL FIX REQUIRED");
          }
          if (sma.isDirty()) {

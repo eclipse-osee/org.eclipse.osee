@@ -142,8 +142,8 @@ public class TaskImportPage extends WizardDataTransferPage {
       if (currentResourceSelection != null) fileSelector.setText(currentResourceSelection.getLocation().toString());
       setPageComplete(determinePageCompletion());
    } /*
-                         * @see WizardPage#becomesVisible
-                         */
+                           * @see WizardPage#becomesVisible
+                           */
 
    public void setVisible(boolean visible) {
       super.setVisible(visible);
@@ -166,15 +166,14 @@ public class TaskImportPage extends WizardDataTransferPage {
       }
       try {
          try {
-            Artifact artifact =
-                  ArtifactQuery.getArtifactFromId(hrid, BranchPersistenceManager.getAtsBranch());
+            Artifact artifact = ArtifactQuery.getArtifactFromId(hrid, BranchPersistenceManager.getAtsBranch());
             if (!(artifact instanceof StateMachineArtifact)) {
                setErrorMessage("Artifact retrieved is not a StateMachineArtifact");
                actionLabel.setText("");
                return false;
             }
             actionLabel.setText(String.format("Import to: \"%s\"\nCurrent state: %s", artifact.getDescriptiveName(),
-                  ((StateMachineArtifact) artifact).getCurrentStateName()));
+                  ((StateMachineArtifact) artifact).getSmaMgr().getStateMgr().getCurrentStateName()));
             actionLabel.getParent().layout();
          } catch (OseeCoreException ex) {
             setErrorMessage("Can't retrieve artifact for entered HRID");
@@ -189,14 +188,11 @@ public class TaskImportPage extends WizardDataTransferPage {
 
    public boolean finish() {
       File file = fileSelector.getFile();
-      System.out.println("Not Implemented Yet");
-
       try {
          ExcelAtsTaskArtifactExtractor extractor =
-               new ExcelAtsTaskArtifactExtractor(hridText.getText(),
-                     BranchPersistenceManager.getAtsBranch(), emailPocs.getSelection());
-         Jobs.startJob(new TaskImportJob(file, hridText.getText(), extractor,
-               BranchPersistenceManager.getAtsBranch()));
+               new ExcelAtsTaskArtifactExtractor(hridText.getText(), BranchPersistenceManager.getAtsBranch(),
+                     emailPocs.getSelection());
+         Jobs.startJob(new TaskImportJob(file, hridText.getText(), extractor, BranchPersistenceManager.getAtsBranch()));
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
          ErrorDialog.openError(getShell(), "ATS Import Error", "An error has occured while importing document.",

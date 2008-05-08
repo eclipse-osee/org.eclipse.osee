@@ -43,9 +43,9 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       sma.setSoleStringAttributeValue(attributeName, state.toXml());
    }
 
-   public void logMetrics() throws IllegalStateException, SQLException, MultipleAttributesExist {
-      if (sma instanceof TaskArtifact) logMetrics(sma, sma.getWorldViewTotalPercentComplete() + "",
-            AtsLib.doubleToStrString(sma.getWorldViewTotalHoursSpent()),
+   public void logMetrics() throws Exception {
+      if (sma instanceof TaskArtifact) logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
+            AtsLib.doubleToStrString(sma.getHoursSpentSMATotal()),
             SkynetAuthentication.getInstance().getAuthenticatedUser(), new Date());
    }
 

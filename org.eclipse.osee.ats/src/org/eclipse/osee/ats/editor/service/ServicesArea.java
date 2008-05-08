@@ -71,9 +71,11 @@ public class ServicesArea {
          // Services
          services.add(new AtsAdminStat(smaMgr));
          services.add(new TotalPercentCompleteStat(smaMgr));
+         services.add(new TotalEstimatedHoursStat(smaMgr));
          services.add(new TotalHoursSpentStat(smaMgr));
          services.add(new TargetedForVersionState(smaMgr));
          services.add(new StatePercentCompleteStat(smaMgr));
+         services.add(new StateEstimatedHoursStat(smaMgr));
          services.add(new StateHoursSpentStat(smaMgr));
          services.add(new AddDecisionReviewService(smaMgr));
          services.add(new AddPeerToPeerReviewService(smaMgr));

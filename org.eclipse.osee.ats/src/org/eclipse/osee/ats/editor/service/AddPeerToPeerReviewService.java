@@ -63,7 +63,7 @@ public class AddPeerToPeerReviewService extends WorkPageService {
             StateListDialog dialog =
                   new StateListDialog("Related Review State", "Select state to that review will be associated with.",
                         smaMgr.getWorkFlow().getPageNames());
-            dialog.setInitialSelections(new Object[] {smaMgr.getCurrentStateName()});
+            dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});
             if (dialog.open() == 0) {
                if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Add PeerToPeer Review",
                      "Create a PeerToPeer Review and attach it the \"" + dialog.getResult()[0] + "\" state?")) return;

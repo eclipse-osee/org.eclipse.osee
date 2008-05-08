@@ -110,7 +110,8 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
                sb.append(AHTML.addRowMultiColumnTable(new String[] {reviewArt.getHumanReadableId(),
                      reviewArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), ""),
                      getDateString(reviewArt.getWorldViewCompletedDate()), reviewArt.getArtifactTypeName(),
-                     getRolesStr(reviewArt, user), reviewArt.getCurrentStateName(), reviewArt.getDescriptiveName()}));
+                     getRolesStr(reviewArt, user), reviewArt.getSmaMgr().getStateMgr().getCurrentStateName(),
+                     reviewArt.getDescriptiveName()}));
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, false);
             }

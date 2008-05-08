@@ -49,13 +49,6 @@ public class XResultHtml {
             hrid), name);
    }
 
-   public static String getOpenHyperlinkHtml(Artifact art, int transId) {
-      String str =
-            AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openTransAction,
-                  String.format("%s,%s", art.getGuid(), transId + "")), art.getDescriptiveName());
-      return str;
-   }
-
    public static String getOpenHyperlinkHtml(String name, Artifact art) {
       return AHTML.getHyperlink(ResultBrowserHyperCmd.getHyperCmdStr(ResultBrowserHyperCmd.openAction, art.getGuid()),
             name);

@@ -17,127 +17,130 @@ import org.eclipse.swt.graphics.Image;
 
 public interface IWorldViewArtifact {
 
-   public String getWorldViewNotes();
+   public Image getAssigneeImage() throws Exception;
 
-   public int getWorldViewPercentRework();
+   public String getWorldViewActionableItems() throws Exception;
 
-   public String getWorldViewNumberOfTasks();
+   public String getWorldViewActivePoc() throws Exception;
 
-   public String getWorldViewPercentReworkStr();
+   public double getWorldViewAnnualCostAvoidance() throws Exception;
 
-   public Date getWorldViewEstimatedReleaseDate() throws Exception;
-
-   public String getWorldViewEstimatedReleaseDateStr();
-
-   public String getWorldViewBranchStatus();
-
-   public double getWorldViewRemainHours();
-
-   public double getWorldViewManDaysNeeded();
-
-   public Result isWorldViewAnnualCostAvoidanceValid();
-
-   public double getWorldViewAnnualCostAvoidance();
-
-   public Result isWorldViewRemainHoursValid();
-
-   public Result isWorldViewManDaysNeededValid();
-
-   public Date getWorldViewReleaseDate() throws Exception;
-
-   public String getWorldViewReleaseDateStr();
-
-   public Date getWorldViewDeadlineDate() throws Exception;
-
-   public String getWorldViewDeadlineDateStr();
-
-   /**
-    * @return true if the deadline date causes
-    */
-   public Result isWorldViewDeadlineAlerting();
-
-   public String getWorldViewWorkPackage();
-
-   public String getWorldViewCategory();
-
-   public String getWorldViewCategory2();
-
-   public String getWorldViewCategory3();
-
-   public String getWorldViewType();
-
-   public String getWorldViewTitle();
-
-   public Date getWorldViewCompletedDate() throws Exception;
-
-   public String getWorldViewCompletedDateStr();
-
-   public String getWorldViewDescription();
-
-   public String getWorldViewValidationRequiredStr();
-
-   public boolean isMetricsFromTasks();
+   public String getWorldViewBranchStatus() throws Exception;
 
    public Date getWorldViewCancelledDate() throws Exception;
 
-   public String getWorldViewCancelledDateStr();
+   public String getWorldViewCancelledDateStr() throws Exception;
+
+   public String getWorldViewCategory() throws Exception;
+
+   public String getWorldViewCategory2() throws Exception;
+
+   public String getWorldViewCategory3() throws Exception;
 
    public ChangeType getWorldViewChangeType() throws Exception;
 
-   public String getWorldViewChangeTypeStr();
+   public String getWorldViewChangeTypeStr() throws Exception;
 
-   public String getWorldViewState();
+   public Date getWorldViewCompletedDate() throws Exception;
 
-   public String getWorldViewTeam();
-
-   public String getWorldViewRelatedToState();
-
-   public String getWorldViewUserCommunity();
-
-   public String getWorldViewResolution();
-
-   public String getWorldViewDecision();
-
-   public String getWorldViewLegacyPCR();
-
-   public String getWorldViewActionableItems();
-
-   public String getWorldViewActivePoc();
-
-   public Image getAssigneeImage();
-
-   public String getWorldViewCreatedDateStr();
+   public String getWorldViewCompletedDateStr() throws Exception;
 
    public Date getWorldViewCreatedDate() throws Exception;
 
-   public String getWorldViewOriginator();
+   public String getWorldViewCreatedDateStr() throws Exception;
 
-   public String getWorldViewImplementer();
+   public Date getWorldViewDeadlineDate() throws Exception;
 
-   public String getWorldViewReviewAuthor();
+   public String getWorldViewDeadlineDateStr() throws Exception;
 
-   public String getWorldViewReviewModerator();
+   public String getWorldViewDecision() throws Exception;
 
-   public String getWorldViewReviewReviewer();
+   public String getWorldViewDescription() throws Exception;
 
-   public String getWorldViewReviewDecider();
+   public double getWorldViewEstimatedHours() throws Exception;
 
-   public String getWorldViewVersion();
+   public Date getWorldViewEstimatedReleaseDate() throws Exception;
 
-   public String getWorldViewID();
+   public String getWorldViewEstimatedReleaseDateStr() throws Exception;
 
-   public String getWorldViewPriority();
+   public double getWorldViewHoursSpentState() throws Exception;
 
-   public double getWorldViewEstimatedHours();
+   public double getWorldViewHoursSpentStateReview() throws Exception;
 
-   public double getWorldViewWeeklyBenefit();
+   public double getWorldViewHoursSpentStateTask() throws Exception;
 
-   public int getWorldViewStatePercentComplete();
+   public double getWorldViewHoursSpentTotal() throws Exception;
 
-   public double getWorldViewStateHoursSpent();
+   public String getWorldViewID() throws Exception;
 
-   public int getWorldViewTotalPercentComplete();
+   public String getWorldViewImplementer() throws Exception;
 
-   public double getWorldViewTotalHoursSpent();
+   public String getWorldViewLegacyPCR() throws Exception;
+
+   public double getWorldViewManDaysNeeded() throws Exception;
+
+   public String getWorldViewNotes() throws Exception;
+
+   public String getWorldViewNumberOfTasks() throws Exception;
+
+   public String getWorldViewOriginator() throws Exception;
+
+   public int getWorldViewPercentCompleteState() throws Exception;
+
+   public int getWorldViewPercentCompleteStateReview() throws Exception;
+
+   public int getWorldViewPercentCompleteStateTask() throws Exception;
+
+   public int getWorldViewPercentCompleteTotal() throws Exception;
+
+   public int getWorldViewPercentRework() throws Exception;
+
+   public String getWorldViewPercentReworkStr() throws Exception;
+
+   public String getWorldViewPriority() throws Exception;
+
+   public String getWorldViewRelatedToState() throws Exception;
+
+   public Date getWorldViewReleaseDate() throws Exception;
+
+   public String getWorldViewReleaseDateStr() throws Exception;
+
+   public double getWorldViewRemainHours() throws Exception;
+
+   public String getWorldViewResolution() throws Exception;
+
+   public String getWorldViewReviewAuthor() throws Exception;
+
+   public String getWorldViewReviewDecider() throws Exception;
+
+   public String getWorldViewReviewModerator() throws Exception;
+
+   public String getWorldViewReviewReviewer() throws Exception;
+
+   public String getWorldViewState() throws Exception;
+
+   public String getWorldViewTeam() throws Exception;
+
+   public String getWorldViewTitle() throws Exception;
+
+   public String getWorldViewType() throws Exception;
+
+   public String getWorldViewUserCommunity() throws Exception;
+
+   public String getWorldViewValidationRequiredStr() throws Exception;
+
+   public String getWorldViewVersion() throws Exception;
+
+   public double getWorldViewWeeklyBenefit() throws Exception;
+
+   public String getWorldViewWorkPackage() throws Exception;
+
+   public Result isWorldViewAnnualCostAvoidanceValid() throws Exception;
+
+   public Result isWorldViewDeadlineAlerting() throws Exception;
+
+   public Result isWorldViewManDaysNeededValid() throws Exception;
+
+   public Result isWorldViewRemainHoursValid() throws Exception;
 
 }

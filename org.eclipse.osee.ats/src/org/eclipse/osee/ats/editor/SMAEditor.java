@@ -94,7 +94,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeNameSuppressException() + ":" + smaMgr.getSma());
       } else {
          smaMgr.getSma().saveSMA();
-         workFlowTab.refresh();
+         try {
+            workFlowTab.refresh();
+         } catch (Exception ex) {
+            OSEELog.logException(AtsPlugin.class, ex, false);
+         }
          onDirtied();
       }
    }
@@ -108,32 +112,32 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
           */
          @Override
          public void run() {
-            StringBuffer sb = new StringBuffer();
-            sb.append(AHTML.beginMultiColumnTable(100));
-            sb.append(AHTML.addRowMultiColumnTable(new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Title: ",
-                  smaMgr.getSma().getDescriptiveName())}));
-            sb.append(AHTML.endMultiColumnTable());
-            sb.append(AHTML.beginMultiColumnTable(100));
-            sb.append(AHTML.addRowMultiColumnTable(new String[] {
-            //
-                  AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ",
-                        ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewState()),
-                  //
-                  AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-                        ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewTeam()),
-                  //
-                  AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ",
-                        ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewActivePoc()),
-                  //
-                  AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ",
-                        ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewOriginator()),
-                  //
-                  AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", XDate.getDateStr(
-                        smaMgr.getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM))
-
-            }));
-            sb.append(AHTML.endMultiColumnTable());
             try {
+               StringBuffer sb = new StringBuffer();
+               sb.append(AHTML.beginMultiColumnTable(100));
+               sb.append(AHTML.addRowMultiColumnTable(new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Title: ",
+                     smaMgr.getSma().getDescriptiveName())}));
+               sb.append(AHTML.endMultiColumnTable());
+               sb.append(AHTML.beginMultiColumnTable(100));
+               sb.append(AHTML.addRowMultiColumnTable(new String[] {
+               //
+                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ",
+                           ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewState()),
+                     //
+                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
+                           ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewTeam()),
+                     //
+                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ",
+                           ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewActivePoc()),
+                     //
+                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ",
+                           ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewOriginator()),
+                     //
+                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", XDate.getDateStr(
+                           smaMgr.getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM))
+
+               }));
+               sb.append(AHTML.endMultiColumnTable());
                sb.append(AHTML.beginMultiColumnTable(100));
                sb.append(AHTML.addRowMultiColumnTable(new String[] {
                      //
@@ -142,16 +146,17 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                      (smaMgr.getSma().getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT,
                            "Action HRID: ", smaMgr.getSma().getParentActionArtifact().getHumanReadableId()))}));
                sb.append(AHTML.endMultiColumnTable());
+               sb.append(workFlowTab.getHtml());
+               sb.append(taskComposite.getHtml());
+               sb.append(AHTML.newline());
+               sb.append(smaMgr.getSma().getLog().getHtml());
+               XResultData resultData = new XResultData(AtsPlugin.getLogger());
+               resultData.addRaw(sb.toString());
+               resultData.report(smaMgr.getSma().getDescriptiveName(), Manipulations.RAW_HTML);
             } catch (Exception ex) {
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
-            sb.append(workFlowTab.getHtml());
-            sb.append(taskComposite.getHtml());
-            sb.append(AHTML.newline());
-            sb.append(smaMgr.getSma().getLog().getHtml());
-            XResultData resultData = new XResultData(AtsPlugin.getLogger());
-            resultData.addRaw(sb.toString());
-            resultData.report(smaMgr.getSma().getDescriptiveName(), Manipulations.RAW_HTML);
+
          }
       };
       getEditorSite().getActionBars().setGlobalActionHandler(ActionFactory.PRINT.getId(), printAction);
@@ -379,7 +384,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getCurrentStateName()
     */
    public String getCurrentStateName() throws Exception {
-      return smaMgr.getCurrentStateName();
+      return smaMgr.getStateMgr().getCurrentStateName();
    }
 
    /*

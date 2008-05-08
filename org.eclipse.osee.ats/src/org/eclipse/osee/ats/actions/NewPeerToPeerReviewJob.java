@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsLib;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
  * @author Donald G. Dunne
  */
 public class NewPeerToPeerReviewJob extends Job {
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
 
    private final TeamWorkFlowArtifact teamParent;
    private final String againstState;
@@ -42,7 +40,7 @@ public class NewPeerToPeerReviewJob extends Job {
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         AbstractSkynetTxTemplate newPeerToPeerTx = new AbstractSkynetTxTemplate(branchManager.getAtsBranch()) {
+         AbstractSkynetTxTemplate newPeerToPeerTx = new AbstractSkynetTxTemplate(AtsPlugin.getAtsBranch()) {
 
             @Override
             protected void handleTxWork() throws Exception {

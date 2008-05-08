@@ -109,15 +109,39 @@ public class ReviewManager {
       peerToPeerRev.getLog().addLog(LogType.Originated, "", "", origDate, origUser);
       peerToPeerRev.setSoleBooleanAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
 
-      // Set state
-      // Set current state and POCs
-      peerToPeerRev.getCurrentStateDam().setState(
-            new SMAState(DecisionReviewArtifact.StateNames.Prepare.name(),
-                  SkynetAuthentication.getInstance().getAuthenticatedUser()));
+      // Initialize state machine
+      peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());
       peerToPeerRev.getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.StateNames.Prepare.name(), "",
             origDate, origUser);
       peerToPeerRev.persist(true);
       return peerToPeerRev;
+   }
+
+   /**
+    * Return Estimated Review Hours of "Related to State" stateName
+    * 
+    * @param relatedToStateName state name of parent workflow's state
+    * @return Returns the Estimated Hours
+    */
+   public double getEstimatedHours(String relatedToStateName) throws Exception {
+      double hours = 0;
+      for (ReviewSMArtifact revArt : getReviews(relatedToStateName))
+         hours += revArt.getEstimatedHoursTotal();
+      return hours;
+   }
+
+   /**
+    * Return Estimated Hours for all reviews
+    * 
+    * @return
+    * @throws Exception
+    */
+   public double getEstimatedHours() throws Exception {
+      double hours = 0;
+      for (ReviewSMArtifact revArt : getReviews())
+         hours += revArt.getEstimatedHoursTotal();
+      return hours;
+
    }
 
    public String getValidateReviewFollowupUsersStr() {
@@ -129,16 +153,13 @@ public class ReviewManager {
       }
    }
 
-   public Collection<User> getValidateReviewFollowupUsers() throws SQLException {
-      SMAState state = smaMgr.getSMAState("Implement", false);
-      // Try to find an Implement state and it's assignees
-      if (state != null && state.getAssignees().size() > 0) return state.getAssignees();
-      try {
-         // Else if Team Workflow , return it to the leads of this team
-         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
+   public Collection<User> getValidateReviewFollowupUsers() throws Exception {
+      Collection<User> users = smaMgr.getStateMgr().getAssignees("Implement");
+      if (users.size() > 0) return users;
+
+      // Else if Team Workflow , return it to the leads of this team
+      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
+
       // Else, return current user; should never hit this
       return Arrays.asList(new User[] {SkynetAuthentication.getInstance().getAuthenticatedUser()});
    }
@@ -148,7 +169,7 @@ public class ReviewManager {
    }
 
    public Collection<ReviewSMArtifact> getReviewsFromCurrentState() throws SQLException, MultipleAttributesExist {
-      return getReviews(smaMgr.getSma().getCurrentStateName());
+      return getReviews(smaMgr.getStateMgr().getCurrentStateName());
    }
 
    public Collection<ReviewSMArtifact> getReviews(String stateName) throws SQLException, MultipleAttributesExist {
@@ -183,4 +204,33 @@ public class ReviewManager {
    public static Collection<String> getAllReviewArtifactTypeNames() {
       return Arrays.asList(new String[] {DecisionReviewArtifact.ARTIFACT_NAME, PeerToPeerReviewArtifact.ARTIFACT_NAME});
    }
+
+   /**
+    * Return Hours Spent for Reviews of "Related to State" stateName
+    * 
+    * @param relatedToStateName state name of parent workflow's state
+    * @return Returns the Hours Spent
+    */
+   public double getHoursSpent(String relatedToStateName) throws Exception {
+      double spent = 0;
+      for (ReviewSMArtifact reviewArt : getReviews(relatedToStateName))
+         spent += reviewArt.getHoursSpentSMATotal();
+      return spent;
+   }
+
+   /**
+    * Return Total Percent Complete / # Reviews for "Related to State" stateName
+    * 
+    * @param relatedToStateName state name of parent workflow's state
+    * @return Returns the Percent Complete.
+    */
+   public int getPercentComplete(String relatedToStateName) throws Exception {
+      int spent = 0;
+      Collection<ReviewSMArtifact> reviewArts = getReviews(relatedToStateName);
+      for (ReviewSMArtifact reviewArt : reviewArts)
+         spent += reviewArt.getPercentCompleteSMATotal();
+      if (spent == 0) return 0;
+      return spent / reviewArts.size();
+   }
+
 }

@@ -27,10 +27,12 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
+import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.util.widgets.task.XTaskViewer;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -125,7 +127,7 @@ public class SMAWorkFlowSection extends SectionPart {
       return section;
    }
 
-   private String getCurrentStateTitle() {
+   private String getCurrentStateTitle() throws Exception {
       StringBuffer sb = new StringBuffer(page.getName());
       if (isEditable && (!smaMgr.isCompleted() && !smaMgr.isCancelled())) {
          sb.append(" - Current State");
@@ -149,9 +151,9 @@ public class SMAWorkFlowSection extends SectionPart {
             LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateEntered, page.getName());
             sb.append(" by " + item.getUser().getName());
          }
-         if (smaMgr.getAssignees().size() > 0) {
+         if (smaMgr.getStateMgr().getAssignees().size() > 0) {
             sb.append(" assigned to ");
-            sb.append(smaMgr.getAssigneesStr());
+            sb.append(Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
          }
       } else {
          LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateComplete, page.getName());
@@ -228,7 +230,7 @@ public class SMAWorkFlowSection extends SectionPart {
       super.refresh();
       if (isEditable) {
          if (currentAssigneesLabel != null && !currentAssigneesLabel.isDisposed()) {
-            currentAssigneesLabel.setText(smaMgr.getAssigneesStr());
+            currentAssigneesLabel.setText(Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
             currentAssigneesLabel.getParent().layout();
          }
          if (transitionAssigneesLabel != null && !transitionAssigneesLabel.isDisposed()) {
@@ -267,16 +269,17 @@ public class SMAWorkFlowSection extends SectionPart {
             }
 
          });
-         currentAssigneesLabel = toolkit.createLabel(comp, smaMgr.getAssigneesStr());
+         currentAssigneesLabel = toolkit.createLabel(comp, Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
          currentAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         if (smaMgr.getAssignees().size() == 0) {
+         if (smaMgr.getStateMgr().getAssignees().size() == 0) {
             Label errorLabel = toolkit.createLabel(comp, "Error: State has no assignees");
             errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          }
-      } else if (smaMgr.getAssignees().size() > 0) {
+      } else if (smaMgr.getStateMgr().getAssignees().size() > 0) {
          Label errorLabel =
-               toolkit.createLabel(comp,
-                     "Error: Non-current/Cancelled/Completed state still assigned to " + smaMgr.getAssigneesStr());
+               toolkit.createLabel(
+                     comp,
+                     "Error: Non-current/Cancelled/Completed state still assigned to " + Artifacts.commaArts(smaMgr.getStateMgr().getAssignees()));
          errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       }
    }
@@ -504,7 +507,9 @@ public class SMAWorkFlowSection extends SectionPart {
             // Check extension points for valid transition
             for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {
                try {
-                  result = item.transitioning(smaMgr, smaMgr.getCurrentStateName(), toWorkPage.getName(), toAssignees);
+                  result =
+                        item.transitioning(smaMgr, smaMgr.getStateMgr().getCurrentStateName(), toWorkPage.getName(),
+                              toAssignees);
                   if (result.isFalse()) {
                      result.popup();
                      return;
@@ -553,7 +558,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public boolean handlePopulateStateMetrics() throws Exception {
 
       // Page has the ability to override the autofill of the metrics
-      if (!page.isRequireStateHoursSpentPrompt() && smaMgr.getSma().getCurrentState().getHoursSpent() == 0) {
+      if (!page.isRequireStateHoursSpentPrompt() && smaMgr.getStateMgr().getHoursSpent() == 0) {
          // First, try to autofill if it's only been < 5 min since creation
          int minSinceCreation = getCreationToNowDateDeltaMinutes();
          // System.out.println("minSinceCreation *" + minSinceCreation + "*");
@@ -561,23 +566,22 @@ public class SMAWorkFlowSection extends SectionPart {
          if (hoursSinceCreation < 0.02) hoursSinceCreation = (new Float(0.02)).floatValue();
          // System.out.println("hoursSinceCreation *" + hoursSinceCreation + "*");
          if (minSinceCreation < 5) {
-            smaMgr.getCurrentStateDam().setPercentComplete(100);
-            smaMgr.getCurrentStateDam().setHoursSpent(hoursSinceCreation);
+            smaMgr.getStateMgr().setPercentComplete(100);
+            smaMgr.getStateMgr().setHoursSpent(hoursSinceCreation);
             return true;
          }
       }
 
       // Otherwise, open dialog to ask for hours complete
       String msg =
-            smaMgr.getCurrentStateName() + " State\n\n" + smaMgr.getSma().getCurrentState().getHoursSpentStr() + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
+            smaMgr.getStateMgr().getCurrentStateName() + " State\n\n" + AtsLib.doubleToStrString(smaMgr.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
       SMAStatusDialog tsd =
             new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent",
                   msg, false, Arrays.asList(new StateMachineArtifact[] {smaMgr.getSma()}));
       int result = tsd.open();
       if (result == 0) {
-         smaMgr.getCurrentStateDam().setPercentComplete(100);
-         smaMgr.getCurrentStateDam().setHoursSpent(
-               smaMgr.getSma().getCurrentState().getHoursSpent() + tsd.getHours().getFloat());
+         smaMgr.getStateMgr().setPercentComplete(100);
+         smaMgr.getStateMgr().setHoursSpent(smaMgr.getStateMgr().getHoursSpent() + tsd.getHours().getFloat());
          return true;
       }
       return false;

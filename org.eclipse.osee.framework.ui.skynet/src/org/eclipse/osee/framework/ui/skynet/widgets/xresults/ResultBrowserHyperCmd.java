@@ -17,15 +17,13 @@ import java.util.regex.Pattern;
  * @author Donald G. Dunne
  */
 public enum ResultBrowserHyperCmd {
-   openTransAction,
    openAction,
    openArtifctBranch,
    openArtifactEditor,
    openArtifactHyperViewer,
    openBranch,
    openChangeReport,
-   openPriorityHelp,
-   openTaskResolutionHelp;
+   openPriorityHelp;
 
    public static String getHyperCmdStr(ResultBrowserHyperCmd resultBrowserHyperCmd, String value) {
       return String.format("%s=%s", resultBrowserHyperCmd.name(), value);

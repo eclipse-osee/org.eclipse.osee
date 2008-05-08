@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -62,77 +62,77 @@ public class WorldLabelProvider implements ITableLabelProvider, ITableColorProvi
     * @return column string
     */
    public String getColumnText(Object element, int columnIndex, Artifact artifact, XViewerColumn xCol, AtsXColumn aCol) {
-      if (!xCol.isShow()) return ""; // Since not shown, don't display
-      IWorldViewArtifact wva = (IWorldViewArtifact) artifact;
-      if (aCol == AtsXColumn.Type_Col) return wva.getWorldViewType();
-      if (aCol == AtsXColumn.Actionable_Items_Col) return wva.getWorldViewActionableItems();
-      if (aCol == AtsXColumn.User_Community_Col) return wva.getWorldViewUserCommunity();
-      if (aCol == AtsXColumn.Title_Col) return wva.getWorldViewTitle();
-      if (aCol == AtsXColumn.Number_of_Tasks_Col) return wva.getWorldViewNumberOfTasks();
-      if (aCol == AtsXColumn.Description_Col) return wva.getWorldViewDescription();
-      if (aCol == AtsXColumn.Metrics_from_Tasks_Col) {
-         try {
-            return wva.isMetricsFromTasks() ? "yes" : "";
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
-            return ex.getLocalizedMessage();
+      try {
+         if (!xCol.isShow()) return ""; // Since not shown, don't display
+         IWorldViewArtifact wva = (IWorldViewArtifact) artifact;
+         if (aCol == AtsXColumn.Type_Col) return wva.getWorldViewType();
+         if (aCol == AtsXColumn.Actionable_Items_Col) return wva.getWorldViewActionableItems();
+         if (aCol == AtsXColumn.User_Community_Col) return wva.getWorldViewUserCommunity();
+         if (aCol == AtsXColumn.Title_Col) return wva.getWorldViewTitle();
+         if (aCol == AtsXColumn.Number_of_Tasks_Col) return wva.getWorldViewNumberOfTasks();
+         if (aCol == AtsXColumn.Description_Col) return wva.getWorldViewDescription();
+         if (aCol == AtsXColumn.Validation_Required_Col) return wva.getWorldViewValidationRequiredStr();
+         if (aCol == AtsXColumn.Version_Target_Col) return wva.getWorldViewVersion();
+         if (aCol == AtsXColumn.Completed_Date_Col) return wva.getWorldViewCompletedDateStr();
+         if (aCol == AtsXColumn.Cancelled_Date_Col) return wva.getWorldViewCancelledDateStr();
+         if (aCol == AtsXColumn.Team_Col) return wva.getWorldViewTeam();
+         if (aCol == AtsXColumn.Related_To_State_Col) return wva.getWorldViewRelatedToState();
+         if (aCol == AtsXColumn.Originator_Col) return wva.getWorldViewOriginator();
+         if (aCol == AtsXColumn.Branch_Status_Col) return wva.getWorldViewBranchStatus();
+         if (aCol == AtsXColumn.Implementor_Col) return wva.getWorldViewImplementer();
+         if (aCol == AtsXColumn.Review_Author_Col) return wva.getWorldViewReviewAuthor();
+         if (aCol == AtsXColumn.Review_Moderator_Col) return wva.getWorldViewReviewModerator();
+         if (aCol == AtsXColumn.Review_Reviewer_Col) return wva.getWorldViewReviewReviewer();
+         if (aCol == AtsXColumn.Review_Decider_Col) return wva.getWorldViewReviewDecider();
+         if (aCol == AtsXColumn.Change_Type_Col) return wva.getWorldViewChangeTypeStr();
+         if (aCol == AtsXColumn.State_Col) return wva.getWorldViewState();
+         if (aCol == AtsXColumn.Assignees_Col) return wva.getWorldViewActivePoc();
+         if (aCol == AtsXColumn.Created_Date_Col) return wva.getWorldViewCreatedDateStr();
+         if (aCol == AtsXColumn.ID_Col) return wva.getWorldViewID();
+         if (aCol == AtsXColumn.Priority_Col) return wva.getWorldViewPriority();
+         if (aCol == AtsXColumn.Resolution_Col) return wva.getWorldViewResolution();
+         if (aCol == AtsXColumn.Decision_Col) return wva.getWorldViewDecision();
+         if (aCol == AtsXColumn.Legacy_PCR_Col) return wva.getWorldViewLegacyPCR();
+         if (aCol == AtsXColumn.Weekly_Benefit_Hrs_Col) return AtsLib.doubleToStrString(
+               wva.getWorldViewWeeklyBenefit(), true);
+         if (aCol == AtsXColumn.Estimated_Hours_Col) return AtsLib.doubleToStrString(wva.getWorldViewEstimatedHours());
+         if (aCol == AtsXColumn.Annual_Cost_Avoidance_Col) {
+            Result result = wva.isWorldViewAnnualCostAvoidanceValid();
+            if (result.isFalse()) return result.getText();
+            return AtsLib.doubleToStrString(wva.getWorldViewAnnualCostAvoidance(), true);
          }
-      }
-      if (aCol == AtsXColumn.Validation_Required_Col) return wva.getWorldViewValidationRequiredStr();
-      if (aCol == AtsXColumn.Version_Target_Col) return wva.getWorldViewVersion();
-      if (aCol == AtsXColumn.Completed_Date_Col) return wva.getWorldViewCompletedDateStr();
-      if (aCol == AtsXColumn.Cancelled_Date_Col) return wva.getWorldViewCancelledDateStr();
-      if (aCol == AtsXColumn.Team_Col) return wva.getWorldViewTeam();
-      if (aCol == AtsXColumn.Related_To_State_Col) return wva.getWorldViewRelatedToState();
-      if (aCol == AtsXColumn.Originator_Col) return wva.getWorldViewOriginator();
-      if (aCol == AtsXColumn.Branch_Status_Col) return wva.getWorldViewBranchStatus();
-      if (aCol == AtsXColumn.Implementor_Col) return wva.getWorldViewImplementer();
-      if (aCol == AtsXColumn.Review_Author_Col) return wva.getWorldViewReviewAuthor();
-      if (aCol == AtsXColumn.Review_Moderator_Col) return wva.getWorldViewReviewModerator();
-      if (aCol == AtsXColumn.Review_Reviewer_Col) return wva.getWorldViewReviewReviewer();
-      if (aCol == AtsXColumn.Review_Decider_Col) return wva.getWorldViewReviewDecider();
-      if (aCol == AtsXColumn.Change_Type_Col) return wva.getWorldViewChangeTypeStr();
-      if (aCol == AtsXColumn.State_Col) return wva.getWorldViewState();
-      if (aCol == AtsXColumn.Assignees_Col) return wva.getWorldViewActivePoc();
-      if (aCol == AtsXColumn.Created_Date_Col) return wva.getWorldViewCreatedDateStr();
-      if (aCol == AtsXColumn.ID_Col) return wva.getWorldViewID();
-      if (aCol == AtsXColumn.Priority_Col) return wva.getWorldViewPriority();
-      if (aCol == AtsXColumn.Resolution_Col) return wva.getWorldViewResolution();
-      if (aCol == AtsXColumn.Decision_Col) return wva.getWorldViewDecision();
-      if (aCol == AtsXColumn.Legacy_PCR_Col) return wva.getWorldViewLegacyPCR();
-      if (aCol == AtsXColumn.Weekly_Benefit_Hrs_Col) return AtsLib.doubleToStrString(wva.getWorldViewWeeklyBenefit(),
-            true);
-      if (aCol == AtsXColumn.Estimated_Hours_Col) return AtsLib.doubleToStrString(wva.getWorldViewEstimatedHours());
-      if (aCol == AtsXColumn.Annual_Cost_Avoidance_Col) {
-         Result result = wva.isWorldViewAnnualCostAvoidanceValid();
-         if (result.isFalse()) return result.getText();
-         return AtsLib.doubleToStrString(wva.getWorldViewAnnualCostAvoidance(), true);
-      }
-      if (aCol == AtsXColumn.Remaining_Hours_Col) {
-         Result result = wva.isWorldViewRemainHoursValid();
-         if (result.isFalse()) return result.getText();
-         return AtsLib.doubleToStrString(wva.getWorldViewRemainHours());
-      }
-      if (aCol == AtsXColumn.Man_Days_Needed_Col) {
-         Result result = wva.isWorldViewManDaysNeededValid();
-         if (result.isFalse()) return result.getText();
-         return AtsLib.doubleToStrString(wva.getWorldViewManDaysNeeded());
-      }
-      if (aCol == AtsXColumn.State_Percent_Col) return AtsLib.doubleToStrString(wva.getWorldViewStatePercentComplete());
-      if (aCol == AtsXColumn.State_Hours_Spent_Col) return AtsLib.doubleToStrString(wva.getWorldViewStateHoursSpent());
-      if (aCol == AtsXColumn.Notes_Col) return wva.getWorldViewNotes();
-      if (aCol == AtsXColumn.Percent_Rework_Col) return wva.getWorldViewPercentReworkStr();
-      if (aCol == AtsXColumn.Estimated_Release_Date_Col) return wva.getWorldViewEstimatedReleaseDateStr();
-      if (aCol == AtsXColumn.Release_Date_Col) return wva.getWorldViewReleaseDateStr();
-      if (aCol == AtsXColumn.Deadline_Col) return wva.getWorldViewDeadlineDateStr();
-      if (aCol == AtsXColumn.Work_Package_Col) return wva.getWorldViewWorkPackage();
-      if (aCol == AtsXColumn.Category_Col) return wva.getWorldViewCategory();
-      if (aCol == AtsXColumn.Category2_Col) return wva.getWorldViewCategory2();
-      if (aCol == AtsXColumn.Category3_Col) return wva.getWorldViewCategory3();
-      if (aCol == AtsXColumn.Total_Percent_Complete_Col) return wva.getWorldViewTotalPercentComplete() + "";
-      if (aCol == AtsXColumn.Total_Hours_Spent_Col) return AtsLib.doubleToStrString(wva.getWorldViewTotalHoursSpent());
+         if (aCol == AtsXColumn.Remaining_Hours_Col) {
+            Result result = wva.isWorldViewRemainHoursValid();
+            if (result.isFalse()) return result.getText();
+            return AtsLib.doubleToStrString(wva.getWorldViewRemainHours());
+         }
+         if (aCol == AtsXColumn.Man_Days_Needed_Col) {
+            Result result = wva.isWorldViewManDaysNeededValid();
+            if (result.isFalse()) return result.getText();
+            return AtsLib.doubleToStrString(wva.getWorldViewManDaysNeeded());
+         }
+         if (aCol == AtsXColumn.Percent_Complete_State_Col) return AtsLib.doubleToStrString(wva.getWorldViewPercentCompleteState());
+         if (aCol == AtsXColumn.Percent_Complete_State_Task_Col) return AtsLib.doubleToStrString(wva.getWorldViewPercentCompleteStateTask());
+         if (aCol == AtsXColumn.Percent_Complete_State_Review_Col) return AtsLib.doubleToStrString(wva.getWorldViewPercentCompleteStateReview());
+         if (aCol == AtsXColumn.Percent_Complete_Total_Col) return AtsLib.doubleToStrString(wva.getWorldViewPercentCompleteTotal());
+         if (aCol == AtsXColumn.Hours_Spent_State_Col) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentState());
+         if (aCol == AtsXColumn.Hours_Spent_State_Task_Col) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentStateTask());
+         if (aCol == AtsXColumn.Hours_Spent_State_Review_Col) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentStateReview());
+         if (aCol == AtsXColumn.Hours_Spent_Total_Col) return AtsLib.doubleToStrString(wva.getWorldViewHoursSpentTotal());
+         if (aCol == AtsXColumn.Notes_Col) return wva.getWorldViewNotes();
+         if (aCol == AtsXColumn.Percent_Rework_Col) return wva.getWorldViewPercentReworkStr();
+         if (aCol == AtsXColumn.Estimated_Release_Date_Col) return wva.getWorldViewEstimatedReleaseDateStr();
+         if (aCol == AtsXColumn.Release_Date_Col) return wva.getWorldViewReleaseDateStr();
+         if (aCol == AtsXColumn.Deadline_Col) return wva.getWorldViewDeadlineDateStr();
+         if (aCol == AtsXColumn.Work_Package_Col) return wva.getWorldViewWorkPackage();
+         if (aCol == AtsXColumn.Category_Col) return wva.getWorldViewCategory();
+         if (aCol == AtsXColumn.Category2_Col) return wva.getWorldViewCategory2();
+         if (aCol == AtsXColumn.Category3_Col) return wva.getWorldViewCategory3();
 
-      return "Unhandled Column";
+         return "Unhandled Column";
+      } catch (Exception ex) {
+         return XViewerCells.getCellExceptionString(ex);
+      }
    }
 
    public void dispose() {

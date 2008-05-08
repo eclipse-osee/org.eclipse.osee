@@ -69,16 +69,6 @@ public class ResultBrowserListener implements LocationListener {
          } else if (resultBrowserHyperCmd == ResultBrowserHyperCmd.openArtifactHyperViewer) {
             event.doit = false;
             OseeAts.getAtsLib().openArtifact(value, OseeAts.OpenView.ArtifactHyperViewer);
-         } else if (resultBrowserHyperCmd == ResultBrowserHyperCmd.openTransAction) {
-            event.doit = false;
-            // DON Fix this
-            // Matcher m = Pattern.compile("(.*?),(.*?)$").matcher(value);
-            // if (m.find()) {
-            // String guid = m.group(1);
-            // String transId = m.group(2);
-            // SMAEditor.open(guid, transId);
-            // }
-            // else
          } else if (resultBrowserHyperCmd == ResultBrowserHyperCmd.openBranch) {
             event.doit = false;
             int branchId = new Integer(value);
@@ -88,13 +78,6 @@ public class ResultBrowserListener implements LocationListener {
                return;
             }
             BranchView.revealBranch(branch);
-         } else if (resultBrowserHyperCmd == ResultBrowserHyperCmd.openTaskResolutionHelp) {
-            // DON Fix this
-            event.doit = false;
-            // if (sma != null && sma instanceof TaskArtifact) {
-            // TaskArtifact taskArt = (TaskArtifact) sma;
-            // XTaskTable.handleOpenTaskResolutionOptionHelp(taskArt.getTaskResolutionOptions());
-            // }
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, "Can't process hyperlink.", ex, true);
