@@ -376,5 +376,13 @@
                class="org.eclipse.osee.framework.skynet.core.attribute.providers.ClobAttributeDataProvider">
          </CharacterAttributeDataProvider>
       </extension>
+      <extension
+            id="FileBackedAttributeDataProvider"
+            name="FileBackedAttributeDataProvider"
+            point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">
+         <BinaryAttributeDataProvider
+               class="org.eclipse.osee.framework.skynet.core.attribute.providers.FileBackedAttributeDataProvider">
+         </BinaryAttributeDataProvider>
+      </extension>
    
 </plugin>

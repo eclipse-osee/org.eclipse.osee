@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -20,9 +22,13 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttr
  * @author Ryan D. Brooks
  */
 public class DateAttribute extends CharacterBackedAttribute<Date> {
-   public static final SimpleDateFormat MMDDYY = new SimpleDateFormat("MM/dd/yyyy");
-   public static final SimpleDateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-   public static final SimpleDateFormat HHMM = new SimpleDateFormat("hh:mm");
+   public static final DateFormat MMDDYY = new SimpleDateFormat("MM/dd/yyyy");
+   public static final DateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+   public static final DateFormat HHMM = new SimpleDateFormat("hh:mm");
+   public static final DateFormat MMDDYYYYHHMMSSAMPM = new SimpleDateFormat("MMM dd,yyyy hh:mm:ss a");
+   public static final DateFormat ALLDATETIME = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
+
+   private static final DateFormat[] legacyDateFormats = new DateFormat[] {MMDDYYYYHHMMSSAMPM, ALLDATETIME, MMDDYYHHMM};
 
    private ICharacterAttributeDataProvider dataProvider;
 
@@ -57,8 +63,30 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * @return date or null if not set
     */
    public Date getValue() {
+      Date toReturn = null;
       String value = dataProvider.getValueAsString();
-      return Strings.isValid(value) ? new Date(Long.parseLong(value)) : null;
+      if (Strings.isValid(value) != false) {
+         //TODO Added for backward compatibility with inconsistent date formats;
+         try {
+            toReturn = new Date(Long.parseLong(value));
+         } catch (Exception ex) {
+            // We have a legacy date - need to figure out how to parse it
+            toReturn = handleLegacyDates(value);
+         }
+      }
+      return toReturn;
+   }
+
+   private Date handleLegacyDates(String rawValue) {
+      Date toReturn = null;
+      for (DateFormat format : legacyDateFormats) {
+         try {
+            toReturn = format.parse(rawValue);
+            break;
+         } catch (ParseException ex) {
+         }
+      }
+      return toReturn;
    }
 
    /* (non-Javadoc)
@@ -66,7 +94,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     */
    @Override
    public String getDisplayableString() {
-      return getAsFormattedString(DateAttribute.MMDDYY);
+      return getAsFormattedString(DateAttribute.MMDDYYHHMM);
    }
 
    /**
@@ -75,7 +103,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * @param pattern DateAttribute.MMDDYY, etc...
     * @return formated date
     */
-   public String getAsFormattedString(SimpleDateFormat dateFormat) {
+   public String getAsFormattedString(DateFormat dateFormat) {
       Date date = getValue();
       return date != null ? dateFormat.format(getValue()) : "";
    }
