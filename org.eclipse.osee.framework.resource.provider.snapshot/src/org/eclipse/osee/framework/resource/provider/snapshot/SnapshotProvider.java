@@ -6,6 +6,7 @@
 package org.eclipse.osee.framework.resource.provider.snapshot;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -17,6 +18,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.resource.provider.common.OptionsProcessor;
 
 /**
  * @author Roberto E. Escobar
@@ -73,8 +75,8 @@ public class SnapshotProvider implements IResourceProvider {
    @Override
    public IResource acquire(IResourceLocator locator, Options options) throws Exception {
       IResource toReturn = null;
-      //      OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
-      //      toReturn = optionsProcessor.getResourceToServer();
+      OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
+      toReturn = optionsProcessor.getResourceToServer();
       return toReturn;
    }
 
@@ -84,17 +86,22 @@ public class SnapshotProvider implements IResourceProvider {
    @Override
    public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws Exception {
       IResourceLocator toReturn = null;
-      //      OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, resource, options);
+      OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, resource, options);
       OutputStream outputStream = null;
       InputStream inputStream = null;
       try {
-         //         File storageFile = optionsProcessor.getStorageFile();
-         //         IResource resourceToStore = optionsProcessor.getResourceToStore();
-         //
-         //         outputStream = new FileOutputStream(storageFile);
-         //         inputStream = resourceToStore.getContent();
+         File storageFile = optionsProcessor.getStorageFile();
+         // Remove all other files from this folder
+         File parent = storageFile.getParentFile();
+         if (parent != null) {
+            Files.emptyDirectory(parent);
+         }
+         IResource resourceToStore = optionsProcessor.getResourceToStore();
+
+         outputStream = new FileOutputStream(storageFile);
+         inputStream = resourceToStore.getContent();
          Streams.inputStreamToOutputStream(inputStream, outputStream);
-         //         toReturn = optionsProcessor.getActualResouceLocator();
+         toReturn = optionsProcessor.getActualResouceLocator();
       } finally {
          if (outputStream != null) {
             outputStream.close();
