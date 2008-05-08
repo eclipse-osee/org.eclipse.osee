@@ -45,7 +45,7 @@ public class ResourceProcessor {
             throw new Exception(status.getMessage(), status.getException());
          }
       } catch (Exception ex) {
-         throw new Exception("Error saving resource", ex);
+         throw new Exception(String.format("Error saving resource [%s]", ex.getLocalizedMessage()), ex);
       }
       return toReturn;
    }

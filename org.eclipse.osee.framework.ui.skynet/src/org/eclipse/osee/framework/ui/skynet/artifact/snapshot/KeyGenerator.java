@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.snapshot;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -32,7 +31,7 @@ class KeyGenerator {
    public Pair<String, String> getKeyPair(Artifact artifact, Branch branch) throws UnsupportedEncodingException {
       String namespace = getNamespace(artifact, branch);
       String key = Integer.toString(artifact.getPersistenceMemo().getGammaId());
-      return new Pair<String, String>(namespace, encode(key));
+      return new Pair<String, String>(namespace, key);
    }
 
    /**
@@ -59,7 +58,7 @@ class KeyGenerator {
       namespace.append(artifact.getGuid());
       namespace.append("BRANCH");
       namespace.append(branch.getBranchId());
-      return encode(namespace.toString());
+      return namespace.toString();
    }
 
    /**
@@ -81,9 +80,5 @@ class KeyGenerator {
     */
    public String toLocalCacheKey(String namespace, String key) {
       return namespace + "&" + key;
-   }
-
-   private String encode(String value) throws UnsupportedEncodingException {
-      return URLEncoder.encode(value, "UTF-8");
    }
 }

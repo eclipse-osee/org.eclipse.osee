@@ -114,6 +114,7 @@ class RemoteSnapshotManager {
       if (Strings.isValid(extension) != false) {
          parameterMap.put("extension", extension);
       }
+      parameterMap.put("is.overwrite.allowed", Boolean.toString(true));
       String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("resource", parameterMap);
       return new URL(urlString);
    }
@@ -127,11 +128,19 @@ class RemoteSnapshotManager {
 
    private String generateUriFromKey(Pair<String, String> key) throws IOException {
       StringBuilder builder = new StringBuilder("snapshot://");
+      String seed = key.getKey();
+      String[] values = seed.split("BRANCH");
+      String struct = values[0];
       char[] buffer = new char[3];
       int cnt = -1;
-      Reader in = new StringReader(key.getKey());
+      Reader in = new StringReader(struct);
       while ((cnt = in.read(buffer)) != -1) {
          builder.append(buffer, 0, cnt);
+         builder.append("/");
+      }
+
+      if (values.length == 2) {
+         builder.append(values[1]);
          builder.append("/");
       }
       builder.append(key.getValue());
