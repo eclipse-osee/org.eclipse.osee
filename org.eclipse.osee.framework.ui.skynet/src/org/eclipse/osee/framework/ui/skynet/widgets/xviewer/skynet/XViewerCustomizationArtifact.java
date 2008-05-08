@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -60,7 +59,8 @@ public class XViewerCustomizationArtifact extends BasicArtifact {
                xViewerCustomizationArtifact = (XViewerCustomizationArtifact) arts.iterator().next();
             } else if (arts.size() == 0 && create) {
                xViewerCustomizationArtifact =
-                     (XViewerCustomizationArtifact) ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME,BranchPersistenceManager.getCommonBranch(),ARTIFACT_TYPE_NAME);
+                     (XViewerCustomizationArtifact) ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME,
+                           BranchPersistenceManager.getCommonBranch(), ARTIFACT_TYPE_NAME);
                xViewerCustomizationArtifact.persistAttributes();
             } else if (arts.size() != 1) throw new IllegalArgumentException(
                   "Should only be one " + ARTIFACT_TYPE_NAME + ".  Found " + arts.size() + ".  ATS not configured in OSEE?.");
