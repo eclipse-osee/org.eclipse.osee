@@ -40,7 +40,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
          "import org.eclipse.osee.framework.skynet.core.artifact.Branch;\n" + "import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;\n" + "import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;\n" + "import org.eclipse.osee.framework.skynet.core.relation.IRelationLinkDescriptor;\n" + "import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;\n\n";
 
    private static final String relationEnumCode =
-         "   private boolean sideA;\n" + "\n" + "   private String typeName;\n" + "   private static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();\n" + "\n" + "   private CLASSNAME_PLACEHOLDER(boolean sideA, String typeName) {\n" + "      this.sideA = sideA;\n" + "      this.typeName = typeName;\n" + "      RelationPersistenceManager.sideHash.put(typeName, sideA, this);\n" + "   }\n" + "		\n" + "   public static IRelationEnumeration getRelationSide(String relationType, String relationSide, Branch branch) {\n" + "      IRelationLinkDescriptor desc = relationManager.getIRelationLinkDescriptor(relationType, branch);\n" + "      boolean isSideA = (desc.getSideAName().equals(relationSide));\n" + "      return RelationPersistenceManager.sideHash.get(relationType, isSideA);\n" + "   }\n" + "\n" + "   /**\n" + "    * @return Returns the sideName.\n" + "    */\n" + "   public boolean isSideA() {\n" + "      return sideA;\n" + "   }\n" + "\n" + "   public String getSideName(Branch branch) {\n" + "      if (isSideA())\n" + "         return getDescriptor(branch).getSideAName();\n" + "      else\n" + "        return getDescriptor(branch).getSideBName();\n" + "   }\n" + "\n" + "   /**\n" + "    * @return Returns the typeName.\n" + "    */\n" + "   public String getTypeName() {\n" + "      return typeName;\n" + "   }\n" + "\n" + "   public IRelationLinkDescriptor getDescriptor(Branch branch) {\n" + "      return relationManager.getIRelationLinkDescriptor(typeName, branch);\n" + "   }\n" + "   \n" + "   public boolean isThisType(IRelationLink link) {\n" + "      return link.getLinkDescriptor().getName().equals(typeName);\n" + "   }\n";
+         "   private boolean sideA;\n" + "\n" + "   private String typeName;\n" + "   private static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();\n" + "\n" + "   private CLASSNAME_PLACEHOLDER(boolean sideA, String typeName) {\n" + "      this.sideA = sideA;\n" + "      this.typeName = typeName;\n" + "      RelationPersistenceManager.sideHash.put(typeName, sideA, this);\n" + "   }\n" + "		\n" + "   public static IRelationEnumeration getRelationSide(String relationType, String relationSide, Branch branch)  throws SQLException {\n" + "      IRelationLinkDescriptor desc = relationManager.getIRelationLinkDescriptor(relationType, branch);\n" + "      boolean isSideA = (desc.getSideAName().equals(relationSide));\n" + "      return RelationPersistenceManager.sideHash.get(relationType, isSideA);\n" + "   }\n" + "\n" + "   /**\n" + "    * @return Returns the sideName.\n" + "    */\n" + "   public boolean isSideA() {\n" + "      return sideA;\n" + "   }\n" + "\n" + "   public String getSideName(Branch branch)  throws SQLException  {\n" + "      if (isSideA())\n" + "         return getDescriptor(branch).getSideAName();\n" + "      else\n" + "        return getDescriptor(branch).getSideBName();\n" + "   }\n" + "\n" + "   /**\n" + "    * @return Returns the typeName.\n" + "    */\n" + "   public String getTypeName() {\n" + "      return typeName;\n" + "   }\n" + "\n" + "   public IRelationLinkDescriptor getDescriptor(Branch branch) {\n" + "      return relationManager.getIRelationLinkDescriptor(typeName, branch);\n" + "   }\n" + "   \n" + "   public boolean isThisType(IRelationLink link) {\n" + "      return link.getLinkDescriptor().getName().equals(typeName);\n" + "   }\n";
 
    private enum Table {
       ARTIFACT_TYPE_TABLE, ATTRIBUTE_TYPE_TABLE, ATTRIBUTE_MAP_TABLE, RELATION_TYPE_TABLE, RELATION_SIDE_TABLE
@@ -212,13 +212,23 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
     * @throws SQLException
     */
    private void addAttributeType(String[] row) throws ClassNotFoundException, SQLException {
-      // String attrBaseType = row[0];
-      String attributeName = row[1];
-      // String defaultValue = row[2];
-      // String validityXml = row[3];
-      // int minOccurrence = getQuantity(row[4]);
-      // int maxOccurrence = getQuantity(row[5]);
-      // String tipText = row[6];
+      //      String attrBaseType = row[0];
+      //      String attrProviderType = row[1];
+      String attributeName = row[2];
+      int index = attributeName.lastIndexOf(".");
+      if (index != -1 && index + 1 < attributeName.length()) {
+         attributeName = attributeName.substring(index + 1, attributeName.length());
+      }
+      //      String fileTypeExtension = row[3];
+      //      String defaultValue = row[4];
+      //      String validityXml = row[5];
+      //      int minOccurrence = getQuantity(row[6]);
+      //      int maxOccurrence = getQuantity(row[7]);
+      //      String tipText = row[8];
+
+      //      if (fileTypeExtension == null) {
+      //         fileTypeExtension = "";
+      //      }
 
       attributes.add(nonJavaCharP.matcher(attributeName).replaceAll("_").toUpperCase() + "(\"" + attributeName + "\")");
    }
