@@ -38,6 +38,12 @@ public class Files {
       return result;
    }
 
+   /**
+    * Determine if file is a compressed file
+    * 
+    * @param file to check
+    * @return <b>true</b> if the files is a compressed file
+    */
    public static boolean isCompressed(File file) {
       boolean toReturn = false;
       String ext = getExtension(file.getAbsolutePath());
@@ -47,10 +53,21 @@ public class Files {
       return toReturn;
    }
 
+   /**
+    * Determine is OS is windows
+    * 
+    * @return <b>true</b> if OS is windows
+    */
    private static boolean isWindows() {
       return System.getProperty("os.name").indexOf("indows") != -1;
    }
 
+   /**
+    * Get file extension from the file path
+    * 
+    * @param filepath
+    * @return file extension
+    */
    public static String getExtension(String filepath) {
       filepath = filepath.trim();
       String separatorRegEx = File.separator;
@@ -72,11 +89,35 @@ public class Files {
       }
    }
 
-   public static String removeExtension(String path) {
-      String ext = getExtension(path);
+   /**
+    * Remove the file extension from the file path
+    * 
+    * @param filepath
+    * @return modified file path
+    */
+   public static String removeExtension(String filepath) {
+      String ext = getExtension(filepath);
       if (ext != null && ext.length() > 0) {
-         path = path.substring(0, path.length() - ext.length());
+         filepath = filepath.substring(0, filepath.length() - ext.length());
       }
-      return path;
+      return filepath;
+   }
+
+   /**
+    * Deletes all files from directory
+    * 
+    * @param directory
+    */
+   public static void emptyDirectory(File directory) {
+      File[] children = directory.listFiles();
+      if (children != null) {
+         for (File child : children) {
+            if (child.isDirectory()) {
+               emptyDirectory(child);
+            } else { // else is a file
+               child.delete();
+            }
+         }
+      }
    }
 }
