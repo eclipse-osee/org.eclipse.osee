@@ -107,10 +107,11 @@ public class ResourceManagerServlet extends CustomHttpServlet {
          response.getWriter().write(actualLocator.toString());
       } catch (MalformedLocatorException ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-         handleError(response, String.format("Unable to locate resource: [%s]", request.getRequestURI()), ex);
+         handleError(response, String.format("Unable to locate resource: [%s] - %s", request.getRequestURI(),
+               ex.getLocalizedMessage()), ex);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-         handleError(response, String.format("Unable to delete resource: [%s]", request.getRequestURI()), ex);
+         handleError(response, String.format("Error saving resource: [%s]", ex.getLocalizedMessage()), ex);
       }
    }
 
