@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.plugin;
 
 import java.util.logging.Logger;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.osgi.framework.BundleContext;
 
@@ -39,6 +40,7 @@ public class OseePluginUiActivator extends OseeUiActivator {
     */
    public void start(BundleContext context) throws Exception {
       super.start(context);
+      OseeLog.registerLoggerListener(new EclipseErrorLogLogger());
    }
 
    /*
