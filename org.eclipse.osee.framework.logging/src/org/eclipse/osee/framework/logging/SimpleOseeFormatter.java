@@ -30,7 +30,7 @@ public class SimpleOseeFormatter extends Formatter {
       StackTraceElement[] elements = th.getStackTrace();
       boolean captureNextItem = false;
       for (StackTraceElement el : elements) {
-         if (el.getClassName().contains("OteLogger")) {
+         if (el.getClassName().contains("OseeLog")) {
             captureNextItem = true;
          }
          else if (captureNextItem) {
