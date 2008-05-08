@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
-import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeStateManager;
@@ -62,6 +63,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
       try {
          data = dataStore.getContent();
          if (data != null) {
+            data = Lib.decompressBytes(new ByteArrayInputStream(data));
             fromStorage = new String(data, "UTF-8");
          }
       } catch (Exception ex) {
@@ -85,24 +87,20 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
       try {
          storeValue(value);
          getAttributeStateManager().setDirty();
-      } catch (UnsupportedEncodingException ex) {
+      } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }
    }
 
-   private String getExtension() {
-      String toReturn = getAttributeStateManager().getAttributeManager().getAttributeType().getFileTypeExtension();
-      if (Strings.isValid(toReturn) != true) {
-         toReturn = "txt";
-      }
-      return toReturn;
+   public String getInternalFileName() {
+      return BinaryContentUtils.generateFileName(getAttributeStateManager().getAttributeManager());
    }
 
-   private void storeValue(String value) throws UnsupportedEncodingException {
+   private void storeValue(String value) throws IOException {
       if (value != null && value.length() > MAX_VARCHAR_LENGTH) {
-         String extension = getExtension();
-         String contentType = BinaryContentUtils.getContentType(extension);
-         dataStore.setContent(value.getBytes("UTF-8"), extension, contentType, "UTF-8");
+         byte[] compressed;
+         compressed = Lib.compressFile(new ByteArrayInputStream(value.getBytes("UTF-8")), getInternalFileName());
+         dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
       } else {
          this.rawStringValue = value;
          dataStore.clear();
@@ -122,7 +120,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     */
    @Override
    public void loadData(Object... objects) throws Exception {
-      if (objects != null && objects.length > 2) {
+      if (objects != null && objects.length > 1) {
          storeValue((String) objects[0]);
          dataStore.setLocator((String) objects[1]);
       }
