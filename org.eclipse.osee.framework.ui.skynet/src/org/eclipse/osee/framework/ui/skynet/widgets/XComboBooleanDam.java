@@ -71,7 +71,7 @@ public class XComboBooleanDam extends XCombo implements IDamWidget {
    }
 
    private Attribute<Boolean> getAttribute() throws Exception {
-      return artifact.getSoleAttributeValue(attrName);
+      return artifact.getAttributeManager(attrName).getSoleAttribute();
    }
 
    @Override

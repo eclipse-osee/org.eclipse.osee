@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
@@ -355,6 +356,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             } else if (ed.isHasEvent()) {
                setTitleImage(smaMgr.getSma().getImage());
                redrawPages();
+            } else if (smaMgr.getReviewManager().hasReviews()) {
+               // If related review has made a change, redraw
+               for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviews()) {
+                  EventData revEd = ((TransactionEvent) event).getEventData(reviewArt);
+                  if (revEd.isHasEvent()) {
+                     redrawPages();
+                     break;
+                  }
+               }
             }
          } else if (event instanceof CacheArtifactModifiedEvent) {
             if (((CacheArtifactModifiedEvent) event).getType() == ModType.Reverted && ((CacheArtifactModifiedEvent) event).getArtifact().equals(
