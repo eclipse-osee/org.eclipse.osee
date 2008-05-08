@@ -26,6 +26,5 @@ Export-Package: org.eclipse.osee.framework.ui.plugin,
  org.eclipse.osee.framework.ui.plugin.event,
  org.eclipse.osee.framework.ui.plugin.io,
  org.eclipse.osee.framework.ui.plugin.security,
- org.eclipse.osee.framework.ui.plugin.server,
  org.eclipse.osee.framework.ui.plugin.util
 Import-Package: org.eclipse.osee.framework.logging
