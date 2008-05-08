@@ -22,7 +22,6 @@ public class AttributeStateManager {
 
    private Attribute parentAttribute;
    private DynamicAttributeManager attributeManager;
-   private boolean deletable;
    private boolean deleted;
    protected boolean dirty;
 
@@ -75,14 +74,6 @@ public class AttributeStateManager {
    public void setNotDirty() {
       checkDeleted();
       this.dirty = false;
-   }
-
-   /**
-    * @return <b>true</b> if the item is deletable
-    */
-   public boolean isDeletable() {
-      checkDeleted();
-      return deletable;
    }
 
    protected void setDeleted(boolean isDeleted) {

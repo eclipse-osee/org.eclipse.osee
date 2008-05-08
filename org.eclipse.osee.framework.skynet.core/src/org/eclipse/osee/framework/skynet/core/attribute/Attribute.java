@@ -97,9 +97,7 @@ public abstract class Attribute<T> {
     * Deletes the attribute
     */
    public void delete() {
-      if (stateManager.isDeletable()) {
-         getAttributeManager().removeAttribute(this);
-      }
+      getAttributeManager().removeAttribute(this);
    }
 
    /**
