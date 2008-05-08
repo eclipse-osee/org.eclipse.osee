@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -169,9 +170,10 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       if (customizationArtifact != null) {
 
          try {
-            DynamicAttributeManager dam = customizationArtifact.getAttributeManager(CUSTOMIZATION_ATTRIBUTE_NAME);
-            for (Attribute attr : dam.getAttributes()) {
-               String str = attr.getDisplayableString();
+            Collection<Attribute<String>> attributes =
+                  customizationArtifact.getAttributeManager(CUSTOMIZATION_ATTRIBUTE_NAME).getAttributes();
+            for (Attribute<String> attr : attributes) {
+               String str = attr.getValue();
                Matcher m =
                      Pattern.compile("name=\"(.*?)\".*?namespace=\"" + xViewer.getViewerNamespace() + "\"").matcher(str);
                if (m.find()) {
