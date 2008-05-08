@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
  */
 public class OSEEConfig {
 
-   private String[] serviceLookups = null;
+   private String[] serviceLookups = new String[0];
    private String[] serviceGroups = null;
    private boolean disableRemoteEvents = false;
    private OseeRunMode runMode;
