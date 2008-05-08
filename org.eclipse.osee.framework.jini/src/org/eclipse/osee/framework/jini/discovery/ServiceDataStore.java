@@ -684,6 +684,9 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
    }
 
    public void addLookupLocators(String[] lookups) {
+	   if (lookups == null) {
+		   throw new IllegalArgumentException("looks should not be null");
+	   }
       addLookupLocators(Arrays.asList(lookups), true);
    }
 
