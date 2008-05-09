@@ -327,7 +327,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
 
    private void createDeleteMenuItem(final Menu parentMenu) {
       deleteMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      deleteMenuItem.setText("&Delete");
+      deleteMenuItem.setText("&Delete Relation");
       deleteMenuItem.addSelectionListener(new SelectionAdapter() {
 
          public void widgetSelected(SelectionEvent e) {
