@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.DateValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.StringValue;
@@ -71,24 +72,22 @@ public class AttributeCellModifier implements ICellModifier {
       if (attribute instanceof EnumeratedAttribute) {
          enumeratedValue.setValue(attribute.getDisplayableString());
          enumeratedValue.setChocies(((EnumeratedAttribute) attribute).getChoices());
+         return enumeratedValue;
+      } else if (object instanceof Boolean) {
+         enumeratedValue.setValue(attribute.getDisplayableString());
+         enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
+         return enumeratedValue;
+      } else if (object instanceof Date) {
+         dateValue.setValue((Date) object);
+         return dateValue;
+      } else if (object instanceof String || object instanceof Integer || object instanceof Double) {
+         stringValue.setValue(attribute.getDisplayableString());
+         return stringValue;
       } else {
-         if (object instanceof Boolean) {
-            enumeratedValue.setValue(attribute.getDisplayableString());
-            enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
-            return enumeratedValue;
-         } else if (object instanceof Date) {
-            dateValue.setValue((Date) object);
-            return dateValue;
-         } else if (object instanceof String || object instanceof Integer || object instanceof Double) {
-            stringValue.setValue(attribute.getDisplayableString());
-            return stringValue;
-         } else {
-            StringValue val = new StringValue();
-            val.setValue(attribute.getDisplayableString());
-            return val;
-         }
+         StringValue val = new StringValue();
+         val.setValue(attribute.getDisplayableString());
+         return val;
       }
-      throw new IllegalArgumentException("unexpected element type: " + element.getClass().getName());
    }
 
    /*
@@ -114,6 +113,8 @@ public class AttributeCellModifier implements ICellModifier {
          }
       } else if (attribute instanceof BooleanAttribute) {
          ((BooleanAttribute) attribute).setValue(value.equals("yes"));
+      } else if (attribute instanceof FloatingPointAttribute) {
+         ((FloatingPointAttribute) attribute).setValue(new Double((String) value).doubleValue());
       } else if (!(attribute instanceof BinaryAttribute)) {
          //binary attributes should not be changed.
          attribute.setValue(value);
