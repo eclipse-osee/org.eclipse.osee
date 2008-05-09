@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.jdk.core.util.xml;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -51,7 +52,7 @@ public class Xml {
    public final static String wordBody = "<w:body></w:body>";
    public final static String wordTrailer = "</w:wordDocument> ";
    public final SimpleNamespaceContext mySimpleNamespaceContext = new SimpleNamespaceContext();
-   public final static Matcher theSeriousXPathMatcher = Pattern.compile(".*(\\[|\\]|[(]|[)]|[:]).*").matcher("");
+   public final static Matcher theFunnyQuoteMatcher = Pattern.compile("’").matcher("");
 
    /**
     * TODO Optimize algorithm
@@ -362,9 +363,13 @@ public class Xml {
       return null;
    }
 
+   public static final boolean isSeriousXPath(String xPathExpression) {
+      return (xPathExpression.indexOf("[") > -1 || xPathExpression.indexOf("]") > -1 || xPathExpression.indexOf("(") > -1 || xPathExpression.indexOf(")") > -1 || xPathExpression.indexOf(":") > -1);
+   }
+
    public static final Node[] selectNodeList(Node startingNode, String xPathExpression) throws XPathExpressionException {
       Node[] resultNodes = null;
-      if (!theSeriousXPathMatcher.reset(xPathExpression).matches() && startingNode.getNodeType() == Node.ELEMENT_NODE) {
+      if (!isSeriousXPath(xPathExpression) && startingNode.getNodeType() == Node.ELEMENT_NODE) {
          List<Element> resultElementList = Jaxp.findElements((Element) startingNode, xPathExpression);
          resultNodes = resultElementList.toArray(new Node[0]);
       } else {
@@ -381,7 +386,7 @@ public class Xml {
 
    public static final String selectNodesText(Node startingNode, String xPathExpression) throws XPathExpressionException {
       String resultString = null;
-      if (!theSeriousXPathMatcher.reset(xPathExpression).matches() && startingNode.getNodeType() == Node.ELEMENT_NODE) {
+      if (!isSeriousXPath(xPathExpression) && startingNode.getNodeType() == Node.ELEMENT_NODE) {
          Element foundElement = Jaxp.findElement((Element) startingNode, xPathExpression);
          if (foundElement != null) {
             resultString = Jaxp.getElementCharacterData(foundElement).trim();
@@ -448,6 +453,19 @@ public class Xml {
          }
       }
       return nextRow;
+   }
+
+   public static final Node writePrettyXML(Node aNode, File resultXmlFile) {
+      try {
+         Node[] notUTF8Nodes = Xml.selectNodeList(aNode, "descendant::text()[contains(.,'’')]");
+         for (int i = 0; i < notUTF8Nodes.length; i++) {
+            notUTF8Nodes[i].setNodeValue(theFunnyQuoteMatcher.reset(notUTF8Nodes[i].getNodeValue()).replaceAll("'"));
+         }
+         Jaxp.writeXmlDocument(aNode.getOwnerDocument(), resultXmlFile, Jaxp.getPrettyFormat(aNode.getOwnerDocument()));
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+      return aNode;
    }
 
 }
