@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -22,7 +23,7 @@ public class OSEELog {
 
    public static void logException(Class<?> clazz, String str, Exception ex, boolean popup) {
       Logger logger = ConfigUtil.getConfigFactory().getLogger(clazz);
-      if (popup) {
+      if (popup && PlatformUI.isWorkbenchRunning()) {
          if (ex == null)
             AWorkbench.popup("ERROR", str);
          else
