@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -93,7 +94,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    private MenuItem editMenuItem;
    private MenuItem newMenuItem;
    private MenuItem viewRelationTreeItem;
-   private MenuItem deleteMenuItem;
+   private MenuItem deleteRelationMenuItem;
+   private MenuItem deleteArtifactMenuItem;
    private MenuItem massEditMenuItem;
    private Artifact artifact;
    private SkynetEventManager eventManager;
@@ -258,7 +260,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createViewRelationTreeMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
-      createDeleteMenuItem(popupMenu);
+      createDeleteRelationMenuItem(popupMenu);
+      createDeleteArtifactMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
       createExpandAllMenuItem(popupMenu);
@@ -325,19 +328,34 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       return sideMax > 0 && otherSideGroup == null;
    }
 
-   private void createDeleteMenuItem(final Menu parentMenu) {
-      deleteMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      deleteMenuItem.setText("&Delete Relation");
-      deleteMenuItem.addSelectionListener(new SelectionAdapter() {
+   private void createDeleteRelationMenuItem(final Menu parentMenu) {
+      deleteRelationMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
+      deleteRelationMenuItem.setText("&Delete Relation");
+      deleteRelationMenuItem.addSelectionListener(new SelectionAdapter() {
 
          public void widgetSelected(SelectionEvent e) {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
-            performDelete(selection);
+            performDeleteRelation(selection);
          }
       });
 
-      deleteMenuItem.setEnabled(true);
+      deleteRelationMenuItem.setEnabled(true);
+   }
+
+   private void createDeleteArtifactMenuItem(final Menu parentMenu) {
+      deleteArtifactMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
+      deleteArtifactMenuItem.setText("&Delete Artifact");
+      deleteArtifactMenuItem.addSelectionListener(new SelectionAdapter() {
+
+         public void widgetSelected(SelectionEvent e) {
+            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+
+            performDeleteArtifact(selection);
+         }
+      });
+
+      deleteArtifactMenuItem.setEnabled(true);
    }
 
    private void createMassEditMenuItem(final Menu parentMenu) {
@@ -593,7 +611,35 @@ public class RelationsComposite extends Composite implements IEventReceiver {
     * 
     * @param selection
     */
-   private void performDelete(IStructuredSelection selection) {
+   private void performDeleteArtifact(IStructuredSelection selection) {
+      Object object = selection.getFirstElement();
+      try {
+         if (object instanceof DynamicRelationLink) {
+            DynamicRelationLink relLink = (DynamicRelationLink) object;
+            Artifact artToDelete = null;
+            if (relLink.getArtifactA() == artifact)
+               artToDelete = relLink.getArtifactB();
+            else
+               artToDelete = relLink.getArtifactA();
+            if (MessageDialog.openConfirm(
+                  Display.getCurrent().getActiveShell(),
+                  "Delete Artifact",
+                  "Delete Artifact?\n\n\"" + artToDelete + "\"\n\nNOTE: This will delete the artifact from the system.  Use \"Delete Relation\" to remove this artifact from the relation.")) {
+               artToDelete.delete();
+            }
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
+      refresh();
+   }
+
+   /**
+    * Performs the deletion functionality
+    * 
+    * @param selection
+    */
+   private void performDeleteRelation(IStructuredSelection selection) {
       Object object = selection.getFirstElement();
 
       try {
@@ -627,7 +673,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    private class keySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
          if (e.keyCode == SWT.DEL) {
-            performDelete((IStructuredSelection) treeViewer.getSelection());
+            performDeleteRelation((IStructuredSelection) treeViewer.getSelection());
          }
          if (e.keyCode == 'a' && e.stateMask == SWT.CONTROL) {
             treeViewer.getTree().selectAll();
