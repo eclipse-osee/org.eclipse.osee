@@ -358,7 +358,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       addChild(child);
       child.persistAttributes();
       child.getLinkManager().persistLinks();
-      }
+   }
 
    public void addChildren(List<? extends Artifact> artifacts) throws SQLException {
       for (Artifact artifact : artifacts) {
@@ -428,6 +428,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return getAttributeManager(attributeTypeName).getAttributes();
    }
 
+   public <T> Collection<Attribute<T>> getAttributes() throws SQLException {
+      Collection<Attribute<T>> attributes = new ArrayList<Attribute<T>>();
+      for (DynamicAttributeManager attributeManager : attributeManagers) {
+         Collection<Attribute<T>> temp = attributeManager.getAttributes();
+         attributes.addAll(temp);
+      }
+      return attributes;
+   }
+
    public Collection<AttributeType> getAttributeTypes() throws SQLException {
       return ConfigurationPersistenceManager.getInstance().getAttributeTypesFromArtifactType(getArtifactTypeName(),
             branch);
@@ -488,7 +497,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws IllegalStateException
     * @throws SQLException
     */
-   public <T> T getSoleAttributeValue(String attributeTypeName) throws AttributeDoesNotExist, MultipleAttributesExist, IllegalStateException, SQLException {
+   public <T> T getSoleAttributeValue(String attributeTypeName) throws AttributeDoesNotExist, MultipleAttributesExist, SQLException {
       DynamicAttributeManager attributeManager = getAttributeManager(attributeTypeName);
       Collection<Attribute<T>> attributes = attributeManager.getAttributes();
       if (attributes.size() == 0)
@@ -1146,8 +1155,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public void setPersistenceMemo(ArtifactPersistenceMemo memo) {
       this.memo = memo;
-         ArtifactCache.getInstance().cache(this);
-         dirty = true;
+      ArtifactCache.getInstance().cache(this);
+      dirty = true;
    }
 
    /**
@@ -1476,8 +1485,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       DynamicAttributeManager attribute;
       for (AttributeType attributeType : attributeTypeDescriptors) {
-         attribute = attributeType.createAttributeManager(this, true);
-
+         attribute = new DynamicAttributeManager(this, attributeType, true);
          attribute.setupForInitialization(true);
          attributes.add(attribute);
       }

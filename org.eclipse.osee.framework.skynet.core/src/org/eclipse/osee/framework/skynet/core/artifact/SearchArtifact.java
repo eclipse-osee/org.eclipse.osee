@@ -21,9 +21,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.operation.WorkflowStep;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ISearchAttribute;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 public class SearchArtifact extends BasicArtifact implements WorkflowStep {
@@ -55,11 +54,9 @@ public class SearchArtifact extends BasicArtifact implements WorkflowStep {
    public List<ISearchPrimitive> getCriteria() throws SQLException {
       List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
 
-      for (DynamicAttributeManager userAttr : getAttributeManagers()) {
-         for (Attribute attr : userAttr.getAttributes()) {
-            if (attr instanceof ISearchAttribute) {
-               criteria.add(((ISearchAttribute) attr).getSearchPrimitive());
-            }
+      for (Attribute<?> attr : getAttributes()) {
+         if (attr instanceof ISearchAttribute) {
+            criteria.add(((ISearchAttribute) attr).getSearchPrimitive());
          }
       }
       return criteria;
@@ -72,35 +69,15 @@ public class SearchArtifact extends BasicArtifact implements WorkflowStep {
 
    @SuppressWarnings("unchecked")
    public void addPrimitive(ISearchPrimitive primitive) throws SQLException {
-      DynamicAttributeManager userAttr = getAttributeManager(primitive.getClass().getSimpleName());
-      Attribute attr = userAttr.getNewAttribute();
-
-      if (attr instanceof ISearchAttribute) {
-         ((ISearchAttribute) attr).setSearchPrimitive(primitive);
-      } else {
-         throw new IllegalStateException("Unsupported attribute support object returned");
-      }
-
+      addAttribute(primitive.getClass().getSimpleName(), primitive.getStorageString());
    }
 
-   public boolean getMatchAll() throws SQLException, MultipleAttributesExist {
-      Attribute attr = getAttributeManager(ALL_FILTERS).getSoleAttribute();
-
-      if (attr instanceof BooleanAttribute) {
-         return ((BooleanAttribute) attr).getValue();
-      } else {
-         throw new IllegalStateException("Unsupported attribute support object returned");
-      }
+   public boolean getMatchAll() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+      return getSoleAttributeValue(ALL_FILTERS);
    }
 
    public void setMatchAll(boolean all) throws SQLException, MultipleAttributesExist {
-      Attribute attr = getAttributeManager(ALL_FILTERS).getSoleAttribute();
-
-      if (attr instanceof BooleanAttribute) {
-         ((BooleanAttribute) attr).setValue(all);
-      } else {
-         throw new IllegalStateException("Unsupported attribute support object returned");
-      }
+      setSoleXAttributeValue(ALL_FILTERS, all);
    }
 
    /**
@@ -108,9 +85,10 @@ public class SearchArtifact extends BasicArtifact implements WorkflowStep {
     * information stored in this <code>SearchArtifact</code>.
     * 
     * @throws MultipleAttributesExist
+    * @throws AttributeDoesNotExist
     * @see ArtifactPersistenceManager#getArtifacts(List, boolean, Branch)
     */
-   public Collection<Artifact> getArtifacts() throws SQLException, MultipleAttributesExist {
+   public Collection<Artifact> getArtifacts() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       return ArtifactPersistenceManager.getInstance().getArtifacts(getCriteria(), getMatchAll(), getBranch());
    }
 

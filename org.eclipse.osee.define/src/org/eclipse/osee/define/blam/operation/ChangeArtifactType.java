@@ -22,9 +22,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifi
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkBase;
@@ -91,9 +90,9 @@ public class ChangeArtifactType extends AbstractBlam {
       Collection<AttributeType> descriptorAttrTypes =
             configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor, artifact.getBranch());
 
-      for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
-         if (!descriptorAttrTypes.contains(attributeManager.getAttributeType())) {
-            attributesToPurge.addAll(attributeManager.getAttributes());
+      for (Attribute<?> attribute : artifact.getAttributes()) {
+         if (!descriptorAttrTypes.contains(attribute.getAttributeType())) {
+            attributesToPurge.add(attribute);
          }
       }
    }

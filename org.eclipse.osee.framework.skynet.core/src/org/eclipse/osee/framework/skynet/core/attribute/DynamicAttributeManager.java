@@ -52,7 +52,7 @@ public class DynamicAttributeManager {
    /**
     * Create a manager that is tied to a particular artifact.
     */
-   protected DynamicAttributeManager(Artifact parentArtifact, AttributeType descriptor, boolean initialized) {
+   public DynamicAttributeManager(Artifact parentArtifact, AttributeType descriptor, boolean initialized) {
       this.attributeToProviderMap = new WeakHashMap<Attribute<?>, WeakReference<IDataAccessObject>>();
       this.deletedAttributes = new LinkedList<Attribute<?>>();
       this.parentArtifact = parentArtifact;
@@ -407,7 +407,7 @@ public class DynamicAttributeManager {
    }
 
    public Object clone(Artifact artifact) throws CloneNotSupportedException {
-      DynamicAttributeManager attributeManager = getAttributeType().createAttributeManager(artifact, false);
+      DynamicAttributeManager attributeManager = new DynamicAttributeManager(artifact, getAttributeType(), false);
       AttributeMemo memo;
       Attribute newAttribute;
 

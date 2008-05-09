@@ -77,10 +77,6 @@ public class AttributeType implements Comparable<AttributeType> {
       this.fileTypeExtension = fileTypeExtension != null ? fileTypeExtension : "";
    }
 
-   public DynamicAttributeManager createAttributeManager(Artifact parentArtifact, boolean initialized) {
-      return new DynamicAttributeManager(parentArtifact, this, initialized);
-   }
-
    /**
     * @return Returns the attrTypeId.
     */

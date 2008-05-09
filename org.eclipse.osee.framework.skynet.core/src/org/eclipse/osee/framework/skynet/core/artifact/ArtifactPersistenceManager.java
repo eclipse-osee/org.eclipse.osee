@@ -586,7 +586,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       Collection<AttributeType> attributeTypeDescriptors =
             configurationManager.getAttributeTypesFromArtifactType(artifact.getArtifactType(), artifact.getBranch());
       for (AttributeType attributeType : attributeTypeDescriptors) {
-         attributeManager = attributeType.createAttributeManager(artifact, false);
+         attributeManager = new DynamicAttributeManager(artifact, attributeType, false);
          attributeManager.setupForInitialization(false);
          typeHash.put(attributeType.getAttrTypeId(), attributeManager);
       }
@@ -614,7 +614,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                   // currently
                   // defined in the schema as being appropriate for this Artifact.
                   if (type == null) {
-                     type = AttributeTypeManager.getType(attrTypeId).createAttributeManager(artifact, false);
+                     type = new DynamicAttributeManager(artifact, AttributeTypeManager.getType(attrTypeId), false);
                      type.setupForInitialization(false);
                      typeHash.put(attrTypeId, type);
                   }
@@ -672,7 +672,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       for (Artifact artifact : artifacts) {
          for (AttributeType attributeType : configurationManager.getAttributeTypesFromArtifactType(
                artifact.getArtifactType(), artifact.getBranch())) {
-            attributeManager = attributeType.createAttributeManager(artifact, false);
+            attributeManager = new DynamicAttributeManager(artifact, attributeType, false);
             attributeManager.setupForInitialization(false);
             typeHash.put(artifact.getArtId(), attributeType.getAttrTypeId(), attributeManager);
          }
@@ -717,7 +717,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             attrTypeId = rSet.getInt("attr_type_id");
             attributeManager = typeHash.get(artId, attrTypeId);
             if (attributeManager == null) {
-               attributeManager = AttributeTypeManager.getType(attrTypeId).createAttributeManager(artifact, false);
+               attributeManager =
+                     new DynamicAttributeManager(artifact, AttributeTypeManager.getType(attrTypeId), false);
                typeHash.put(artId, attrTypeId, attributeManager);
                attributeManager.setupForInitialization(false);
             }

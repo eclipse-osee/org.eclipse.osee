@@ -506,8 +506,10 @@ public class ArtifactQueryBuilder {
                   lastArtId = artId;
                   artifact = artifactIterator.next();
                }
+
                DynamicAttributeManager attributeManager =
-                     AttributeTypeManager.getType(rSet.getInt("attr_type_id")).createAttributeManager(artifact, false);
+                     new DynamicAttributeManager(artifact, AttributeTypeManager.getType(rSet.getInt("attr_type_id")),
+                           false);
                attributeManager.setupForInitialization(false);
 
                Attribute<?> attribute = attributeManager.injectFromDb(rSet.getString("value"), rSet.getString("uri"));
