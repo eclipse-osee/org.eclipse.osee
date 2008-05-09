@@ -152,8 +152,8 @@ public class SMAStatusDialog extends MessageDialog {
    }
 
    protected Result isComplete() {
-      if (percent.isValidResult().isFalse()) return percent.isValidResult();
-      if (hours.isValidResult().isFalse()) return hours.isValidResult();
+      if (percent.isValid().isFalse()) return percent.isValid();
+      if (hours.isValid().isFalse()) return hours.isValid();
       if (smas.size() > 1) {
          if (!splitRadio.isSelected() && !eachRadio.isSelected()) return new Result(
                "Either split or each must be selected");

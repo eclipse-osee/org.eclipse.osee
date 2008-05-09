@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -59,6 +59,7 @@ public class DynamicXWidgetLayout {
    public static String XWIDGETS_LIST = "xWidgets";
    private final IDynamicWidgetLayoutListener dynamicWidgetLayoutListener;
    private final IXWidgetOptionResolver optionResolver;
+   private final List<XWidget> xWidgets = new ArrayList<XWidget>();
 
    public DynamicXWidgetLayout() {
       this(null, new DefaultXWidgetOptionResolver());
@@ -111,6 +112,7 @@ public class DynamicXWidgetLayout {
          }
 
          XWidget xWidget = xWidgetLayoutData.getXWidget();
+         xWidgets.add(xWidget);
          if (!xWidgetLayoutData.getName().equals("")) xWidget.setLabel(xWidgetLayoutData.getName().replaceFirst(
                "^.*?\\.", ""));
          if (xWidgetLayoutData.getToolTip() != null && !xWidgetLayoutData.getToolTip().equals("")) xWidget.setToolTip(xWidgetLayoutData.getToolTip());
@@ -138,9 +140,9 @@ public class DynamicXWidgetLayout {
             gd.minimumHeight = 60;
             ((XText) xWidget).getStyledText().setLayoutData(gd);
          }
-         if (artifact != null && (xWidget instanceof IDamWidget)) {
+         if (artifact != null && (xWidget instanceof IArtifactWidget)) {
             try {
-               ((IDamWidget) xWidget).setArtifact(artifact, xWidgetLayoutData.getLayoutName());
+               ((IArtifactWidget) xWidget).setArtifact(artifact, xWidgetLayoutData.getLayoutName());
             } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
@@ -195,10 +197,10 @@ public class DynamicXWidgetLayout {
 
    public Result isPageComplete() {
       for (DynamicXWidgetLayoutData data : datas) {
-         if (!data.getXWidget().isValid()) {
+         Result valid = data.getXWidget().isValid();
+         if (valid.isFalse()) {
             // Check to see if widget is part of a completed OR or XOR group
-            if (!isOrGroupFromAttrNameComplete(data.getLayoutName()) && !isXOrGroupFromAttrNameComplete(data.getLayoutName())) return new Result(
-                  "Must Enter \"" + data.getName() + "\"");
+            if (!isOrGroupFromAttrNameComplete(data.getLayoutName()) && !isXOrGroupFromAttrNameComplete(data.getLayoutName())) return valid;
          }
       }
       return Result.TrueResult;
@@ -278,7 +280,7 @@ public class DynamicXWidgetLayout {
    public boolean isOrGroupFromAttrNameComplete(String name) {
       for (String aName : getOrRequiredGroup(name)) {
          DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
-         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid()) return true;
+         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isTrue()) return true;
       }
       return false;
    }
@@ -291,7 +293,7 @@ public class DynamicXWidgetLayout {
       boolean oneFound = false;
       for (String aName : getXOrRequiredGroup(attrName)) {
          DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
-         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid())
+         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isTrue())
          // If already found one, return false
          if (oneFound)
             return false;
@@ -341,5 +343,12 @@ public class DynamicXWidgetLayout {
     */
    public IXWidgetOptionResolver getOptionResolver() {
       return optionResolver;
+   }
+
+   /**
+    * @return the xWidgets
+    */
+   public List<XWidget> getXWidgets() {
+      return xWidgets;
    }
 }

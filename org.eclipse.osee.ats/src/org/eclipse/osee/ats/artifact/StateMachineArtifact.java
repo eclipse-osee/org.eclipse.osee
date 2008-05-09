@@ -610,13 +610,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * 
     * @return true if any object in SMA tree is dirty
     */
-   public boolean isSMADirty() {
-      return isSMADirty(new StringBuilder());
-   }
-
-   public boolean isSMADirty(StringBuilder info) {
-      if (isRelationsAndArtifactsDirty(smaRelations, info)) return true;
-      return false;
+   public Result isSMADirty() {
+      return isRelationsAndArtifactsDirty(smaRelations);
    }
 
    public void saveSMA() {

@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRadioButton.ButtonType;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -287,9 +288,11 @@ public class XRadioButtons extends XWidget {
       setLabelError();
    }
 
-   public boolean isValid() {
-      if (requiredEntry) return (getSelectedNames().size() > 0);
-      return true;
+   public Result isValid() {
+      if (requiredEntry && getSelectedNames().size() == 0) {
+         return new Result(getLabel() + " must have at least one selection.");
+      }
+      return Result.TrueResult;
    }
 
    public String getReportData() {

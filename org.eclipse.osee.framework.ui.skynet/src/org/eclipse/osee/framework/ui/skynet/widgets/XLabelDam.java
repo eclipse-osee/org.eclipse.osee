@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -25,12 +26,11 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Donald G. Dunne
  */
-public class XLabelDam extends XWidget implements IDamWidget {
+public class XLabelDam extends XWidget implements IArtifactWidget {
 
    private Artifact artifact;
-   private String attrName;
-   private String data = "";
-   private Text valueLabel;
+   private String attributeTypeName;
+   private Text valueTextWidget;
    private Composite parent;
 
    public XLabelDam(String displayLabel) {
@@ -39,7 +39,7 @@ public class XLabelDam extends XWidget implements IDamWidget {
 
    @Override
    public Control getControl() {
-      return valueLabel;
+      return valueTextWidget;
    }
 
    public void createWidgets(Composite parent, int horizontalSpan) {
@@ -54,33 +54,33 @@ public class XLabelDam extends XWidget implements IDamWidget {
             labelWidget.setToolTipText(toolTip);
          }
       }
-      valueLabel = new Text(parent, SWT.NONE);
-      valueLabel.setText(data);
-      valueLabel.setEditable(false);
+      valueTextWidget = new Text(parent, SWT.NONE);
+      valueTextWidget.setEditable(false);
 
       refresh();
    }
 
    public void setArtifact(Artifact artifact, String attrName) {
       this.artifact = artifact;
-      this.attrName = attrName;
+      this.attributeTypeName = attrName;
 
       refresh();
    }
 
    @Override
-   public void save() {
+   public void saveToArtifact() {
+      // Do nothing cause labelDam is read-only
    }
 
    @Override
-   public boolean isDirty() {
-      return false;
+   public Result isDirty() {
+      return Result.FalseResult;
    }
 
    public void refresh() {
-      if (artifact != null && valueLabel != null && !valueLabel.isDisposed()) {
+      if (artifact != null && valueTextWidget != null && !valueTextWidget.isDisposed()) {
          try {
-            valueLabel.setText(artifact.getAttributesToString(attrName));
+            valueTextWidget.setText(artifact.getAttributesToString(attributeTypeName));
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
@@ -89,7 +89,7 @@ public class XLabelDam extends XWidget implements IDamWidget {
 
    public void dispose() {
       if (labelWidget != null) labelWidget.dispose();
-      if (valueLabel != null) valueLabel.dispose();
+      if (valueTextWidget != null) valueTextWidget.dispose();
       if (parent != null && !parent.isDisposed()) parent.layout();
    }
 
@@ -113,8 +113,8 @@ public class XLabelDam extends XWidget implements IDamWidget {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#isValid()
     */
    @Override
-   public boolean isValid() {
-      return true;
+   public Result isValid() {
+      return Result.TrueResult;
    }
 
    /* (non-Javadoc)
@@ -144,7 +144,15 @@ public class XLabelDam extends XWidget implements IDamWidget {
     */
    @Override
    public Object getData() {
-      return valueLabel.getText();
+      return valueTextWidget.getText();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
+   @Override
+   public void revert() throws Exception {
+      // Do nothing cause labelDam is read-only
    }
 
 }

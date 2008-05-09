@@ -10,123 +10,73 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.swt.widgets.Composite;
 
-public class XIntegerDam extends XInteger implements IDamWidget {
+public class XIntegerDam extends XInteger implements IArtifactWidget {
 
-   private int minValue = 0;
-   private boolean minValueSet = false;
-   private int maxValue = 0;
-   private boolean maxValueSet = false;
    private Artifact artifact;
-   private String attrName;
+   private String attributeTypeName;
 
    public XIntegerDam(String displayLabel) {
       super(displayLabel);
    }
 
-   private Attribute<Integer> getAttribute() throws Exception {
-      return artifact.getSoleAttributeValue(attrName);
-   }
-
-   public void setArtifact(Artifact artifact, String attrName) throws SQLException {
+   public void setArtifact(Artifact artifact, String attrName) throws Exception {
       this.artifact = artifact;
-      this.attrName = attrName;
-
-      super.set(getUdatStringValue());
-   }
-
-   private void setFromString(String value) {
+      this.attributeTypeName = attrName;
       try {
-         getAttribute().setValue(new Integer(text));
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         Integer value = artifact.getSoleAttributeValue(attributeTypeName);
+         super.set(value.toString());
+      } catch (AttributeDoesNotExist ex) {
+         super.set("");
       }
    }
 
    @Override
-   public void set(String text) {
-      super.set(text);
-      setFromString(text);
-   }
-
-   public String getUdatStringValue() throws SQLException {
-      String toReturn = null;
+   public void saveToArtifact() throws Exception {
       try {
-         toReturn = getAttribute().toString();
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
-      return toReturn != null ? toReturn : "";
-   }
-
-   public void setMinValue(int minValue) {
-      minValueSet = true;
-      this.minValue = minValue;
-   }
-
-   @Override
-   public boolean isDirty() throws SQLException {
-      return (!getUdatStringValue().equals(get()));
-   }
-
-   XModifiedListener modifyListener = new XModifiedListener() {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
-       */
-      public void widgetModified(XWidget widget) {
-         try {
-            save();
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         if (text == null || text.equals("")) {
+            artifact.deleteSoleAttribute(attributeTypeName);
+         } else {
+            Integer enteredValue = getInteger();
+            artifact.setSoleXAttributeValue(attributeTypeName, enteredValue);
          }
-      }
-   };
-
-   @Override
-   public void save() throws SQLException {
-      if (isDirty()) {
-         setFromString(get());
+      } catch (NumberFormatException ex) {
+         // do nothing
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#createWidgets(org.eclipse.swt.widgets.Composite, int, boolean)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan, boolean fillText) {
-      super.createWidgets(parent, horizontalSpan, fillText);
-      super.addXModifiedListener(modifyListener);
-   }
-
-   public void setMaxValue(int maxValue) {
-      maxValueSet = false;
-      this.maxValue = maxValue;
-   }
-
-   public boolean isValid() {
-      return isValidResult().isTrue();
-   }
-
-   public Result isValidResult() {
-      if (super.requiredEntry() || (super.get().compareTo("") != 0)) {
-         if (!this.isInteger()) {
-            return new Result("Must be an Integer");
-         } else if (minValueSet && (this.getInteger() < minValue)) {
-            return new Result("Must be >= " + minValue);
-         } else if (maxValueSet && (this.getInteger() > maxValue)) {
-            return new Result("Must be <= " + maxValue);
+   public Result isDirty() throws Exception {
+      try {
+         Integer enteredValue = getInteger();
+         Integer storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         if (enteredValue.doubleValue() != storedValue.doubleValue()) {
+            return new Result(true, attributeTypeName + " is dirty");
          }
+      } catch (AttributeDoesNotExist ex) {
+         if (!get().equals("")) return new Result(true, attributeTypeName + " is dirty");
+      } catch (NumberFormatException ex) {
+         // do nothing
       }
-      return Result.TrueResult;
+      return Result.FalseResult;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
+   @Override
+   public void revert() throws Exception {
+      setArtifact(artifact, attributeTypeName);
    }
 
 }

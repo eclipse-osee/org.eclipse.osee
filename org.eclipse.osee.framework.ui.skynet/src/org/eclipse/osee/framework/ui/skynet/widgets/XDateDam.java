@@ -10,126 +10,73 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.sql.SQLException;
 import java.util.Date;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.widgets.Composite;
 
-public class XDateDam extends XDate implements IDamWidget {
+public class XDateDam extends XDate implements IArtifactWidget {
 
    private Artifact artifact;
-   private String attrName;
+   private String attributeTypeName;
 
    public XDateDam(String displayLabel) {
       super(displayLabel);
    }
 
-   private DateAttribute getAttribute() throws Exception {
-      return (DateAttribute) getAttributeManager().getSoleAttribute();
-   }
-
-   private DynamicAttributeManager getAttributeManager() throws Exception {
-      return artifact.getAttributeManager(attrName);
-   }
-
-   public String getUdatStringValue() {
-      String toReturn = null;
+   public void setArtifact(Artifact artifact, String attrName) throws Exception {
+      this.artifact = artifact;
+      this.attributeTypeName = attrName;
       try {
-         toReturn = getAttribute().getAsFormattedString(DateAttribute.MMDDYY);
-      } catch (Exception ex) {
+         Date value = artifact.getSoleAttributeValue(attributeTypeName);
+         super.setDate(value);
+      } catch (AttributeDoesNotExist ex) {
+         super.setDate(null);
       }
-      return toReturn != null ? toReturn : "";
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XDate#createWidgets(org.eclipse.swt.widgets.Composite, int)
+   @Override
+   public void saveToArtifact() throws Exception {
+      try {
+         if (date == null || date.equals("")) {
+            artifact.deleteSoleAttribute(attributeTypeName);
+         } else {
+            Date enteredValue = getDate();
+            artifact.setSoleXAttributeValue(attributeTypeName, enteredValue);
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
-      super.createWidgets(parent, horizontalSpan);
-      super.addXModifiedListener(modifyListener);
+   public Result isDirty() throws Exception {
+      try {
+         Date enteredValue = getDate();
+         Date storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         if (enteredValue == null && storedValue == null) return Result.FalseResult;
+         if (enteredValue == null && storedValue != null) return new Result(true, attributeTypeName + " is dirty");
+         if (enteredValue != null && storedValue == null) return new Result(true, attributeTypeName + " is dirty");
+         if (enteredValue.getTime() != storedValue.getTime()) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
+      } catch (AttributeDoesNotExist ex) {
+         if (getDate() != null) return new Result(true, attributeTypeName + " is dirty");
+      }
+      return Result.FalseResult;
    }
 
-   XModifiedListener modifyListener = new XModifiedListener() {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
-       */
-      public void widgetModified(XWidget widget) {
-         try {
-            save();
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
-      }
-   };
-
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
    @Override
-   public void save() throws Exception {
-      if (isDirty()) {
-         if (get().equals("")) {
-            DynamicAttributeManager attrManager = getAttributeManager();
-            if (attrManager != null) {
-               for (Attribute attr : attrManager.getAttributes()) {
-                  attr.delete();
-               }
-            }
-         } else {
-            artifact.setSoleDateAttributeValue(attrName, getDate());
-         }
-      }
-   }
-
-   public void setArtifact(Artifact artifact, String attrName) throws SQLException {
-      this.artifact = artifact;
-      this.attrName = attrName;
-
-      if (!getUdatStringValue().equals("")) {
-         Date date = null;
-         try {
-            date = getAttribute().getValue();
-         } catch (Exception ex) {
-            // Do Nothing
-         }
-         super.setDate(date);
-      }
-
-      this.addModifyListener(new ModifyListener() {
-         public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
-            try {
-               String date = get(DateAttribute.MMDDYY);
-               if (date.equals("")) {
-                  DynamicAttributeManager udat = getAttributeManager();
-                  if (udat != null) {
-                     if (udat.getAttributes().size() > 0) {
-                        udat.removeAttribute(udat.getAttributes().iterator().next());
-                     }
-                  }
-               } else {
-                  getAttribute().setValue(getDate());
-               }
-            } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-            }
-         };
-      });
-   }
-
-   @Override
-   public boolean isDirty() throws Exception {
-      if (getDate() == null && getUdatStringValue().equals("")) return false;
-      if (getDate() == null && !getUdatStringValue().equals("")) return true;
-      if (getDate() == null && getAttribute() != null && getAttribute().getValue() != null) return true;
-      return getAttribute() != null && getDate().equals(getAttribute().getValue());
+   public void revert() throws Exception {
+      setArtifact(artifact, attributeTypeName);
    }
 
 }

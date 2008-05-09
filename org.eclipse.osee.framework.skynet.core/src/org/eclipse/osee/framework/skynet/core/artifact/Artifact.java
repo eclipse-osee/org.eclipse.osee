@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 
@@ -357,7 +358,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       addChild(child);
       child.persistAttributes();
       child.getLinkManager().persistLinks();
-   }
+      }
 
    public void addChildren(List<? extends Artifact> artifacts) throws SQLException {
       for (Artifact artifact : artifacts) {
@@ -1145,8 +1146,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public void setPersistenceMemo(ArtifactPersistenceMemo memo) {
       this.memo = memo;
-      ArtifactCache.getInstance().cache(this);
-      dirty = true;
+         ArtifactCache.getInstance().cache(this);
+         dirty = true;
    }
 
    /**
@@ -1180,36 +1181,33 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * are dirty
     * 
     * @param links
-    * @param info TODO
     */
-   public boolean isRelationsAndArtifactsDirty(Set<IRelationEnumeration> links, StringBuilder info) {
+   public Result isRelationsAndArtifactsDirty(Set<IRelationEnumeration> links) {
       try {
          if (isDirty()) {
-            info.append(getArtifactTypeName() + " \"" + this + "\" => dirty\n");
             for (DynamicAttributeManager dam : getDirtyAttributes())
-               if (dam.isDirty()) info.append("===> Dirty Attribute - " + dam.getAttributeType().getName() + "\n");
-            return true;
+               if (dam.isDirty()) return new Result(true,
+                     "===> Dirty Attribute - " + dam.getAttributeType().getName() + "\n");
+            return new Result(true, "Artifact isDirty == true??");
          }
          // Loop through all relations
          for (IRelationEnumeration side : links) {
             for (Artifact art : getArtifacts(side)) {
                // Check artifact dirty
                if (art.isDirty()) {
-                  info.append(art.getArtifactTypeName() + " \"" + art + "\" => dirty\n");
-                  return true;
+                  return new Result(true, art.getArtifactTypeName() + " \"" + art + "\" => dirty\n");
                }
                // Check the links to this artifact
                for (IRelationLink link : getRelations(side, art))
                   if (link.isDirty()) {
-                     info.append("Link \"" + link + "\" => dirty\n");
-                     return true;
+                     return new Result(true, "Link \"" + link + "\" => dirty\n");
                   }
             }
          }
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
-      return false;
+      return Result.FalseResult;
    }
 
    /**

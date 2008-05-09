@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.changeReport.ChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -50,7 +50,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XCommitViewer extends XWidget implements IEventReceiver, IDamWidget {
+public class XCommitViewer extends XWidget implements IEventReceiver {
 
    private CommitXViewer xCommitViewer;
    private IDirtiableEditor editor;
@@ -225,13 +225,8 @@ public class XCommitViewer extends XWidget implements IEventReceiver, IDamWidget
    }
 
    @Override
-   public boolean isValid() {
-      if (isRequiredEntry() && xCommitViewer.getTree().getItemCount() == 0) {
-         extraInfoLabel.setText("At least one role entry is required");
-         return false;
-      }
-      extraInfoLabel.setText("");
-      return true;
+   public Result isValid() {
+      return Result.TrueResult;
    }
 
    @Override

@@ -373,8 +373,8 @@ public class XAutoRunViewer extends XWidget {
    }
 
    @Override
-   public boolean isValid() {
-      return true;
+   public Result isValid() {
+      return Result.TrueResult;
    }
 
    @Override

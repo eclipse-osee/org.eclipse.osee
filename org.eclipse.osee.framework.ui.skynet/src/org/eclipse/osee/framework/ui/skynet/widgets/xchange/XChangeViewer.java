@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -182,8 +183,8 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
    }
 
    @Override
-   public boolean isValid() {
-      return true;
+   public Result isValid() {
+      return Result.TrueResult;
    }
 
    @Override

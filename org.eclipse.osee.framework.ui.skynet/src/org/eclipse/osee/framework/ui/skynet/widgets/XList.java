@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -286,6 +287,14 @@ public class XList extends XWidget {
       return sb.toString().replaceFirst(", $", "");
    }
 
+   public Collection<String> getSelectedStrs() {
+      Set<String> selected = new HashSet<String>();
+      for (XListItem item : getSelected()) {
+         selected.add(item.getName());
+      }
+      return selected;
+   }
+
    public XListItem getByXmlName(String xmlName) {
       for (XListItem xItem : items.values()) {
          if (xItem.xmlValue.equals(xmlName)) return xItem;
@@ -366,11 +375,21 @@ public class XList extends XWidget {
       updateListWidget();
    }
 
-   public boolean isValid() {
-      if (!requiredEntry) return true;
+   public Result isValid() {
+      if (!requiredEntry) return Result.TrueResult;
       int size = getSelected().size();
-      if (requiredMaxSelected != 0) return ((size >= requiredMinSelected) && (size <= requiredMaxSelected));
-      return size > 0;
+      if (requiredMaxSelected != 0) {
+         if ((size >= requiredMinSelected) && (size <= requiredMaxSelected)) {
+            return Result.TrueResult;
+         } else if (size < requiredMinSelected)
+            return new Result(getLabel() + " must have at least " + requiredMinSelected + " selected.");
+         else if (size < requiredMaxSelected)
+            return new Result(getLabel() + " should only have " + requiredMaxSelected + " selected.");
+         else
+            return new Result(getLabel());
+      }
+      if (size == 0) return new Result(getLabel() + " must be selected.");
+      return Result.TrueResult;
    }
 
    /**

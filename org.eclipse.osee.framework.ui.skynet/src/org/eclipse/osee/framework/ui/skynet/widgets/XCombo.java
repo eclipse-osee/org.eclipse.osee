@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -33,7 +34,7 @@ public class XCombo extends XWidget {
 
    private Combo dataCombo;
    private Composite parent;
-   private String data = "";
+   protected String data = "";
    protected String[] inDataStrings; // Strings sent in for display
    // 
    private Map<String, Integer> displayDataStrings = new HashMap<String, Integer>();
@@ -294,11 +295,11 @@ public class XCombo extends XWidget {
       if (dataCombo.indexOf(data) >= 0) dataCombo.remove(data);
    }
 
-   public boolean isValid() {
-      if (requiredEntry && (data.compareTo("") == 0)) {
-         return false;
+   public Result isValid() {
+      if (requiredEntry && data.equals("")) {
+         return new Result(getLabel() + " must be selected.");
       }
-      return true;
+      return Result.TrueResult;
    }
 
    public String toXml() {

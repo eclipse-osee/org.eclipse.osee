@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,9 +27,9 @@ import org.eclipse.swt.widgets.Label;
  */
 public class XCheckBox extends XWidget {
 
-   private Button checkButton;
+   protected Button checkButton;
    private Composite parent;
-   private boolean selected = false;
+   protected boolean selected = false;
    private boolean labelAfter = true;
 
    public XCheckBox(String displayLabel, String xmlRoot) {
@@ -146,9 +147,8 @@ public class XCheckBox extends XWidget {
       updateCheckWidget();
    }
 
-   public boolean isValid() {
-      if (requiredEntry && !selected) return false;
-      return true;
+   public Result isValid() {
+      return Result.TrueResult;
    }
 
    public String toHTML(String labelFont) {

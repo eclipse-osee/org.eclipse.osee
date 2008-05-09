@@ -117,13 +117,14 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       return false;
    }
 
-   public void createBody(FormToolkit toolkit, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws Exception {
+   public DynamicXWidgetLayout createBody(FormToolkit toolkit, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws Exception {
       dynamicXWidgetLayout.createBody(toolkit, parent, artifact, xModListener, isEditable);
+      return dynamicXWidgetLayout;
    }
 
    public Result isPageComplete() {
       for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
-         if (!layoutData.getXWidget().isValid()) {
+         if (!layoutData.getXWidget().isValid().isTrue()) {
             // Check to see if widget is part of a completed OR or XOR group
             if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getLayoutName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getLayoutName())) return new Result(
                   "Must Enter \"" + layoutData.getName() + "\"");

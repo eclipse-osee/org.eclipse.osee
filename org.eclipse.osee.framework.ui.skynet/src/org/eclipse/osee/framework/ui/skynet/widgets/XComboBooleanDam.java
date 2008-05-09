@@ -12,57 +12,24 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.swt.widgets.Composite;
 
-public class XComboBooleanDam extends XCombo implements IDamWidget {
+public class XComboBooleanDam extends XCombo implements IArtifactWidget {
 
    private Artifact artifact;
-   private String attrName;
+   private String attributeTypeName;
 
    public XComboBooleanDam(String displayLabel) {
       super(displayLabel);
    }
 
-   XModifiedListener modifyListener = new XModifiedListener() {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
-       */
-      public void widgetModified(XWidget widget) {
-         try {
-            save();
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
-      }
-   };
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XCombo#createWidgets(org.eclipse.swt.widgets.Composite, int,
-    *      java.lang.String[])
-    */
-   @Override
-   public void createWidgets(Composite composite, int horizontalSpan, String[] inDataStrings) {
-      super.createWidgets(composite, horizontalSpan, inDataStrings);
-      super.addXModifiedListener(modifyListener);
-   }
-
-   public void createWidgets(Composite composite, int horizontalSpan) {
-      super.createWidgets(composite, horizontalSpan);
-      super.addXModifiedListener(modifyListener);
-   }
-
    public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       this.artifact = artifact;
-      this.attrName = attrName;
+      this.attributeTypeName = attrName;
       Boolean result = artifact.getSoleAttributeValue(attrName, null);
       if (result == null)
          super.set("");
@@ -70,49 +37,42 @@ public class XComboBooleanDam extends XCombo implements IDamWidget {
          super.set(result ? "yes" : "no");
    }
 
-   private Attribute<Boolean> getAttribute() throws Exception {
-      return artifact.getAttributeManager(attrName).getSoleAttribute();
-   }
-
    @Override
-   public void set(String text) throws IllegalStateException, SQLException {
+   public void saveToArtifact() throws Exception {
       try {
-         if (text == null || text.equals("")) {
-            super.set("");
-            artifact.getAttributeManager(attrName).getSoleAttribute().delete();
+         if (data == null || data.equals("")) {
+            artifact.deleteSoleAttribute(attributeTypeName);
          } else {
-            super.set(text);
-            getAttribute().setValue(new Boolean(text.equals("yes")));
+            String enteredValue = get();
+            artifact.setSoleXAttributeValue(attributeTypeName, enteredValue);
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
+    */
    @Override
-   public void save() throws Exception {
-      if (isDirty()) {
-         if (get() == null || get().equals("")) {
-            artifact.getAttributeManager(attrName).getSoleAttribute().delete();
-         } else {
-            getAttribute().setValue(get().equals("yes"));
+   public Result isDirty() throws Exception {
+      try {
+         String enteredValue = get();
+         String storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         if (!enteredValue.equals(storedValue)) {
+            return new Result(true, attributeTypeName + " is dirty");
          }
+      } catch (AttributeDoesNotExist ex) {
+         if (!get().equals("")) return new Result(true, attributeTypeName + " is dirty");
       }
+      return Result.FalseResult;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
    @Override
-   public boolean isDirty() {
-      try {
-         Boolean result = artifact.getSoleAttributeValue(attrName, null);
-         if (result == null && (get() != null || !get().equals("")))
-            return true;
-         else if ((get() != null || !get().equals("")) && result != null)
-            return true;
-         else
-            return artifact.getSoleAttributeValue(attrName, false) != (get().equals("yes"));
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-      }
-      return false;
+   public void revert() throws Exception {
+      setArtifact(artifact, attributeTypeName);
    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -88,8 +89,8 @@ public class XLabel extends XWidget {
     * @see osee.skynet.gui.widgets.XWidget#isValid()
     */
    @Override
-   public boolean isValid() {
-      return true;
+   public Result isValid() {
+      return Result.TrueResult;
    }
 
    /* (non-Javadoc)

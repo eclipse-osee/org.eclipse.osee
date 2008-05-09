@@ -39,14 +39,11 @@ public class XInteger extends XText {
       this.maxValue = maxValue;
    }
 
-   public boolean isValid() {
-      return isValidResult().isTrue();
-   }
-
-   public Result isValidResult() {
+   public Result isValid() {
       if (super.requiredEntry() || (super.get().compareTo("") != 0)) {
-         if (!super.isValid()) {
-            return new Result("Invalid");
+         Result result = super.isValid();
+         if (result.isFalse()) {
+            return result;
          } else if (!this.isInteger()) {
             return new Result("Must be an Integer");
          } else if (minValueSet && (this.getInteger() < minValue)) {

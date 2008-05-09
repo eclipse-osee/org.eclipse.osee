@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -144,10 +145,10 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       item.setToolTipText("Show Change Report");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-//            if (xCommitViewer.getTransactionArtifactChanges() != null)
-//               ChangeReportView.openViewUpon(xCommitViewer.getWorkingBranch());
-//            else
-//               AWorkbench.popup("ERROR", "Not implemented yet.");
+            //            if (xCommitViewer.getTransactionArtifactChanges() != null)
+            //               ChangeReportView.openViewUpon(xCommitViewer.getWorkingBranch());
+            //            else
+            //               AWorkbench.popup("ERROR", "Not implemented yet.");
          }
       });
 
@@ -176,12 +177,12 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
    }
 
    public void loadTable() {
-//      try {
-//         if (artifact != null && (artifact instanceof IBranchArtifact)) xCommitViewer.setWorkingBranch(((IBranchArtifact) artifact).getWorkingBranch());
-//         extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
-//      } catch (Exception ex) {
-//         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-//      }
+      //      try {
+      //         if (artifact != null && (artifact instanceof IBranchArtifact)) xCommitViewer.setWorkingBranch(((IBranchArtifact) artifact).getWorkingBranch());
+      //         extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
+      //      } catch (Exception ex) {
+      //         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      //      }
       refresh();
    }
 
@@ -220,13 +221,8 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
    }
 
    @Override
-   public boolean isValid() {
-      if (isRequiredEntry() && xCommitViewer.getTree().getItemCount() == 0) {
-         extraInfoLabel.setText("At least one role entry is required");
-         return false;
-      }
-      extraInfoLabel.setText("");
-      return true;
+   public Result isValid() {
+      return Result.TrueResult;
    }
 
    @Override

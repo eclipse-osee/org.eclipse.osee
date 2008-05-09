@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnota
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -187,7 +186,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          }
       }
       try {
-      setDamAttributes(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComs);
+         setDamAttributes(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComs);
       } catch (Exception ex) {
          throw new SQLException(ex);
       }
@@ -830,7 +829,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @throws SQLException
     * @throws IllegalStateException
     */
-   public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws IllegalStateException, SQLException, MultipleAttributesExist {
+   public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws Exception {
       String priorityStr = fromAction.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "");
       PriorityType priType = null;
       if (priorityStr.equals(""))
@@ -854,13 +853,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @param art
     * @throws SQLException
     */
-   public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, Boolean validationRequired, Date needByDate) throws SQLException {
+   public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, Boolean validationRequired, Date needByDate) throws Exception {
       art.setDescriptiveName(title);
       if (!desc.equals("")) art.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
       art.setSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
-      DynamicAttributeManager dam = art.getAttributeManager(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName());
-      for (String comm : userComms)
-         dam.getNewAttribute().setValue(comm);
+      art.setDamAttributes(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
       if (priority != null) art.setSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             priority.getShortName());
       if (needByDate != null) art.setSoleDateAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), needByDate);

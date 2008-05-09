@@ -56,6 +56,7 @@ public class SMAWorkFlowDebugSection extends SMAWorkFlowSection {
          for (IAtsStateItem stateItem : smaMgr.getStateItems().getStateItems(atsPage.getId())) {
             addDebug("            StateItem: " + stateItem.getDescription());
          }
+         addDebug("            PageData: " + atsPage.getInstructionStr());
       }
 
       // Button button = toolkit.createButton(workComp, "Return to \"" + item.getState() + "\"",

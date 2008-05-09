@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.swt.Search;
@@ -262,9 +263,9 @@ public class XMembersCombo extends XWidget {
       updateComboWidget();
    }
 
-   public boolean isValid() {
-      if (requiredEntry && !isAssigned()) return false;
-      return true;
+   public Result isValid() {
+      if (requiredEntry && !isAssigned()) return new Result("Must select " + getLabel());
+      return Result.TrueResult;
    }
 
    public String toXml() throws Exception {

@@ -443,13 +443,6 @@ public class XText extends XWidget {
       updateTextWidget();
    }
 
-   public boolean isValid() {
-      if (requiredEntry && (text.compareTo("") == 0)) {
-         return false;
-      }
-      return true;
-   }
-
    public String getReportData() {
       String s = "";
       String textStr = new String(text);
@@ -493,7 +486,7 @@ public class XText extends XWidget {
       if (debug) System.err.println("AText :" + str);
    }
 
-   public Result isValidResult() {
+   public Result isValid() {
       if (isRequiredEntry() && get().equals("")) {
          return new Result(String.format("Must enter \"%s\"", label));
       }

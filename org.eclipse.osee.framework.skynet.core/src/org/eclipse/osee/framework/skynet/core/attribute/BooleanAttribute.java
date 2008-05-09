@@ -39,7 +39,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    @Override
    public String getDisplayableString() {
       String toDisplay = dataProvider.getDisplayableString();
-      return Boolean.parseBoolean(toDisplay) ? "yes" : "no";
+      return toDisplay;
    }
 
    /* (non-Javadoc)
@@ -49,5 +49,10 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    public void setFromString(String value) throws Exception {
       boolean result = value != null && value.equalsIgnoreCase(BooleanAttribute.booleanChoices[0]);
       setValue(Boolean.valueOf(result));
+   }
+
+   @Override
+   public String toString() {
+      return getAttributeManager().getAttributeType().getName() + " - " + getValue();
    }
 }

@@ -19,16 +19,17 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.widgets.Composite;
 
-public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implements IDamWidget {
+public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implements IArtifactWidget {
 
    private Artifact artifact;
-   private String attrName;
+   private String attributeTypeName;
 
    public XHyperlabelMemberSelDam(String displayLabel) {
       super(displayLabel);
@@ -36,29 +37,16 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
 
    public void setArtifact(Artifact artifact, String attrName) {
       this.artifact = artifact;
-      this.attrName = attrName;
+      this.attributeTypeName = attrName;
 
-      super.setSelectedUsers(getUdatUsers());
+      super.setSelectedUsers(getUsers());
    }
 
-   private Attribute<String> getAttribute() throws Exception {
-      return artifact.getAttributeManager(attrName).getSoleAttribute();
-   }
-
-   public String getUdatStringValue() throws SQLException {
-      String toReturn = null;
-      try {
-         toReturn = getAttribute().getValue();
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-      }
-      return toReturn != null ? toReturn : "";
-   }
-
-   public Set<User> getUdatUsers() {
+   public Set<User> getUsers() {
       Set<User> users = new HashSet<User>();
       try {
-         Matcher m = Pattern.compile("<userId>(.*?)</userId>").matcher(getUdatStringValue());
+         Matcher m =
+               Pattern.compile("<userId>(.*?)</userId>").matcher(artifact.getSoleAttributeValue(attributeTypeName, ""));
          while (m.find()) {
             users.add(SkynetAuthentication.getInstance().getUserByIdWithError(m.group(1)));
          }
@@ -67,20 +55,6 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
       }
 
       return users;
-   }
-
-   @Override
-   public boolean handleSelection() {
-      boolean changed = super.handleSelection();
-      if (changed) {
-         try {
-            save();
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
-         return true;
-      }
-      return false;
    }
 
    /*
@@ -95,9 +69,16 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    @Override
-   public void save() throws Exception {
-      if (isDirty()) {
-         getAttribute().setValue(getSelectedStringValue());
+   public void saveToArtifact() throws Exception {
+      try {
+         String selectedStrValue = getSelectedStringValue();
+         if (selectedStrValue == null || selectedStrValue.equals("")) {
+            artifact.deleteSoleAttribute(attributeTypeName);
+         } else {
+            artifact.setSoleXAttributeValue(attributeTypeName, selectedStrValue);
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
    }
 
@@ -109,8 +90,31 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
       return sb.toString();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
+    */
    @Override
-   public boolean isDirty() throws Exception {
-      return (!getUdatStringValue().equals(getSelectedStringValue()));
+   public Result isDirty() throws Exception {
+      try {
+         String enteredValue = getSelectedStringValue();
+         String storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         if (!enteredValue.equals(storedValue)) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
+      } catch (AttributeDoesNotExist ex) {
+         if (!artifact.getSoleAttributeValue(attributeTypeName, "").equals("")) return new Result(true,
+               attributeTypeName + " is dirty");
+      } catch (NumberFormatException ex) {
+         // do nothing
+      }
+      return Result.FalseResult;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
+   @Override
+   public void revert() throws Exception {
+      setArtifact(artifact, attributeTypeName);
    }
 }

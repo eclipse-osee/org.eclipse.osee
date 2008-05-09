@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -27,7 +28,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public abstract class XHyperlinkLabelSelection extends XWidget {
 
-   org.eclipse.swt.widgets.Label valueLabel;
+   Label valueLabel;
    Label hyperLinkLabel;
 
    /**
@@ -164,9 +165,8 @@ public abstract class XHyperlinkLabelSelection extends XWidget {
     * @see osee.skynet.gui.widgets.XWidget#isValid()
     */
    @Override
-   public boolean isValid() {
-      if (isRequiredEntry()) return !getCurrentValue().equals("");
-      return true;
+   public Result isValid() {
+      return Result.TrueResult;
    }
 
    /* (non-Javadoc)

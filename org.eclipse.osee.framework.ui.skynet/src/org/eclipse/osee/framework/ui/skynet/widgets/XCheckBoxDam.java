@@ -10,92 +10,67 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
  */
-public class XCheckBoxDam extends XCheckBox implements IDamWidget {
+public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
 
    private Artifact artifact;
-   private String attrName;
+   private String attributeTypeName;
 
-   /**
-    * @param displayLabel
-    * @param xmlRoot
-    */
-   public XCheckBoxDam(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
-   }
-
-   /**
-    * @param displayLabel
-    */
    public XCheckBoxDam(String displayLabel) {
-      this(displayLabel, "");
+      super(displayLabel);
    }
 
-   XModifiedListener modifyListener = new XModifiedListener() {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
-       */
-      public void widgetModified(XWidget widget) {
-         try {
-            save();
-         } catch (IllegalStateException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
-      }
-   };
-
-   @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
-      super.createWidgets(parent, horizontalSpan);
-      super.addXModifiedListener(modifyListener);
-   }
-
-   public void set(boolean selected) {
-      super.set(selected);
-      try {
-         save();
-      } catch (IllegalStateException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
-   }
-
-   public void setArtifact(Artifact artifact, String attrName) throws IllegalStateException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public void setArtifact(Artifact artifact, String attrName) throws Exception {
       this.artifact = artifact;
-      this.attrName = attrName;
-      super.set(artifact.getSoleAttributeValue(attrName, false));
-   }
-
-   @Override
-   public void save() throws IllegalStateException, SQLException {
-      if (isDirty()) {
-         artifact.setSoleBooleanAttributeValue(attrName, get());
-      }
-   }
-
-   @Override
-   public boolean isDirty() throws IllegalStateException, SQLException {
+      this.attributeTypeName = attrName;
       try {
-         return artifact.getSoleAttributeValue(attrName, false) != get();
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-         return false;
+         Boolean value = artifact.getSoleAttributeValue(attributeTypeName);
+         super.set(value);
+      } catch (AttributeDoesNotExist ex) {
+         super.set(false);
       }
+   }
+
+   @Override
+   public void saveToArtifact() throws Exception {
+      try {
+         artifact.setSoleXAttributeValue(attributeTypeName, checkButton.getSelection());
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
+    */
+   @Override
+   public Result isDirty() throws Exception {
+      try {
+         Boolean enteredValue = checkButton.getSelection();
+         Boolean storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         if (enteredValue.booleanValue() != storedValue.booleanValue()) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
+      } catch (AttributeDoesNotExist ex) {
+         if (checkButton.getSelection()) return new Result(true, attributeTypeName + " is dirty");
+      }
+      return Result.FalseResult;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
+   @Override
+   public void revert() throws Exception {
+      setArtifact(artifact, attributeTypeName);
    }
 
 }

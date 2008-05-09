@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -157,11 +158,8 @@ public class XRadioButton extends XWidget {
       setLabelError();
    }
 
-   public boolean isValid() {
-      if (requiredEntry) {
-         return selected;
-      }
-      return true;
+   public Result isValid() {
+      return Result.TrueResult;
    }
 
    public String getReportData() {

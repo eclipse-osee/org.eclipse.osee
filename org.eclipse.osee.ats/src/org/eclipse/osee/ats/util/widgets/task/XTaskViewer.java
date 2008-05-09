@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
@@ -592,8 +593,8 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
    }
 
    @Override
-   public boolean isValid() {
-      return false;
+   public Result isValid() {
+      return Result.TrueResult;
    }
 
    @Override

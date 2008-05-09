@@ -37,12 +37,14 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageViewSorter;
@@ -79,6 +81,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private XTaskViewer xTask;
    public static String TRANSITION_TO_STATE_COMBO = "Transition To State Combo";
    private Composite mainComp;
+   private DynamicXWidgetLayout dynamicXWidgetLayout;
 
    public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, SMAManager smaMgr) throws Exception {
       super(parent, toolkit, style);
@@ -125,6 +128,34 @@ public class SMAWorkFlowSection extends SectionPart {
       section.layout();
       section.setExpanded(smaMgr.isCurrentSectionExpanded(page));
       return section;
+   }
+
+   public Result isXWidgetSavable() throws Exception {
+      if (dynamicXWidgetLayout == null) return Result.TrueResult;
+      for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+         if (widget instanceof IArtifactWidget) {
+            Result result = widget.isValid();
+            if (result.isFalse()) return result;
+         }
+      }
+      return Result.TrueResult;
+   }
+
+   public Result isXWidgetDirty() throws Exception {
+      if (dynamicXWidgetLayout == null) return Result.FalseResult;
+      for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+         if (widget instanceof IArtifactWidget) {
+            Result result = ((IArtifactWidget) widget).isDirty();
+            if (result.isTrue()) return result;
+         }
+      }
+      return Result.FalseResult;
+   }
+
+   public void saveXWidgetToArtifact() throws Exception {
+      for (XWidget widget : dynamicXWidgetLayout.getXWidgets()) {
+         if (widget instanceof IArtifactWidget) ((IArtifactWidget) widget).saveToArtifact();
+      }
    }
 
    private String getCurrentStateTitle() throws Exception {
@@ -186,7 +217,8 @@ public class SMAWorkFlowSection extends SectionPart {
       if (isEditable) createCurrentPageHeader(workComp, page, toolkit);
 
       page.setSmaMgr(smaMgr);
-      page.createBody(toolkit, workComp, smaMgr.getSma(), xModListener, isEditable || isGlobalEditable);
+      dynamicXWidgetLayout =
+            page.createBody(toolkit, workComp, smaMgr.getSma(), xModListener, isEditable || isGlobalEditable);
 
       // Check extenstion points for page creation
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(page.getId())) {

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationComposite;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -123,6 +124,28 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          // restoreScrollLocation();
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, true);
+      }
+   }
+
+   public Result isXWidgetDirty() throws Exception {
+      for (SMAWorkFlowSection section : sections) {
+         Result result = section.isXWidgetDirty();
+         if (result.isTrue()) return result;
+      }
+      return Result.FalseResult;
+   }
+
+   public Result isXWidgetSavable() throws Exception {
+      for (SMAWorkFlowSection section : sections) {
+         Result result = section.isXWidgetSavable();
+         if (result.isFalse()) return result;
+      }
+      return Result.TrueResult;
+   }
+
+   public void saveXWidgetToArtifact() throws Exception {
+      for (SMAWorkFlowSection section : sections) {
+         section.saveXWidgetToArtifact();
       }
    }
 

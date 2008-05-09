@@ -86,7 +86,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    public void dispose() {
       super.dispose();
       for (TaskArtifact taskArt : tasks)
-         if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMADirty()) taskArt.revertSMA();
+         if (taskArt != null && !taskArt.isDeleted() && taskArt.isSMADirty().isTrue()) taskArt.revertSMA();
       SkynetEventManager.getInstance().unRegisterAll(this);
       taskComposite.dispose();
    }
@@ -98,10 +98,11 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
     */
    @Override
    public boolean isDirty() {
-      for (TaskArtifact taskArt : tasks)
+      for (TaskArtifact taskArt : tasks) {
          if (taskArt.isDeleted())
             continue;
-         else if (taskArt.isSMADirty()) return true;
+         else if (taskArt.isSMADirty().isTrue()) return true;
+      }
       return false;
    }
 

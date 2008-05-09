@@ -34,9 +34,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -64,7 +65,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class XDefectViewer extends XWidget implements IDamWidget, IEventReceiver {
+public class XDefectViewer extends XWidget implements IArtifactWidget, IEventReceiver {
 
    private DefectXViewer xViewer;
    private IDirtiableEditor editor;
@@ -362,25 +363,26 @@ public class XDefectViewer extends XWidget implements IDamWidget, IEventReceiver
    }
 
    @Override
-   public boolean isValid() {
+   public Result isValid() {
       try {
          if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
             extraInfoLabel.setText("At least one defect entry is required");
-            return false;
+            return new Result("At least one defect entry is required");
          }
          if (reviewArt != null) {
             for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
                if (item.getSeverity() == Severity.None || item.getDisposition() == Disposition.None || item.isClosed() == false) {
                   extraInfoLabel.setText("Review not complete till all items are marked for severity, disposition and closed");
-                  return false;
+                  return new Result(
+                        "Review not complete till all items are marked for severity, disposition and closed");
                }
             }
          }
          extraInfoLabel.setText("");
-         return true;
+         return Result.TrueResult;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
-         return false;
+         return new Result("Exception validating defects. See log for details. " + ex);
       }
    }
 
@@ -492,6 +494,31 @@ public class XDefectViewer extends XWidget implements IDamWidget, IEventReceiver
     */
    public void setArtifact(Artifact artifact, String attrName) {
       setReviewArt((IReviewArtifact) artifact);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
+    */
+   @Override
+   public void saveToArtifact() throws Exception {
+      // DefectViewer uses artifact as storage mechanism; nothing to do here
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
+    */
+   @Override
+   public Result isDirty() throws Exception {
+      // DefectViewer uses artifact as storage mechanism which already determines dirty
+      return Result.FalseResult;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
+   @Override
+   public void revert() throws Exception {
+      // Nothing to revert cause artifact will be reverted
    }
 
 }

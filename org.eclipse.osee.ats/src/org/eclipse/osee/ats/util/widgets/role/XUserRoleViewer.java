@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.IDamWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -57,7 +57,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class XUserRoleViewer extends XWidget implements IDamWidget, IEventReceiver {
+public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventReceiver {
 
    private UserRoleXViewer xViewer;
    private IDirtiableEditor editor;
@@ -298,22 +298,22 @@ public class XUserRoleViewer extends XWidget implements IDamWidget, IEventReceiv
    }
 
    @Override
-   public boolean isValid() {
+   public Result isValid() {
       try {
          if (isRequiredEntry() && xViewer.getTree().getItemCount() == 0) {
             extraInfoLabel.setText("At least one role entry is required");
-            return false;
+            return new Result("At least one role entry is required");
          }
          Result result = reviewArt.isUserRoleValid();
          if (result.isFalse()) {
             extraInfoLabel.setText(result.getText());
-            return false;
+            return result;
          }
          extraInfoLabel.setText("");
-         return true;
+         return Result.TrueResult;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
-         return false;
+         return new Result("Exception validating roles. See log for details. " + ex.getLocalizedMessage());
       }
    }
 
@@ -425,6 +425,31 @@ public class XUserRoleViewer extends XWidget implements IDamWidget, IEventReceiv
     */
    public void setArtifact(Artifact artifact, String attrName) {
       setReviewArt((IReviewArtifact) artifact);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#saveToArtifact()
+    */
+   @Override
+   public void saveToArtifact() throws Exception {
+      // RoleViewer uses artifact as storage mechanism, nothing to save
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
+    */
+   @Override
+   public Result isDirty() throws Exception {
+      // RoleViewer uses artifact as storage mechanism which already determines dirty
+      return Result.FalseResult;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
+   @Override
+   public void revert() throws Exception {
+      // Nothing to revert cause artifact will be reverted
    }
 
 }

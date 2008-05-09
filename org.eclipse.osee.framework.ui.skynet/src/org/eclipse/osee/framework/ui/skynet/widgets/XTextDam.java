@@ -12,14 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 
-public class XTextDam extends XText implements IDamWidget {
+public class XTextDam extends XText implements IArtifactWidget {
 
    private Artifact artifact;
    private String attributeTypeName;
@@ -28,60 +25,42 @@ public class XTextDam extends XText implements IDamWidget {
       super(displayLabel);
    }
 
-   public void setArtifact(Artifact artifact, String attrName) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public void setArtifact(Artifact artifact, String attributeTypeName) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       this.artifact = artifact;
-      this.attributeTypeName = attrName;
+      this.attributeTypeName = attributeTypeName;
 
-      super.set(getUdatStringValue());
-   }
-
-   public DynamicAttributeManager getUdat() throws SQLException {
-      return artifact.getAttributeManager(attributeTypeName);
-   }
-
-   public String getUdatStringValue() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
-      return artifact.getSoleAttributeValue(attributeTypeName, null);
-   }
-
-   XModifiedListener modifyListener = new XModifiedListener() {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
-       */
-      public void widgetModified(XWidget widget) {
-         try {
-            save();
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
+      try {
+         String value = artifact.getSoleAttributeValue(attributeTypeName);
+         super.set(value);
+      } catch (AttributeDoesNotExist ex) {
+         super.set("");
       }
-   };
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#createWidgets(org.eclipse.swt.widgets.Composite, int,
-    *      boolean)
-    */
-   @Override
-   public void createWidgets(Composite parent, int horizontalSpan, boolean fillText) {
-      super.createWidgets(parent, horizontalSpan, fillText);
-      addXModifiedListener(modifyListener);
    }
 
    @Override
-   public void save() throws SQLException {
+   public void saveToArtifact() throws SQLException {
       artifact.setSoleXAttributeValue(attributeTypeName, get());
    }
 
    @Override
-   public boolean isDirty() throws SQLException {
+   public Result isDirty() throws Exception {
       try {
-         return (!getUdatStringValue().equals(get()));
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         String enteredValue = get();
+         String storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         if (!enteredValue.equals(storedValue)) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
+      } catch (AttributeDoesNotExist ex) {
+         if (!get().equals("")) return new Result(true, attributeTypeName + " is dirty");
       }
-      return false;
+      return Result.FalseResult;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
+   @Override
+   public void revert() throws Exception {
+      setArtifact(artifact, attributeTypeName);
    }
 }

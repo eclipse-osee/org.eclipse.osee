@@ -17,14 +17,10 @@ import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.stateItem.AtsDebugWorkPage;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts.OpenView;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -63,13 +59,7 @@ public class DebugOperations extends WorkPageService {
          }
 
          public void linkActivated(HyperlinkEvent e) {
-            StringBuilder info = new StringBuilder();
-            info.append(AHTML.heading(2, "State Machine Artifact - Dirty Report"));
-            smaMgr.getSma().isSMADirty(info);
-            String title = "State Machine Artifact - Dirty Report";
-            XResultView.getResultView().addResultPage(
-                  new XResultPage(title + " - " + XDate.getDateNow(XDate.MMDDYYHHMM), AHTML.simplePage(info.toString())));
-            AWorkbench.popup("Complete", title + " Complete...Results in ATS Results");
+            smaMgr.getSma().isSMADirty().popup();
          }
 
       });

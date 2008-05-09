@@ -46,16 +46,13 @@ public class XFloat extends XText {
          return new Double(get());
    }
 
-   public boolean isValid() {
-      return isValidResult().isTrue();
-   }
-
-   public Result isValidResult() {
+   public Result isValid() {
       if (super.requiredEntry() || (super.get().compareTo("") != 0)) {
          String name = getLabel();
          if (name.equals("")) name = "Value";
-         if (!super.isValid()) {
-            return new Result(name + " is invalid");
+         Result result = super.isValid();
+         if (result.isFalse()) {
+            return result;
          } else if (!this.isFloat()) {
             return new Result(name + " must be a Float");
          } else if (minValueSet && (this.getFloat() < minValue)) {

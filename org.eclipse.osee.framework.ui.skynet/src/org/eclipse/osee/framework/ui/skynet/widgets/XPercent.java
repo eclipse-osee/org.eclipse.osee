@@ -21,18 +21,15 @@ public class XPercent extends XText {
       super(displayLabel, xmlRoot);
    }
 
-   public boolean isValid() {
-      return isValidResult().isTrue();
-   }
-
    public void set(int percent) {
       super.set(percent + "");
    }
 
-   public Result isValidResult() {
+   public Result isValid() {
       if (super.requiredEntry()) {
-         if (!super.isValid()) {
-            return new Result("Invalid");
+         Result result = super.isValid();
+         if (result.isFalse()) {
+            return result;
          } else if (!this.isInteger()) {
             return new Result("Percent must be an Integer");
          } else if (this.getInteger() < 0 || this.getInteger() > 100) {

@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -85,6 +86,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    @Override
    public void doSave(IProgressMonitor monitor) {
+      System.out.println("doSave called");
       if (smaMgr.isHistoricalVersion()) {
          AWorkbench.popup(
                "Historical Error",
@@ -94,11 +96,13 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                "Authentication Error",
                "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeNameSuppressException() + ":" + smaMgr.getSma());
       } else {
-         smaMgr.getSma().saveSMA();
          try {
+            // Save widget data to artifact
+            workFlowTab.saveXWidgetToArtifact();
+            smaMgr.getSma().saveSMA();
             workFlowTab.refresh();
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, false);
+            OSEELog.logException(AtsPlugin.class, ex, true);
          }
          onDirtied();
       }
@@ -169,7 +173,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    @Override
    public void dispose() {
-      if (smaMgr != null && !smaMgr.getSma().isDeleted() && smaMgr.getSma().isSMADirty()) smaMgr.getSma().revertSMA();
+      if (smaMgr != null && !smaMgr.getSma().isDeleted() && smaMgr.getSma().isSMADirty().isTrue()) smaMgr.getSma().revertSMA();
       SkynetEventManager.getInstance().unRegisterAll(this);
       workFlowTab.dispose();
       if (taskComposite != null) taskComposite.dispose();
@@ -184,7 +188,21 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public boolean isDirty() {
       if (smaMgr.getSma().isDeleted()) return false;
-      return (((StateMachineArtifact) getEditorInput().getArtifact()).isSMADirty());
+      try {
+         Result result = workFlowTab.isXWidgetDirty();
+         if (result.isTrue()) {
+            System.err.println("SMAEditor: " + result.getText());
+            return true;
+         }
+         result = ((StateMachineArtifact) getEditorInput().getArtifact()).isSMADirty();
+         if (result.isTrue()) {
+            System.err.println("SMAEditor: " + result.getText());
+            return true;
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+      }
+      return false;
    }
 
    public String toString() {

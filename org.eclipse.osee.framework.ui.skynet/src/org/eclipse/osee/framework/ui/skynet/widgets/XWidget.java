@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -98,7 +99,7 @@ public abstract class XWidget {
       if (labelWidget == null || labelWidget.isDisposed()) {
          return;
       }
-      if (!isValid()) {
+      if (!isValid().isTrue()) {
          labelWidget.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
       } else {
          labelWidget.setForeground(null);
@@ -162,7 +163,7 @@ public abstract class XWidget {
     * 
     * @return Return boolean validity indication.
     */
-   public abstract boolean isValid();
+   public abstract Result isValid();
 
    /**
     * Called with string found between xml tags Used by setFromXml() String will be sent through AXml.xmlToText() before
@@ -405,25 +406,6 @@ public abstract class XWidget {
 
    public void setFillHorizontally(boolean fillHorizontally) {
       this.fillHorizontally = fillHorizontally;
-   }
-
-   /**
-    * Used by XWidgets that perform external data storage
-    */
-   public void save() throws Exception {
-   }
-
-   /**
-    * Used by XWidgets that perform external data storage
-    */
-   public void revert() {
-   }
-
-   /**
-    * Used by XWidgets that perform external data storage
-    */
-   public boolean isDirty() throws Exception {
-      return false;
    }
 
    public abstract Object getData();

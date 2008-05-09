@@ -11,21 +11,20 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Donald G. Dunne
  */
-public class XListDam extends XList implements IDamWidget {
+public class XListDam extends XList implements IArtifactWidget {
 
    private Artifact artifact;
-   private String attrName;
+   private String attributeTypeName;
 
    /**
     * @param displayLabel
@@ -35,75 +34,51 @@ public class XListDam extends XList implements IDamWidget {
    }
 
    public DynamicAttributeManager getUdat() throws SQLException {
-      return artifact.getAttributeManager(attrName);
+      return artifact.getAttributeManager(attributeTypeName);
    }
 
-   public void setArtifact(Artifact artifact, String attrName) {
+   public void setArtifact(Artifact artifact, String attrName) throws Exception {
       this.artifact = artifact;
-      this.attrName = attrName;
-
-      setSelected(getStoredNames());
+      this.attributeTypeName = attrName;
+      super.setSelected(getStoredStrs());
    }
-
-   XModifiedListener modifyListener = new XModifiedListener() {
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener#widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget)
-       */
-      public void widgetModified(XWidget widget) {
-         try {
-            save();
-         } catch (Exception ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
-      }
-   };
 
    @Override
-   public void save() throws Exception {
-      if (isDirty()) {
-         ArrayList<String> selectedNames = new ArrayList<String>();
-         for (XListItem item : getSelected())
-            selectedNames.add(item.getName());
-
-         artifact.setDamAttributes(attrName, selectedNames);
-      }
-   }
-
-   public ArrayList<String> getStoredNames() {
-      ArrayList<String> storedNames = new ArrayList<String>();
+   public void saveToArtifact() throws Exception {
       try {
-         for (Attribute attr : getUdat().getAttributes()) {
-            storedNames.add(attr.getDisplayableString());
-         }
-      } catch (SQLException ex) {
+         artifact.setDamAttributes(attributeTypeName, getSelectedStrs());
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
-      return storedNames;
    }
 
-   public String getStoredStr() {
-      StringBuffer sb = new StringBuffer();
-      for (String item : getStoredNames())
-         sb.append(item + ", ");
-      return sb.toString().replaceFirst(", $", "");
+   public Collection<String> getStoredStrs() throws SQLException {
+      return artifact.getAttributesToStringCollection(attributeTypeName);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XList#createWidgets(org.eclipse.swt.widgets.Composite, int)
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#isDirty()
     */
    @Override
-   public void createWidgets(Composite parent, int horizontalSpan) {
-      super.createWidgets(parent, horizontalSpan);
-      super.addXModifiedListener(modifyListener);
+   public Result isDirty() throws Exception {
+      try {
+         Collection<String> enteredValues = getSelectedStrs();
+         Collection<String> storedValues = getStoredStrs();
+         if (!enteredValues.equals(storedValues)) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
+      } catch (NumberFormatException ex) {
+         // do nothing
+      }
+      return Result.FalseResult;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
+    */
    @Override
-   public boolean isDirty() {
-      return (!getStoredStr().equals(getSelectedStr()));
+   public void revert() throws Exception {
+      setArtifact(artifact, attributeTypeName);
    }
 
 }

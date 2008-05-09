@@ -20,8 +20,6 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -38,14 +36,6 @@ public class XActionableItemsDam extends XTextDam {
    public XActionableItemsDam(Artifact sma) {
       super(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
       this.sma = sma;
-   }
-
-   private DynamicAttributeManager getDam() throws SQLException {
-      return sma.getAttributeManager(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
-   }
-
-   private Collection<Attribute<String>> getAttributes() throws SQLException {
-      return this.sma.getAttributes(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
    }
 
    public Set<ActionableItemArtifact> getActionableItems() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {

@@ -12,20 +12,21 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
-public class XPercentAttribute extends XTextAttribute {
+public class XPercentDam extends XIntegerDam {
 
-   public XPercentAttribute(String displayLabel) {
+   public XPercentDam(String displayLabel) {
       super(displayLabel);
    }
 
-   public boolean isValid() {
-      return isValidResult().isTrue();
-   }
-
-   public Result isValidResult() {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XInteger#isValid()
+    */
+   @Override
+   public Result isValid() {
       if (super.requiredEntry()) {
-         if (!super.isValid()) {
-            return new Result("Invalid");
+         Result result = super.isValid();
+         if (result.isFalse()) {
+            return result;
          } else if (!this.isInteger()) {
             return new Result("Percent must be an Integer");
          } else if (this.getInteger() < 0 || this.getInteger() > 100) {

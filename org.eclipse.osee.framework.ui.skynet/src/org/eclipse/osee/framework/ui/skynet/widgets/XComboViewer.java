@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -242,11 +243,11 @@ public class XComboViewer extends XWidget {
       updateListWidget();
    }
 
-   public boolean isValid() {
-      if (!requiredEntry) return true;
+   public Result isValid() {
+      if (!requiredEntry) return Result.TrueResult;
       Object selected = getSelected();
-      if (selected == null && isRequiredEntry()) return false;
-      return true;
+      if (selected == null && isRequiredEntry()) return new Result("Must select " + getLabel());
+      return Result.TrueResult;
    }
 
    public String getReportData() {

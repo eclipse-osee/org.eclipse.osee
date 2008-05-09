@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -119,8 +120,9 @@ public class XBranchSelectWidget extends XWidget implements Listener {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XWidget#isValid()
     */
    @Override
-   public boolean isValid() {
-      return selectComposite.getSelectedBranch() != null;
+   public Result isValid() {
+      if (selectComposite.getSelectedBranch() == null) return new Result("Must select a Branch");
+      return Result.TrueResult;
    }
 
    /* (non-Javadoc)

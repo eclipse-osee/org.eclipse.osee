@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
-public class XTextDescriptiveName extends XText {
+public class XTextDescriptiveName extends XTextDam implements IArtifactWidget {
 
    public Artifact artifact;
 
@@ -20,30 +20,9 @@ public class XTextDescriptiveName extends XText {
       super(displayLabel);
    }
 
-   @Override
-   public void set(String text) {
-      super.set(text);
-   }
-
-   @Override
-   public void save() {
-      if (isDirty()) {
-         artifact.setDescriptiveName(get());
-      }
-   }
-
-   @Override
-   public boolean isDirty() {
-      return (!artifact.getDescriptiveName().equals(get()));
-   }
-
-   public Artifact getArtifact() {
-      return artifact;
-   }
-
-   public void setArtifact(Artifact artifact) {
+   public void setArtifact(Artifact artifact) throws Exception {
       this.artifact = artifact;
-      super.set(artifact.getDescriptiveName());
+      super.setArtifact(artifact, "Name");
    }
 
 }

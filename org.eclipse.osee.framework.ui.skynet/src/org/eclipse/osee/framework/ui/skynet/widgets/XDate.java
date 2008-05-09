@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
@@ -34,7 +35,7 @@ public class XDate extends XWidget {
 
    private CalendarCombo dateCombo;
    private Composite parent;
-   private Date date;
+   protected Date date;
    public static String MMDDYY = "MM/dd/yyyy";
    public static String MMDDYYHHMM = "MM/dd/yyyy hh:mm a";
    public static String HHMMSS = "hh:mm:ss";
@@ -216,14 +217,14 @@ public class XDate extends XWidget {
       setLabelError();
    }
 
-   public boolean isValid() {
+   public Result isValid() {
       if (isRequireFutureDate()) {
-         if (getDate().before(new Date())) return false;
+         if (getDate().before(new Date())) return new Result(getLabel() + " must be in future.");
       }
       if (requiredEntry) {
-         if (get().equals("")) return false;
+         if (get().equals("")) return new Result(getLabel() + " must be selected.");
       }
-      return true;
+      return Result.TrueResult;
    }
 
    public String getReportData() {
