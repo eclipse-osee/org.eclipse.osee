@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
@@ -147,7 +148,7 @@ public class ArtifactPromptChange {
          for (Object obj : diag.getResult())
             selected.add((String) obj);
          for (Artifact artifact : artifacts) {
-            Set<String> current = artifact.getAttributesToStringCollection(attributeName);
+            List<String> current = artifact.getAttributesToStringCollection(attributeName);
             if (diag.getSelected() == Selection.AddSelection) {
                current.addAll(selected);
                artifact.setDamAttributes(attributeName, current);

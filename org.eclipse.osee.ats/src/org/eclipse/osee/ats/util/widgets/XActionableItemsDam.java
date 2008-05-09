@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.widgets;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
@@ -59,7 +60,7 @@ public class XActionableItemsDam extends XTextDam {
       return Artifacts.commaArts(getActionableItems());
    }
 
-   public Set<String> getActionableItemGuids() throws SQLException {
+   public List<String> getActionableItemGuids() throws SQLException {
       return sma.getAttributesToStringCollection(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
    }
 

@@ -11,12 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.artifact.annotation;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 
 /**
  * Provides access to annotations stored as the "Annotation" attribute in the specified artifact. NOTE: Annotations can
@@ -37,19 +36,15 @@ public class AttributeAnnotationManager {
       return artifact.getAttributes(ANNOTATION_ATTRIBUTE);
    }
 
-   private DynamicAttributeManager getAttributeManager() throws SQLException {
-      return artifact.getAttributeManager(ANNOTATION_ATTRIBUTE);
-   }
-
    /**
     * @return annotations stored in "Annotation" attribute of given artifact. NOTE: This is not a full list of
     *         annotation for this artifact as annotations can be added via extension point.
     * @throws SQLException
     */
-   public Set<ArtifactAnnotation> getAnnotations() throws SQLException {
-      Set<ArtifactAnnotation> annotations = new HashSet<ArtifactAnnotation>();
-      for (Attribute<String> attr : getAttributes()) {
-         ArtifactAnnotation annotation = new ArtifactAnnotation(attr.getValue());
+   public List<ArtifactAnnotation> getAnnotations() throws SQLException {
+      List<ArtifactAnnotation> annotations = new ArrayList<ArtifactAnnotation>();
+      for (String value : artifact.getAttributesToStringCollection(ANNOTATION_ATTRIBUTE)) {
+         ArtifactAnnotation annotation = new ArtifactAnnotation(value);
          annotations.add(annotation);
       }
       return annotations;
@@ -62,6 +57,7 @@ public class AttributeAnnotationManager {
     * @throws SQLException
     */
    public void addAnnotation(ArtifactAnnotation newAnnotation) throws SQLException {
+
       // Update attribute if it already exists
       for (Attribute<String> attr : getAttributes()) {
          ArtifactAnnotation annotation = new ArtifactAnnotation(attr.getValue());
@@ -70,9 +66,7 @@ public class AttributeAnnotationManager {
             return;
          }
       }
-      // Else, doesn't exist yet, create
-      Attribute<String> attribute = getAttributeManager().getNewAttribute();
-      attribute.setValue(newAnnotation.toXml());
+      artifact.addAttribute(ANNOTATION_ATTRIBUTE, newAnnotation.toXml());
    }
 
    /**

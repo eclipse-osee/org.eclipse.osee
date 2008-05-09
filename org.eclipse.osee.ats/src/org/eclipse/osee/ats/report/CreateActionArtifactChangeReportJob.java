@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.report;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -118,21 +119,21 @@ public class CreateActionArtifactChangeReportJob extends Job {
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, StringBuffer sb) throws Exception {
       String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
       for (Artifact modArt : teamArt.getSmaMgr().getBranchMgr().getArtifactsModified(false)) {
-         Set<String> attrStrs = modArt.getAttributesToStringCollection(byAttribute);
+         List<String> attrStrs = modArt.getAttributesToStringCollection(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             sb.append(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   modArt.getDescriptiveName(), attrStr, rpcrNum, "Content"}));
       }
       for (Artifact artChg : teamArt.getSmaMgr().getBranchMgr().getArtifactsDeleted()) {
-         Set<String> attrStrs = artChg.getAttributesToStringCollection(byAttribute);
+         List<String> attrStrs = artChg.getAttributesToStringCollection(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             sb.append(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   artChg.getDescriptiveName(), attrStr, rpcrNum, "Deleted"}));
       }
       for (Artifact artChg : teamArt.getSmaMgr().getBranchMgr().getArtifactsRelChanged()) {
-         Set<String> attrStrs = artChg.getAttributesToStringCollection(byAttribute);
+         List<String> attrStrs = artChg.getAttributesToStringCollection(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             sb.append(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,

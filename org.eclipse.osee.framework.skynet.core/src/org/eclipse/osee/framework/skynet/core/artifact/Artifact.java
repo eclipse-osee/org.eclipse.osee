@@ -710,8 +710,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return string collection representation of all the attributes of the type attributeName
     * @throws SQLException
     */
-   public Set<String> getAttributesToStringCollection(String attributeName) throws SQLException {
-      Set<String> items = new HashSet<String>();
+   public List<String> getAttributesToStringCollection(String attributeName) throws SQLException {
+      List<String> items = new ArrayList<String>();
       if (!isAttributeTypeValid(attributeName)) return items;
       DynamicAttributeManager dam = getAttributeManager(attributeName);
       for (Attribute attr : dam.getAttributes())
