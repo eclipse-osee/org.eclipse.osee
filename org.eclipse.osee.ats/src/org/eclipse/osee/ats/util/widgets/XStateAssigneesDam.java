@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 
@@ -32,11 +31,6 @@ public abstract class XStateAssigneesDam extends XTextDam {
       super(attributeName);
       this.sma = sma;
       this.attributeTypeName = attributeName;
-      try {
-         setArtifact(sma, attributeName);
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
    }
 
    public SMAState getState(String stateName, boolean create) {
