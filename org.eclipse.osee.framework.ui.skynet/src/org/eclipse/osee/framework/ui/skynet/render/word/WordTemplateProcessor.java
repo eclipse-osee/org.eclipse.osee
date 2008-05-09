@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
@@ -492,8 +491,8 @@ public class WordTemplateProcessor {
          String attributeName = attributeElement.getAttributeName();
 
          if (attributeElement.getAttributeName().equals("*")) {
-            for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
-               processAttribute(artifact, wordMl, attributeElement, attributeManager.getAttributeType().getName(), true);
+            for (AttributeType attributeType : artifact.getAttributeTypes()) {
+               processAttribute(artifact, wordMl, attributeElement, attributeType.getName(), true);
             }
          } else {
             if (artifact.isAttributeTypeValid(attributeName)) {
@@ -526,8 +525,7 @@ public class WordTemplateProcessor {
          return;
       }
 
-      DynamicAttributeManager dynamicAttributeManager = artifact.getAttributeManager(attributeTypeName);
-      Collection<Attribute<Object>> attributes = dynamicAttributeManager.getAttributes();
+      Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeTypeName);
 
       if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();
