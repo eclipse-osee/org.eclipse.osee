@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
@@ -66,16 +65,18 @@ public class SkynetCustomizations implements IXViewerCustomizations {
 
    private static void saveCustomization(CustomizeData custData, Artifact saveArt) throws SQLException {
       boolean found = false;
-      DynamicAttributeManager dam = saveArt.getAttributeManager(CUSTOMIZATION_ATTRIBUTE_NAME);
-      for (Attribute attr : dam.getAttributes()) {
-         if (attr.getDisplayableString().contains("namespace=\"" + custData.getNameSpace() + "\"") && attr.getDisplayableString().contains(
+      Collection<Attribute<String>> attributes = saveArt.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME);
+      for (Attribute<String> attribute : attributes) {
+         if (attribute.getDisplayableString().contains("namespace=\"" + custData.getNameSpace() + "\"") && attribute.getDisplayableString().contains(
                "name=\"" + custData.getName() + "\"")) {
-            attr.setValue(custData.getXml());
+            attribute.setValue(custData.getXml());
             found = true;
             break;
          }
       }
-      if (!found) dam.getNewAttribute().setValue(custData.getXml());
+      if (!found) {
+         saveArt.addAttribute(CUSTOMIZATION_ATTRIBUTE_NAME, custData.getXml());
+      }
       saveArt.persistAttributes();
    }
 
@@ -129,12 +130,12 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    }
 
    public void deleteCustomization(CustomizeData custData, Artifact deleteArt) throws SQLException {
-      DynamicAttributeManager dam = deleteArt.getAttributeManager(CUSTOMIZATION_ATTRIBUTE_NAME);
-      for (Attribute attr : dam.getAttributes()) {
-         String str = attr.getDisplayableString();
-         Matcher m = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"").matcher(str);
+      Pattern pattern = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"");
+      for (Attribute<?> attribute : deleteArt.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME)) {
+         String str = attribute.getDisplayableString();
+         Matcher m = pattern.matcher(str);
          if (m.find() && m.group(1).equals(custData.getName())) {
-            attr.delete();
+            attribute.delete();
             deleteArt.persistAttributes();
             break;
          }

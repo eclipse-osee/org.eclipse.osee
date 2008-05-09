@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
@@ -805,19 +804,20 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                   @Override
                   protected void handleTxWork() throws Exception {
                      for (Artifact art : arts) {
-                        DynamicAttributeManager dam = art.getAttributeManager(Requirements.PARTITION);
                         for (String partition : partitions) {
                            boolean found = false;
-                           for (Attribute attr : dam.getAttributes()) {
-                              if (attr.getDisplayableString().equals(partition)) {
+                           for (Attribute<?> attr : art.getAttributes(Requirements.PARTITION)) {
+                              if (attr.toString().equals(partition)) {
                                  found = true;
                                  break;
                               }
                            }
-                           if (!found) dam.getNewAttribute().setValue(partition);
+                           if (!found) {
+                              art.addAttribute(Requirements.PARTITION, partition);
+                           }
                         }
-                        for (Attribute attr : dam.getAttributes()) {
-                           if (attr.getDisplayableString().equals("Unspecified")) attr.delete();
+                        for (Attribute<?> attr : art.getAttributes(Requirements.PARTITION)) {
+                           if (attr.toString().equals("Unspecified")) attr.delete();
                         }
 
                         art.persistAttributes();

@@ -428,8 +428,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return getAttributeManager(attributeTypeName).getAttributes();
    }
 
-   public <T> Collection<Attribute<T>> getAttributes() throws SQLException {
-      Collection<Attribute<T>> attributes = new ArrayList<Attribute<T>>();
+   public <T> List<Attribute<T>> getAttributes() throws SQLException {
+      List<Attribute<T>> attributes = new ArrayList<Attribute<T>>();
       for (DynamicAttributeManager attributeManager : attributeManagers) {
          Collection<Attribute<T>> temp = attributeManager.getAttributes();
          attributes.addAll(temp);

@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -32,10 +31,6 @@ public class XListDam extends XList implements IArtifactWidget {
     */
    public XListDam(String displayLabel) {
       super(displayLabel);
-   }
-
-   public DynamicAttributeManager getUdat() throws SQLException {
-      return artifact.getAttributeManager(attributeTypeName);
    }
 
    public void setArtifact(Artifact artifact, String attrName) throws Exception {
