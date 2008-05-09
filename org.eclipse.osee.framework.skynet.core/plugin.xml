@@ -132,6 +132,10 @@
                ArtifactTypeName="Renderer Template"
                ImagePath="images/laser_16_16.gif">
          </ArtifactImage>
+         <ArtifactImage
+               ArtifactTypeName="Test Information Sheet"
+               ImagePath="images/laser_16_16.gif">
+         </ArtifactImage>
       </extension>
       <extension
             point="org.eclipse.osee.framework.skynet.core.TaggerCustomization">
