@@ -509,7 +509,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
          if (modType == ModType.Deleted) {
             AWorkbench.getActivePage().closeEditor(editor, false);
-         } else if (modType == ModType.Changed || modType == ModType.Reverted) {
+         } else if (modType == ModType.Added || modType == ModType.Changed || modType == ModType.Reverted) {
             Artifact artifact = getEditorInput().getArtifact();
             setPartName(getEditorInput().getName());
             setTitleImage(artifact.getImage());
