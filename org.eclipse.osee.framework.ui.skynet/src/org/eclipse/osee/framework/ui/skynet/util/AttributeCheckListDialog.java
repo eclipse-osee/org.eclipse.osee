@@ -24,9 +24,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTreeContentProvider;
 import org.eclipse.swt.SWT;
@@ -67,10 +66,10 @@ public class AttributeCheckListDialog extends SelectionDialog {
       }
 
       StringBuilder result = new StringBuilder();
-      for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
-         if (selectedAttributes.contains(attributeManager.getAttributeType())) {
+      for (AttributeType attributeType : artifact.getAttributeTypes()) {
+         if (selectedAttributes.contains(attributeType)) {
             result.append(" - ");
-            result.append(Collections.toString(", ", artifact.getAttributes(attributeManager.getAttributeType())));
+            result.append(Collections.toString(", ", artifact.getAttributes(attributeType)));
          }
       }
       return result.toString();
@@ -121,8 +120,7 @@ public class AttributeCheckListDialog extends SelectionDialog {
 
       @SuppressWarnings("unchecked")
       public int compare(Viewer viewer, Object o1, Object o2) {
-         return getComparator().compare(((AttributeType) o1).getName(),
-               ((AttributeType) o2).getName());
+         return getComparator().compare(((AttributeType) o1).getName(), ((AttributeType) o2).getName());
       }
    }
 

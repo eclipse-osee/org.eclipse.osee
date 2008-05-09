@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
@@ -51,21 +50,15 @@ public class BaseTagger extends Tagger {
 
    @Override
    public Collection<String> getTextStrings(Artifact artifact) throws SQLException {
-
-      if (artifact == null) throw new IllegalArgumentException("A null artifact can not be tagged.");
-
       List<String> textString = new LinkedList<String>();
 
-      for (DynamicAttributeManager attributeManager : artifact.getAttributeManagers()) {
-         Collection<Attribute<Object>> attributes = attributeManager.getAttributes();
-         for (Attribute<?> attribute : attributes) {
-            String attributeTypeName = attributeManager.getAttributeType().getName();
-            if (!ignoreAttributeNames.contains(attributeTypeName)) {
-               if (attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
-                  textString.add(WordUtil.textOnly(attribute.toString()));
-               } else {
-                  textString.add(attribute.toString());
-               }
+      for (Attribute<?> attribute : artifact.getAttributes()) {
+         String attributeTypeName = attribute.getAttributeType().getName();
+         if (!ignoreAttributeNames.contains(attributeTypeName)) {
+            if (attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
+               textString.add(WordUtil.textOnly(attribute.toString()));
+            } else {
+               textString.add(attribute.toString());
             }
          }
       }

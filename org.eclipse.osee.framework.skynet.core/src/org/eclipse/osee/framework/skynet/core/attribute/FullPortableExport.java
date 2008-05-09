@@ -176,23 +176,22 @@ public class FullPortableExport {
       Arrays.fill(row, 0, row.length, null);
       row[0] = artifact.getGuid();
       row[1] = artifact.getHumanReadableId();
-      Collection<DynamicAttributeManager> attributes = artifact.getAttributeManagers();
-      for (DynamicAttributeManager attributeType : attributes) {
-         row[columnIndexHash.get(attributeType.getAttributeType().getName())] = prepareAttributes(attributeType);
+      for (AttributeType attributeType : artifact.getAttributeTypes()) {
+         row[columnIndexHash.get(attributeType.getName())] = prepareAttributes(artifact, attributeType);
       }
       excelWriter.writeRow(row);
    }
 
-   private String prepareAttributes(DynamicAttributeManager attributeType) {
-      Collection<Attribute<Object>> attributes = attributeType.getAttributes();
+   private String prepareAttributes(Artifact artifact, AttributeType attributeType) throws SQLException {
+      Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType);
       if (attributes.size() == 0) {
          return null;
       } else if (attributes.size() == 1) {
          return attributes.iterator().next().toString();
       } else {
          StringBuilder strB = new StringBuilder(200);
-         for (Attribute attribute : attributes) {
-            strB.append(attribute.getValue());
+         for (Attribute<Object> attribute : attributes) {
+            strB.append(attribute.toString());
             strB.append(ATTRIBUTE_VALUE_DELIMITER);
          }
          return strB.toString();

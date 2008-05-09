@@ -43,16 +43,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
                      roughArtifact.getHumandReadableId());
       }
 
-      // Try to confer attributes in 'initialization mode' to avoid default attributes
-      // on optional attributes. The attributes would be loaded at this point from
-      // onBirth() code in the artifact.
-      if (realArtifact.attributesNotLoaded()) {
-         realArtifact.startAttributeInitialization();
-         roughArtifact.conferAttributesUpon(realArtifact);
-         realArtifact.finalizeAttributeInitialization();
-      } else {
-         roughArtifact.conferAttributesUpon(realArtifact);
-      }
+      roughArtifact.conferAttributesUpon(realArtifact);
 
       return realArtifact;
    }

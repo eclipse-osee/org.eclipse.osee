@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
@@ -144,14 +144,14 @@ public class HtmlReportJob extends Job {
       sb.append(AHTML.beginMultiColumnTable(90));
       if (includeAttributes) {
          try {
-            for (DynamicAttributeManager dam : artifact.getAttributeManagers()) {
-               if (onlyAttributeNames == null || onlyAttributeNames.contains(dam.getAttributeType().getName())) {
-                  for (Attribute attr : dam.getAttributes()) {
-                     if (!dam.getAttributeType().getName().equals("Name") && !dam.getAttributeType().getName().equals(
-                           WordAttribute.CONTENT_NAME)) {
-                        sb.append(AHTML.addRowMultiColumnTable(new String[] {dam.getAttributeType().getName(),
+            for (AttributeType attributeType : artifact.getAttributeTypes()) {
+               String attributeTypeName = attributeType.getName();
+               if (onlyAttributeNames == null || onlyAttributeNames.contains(attributeTypeName)) {
+                  for (Attribute<?> attr : artifact.getAttributes(attributeType)) {
+                     if (!attributeTypeName.equals("Name") && !attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
+                        sb.append(AHTML.addRowMultiColumnTable(new String[] {attributeTypeName,
                               attr.getDisplayableString()}));
-                     } else if (dam.getAttributeType().getName().equals(WordAttribute.CONTENT_NAME)) {
+                     } else if (attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
                         try {
                            ByteArrayInputStream wordMl =
                                  new ByteArrayInputStream(("<body>" + attr.getValue() + "</body>").getBytes("UTF-8"));

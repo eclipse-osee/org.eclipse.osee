@@ -13,7 +13,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
@@ -34,9 +33,8 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
     */
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws SQLException, IllegalStateException, IOException {
-      DynamicAttributeManager dynamicAttributeManager = artifact.getAttributeManager(templateAttribute.getName());
-      Collection<Attribute<Object>> attributes = dynamicAttributeManager.getAttributes();
-//if(true)return;
+      Collection<Attribute<Object>> attributes = artifact.getAttributes(templateAttribute.getName());
+
       if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();
          AttributeType attributeType = attribute.getAttributeType();
@@ -50,13 +48,13 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
             wordMl.addParagraph(templateAttribute.getLabel());
          }
 
-         if(false){
-         WordTemplateProcessor.writeXMLMetaDataWrapper(wordMl,
+         if (false) {
+            WordTemplateProcessor.writeXMLMetaDataWrapper(wordMl,
                   WordTemplateProcessor.elementNameFor(attributeType.getName()),
                   "ns0:guid=\"" + artifact.getGuid() + "\"", "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"",
                   attribute.toString());
          } else {
-        	 wordMl.addWordMl(attribute.toString());
+            wordMl.addWordMl(attribute.toString());
          }
          wordMl.resetListValue();
       }
@@ -67,13 +65,6 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
     */
    @Override
    public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws SQLException {
-      try {
-         DynamicAttributeManager dam = artifact.getAttributeManager(attribute.getName());
-         return dam.getAttributeType().getName().equals(WordAttribute.CONTENT_NAME);
-      } catch (IllegalArgumentException ex) {
-         return false;
-      }
-
+      return artifact.isAttributeTypeValid(WordAttribute.CONTENT_NAME);
    }
-
 }

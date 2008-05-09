@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**
@@ -36,9 +35,7 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
     */
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute templateAttribute) throws SQLException, IllegalStateException, IOException {
-//      if(true)return;
-      DynamicAttributeManager dynamicAttributeManager = artifact.getAttributeManager(templateAttribute.getName());
-      Collection<Attribute<Object>> attributes = dynamicAttributeManager.getAttributes();
+      Collection<Attribute<Object>> attributes = artifact.getAttributes(templateAttribute.getName());
       if (!attributes.isEmpty()) {
          Attribute<Object> attribute = attributes.iterator().next();
          AttributeType attributeType = attribute.getAttributeType();
@@ -48,19 +45,19 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
             return;
          }
 
-         if(templateAttribute.isParagrapthWrap()){
+         if (templateAttribute.isParagrapthWrap()) {
             wordMl.startParagraph();
          }
          // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
-//         if (allAttrs) {
-         if(templateAttribute.hasLabel()){
+         //         if (allAttrs) {
+         if (templateAttribute.hasLabel()) {
             wordMl.addWordMl("<w:r><w:t> " + templateAttribute.getName() + ": </w:t></w:r>");
          }
-//         } else {
-//            if (templateAttribute.hasLabel()) {
-//               wordMl.addParagraph(templateAttribute.getLabel());
-//            }
-//         }
+         //         } else {
+         //            if (templateAttribute.hasLabel()) {
+         //               wordMl.addParagraph(templateAttribute.getLabel());
+         //            }
+         //         }
 
          String valueList = Collections.toString(", ", artifact.getAttributes(templateAttribute.getName()));
          if (templateAttribute.hasFormatting()) {
@@ -70,10 +67,10 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
          } else {
             wordMl.addTextInsideParagraph(valueList);
          }
-         if(templateAttribute.isParagrapthWrap()){
-            wordMl.endParagraph();   
+         if (templateAttribute.isParagrapthWrap()) {
+            wordMl.endParagraph();
          }
-         
+
       }
    }
 

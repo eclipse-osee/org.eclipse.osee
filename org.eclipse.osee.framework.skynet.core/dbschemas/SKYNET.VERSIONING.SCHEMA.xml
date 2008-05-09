@@ -308,18 +308,8 @@
 		<Constraint schema="OSEE" id="OSEE_TRANSACTION_ID_FK" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_TX_DETAILS" column="TRANSACTION_ID" onDelete="CASCADE" />
 		</Constraint>
-		<Index id="OSEE_TXS_TX_G_IDX" type="UNIQUE">
-			<AppliesTo id="TRANSACTION_ID" />
-			<AppliesTo id="GAMMA_ID" />
-		</Index>
 		<Index id="OSEE_TXS_G_IDX">
 			<AppliesTo id="GAMMA_ID" />
-		</Index>
-		<Index id="OSEE_TXS_M_IDX">
-			<AppliesTo id="MOD_TYPE" />
-		</Index>
-		<Index id="OSEE_TXS_C_IDX">
-			<AppliesTo id="TX_CURRENT" />
 		</Index>
 		<Index id="OSEE_TXS_TX_IDX" >
 			<AppliesTo id="TRANSACTION_ID" />

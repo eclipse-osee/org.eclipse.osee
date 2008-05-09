@@ -43,7 +43,6 @@ public class AttributeContentProvider implements IStructuredContentProvider {
    public Object[] getElements(Object inputElement) {
 
       if (inputElement instanceof Artifact) {
-
          Artifact artifact = (Artifact) inputElement;
 
          ArrayList<Attribute> elements = new ArrayList<Attribute>();

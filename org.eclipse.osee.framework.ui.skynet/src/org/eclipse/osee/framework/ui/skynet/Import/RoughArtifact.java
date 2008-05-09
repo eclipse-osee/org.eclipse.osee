@@ -23,11 +23,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.FullPortableExport;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Robert A. Fisher
@@ -112,24 +107,9 @@ public class RoughArtifact {
    }
 
    public void conferAttributesUpon(Artifact artifact) throws SQLException, IllegalStateException, IOException {
-      for (NameAndVal attr : attributes) {
-         String attributeTypeName = attr.getName();
-         String fullValue = attr.getValue();
-
-         if (fullValue != null) {
-            try {
-               DynamicAttributeManager attributeManager = artifact.getAttributeManager(attributeTypeName);
-               AttributeType descriptor = attributeManager.getAttributeType();
-               if (descriptor.getMinOccurrences() == 1 && descriptor.getMaxOccurrences() == 1) {
-                  artifact.setSoleXAttributeValue(attributeTypeName, fullValue);
-               } else {
-                  for (String value : fullValue.split(FullPortableExport.ATTRIBUTE_VALUE_DELIMITER_REGEX)) {
-                     attributeManager.getNewAttribute().setValue(value);
-                  }
-               }
-            } catch (IllegalStateException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-            }
+      for (NameAndVal roughtAttribute : attributes) {
+         if (roughtAttribute.getValue() != null) {
+            artifact.addAttribute(roughtAttribute.getName(), roughtAttribute.getValue());
          }
       }
 

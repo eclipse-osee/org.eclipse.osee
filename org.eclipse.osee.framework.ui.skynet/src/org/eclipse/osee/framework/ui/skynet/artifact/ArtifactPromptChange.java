@@ -21,9 +21,10 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
@@ -50,18 +51,19 @@ public class ArtifactPromptChange {
 
    public static boolean promptChangeAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws SQLException {
       try {
-         DynamicAttributeManager dam = artifacts.iterator().next().getAttributeManager(attributeName);
-         if (dam.getAttributeType().getBaseAttributeClass().equals(DateAttribute.class)) {
+         Class<? extends Attribute<?>> attributeBaseType =
+               AttributeTypeManager.getType(attributeName).getBaseAttributeClass();
+         if (attributeBaseType.equals(DateAttribute.class)) {
             return ArtifactPromptChange.promptChangeDate(attributeName, displayName, artifacts, persist);
-         } else if (dam.getAttributeType().getBaseAttributeClass().equals(FloatingPointAttribute.class)) {
+         } else if (attributeBaseType.equals(FloatingPointAttribute.class)) {
             return ArtifactPromptChange.promptChangeFloatAttribute(attributeName, displayName, artifacts, persist);
-         } else if (dam.getAttributeType().getBaseAttributeClass().equals(IntegerAttribute.class)) {
+         } else if (attributeBaseType.equals(IntegerAttribute.class)) {
             return ArtifactPromptChange.promptChangeIntegerAttribute(attributeName, displayName, artifacts, persist);
-         } else if (dam.getAttributeType().getBaseAttributeClass().equals(BooleanAttribute.class)) {
+         } else if (attributeBaseType.equals(BooleanAttribute.class)) {
             return ArtifactPromptChange.promptChangeBoolean(attributeName, displayName, artifacts, null, persist);
-         } else if (dam.getAttributeType().getBaseAttributeClass().equals(EnumeratedAttribute.class)) {
+         } else if (attributeBaseType.equals(EnumeratedAttribute.class)) {
             return ArtifactPromptChange.promptChangeEnumeratedAttribute(attributeName, displayName, artifacts, persist);
-         } else if (dam.getAttributeType().getBaseAttributeClass().equals(StringAttribute.class)) {
+         } else if (attributeBaseType.equals(StringAttribute.class)) {
             return ArtifactPromptChange.promptChangeStringAttribute(attributeName, displayName, artifacts, persist);
          } else
             AWorkbench.popup("ERROR", "Unhandled attribute type.  Can't edit through this view");

@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -270,11 +270,11 @@ public class MassXViewer extends XViewer {
    public void resetColumns(Collection<? extends Artifact> artifacts) {
       CustomizeData custData = new CustomizeData();
 
-      Set<DynamicAttributeManager> dams = new HashSet<DynamicAttributeManager>();
+      Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
 
       try {
          for (Artifact art : artifacts) {
-            dams.addAll(art.getAttributeManagers());
+            attributeTypes.addAll(art.getAttributeTypes());
          }
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -292,24 +292,23 @@ public class MassXViewer extends XViewer {
       attrNames.add("Name");
 
       // Add other attributes
-      for (DynamicAttributeManager dam : dams) {
-         if (!attrNames.contains(dam.getAttributeType().getName())) {
-            // System.out.println(dam.getDescriptor().getName());
+      for (AttributeType attributeType : attributeTypes) {
+         if (!attrNames.contains(attributeType.getName())) {
             SortDataType sortType = SortDataType.String;
-            if (dam.getAttributeType().getBaseAttributeClass().equals(DateAttribute.class))
+            if (attributeType.getBaseAttributeClass().equals(DateAttribute.class))
                sortType = SortDataType.Date;
-            else if (dam.getAttributeType().getBaseAttributeClass().equals(FloatingPointAttribute.class))
+            else if (attributeType.getBaseAttributeClass().equals(FloatingPointAttribute.class))
                sortType = SortDataType.Float;
-            else if (dam.getAttributeType().getBaseAttributeClass().equals(IntegerAttribute.class))
+            else if (attributeType.getBaseAttributeClass().equals(IntegerAttribute.class))
                sortType = SortDataType.Integer;
-            else if (dam.getAttributeType().getBaseAttributeClass().equals(BooleanAttribute.class)) sortType =
+            else if (attributeType.getBaseAttributeClass().equals(BooleanAttribute.class)) sortType =
                   SortDataType.Boolean;
-            newCol = new XViewerColumn(this, dam.getAttributeType().getName(), 75, 75, SWT.CENTER);
+            newCol = new XViewerColumn(this, attributeType.getName(), 75, 75, SWT.CENTER);
             newCol.setSortDataType(sortType);
             newCol.setOrderNum(x++);
             newCol.setTreeViewer(this);
             cols.add(newCol);
-            attrNames.add(dam.getAttributeType().getName());
+            attrNames.add(attributeType.getName());
          }
       }
 

@@ -174,19 +174,19 @@ public class AttributeTypeManager {
       idToTypeMap.put(attributeType.getAttrTypeId(), attributeType);
    }
 
-   public static AttributeType createType(String attributeTypeName, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws Exception {
-      if (typeExists(namespace, attributeTypeName)) {
-         return getType(namespace, attributeTypeName);
+   public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws Exception {
+      if (typeExists(namespace, name)) {
+         return getType(namespace, name);
       }
 
       AttributeExtensionManager extensionManager = AttributeExtensionManager.getInstance();
 
-      Class<? extends Attribute<?>> baseAttributeClass = extensionManager.getAttributeClassFor(attributeTypeName);
+      Class<? extends Attribute<?>> baseAttributeClass = extensionManager.getAttributeClassFor(attributeBaseType);
       Class<? extends AbstractAttributeDataProvider> providerAttributeClass =
             extensionManager.getAttributeProviderClassFor(attributeProviderTypeName);
 
       int attrTypeId = Query.getNextSeqVal(null, ATTR_TYPE_ID_SEQ);
-      int attrBaseTypeId = instance.getOrCreateAttributeBaseType(attributeTypeName);
+      int attrBaseTypeId = instance.getOrCreateAttributeBaseType(attributeBaseType);
       int attrProviderTypeId = instance.getOrCreateAttributeProviderType(attributeProviderTypeName);
       ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, SQL3DataType.INTEGER, attrTypeId,
             SQL3DataType.INTEGER, attrBaseTypeId, SQL3DataType.INTEGER, attrProviderTypeId, SQL3DataType.VARCHAR,
