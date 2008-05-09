@@ -193,7 +193,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             //            System.err.println("SMAEditor: " + result.getText());
             return true;
          }
-         result = ((StateMachineArtifact) getEditorInput().getArtifact()).isSMADirty();
+         result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMADirty();
          if (result.isTrue()) {
             //            System.err.println("SMAEditor: " + result.getText());
             return true;
@@ -368,7 +368,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                System.err.println(String.format("VERSION INC switching %d to %d for artifact %s",
                      smaMgr.getSma().getArtId(), ed.getAvie().getNewVersion().getArtId(),
                      smaMgr.getSma().getDescriptiveName()));
-               getEditorInput().setArtifact(ed.getAvie().getNewVersion());
+               ((SMAEditorInput) getEditorInput()).setArtifact(ed.getAvie().getNewVersion());
                redrawPages();
             } else if (ed.isHasEvent()) {
                setTitleImage(smaMgr.getSma().getImage());

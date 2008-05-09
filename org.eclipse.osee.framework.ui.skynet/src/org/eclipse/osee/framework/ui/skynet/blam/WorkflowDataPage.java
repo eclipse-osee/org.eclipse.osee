@@ -52,7 +52,7 @@ public class WorkflowDataPage extends FormPage {
    public WorkflowDataPage(WorkflowEditor editor, OverviewPage overviewPage) {
       super(editor, "overview", "Workflow Data");
 
-      this.workflow = (BlamWorkflow) editor.getEditorInput().getArtifact();
+      this.workflow = (BlamWorkflow) ((WorkflowEditorInput) editor.getEditorInput()).getArtifact();
       this.toolkit = editor.getToolkit();
       this.parameters = new LinkedList<Text>();
       this.localVariables = new LinkedList<Text>();

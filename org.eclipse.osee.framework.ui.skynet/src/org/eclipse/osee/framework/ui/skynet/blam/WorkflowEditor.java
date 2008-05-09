@@ -61,7 +61,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
    }
 
    public BlamWorkflow getWorkflow() {
-      return (BlamWorkflow) getEditorInput().getArtifact();
+      return (BlamWorkflow) ((WorkflowEditorInput) getEditorInput()).getArtifact();
    }
 
    /**

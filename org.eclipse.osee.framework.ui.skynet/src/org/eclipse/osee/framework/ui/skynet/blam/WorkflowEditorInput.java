@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
+package org.eclipse.osee.framework.ui.skynet.blam;
 
-import java.util.Collection;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.ui.IEditorInput;
@@ -19,70 +18,75 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * @author Donald G. Dunne
  */
-public class MassArtifactEditorInput implements IEditorInput {
+public class WorkflowEditorInput implements IEditorInput {
 
-   private final Collection<? extends Artifact> artifacts;
-   private final String name;
+   protected Artifact artifact;
 
-   /**
-    * @param artifact
-    */
-   public MassArtifactEditorInput(String name, Collection<? extends Artifact> artifacts) {
-      this.name = name;
-      this.artifacts = artifacts;
+   public WorkflowEditorInput(Artifact artifact) {
+      this.artifact = artifact;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput#equals(java.lang.Object)
-    */
-   @Override
    public boolean equals(Object obj) {
-      return false;
+      boolean equals = false;
+      if (obj instanceof WorkflowEditorInput) {
+         WorkflowEditorInput otherEdInput = (WorkflowEditorInput) obj;
+
+         equals = (artifact == otherEdInput.artifact);
+      }
+      return equals;
    }
 
-   /**
-    * @return the taskArts
-    */
-   public Collection<? extends Artifact> getArtifacts() {
-      return artifacts;
-   }
-
-   /**
-    * @return the name
-    */
-   public String getName() {
-      return name;
-   }
-
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see org.eclipse.ui.IEditorInput#exists()
     */
    public boolean exists() {
-      return false;
+      return true;
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
     */
    public ImageDescriptor getImageDescriptor() {
       return null;
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.ui.IEditorInput#getName()
+    */
+   public String getName() {
+      if (artifact == null) {
+         return "No Artifact Input Provided";
+      }
+      return artifact.getVersionedName();
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
     * @see org.eclipse.ui.IEditorInput#getPersistable()
     */
    public IPersistableElement getPersistable() {
       return null;
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see org.eclipse.ui.IEditorInput#getToolTipText()
     */
    public String getToolTipText() {
-      return "";
+      return getName();
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
     */
    @SuppressWarnings("unchecked")
@@ -90,4 +94,14 @@ public class MassArtifactEditorInput implements IEditorInput {
       return null;
    }
 
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   /**
+    * @param artifact the artifact to set
+    */
+   public void setArtifact(Artifact artifact) {
+      this.artifact = artifact;
+   }
 }

@@ -69,10 +69,6 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
    public void onDirtied() {
    }
 
-   public ArtifactEditorInput getEditorInput() {
-      return (ArtifactEditorInput) super.getEditorInput();
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.ui.forms.editor.FormEditor#getToolkit()
     */

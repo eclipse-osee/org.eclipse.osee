@@ -325,10 +325,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
          Artifact artifact = artifacts.iterator().next();
          try {
             if (artifact.getBranch() != BranchPersistenceManager.getAtsBranch() && artifact.getBranch() != BranchPersistenceManager.getInstance().getDefaultBranch()) {
-               if (artifact == null || getEditorInput().getArtifact() == null) {
-                  AWorkbench.getActivePage().closeEditor(this, false);
-                  return;
-               }
+               AWorkbench.getActivePage().closeEditor(this, false);
+               return;
             }
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
