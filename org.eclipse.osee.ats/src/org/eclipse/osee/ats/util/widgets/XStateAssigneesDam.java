@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,13 +25,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
  */
 public abstract class XStateAssigneesDam extends XTextDam {
 
-   protected final String attributeName;
+   protected final String attributeTypeName;
    protected final StateMachineArtifact sma;
 
    public XStateAssigneesDam(StateMachineArtifact sma, String attributeName) {
       super(attributeName);
       this.sma = sma;
-      this.attributeName = attributeName;
+      this.attributeTypeName = attributeName;
       try {
          setArtifact(sma, attributeName);
       } catch (Exception ex) {
@@ -40,16 +39,12 @@ public abstract class XStateAssigneesDam extends XTextDam {
       }
    }
 
-   private Collection<Attribute<String>> getAttributes() throws SQLException {
-      return sma.getAttributes(attributeName);
-   }
-
    public SMAState getState(String stateName, boolean create) {
       try {
-         for (Attribute<String> attr : getAttributes()) {
-            if (attr.getValue().startsWith(stateName + ";")) {
+         for (String stateXml : sma.getAttributesToStringCollection(attributeTypeName)) {
+            if (stateXml.startsWith(stateName + ";")) {
                SMAState state = new SMAState();
-               state.setFromXml((String) attr.getValue());
+               state.setFromXml(stateXml);
                return state;
             }
          }
@@ -63,9 +58,9 @@ public abstract class XStateAssigneesDam extends XTextDam {
    public Set<SMAState> getStates() {
       Set<SMAState> states = new HashSet<SMAState>();
       try {
-         for (Attribute<String> attr : getAttributes()) {
+         for (String stateXml : sma.getAttributesToStringCollection(attributeTypeName)) {
             SMAState state = new SMAState();
-            state.setFromXml(attr.getValue());
+            state.setFromXml(stateXml);
             states.add(state);
          }
       } catch (Exception ex) {
@@ -77,7 +72,8 @@ public abstract class XStateAssigneesDam extends XTextDam {
    public void setState(SMAState state) throws Exception {
       // Update attribute if it already exists
       try {
-         for (Attribute<String> attr : getAttributes()) {
+         Collection<Attribute<String>> attrs = sma.getAttributes(attributeTypeName);
+         for (Attribute<String> attr : attrs) {
             SMAState storedState = new SMAState();
             storedState.setFromXml(attr.getValue());
             if (state.getName().equals(storedState.getName())) {
@@ -86,8 +82,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
             }
          }
          // Else, doesn't exist yet, create
-         Attribute<String> newAttribute = sma.getAttributeManager(this.attributeName).getNewAttribute();
-         newAttribute.setValue(state.toXml());
+         sma.addAttribute(attributeTypeName, state.toXml());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Error setting state data for " + sma.getHumanReadableId(), ex, false);
       }

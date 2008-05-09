@@ -86,7 +86,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     */
    @Override
    public void doSave(IProgressMonitor monitor) {
-      System.out.println("doSave called");
       if (smaMgr.isHistoricalVersion()) {
          AWorkbench.popup(
                "Historical Error",
@@ -191,12 +190,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       try {
          Result result = workFlowTab.isXWidgetDirty();
          if (result.isTrue()) {
-            System.err.println("SMAEditor: " + result.getText());
+            //            System.err.println("SMAEditor: " + result.getText());
             return true;
          }
          result = ((StateMachineArtifact) getEditorInput().getArtifact()).isSMADirty();
          if (result.isTrue()) {
-            System.err.println("SMAEditor: " + result.getText());
+            //            System.err.println("SMAEditor: " + result.getText());
             return true;
          }
       } catch (Exception ex) {

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.sql.SQLException;
 import java.util.Collection;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -64,7 +65,7 @@ public class XListDam extends XList implements IArtifactWidget {
       try {
          Collection<String> enteredValues = getSelectedStrs();
          Collection<String> storedValues = getStoredStrs();
-         if (!enteredValues.equals(storedValues)) {
+         if (!Collections.isEqual(enteredValues, storedValues)) {
             return new Result(true, attributeTypeName + " is dirty");
          }
       } catch (NumberFormatException ex) {
