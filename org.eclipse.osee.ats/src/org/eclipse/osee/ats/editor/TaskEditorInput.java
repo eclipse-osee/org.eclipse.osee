@@ -17,13 +17,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 /**
  * @author Donald G. Dunne
  */
-public class TaskEditorInput extends ArtifactEditorInput {
+public class TaskEditorInput implements IEditorInput {
 
    private final Collection<TaskArtifact> taskArts;
    private final String name;
@@ -33,23 +33,17 @@ public class TaskEditorInput extends ArtifactEditorInput {
     * @param artifact
     */
    public TaskEditorInput(String name, Collection<TaskArtifact> taskArts, List<TaskResOptionDefinition> resOptions) {
-      super(null);
       this.name = name;
       this.taskArts = taskArts;
       this.resOptions = resOptions;
    }
 
    public TaskEditorInput(String name, Collection<TaskArtifact> taskArts) {
-      super(null);
       this.name = name;
       this.taskArts = taskArts;
       this.resOptions = null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput#equals(java.lang.Object)
-    */
-   @Override
    public boolean equals(Object obj) {
       return false;
    }
@@ -107,6 +101,14 @@ public class TaskEditorInput extends ArtifactEditorInput {
     */
    public String getToolTipText() {
       return "";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+    */
+   @Override
+   public Object getAdapter(Class adapter) {
+      return null;
    }
 
 }

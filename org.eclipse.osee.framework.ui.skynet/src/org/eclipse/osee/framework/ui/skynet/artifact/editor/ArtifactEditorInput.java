@@ -26,12 +26,13 @@ public class ArtifactEditorInput implements IEditorInput {
    }
 
    public boolean equals(Object obj) {
+      boolean equals = false;
       if (obj instanceof ArtifactEditorInput) {
          ArtifactEditorInput otherEdInput = (ArtifactEditorInput) obj;
 
-         return artifact == otherEdInput.artifact;
+         equals = (artifact == otherEdInput.artifact);
       }
-      return false;
+      return equals;
    }
 
    /*
