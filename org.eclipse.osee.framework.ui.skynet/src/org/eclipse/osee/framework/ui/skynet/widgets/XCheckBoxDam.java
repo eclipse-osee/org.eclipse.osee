@@ -54,13 +54,17 @@ public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
    @Override
    public Result isDirty() throws Exception {
       try {
-         Boolean enteredValue = checkButton.getSelection();
-         Boolean storedValue = artifact.getSoleAttributeValue(attributeTypeName);
-         if (enteredValue.booleanValue() != storedValue.booleanValue()) {
-            return new Result(true, attributeTypeName + " is dirty");
+         if (checkButton != null && checkButton.isDisposed() != true) {
+            Boolean enteredValue = checkButton.getSelection();
+            Boolean storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+            if (enteredValue.booleanValue() != storedValue.booleanValue()) {
+               return new Result(true, attributeTypeName + " is dirty");
+            }
          }
       } catch (AttributeDoesNotExist ex) {
-         if (checkButton.getSelection()) return new Result(true, attributeTypeName + " is dirty");
+         if (checkButton != null && checkButton.isDisposed() != true && checkButton.getSelection()) {
+            return new Result(true, attributeTypeName + " is dirty");
+         }
       }
       return Result.FalseResult;
    }
