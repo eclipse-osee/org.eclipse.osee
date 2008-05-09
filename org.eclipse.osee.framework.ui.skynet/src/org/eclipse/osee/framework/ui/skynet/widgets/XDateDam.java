@@ -33,7 +33,7 @@ public class XDateDam extends XDate implements IArtifactWidget {
          Date value = artifact.getSoleAttributeValue(attributeTypeName);
          super.setDate(value);
       } catch (AttributeDoesNotExist ex) {
-         super.setDate(null);
+         // do nothing
       }
    }
 
