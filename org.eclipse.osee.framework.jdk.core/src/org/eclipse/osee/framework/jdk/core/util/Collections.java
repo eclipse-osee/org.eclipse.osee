@@ -101,6 +101,20 @@ public class Collections {
       return intersection;
    }
 
+   /**
+    * Return true if same objects exist in listA and listB
+    * 
+    * @param <T>
+    * @param listA
+    * @param listB
+    * @return
+    */
+   public static <T> boolean isEqual(Collection<T> listA, Collection<T> listB) {
+      if (listA.size() != listB.size()) return false;
+      if (listA.size() != setIntersection(listA, listB).size()) return false;
+      return true;
+   }
+
    @SuppressWarnings("unchecked")
    public static Set toSet(Collection collection) {
       Set set = null;
