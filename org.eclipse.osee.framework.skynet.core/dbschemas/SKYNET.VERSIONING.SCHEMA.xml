@@ -115,7 +115,7 @@
 		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="FILE_TYPE_EXTENSION" limits="20" defaultValue="null" type="VARCHAR" />
+		<Column id="FILE_TYPE_EXTENSION" limits="20" type="VARCHAR" />
 		<Column id="NAMESPACE" limits="120" type="VARCHAR" />
 		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Column id="DEFAULT_VALUE" limits="500" type="VARCHAR" />
