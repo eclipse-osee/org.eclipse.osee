@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.change;
 
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,8 +30,8 @@ import org.eclipse.swt.graphics.Image;
  */
 public class AttributeChanged extends Change {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(AttributeChanged.class);
-   private String sourceValue;
-   private InputStream sourceContent;
+   private String isValue;
+   private String wasValue;
    private int attrId;
    private int attrTypeId;
    private AttributeType dynamicAttributeDescriptor;
@@ -45,24 +44,17 @@ public class AttributeChanged extends Change {
     * @param fromTransactionId
     * @param modType
     * @param changeType
-    * @param sourceValue
+    * @param isValue
     * @param sourceContent
     * @param attrId
     * @param attrTypeId
     */
-   public AttributeChanged(Branch branch, int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String sourceValue, InputStream sourceContent, int attrId, int attrTypeId) {
+   public AttributeChanged(Branch branch, int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId) {
       super(branch, artTypeId, artName, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
-      this.sourceValue = sourceValue;
-      this.sourceContent = sourceContent;
+      this.isValue = isValue;
+      this.wasValue = wasValue;
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
-   }
-
-   /**
-    * @return the sourceContent
-    */
-   public InputStream getSourceContent() {
-      return sourceContent;
    }
 
    /**
@@ -121,8 +113,22 @@ public class AttributeChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getValue()
     */
    @Override
-   public String getValue() {
-      return sourceValue != null ? sourceValue : "Stream data";
+   public String getIsValue() {
+      return isValue != null ? isValue : "";
+   }
+
+   /**
+    * @return the wasValue
+    */
+   public String getWasValue() {
+      return wasValue;
+   }
+
+   /**
+    * @param wasValue the wasValue to set
+    */
+   public void setWasValue(String wasValue) {
+      this.wasValue = wasValue;
    }
 
    private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
@@ -132,8 +138,6 @@ public class AttributeChanged extends Change {
                      ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(getArtTypeId()),
                      getArtifact(), null, null, getFromTransactionId(), getFromTransactionId(), getToTransactionId(),
                      getArtId(), getGamma(), null);
-         //         new ArtifactChange(getChangeType(), getArtId(), getModificationType().getValue(), getGamma(), null, null,
-         //               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(getArtTypeId()));
       }
       return artifactChange;
    }

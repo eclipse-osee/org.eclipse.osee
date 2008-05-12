@@ -152,7 +152,7 @@ public class RelationChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getValue()
     */
    @Override
-   public String getValue() {
+   public String getIsValue() {
       return getRationale();
    }
 
@@ -170,6 +170,14 @@ public class RelationChanged extends Change {
    @Override
    public String getItemKind() {
       return "Relation";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getWasValue()
+    */
+   @Override
+   public String getWasValue() {
+      return null;
    }
 
 }

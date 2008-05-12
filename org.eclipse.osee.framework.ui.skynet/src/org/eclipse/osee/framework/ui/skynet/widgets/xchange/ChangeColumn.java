@@ -23,12 +23,13 @@ public enum ChangeColumn {
 
    Empty("", 0, SWT.LEFT, true, SortDataType.String, false),
    Name("Artifact name(s)", 250, SWT.LEFT, true, SortDataType.String, false),
-   Item_Type("Item Type", 90, SWT.LEFT, true, SortDataType.String, false),
+   Item_Type("Item Type", 100, SWT.LEFT, true, SortDataType.String, false),
    Item_Kind("Item Kind", 70, SWT.LEFT, true, SortDataType.String, false),
    Change_Type("Change Type", 50, SWT.LEFT, true, SortDataType.String, false),
    // TODO Temporary column until dynamic attributes can be added
    CSCI("CSCI", 50, SWT.LEFT, true, SortDataType.String, false),
-   Value("Value", 300, SWT.LEFT, true, SortDataType.String, false);
+   Is_Value("Is Value", 150, SWT.LEFT, true, SortDataType.String, false),
+   Was_Value("Was Value", 300, SWT.LEFT, true, SortDataType.String, false);
 
    private final String name;
    private final int width;

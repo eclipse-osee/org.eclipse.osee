@@ -85,7 +85,7 @@ public class ArtifactChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getValue()
     */
    @Override
-   public String getValue() {
+   public String getIsValue() {
       return "";
    }
 
@@ -113,6 +113,14 @@ public class ArtifactChanged extends Change {
    @Override
    public String getItemKind() {
       return "Artifact";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.change.Change#getWasValue()
+    */
+   @Override
+   public String getWasValue() {
+      return null;
    }
 
 }

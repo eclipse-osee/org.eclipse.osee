@@ -155,7 +155,7 @@ public class ChangeView extends ViewPart implements IActionable {
       this.changes = changes;
       try {
          if (xChangeViewer != null && changes != null) xChangeViewer.setChanges(changes);
-         setPartName("Change Report: " + changes[0].getToTransactionId().getBranch().getBranchShortName());
+         setPartName("Change Report: " + changes[0].getBranch().getBranchShortName());
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

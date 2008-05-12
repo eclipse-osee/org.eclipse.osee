@@ -60,6 +60,13 @@ public abstract class Change implements IAdaptable {
    }
 
    /**
+    * @param modType the modType to set
+    */
+   public void setModType(ModificationType modType) {
+      this.modType = modType;
+   }
+
+   /**
     * @return the modification type (New, Modified, Deleted)
     */
    public ModificationType getModificationType() {
@@ -120,6 +127,20 @@ public abstract class Change implements IAdaptable {
    }
 
    /**
+    * @return the artTypeId
+    */
+   public int getArtTypeId() {
+      return artTypeId;
+   }
+
+   /**
+    * @return the branch
+    */
+   public Branch getBranch() {
+      return branch;
+   }
+
+   /**
     * @param fromTransactionId the fromTransactionId to set
     */
    public void setFromTransactionId(TransactionId fromTransactionId) {
@@ -130,7 +151,9 @@ public abstract class Change implements IAdaptable {
 
    public abstract Image getItemTypeImage();
 
-   public abstract String getValue();
+   public abstract String getIsValue();
+
+   public abstract String getWasValue();
 
    public abstract String getItemTypeName() throws Exception;
 
@@ -143,19 +166,5 @@ public abstract class Change implements IAdaptable {
     */
    public void setArtName(String artName) {
       this.artName = artName;
-   }
-
-   /**
-    * @return the artTypeId
-    */
-   public int getArtTypeId() {
-      return artTypeId;
-   }
-
-   /**
-    * @return the branch
-    */
-   public Branch getBranch() {
-      return branch;
    }
 }
