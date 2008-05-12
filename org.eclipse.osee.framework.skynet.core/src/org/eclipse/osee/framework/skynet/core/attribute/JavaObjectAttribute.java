@@ -17,12 +17,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public final class JavaObjectAttribute extends BinaryAttribute<Object> {
 
-   public JavaObjectAttribute(AttributeType attributeType, IBinaryAttributeDataProvider dataProvider) {
-      super(attributeType, dataProvider);
+   public JavaObjectAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    /* (non-Javadoc)
@@ -32,7 +32,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    public Object getValue() {
       Object obj = null;
       try {
-         InputStream inputStream = new ByteArrayInputStream(dataProvider.getValueAsBytes());
+         InputStream inputStream = new ByteArrayInputStream(getAttributeDataProvider().getValueAsBytes());
          if (inputStream != null) {
             ObjectInputStream objectStream = new ObjectInputStream(inputStream);
             obj = objectStream.readObject();
@@ -55,8 +55,8 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
          objectStream.writeObject(value);
          objectStream.flush();
          objectStream.close();
-         dataProvider.setValue(byteStream.toByteArray());
-         dataProvider.setDisplayableString(value != null ? value.getClass().getName() : "null");
+         getAttributeDataProvider().setValue(byteStream.toByteArray());
+         getAttributeDataProvider().setDisplayableString(value != null ? value.getClass().getName() : "null");
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
@@ -67,6 +67,6 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
     */
    @Override
    public String getDisplayableString() {
-      return dataProvider.getDisplayableString();
+      return getAttributeDataProvider().getDisplayableString();
    }
 }

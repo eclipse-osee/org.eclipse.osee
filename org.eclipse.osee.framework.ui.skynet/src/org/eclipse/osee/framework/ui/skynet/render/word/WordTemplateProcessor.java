@@ -467,7 +467,7 @@ public class WordTemplateProcessor {
 
          if (paragraphNumber != null && saveParagraphNumOnArtifact) {
             if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-               artifact.setSoleStringAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
+               artifact.setSoleXAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
                artifact.persistAttributes();
             }
          }
@@ -510,7 +510,7 @@ public class WordTemplateProcessor {
       // This is for SRS Publishing. Do not publish unspecified attributes
       if (!allAttrs && (attributeTypeName.equals(Requirements.PARTITION) || attributeTypeName.equals("Safety Criticality"))) {
          if (artifact.isAttributeTypeValid(Requirements.PARTITION)) {
-            for (Attribute partition : artifact.getAttributeManager(Requirements.PARTITION).getAttributes()) {
+            for (Attribute<?> partition : artifact.getAttributes(Requirements.PARTITION)) {
                if (partition.getValue().equals("Unspecified")) {
                   return;
                }
@@ -546,15 +546,14 @@ public class WordTemplateProcessor {
                String data = (String) value;
                String wordContent = WordUtil.stripSpellCheck(data);//TODO what is the best way to get at unknown attribute types? (because this isn't it)
                if (isEditMode) {
-                  AttributeType attributeDescriptor = attribute.getAttributeManager().getAttributeType();
-                  writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeDescriptor.getName()),
+                  writeXMLMetaDataWrapper(wordMl, elementNameFor(attributeType.getName()),
                         "ns0:guid=\"" + artifact.getGuid() + "\"",
-                        "ns0:attrId=\"" + attributeDescriptor.getAttrTypeId() + "\"", wordContent);
+                        "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"", wordContent);
                } else {
                   wordMl.addWordMl(wordContent);
                }
             } else {
-               System.out.println(artifact.getArtifactType().getName() + " : " + artifact.getSoleAttributeValue("Name") + " : " + attribute.getAttributeType().getName() + " == null");
+               System.out.println(artifact.getArtifactType().getName() + " : " + artifact.getSoleAttributeValue("Name") + " : " + attributeType.getName() + " == null");
             }
 
             wordMl.resetListValue();

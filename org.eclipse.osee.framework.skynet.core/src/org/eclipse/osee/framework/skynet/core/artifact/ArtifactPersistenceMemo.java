@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import org.eclipse.osee.framework.jdk.core.util.PersistenceMemo;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Jeff C. Phillips
  */
-public class ArtifactPersistenceMemo implements PersistenceMemo {
+public class ArtifactPersistenceMemo {
 
    private TransactionId transactionId;
    private int artId;

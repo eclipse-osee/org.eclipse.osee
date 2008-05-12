@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import org.eclipse.osee.framework.jdk.core.util.PersistenceMemo;
-
 /**
  * @author Robert A. Fisher
  */
-public class AttributeMemo implements PersistenceMemo {
+public class AttributeMemo {
    private int attrId;
    private int gammaId;
+   private boolean deleted;
+   private boolean dirty;
+
+   public AttributeMemo() {
+   }
 
    /**
     * @param attrId
@@ -38,4 +41,50 @@ public class AttributeMemo implements PersistenceMemo {
    public int getGammaId() {
       return gammaId;
    }
+
+   public void setDeleted(boolean isDeleted) {
+      this.deleted = isDeleted;
+   }
+
+   /**
+    * Set this attribute as not dirty. Should only be called my the persistence manager once it has persisted this
+    * attribute.
+    */
+   public void setDirty(boolean dirty) {
+      this.dirty = dirty;
+   }
+
+   /**
+    * @return Returns the dirty.
+    */
+   public boolean isDirty() {
+      return dirty;
+   }
+
+   /**
+    * @return the deleted
+    */
+   public boolean isDeleted() {
+      return deleted;
+   }
+
+   /**
+    * @param attrId the attrId to set
+    */
+   public void setAttrId(int attrId) {
+      this.attrId = attrId;
+   }
+
+   /**
+    * @param gammaId the gammaId to set
+    */
+   public void setGammaId(int gammaId) {
+      this.gammaId = gammaId;
+   }
+
+   public void setIds(int attrId, int gammaId) {
+      this.attrId = attrId;
+      this.gammaId = gammaId;
+   }
+
 }

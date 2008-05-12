@@ -11,23 +11,15 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
  */
 public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
 
-   private ICharacterAttributeDataProvider dataProvider;
-
-   public FloatingPointAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType);
-      this.dataProvider = dataProvider;
-      String defaultValue = attributeType.getDefaultValue();
-      if (Strings.isValid(defaultValue) != true) {
-         defaultValue = "0.0";
-      }
-      dataProvider.setValue(defaultValue);
+   public FloatingPointAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    /* (non-Javadoc)
@@ -35,7 +27,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
     */
    @Override
    public Double getValue() {
-      String doubleString = dataProvider.getValueAsString();
+      String doubleString = getAttributeDataProvider().getValueAsString();
       return Strings.isValid(doubleString) ? Double.valueOf(doubleString) : null;
    }
 
@@ -44,7 +36,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
     */
    @Override
    public void setValue(Double value) {
-      dataProvider.setValue(String.valueOf(value));
+      getAttributeDataProvider().setValue(String.valueOf(value));
    }
 
    /* (non-Javadoc)
@@ -52,7 +44,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
     */
    @Override
    public String getDisplayableString() {
-      return dataProvider.getDisplayableString();
+      return getAttributeDataProvider().getDisplayableString();
    }
 
    /* (non-Javadoc)
@@ -67,5 +59,18 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
          toSet = new Double(value);
       }
       setValue(toSet);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
+    */
+   @Override
+   public void initializeDefaultValue() {
+      getAttributeDataProvider().setValue(getAttributeType().getDefaultValue());
+      String defaultValue = getAttributeType().getDefaultValue();
+      if (!Strings.isValid(defaultValue)) {
+         defaultValue = "0.0";
+      }
+      getAttributeDataProvider().setValue(defaultValue);
    }
 }

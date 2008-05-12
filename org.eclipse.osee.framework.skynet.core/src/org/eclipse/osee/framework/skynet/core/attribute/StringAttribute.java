@@ -10,23 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
  */
 public class StringAttribute extends CharacterBackedAttribute<String> {
 
-   private ICharacterAttributeDataProvider dataProvider;
-
-   public StringAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType);
-      this.dataProvider = dataProvider;
-      String defaultValue = attributeType.getDefaultValue();
-      if (defaultValue == null) {
-         defaultValue = "";
-      }
-      dataProvider.setValue(defaultValue);
+   public StringAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    /* (non-Javadoc)
@@ -34,7 +26,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
     */
    @Override
    public String getValue() {
-      return dataProvider.getValueAsString();
+      return getAttributeDataProvider().getValueAsString();
    }
 
    /* (non-Javadoc)
@@ -42,7 +34,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
     */
    @Override
    public void setValue(String value) {
-      dataProvider.setValue(value);
+      getAttributeDataProvider().setValue(value);
    }
 
    /* (non-Javadoc)
@@ -50,7 +42,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
     */
    @Override
    public String getDisplayableString() {
-      return dataProvider.getDisplayableString();
+      return getAttributeDataProvider().getDisplayableString();
    }
 
    /* (non-Javadoc)
@@ -59,5 +51,17 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
    @Override
    public void setFromString(String value) throws Exception {
       setValue(value);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
+    */
+   @Override
+   public void initializeDefaultValue() {
+      String defaultValue = getAttributeType().getDefaultValue();
+      if (defaultValue == null) {
+         defaultValue = "";
+      }
+      getAttributeDataProvider().setValue(defaultValue);
    }
 }

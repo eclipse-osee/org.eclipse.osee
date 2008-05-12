@@ -15,17 +15,16 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 
 public class AttributeResourceProcessor extends AbstractResourceProcessor {
 
-   private final AttributeStateManager stateManager;
+   private final Attribute<?> attribute;
 
-   public AttributeResourceProcessor(AttributeStateManager stateManager) {
-      this.stateManager = stateManager;
+   public AttributeResourceProcessor(Attribute<?> attribute) {
+      this.attribute = attribute;
    }
 
    private URL generatePathURL(DataStore dataToStore) throws Exception {
@@ -44,13 +43,11 @@ public class AttributeResourceProcessor extends AbstractResourceProcessor {
    }
 
    protected URL getStorageURL(DataStore dataToStore) throws Exception {
-      Attribute<?> attribute = stateManager.getAttribute();
-      AttributeMemo memo = attribute.getPersistenceMemo();
-      Artifact artifact = attribute.getAttributeManager().getParentArtifact();
+      Artifact artifact = attribute.getArtifact();
 
       Map<String, String> parameterMap = new HashMap<String, String>();
       parameterMap.put("protocol", "attr");
-      parameterMap.put("seed", Integer.toString(memo.getGammaId()));
+      parameterMap.put("seed", Integer.toString(attribute.getPersistenceMemo().getGammaId()));
       parameterMap.put("name", artifact.getHumanReadableId());
       String extension = dataToStore.getExtension();
       if (Strings.isValid(extension) != false) {

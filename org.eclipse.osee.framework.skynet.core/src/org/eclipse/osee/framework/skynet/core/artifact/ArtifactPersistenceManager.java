@@ -22,11 +22,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,7 +37,6 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetArtifactEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactModifiedEvent;
@@ -64,10 +61,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
@@ -110,9 +104,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    private static final String PURGE_ATTRIBUTE_GAMMAS =
          "DELETE" + " FROM " + TRANSACTIONS_TABLE + " WHERE gamma_id IN" + "(SELECT gamma_id" + " FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE attr_id = ?)";
 
-   // 'order by transaction_id desc' clause works with the DynamicAttributeManager to ignore effectively overwritten attributes with {min,max} of {0,1} with >1 attribute instances.
    private static final String SELECT_ATTRIBUTES_FOR_ARTIFACT =
-         "SELECT " + ATTRIBUTE_ALIAS_1.columns("attr_id", "attr_type_id", "gamma_id", "value", "uri") + " FROM " + ATTRIBUTE_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + "=?" + " AND " + ATTRIBUTE_ALIAS_1.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")" + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " <= ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)" + " ORDER BY " + TRANSACTIONS_TABLE.column("transaction_id") + " DESC";
+         "SELECT " + ATTRIBUTE_ALIAS_1.columns("attr_id", "attr_type_id", "gamma_id", "value", "uri") + " FROM " + ATTRIBUTE_ALIAS_1 + "," + TRANSACTIONS_TABLE + " WHERE " + ATTRIBUTE_ALIAS_1.column("art_id") + "=?" + " AND " + ATTRIBUTE_ALIAS_1.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ")" + " FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " <= ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
    private static final String UPDATE_ARTIFACT_TYPE = "UPDATE osee_define_artifact SET art_type_id = ? WHERE art_id =?";
 
@@ -202,8 +195,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    public void saveTrace(Artifact artifact, boolean recurse, SkynetTransactionBuilder builder) throws Exception {
-      if (artifact.isInAttributeInitialization()) throw new IllegalArgumentException(
-            "The artifact is in attribute initialization still");
       if (!accessControlManager.checkObjectPermission(artifact.getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
             "No write permissions for the branch that this artifact belongs to:" + artifact.getBranch());
       if (artifact.getPersistenceMemo() != null && !artifact.getPersistenceMemo().getTransactionId().isEditable()) throw new IllegalArgumentException(
@@ -572,76 +563,27 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @param branch The tag to get the data for.
     * @throws SQLException
     */
-   protected void setAttributesOnArtifact(Artifact artifact) throws SQLException {
-      HashMap<Integer, DynamicAttributeManager> typeHash = new HashMap<Integer, DynamicAttributeManager>();
-      TransactionId transactionId;
-
-      if (artifact.getPersistenceMemo() != null)
-         transactionId = artifact.getPersistenceMemo().getTransactionId();
-      else
-         transactionId = transactionIdManager.getEditableTransactionId(artifact.getBranch());
-
-      DynamicAttributeManager attributeManager;
-
-      Collection<AttributeType> attributeTypeDescriptors =
-            configurationManager.getAttributeTypesFromArtifactType(artifact.getArtifactType(), artifact.getBranch());
-      for (AttributeType attributeType : attributeTypeDescriptors) {
-         attributeManager = new DynamicAttributeManager(artifact, attributeType, false);
-         attributeManager.setupForInitialization(false);
-         typeHash.put(attributeType.getAttrTypeId(), attributeManager);
-      }
+   public static void setAttributesOnArtifact(Artifact artifact) throws SQLException {
+      TransactionId transactionId = artifact.getPersistenceMemo().getTransactionId();
 
       ConnectionHandlerStatement chStmt = null;
       try {
-         if (artifact.getPersistenceMemo() != null) {
-            // Acquire previously stored attributes
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_FOR_ARTIFACT, SQL3DataType.INTEGER,
-                        artifact.getArtId(), SQL3DataType.INTEGER, ModificationType.DELETED.getValue(),
-                        SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                        transactionId.getBranch().getBranchId());
+         // Acquire previously stored attributes
+         chStmt =
+               ConnectionHandler.runPreparedQuery(SELECT_ATTRIBUTES_FOR_ARTIFACT, SQL3DataType.INTEGER,
+                     artifact.getArtId(), SQL3DataType.INTEGER, ModificationType.DELETED.getValue(),
+                     SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                     transactionId.getBranch().getBranchId());
 
-            if (chStmt.next()) {
-               Attribute attribute;
-               int attrTypeId;
-               DynamicAttributeManager type;
-
-               do {
-                  attrTypeId = chStmt.getRset().getInt("attr_type_id");
-                  type = typeHash.get(attrTypeId);
-
-                  // This handles attributes that have been stored on the Artifact but are not
-                  // currently
-                  // defined in the schema as being appropriate for this Artifact.
-                  if (type == null) {
-                     type = new DynamicAttributeManager(artifact, AttributeTypeManager.getType(attrTypeId), false);
-                     type.setupForInitialization(false);
-                     typeHash.put(attrTypeId, type);
-                  }
-
-                  try {
-                     String varchar = chStmt.getRset().getString("value");
-                     attribute = type.injectFromDb(varchar, chStmt.getRset().getString("uri"));
-
-                  } catch (SQLException e) {
-                     throw new RuntimeException(e);
-                  }
-
-                  attribute.setPersistenceMemo(new AttributeMemo(chStmt.getRset().getInt("attr_id"),
-                        chStmt.getRset().getInt("gamma_id")));
-               } while (chStmt.next());
-            }
+         ResultSet rSet = chStmt.getRset();
+         while (rSet.next()) {
+            AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
+                  rSet.getString("value"), rSet.getString("uri"), rSet.getInt("attr_id"), rSet.getInt("gamma_id"));
          }
       } finally {
          DbUtil.close(chStmt);
       }
-
-      Collection<DynamicAttributeManager> attributes = typeHash.values();
-      // Finalize the initialization of all the attribute sets
-      for (DynamicAttributeManager attr : attributes)
-         attr.enforceMinMaxConstraints();
-
-      artifact.setAttributeManagers(attributes);
+      AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
    }
 
    /**
@@ -651,31 +593,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @param artifacts
     * @throws SQLException
     */
-   public void initializeArtifacts(Collection<Artifact> artifacts, TransactionId transactionId) throws SQLException {
+   private void initializeArtifacts(Collection<Artifact> artifacts, TransactionId transactionId) throws SQLException {
       if (artifacts.isEmpty()) {
          return;
-      }
-
-      initializeArtifactsAttributes(artifacts, transactionId);
-
-      for (Artifact artifact : artifacts) {
-         artifact.setNotDirty(); // The artifacts are fresh, so mark them as not dirty
-         artifact.onInitializationComplete();
-      }
-   }
-
-   private void initializeArtifactsAttributes(Collection<Artifact> artifacts, TransactionId transactionId) throws SQLException {
-      DoubleKeyHashMap<Integer, Integer, DynamicAttributeManager> typeHash =
-            new DoubleKeyHashMap<Integer, Integer, DynamicAttributeManager>();
-      DynamicAttributeManager attributeManager;
-
-      for (Artifact artifact : artifacts) {
-         for (AttributeType attributeType : configurationManager.getAttributeTypesFromArtifactType(
-               artifact.getArtifactType(), artifact.getBranch())) {
-            attributeManager = new DynamicAttributeManager(artifact, attributeType, false);
-            attributeManager.setupForInitialization(false);
-            typeHash.put(artifact.getArtId(), attributeType.getAttrTypeId(), attributeManager);
-         }
       }
 
       // Can only ask for 1000 distinct values at a time
@@ -683,66 +603,40 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       while (!tempArts.isEmpty()) {
 
          String artIdList = getArtIdList(tempArts);
-         // Acquire previously stored attributes
-         // NOTE: the 'order by transaction_id desc' clause works with the DynamicAttributeManager
-         // to allow
-         // it to ignore effectively overwritten attributes with {min,max} of {0,1} with >1
-         // attribute instances.
-         ConnectionHandlerStatement chStmt =
-               ConnectionHandler.runPreparedQuery(
-                     "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("art_id", "attr_id", "attr_type_id", "gamma_id",
-                           "value", "uri") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE
 
-                     + ", (SELECT " + ATTRIBUTE_VERSION_TABLE.column("attr_id") + ", MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ") AS last_transaction_id FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN (" + artIdList + ") " + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + EQUAL + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + EQUAL + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY attr_id) t1 " + " WHERE " + TRANSACTIONS_TABLE.column("transaction_id") + "= t1.last_transaction_id" + " AND " + ATTRIBUTE_VERSION_TABLE.column("attr_id") + "= t1.attr_id" + " AND " + ATTRIBUTE_VERSION_TABLE.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN (" + artIdList + ")" + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " ORDER BY " + TRANSACTIONS_TABLE.column("transaction_id") + " DESC",
-                     SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                     transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER, ModificationType.DELETED.getValue());
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(
+                        "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("art_id", "attr_id", "attr_type_id", "gamma_id",
+                              "value", "uri") + " FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + ", (SELECT " + ATTRIBUTE_VERSION_TABLE.column("attr_id") + ", MAX(" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ") AS last_transaction_id FROM " + ATTRIBUTE_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN (" + artIdList + ") " + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + EQUAL + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + EQUAL + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY attr_id) t1 " + " WHERE " + TRANSACTIONS_TABLE.column("transaction_id") + "= t1.last_transaction_id" + " AND " + ATTRIBUTE_VERSION_TABLE.column("attr_id") + "= t1.attr_id" + " AND " + ATTRIBUTE_VERSION_TABLE.column("modification_id") + "<> ?" + " AND " + ATTRIBUTE_VERSION_TABLE.column("art_id") + " IN (" + artIdList + ")" + " AND " + ATTRIBUTE_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " ORDER BY " + TRANSACTIONS_TABLE.column("transaction_id") + " DESC",
+                        SQL3DataType.INTEGER, transactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                        transactionId.getBranch().getBranchId(), SQL3DataType.INTEGER,
+                        ModificationType.DELETED.getValue());
 
-         Attribute attribute;
-         int artId;
-         int lastArtId = -1; // Set to an invalid value to force a trigger on the first run of the
-         // loop
+            int lastArtId = -1; // Set to an invalid value to force a trigger on the first run of the loop
+            Artifact artifact = null;
+            ResultSet rSet = chStmt.getRset();
+            while (rSet.next()) {
+               int artId = rSet.getInt("art_id");
 
-         int attrTypeId;
-         Artifact artifact = null;
-         ResultSet rSet = chStmt.getRset();
-         while (rSet.next()) {
-            artId = rSet.getInt("art_id");
+               // Get a new artifact reference if the ID has changed
+               if (artId != lastArtId) {
+                  lastArtId = artId;
+                  artifact = getArtifactFromId(artId, transactionId);
+               }
 
-            // Get a new artifact reference if the ID has changed
-            if (artId != lastArtId) {
-               lastArtId = artId;
-               artifact = getArtifactFromId(artId, transactionId);
+               AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
+                     rSet.getString("value"), rSet.getString("uri"), rSet.getInt("attr_id"), rSet.getInt("gamma_id"));
             }
-
-            attrTypeId = rSet.getInt("attr_type_id");
-            attributeManager = typeHash.get(artId, attrTypeId);
-            if (attributeManager == null) {
-               attributeManager =
-                     new DynamicAttributeManager(artifact, AttributeTypeManager.getType(attrTypeId), false);
-               typeHash.put(artId, attrTypeId, attributeManager);
-               attributeManager.setupForInitialization(false);
-            }
-
-            attribute = attributeManager.injectFromDb(rSet.getString("value"), rSet.getString("uri"));
-            attribute.setPersistenceMemo(new AttributeMemo(rSet.getInt("attr_id"), rSet.getInt("gamma_id")));
-
+         } finally {
+            DbUtil.close(chStmt);
          }
-         DbUtil.close(chStmt);
       }
 
-      // Finalize the initialization of all the attribute sets
-      for (DynamicAttributeManager attr : typeHash.allValues())
-         attr.enforceMinMaxConstraints();
-
-      Map<Integer, DynamicAttributeManager> attributeMap;
       for (Artifact artifact : artifacts) {
-         attributeMap = typeHash.getSubHash(artifact.getArtId());
-         // The attributeMap.values() is wrapped with a new LinkedList because
-         // the returned
-         // collection is backed by the hashmap. This causes a lot of
-         // restrictions of the collection
-         // such as not being able to add, and that will not work.
-         artifact.setAttributeManagers(new LinkedList<DynamicAttributeManager>(attributeMap.values()));
+         artifact.setNotDirty(); // The artifacts are fresh, so mark them as not dirty
+         artifact.onInitializationComplete();
       }
    }
 
@@ -1015,10 +909,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * 
     * @param attribute
     */
-   public void purgeAttribute(Attribute attribute) throws SQLException {
-      ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE_GAMMAS, SQL3DataType.INTEGER,
-            attribute.getPersistenceMemo().getAttrId());
-      ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE, SQL3DataType.INTEGER,
-            attribute.getPersistenceMemo().getAttrId());
+   public static void purgeAttribute(Attribute<?> attribute, int attributeId) throws SQLException {
+      ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE_GAMMAS, SQL3DataType.INTEGER, attributeId);
+      ConnectionHandler.runPreparedUpdate(PURGE_ATTRIBUTE, SQL3DataType.INTEGER, attributeId);
    }
 }

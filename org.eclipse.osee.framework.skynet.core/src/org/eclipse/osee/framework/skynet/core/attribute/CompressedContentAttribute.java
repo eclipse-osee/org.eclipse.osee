@@ -16,13 +16,13 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> implements IStreamSetableAttribute {
 
-   public CompressedContentAttribute(AttributeType attributeType, IBinaryAttributeDataProvider dataProvider) {
-      super(attributeType, dataProvider);
-      dataProvider.setDisplayableString(getAttributeType().getName());
+   public CompressedContentAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    /* (non-Javadoc)
@@ -30,7 +30,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
     */
    @Override
    public String getDisplayableString() {
-      return dataProvider.getDisplayableString();
+      return getAttributeDataProvider().getDisplayableString();
    }
 
    /* (non-Javadoc)
@@ -38,7 +38,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
     */
    @Override
    public InputStream getValue() {
-      return new ByteArrayInputStream(dataProvider.getValueAsBytes());
+      return new ByteArrayInputStream(getAttributeDataProvider().getValueAsBytes());
    }
 
    /* (non-Javadoc)
@@ -59,6 +59,15 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    @Override
    public void setValueFromInputStream(InputStream value) throws IOException {
       byte[] data = Lib.inputStreamToBytes(value);
-      dataProvider.setValue(data);
+      getAttributeDataProvider().setValue(data);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setAttributeDataProvider(org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider)
+    */
+   @Override
+   public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) {
+      super.setAttributeDataProvider(attributeDataProvider);
+      attributeDataProvider.setDisplayableString(getAttributeType().getName());
    }
 }

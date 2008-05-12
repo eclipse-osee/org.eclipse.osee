@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
  * @author Robert A. Fisher
  */
 public class AttributeValueSearchAttribute extends StringAttribute implements ISearchAttribute<AttributeValueSearch> {
 
-   public AttributeValueSearchAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType, dataProvider);
+   public AttributeValueSearchAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    public void setSearchPrimitive(AttributeValueSearch value) {

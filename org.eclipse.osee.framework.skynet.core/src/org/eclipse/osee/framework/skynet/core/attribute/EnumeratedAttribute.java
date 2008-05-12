@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -28,12 +28,8 @@ public class EnumeratedAttribute extends CharacterBackedAttribute<String> {
    // init of the artifact and given the "Unspecified" value
    public static String UNSPECIFIED_VALUE = "Unspecified";
 
-   private ICharacterAttributeDataProvider dataProvider;
-
-   public EnumeratedAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType);
-      this.dataProvider = dataProvider;
-      dataProvider.setValue(attributeType.getDefaultValue());
+   public EnumeratedAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
 
       try {
          Document document = Jaxp.readXmlDocument(attributeType.getValidityXml());
@@ -59,7 +55,7 @@ public class EnumeratedAttribute extends CharacterBackedAttribute<String> {
     */
    @Override
    public String getValue() {
-      return dataProvider.getValueAsString();
+      return getAttributeDataProvider().getValueAsString();
    }
 
    /* (non-Javadoc)
@@ -67,7 +63,7 @@ public class EnumeratedAttribute extends CharacterBackedAttribute<String> {
     */
    @Override
    public void setValue(String value) {
-      dataProvider.setValue(value);
+      getAttributeDataProvider().setValue(value);
    }
 
    /* (non-Javadoc)
@@ -75,7 +71,7 @@ public class EnumeratedAttribute extends CharacterBackedAttribute<String> {
     */
    @Override
    public String getDisplayableString() {
-      String toDisplay = dataProvider.getDisplayableString();
+      String toDisplay = getAttributeDataProvider().getDisplayableString();
       return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
    }
 
@@ -94,5 +90,13 @@ public class EnumeratedAttribute extends CharacterBackedAttribute<String> {
          }
       }
       setValue(toSet);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
+    */
+   @Override
+   public void initializeDefaultValue() {
+      getAttributeDataProvider().setValue(getAttributeType().getDefaultValue());
    }
 }

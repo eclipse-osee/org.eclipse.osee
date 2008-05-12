@@ -10,22 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
+import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class Attribute<T> {
-
    private final AttributeType attributeType;
-   private AttributeStateManager stateManager;
    private AttributeMemo memo;
+   private Artifact artifact;
+   private IAttributeDataProvider attributeDataProvider;
 
-   protected Attribute(AttributeType attributeType) {
+   protected Attribute(AttributeType attributeType, Artifact artifact) {
       this.attributeType = attributeType;
-      this.stateManager = null;
-      this.memo = null;
+      this.artifact = artifact;
+      this.memo = new AttributeMemo();
    }
 
    /**
@@ -36,76 +40,50 @@ public abstract class Attribute<T> {
    }
 
    /**
-    * @return stateManager Object managing this attributes state
-    */
-   protected AttributeStateManager getStateManager() {
-      return stateManager;
-   }
-
-   /**
-    * @param stateManager Object managing this attributes state
-    */
-   protected void setStateManager(AttributeStateManager stateManager) {
-      this.stateManager = stateManager;
-      this.stateManager.setAttribute(this);
-   }
-
-   /**
     * @return attributeType Attribute Type Information
     */
    public AttributeType getAttributeType() {
       return attributeType;
    }
 
-   public int getTypeId() {
-      return attributeType.getAttrTypeId();
-   }
-
-   /**
-    * @return manager The instance managing this attribute.
-    */
-   public DynamicAttributeManager getAttributeManager() {
-      return stateManager.getAttributeManager();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.plugin.core.util.PersistenceObject#getPersistenceMemo()
-    */
    public AttributeMemo getPersistenceMemo() {
-      stateManager.checkDeleted();
       return memo;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    */
-   public void setPersistenceMemo(AttributeMemo memo) {
-      this.memo = memo;
    }
 
    /**
     * @return <b>true</b> if this attribute is dirty
     */
    public boolean isDirty() {
-      return getStateManager().isDirty();
+      return memo.isDirty();
+   }
+
+   public void setDirty() {
+      memo.setDirty(true);
+      artifact.setInTransaction(false);
+      SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
+   }
+
+   public Artifact getArtifact() {
+      return artifact;
    }
 
    /**
     * Deletes the attribute
     */
    public void delete() {
-      getAttributeManager().removeAttribute(this);
+      memo.setDeleted(true);
+   }
+
+   public boolean canDelete() {
+      return artifact.getAttributeCount(attributeType.getName()) > attributeType.getMinOccurrences();
    }
 
    /**
     * Purges the attribute from the database.
     */
-   public void purge() throws SQLException {
-      getAttributeManager().purge(this);
-      getStateManager().setDeleted(true);
+   public void purge() throws Exception {
+      getAttributeDataProvider().purge();
+      memo.setDeleted(true);
    }
 
    /*
@@ -123,4 +101,26 @@ public abstract class Attribute<T> {
    public abstract T getValue();
 
    public abstract String getDisplayableString();
+
+   /**
+    * @param attributeDataProvider the attributeDataProvider to set
+    */
+   public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) {
+      this.attributeDataProvider = attributeDataProvider;
+   }
+
+   protected IAttributeDataProvider getAttributeDataProvider() {
+      return attributeDataProvider;
+   }
+
+   /**
+    * @return
+    */
+   public boolean isInDatastore() {
+      return memo.getGammaId() > 0;
+   }
+
+   public void initializeDefaultValue() {
+
+   }
 }

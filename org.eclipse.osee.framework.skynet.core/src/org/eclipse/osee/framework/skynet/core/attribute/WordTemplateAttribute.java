@@ -5,19 +5,23 @@
  */
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Jeff C. Phillips
  */
 public class WordTemplateAttribute extends WordAttribute {
 
-   public WordTemplateAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType, dataProvider);
-      setDefaultValue(attributeType.getDefaultValue());
+   public WordTemplateAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
-   protected void setDefaultValue(String value) {
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.StringAttribute#initializeDefaultValue()
+    */
+   @Override
+   public void initializeDefaultValue() {
+      String value = getAttributeType().getDefaultValue();
       StringBuilder strB = new StringBuilder(300);
       strB.append("<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\">\n\t<w:r>\n\t\t<w:t>");
       if (value != null) {
@@ -27,5 +31,4 @@ public class WordTemplateAttribute extends WordAttribute {
       strB.append("</w:t>\n\t\t</w:r>\n\t</w:p>");
       setValue(strB.toString());
    }
-
 }

@@ -10,15 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttributeDataProvider;
+
 /**
  * @author Roberto E. Escobar
  */
 public abstract class BinaryBackedAttribute<T> extends Attribute<T> {
 
-   /**
-    * @param attributeType
-    */
-   protected BinaryBackedAttribute(AttributeType attributeType) {
-      super(attributeType);
+   protected BinaryBackedAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
+   }
+
+   protected IBinaryAttributeDataProvider getAttributeDataProvider() {
+      // this cast is always safe since the the data provider passed in the constructor to 
+      // the super class is of type  IBinaryAttributeDataProvider
+      return (IBinaryAttributeDataProvider) super.getAttributeDataProvider();
    }
 }

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
@@ -29,8 +29,8 @@ public abstract class WordAttribute extends StringAttribute implements IStreamSe
     * @param attributeType
     * @param value
     */
-   public WordAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType, dataProvider);
+   public WordAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    /* (non-Javadoc)

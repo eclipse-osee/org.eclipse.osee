@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 
 /**
  * @author Ryan D. Brooks
@@ -77,7 +77,7 @@ public class AttributeTypeManager {
 
                Class<? extends Attribute<?>> baseAttributeClass =
                      extensionManager.getAttributeClassFor(baseClassString);
-               Class<? extends AbstractAttributeDataProvider> providerAttributeClass =
+               Class<? extends IAttributeDataProvider> providerAttributeClass =
                      extensionManager.getAttributeProviderClassFor(baseProviderClassString);
 
                AttributeType type =
@@ -182,7 +182,7 @@ public class AttributeTypeManager {
       AttributeExtensionManager extensionManager = AttributeExtensionManager.getInstance();
 
       Class<? extends Attribute<?>> baseAttributeClass = extensionManager.getAttributeClassFor(attributeBaseType);
-      Class<? extends AbstractAttributeDataProvider> providerAttributeClass =
+      Class<? extends IAttributeDataProvider> providerAttributeClass =
             extensionManager.getAttributeProviderClassFor(attributeProviderTypeName);
 
       int attrTypeId = Query.getNextSeqVal(null, ATTR_TYPE_ID_SEQ);

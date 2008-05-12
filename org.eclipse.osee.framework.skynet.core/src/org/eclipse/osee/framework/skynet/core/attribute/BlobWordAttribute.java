@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Jeff C. Phillips
  */
 public class BlobWordAttribute extends WordAttribute {
 
-   public BlobWordAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType, dataProvider);
+   public BlobWordAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 }

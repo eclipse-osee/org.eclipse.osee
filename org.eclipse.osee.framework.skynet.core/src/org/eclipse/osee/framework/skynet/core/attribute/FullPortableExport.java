@@ -145,7 +145,7 @@ public class FullPortableExport {
    private void createArtifactSheet(ArtifactSubtypeDescriptor descriptor, Collection<Artifact> artifacts) throws Exception {
       if (artifacts.size() > 0) {
          Artifact sampleArtifact = artifacts.iterator().next();
-         int columnNum = sampleArtifact.getAttributeManagers().size();
+         int columnNum = sampleArtifact.getAttributeTypes().size();
          excelWriter.startSheet(descriptor.getName(), columnNum);
          writeArtifactHeader(descriptor, sampleArtifact.getBranch());
          for (Artifact artifact : artifacts) {
@@ -183,19 +183,15 @@ public class FullPortableExport {
    }
 
    private String prepareAttributes(Artifact artifact, AttributeType attributeType) throws SQLException {
-      Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType);
-      if (attributes.size() == 0) {
+      if (artifact.getAttributeCount(attributeType.getName()) == 0) {
          return null;
-      } else if (attributes.size() == 1) {
-         return attributes.iterator().next().toString();
-      } else {
-         StringBuilder strB = new StringBuilder(200);
-         for (Attribute<Object> attribute : attributes) {
-            strB.append(attribute.toString());
-            strB.append(ATTRIBUTE_VALUE_DELIMITER);
-         }
-         return strB.toString();
       }
+      StringBuilder strB = new StringBuilder(200);
+      for (String attribute : artifact.getAttributesToStringList(attributeType.getName())) {
+         strB.append(attribute);
+         strB.append(ATTRIBUTE_VALUE_DELIMITER);
+      }
+      return strB.substring(0, strB.length() - ATTRIBUTE_VALUE_DELIMITER.length());
    }
 
    public String finish() throws IOException, CoreException {

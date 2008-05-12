@@ -10,27 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
  */
 public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    public static final String[] booleanChoices = new String[] {"yes", "no"};
-   private ICharacterAttributeDataProvider dataProvider;
 
-   public BooleanAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType);
-      this.dataProvider = dataProvider;
-      dataProvider.setValue(attributeType.getDefaultValue());
+   public BooleanAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    public Boolean getValue() {
-      return dataProvider.getValueAsString().equals(booleanChoices[0]);
+      return getAttributeDataProvider().getValueAsString().equals(booleanChoices[0]);
    }
 
    public void setValue(Boolean value) {
-      dataProvider.setValue(value ? booleanChoices[0] : booleanChoices[1]);
+      getAttributeDataProvider().setValue(value ? booleanChoices[0] : booleanChoices[1]);
    }
 
    /* (non-Javadoc)
@@ -38,7 +35,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
     */
    @Override
    public String getDisplayableString() {
-      String toDisplay = dataProvider.getDisplayableString();
+      String toDisplay = getAttributeDataProvider().getDisplayableString();
       return toDisplay;
    }
 
@@ -53,6 +50,14 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
 
    @Override
    public String toString() {
-      return getAttributeManager().getAttributeType().getName() + " - " + getValue();
+      return getAttributeType().getName() + " - " + getValue();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
+    */
+   @Override
+   public void initializeDefaultValue() {
+      getAttributeDataProvider().setValue(getAttributeType().getDefaultValue());
    }
 }

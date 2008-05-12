@@ -11,22 +11,15 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
  */
 public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
-   private ICharacterAttributeDataProvider dataProvider;
 
-   public IntegerAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType);
-      this.dataProvider = dataProvider;
-      String defaultValue = attributeType.getDefaultValue();
-      if (Strings.isValid(defaultValue) != true) {
-         defaultValue = "0";
-      }
-      dataProvider.setValue(defaultValue);
+   public IntegerAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    /* (non-Javadoc)
@@ -34,7 +27,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
     */
    @Override
    public Integer getValue() throws NumberFormatException {
-      String integerString = dataProvider.getValueAsString();
+      String integerString = getAttributeDataProvider().getValueAsString();
       return Strings.isValid(integerString) ? Integer.valueOf(integerString) : null;
    }
 
@@ -43,7 +36,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
     */
    @Override
    public void setValue(Integer value) {
-      dataProvider.setValue(Integer.toString(value));
+      getAttributeDataProvider().setValue(Integer.toString(value));
    }
 
    /* (non-Javadoc)
@@ -51,7 +44,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
     */
    @Override
    public String getDisplayableString() {
-      return dataProvider.getDisplayableString();
+      return getAttributeDataProvider().getDisplayableString();
    }
 
    /* (non-Javadoc)
@@ -66,5 +59,17 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
          toSet = new Integer(value);
       }
       setValue(toSet);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
+    */
+   @Override
+   public void initializeDefaultValue() {
+      String defaultValue = getAttributeType().getDefaultValue();
+      if (!Strings.isValid(defaultValue)) {
+         defaultValue = "0";
+      }
+      getAttributeDataProvider().setValue(defaultValue);
    }
 }

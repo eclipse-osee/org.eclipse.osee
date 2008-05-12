@@ -10,15 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
 
-   protected CharacterBackedAttribute(AttributeType attributeType) {
-      super(attributeType);
+   protected CharacterBackedAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    public abstract void setFromString(String value) throws Exception;
+
+   @Override
+   protected ICharacterAttributeDataProvider getAttributeDataProvider() {
+      // this cast is always safe since the the data provider passed in the constructor to 
+      // the super class is of type  ICharacterAttributeDataProvider
+      return (ICharacterAttributeDataProvider) super.getAttributeDataProvider();
+   }
 }

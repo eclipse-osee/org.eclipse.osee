@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.swt.graphics.Image;
 
@@ -65,8 +65,8 @@ public class NativeArtifact extends Artifact {
       return getSoleAttributeValue("Extension", "");
    }
 
-   public InputStream getNativeContent() throws IOException, SQLException, MultipleAttributesExist {
-      return getCompressedContentAttribute().getValue();
+   public InputStream getNativeContent() throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+      return getSoleAttributeValue(CONTENT_NAME);
    }
 
    public void setNativeContent(File importFile) throws IOException, SQLException, MultipleAttributesExist {
@@ -74,10 +74,6 @@ public class NativeArtifact extends Artifact {
    }
 
    public void setNativeContent(InputStream inputStream) throws IOException, SQLException, MultipleAttributesExist {
-      getCompressedContentAttribute().setValue(inputStream);
-   }
-
-   private CompressedContentAttribute getCompressedContentAttribute() throws SQLException, MultipleAttributesExist {
-      return (CompressedContentAttribute) getAttributeManager(CONTENT_NAME).getSoleAttribute();
+      setSoleXAttributeValue(CONTENT_NAME, inputStream);
    }
 }

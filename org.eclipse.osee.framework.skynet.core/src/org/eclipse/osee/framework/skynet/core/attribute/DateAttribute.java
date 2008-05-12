@@ -15,7 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Robert A. Fisher
@@ -30,21 +30,13 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    private static final DateFormat[] legacyDateFormats = new DateFormat[] {MMDDYYYYHHMMSSAMPM, ALLDATETIME, MMDDYYHHMM};
 
-   private ICharacterAttributeDataProvider dataProvider;
-
    /**
     * Create a date attribute with a given type, initialized to the current date and time.
     * 
     * @param attributeType The type of the attribute
     */
-   public DateAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType);
-      this.dataProvider = dataProvider;
-      String defaultValue = attributeType.getDefaultValue();
-      if (Strings.isValid(defaultValue) != true) {
-         defaultValue = "";
-      }
-      dataProvider.setValue(defaultValue);
+   public DateAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    /**
@@ -54,7 +46,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     */
    public void setValue(Date value) {
       String toSet = value != null ? Long.toString(value.getTime()) : "";
-      dataProvider.setValue(toSet);
+      getAttributeDataProvider().setValue(toSet);
    }
 
    /**
@@ -64,7 +56,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     */
    public Date getValue() {
       Date toReturn = null;
-      String value = dataProvider.getValueAsString();
+      String value = getAttributeDataProvider().getValueAsString();
       if (Strings.isValid(value) != false) {
          //TODO Added for backward compatibility with inconsistent date formats;
          try {
@@ -122,4 +114,15 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
       setValue(toSet);
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
+    */
+   @Override
+   public void initializeDefaultValue() {
+      String defaultValue = getAttributeType().getDefaultValue();
+      if (defaultValue == null) {
+         defaultValue = "";
+      }
+      getAttributeDataProvider().setValue(defaultValue);
+   }
 }

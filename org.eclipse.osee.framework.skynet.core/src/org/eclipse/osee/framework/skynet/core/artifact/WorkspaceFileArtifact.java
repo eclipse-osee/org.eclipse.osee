@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -40,7 +41,7 @@ public class WorkspaceFileArtifact extends Artifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws MultipleArtifactsExist, SQLException {
+   public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws MultipleArtifactsExist, SQLException, MultipleAttributesExist {
       Artifact artifact = null;
       int descriptorSelected = -1;
       ArtifactSubtypeDescriptor descriptor = null;
@@ -63,8 +64,8 @@ public class WorkspaceFileArtifact extends Artifact {
          if (descriptorSelected == 0) {
             descriptor = dialog.getEntry();
             artifact = descriptor.makeNewArtifact(branchManager.getDefaultBranch());
-            artifact.setSoleStringAttributeValue("Content URL", location);
-            artifact.setSoleStringAttributeValue("Name", new File(location).getName());
+            artifact.setSoleXAttributeValue("Content URL", location);
+            artifact.setSoleXAttributeValue("Name", new File(location).getName());
             artifact.persistAttributes();
          }
       }

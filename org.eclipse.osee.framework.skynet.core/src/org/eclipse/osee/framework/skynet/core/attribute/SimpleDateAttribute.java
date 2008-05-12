@@ -12,15 +12,15 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.text.DateFormat;
 import java.util.Date;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
  */
 public final class SimpleDateAttribute extends DateAttribute {
 
-   public SimpleDateAttribute(AttributeType attributeType, ICharacterAttributeDataProvider dataProvider) {
-      super(attributeType, dataProvider);
+   public SimpleDateAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 
    @Override

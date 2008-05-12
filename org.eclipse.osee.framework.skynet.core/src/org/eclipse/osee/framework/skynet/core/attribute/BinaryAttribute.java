@@ -11,17 +11,13 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class BinaryAttribute<T> extends BinaryBackedAttribute<T> {
-
-   protected IBinaryAttributeDataProvider dataProvider;
-
-   public BinaryAttribute(AttributeType attributeType, IBinaryAttributeDataProvider dataProvider) {
-      super(attributeType);
-      this.dataProvider = dataProvider;
+   public BinaryAttribute(AttributeType attributeType, Artifact artifact) {
+      super(attributeType, artifact);
    }
 }

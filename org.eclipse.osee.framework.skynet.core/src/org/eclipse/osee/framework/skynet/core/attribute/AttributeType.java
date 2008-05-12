@@ -10,26 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
 /**
  * Type information for dynamic attributes.
  * 
  * @author Robert A. Fisher
+ * @author Ryan D. Brooks
  */
 public class AttributeType implements Comparable<AttributeType> {
    public static final AttributeType[] EMPTY_ARRAY = new AttributeType[0];
    private Class<? extends Attribute<?>> baseAttributeClass;
-   private Class<? extends AbstractAttributeDataProvider> providerAttributeClass;
+   private Class<? extends IAttributeDataProvider> providerAttributeClass;
    private int attrTypeId;
    private String namespace;
    private String name;
@@ -39,9 +32,6 @@ public class AttributeType implements Comparable<AttributeType> {
    private int minOccurrences;
    private String tipText;
    private String fileTypeExtension;
-
-   // These arrays are going to be used for reflection
-   private static final Class<?>[] attributeDataProviderSignature = new Class<?>[] {AttributeStateManager.class};
 
    /**
     * Create a dynamic attribute descriptor. Descriptors can be acquired for application use from the
@@ -56,7 +46,7 @@ public class AttributeType implements Comparable<AttributeType> {
     * @param tipText
     * @throws SQLException
     */
-   public AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends AbstractAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
+   public AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText) throws SQLException {
       if (minOccurrences < 0) {
          throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
       }
@@ -89,13 +79,6 @@ public class AttributeType implements Comparable<AttributeType> {
     */
    public Class<? extends Attribute<?>> getBaseAttributeClass() {
       return baseAttributeClass;
-   }
-
-   /**
-    * @return Returns the AttributeDataProviderClass.
-    */
-   private Class<? extends AbstractAttributeDataProvider> getAttributeDataProviderClass() {
-      return providerAttributeClass;
    }
 
    /**
@@ -198,60 +181,9 @@ public class AttributeType implements Comparable<AttributeType> {
    }
 
    /**
-    * Creates a new <code>AttributeDataProvider</code> that is consistent with this descriptor.
-    * 
-    * @throws Exception
+    * @return the providerAttributeClass
     */
-   protected AbstractAttributeDataProvider createAttributeDataProvider(AttributeStateManager stateManager) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-      return getAttributeDataProviderClass().getConstructor(attributeDataProviderSignature).newInstance(
-            new Object[] {stateManager});
+   public Class<? extends IAttributeDataProvider> getProviderAttributeClass() {
+      return providerAttributeClass;
    }
-
-   /**
-    * Creates a new <code>Attribute</code> that is consistent with this descriptor.
-    * 
-    * @param artifact
-    * @param attributeDataProvider
-    * @return new attribute instance
-    * @throws Exception
-    */
-   protected Attribute<?> createAttribute(Artifact artifact, IAttributeDataProvider attributeDataProvider) throws Exception {
-      Attribute<?> toReturn = null;
-      Object[] params = new Object[] {this, attributeDataProvider};
-      try {
-         Constructor<? extends Attribute<?>> constructor = getAttributeConstructor(artifact);
-         toReturn = constructor.newInstance(params);
-      } catch (Exception ex) {
-         throw new Exception(String.format("Error creating attribute:\n Class: [%s] Params: [%s]",
-               getBaseAttributeClass(), Arrays.deepToString(params)), ex);
-      }
-      return toReturn;
-   }
-
-   private Constructor<? extends Attribute<?>> getAttributeConstructor(Artifact artifact) throws SecurityException, NoSuchMethodException {
-      Constructor<? extends Attribute<?>> constructor = null;
-      Class<? extends Attribute<?>> attributeClass = getBaseAttributeClass();
-
-      //TODO: JPhillips - This should be removed when the blob attribute conversion is complete
-      if (artifact instanceof WordArtifact && name.equals("Word Formatted Content")) {
-         WordArtifact wordArtifact = (WordArtifact) artifact;
-
-         if (wordArtifact.isWholeWordArtifact()) {
-            attributeClass = WordWholeDocumentAttribute.class;
-         } else {
-            attributeClass = WordTemplateAttribute.class;
-         }
-      }
-
-      try {
-         constructor =
-               attributeClass.getConstructor(new Class[] {AttributeType.class, ICharacterAttributeDataProvider.class});
-
-      } catch (Exception ex) {
-         constructor =
-               attributeClass.getConstructor(new Class[] {AttributeType.class, IBinaryAttributeDataProvider.class});
-      }
-      return constructor;
-   }
-
 }

@@ -15,17 +15,18 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.IDataAccessObject;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
@@ -53,88 +54,80 @@ public class AttributeToTransactionOperation {
    }
 
    public void execute() throws Exception {
-      Collection<DynamicAttributeManager> managers = artifact.getAttributeManagers();
-      for (DynamicAttributeManager attributeManager : managers) {
-         for (Attribute<?> attribute : attributeManager.getAttributes()) {
-            if (attribute.isDirty()) {
-               IDataAccessObject dao = attributeManager.getDataAccessObjectFor(attribute);
-               if (dao != null) {
-                  addAttributeData(artifact, attribute, dao, transaction);
-               }
-            }
+      for (Attribute<?> attribute : artifact.getAttributes()) {
+         if (attribute.isDirty()) {
+            addAttributeData(artifact, attribute, transaction);
          }
+      }
 
-         for (Attribute<?> attribute : attributeManager.getDeletedAttributes()) {
+      for (Attribute<?> attribute : artifact.getAttributes()) {
+         if (attribute.getPersistenceMemo().isDeleted()) {
             deleteAttribute(attribute, transaction, artifact);
          }
       }
    }
 
-   private void addAttributeData(Artifact artifact, Attribute attribute, IDataAccessObject dao, SkynetTransaction transaction) throws Exception {
+   private void addAttributeData(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws Exception {
       if (artifact.isVersionControlled()) {
-         versionControlled(artifact, attribute, dao, transaction);
+         versionControlled(artifact, attribute, transaction);
       } else {
-         nonVersionControlled(artifact, attribute, dao, transaction);
+         nonVersionControlled(artifact, attribute, transaction);
       }
    }
 
-   private void versionControlled(Artifact artifact, Attribute attribute, IDataAccessObject dao, SkynetTransaction transaction) throws Exception {
-      AttributeMemo memo = null;
+   private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws Exception {
       ModType modType = null;
       ModificationType attrModType = null;
-      if (attribute.getPersistenceMemo() == null) {
-         memo = createNewAttributeMemo(attribute);
-         attrModType = ModificationType.NEW;
-         modType = ModType.Added;
-      } else {
-         memo = attribute.getPersistenceMemo();
-         memo = new AttributeMemo(memo.getAttrId(), SkynetDatabase.getNextGammaId());
-         attribute.setPersistenceMemo(memo);
+      if (attribute.isInDatastore()) {
+         attribute.getPersistenceMemo().setGammaId(SkynetDatabase.getNextGammaId());
 
          modType = ModType.Changed;
          attrModType = ModificationType.CHANGE;
+      } else {
+         createNewAttributeMemo(attribute);
+         attrModType = ModificationType.NEW;
+         modType = ModType.Added;
       }
-      dao.persist();
-      DAOToSQL daoToSql = new DAOToSQL(dao.getData());
+      attribute.getAttributeDataProvider().persist();
+      DAOToSQL daoToSql = new DAOToSQL(attribute.getAttributeDataProvider().getData());
       transaction.addTransactionDataItem(createAttributeTxData(artifact, attribute, daoToSql, transaction, attrModType));
       transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact, modType, artifact));
    }
 
-   private void nonVersionControlled(Artifact artifact, Attribute attribute, IDataAccessObject dao, SkynetTransaction transaction) throws Exception {
-      AttributeMemo memo = null;
-      if (attribute.getPersistenceMemo() == null) {
-         memo = createNewAttributeMemo(attribute);
-         dao.persist();
-         DAOToSQL daoToSql = new DAOToSQL(dao.getData());
+   private void nonVersionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws Exception {
+      AttributeMemo memo = attribute.getPersistenceMemo();
+      IAttributeDataProvider dataProvider = attribute.getAttributeDataProvider();
+      if (!attribute.isInDatastore()) {
+         createNewAttributeMemo(attribute);
+         dataProvider.persist();
+         DAOToSQL daoToSql = new DAOToSQL(dataProvider.getData());
          transaction.addTransactionDataItem(createAttributeTxData(artifact, attribute, daoToSql, transaction,
                ModificationType.NEW));
       } else {
-         memo = attribute.getPersistenceMemo();
-         dao.persist();
-         DAOToSQL daoToSql = new DAOToSQL(dao.getData());
+         dataProvider.persist();
+         DAOToSQL daoToSql = new DAOToSQL(dataProvider.getData());
          transaction.addToBatch(UPDATE_TRANSACTION_TABLE, SQL3DataType.VARCHAR, transaction.getComment(),
-               SQL3DataType.TIMESTAMP, GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER,
-               attribute.getPersistenceMemo().getGammaId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
+               SQL3DataType.TIMESTAMP, GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER, memo.getGammaId(),
+               SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
 
          transaction.addToBatch(UPDATE_ATTRIBUTE, SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-               memo.getAttrId(), SQL3DataType.INTEGER, attribute.getTypeId(), SQL3DataType.INTEGER, memo.getGammaId(),
-               SQL3DataType.VARCHAR, daoToSql.getValue(), SQL3DataType.VARCHAR, daoToSql.getUri());
+               memo.getAttrId(), SQL3DataType.INTEGER, attribute.getAttributeType().getAttrTypeId(),
+               SQL3DataType.INTEGER, memo.getGammaId(), SQL3DataType.VARCHAR, daoToSql.getValue(),
+               SQL3DataType.VARCHAR, daoToSql.getUri());
       }
    }
 
-   private AttributeTransactionData createAttributeTxData(Artifact artifact, Attribute attribute, DAOToSQL dao, SkynetTransaction transaction, ModificationType attrModType) throws Exception {
+   private AttributeTransactionData createAttributeTxData(Artifact artifact, Attribute<?> attribute, DAOToSQL dao, SkynetTransaction transaction, ModificationType attrModType) throws Exception {
       AttributeMemo memo = attribute.getPersistenceMemo();
-      return new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(), attribute.getTypeId(), dao.getValue(),
-            memo.getGammaId(), transaction.getTransactionNumber(), dao.getUri(), attrModType, transaction.getBranch());
+      return new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
+            attribute.getAttributeType().getAttrTypeId(), dao.getValue(), memo.getGammaId(),
+            transaction.getTransactionNumber(), dao.getUri(), attrModType, transaction.getBranch());
    }
 
-   private AttributeMemo createNewAttributeMemo(Attribute<?> attribute) throws SQLException {
+   private void createNewAttributeMemo(Attribute<?> attribute) throws SQLException {
       int gammaId = SkynetDatabase.getNextGammaId();
       int attrId = Query.getNextSeqVal(null, SkynetDatabase.ATTR_ID_SEQ);
-
-      AttributeMemo memo = new AttributeMemo(attrId, gammaId);
-      attribute.setPersistenceMemo(memo);
-      return memo;
+      attribute.getPersistenceMemo().setIds(attrId, gammaId);
    }
 
    /**
@@ -145,16 +138,23 @@ public class AttributeToTransactionOperation {
     * @throws SQLException
     */
    private void deleteAttribute(Attribute<?> attribute, SkynetTransaction transaction, Artifact artifact) throws SQLException {
-      // If the memo is null, the attribute was never saved to the database, so we can ignore it
-      AttributeMemo memo = attribute.getPersistenceMemo();
-      if (memo == null) return;
+      if (!attribute.isInDatastore()) return;
 
       int gammaId = SkynetDatabase.getNextGammaId();
-      transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
-            attribute.getAttributeType().getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null,
-            ModificationType.DELETED, transaction.getBranch()));
+      transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(),
+            attribute.getPersistenceMemo().getAttrId(), attribute.getAttributeType().getAttrTypeId(), null, gammaId,
+            transaction.getTransactionNumber(), null, ModificationType.DELETED, transaction.getBranch()));
 
       transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
+   }
+
+   public static void meetMinimumAttributeCounts(Artifact artifact) throws SQLException {
+      for (AttributeType attributeType : artifact.getAttributeTypes()) {
+         int missingCount = attributeType.getMinOccurrences() - artifact.getAttributeCount(attributeType.getName());
+         for (int i = 0; i < missingCount; i++) {
+            artifact.createAttribute(attributeType);
+         }
+      }
    }
 
    private final class DAOToSQL {
@@ -183,6 +183,17 @@ public class AttributeToTransactionOperation {
 
       public String getValue() {
          return value != null ? value : "";
+      }
+   }
+
+   public static void initializeAttribute(Artifact artifact, int atttributeTypeId, String value, String uri, int attributeId, int gamma_id) {
+      try {
+         AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
+         Attribute<?> attribute = artifact.createAttribute(attributeType);
+         attribute.getAttributeDataProvider().loadData(value, uri);
+         attribute.getPersistenceMemo().setIds(attributeId, gamma_id);
+      } catch (Exception ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 }
