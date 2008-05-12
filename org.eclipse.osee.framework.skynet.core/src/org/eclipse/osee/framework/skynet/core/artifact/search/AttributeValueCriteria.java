@@ -14,8 +14,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
 /**
  * @author Ryan D. Brooks
@@ -133,7 +133,7 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
 
       if (values != null && values.size() > 0) {
          builder.append(attrAlias);
-         builder.append(".value IN (" + Collections.toString(",", values) + ") AND ");
+         builder.append(".value IN ('" + Collections.toString("','", values) + "') AND ");
       }
 
       if (!multiBranchHistorical) {
@@ -153,5 +153,28 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
    public void addJoinArtId(ArtifactQueryBuilder builder, boolean left) {
       builder.append(attrAlias);
       builder.append(".art_id");
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   @Override
+   public String toString() {
+      StringBuilder strB = new StringBuilder();
+      if (attributeType != null) {
+         strB.append(attributeType.getName());
+      } else {
+         strB.append("*");
+      }
+      strB.append("=");
+      if (value != null) {
+         strB.append(value);
+      }
+
+      if (values != null && values.size() > 0) {
+         strB.append(attrAlias);
+         strB.append("(" + Collections.toString(",", values) + ")");
+      }
+      return strB.toString();
    }
 }

@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -91,7 +92,7 @@ public class ExtractTestRelations {
       }
    }
 
-   private void addRelationToDatabaseIfNotAlreadyThere(IFile testArtifactFile, String reqArtifactName) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
+   private void addRelationToDatabaseIfNotAlreadyThere(IFile testArtifactFile, String reqArtifactName) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, MultipleAttributesExist {
 
       // Make sure that the runtime relation type is available
       Artifact reqArtifact =
@@ -125,7 +126,7 @@ public class ExtractTestRelations {
       //      link.persist();
    }
 
-   private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws SQLException {
+   private Artifact getTestArtifact(IFile testArtifactFile, Branch branch) throws SQLException, MultipleAttributesExist {
       try {
          return ArtifactQuery.getArtifactFromTypeAndName(Requirements.TEST_SCRIPT, testArtifactFile.getName(), branch);
       } catch (MultipleArtifactsExist ex) {
@@ -134,7 +135,7 @@ public class ExtractTestRelations {
       } catch (ArtifactDoesNotExist ex) {
          Artifact testArtifact =
                ArtifactTypeManager.addArtifact(Requirements.TEST_SCRIPT, branch, testArtifactFile.getName());
-         testArtifact.setSoleStringAttributeValue("Content URL", testArtifactFile.getFullPath().toString());
+         testArtifact.setSoleXAttributeValue("Content URL", testArtifactFile.getFullPath().toString());
          testArtifact.persistAttributes();
          return testArtifact;
       }

@@ -173,7 +173,7 @@ public class ImportTraceabilityJob extends Job {
 
       for (Artifact artifact : requirementData.getDirectSwRequirements()) {
          excelWriter.writeRow(artifact.getDescriptiveName(), String.valueOf(reqsTraceCounts.get(artifact)),
-               Collections.toString(",", artifact.getAttributesToStringCollection(Requirements.PARTITION)));
+               Collections.toString(",", artifact.getAttributesToStringList(Requirements.PARTITION)));
       }
 
       excelWriter.endSheet();

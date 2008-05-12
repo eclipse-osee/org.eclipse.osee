@@ -10,20 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeStateManager;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractAttributeDataProvider implements IDataAccessObject, IAttributeDataProvider {
+public abstract class AbstractAttributeDataProvider implements IAttributeDataProvider {
+   private Attribute<?> attribute;
 
-   private AttributeStateManager attributeStateManager;
-
-   public AbstractAttributeDataProvider(AttributeStateManager attributeStateManager) {
-      this.attributeStateManager = attributeStateManager;
+   /**
+    * @param attribute
+    */
+   public AbstractAttributeDataProvider(Attribute<?> attribute) {
+      super();
+      this.attribute = attribute;
    }
 
-   protected AttributeStateManager getAttributeStateManager() {
-      return attributeStateManager;
+   /**
+    * @return the attribute
+    */
+   protected Attribute<?> getAttribute() {
+      return attribute;
    }
 }

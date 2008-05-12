@@ -51,12 +51,7 @@ public class DataStore {
    }
 
    public InputStream getInputStream() throws Exception {
-      ByteArrayInputStream toReturn = null;
-      byte[] buffer = getContent();
-      if (buffer != null) {
-         toReturn = new ByteArrayInputStream(buffer);
-      }
-      return toReturn;
+      return new ByteArrayInputStream(getContent());
    }
 
    public byte[] getContent() throws Exception {
@@ -83,6 +78,12 @@ public class DataStore {
    public void persist() throws Exception {
       if (this.rawContent != null && this.rawContent.length > 0) {
          resourceProcessor.saveResource(this);
+      }
+   }
+
+   public void purge() throws Exception {
+      if (isLocatorValid() != false) {
+         resourceProcessor.purge(this);
       }
    }
 

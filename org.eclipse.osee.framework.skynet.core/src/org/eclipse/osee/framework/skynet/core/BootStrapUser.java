@@ -127,16 +127,6 @@ public class BootStrapUser extends User {
    /*
     * (non-Javadoc)
     * 
-    * @see org.eclipse.osee.framework.skynet.core.User#setName(java.lang.String)
-    */
-   @Override
-   public void setName(String name) {
-      throw new UnsupportedOperationException();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
     * @see org.eclipse.osee.framework.skynet.core.User#setPhone(java.lang.String)
     */
    @Override

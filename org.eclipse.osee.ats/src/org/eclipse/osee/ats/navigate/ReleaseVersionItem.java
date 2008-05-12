@@ -54,7 +54,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run() throws SQLException {
+   public void run() throws SQLException, MultipleAttributesExist {
       TeamDefinitionArtifact teamDefHoldingVersions = getReleaseableTeamDefinitionArtifact();
       if (teamDefHoldingVersions == null) return;
       try {
@@ -88,8 +88,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                return;
             }
 
-            verArt.setSoleBooleanAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), true);
-            verArt.setSoleDateAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), new Date());
+            verArt.setSoleXAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), true);
+            verArt.setSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), new Date());
             verArt.setNextVersion(false);
             verArt.persistAttributes();
 

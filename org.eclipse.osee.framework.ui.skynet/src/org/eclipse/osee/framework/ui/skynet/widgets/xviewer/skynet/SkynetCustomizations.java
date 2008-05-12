@@ -172,7 +172,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
 
          try {
             Collection<Attribute<String>> attributes =
-                  customizationArtifact.getAttributeManager(CUSTOMIZATION_ATTRIBUTE_NAME).getAttributes();
+                  customizationArtifact.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME);
             for (Attribute<String> attr : attributes) {
                String str = attr.getValue();
                Matcher m =

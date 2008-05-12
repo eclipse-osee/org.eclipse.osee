@@ -14,10 +14,6 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
  * @author Jeff C. Phillips
  */
 public class SkynetAttributeChange implements SkynetChange {
-
-   /**
-    * 
-    */
    private static final long serialVersionUID = 7269483275150734396L;
    private final String name;
    private final int attributeId;

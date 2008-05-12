@@ -19,8 +19,8 @@ import java.util.LinkedList;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact.NameAndVal;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -41,8 +41,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
       if (identifyingAttributeDescriptors.isEmpty()) throw new IllegalArgumentException(
             "identifyingAttributeDescriptors can not be empty");
 
-      this.identifyingAttributeDescriptors =
-            new LinkedList<AttributeType>(identifyingAttributeDescriptors);
+      this.identifyingAttributeDescriptors = new LinkedList<AttributeType>(identifyingAttributeDescriptors);
       this.createNewIfNotExist = createNewIfNotExist;
    }
 
@@ -54,20 +53,20 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
          roughAttributeMap.put(roughAttribute.getName(), roughAttribute.getValue());
       }
 
-      for (AttributeType descriptor : identifyingAttributeDescriptors) {
-         Collection<Attribute<String>> attributes = artifact.getAttributeManager(descriptor).getAttributes();
-         Collection<String> roughAttributes = roughAttributeMap.getValues(descriptor.getName());
+      for (AttributeType attributeType : identifyingAttributeDescriptors) {
+         Collection<String> attributeValues = artifact.getAttributesToStringList(attributeType.getName());
+         Collection<String> roughAttributes = roughAttributeMap.getValues(attributeType.getName());
 
          if (roughAttributes == null) {
             roughAttributes = EMPTY;
          }
 
-         if (attributes.size() == roughAttributes.size()) {
-            for (Attribute<String> attribute : attributes) {
+         if (attributeValues.size() == roughAttributes.size()) {
+            for (String attributeValue : attributeValues) {
                boolean attributeEqual = false;
                Iterator<String> iter = roughAttributes.iterator();
 
-               String normalizedAttributeValue = normalizeAttributeValue(attribute.getValue());
+               String normalizedAttributeValue = normalizeAttributeValue(attributeValue);
                while (iter.hasNext()) {
                   String otherAttribute = iter.next();
 
@@ -93,7 +92,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
       return value.trim().replaceAll("\\.$", "").toLowerCase();
    }
 
-   public Artifact resolve(RoughArtifact roughArtifact) throws SQLException, IllegalStateException, IOException {
+   public Artifact resolve(RoughArtifact roughArtifact) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
       Set<Artifact> siblings = roughArtifact.getRoughParent().getAssociatedArtifact().getChildren();
       Collection<Artifact> candidates = new LinkedList<Artifact>();
 

@@ -59,13 +59,13 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, boolean usesVersions, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef) throws SQLException {
+   public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, boolean usesVersions, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef) throws SQLException, MultipleAttributesExist {
       TeamDefinitionArtifact tda = null;
       tda =
             (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
                   BranchPersistenceManager.getAtsBranch(), name);
-      tda.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
-      tda.setSoleStringAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
+      tda.setSoleXAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
+      tda.setSoleXAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
          tda.relate(RelationSide.TeamLead_Lead, user);
          // All leads are members
@@ -76,7 +76,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       }
 
       if (usesVersions) {
-         tda.setSoleBooleanAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
+         tda.setSoleXAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
       }
       tda.persist(true);
 

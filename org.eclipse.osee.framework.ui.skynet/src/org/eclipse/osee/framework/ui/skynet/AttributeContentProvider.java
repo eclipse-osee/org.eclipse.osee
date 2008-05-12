@@ -11,49 +11,31 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Ryan D. Brooks
  */
 public class AttributeContentProvider implements IStructuredContentProvider {
-
-   private Collection<String> ignoreAttributes;
-   private Collection<DynamicAttributeManager> attributeTypes;
    private Object[] dummyArray = new Object[0];
 
    /**
     * 
     */
-   public AttributeContentProvider(Collection<String> ignoreAttributes) {
+   public AttributeContentProvider() {
       super();
-      this.ignoreAttributes = ignoreAttributes;
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
     */
    public Object[] getElements(Object inputElement) {
-
       if (inputElement instanceof Artifact) {
-         Artifact artifact = (Artifact) inputElement;
-
-         ArrayList<Attribute> elements = new ArrayList<Attribute>();
          try {
-            Collection<DynamicAttributeManager> types = populateAttributeTypes(artifact);
-            for (DynamicAttributeManager type : types) {
-               for (Attribute attribute : type.getAttributes()) {
-                  elements.add(attribute);
-               }
-            }
-            return elements.toArray();
+            return ((Artifact) inputElement).getAttributes().toArray();
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
@@ -67,29 +49,10 @@ public class AttributeContentProvider implements IStructuredContentProvider {
    public void dispose() {
    }
 
-   public Collection<DynamicAttributeManager> populateAttributeTypes(Artifact artifact) throws SQLException {
-      Collection<DynamicAttributeManager> attrTypes = null;
-      if (ignoreAttributes == null)
-         attrTypes = artifact.getAttributeManagers();
-      else {
-         attrTypes = new ArrayList<DynamicAttributeManager>();
-         for (DynamicAttributeManager udat : artifact.getAttributeManagers())
-            if (!ignoreAttributes.contains(udat.getAttributeType().getName())) attrTypes.add(udat);
-      }
-      return attrTypes;
-   }
-
    /* (non-Javadoc)
     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
     */
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
-   }
-
-   /**
-    * @return Returns the attributeTypes.
-    */
-   public Collection<DynamicAttributeManager> getAttributeTypes() {
-      return attributeTypes;
    }
 }

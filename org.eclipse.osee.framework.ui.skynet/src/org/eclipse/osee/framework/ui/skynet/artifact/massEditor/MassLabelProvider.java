@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassXViewer.Extra_Columns;
@@ -55,12 +57,12 @@ public class MassLabelProvider implements ITableLabelProvider {
          if (!artifact.isAttributeTypeValid(colName)) {
             return "";
          }
-         if (artifact.getAttributeManager(colName).getAttributeType().getBaseAttributeClass().equals(
-               DateAttribute.class)) {
-            if (artifact.getAttributeManager(colName).getAttributes().size() > 0) {
-               DateAttribute.MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
+         if (AttributeTypeManager.getType(colName).getBaseAttributeClass().equals(DateAttribute.class)) {
+            try {
+               return DateAttribute.MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
+            } catch (OseeCoreException ex) {
+               return "";
             }
-            return "";
          }
 
          return artifact.getAttributesToString(colName);

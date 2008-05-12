@@ -43,7 +43,7 @@ public class AttributeAnnotationManager {
     */
    public List<ArtifactAnnotation> getAnnotations() throws SQLException {
       List<ArtifactAnnotation> annotations = new ArrayList<ArtifactAnnotation>();
-      for (String value : artifact.getAttributesToStringCollection(ANNOTATION_ATTRIBUTE)) {
+      for (String value : artifact.getAttributesToStringList(ANNOTATION_ATTRIBUTE)) {
          ArtifactAnnotation annotation = new ArtifactAnnotation(value);
          annotations.add(annotation);
       }

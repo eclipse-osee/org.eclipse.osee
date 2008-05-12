@@ -49,28 +49,28 @@ public class VersionArtifact extends BasicArtifact {
       return getDescriptiveName();
    }
 
-   public void setReleased(boolean released) throws IllegalStateException, SQLException {
-      setSoleBooleanAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), released);
+   public void setReleased(boolean released) throws SQLException, MultipleAttributesExist {
+      setSoleXAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), released);
    }
 
-   public void setNextVersion(boolean nextVersion) throws IllegalStateException, SQLException {
-      setSoleBooleanAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), nextVersion);
+   public void setNextVersion(boolean nextVersion) throws SQLException, MultipleAttributesExist {
+      setSoleXAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), nextVersion);
    }
 
    public String getFullName() throws SQLException, MultipleAttributesExist {
       return getSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), "");
    }
 
-   public void setFullName(String name) throws IllegalStateException, SQLException {
-      setSoleStringAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), name);
+   public void setFullName(String name) throws SQLException, MultipleAttributesExist {
+      setSoleXAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), name);
    }
 
    public String getDescription() throws SQLException, MultipleAttributesExist {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
 
-   public void setDescription(String desc) throws IllegalStateException, SQLException {
-      setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+   public void setDescription(String desc) throws SQLException, MultipleAttributesExist {
+      setSoleXAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
    }
 
    public Collection<TeamWorkFlowArtifact> getTargetedForTeamArtifacts() throws SQLException {

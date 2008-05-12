@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.HTMLTransferFormatter;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.NonBlankValidator;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.HTMLTransfer;
@@ -97,13 +96,9 @@ public class ArtifactClipboard {
                return;
             } else {
                Artifact newArtifact = null;
-               try {
-                  newArtifact = clipboardArtifact.duplicate(parent.getBranch());
-                  newArtifact.setDescriptiveName(dialog.getValue());
-                  parent.addChild(newArtifact);
-               } catch (CloneNotSupportedException ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-               }
+               newArtifact = clipboardArtifact.duplicate(parent.getBranch());
+               newArtifact.setDescriptiveName(dialog.getValue());
+               parent.addChild(newArtifact);
             }
          } else {
             for (Artifact clipboardArtifact : clipboardArtifacts) {
@@ -113,11 +108,7 @@ public class ArtifactClipboard {
                }
 
                Artifact newArtifact = null;
-               try {
-                  newArtifact = clipboardArtifact.duplicate(parent.getBranch());
-               } catch (CloneNotSupportedException ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, ex, false);
-               }
+               newArtifact = clipboardArtifact.duplicate(parent.getBranch());
                parent.addChild(newArtifact);
             }
          }

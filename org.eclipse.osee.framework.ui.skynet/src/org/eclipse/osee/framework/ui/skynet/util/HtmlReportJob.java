@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
@@ -147,14 +146,13 @@ public class HtmlReportJob extends Job {
             for (AttributeType attributeType : artifact.getAttributeTypes()) {
                String attributeTypeName = attributeType.getName();
                if (onlyAttributeNames == null || onlyAttributeNames.contains(attributeTypeName)) {
-                  for (Attribute<?> attr : artifact.getAttributes(attributeType)) {
+                  for (String attributeValue : artifact.getAttributesToStringList(attributeTypeName)) {
                      if (!attributeTypeName.equals("Name") && !attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
-                        sb.append(AHTML.addRowMultiColumnTable(new String[] {attributeTypeName,
-                              attr.getDisplayableString()}));
+                        sb.append(AHTML.addRowMultiColumnTable(new String[] {attributeTypeName, attributeValue}));
                      } else if (attributeTypeName.equals(WordAttribute.CONTENT_NAME)) {
                         try {
                            ByteArrayInputStream wordMl =
-                                 new ByteArrayInputStream(("<body>" + attr.getValue() + "</body>").getBytes("UTF-8"));
+                                 new ByteArrayInputStream(("<body>" + attributeValue + "</body>").getBytes("UTF-8"));
                            wordHtml = WordConverter.getInstance().toHtml(wordMl);
                         } catch (UnsupportedEncodingException ex) {
                            wordHtml = ex.getLocalizedMessage();

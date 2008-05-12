@@ -440,7 +440,7 @@ public class SMAManager {
                for (StateMachineArtifact sma : smas) {
                   sma.getSmaMgr().getStateMgr().setHoursSpent(hours + sma.getSmaMgr().getStateMgr().getHoursSpent());
                   sma.getSmaMgr().getStateMgr().setPercentComplete(tsd.getPercent().getInt());
-                  sma.setSoleStringAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
+                  sma.setSoleXAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
                         tsd.getSelectedOptionDef().getName());
                   sma.statusChanged();
                }
@@ -571,7 +571,7 @@ public class SMAManager {
                         verArt.getReleaseDate());
             if (verArt.getReleaseDate() != null) diag.setSelectedDate(verArt.getReleaseDate());
             if (diag.open() == 0) {
-               verArt.setSoleDateAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
+               verArt.setSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
                      diag.getSelectedDate());
                verArt.persistAttributes();
                return true;
@@ -606,7 +606,7 @@ public class SMAManager {
                         verArt.getEstimatedReleaseDate());
             if (verArt.getEstimatedReleaseDate() != null) diag.setSelectedDate(verArt.getEstimatedReleaseDate());
             if (diag.open() == 0) {
-               verArt.setSoleDateAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
+               verArt.setSoleXAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
                      diag.getSelectedDate());
                verArt.persistAttributes();
                return true;
@@ -619,7 +619,7 @@ public class SMAManager {
                         sma.getWorldViewEstimatedReleaseDate());
             if (getSma().getWorldViewEstimatedReleaseDate() != null) diag.setSelectedDate(sma.getWorldViewEstimatedReleaseDate());
             if (diag.open() == 0) {
-               sma.setSoleDateAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
+               sma.setSoleXAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
                      diag.getSelectedDate());
                sma.persistAttributes();
                return true;

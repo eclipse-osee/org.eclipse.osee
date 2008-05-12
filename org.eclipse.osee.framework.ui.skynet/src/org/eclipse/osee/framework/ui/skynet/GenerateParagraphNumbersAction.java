@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
@@ -94,11 +95,11 @@ public class GenerateParagraphNumbersAction extends Action {
             return toReturn;
          }
 
-         private void setParagraphNumber(WordMLProducer producer, Artifact artifact, IProgressMonitor monitor) throws IOException, SQLException {
+         private void setParagraphNumber(WordMLProducer producer, Artifact artifact, IProgressMonitor monitor) throws IOException, SQLException, MultipleAttributesExist {
             String paragraphNumber = producer.startOutlineSubSection("", "", null).toString();
 
             monitor.subTask(paragraphNumber + " " + artifact.getDescriptiveName());
-            artifact.setSoleStringAttributeValue("Imported Paragraph Number", paragraphNumber);
+            artifact.setSoleXAttributeValue("Imported Paragraph Number", paragraphNumber);
             artifact.persistAttributes();
             monitor.worked(1);
 

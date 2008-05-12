@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,8 +37,8 @@ public class AttributeMenuSelectionListener extends SelectionAdapter {
     */
    @Override
    public void widgetSelected(SelectionEvent ev) {
-      DynamicAttributeManager type = (DynamicAttributeManager) ((MenuItem) ev.getSource()).getData();
-      type.getNewAttribute();
+      AttributeType attributeType = (AttributeType) ((MenuItem) ev.getSource()).getData();
+      attrsComp.getArtifact().createAttribute(attributeType);
 
       tableViewer.refresh();
       attrsComp.layout();

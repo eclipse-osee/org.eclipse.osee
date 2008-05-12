@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeStateManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
 
 /**
@@ -31,14 +31,14 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
    /**
     * @param attributeStateManager
     */
-   public ClobAttributeDataProvider(AttributeStateManager attributeStateManager) {
-      super(attributeStateManager);
-      this.dataStore = new DataStore(new AttributeResourceProcessor(attributeStateManager));
+   public ClobAttributeDataProvider(Attribute<?> attribute) {
+      super(attribute);
+      this.dataStore = new DataStore(new AttributeResourceProcessor(attribute));
       this.rawStringValue = "";
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#getDisplayableString()
+    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider#getDisplayableString()
     */
    @Override
    public String getDisplayableString() {
@@ -46,7 +46,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#setDisplayableString(java.lang.String)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider#setDisplayableString(java.lang.String)
     */
    @Override
    public void setDisplayableString(String toDisplay) {
@@ -86,14 +86,14 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
       }
       try {
          storeValue(value);
-         getAttributeStateManager().setDirty();
+         getAttribute().setDirty();
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }
    }
 
    public String getInternalFileName() {
-      return BinaryContentUtils.generateFileName(getAttributeStateManager().getAttributeManager());
+      return BinaryContentUtils.generateFileName(getAttribute());
    }
 
    private void storeValue(String value) throws IOException {
@@ -132,5 +132,13 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
    @Override
    public void persist() throws Exception {
       dataStore.persist();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
+    */
+   @Override
+   public void purge() throws Exception {
+      dataStore.purge();
    }
 }

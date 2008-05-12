@@ -169,16 +169,16 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       return ChangeType.getChangeType(getSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
-   public void setChangeType(ChangeType type) throws IllegalStateException, SQLException {
-      setSoleStringAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
+   public void setChangeType(ChangeType type) throws IllegalStateException, SQLException, MultipleAttributesExist {
+      setSoleXAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
    }
 
    public PriorityType getPriority() throws SQLException, MultipleAttributesExist {
       return PriorityType.getPriority(getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), ""));
    }
 
-   public void setPriority(PriorityType type) throws IllegalStateException, SQLException {
-      setSoleStringAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
+   public void setPriority(PriorityType type) throws IllegalStateException, SQLException, MultipleAttributesExist {
+      setSoleXAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
    }
 
    /**
@@ -188,8 +188,8 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
       return actionableItemsDam;
    }
 
-   public void setTeamDefinition(TeamDefinitionArtifact tda) throws IllegalStateException, SQLException {
-      this.setSoleStringAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid());
+   public void setTeamDefinition(TeamDefinitionArtifact tda) throws IllegalStateException, SQLException, MultipleAttributesExist {
+      this.setSoleXAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid());
    }
 
    public TeamDefinitionArtifact getTeamDefinition() throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {

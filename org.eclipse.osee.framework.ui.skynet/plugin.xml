@@ -587,12 +587,6 @@
 	<extension id="FindInvalidUTF8Chars" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindInvalidUTF8Chars"/>
 	</extension>
-	<extension
-       id="DeleteExtraneousUnspecifiedAttributes"
-       name="Delete Extraneous Unspecified Attributes"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteExtraneousUnspecifiedAttributes"/>
-	</extension>
 	<extension id="InPlaceSmartTagRemover" name="In-Place Smart Tag Remover" point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
 		<Operation className="org.eclipse.osee.framework.ui.skynet.blam.operation.InPlaceSmartTagRemover"/>
 	</extension>

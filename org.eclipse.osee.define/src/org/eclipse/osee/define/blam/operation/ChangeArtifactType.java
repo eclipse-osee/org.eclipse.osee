@@ -59,7 +59,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param descriptor
     * @throws SQLException
     */
-   private void processChange(List<Artifact> artifacts, ArtifactSubtypeDescriptor descriptor) throws SQLException {
+   private void processChange(List<Artifact> artifacts, ArtifactSubtypeDescriptor descriptor) throws Exception {
       if (artifacts.isEmpty()) {
          throw new IllegalArgumentException("The artifact list can not be empty");
       }
@@ -87,12 +87,12 @@ public class ChangeArtifactType extends AbstractBlam {
    private void processAttributes(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws SQLException {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
-      Collection<AttributeType> descriptorAttrTypes =
+      Collection<AttributeType> attributeTypes =
             configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor, artifact.getBranch());
 
-      for (Attribute<?> attribute : artifact.getAttributes()) {
-         if (!descriptorAttrTypes.contains(attribute.getAttributeType())) {
-            attributesToPurge.add(attribute);
+      for (AttributeType attributeType : artifact.getAttributeTypes()) {
+         if (!attributeTypes.contains(attributeType)) {
+            attributesToPurge.addAll(artifact.getAttributes(attributeType.getName()));
          }
       }
    }
@@ -175,11 +175,9 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param descriptor
     * @throws SQLException
     */
-   private void changeArtifactType(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws SQLException {
-      for (Attribute attribute : attributesToPurge) {
-         if (attribute.getPersistenceMemo() != null) {
-            attribute.purge();
-         }
+   private void changeArtifactType(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws Exception {
+      for (Attribute<?> attribute : attributesToPurge) {
+         attribute.purge();
       }
 
       if (!linksToPurge.isEmpty()) {

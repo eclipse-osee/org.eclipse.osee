@@ -231,10 +231,10 @@ public class BranchManager {
     * 
     * @param branchId
     * @throws SQLException
-    * @throws IllegalStateException
+    * @throws MultipleAttributesExist
     */
-   public void setParentBranchId(int branchId) throws IllegalStateException, SQLException {
-      smaMgr.getSma().setSoleStringAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
+   public void setParentBranchId(int branchId) throws SQLException, MultipleAttributesExist {
+      smaMgr.getSma().setSoleXAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
             String.valueOf(branchId));
    }
 

@@ -176,7 +176,7 @@ public class BlamWorkflow extends Artifact {
       String doc = Jaxp.getDocumentXml(document);
       doc = doc.replace("<Workflow>", "<Workflow>" + xml);
 
-      setSoleStringAttributeValue("Workflow Definition", doc);
+      setSoleXAttributeValue("Workflow Definition", doc);
       persistAttributes();
    }
 

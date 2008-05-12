@@ -20,15 +20,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -85,10 +84,10 @@ public class SkyWalkerOptions {
          return "";
       else {
          StringBuffer sb = new StringBuffer();
-         for (AttributeType desc : getSelectedShowAttributeTypes()) {
-            if (artifact.isAttributeTypeValid(desc.getName()) && artifact.getAttributeManager(desc).getAttributes().size() > 0) {
+         for (AttributeType attributeType : getSelectedShowAttributeTypes()) {
+            if (artifact.getAttributeCount(attributeType.getName()) > 0) {
                sb.append("\n");
-               sb.append(Collections.toString(", ", artifact.getAttributes(desc)));
+               sb.append(artifact.getAttributesToString(attributeType.getName()));
             }
          }
          return sb.toString();

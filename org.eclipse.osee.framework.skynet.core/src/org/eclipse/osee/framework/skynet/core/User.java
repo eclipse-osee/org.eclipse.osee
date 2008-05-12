@@ -54,7 +54,7 @@ public class User extends Artifact implements Serializable {
    }
 
    public void setFieldsBasedon(User u) throws Exception {
-      setName(u.getName());
+      setDescriptiveName(u.getName());
       setPhone(u.getPhone());
       setEmail(u.getEmail());
       setUserID(u.getUserId());
@@ -118,40 +118,36 @@ public class User extends Artifact implements Serializable {
       return getSoleAttributeValue(userIdAttributeName, "");
    }
 
-   public void setUserID(String userId) throws IllegalStateException, SQLException {
-      setSoleStringAttributeValue(userIdAttributeName, userId);
+   public void setUserID(String userId) throws SQLException, MultipleAttributesExist {
+      setSoleXAttributeValue(userIdAttributeName, userId);
    }
 
    public String getEmail() throws SQLException, MultipleAttributesExist {
       return getSoleAttributeValue(Attributes.Email.toString(), "");
    }
 
-   public void setEmail(String email) throws IllegalStateException, SQLException {
-      setSoleStringAttributeValue(Attributes.Email.toString(), email);
+   public void setEmail(String email) throws SQLException, MultipleAttributesExist {
+      setSoleXAttributeValue(Attributes.Email.toString(), email);
    }
 
    public String getName() {
       return getDescriptiveName();
    }
 
-   public void setName(String name) {
-      setDescriptiveName(name);
-   }
-
    public String getPhone() throws SQLException, MultipleAttributesExist {
       return getSoleAttributeValue(Attributes.Phone.toString(), "");
    }
 
-   public void setPhone(String phone) throws IllegalStateException, SQLException {
-      setSoleStringAttributeValue(Attributes.Phone.toString(), phone);
+   public void setPhone(String phone) throws SQLException, MultipleAttributesExist {
+      setSoleXAttributeValue(Attributes.Phone.toString(), phone);
    }
 
    public Boolean isActive() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist, MultipleAttributesExist {
       return getSoleAttributeValue(Attributes.Active.toString());
    }
 
-   public void setActive(boolean required) throws IllegalStateException, SQLException {
-      setSoleBooleanAttributeValue(Attributes.Active.toString(), required);
+   public void setActive(boolean required) throws SQLException, MultipleAttributesExist {
+      setSoleXAttributeValue(Attributes.Active.toString(), required);
    }
 
    @Override

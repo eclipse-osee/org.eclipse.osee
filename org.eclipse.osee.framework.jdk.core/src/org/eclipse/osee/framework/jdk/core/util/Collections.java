@@ -188,6 +188,22 @@ public class Collections {
    }
 
    /**
+    * Cast objects to clazz
+    * 
+    * @param <A>
+    * @param objects
+    * @return
+    */
+   @SuppressWarnings("unchecked")
+   public static <A> List<A> castAll(Collection<?> objects) {
+      List<A> results = new ArrayList<A>(objects.size());
+      for (Object object : objects) {
+         results.add((A) object);
+      }
+      return results;
+   }
+
+   /**
     * Unchecked cast objects to clazz; CastClassException will occur when object sent in does not match clazz<br>
     * <br>
     * Use when all objects are expected to be of type class and exception is desired if not

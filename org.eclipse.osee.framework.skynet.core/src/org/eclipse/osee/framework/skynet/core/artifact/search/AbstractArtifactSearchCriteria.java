@@ -22,4 +22,12 @@ public abstract class AbstractArtifactSearchCriteria {
    public abstract void addToWhereSql(ArtifactQueryBuilder builder) throws SQLException;
 
    public abstract void addJoinArtId(ArtifactQueryBuilder builder, boolean left) throws SQLException;
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   @Override
+   public String toString() {
+      return getClass().getSimpleName();
+   }
 }

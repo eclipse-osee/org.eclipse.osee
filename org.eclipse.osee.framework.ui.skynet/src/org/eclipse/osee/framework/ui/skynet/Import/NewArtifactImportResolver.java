@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.PolymorphicArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * @author Ryan D. Brooks
@@ -29,7 +30,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver#resolve(org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact)
     */
-   public Artifact resolve(RoughArtifact roughArtifact) throws SQLException, IllegalStateException, IOException {
+   public Artifact resolve(RoughArtifact roughArtifact) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
       ArtifactSubtypeDescriptor descriptor = roughArtifact.getDescriptorForGetReal();
 
       Artifact realArtifact = null;

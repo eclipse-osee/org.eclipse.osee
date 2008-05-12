@@ -84,7 +84,7 @@ public class UserRoleManager {
          for (UserRole item : defectItems)
             sb.append(AXml.addTagData(DEFECT_ITEM_TAG, item.toXml()));
          sb.append("</" + ATS_DEFECT_TAG + ">");
-         artifact.setSoleStringAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
+         artifact.setSoleXAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
          updateAssignees();
          if (persist) artifact.persistAttributes();
          rollupHoursSpentToReviewState(persist);

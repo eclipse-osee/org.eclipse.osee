@@ -35,7 +35,7 @@ public class SRSSpecialPublishingAttributeHandler implements ITemplateAttributeH
    public boolean canHandle(Artifact artifact, TemplateAttribute attribute) throws SQLException {
       // This is for SRS Publishing. Do not publish unspecified attributes
       if ((attribute.getName().equals(Requirements.PARTITION) || attribute.getName().equals("Safety Criticality"))) {
-         for (Attribute partition : artifact.getAttributeManager(Requirements.PARTITION).getAttributes()) {
+         for (Attribute<?> partition : artifact.getAttributes(Requirements.PARTITION)) {
             if (partition.getValue().equals("Unspecified")) {
                return true;
             }

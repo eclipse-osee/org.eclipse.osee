@@ -124,7 +124,7 @@ public class ArtifactPromptChange {
             if (diag.isNoneSelected())
                artifact.deleteSoleAttribute(attributeName);
             else
-               artifact.setSoleDateAttributeValue(attributeName, diag.getSelectedDate());
+               artifact.setSoleXAttributeValue(attributeName, diag.getSelectedDate());
             if (persist) artifact.persistAttributes();
          }
       }
@@ -150,15 +150,15 @@ public class ArtifactPromptChange {
          for (Object obj : diag.getResult())
             selected.add((String) obj);
          for (Artifact artifact : artifacts) {
-            List<String> current = artifact.getAttributesToStringCollection(attributeName);
+            List<String> current = artifact.getAttributesToStringList(attributeName);
             if (diag.getSelected() == Selection.AddSelection) {
                current.addAll(selected);
-               artifact.setDamAttributes(attributeName, current);
+               artifact.setAttributeValues(attributeName, current);
             } else if (diag.getSelected() == Selection.DeleteSelected) {
                current.removeAll(selected);
-               artifact.setDamAttributes(attributeName, current);
+               artifact.setAttributeValues(attributeName, current);
             } else if (diag.getSelected() == Selection.ReplaceAll) {
-               artifact.setDamAttributes(attributeName, selected);
+               artifact.setAttributeValues(attributeName, selected);
             } else {
                AWorkbench.popup("ERROR", "Unhandled selection type => " + diag.getSelected().name());
                return false;
@@ -216,7 +216,7 @@ public class ArtifactPromptChange {
       int result = md.open();
       if (result == 256) {
          for (Artifact sma : smas) {
-            sma.setSoleBooleanAttributeValue(attributeName, md.getToggleState());
+            sma.setSoleXAttributeValue(attributeName, md.getToggleState());
             if (persist) sma.persistAttributes();
          }
          return true;

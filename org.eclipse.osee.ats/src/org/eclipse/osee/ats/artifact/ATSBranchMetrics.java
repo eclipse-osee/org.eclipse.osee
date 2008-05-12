@@ -67,7 +67,7 @@ public class ATSBranchMetrics {
       rootElement.setAttribute("numDelArts", String.valueOf(numDeletedArtifacts));
       rootElement.setAttribute("numModArts", String.valueOf(numModifiedArtifacts));
       rootElement.setAttribute("numNonRelModArts", String.valueOf(numNonRelationModifiedArtifacts));
-      branchMgr.getSmaMgr().getSma().setSoleStringAttributeValue(ATSAttributes.BRANCH_METRICS_ATTRIBUTE.getStoreName(),
+      branchMgr.getSmaMgr().getSma().setSoleXAttributeValue(ATSAttributes.BRANCH_METRICS_ATTRIBUTE.getStoreName(),
             Jaxp.getDocumentXml(doc));
       branchMgr.getSmaMgr().getSma().persist(false);
    }

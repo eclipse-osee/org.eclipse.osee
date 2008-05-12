@@ -35,8 +35,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -101,8 +101,7 @@ public class AttributeFindReplaceDialog extends Dialog {
    private void setInputs() {
       try {
          cmbAttributeDescriptors.setInput(AttributeTypeManager.getTypes(
-               BranchPersistenceManager.getInstance().getDefaultBranch()).toArray(
-               AttributeType.EMPTY_ARRAY));
+               BranchPersistenceManager.getInstance().getDefaultBranch()).toArray(AttributeType.EMPTY_ARRAY));
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (SQLException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});
@@ -131,8 +130,7 @@ public class AttributeFindReplaceDialog extends Dialog {
          @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare(((AttributeType) e1).getName(),
-                  ((AttributeType) e2).getName());
+            return getComparator().compare(((AttributeType) e1).getName(), ((AttributeType) e2).getName());
          }
       });
 
@@ -177,7 +175,7 @@ public class AttributeFindReplaceDialog extends Dialog {
                   protected void handleTxWork() throws Exception {
                      for (Artifact artifact : artifacts) {
                         monitor.subTask("Modifying " + artifact.getDescriptiveName());
-                        for (Attribute attribute : artifact.getAttributeManager(attributeName).getAttributes()) {
+                        for (Attribute<?> attribute : artifact.getAttributes(attributeName)) {
                            if (attribute instanceof StringAttribute) {
                               StringAttribute stringAttribute = (StringAttribute) attribute;
                               Matcher matcher = pattern.matcher(stringAttribute.getValue());

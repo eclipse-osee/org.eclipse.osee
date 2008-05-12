@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -221,6 +222,22 @@ public class HashCollectionPlus<K, V, O> {
       ObjectPair<Collection<V>, O> objectPair = map.get(key);
       if (objectPair != null) return map.get(key).object1;
       return null;
+   }
+
+   /**
+    * Returns the Collection all items
+    * 
+    * @param key
+    * @return Return value collection reference
+    */
+   public List<V> getValues() {
+      List<V> values = new ArrayList<V>();
+      for (ObjectPair<Collection<V>, O> objectPair : map.values()) {
+         if (objectPair != null) {
+            values.addAll(objectPair.object1);
+         }
+      }
+      return values;
    }
 
    /**

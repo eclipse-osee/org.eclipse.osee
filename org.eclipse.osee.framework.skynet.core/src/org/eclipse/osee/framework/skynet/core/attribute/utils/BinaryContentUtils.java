@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core.attribute.utils;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 
 /**
  * @author Roberto E. Escobar
@@ -35,23 +35,22 @@ public class BinaryContentUtils {
       return contentType;
    }
 
-   public static String generateFileName(DynamicAttributeManager attributeManager) {
-      AttributeType attributeDescriptor = attributeManager.getAttributeType();
+   public static String generateFileName(Attribute<?> attribute) {
+      AttributeType attributeType = attribute.getAttributeType();
       StringBuilder builder = new StringBuilder();
       try {
-         builder.append(URLEncoder.encode(attributeDescriptor.getName(), "UTF-8"));
+         builder.append(URLEncoder.encode(attributeType.getName(), "UTF-8"));
          builder.append(".");
       } catch (Exception ex) {
          // Do Nothing - this is not important
       }
-      builder.append(attributeManager.getParentArtifact().getGuid());
+      builder.append(attribute.getArtifact().getGuid());
 
-      String fileTypeExtension = attributeDescriptor.getFileTypeExtension();
+      String fileTypeExtension = attributeType.getFileTypeExtension();
       if (Strings.isValid(fileTypeExtension)) {
          builder.append(".");
          builder.append(fileTypeExtension);
       }
       return builder.toString();
    }
-
 }

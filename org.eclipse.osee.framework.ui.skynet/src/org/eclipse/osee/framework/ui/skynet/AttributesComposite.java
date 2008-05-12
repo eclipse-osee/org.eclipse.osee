@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -24,7 +23,6 @@ import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.UniversalCellEditor;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -62,30 +60,16 @@ public class AttributesComposite extends Composite {
    private Label warningLabel;
    private boolean displayNameAttribute = true;
    private ArrayList<ModifyAttributesListener> modifyAttrListeners = new ArrayList<ModifyAttributesListener>();
-   private AttributeContentProvider attributeContentProvider;
    private MenuItem deleteItem;
    private ToolBar toolBar;
 
    public static final int NAME_COLUMN_INDEX = 0;
    public static final int VALUE_COLUMN_INDEX = 1;
 
-   public AttributesComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact) {
-      this(editor, parent, style, artifact, null, null);
-   }
-
    public AttributesComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact, ToolBar toolBar) {
-      this(editor, parent, style, artifact, null, toolBar);
-   }
-
-   public AttributesComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact, Collection<String> ignoreAttributes) {
-      this(editor, parent, style, artifact, ignoreAttributes, null);
-   }
-
-   public AttributesComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact, Collection<String> ignoreAttributes, ToolBar toolBar) {
       super(parent, style);
       this.artifact = artifact;
       this.editor = editor;
-      this.attributeContentProvider = new AttributeContentProvider(ignoreAttributes);
 
       create(this);
       Menu popupMenu = new Menu(parent);
@@ -158,10 +142,10 @@ public class AttributesComposite extends Composite {
             Object selected = selection.getFirstElement();
 
             if (selected instanceof Attribute) {
-               Attribute attribute = (Attribute) selected;
-               AttributeType descriptor = attribute.getAttributeManager().getAttributeType();
-               if (descriptor.getTipText() != null && !descriptor.getTipText().equals("null"))
-                  helpText.setText(descriptor.getTipText());
+               Attribute<?> attribute = (Attribute<?>) selected;
+               AttributeType attributeType = attribute.getAttributeType();
+               if (attributeType.getTipText() != null && !attributeType.getTipText().equals("null"))
+                  helpText.setText(attributeType.getTipText());
                else
                   helpText.setText("");
             }
@@ -186,7 +170,7 @@ public class AttributesComposite extends Composite {
          tableViewer.setCellEditors(editors);
          tableViewer.setCellModifier(new AttributeCellModifier(editor, tableViewer, this));
       }
-      tableViewer.setContentProvider(attributeContentProvider);
+      tableViewer.setContentProvider(new AttributeContentProvider());
       tableViewer.setLabelProvider(new AttributeLabelProvider());
       tableViewer.setInput(artifact);
    }
@@ -232,7 +216,7 @@ public class AttributesComposite extends Composite {
          public void widgetArmed(ArmEvent e) {
             MenuItem addItem = (MenuItem) e.getSource();
             for (MenuItem attrItem : addItem.getMenu().getItems()) {
-               attrItem.setEnabled(((DynamicAttributeManager) attrItem.getData()).hasRemaining());
+               attrItem.setEnabled(artifact.getRemainingAttributeCount((AttributeType) attrItem.getData()) > 0);
             }
          }
       });
@@ -241,12 +225,10 @@ public class AttributesComposite extends Composite {
 
       try {
          SelectionAdapter listener = new AttributeMenuSelectionListener(this, tableViewer, editor);
-         for (DynamicAttributeManager type : attributeContentProvider.populateAttributeTypes(artifact)) {
-            AttributeType descriptor = type.getAttributeType();
-            // TODO ADD BACK WHEN ACCESS CONTROL IS PUT IN -- Only let the user add attributes intended for them
+         for (AttributeType attributeType : artifact.getAttributeTypes()) {
             MenuItem item = new MenuItem(attributesMenu, SWT.CASCADE);
-            item.setText(descriptor.getName() + " Attribute");
-            item.setData(type);
+            item.setText(attributeType.getName() + " Attribute");
+            item.setData(attributeType);
             item.addSelectionListener(listener);
          }
       } catch (SQLException ex) {
@@ -261,7 +243,7 @@ public class AttributesComposite extends Composite {
       deleteItem.setText("Delete");
       deleteItem.addSelectionListener(new SelectionListener() {
          public void widgetSelected(SelectionEvent e) {
-            Attribute attribute = getSelectedAttribute();
+            Attribute<?> attribute = getSelectedAttribute();
             attribute.delete();
             tableViewer.refresh();
          }
@@ -282,10 +264,10 @@ public class AttributesComposite extends Composite {
       });
    }
 
-   private Attribute getSelectedAttribute() {
+   private Attribute<?> getSelectedAttribute() {
       TableItem[] items = tableViewer.getTable().getSelection();
       if (items.length > 0)
-         return (Attribute) (tableViewer.getTable().getSelection()[0]).getData();
+         return (Attribute<?>) (tableViewer.getTable().getSelection()[0]).getData();
       else
          return null;
    }
@@ -295,12 +277,12 @@ public class AttributesComposite extends Composite {
       }
 
       public void menuShown(MenuEvent e) {
-         Attribute attribute = getSelectedAttribute();
+         Attribute<?> attribute = getSelectedAttribute();
 
          if (attribute == null) {
             deleteItem.setText("Delete - No Attribute Selected");
             deleteItem.setEnabled(false);
-         } else if (!attribute.getAttributeManager().canDelete()) {
+         } else if (!attribute.canDelete()) {
             deleteItem.setText("Delete - Lower Limit Met");
             deleteItem.setEnabled(false);
          } else {

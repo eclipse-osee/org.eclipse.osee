@@ -16,8 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeStateManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
 
@@ -30,9 +30,9 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    private DataStore dataStore;
    private String displayable;
 
-   public UriAttributeDataProvider(AttributeStateManager attributeStateManager) {
-      super(attributeStateManager);
-      AbstractResourceProcessor abstractResourceProcessor = new AttributeResourceProcessor(attributeStateManager);
+   public UriAttributeDataProvider(Attribute<?> attribute) {
+      super(attribute);
+      AbstractResourceProcessor abstractResourceProcessor = new AttributeResourceProcessor(attribute);
       this.dataStore = new DataStore(abstractResourceProcessor);
       this.displayable = "";
    }
@@ -54,7 +54,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    public String getInternalFileName() {
-      return BinaryContentUtils.generateFileName(getAttributeStateManager().getAttributeManager());
+      return BinaryContentUtils.generateFileName(getAttribute());
    }
 
    /* (non-Javadoc)
@@ -77,7 +77,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
                dataStore.clear();
                dataStore.setLocator(loc);
             }
-            getAttributeStateManager().setDirty();
+            getAttribute().setDirty();
          }
       } catch (Exception ex1) {
          logger.log(Level.SEVERE, ex1.toString(), ex1);
@@ -146,5 +146,13 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    @Override
    public void persist() throws Exception {
       dataStore.persist();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
+    */
+   @Override
+   public void purge() throws Exception {
+      dataStore.purge();
    }
 }

@@ -69,10 +69,10 @@ public class ReviewManager {
 
          DecisionReviewArtifact decRev = NewDecisionReviewJob.createNewDecisionReview(smaMgr.getSma(), true);
          decRev.setDescriptiveName(VALIDATE_REVIEW_TITLE);
-         decRev.setSoleStringAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
-         decRev.setSoleStringAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
+         decRev.setSoleXAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
+         decRev.setSoleXAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
-         decRev.setSoleBooleanAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(),
+         decRev.setSoleXAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(),
                smaMgr.getWorkPage().isValidateReviewBlocking());
 
          SMAManager revSmaMgr = new SMAManager(decRev);
@@ -102,12 +102,12 @@ public class ReviewManager {
 
       if (teamParent != null) {
          teamParent.relate(RelationSide.TeamWorkflowToReview_Review, peerToPeerRev);
-         if (againstState != null) peerToPeerRev.setSoleStringAttributeValue(
+         if (againstState != null) peerToPeerRev.setSoleXAttributeValue(
                ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
       }
 
       peerToPeerRev.getLog().addLog(LogType.Originated, "", "", origDate, origUser);
-      peerToPeerRev.setSoleBooleanAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
+      peerToPeerRev.setSoleXAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
 
       // Initialize state machine
       peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());

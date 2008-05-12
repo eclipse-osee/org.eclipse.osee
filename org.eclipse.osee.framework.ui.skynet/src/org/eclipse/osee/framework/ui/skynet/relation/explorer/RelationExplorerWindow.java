@@ -301,10 +301,10 @@ public class RelationExplorerWindow {
                if (descriptor != null) {
                   try {
                      artifact = descriptor.makeNewArtifact(BranchPersistenceManager.getInstance().getDefaultBranch());
-                     artifact.setSoleStringAttributeValue("Name", model.getName());
-                     artifact.setSoleStringAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
+                     artifact.setSoleXAttributeValue("Name", model.getName());
+                     artifact.setSoleXAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
                      artifact.persistAttributes();
-                  } catch (SQLException ex) {
+                  } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                   }
                }

@@ -73,10 +73,10 @@ public class CreateNewUser extends AbstractBlam {
       } catch (UserNotInDatabase ex) {
          // good that is why we are creating it
       }
-      user.setSoleStringAttributeValue("User Id", userId);
+      user.setSoleXAttributeValue("User Id", userId);
 
       boolean active = variableMap.getBoolean("Active");
-      user.setSoleBooleanAttributeValue("Active", active);
+      user.setSoleXAttributeValue("Active", active);
 
       String email = variableMap.getString("Email");
       if (email.equals("")) {
@@ -84,13 +84,13 @@ public class CreateNewUser extends AbstractBlam {
          monitor.done();
          return;
       }
-      user.setSoleStringAttributeValue("Email", email);
+      user.setSoleXAttributeValue("Email", email);
 
       // Process string attribute names
       for (String attrName : attrNames) {
          String value = variableMap.getString(attrName);
          if (!value.equals("")) {
-            user.setSoleStringAttributeValue(attrName, value);
+            user.setSoleXAttributeValue(attrName, value);
          }
       }
       // Add user to selected User Group and Universal Group

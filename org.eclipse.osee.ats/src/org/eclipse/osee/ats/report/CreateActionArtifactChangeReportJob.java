@@ -119,21 +119,21 @@ public class CreateActionArtifactChangeReportJob extends Job {
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, String byAttribute, StringBuffer sb) throws Exception {
       String rpcrNum = teamArt.getSoleAttributeValue(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), "");
       for (Artifact modArt : teamArt.getSmaMgr().getBranchMgr().getArtifactsModified(false)) {
-         List<String> attrStrs = modArt.getAttributesToStringCollection(byAttribute);
+         List<String> attrStrs = modArt.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             sb.append(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   modArt.getDescriptiveName(), attrStr, rpcrNum, "Content"}));
       }
       for (Artifact artChg : teamArt.getSmaMgr().getBranchMgr().getArtifactsDeleted()) {
-         List<String> attrStrs = artChg.getAttributesToStringCollection(byAttribute);
+         List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             sb.append(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
                   artChg.getDescriptiveName(), attrStr, rpcrNum, "Deleted"}));
       }
       for (Artifact artChg : teamArt.getSmaMgr().getBranchMgr().getArtifactsRelChanged()) {
-         List<String> attrStrs = artChg.getAttributesToStringCollection(byAttribute);
+         List<String> attrStrs = artChg.getAttributesToStringList(byAttribute);
          if (attrStrs.size() == 0) attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          for (String attrStr : attrStrs)
             sb.append(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,

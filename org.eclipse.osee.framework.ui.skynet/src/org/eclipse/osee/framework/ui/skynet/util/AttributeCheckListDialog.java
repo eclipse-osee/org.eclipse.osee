@@ -69,7 +69,7 @@ public class AttributeCheckListDialog extends SelectionDialog {
       for (AttributeType attributeType : artifact.getAttributeTypes()) {
          if (selectedAttributes.contains(attributeType)) {
             result.append(" - ");
-            result.append(Collections.toString(", ", artifact.getAttributes(attributeType)));
+            result.append(artifact.getAttributesToString(attributeType.getName()));
          }
       }
       return result.toString();

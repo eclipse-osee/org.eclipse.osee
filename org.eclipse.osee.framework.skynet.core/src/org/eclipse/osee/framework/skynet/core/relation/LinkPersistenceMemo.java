@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import org.eclipse.osee.framework.jdk.core.util.PersistenceMemo;
 
 /**
  * @author Jeff C. Phillips
  * @author Robert A. Fisher
  */
-public class LinkPersistenceMemo implements PersistenceMemo {
+public class LinkPersistenceMemo {
 
    private int linkId;
    private int gammaId;

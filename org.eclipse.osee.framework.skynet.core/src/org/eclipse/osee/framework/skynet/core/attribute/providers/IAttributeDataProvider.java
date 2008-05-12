@@ -18,4 +18,12 @@ public interface IAttributeDataProvider {
    public String getDisplayableString();
 
    public void setDisplayableString(String toDisplay);
+
+   public void loadData(Object... objects) throws Exception;
+
+   public Object[] getData() throws Exception;
+
+   public void persist() throws Exception;
+
+   public void purge() throws Exception;
 }

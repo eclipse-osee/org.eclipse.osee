@@ -35,14 +35,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceMemo;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.DynamicAttributeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -204,10 +201,10 @@ public class ArtifactQueryBuilder {
       }
 
       if (guids != null && guids.size() > 0) {
-         sql.append("art1.guid IN (" + Collections.toString(",", guids) + ") AND ");
+         sql.append("art1.guid IN ('" + Collections.toString("','", guids) + "') AND ");
       }
       if (hrids != null && hrids.size() > 0) {
-         sql.append("art1.human_readable_id IN (" + Collections.toString(",", hrids) + ") AND ");
+         sql.append("art1.human_readable_id IN ('" + Collections.toString("','", hrids) + "') AND ");
       }
 
       sql.append("\n");
@@ -420,8 +417,10 @@ public class ArtifactQueryBuilder {
     * 
     * @param artifacts
     * @param sql
+    * @param localDataList
+    * @return artifact id for a single artifact search and 0 if a list of artifacts was used
     */
-   private void makeArtifactIdList(Iterator<Artifact> artifacts, StringBuilder sql, List<Object> localDataList) {
+   private int makeArtifactIdList(Iterator<Artifact> artifacts, StringBuilder sql, List<Object> localDataList) {
       StringBuilder list = new StringBuilder(8000);
       int count = 0;
       int artId = 0;
@@ -433,22 +432,29 @@ public class ArtifactQueryBuilder {
 
       if (count == 1) {
          sql.append("=?");
-         localDataList.add(SQL3DataType.INTEGER);
-         localDataList.add(artId);
       } else {
          sql.append("IN (");
          sql.append(list, 0, list.length() - 1);
          sql.append(')');
       }
+      return artId;
    }
 
-   private String getAttributeSQL(Iterator<Artifact> artifacts, List<Object> localDataList) {
+   private String getAttributeSQL(Iterator<Artifact> artifacts, List<Object> attributeDataList) {
       StringBuilder sql = new StringBuilder(10000);
       sql.append("SELECT att1.* from osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.art_id");
-      makeArtifactIdList(artifacts, sql, localDataList);
+
+      int artId = makeArtifactIdList(artifacts, sql, attributeDataList);
+      if (artId != 0) {
+         attributeDataList.add(SQL3DataType.INTEGER);
+         attributeDataList.add(artId);
+      }
+      attributeDataList.add(SQL3DataType.INTEGER);
+      attributeDataList.add(branch.getBranchId());
+
       sql.append(" AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=");
       sql.append(TxChange.CURRENT.ordinal());
-      sql.append(" AND txs1.transaction_id txd1.transaction_id AND txd1.branch_id=? ORDER BY att1.art_id,txd1.transaction_id desc");
+      sql.append(" AND txs1.transaction_id txd1.transaction_id AND txd1.branch_id=?");
       return sql.toString();
    }
 
@@ -463,34 +469,26 @@ public class ArtifactQueryBuilder {
       if (loadLevel == SHALLOW) {
          return;
       } else if (loadLevel == ATTRIBUTE) {
-         loadAttributeData(artifacts);
+         loadAttributesData(artifacts);
       } else if (loadLevel == FULL) {
-         loadAttributeData(artifacts);
+         loadAttributesData(artifacts);
       } else if (loadLevel == RELATION) {
       }
 
       for (Artifact artifact : artifacts) {
-         artifact.setNotDirty(); // The artifacts are fresh, so mark them as not dirty
          artifact.onInitializationComplete();
       }
    }
 
-   private void loadAttributeData(List<Artifact> artifacts) throws SQLException {
+   private void loadAttributesData(List<Artifact> artifacts) throws SQLException {
       Iterator<Artifact> artIdsIter = artifacts.iterator();
       Iterator<Artifact> artifactIterator = artifacts.iterator();
       while (artIdsIter.hasNext()) {
 
          ConnectionHandlerStatement chStmt = null;
          try {
-            // NOTE: the 'ORDER BY att1.art_id,txd1.transaction_id desc' clause works with the DynamicAttributeManager
-            // to ignore effectively overwritten attributes with {min,max} of {0,1} with >1 attribute instances.
-
             List<Object> attributeDataList = new ArrayList<Object>(4);
-
             String sql = getAttributeSQL(artIdsIter, attributeDataList);
-
-            attributeDataList.add(SQL3DataType.INTEGER);
-            attributeDataList.add(branch.getBranchId());
             chStmt = ConnectionHandler.runPreparedQuery(sql, attributeDataList.toArray());
 
             ResultSet rSet = chStmt.getRset();
@@ -498,30 +496,24 @@ public class ArtifactQueryBuilder {
             int lastArtId = -1; // Set to -1 to force a trigger on the first run of the loop
             while (rSet.next()) {
                Artifact artifact = null;
-
                artId = rSet.getInt("art_id");
 
                // Get a new artifact reference if the ID has changed
                if (artId != lastArtId) {
                   lastArtId = artId;
+                  // if not the first pass add any missing attributes to satisfy minimum requirements
+                  if (artifact != null) {
+                     AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
+                  }
                   artifact = artifactIterator.next();
                }
 
-               DynamicAttributeManager attributeManager =
-                     new DynamicAttributeManager(artifact, AttributeTypeManager.getType(rSet.getInt("attr_type_id")),
-                           false);
-               attributeManager.setupForInitialization(false);
-
-               Attribute<?> attribute = attributeManager.injectFromDb(rSet.getString("value"), rSet.getString("uri"));
-               attribute.setPersistenceMemo(new AttributeMemo(rSet.getInt("attr_id"), rSet.getInt("gamma_id")));
-
-               // Finalize the initialization of all the attribute sets
-               attributeManager.enforceMinMaxConstraints();
+               AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
+                     rSet.getString("value"), rSet.getString("uri"), rSet.getInt("attr_id"), rSet.getInt("gamma_id"));
             }
          } finally {
             DbUtil.close(chStmt);
          }
-
       }
    }
 }

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * @author Robert A. Fisher
@@ -106,7 +107,7 @@ public class RoughArtifact {
       return number.isChild(otherArtifact.number);
    }
 
-   public void conferAttributesUpon(Artifact artifact) throws SQLException, IllegalStateException, IOException {
+   public void conferAttributesUpon(Artifact artifact) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
       for (NameAndVal roughtAttribute : attributes) {
          if (roughtAttribute.getValue() != null) {
             artifact.addAttribute(roughtAttribute.getName(), roughtAttribute.getValue());
@@ -116,7 +117,7 @@ public class RoughArtifact {
       setFileAttributes(artifact);
    }
 
-   private void setFileAttributes(Artifact artifact) throws SQLException, IllegalStateException, IOException {
+   private void setFileAttributes(Artifact artifact) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
       if (fileAttributes != null) {
          for (Entry<String, File> entry : fileAttributes.entrySet()) {
             artifact.setSoleAttributeFromStream(entry.getKey(), new FileInputStream(entry.getValue()));
@@ -211,9 +212,9 @@ public class RoughArtifact {
       return children.isEmpty() || forcePrimaryType ? primaryDescriptor : headingDescriptor;
    }
 
-   public void updateValues(Artifact artifact) throws SQLException, IllegalStateException, IOException {
+   public void updateValues(Artifact artifact) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
       for (NameAndVal value : attributes) {
-         artifact.setSoleStringAttributeValue(value.getName(), value.getValue());
+         artifact.setSoleXAttributeValue(value.getName(), value.getValue());
       }
 
       setFileAttributes(artifact);

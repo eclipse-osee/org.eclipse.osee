@@ -32,10 +32,8 @@ public class AttributeAnnotationHandler implements IArtifactAnnotation {
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
       try {
          if (artifact.isAttributeTypeValid(AttributeAnnotationManager.ANNOTATION_ATTRIBUTE)) {
-            if (artifact.getAttributeManager(AttributeAnnotationManager.ANNOTATION_ATTRIBUTE).size() > 0) {
-               AttributeAnnotationManager mgr = new AttributeAnnotationManager(artifact);
-               annotations.addAll(mgr.getAnnotations());
-            }
+            AttributeAnnotationManager mgr = new AttributeAnnotationManager(artifact);
+            annotations.addAll(mgr.getAnnotations());
          }
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);

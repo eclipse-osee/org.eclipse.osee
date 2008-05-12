@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
@@ -58,7 +59,7 @@ public class WorkflowDiagramFactory {
       art =
             (NativeArtifact) ArtifactTypeManager.addArtifact(GENERAL_DOCUMENT_ARTIFACT_NAME,
                   BranchPersistenceManager.getAtsBranch(), name);
-      art.setSoleStringAttributeValue("Extension", "vue");
+      art.setSoleXAttributeValue("Extension", "vue");
       art.setNativeContent(inputStream);
       art.persistAttributes();
 
@@ -84,7 +85,7 @@ public class WorkflowDiagramFactory {
             AtsPlugin.getAtsBranch()).size() == 1;
    }
 
-   public AtsWorkFlow getAtsWorkflowFromArtifact(Artifact artifact) throws IOException, SQLException, MultipleAttributesExist {
+   public AtsWorkFlow getAtsWorkflowFromArtifact(Artifact artifact) throws IOException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       if (!objToAtsWorkFlowXml.containsKey(artifact)) {
          NativeArtifact nativeArtifact = (NativeArtifact) artifact;
          InputStream is = nativeArtifact.getNativeContent();

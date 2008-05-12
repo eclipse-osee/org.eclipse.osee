@@ -48,7 +48,7 @@ public class AtsConfig {
 
    public ActionableItemArtifact getOrCreateActionableItemsHeadingArtifact() throws SQLException {
       Artifact art = getOrCreateHeadingArtifact(ActionableItemArtifact.ARTIFACT_NAME, ACTIONABLE_ITEMS_HEADING);
-      if (!art.getAttributesToStringCollection(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
+      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
             ActionableItemArtifact.TOP_AI_STATIC_ID)) {
          art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, ActionableItemArtifact.TOP_AI_STATIC_ID);
       }
@@ -58,7 +58,7 @@ public class AtsConfig {
 
    public TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact() throws SQLException {
       Artifact art = getOrCreateHeadingArtifact(TeamDefinitionArtifact.ARTIFACT_NAME, TEAMS_HEADING);
-      if (!art.getAttributesToStringCollection(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
+      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(
             TeamDefinitionArtifact.TOP_TEAM_STATIC_ID)) {
          art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, TeamDefinitionArtifact.TOP_TEAM_STATIC_ID);
       }

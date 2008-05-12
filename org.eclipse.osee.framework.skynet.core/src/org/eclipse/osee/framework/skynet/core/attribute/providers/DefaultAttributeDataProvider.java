@@ -10,22 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeStateManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 
 /**
  * @author Roberto E. Escobar
  */
 public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider implements ICharacterAttributeDataProvider {
 
-   private String value;
-
-   public DefaultAttributeDataProvider(AttributeStateManager attributeStateManager) {
-      super(attributeStateManager);
-      this.value = null;
+   /**
+    * @param attribute
+    */
+   public DefaultAttributeDataProvider(Attribute<?> attribute) {
+      super(attribute);
    }
 
+   private String value;
+
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#getDisplayableString()
+    * @see org.eclipse.osee.framework.skynet.core.attribute.AbstractAttributeDataProvider#getDisplayableString()
     */
    @Override
    public String getDisplayableString() {
@@ -33,7 +36,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#getValueAsString()
+    * @see org.eclipse.osee.framework.skynet.core.attribute.AbstractAttributeDataProvider#getValueAsString()
     */
    @Override
    public String getValueAsString() {
@@ -41,7 +44,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#setDisplayableString(java.lang.String)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.AbstractAttributeDataProvider#setDisplayableString(java.lang.String)
     */
    @Override
    public void setDisplayableString(String toDisplay) {
@@ -49,7 +52,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#setValue(java.lang.String)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.AbstractAttributeDataProvider#setValue(java.lang.String)
     */
    @Override
    public void setValue(String value) {
@@ -60,7 +63,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
          return;
       }
       this.value = value;
-      getAttributeStateManager().setDirty();
+      getAttribute().setDirty();
    }
 
    /* (non-Javadoc)
@@ -87,5 +90,13 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    @Override
    public void persist() throws Exception {
       // Do Nothing
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider#purge()
+    */
+   @Override
+   public void purge() throws Exception {
+      ArtifactPersistenceManager.purgeAttribute(getAttribute(), getAttribute().getPersistenceMemo().getAttrId());
    }
 }

@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -150,9 +151,9 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return smaMgr.isCompleted();
    }
 
-   public void transitionToCancelled(String reason, boolean persist) throws IllegalStateException, SQLException {
+   public void transitionToCancelled(String reason, boolean persist) throws SQLException, MultipleAttributesExist {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Cancelled.name())) return;
-      setSoleStringAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getStoreName(), reason);
+      setSoleXAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getStoreName(), reason);
       Result result = smaMgr.transition(DefaultTeamState.Cancelled.name(), (User) null, persist);
       if (result.isFalse()) result.popup();
    }

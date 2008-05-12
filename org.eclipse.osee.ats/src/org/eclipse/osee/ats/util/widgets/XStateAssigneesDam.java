@@ -35,7 +35,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
 
    public SMAState getState(String stateName, boolean create) {
       try {
-         for (String stateXml : sma.getAttributesToStringCollection(attributeTypeName)) {
+         for (String stateXml : sma.getAttributesToStringList(attributeTypeName)) {
             if (stateXml.startsWith(stateName + ";")) {
                SMAState state = new SMAState();
                state.setFromXml(stateXml);
@@ -52,7 +52,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
    public Set<SMAState> getStates() {
       Set<SMAState> states = new HashSet<SMAState>();
       try {
-         for (String stateXml : sma.getAttributesToStringCollection(attributeTypeName)) {
+         for (String stateXml : sma.getAttributesToStringList(attributeTypeName)) {
             SMAState state = new SMAState();
             state.setFromXml(stateXml);
             states.add(state);

@@ -15,8 +15,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
  * @author Donald G. Dunne
@@ -41,15 +39,11 @@ public class XListDam extends XList implements IArtifactWidget {
 
    @Override
    public void saveToArtifact() throws Exception {
-      try {
-         artifact.setDamAttributes(attributeTypeName, getSelectedStrs());
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
+      artifact.setAttributeValues(attributeTypeName, getSelectedStrs());
    }
 
    public Collection<String> getStoredStrs() throws SQLException {
-      return artifact.getAttributesToStringCollection(attributeTypeName);
+      return artifact.getAttributesToStringList(attributeTypeName);
    }
 
    /* (non-Javadoc)

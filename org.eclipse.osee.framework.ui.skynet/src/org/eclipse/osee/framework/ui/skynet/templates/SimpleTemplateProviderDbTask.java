@@ -19,10 +19,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
@@ -41,7 +40,7 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
       processTemplatesForDBInit();
    }
 
-   private void processTemplatesForDBInit() throws SQLException, IllegalStateException, IOException {
+   private void processTemplatesForDBInit() throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
 
       Artifact templateFolder = getTemplateFolder();
       IExtensionPoint ep =
@@ -49,14 +48,15 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
                   "org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTemplate");
       for (IExtension extension : ep.getExtensions()) {
          for (IConfigurationElement el : extension.getConfigurationElements()) {
-            Artifact templateArtifact = ArtifactTypeManager.addArtifact("Renderer Template",BranchPersistenceManager.getCommonBranch());
+            Artifact templateArtifact =
+                  ArtifactTypeManager.addArtifact("Renderer Template", BranchPersistenceManager.getCommonBranch());
             String filePath = el.getAttribute("File");
             String name = filePath.substring(filePath.lastIndexOf('/') + 1);
             name = name.substring(0, name.lastIndexOf('.'));
             URL url = Platform.getBundle(el.getContributor().getName()).getEntry(filePath);
 
             if (url != null) {
-               templateArtifact.setSoleStringAttributeValue("Name", name);
+               templateArtifact.setSoleXAttributeValue("Name", name);
                templateArtifact.setSoleAttributeFromStream("Word Formatted Content", url.openStream());
                for (IConfigurationElement matchCriteriaEl : el.getChildren()) {
                   String match = matchCriteriaEl.getAttribute("match");

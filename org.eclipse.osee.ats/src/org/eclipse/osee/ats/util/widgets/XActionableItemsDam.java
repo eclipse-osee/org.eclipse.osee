@@ -51,7 +51,7 @@ public class XActionableItemsDam extends XTextDam {
    }
 
    public List<String> getActionableItemGuids() throws SQLException {
-      return sma.getAttributesToStringCollection(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
+      return sma.getAttributesToStringList(ATSAttributes.ACTIONABLE_ITEM_GUID_ATTRIBUTE.getStoreName());
    }
 
    public void addActionableItem(ActionableItemArtifact aia) throws SQLException {

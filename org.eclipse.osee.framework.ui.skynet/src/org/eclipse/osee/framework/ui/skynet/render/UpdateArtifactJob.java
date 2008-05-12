@@ -122,7 +122,7 @@ public class UpdateArtifactJob extends UpdateJob {
       eventManager.kick(new VisitorEvent(artifact, this));
    }
 
-   private void updateWholeDocumentArtifact(Artifact artifact) throws IllegalStateException, SQLException, IOException {
+   private void updateWholeDocumentArtifact(Artifact artifact) throws SQLException, IOException, MultipleAttributesExist {
       artifact.setSoleAttributeFromStream(WordAttribute.CONTENT_NAME, new FileInputStream(workingFile));
       artifact.persistAttributes();
       eventManager.kick(new VisitorEvent(artifact, this));
@@ -219,7 +219,7 @@ public class UpdateArtifactJob extends UpdateJob {
                   content = stringBuffer.toString();
                }
 
-               artifact.setSoleStringAttributeValue(WordAttribute.CONTENT_NAME, content);
+               artifact.setSoleXAttributeValue(WordAttribute.CONTENT_NAME, content);
                if (artifact.isDirty()) {
                   artifact.persistAttributes();
                   changedArtifacts.add(artifact);
