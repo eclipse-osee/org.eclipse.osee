@@ -15,20 +15,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class HttpUploader {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HttpUploader.class);
    private static final int CONNECTION_TIMEOUT = 120000;
    private static final int CONNECTION_READ_TIMEOUT = 1000 * 60 * 10;
    private static final String CONTENT_LENGTH = "Content-Length";
