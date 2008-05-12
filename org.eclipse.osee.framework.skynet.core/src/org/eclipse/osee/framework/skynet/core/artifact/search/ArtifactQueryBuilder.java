@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceMemo;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -315,10 +314,10 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Artifact> getArtifacts(ISearchConfirmer confirmer) throws SQLException {
-      if (true) {
-         return new ArrayList<Artifact>(ArtifactPersistenceManager.getInstance().getArtifacts(getArtifactsSql(),
-               dataList, TransactionIdManager.getInstance().getEditableTransactionId(branch), null));
-      }
+      //      if (true) {
+      //         return new ArrayList<Artifact>(ArtifactPersistenceManager.getInstance().getArtifacts(getArtifactsSql(),
+      //               dataList, TransactionIdManager.getInstance().getEditableTransactionId(branch), null));
+      //      }
       List<Artifact> artifacts = new LinkedList<Artifact>();
       List<Artifact> artifactsToInit = new LinkedList<Artifact>();
       ConnectionHandlerStatement chStmt = null;
@@ -433,9 +432,10 @@ public class ArtifactQueryBuilder {
       if (count == 1) {
          sql.append("=?");
       } else {
-         sql.append("IN (");
+         sql.append(" IN (");
          sql.append(list, 0, list.length() - 1);
          sql.append(')');
+         artId = 0;
       }
       return artId;
    }
@@ -454,7 +454,7 @@ public class ArtifactQueryBuilder {
 
       sql.append(" AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=");
       sql.append(TxChange.CURRENT.ordinal());
-      sql.append(" AND txs1.transaction_id txd1.transaction_id AND txd1.branch_id=?");
+      sql.append(" AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? ORDER BY att1.art_id");
       return sql.toString();
    }
 
@@ -481,6 +481,13 @@ public class ArtifactQueryBuilder {
    }
 
    private void loadAttributesData(List<Artifact> artifacts) throws SQLException {
+      java.util.Collections.sort(artifacts, new Comparator<Artifact>() {
+
+         @Override
+         public int compare(Artifact o1, Artifact o2) {
+            return o1.getArtId() - o2.getArtId();
+         }
+      });
       Iterator<Artifact> artIdsIter = artifacts.iterator();
       Iterator<Artifact> artifactIterator = artifacts.iterator();
       while (artIdsIter.hasNext()) {
@@ -494,8 +501,9 @@ public class ArtifactQueryBuilder {
             ResultSet rSet = chStmt.getRset();
             int artId;
             int lastArtId = -1; // Set to -1 to force a trigger on the first run of the loop
+            Artifact artifact = null;
             while (rSet.next()) {
-               Artifact artifact = null;
+
                artId = rSet.getInt("art_id");
 
                // Get a new artifact reference if the ID has changed
@@ -504,6 +512,9 @@ public class ArtifactQueryBuilder {
                   // if not the first pass add any missing attributes to satisfy minimum requirements
                   if (artifact != null) {
                      AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
+                  }
+                  if (!artifactIterator.hasNext()) {
+                     System.out.println("stop");
                   }
                   artifact = artifactIterator.next();
                }
