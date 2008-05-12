@@ -61,6 +61,7 @@ final class HttpPutMethod implements IHttpMethod {
             fileReceived.delete();
          }
          try {
+            httpResponse.setContentType("text/plain");
             httpResponse.sendResponseHeaders(result, 0);
             httpResponse.getOutputStream().flush();
          } catch (IOException ex1) {
