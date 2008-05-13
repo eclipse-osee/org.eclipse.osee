@@ -786,7 +786,7 @@ public final class Lib {
    public static String removeExtension(String filepath) {
       String ext = getExtension(filepath);
       if (ext != null && ext.length() > 0) {
-         filepath = filepath.substring(0, filepath.length() - ext.length());
+         filepath = filepath.substring(0, filepath.length() - (ext.length() + 1));
       }
       return filepath;
    }
