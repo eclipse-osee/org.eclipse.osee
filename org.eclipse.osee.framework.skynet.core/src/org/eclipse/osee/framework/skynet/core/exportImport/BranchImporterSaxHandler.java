@@ -25,11 +25,17 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_ID_SEQ;
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +44,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -45,6 +53,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.TxChange;
+import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
+import org.eclipse.osee.framework.skynet.core.linking.ResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -60,7 +71,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    private static final String INSERT_ARTIFACT_VERSION =
          "INSERT INTO " + ARTIFACT_VERSION_TABLE + " (art_id, gamma_id, modification_id) VALUES (?,?,?)";
    private static final String INSERT_ATTRIBUTE =
-         "INSERT INTO " + ATTRIBUTE_VERSION_TABLE + " (art_id, attr_id, attr_type_id, value, gamma_id, content, modification_id) VALUES (?,?,?,?,?,?,?)";
+         "INSERT INTO " + ATTRIBUTE_VERSION_TABLE + " (art_id, attr_id, attr_type_id, value, gamma_id, uri, modification_id) VALUES (?,?,?,?,?,?,?)";
    private static final String INSERT_ATTRIBUTE_GUID =
          "INSERT INTO " + ATTRIBUTE_TABLE + " (attr_id, guid) VALUES (?,?)";
    private static final String INSERT_NEW_ARTIFACT =
@@ -70,7 +81,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    private static final String INSERT_RELATION_LINK_GUID =
          "INSERT INTO " + RELATION_LINK_TABLE + " (rel_link_id, guid) VALUES (?,?)";
    private static final String INSERT_TX_ADDRESS =
-         "INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id) VALUES (?,?)";
+         "INSERT INTO " + TRANSACTIONS_TABLE + " (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
    private static final String INSERT_TX_DETAIL =
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE + " (transaction_id, time, osee_comment, author, branch_id) VALUES (?,?,?,?,?)";
 
@@ -84,6 +95,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    private final GuidCache artifactGuidCache;
    private final GuidCache attributeGuidCache;
    private final GuidCache linkGuidCache;
+   private final File binaryDataSource;
 
    private Integer currentTransactionId;
    private Integer currentArtifactId;
@@ -95,7 +107,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
    private Stack<Object> transactionKeys;
 
-   public BranchImporterSaxHandler(Branch supportingBranch, boolean includeMainLevelBranch, boolean includeDescendantBranches, IProgressMonitor monitor) throws SQLException, IOException {
+   public BranchImporterSaxHandler(File binaryDataSource, Branch supportingBranch, boolean includeMainLevelBranch, boolean includeDescendantBranches, IProgressMonitor monitor) throws SQLException, IOException {
 
       this.currentTransactionId = null;
       this.currentArtifactId = null;
@@ -114,6 +126,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       this.linkGuidCache = new GuidCache(RELATION_LINK_TABLE, "rel_link_id");
 
       this.transactionKeys = new Stack<Object>();
+      this.binaryDataSource = binaryDataSource;
 
       if (monitor == null) {
          monitor = new NullProgressMonitor();
@@ -256,7 +269,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
       ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, SQL3DataType.INTEGER, currentArtifactId,
             SQL3DataType.VARCHAR, gammaId, SQL3DataType.INTEGER, modificationType.getValue());
-      insertTxAddress(gammaId);
+      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.ordinal());
    }
 
    @Override
@@ -265,7 +278,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processAttribute(String attributeGuid, String attributeTypeName, String stringValue, byte[] contentValue, boolean deleted) throws Exception {
+   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeTypeName, String stringValue, String uriValue, boolean deleted) throws Exception {
       // Skip this attribute if the artifact is not being included
       if (currentArtifactId == null || monitor.isCanceled()) {
          return;
@@ -286,16 +299,35 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       int gammaId = Query.getNextSeqVal(null, GAMMA_ID_SEQ);
       ModificationType modificationType = getModType(modified, deleted);
 
-      InputStream content = null;
-      if (contentValue.length > 0) {
-         content = new ByteArrayInputStream(contentValue);
+      String uriToStore = null;
+      if (Strings.isValid(uriValue)) {
+         InputStream inputStream = null;
+         try {
+            File source = new File(getBinaryDataSource(), uriValue);
+            inputStream = new FileInputStream(source);
+            Map<String, String> parameterMap = new HashMap<String, String>();
+            parameterMap.put("protocol", "attr");
+            parameterMap.put("seed", Integer.toString(gammaId));
+            parameterMap.put("name", artifactHrid);
+            parameterMap.put("extension", Lib.getExtension(uriValue));
+            String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("resource", parameterMap);
+            URI result =
+                  ResourceProcessor.save(new URL(urlString), inputStream,
+                        HttpURLConnection.guessContentTypeFromName(uriValue), "ISO-8859-1");
+            uriToStore = result.toASCIIString();
+         } finally {
+            if (inputStream != null) {
+               inputStream.close();
+            }
+         }
+      } else {
+         uriToStore = "";
       }
-
       ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE, SQL3DataType.INTEGER, currentArtifactId,
             SQL3DataType.INTEGER, attrId, SQL3DataType.INTEGER, attrTypeId, SQL3DataType.VARCHAR, stringValue,
-            SQL3DataType.INTEGER, gammaId, SQL3DataType.BLOB, content, SQL3DataType.INTEGER,
+            SQL3DataType.INTEGER, gammaId, SQL3DataType.VARCHAR, uriToStore, SQL3DataType.INTEGER,
             modificationType.getValue());
-      insertTxAddress(gammaId);
+      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.ordinal());
    }
 
    @Override
@@ -339,15 +371,19 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             relLinkTypeId, SQL3DataType.INTEGER, aArtId, SQL3DataType.INTEGER, bArtId, SQL3DataType.INTEGER, aOrder,
             SQL3DataType.INTEGER, bOrder, SQL3DataType.VARCHAR, rationale, SQL3DataType.INTEGER, gammaId,
             SQL3DataType.INTEGER, modificationType.getValue());
-      insertTxAddress(gammaId);
+      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.ordinal());
    }
 
-   private void insertTxAddress(int gammaId) throws SQLException {
+   private void insertTxAddress(int gammaId, int modType, int txCurrent) throws SQLException {
       ConnectionHandler.runPreparedUpdate(INSERT_TX_ADDRESS, SQL3DataType.INTEGER, currentTransactionId,
-            SQL3DataType.INTEGER, gammaId);
+            SQL3DataType.INTEGER, gammaId, SQL3DataType.INTEGER, modType, SQL3DataType.INTEGER, txCurrent);
    }
 
    private ModificationType getModType(boolean modified, boolean deleted) {
       return deleted ? ModificationType.DELETED : (modified ? ModificationType.CHANGE : ModificationType.NEW);
+   }
+
+   private File getBinaryDataSource() {
+      return binaryDataSource;
    }
 }

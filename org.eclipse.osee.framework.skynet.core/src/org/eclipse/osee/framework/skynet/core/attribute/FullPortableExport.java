@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
@@ -45,7 +44,6 @@ import org.eclipse.osee.framework.ui.plugin.util.OseeData;
  * @author Ryan D. Brooks
  */
 public class FullPortableExport {
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final ConfigurationPersistenceManager configurationManager =
          ConfigurationPersistenceManager.getInstance();
    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

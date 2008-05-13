@@ -17,8 +17,6 @@ import java.sql.Timestamp;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import sun.misc.BASE64Decoder;
-import sun.misc.CharacterDecoder;
 
 /**
  * @author Robert A. Fisher
@@ -29,22 +27,15 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    private static final String ATTRIBUTE = "attribute";
    private static final String BRANCH = "branch";
    private static final String COMMENT = "comment";
-   private static final String CONTENT_VALUE = "contentvalue";
+   private static final String BINARY_DATA = "binarydata";
    private static final String LINK = "link";
    private static final String NAME = "name";
    private static final String RATIONALE = "rationale";
    private static final String STRING_VALUE = "stringvalue";
    private static final String TRANSACTION = "transaction";
 
-   private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
-
-   private final CharacterDecoder decoder;
-
    public BranchSaxHandler() {
       super();
-
-      this.decoder = new BASE64Decoder();
-
    }
 
    @Override
@@ -64,8 +55,8 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
             handleAttribute(attributes);
          } else if (localName.equalsIgnoreCase(STRING_VALUE)) {
             handleStringValue(attributes);
-         } else if (localName.equalsIgnoreCase(CONTENT_VALUE)) {
-            handleContentValue(attributes);
+         } else if (localName.equalsIgnoreCase(BINARY_DATA)) {
+            handleBinaryData(attributes);
          } else if (localName.equalsIgnoreCase(LINK)) {
             handleLink(attributes);
          } else if (localName.equalsIgnoreCase(RATIONALE)) {
@@ -93,8 +84,8 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
             finishAttribute();
          } else if (localName.equalsIgnoreCase(STRING_VALUE)) {
             finishStringValue();
-         } else if (localName.equalsIgnoreCase(CONTENT_VALUE)) {
-            finishContentValue();
+         } else if (localName.equalsIgnoreCase(BINARY_DATA)) {
+            finishBinaryData();
          } else if (localName.equalsIgnoreCase(LINK)) {
             finishLink();
          } else if (localName.equalsIgnoreCase(RATIONALE)) {
@@ -193,11 +184,11 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
 
       final String guid = attributes.getValue("guid");
       final String type = attributes.getValue("type");
-      final String hrid = attributes.getValue("hrid");
+      currentArtifactHrid = attributes.getValue("hrid");
       String deletedStr = attributes.getValue("deleted");
       final boolean deleted = deletedStr == null ? false : Boolean.valueOf(deletedStr);
 
-      processArtifact(guid, type, hrid, deleted);
+      processArtifact(guid, type, currentArtifactHrid, deleted);
    }
 
    protected abstract void processArtifact(String guid, String type, String hrid, boolean deleted) throws Exception;
@@ -207,12 +198,14 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
    }
 
    protected void processArtifactDone() {
+      currentArtifactHrid = null;
    }
 
    private String currentAttributeType;
    private String currentAttributeGuid;
    private String currentAttributeStringValue;
-   private byte[] currentAttributeContentValue;
+   private String currentAttributeContentValue;
+   private String currentArtifactHrid;
    private Boolean currentAttributeDeleted;
 
    /**
@@ -226,7 +219,7 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
       String deletedStr = attributes.getValue("deleted");
       currentAttributeDeleted = deletedStr == null ? Boolean.FALSE : Boolean.valueOf(deletedStr);
       currentAttributeStringValue = "";
-      currentAttributeContentValue = EMPTY_BYTE_ARRAY;
+      currentAttributeContentValue = "";
    }
 
    private void handleStringValue(Attributes attribtues) {
@@ -237,32 +230,27 @@ public abstract class BranchSaxHandler extends AbstractSaxHandler {
       currentAttributeStringValue = getContents();
    }
 
-   private void handleContentValue(Attributes attribtues) {
-      // No attributes, just content -- all handling in the finish method
+   private void handleBinaryData(Attributes attributes) {
+      currentAttributeContentValue = attributes.getValue("location");
    }
 
-   private void finishContentValue() throws IOException {
-      String encodedByteData = getContents();
-      if (encodedByteData.length() > 0) {
-         currentAttributeContentValue = decoder.decodeBuffer(encodedByteData);
-      } else {
-         currentAttributeContentValue = EMPTY_BYTE_ARRAY;
-      }
+   private void finishBinaryData() throws IOException {
+      // Nothing to do here
    }
 
    private void finishAttribute() throws Exception {// Skip this attribute if the artifact is not being included
 
-      processAttribute(currentAttributeGuid, currentAttributeType, currentAttributeStringValue,
+      processAttribute(currentArtifactHrid, currentAttributeGuid, currentAttributeType, currentAttributeStringValue,
             currentAttributeContentValue, currentAttributeDeleted);
 
       currentAttributeType = null;
       currentAttributeGuid = null;
       currentAttributeDeleted = null;
-      currentAttributeContentValue = EMPTY_BYTE_ARRAY;
+      currentAttributeContentValue = "";
       currentAttributeStringValue = "";
    }
 
-   protected abstract void processAttribute(String attributeGuid, String attributeType, String stringValue, byte[] contentValue, boolean deleted) throws Exception;
+   protected abstract void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, boolean deleted) throws Exception;
 
    private String currentLinkType = null;
    private String currentLinkGuid = null;

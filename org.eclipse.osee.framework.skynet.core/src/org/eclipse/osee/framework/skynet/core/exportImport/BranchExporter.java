@@ -26,16 +26,17 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,16 +50,16 @@ import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
+import org.eclipse.osee.framework.skynet.core.linking.ResourceProcessor;
+import org.eclipse.osee.framework.skynet.core.linking.ResourceProcessor.AcquireResult;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import sun.misc.BASE64Encoder;
-import sun.misc.CharacterEncoder;
 
 /**
  * @author Robert A. Fisher
@@ -88,7 +89,7 @@ public class BranchExporter {
                "gamma_id") + " AND " + ARTIFACT_VERSION_TABLE.join(ARTIFACT_TABLE, "art_id") + " AND " + ARTIFACT_TABLE.join(
                ARTIFACT_TYPE_TABLE, "art_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
    private static final String SELECT_ATTRIBUTES =
-         "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("attr_id", "art_id", "modification_id", "value", "content") + "," + ATTRIBUTE_TYPE_TABLE.column("name") + "," + TRANSACTION_DETAIL_TABLE.columns(
+         "SELECT " + ATTRIBUTE_VERSION_TABLE.columns("attr_id", "art_id", "modification_id", "value", "uri") + "," + ATTRIBUTE_TYPE_TABLE.column("name") + "," + TRANSACTION_DETAIL_TABLE.columns(
                "transaction_id", "osee_comment", "time", "author") + " FROM " + TRANSACTION_DETAIL_TABLE + "," + TRANSACTIONS_TABLE + "," + ATTRIBUTE_VERSION_TABLE + "," + ATTRIBUTE_TYPE_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">=? AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<=? AND " + TRANSACTION_DETAIL_TABLE.join(
                TRANSACTIONS_TABLE, "transaction_id") + " AND " + TRANSACTIONS_TABLE.join(ATTRIBUTE_VERSION_TABLE,
                "gamma_id") + " AND " + ATTRIBUTE_VERSION_TABLE.join(ATTRIBUTE_TYPE_TABLE, "attr_type_id") + " ORDER BY " + TRANSACTION_DETAIL_TABLE.column("transaction_id");
@@ -105,7 +106,6 @@ public class BranchExporter {
    private final RsetProcessor<AttributeData> ATTRIBUTE_PROCESSOR;
    private final RsetProcessor<BranchData> BRANCH_PROCESSOR;
 
-   private final CharacterEncoder encoder;
    private final GuidCache artGuidCache;
    private final GuidCache attrGuidCache;
    private final GuidCache relLinkGuidCache;
@@ -150,26 +150,34 @@ public class BranchExporter {
 
       this.ATTRIBUTE_PROCESSOR = new AttributeProcessor();
       this.BRANCH_PROCESSOR = new BranchProcessor();
-      this.encoder = new BASE64Encoder();
-      typeNameMap = new HashMap<String, String>();
+      this.typeNameMap = new HashMap<String, String>();
    }
 
-   public void export() throws SQLException, IOException {
+   public void export() throws Exception {
+      String baseName = Lib.removeExtension(file.getAbsolutePath());
+
+      File rootDirectory = new File(file.getParentFile(), baseName);
+      rootDirectory.mkdirs();
+
+      File indexFile = new File(rootDirectory, file.getName());
       Writer writer =
-            new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"), (int) Math.pow(2, 24));
+            new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), "UTF-8"), (int) Math.pow(2, 24));
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
 
       // Force all users to be mapped
       skynetAuthentication.getUsers();
 
-      processBranch(new BranchData(branch), writer, true, !descendantsOnly);
+      processBranch(rootDirectory, writer, new BranchData(branch), true, !descendantsOnly);
 
       writer.close();
       attrGuidCache.finalizeCachedGuids();
       relLinkGuidCache.finalizeCachedGuids();
+
+      // Zip Export Here
+      Lib.compressDirectory(rootDirectory, baseName + ".zip", true);
    }
 
-   private void processBranch(BranchData branch, Writer writer, boolean mainLevel, boolean useTheseTransactions) throws SQLException, IOException {
+   private void processBranch(File rootDirectory, Writer writer, BranchData branch, boolean mainLevel, boolean useTheseTransactions) throws Exception {
       Collection<BranchData> childBranches = new LinkedList<BranchData>();
       HashCollection<Integer, BranchData> childBranchMap = new HashCollection<Integer, BranchData>();
 
@@ -253,7 +261,8 @@ public class BranchExporter {
             monitor.subTask(task);
 
             if (useTheseTransactions) {
-               processTransaction(new TransactionData(curTransactionId, artSet, attrSet, linkSet), writer, task);
+               processTransaction(rootDirectory, writer,
+                     new TransactionData(curTransactionId, artSet, attrSet, linkSet), task);
                transactionsProcessed++;
             } else {
                skipTransaction(curTransactionId, artSet, attrSet, linkSet);
@@ -266,7 +275,7 @@ public class BranchExporter {
             Collection<BranchData> branchedBranches = childBranchMap.getValues(curTransactionId);
             if (branchedBranches != null) {
                for (BranchData branchedBranch : branchedBranches) {
-                  processBranch(branchedBranch, writer, false, true);
+                  processBranch(rootDirectory, writer, branchedBranch, false, true);
                }
             }
             if (monitor.isCanceled()) break;
@@ -317,7 +326,7 @@ public class BranchExporter {
       return Math.min(artTran, Math.min(attrTran, linkTran));
    }
 
-   private void processTransaction(TransactionData transaction, Writer writer, String task) throws IOException, SQLException {
+   private void processTransaction(File rootDirectory, Writer writer, TransactionData transaction, String task) throws Exception {
       Collection<ArtifactData> artifacts = new LinkedList<ArtifactData>();
       Collection<LinkData> links = new LinkedList<LinkData>();
       HashCollection<Integer, AttributeData> attributeMap = new HashCollection<Integer, AttributeData>();
@@ -356,7 +365,7 @@ public class BranchExporter {
             artifactTask = task + " Artifact " + (++count) + " of " + total;
             monitor.subTask(task);
 
-            processArtifact(artifact, attributeMap, writer, artifactTask);
+            processArtifact(rootDirectory, writer, artifact, attributeMap, artifactTask);
 
             if (monitor.isCanceled()) return;
          }
@@ -382,7 +391,7 @@ public class BranchExporter {
       }
    }
 
-   private void processArtifact(ArtifactData artifact, HashCollection<Integer, AttributeData> attributeMap, Writer writer, String task) throws IOException, SQLException {
+   private void processArtifact(File rootDirectory, Writer writer, ArtifactData artifact, HashCollection<Integer, AttributeData> attributeMap, String task) throws Exception {
 
       writer.write(String.format("<Artifact guid=\"%s\" type=\"%s\" hrid=\"%s\"%s>\n", artifact.getGuid(),
             getTypeName(artifact), artifact.getHrid(), artifact.isDeleted() ? DELETED : ""));
@@ -397,16 +406,38 @@ public class BranchExporter {
                Xml.writeAsCdata(writer, attribute.getStringValue());
                writer.write("</StringValue>\n");
             }
-            if (attribute.getValue().length() > 0) {
-               writer.write("<ContentValue>");
-               writer.write(attribute.getValue());
-               writer.write("</ContentValue>\n");
+            if (attribute.isUriValid()) {
+               String relativePath = writeBinaryDataTo(rootDirectory, attribute.getUri());
+               writer.write("<BinaryData location=\"");
+               writer.write(relativePath);
+               writer.write("\" />\n");
             }
             writer.write("</Attribute>\n");
          }
       }
-
       writer.write("</Artifact>\n");
+   }
+
+   private String writeBinaryDataTo(File rootDirectory, String uriTarget) throws Exception {
+      String toReturn = null;
+      FileOutputStream outputStream = null;
+      try {
+         int index = uriTarget.lastIndexOf("/");
+         String fileName = uriTarget.substring(index + 1, uriTarget.length());
+         File target = new File(rootDirectory, fileName);
+         outputStream = new FileOutputStream(target);
+         Map<String, String> parameters = new HashMap<String, String>();
+         parameters.put("uri", uriTarget);
+         String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("resource", parameters);
+         AcquireResult acquireResult = ResourceProcessor.acquire(new URL(url));
+         outputStream.write(acquireResult.getData());
+         toReturn = target.getName();
+      } finally {
+         if (outputStream != null) {
+            outputStream.close();
+         }
+      }
+      return toReturn;
    }
 
    private String getTypeName(ArtifactData artifact) {
@@ -652,12 +683,11 @@ public class BranchExporter {
    }
 
    private class AttributeData {
-      private final byte[] EMPTY_BYTE_ARRAY = new byte[0];
       private final int artId;
       private final String type;
       private final int id;
       private final String stringValue;
-      private final String value;
+      private final String uri;
       private final boolean deleted;
 
       /**
@@ -667,7 +697,7 @@ public class BranchExporter {
        * @param deleted
        * @throws UnsupportedEncodingException
        */
-      public AttributeData(final int artId, final String type, final int id, String stringValue, byte[] byteData, final boolean deleted) throws UnsupportedEncodingException {
+      public AttributeData(final int artId, final String type, final int id, String stringValue, String uri, final boolean deleted) throws UnsupportedEncodingException {
          this.artId = artId;
          this.type = type;
          this.id = id;
@@ -677,7 +707,7 @@ public class BranchExporter {
             stringValue = "";
          }
          this.stringValue = stringValue;
-         this.value = encoder.encode(byteData == null ? EMPTY_BYTE_ARRAY : byteData);
+         this.uri = uri;
       }
 
       public int getArtId() {
@@ -700,20 +730,22 @@ public class BranchExporter {
          return stringValue;
       }
 
-      public String getValue() {
-         return value;
+      public String getUri() {
+         return uri;
+      }
+
+      public boolean isUriValid() {
+         return uri != null && uri.length() > 0;
       }
    }
 
    private class AttributeProcessor implements RsetProcessor<AttributeData> {
 
       public AttributeData process(ResultSet set) throws SQLException {
-         InputStream stream = set.getBinaryStream("content");
-         byte[] byteData = stream == null ? null : Streams.getByteArray(stream);
-
          try {
             return new AttributeData(set.getInt("art_id"), set.getString("name"), set.getInt("attr_id"),
-                  set.getString("value"), byteData, set.getInt("modification_id") == ModificationType.DELETED.getValue());
+                  set.getString("value"), set.getString("uri"),
+                  set.getInt("modification_id") == ModificationType.DELETED.getValue());
          } catch (UnsupportedEncodingException ex) {
             // Don't expect to ever not have UTF-8 support
             throw new IllegalStateException(ex);

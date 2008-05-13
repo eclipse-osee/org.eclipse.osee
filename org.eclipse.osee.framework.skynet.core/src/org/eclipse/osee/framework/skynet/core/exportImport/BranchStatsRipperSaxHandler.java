@@ -46,7 +46,7 @@ public class BranchStatsRipperSaxHandler extends BranchSaxHandler {
    }
 
    @Override
-   protected void processAttribute(String attributeGuid, String attributeType, String stringValue, byte[] contentValue, boolean deleted) throws Exception {
+   protected void processAttribute(String artifactHrid, String attributeGuid, String attributeType, String stringValue, String uriValue, boolean deleted) throws Exception {
    }
 
    @Override
