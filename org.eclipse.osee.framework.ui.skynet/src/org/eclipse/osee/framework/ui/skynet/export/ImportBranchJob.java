@@ -73,8 +73,8 @@ public class ImportBranchJob extends Job {
       try {
 
          XMLReader reader = XMLReaderFactory.createXMLReader();
-         reader.setContentHandler(new BranchImporterSaxHandler(branch, includeMainLevelBranch,
-               includeDescendantBranches, monitor));
+         reader.setContentHandler(new BranchImporterSaxHandler(importFile.getParentFile(), branch,
+               includeMainLevelBranch, includeDescendantBranches, monitor));
          reader.parse(new InputSource(new FileInputStream(importFile)));
 
          final MutableBoolean isVerificationAllowed = new MutableBoolean(false);
