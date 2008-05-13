@@ -85,15 +85,15 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                "base artifacts size: " + baseArtifacts.size() + " must match newer artifacts size: " + newerArtifacts.size() + ".");
       } else {
          IRenderer myIRenderer =
-               RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, baseArtifacts.get(0));
+               RendererManager.getInstance().getBestRenderer(PresentationType.DIFF,
+                     baseArtifacts.get(0) == null ? newerArtifacts.get(0) : baseArtifacts.get(0));
          if (myIRenderer instanceof WholeDocumentRenderer) {
             JobFamily aFamilyMember =
                   new JobFamily(baseArtifacts.get(0), newerArtifacts.get(newerArtifacts.size() - 1), DIFF_ARTIFACT,
                         "Diff", newerArtifacts.get(newerArtifacts.size() - 1).getDescriptiveName());
             aFamilyMember.schedule();
          } else if (myIRenderer instanceof WordRenderer) {
-            WordRenderer renderer =
-                  (WordRenderer) RendererManager.getInstance().getRendererById(WordRenderer.WORD_RENDERER_EXTENSION);
+            WordRenderer renderer = (WordRenderer) myIRenderer;
             try {
                renderer.compareArtifacts(baseArtifacts, newerArtifacts, DIFF_ARTIFACT, null,
                      selectedItem.getBaselineTransactionId().getBranch());
@@ -156,7 +156,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          this.monitor = monitor;
          try {
             IRenderer myIRenderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, firstArtifact);
-            myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor);
+            myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor, null, false);
          } catch (Exception e) {
             JournalList.add(e.getMessage());
             //         e.printStackTrace();
@@ -197,7 +197,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
          this.monitor = monitor;
          try {
             IRenderer myIRenderer = RendererManager.getInstance().getBestRenderer(PresentationType.DIFF, firstArtifact);
-            myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor);
+            myIRenderer.compare(firstArtifact, secondArtifact, diffOption, monitor, null, false);
          } catch (Exception ex) {
             OSEELog.logException(getClass(), ex, true);
             JournalList.add(ex.getMessage());
