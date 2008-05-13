@@ -30,7 +30,6 @@ import net.jini.core.discovery.LookupLocator;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
-import net.jini.core.lookup.ServiceMatches;
 import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceTemplate;
 import net.jini.discovery.DiscoveryEvent;
@@ -653,12 +652,6 @@ public class ServiceDataStore implements ServiceDiscoveryListener, DiscoveryList
     */
    public Map<ServiceID, ServiceRegistrar> getServiceRegistrars() {
       return serviceRegistrars;
-   }
-
-   public ServiceMatches lookupAllServices(ServiceRegistrar reggie) throws RemoteException {
-      Thread.currentThread().setContextClassLoader(this.loader);
-      ServiceTemplate st = new ServiceTemplate(null, null, null);
-      return reggie.lookup(st, Integer.MAX_VALUE);
    }
 
    /**
