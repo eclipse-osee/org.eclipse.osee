@@ -45,7 +45,7 @@ public class MultipleLinks {
       if (pos != -1) {
          extension = fileName.substring(pos);
       }
-      fileName = Lib.stripExtension(fileToLink.getName());
+      fileName = Lib.removeExtension(fileToLink.getName());
 
       String command = "ln -s " + fileToLink.getPath() + " " + directory.getPath() + File.separator + fileName;
       for (int i = 0; i < linkCount; i++) {

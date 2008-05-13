@@ -643,7 +643,7 @@ public final class Lib {
          }
       } else {
          for (int i = 0; i < files.length; i++) {
-            list.add(Lib.stripExtension(files[i].getName()));
+            list.add(Lib.removeExtension(files[i].getName()));
          }
       }
 
@@ -666,7 +666,7 @@ public final class Lib {
          }
       } else {
          while ((line = in.readLine()) != null) {
-            list.add(Lib.stripExtension(line));
+            list.add(Lib.removeExtension(line));
          }
       }
       in.close();
@@ -783,12 +783,12 @@ public final class Lib {
       }
    }
 
-   public static String stripExtension(String str) {
-      int pos = str.lastIndexOf('.');
-      if (pos == -1) {
-         return str;
+   public static String removeExtension(String filepath) {
+      String ext = getExtension(filepath);
+      if (ext != null && ext.length() > 0) {
+         filepath = filepath.substring(0, filepath.length() - ext.length());
       }
-      return str.substring(0, pos);
+      return filepath;
    }
 
    // replaces the first capturing group of the match in fileToModify with
@@ -1291,28 +1291,55 @@ public final class Lib {
    }
 
    public static byte[] compressFile(File file) throws IOException {
-      // Create a buffer for reading the files
-      byte[] buf = new byte[1024];
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      ZipOutputStream out = new ZipOutputStream(bos);
-      FileInputStream in = new FileInputStream(file);
-
-      // Add ZIP entry to output stream.
-      out.putNextEntry(new ZipEntry(file.getName()));
-
-      // Transfer bytes from the file to the ZIP file
-      int len;
-      while ((len = in.read(buf)) > 0) {
-         out.write(buf, 0, len);
-      }
-
-      out.closeEntry();
-      in.close();
-
-      // Complete the ZIP file
-      out.close();
-
+      ZipOutputStream outputStream = new ZipOutputStream(bos);
+      compressFile(file, outputStream);
+      outputStream.closeEntry();
+      outputStream.close();
       return bos.toByteArray();
+   }
+
+   private static void compressFile(File file, ZipOutputStream outputStream) throws IOException {
+      FileInputStream inputStream = null;
+      try {
+         byte[] buffer = new byte[4096];
+         int count = -1;
+         inputStream = new FileInputStream(file);
+         ZipEntry entry = new ZipEntry(file.getPath());
+         outputStream.putNextEntry(entry);
+         while ((count = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, count);
+         }
+      } finally {
+         if (inputStream != null) {
+            inputStream.close();
+         }
+      }
+   }
+
+   private static void compressDirectory(File source, ZipOutputStream outputStream, boolean includeSubDirectories) throws IOException {
+      File[] children = source.listFiles();
+      for (File file : children) {
+         if (file.isDirectory() != true) {
+            compressFile(file, outputStream);
+         } else {
+            if (includeSubDirectories) {
+               compressDirectory(file, outputStream, includeSubDirectories);
+            }
+         }
+      }
+   }
+
+   public static void compressDirectory(File directory, String zipTarget, boolean includeSubDirectories) throws IOException, IllegalArgumentException {
+      if (directory.isDirectory() != true) {
+         throw new IllegalArgumentException(String.format("Error source is not a directory: [%s]", directory));
+      }
+      if (Strings.isValid(zipTarget) != true) {
+         throw new IllegalArgumentException("Error target zip filename is invalid");
+      }
+      ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipTarget));
+      compressDirectory(directory, out, includeSubDirectories);
+      out.close();
    }
 
    public static byte[] decompressBytes(InputStream inputStream) throws IOException {

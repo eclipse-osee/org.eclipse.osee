@@ -124,7 +124,7 @@ public abstract class Rule {
          return file;
       }
 
-      return new File(Lib.stripExtension(file.getPath()) + "." + outExtension);
+      return new File(Lib.removeExtension(file.getPath()) + "." + outExtension);
    }
 
    public static void main(String[] args) throws Exception {
