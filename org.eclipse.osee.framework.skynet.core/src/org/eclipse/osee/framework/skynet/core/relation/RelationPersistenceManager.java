@@ -346,6 +346,9 @@ public class RelationPersistenceManager implements PersistenceManager {
       int previousRelationId = -1;
       int branchId = artifact.getBranch().getBranchId();
       TransactionId transactionId = artifact.getPersistenceMemo().getTransactionId();
+      if (transactionId == null) {
+         transactionId = TransactionIdManager.getInstance().getEditableTransactionId(artifact.getBranch());
+      }
       ConnectionHandlerStatement chStmt = null;
 
       try {
@@ -364,56 +367,57 @@ public class RelationPersistenceManager implements PersistenceManager {
             if (rSet.getInt("modification_id") == ModificationType.DELETED.getValue()) {
                continue;
             }
-
-            IRelationLink link = null;
-            String rationale = rSet.getString("rationale");
-            int aArtId = rSet.getInt("a_art_id");
-            int bArtId = rSet.getInt("b_art_id");
-            int aOrderValue = rSet.getInt("a_order_value");
-            int bOrderValue = rSet.getInt("b_order_value");
-            int gammaId = rSet.getInt("gamma_id");
-
-            link = relationsCache.get(relId, transactionId);
-
-            if (link == null) {
-               try {
-                  Artifact artA = artifactManager.getArtifactFromId(aArtId, transactionId);
-                  Artifact artB = artifactManager.getArtifactFromId(bArtId, transactionId);
-                  IRelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
-
-                  link =
-                        new DynamicRelationLink(artA, artB, relationType, new LinkPersistenceMemo(relId, gammaId),
-                              (rationale != null && !rationale.equals("null")) ? rationale : "", aOrderValue,
-                              bOrderValue, false);
-               } catch (RuntimeException ex) {
-                  logger.log(
-                        Level.WARNING,
-                        ex.getLocalizedMessage() + ": rel_id = " + relId + " a_art_id = " + aArtId + " b_art_id = " + bArtId,
-                        ex);
-                  continue;
-               }
-               relationsCache.put(relId, transactionId, link);
-
-               if (link.getArtifactA().isLinkManagerLoaded()) {
-                  link.getArtifactA().getLinkManager().addLink(link);
-               }
-               if (link.getArtifactB().isLinkManagerLoaded()) {
-                  link.getArtifactB().getLinkManager().addLink(link);
-               }
-
-               link.setNotDirty();
-
-            } else {
-               if (!link.getArtifactA().getLinkManager().deletedLinks.contains(link) && !link.isDeleted()) {
-
-                  link.getArtifactA().getLinkManager().addLink(link);
-                  link.getArtifactB().getLinkManager().addLink(link);
-               }
-            }
+            loadLinkData(rSet, relId, transactionId);
 
          }
       } finally {
          DbUtil.close(chStmt);
+      }
+   }
+
+   private void loadLinkData(ResultSet rSet, int relId, TransactionId transactionId) throws SQLException {
+      IRelationLink link = null;
+      String rationale = rSet.getString("rationale");
+      int aArtId = rSet.getInt("a_art_id");
+      int bArtId = rSet.getInt("b_art_id");
+      int aOrderValue = rSet.getInt("a_order_value");
+      int bOrderValue = rSet.getInt("b_order_value");
+      int gammaId = rSet.getInt("gamma_id");
+
+      link = relationsCache.get(relId, transactionId);
+
+      if (link == null) {
+         try {
+            Artifact artA = artifactManager.getArtifactFromId(aArtId, transactionId);
+            Artifact artB = artifactManager.getArtifactFromId(bArtId, transactionId);
+            IRelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
+
+            link =
+                  new DynamicRelationLink(artA, artB, relationType, new LinkPersistenceMemo(relId, gammaId),
+                        (rationale != null && !rationale.equals("null")) ? rationale : "", aOrderValue, bOrderValue,
+                        false);
+
+            cache(link, transactionId);
+
+            if (link.getArtifactA().isLinkManagerLoaded()) {
+               link.getArtifactA().getLinkManager().addLink(link);
+            }
+            if (link.getArtifactB().isLinkManagerLoaded()) {
+               link.getArtifactB().getLinkManager().addLink(link);
+            }
+
+            link.setNotDirty();
+         } catch (RuntimeException ex) {
+            logger.log(Level.WARNING,
+                  ex.getLocalizedMessage() + ": relId = " + relId + " a_art_id = " + aArtId + " b_art_id = " + bArtId,
+                  ex);
+         }
+      } else {
+         if (!link.getArtifactA().getLinkManager().deletedLinks.contains(link) && !link.isDeleted()) {
+
+            link.getArtifactA().getLinkManager().addLink(link);
+            link.getArtifactB().getLinkManager().addLink(link);
+         }
       }
    }
 

@@ -314,10 +314,6 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Artifact> getArtifacts(ISearchConfirmer confirmer) throws SQLException {
-      //      if (true) {
-      //         return new ArrayList<Artifact>(ArtifactPersistenceManager.getInstance().getArtifacts(getArtifactsSql(),
-      //               dataList, TransactionIdManager.getInstance().getEditableTransactionId(branch), null));
-      //      }
       List<Artifact> artifacts = new LinkedList<Artifact>();
       List<Artifact> artifactsToInit = new LinkedList<Artifact>();
       ConnectionHandlerStatement chStmt = null;
@@ -512,9 +508,6 @@ public class ArtifactQueryBuilder {
                   // if not the first pass add any missing attributes to satisfy minimum requirements
                   if (artifact != null) {
                      AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
-                  }
-                  if (!artifactIterator.hasNext()) {
-                     System.out.println("stop");
                   }
                   artifact = artifactIterator.next();
                }

@@ -175,8 +175,9 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public static Set<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws SQLException {
-      if (aia.getArtifacts(RelationSide.TeamActionableItem_Team).size() > 0) return aia.getArtifacts(
-            RelationSide.TeamActionableItem_Team, TeamDefinitionArtifact.class);
+      if (aia.getArtifacts(RelationSide.TeamActionableItem_Team).size() > 0) {
+         return aia.getArtifacts(RelationSide.TeamActionableItem_Team, TeamDefinitionArtifact.class);
+      }
       Artifact parentArt = aia.getParent();
       if (parentArt instanceof ActionableItemArtifact) return getImpactedTeamDef((ActionableItemArtifact) parentArt);
       return null;

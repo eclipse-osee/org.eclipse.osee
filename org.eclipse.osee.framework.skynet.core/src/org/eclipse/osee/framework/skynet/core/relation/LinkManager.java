@@ -37,7 +37,6 @@ public class LinkManager {
    private final Map<IRelationType, RelationLinkGroup> sideALinks;
    private final Map<IRelationType, RelationLinkGroup> sideBLinks;
    private boolean inTrace;
-   private static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
    private static final RelationLinkGroup[] dummyRelationLinkGroups = new RelationLinkGroup[0];
    private static final IRelationLink[] dummyRelationLinks = new IRelationLink[0];
    private boolean released;
@@ -207,7 +206,7 @@ public class LinkManager {
       for (IRelationLink link : links) {
          link.persist(false);
       }
-      relationManager.deleteRelationLinks(deletedLinks, artifact.getBranch());
+      RelationPersistenceManager.getInstance().deleteRelationLinks(deletedLinks, artifact.getBranch());
 
       for (IRelationLink link : deletedLinks.toArray(dummyRelationLinks)) {
          link.getArtifactA().getLinkManager().deletedLinks.remove(link);
@@ -220,7 +219,7 @@ public class LinkManager {
       if (!inTrace) {
          inTrace = true;
          for (IRelationLink link : links) {
-            relationManager.trace(link, recurse, builder);
+            RelationPersistenceManager.getInstance().trace(link, recurse, builder);
          }
          builder.addLinks(deletedLinks);
          inTrace = false;
@@ -394,7 +393,7 @@ public class LinkManager {
    public synchronized void populateLinks() throws SQLException {
       checkReleased();
       if (artifact.getPersistenceMemo() != null) {
-         relationManager.populateArtifactRelations(artifact);
+         RelationPersistenceManager.getInstance().populateArtifactRelations(artifact);
       }
    }
 

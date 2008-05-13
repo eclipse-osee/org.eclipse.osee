@@ -77,4 +77,11 @@ public class ArtifactPersistenceMemo {
    public String toString() {
       return "Art id: " + artId + " Gamma id: " + gammaId;
    }
+
+   public boolean isEditable() {
+      if (transactionId == null) {
+         return true;
+      }
+      return transactionId.isEditable();
+   }
 }

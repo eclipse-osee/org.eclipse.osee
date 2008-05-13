@@ -814,8 +814,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public boolean isReadOnly() {
-      return (memo != null && !memo.getTransactionId().isEditable()) || !AccessControlManager.getInstance().checkObjectPermission(
-            this, PermissionEnum.WRITE);
+      return !isEditable() || !AccessControlManager.getInstance().checkObjectPermission(this, PermissionEnum.WRITE);
    }
 
    private boolean anAttributeIsDirty() throws SQLException {
@@ -1157,9 +1156,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public String getVersionedName() {
       String name = getDescriptiveName();
 
-      if (memo != null && !memo.getTransactionId().isEditable()) name += " [Rev:" + memo.getTransactionNumber() + "]";
+      if (!isEditable()) {
+         name += " [Rev:" + memo.getTransactionNumber() + "]";
+      }
 
       return name;
+   }
+
+   public boolean isEditable() {
+      if (memo == null) {
+         return true;
+      }
+      return memo.isEditable();
    }
 
    /**

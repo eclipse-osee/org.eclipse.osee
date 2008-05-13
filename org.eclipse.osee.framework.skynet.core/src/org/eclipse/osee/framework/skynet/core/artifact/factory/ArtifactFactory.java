@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 
 public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFactory {
    private final int factoryId;
@@ -41,8 +42,7 @@ public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFa
       }
 
       A artifact = getNewArtifact(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
-
-      // For now, the only difference we make is the ID, all other initialization is the same
+      AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
       artifact.onBirth();
       artifact.onInitializationComplete();
 

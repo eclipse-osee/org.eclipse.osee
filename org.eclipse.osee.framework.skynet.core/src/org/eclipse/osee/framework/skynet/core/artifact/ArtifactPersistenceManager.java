@@ -197,8 +197,10 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    public void saveTrace(Artifact artifact, boolean recurse, SkynetTransactionBuilder builder) throws Exception {
       if (!accessControlManager.checkObjectPermission(artifact.getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
             "No write permissions for the branch that this artifact belongs to:" + artifact.getBranch());
-      if (artifact.getPersistenceMemo() != null && !artifact.getPersistenceMemo().getTransactionId().isEditable()) throw new IllegalArgumentException(
-            "The artifact " + artifact.getGuid() + " must be at the head of the branch to be edited.");
+      if (!artifact.isEditable()) {
+         throw new IllegalArgumentException(
+               "The artifact " + artifact.getGuid() + " must be at the head of the branch to be edited.");
+      }
 
       if (artifact.isDirty() && !artifact.isInTransaction()) {
          builder.addArtifact(artifact);

@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 
 /**
@@ -80,15 +79,15 @@ public abstract class FileRenderer extends FileSystemRenderer {
       StringBuilder name = new StringBuilder(100);
 
       if (artifact != null) {
-         TransactionId transactionId = artifact.getPersistenceMemo().getTransactionId();
+
          name.append(artifact.getSafeName());
          name.append("(");
          name.append(artifact.getGuid());
          name.append(")");
 
-         if (!transactionId.isEditable() || presentationType == PresentationType.DIFF) {
+         if (!artifact.isEditable() || presentationType == PresentationType.DIFF) {
             name.append("(");
-            name.append(transactionId.getTransactionNumber());
+            name.append(artifact.getPersistenceMemo().getTransactionId().getTransactionNumber());
             name.append(")");
          }
 

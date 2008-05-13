@@ -157,7 +157,7 @@ public class ArtifactChange extends RevisionChange {
       // the memo is checked on the cached artifact in case our original artifact was editable,
       // modified, and no longer on the transaction
       try {
-         if (artifact == null || artifact.getPersistenceMemo().getTransactionNumber() != transactionId.getTransactionNumber() || (artifact.getPersistenceMemo().getTransactionNumber() == transactionId.getTransactionNumber() && artifact.getPersistenceMemo().getTransactionId().isEditable() != transactionId.isEditable())) {
+         if (artifact == null || artifact.getPersistenceMemo().getTransactionNumber() != transactionId.getTransactionNumber() || (artifact.getPersistenceMemo().getTransactionNumber() == transactionId.getTransactionNumber() && artifact.isEditable() != transactionId.isEditable())) {
             artifact = artifactPersistenceManager.getArtifactFromId(artId, transactionId);
          }
       } catch (IllegalArgumentException ex) {
