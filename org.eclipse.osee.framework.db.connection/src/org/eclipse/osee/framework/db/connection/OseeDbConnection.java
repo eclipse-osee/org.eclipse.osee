@@ -13,7 +13,7 @@ import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.pool.OseeConnectionPool;
 
 /**
- * @author b1528444
+ * @author Andrew M Finkbeiner
  */
 public class OseeDbConnection {
    private static DbInformation defaultDbInformation;

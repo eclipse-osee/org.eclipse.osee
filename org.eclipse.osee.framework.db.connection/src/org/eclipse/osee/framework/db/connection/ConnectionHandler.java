@@ -277,6 +277,19 @@ public final class ConnectionHandler {
       return chStmt;
    }
 
+   public static int runPreparedUpdate(Connection connection, String query, Object... data) throws SQLException {
+      PreparedStatement preparedStatement = null;
+      int returnValue = 0;
+      try {
+         preparedStatement = connection.prepareStatement(query);
+         populateValuesForPreparedStatement(preparedStatement, data);
+         returnValue = preparedStatement.executeUpdate();
+      } finally {
+         preparedStatement.close();
+      }
+      return returnValue;
+   }
+
    public static ConnectionHandlerStatement runPreparedQuery(String query, Object... data) throws SQLException {
       return runPreparedQuery(0, false, query, data);
    }
@@ -289,7 +302,10 @@ public final class ConnectionHandler {
       return runPreparedQuery(fetchSize, false, query, data);
    }
 
-   // This method is only for connections external to the OSEE default connection
+   public static ConnectionHandlerStatement runPreparedQuery(Connection connection, String query, Object... data) throws SQLException {
+      return runPreparedQuery(connection, 0, query, data);
+   }
+
    public static ConnectionHandlerStatement runPreparedQuery(Connection connection, int fetchSize, String query, Object... data) throws SQLException {
       QueryRecord record = new QueryRecord(query, data);
       PreparedStatement preparedStatement = null;
