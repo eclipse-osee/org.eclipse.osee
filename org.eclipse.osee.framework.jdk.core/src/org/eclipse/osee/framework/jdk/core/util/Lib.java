@@ -1293,19 +1293,26 @@ public final class Lib {
    public static byte[] compressFile(File file) throws IOException {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       ZipOutputStream outputStream = new ZipOutputStream(bos);
-      compressFile(file, outputStream);
+      compressFile(null, file, outputStream);
       outputStream.closeEntry();
       outputStream.close();
       return bos.toByteArray();
    }
 
-   private static void compressFile(File file, ZipOutputStream outputStream) throws IOException {
+   private static void compressFile(String basePath, File file, ZipOutputStream outputStream) throws IOException {
       FileInputStream inputStream = null;
       try {
          byte[] buffer = new byte[4096];
          int count = -1;
          inputStream = new FileInputStream(file);
-         ZipEntry entry = new ZipEntry(file.getPath());
+         String entryName = file.getPath();
+         if (Strings.isValid(basePath) && entryName.startsWith(basePath)) {
+            if (basePath.endsWith(File.separator) != true) {
+               basePath = basePath + File.separator;
+            }
+            entryName = entryName.replace(basePath, "");
+         }
+         ZipEntry entry = new ZipEntry(entryName);
          outputStream.putNextEntry(entry);
          while ((count = inputStream.read(buffer)) != -1) {
             outputStream.write(buffer, 0, count);
@@ -1317,14 +1324,14 @@ public final class Lib {
       }
    }
 
-   private static void compressDirectory(File source, ZipOutputStream outputStream, boolean includeSubDirectories) throws IOException {
+   private static void compressDirectory(String basePath, File source, ZipOutputStream outputStream, boolean includeSubDirectories) throws IOException {
       File[] children = source.listFiles();
       for (File file : children) {
          if (file.isDirectory() != true) {
-            compressFile(file, outputStream);
+            compressFile(basePath, file, outputStream);
          } else {
             if (includeSubDirectories) {
-               compressDirectory(file, outputStream, includeSubDirectories);
+               compressDirectory(basePath, file, outputStream, includeSubDirectories);
             }
          }
       }
@@ -1338,7 +1345,7 @@ public final class Lib {
          throw new IllegalArgumentException("Error target zip filename is invalid");
       }
       ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipTarget));
-      compressDirectory(directory, out, includeSubDirectories);
+      compressDirectory(directory.getPath(), directory, out, includeSubDirectories);
       out.close();
    }
 

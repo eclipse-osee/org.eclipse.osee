@@ -154,12 +154,12 @@ public class BranchExporter {
    }
 
    public void export() throws Exception {
-      String baseName = Lib.removeExtension(file.getAbsolutePath());
+      String baseName = Lib.removeExtension(file.getName());
 
       File rootDirectory = new File(file.getParentFile(), baseName);
       rootDirectory.mkdirs();
 
-      File indexFile = new File(rootDirectory, file.getName());
+      File indexFile = new File(rootDirectory, baseName + ".xml");
       Writer writer =
             new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), "UTF-8"), (int) Math.pow(2, 24));
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
@@ -173,8 +173,10 @@ public class BranchExporter {
       attrGuidCache.finalizeCachedGuids();
       relLinkGuidCache.finalizeCachedGuids();
 
-      // Zip Export Here
-      Lib.compressDirectory(rootDirectory, baseName + ".zip", true);
+      // Compressed and Clean-up
+      File zipTarget = new File(file.getParent(), baseName + ".zip");
+      Lib.compressDirectory(rootDirectory, zipTarget.getAbsolutePath(), true);
+      Lib.deleteDir(rootDirectory);
    }
 
    private void processBranch(File rootDirectory, Writer writer, BranchData branch, boolean mainLevel, boolean useTheseTransactions) throws Exception {

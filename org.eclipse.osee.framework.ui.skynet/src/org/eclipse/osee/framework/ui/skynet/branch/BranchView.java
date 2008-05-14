@@ -1494,7 +1494,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch branch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
 
-            File file = Files.selectFile(getSite().getShell(), SWT.SAVE, "*.xml");
+            File file = Files.selectFile(getSite().getShell(), SWT.SAVE, "*.zip");
             if (file != null) {
                Jobs.startJob(new ExportBranchJob(file, branch, false));
             }
