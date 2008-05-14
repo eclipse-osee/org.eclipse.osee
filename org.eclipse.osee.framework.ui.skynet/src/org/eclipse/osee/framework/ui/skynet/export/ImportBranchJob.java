@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.export;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -21,6 +21,8 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -71,11 +73,14 @@ public class ImportBranchJob extends Job {
 
    public IStatus run(final IProgressMonitor monitor) {
       try {
-
+         String baseName = Lib.removeExtension(importFile.getName());
+         ZipFile zipFile = new ZipFile(importFile);
+         ZipEntry entry = zipFile.getEntry(baseName + ".xml");
+         InputStream imputStream = zipFile.getInputStream(entry);
          XMLReader reader = XMLReaderFactory.createXMLReader();
-         reader.setContentHandler(new BranchImporterSaxHandler(importFile.getParentFile(), branch,
-               includeMainLevelBranch, includeDescendantBranches, monitor));
-         reader.parse(new InputSource(new FileInputStream(importFile)));
+         reader.setContentHandler(new BranchImporterSaxHandler(importFile, branch, includeMainLevelBranch,
+               includeDescendantBranches, monitor));
+         reader.parse(new InputSource(imputStream));
 
          final MutableBoolean isVerificationAllowed = new MutableBoolean(false);
          Display.getDefault().syncExec(new Runnable() {

@@ -1424,7 +1424,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch branch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
 
-            File file = Files.selectFile(getSite().getShell(), SWT.OPEN, "*.xml");
+            File file = Files.selectFile(getSite().getShell(), SWT.OPEN, "*.zip");
             if (file != null) {
                Jobs.startJob(new ImportBranchJob(file, branch, true, true));
             }
@@ -1459,7 +1459,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch branch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
 
-            File file = Files.selectFile(getSite().getShell(), SWT.OPEN, "*.xml");
+            File file = Files.selectFile(getSite().getShell(), SWT.OPEN, "*.zip");
             if (file != null) {
                Jobs.startJob(new ImportBranchJob(file, branch, false, true));
             }
