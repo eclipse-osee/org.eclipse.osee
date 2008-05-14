@@ -7,7 +7,8 @@ Bundle-Activator: org.eclipse.osee.framework.ui.swt.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.swt,
  org.eclipse.jface,
- org.eclipse.jface.text
+ org.eclipse.jface.text,
+ org.eclipse.ui
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.framework.ui.swt.styledText

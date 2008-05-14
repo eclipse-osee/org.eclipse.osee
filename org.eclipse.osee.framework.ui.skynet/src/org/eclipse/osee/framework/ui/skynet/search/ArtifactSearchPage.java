@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.search.ui.IReplacePage;
 import org.eclipse.search.ui.ISearchPage;
@@ -70,7 +72,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    private static final Pattern notSearchPrimitivePattern = Pattern.compile("Not \\[(.*)\\]");
    private static final String FILTERS_STORAGE_KEY = ".filters";
 
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static ISearchPageContainer aContainer;
 
    private Button addButton;
@@ -94,28 +95,38 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
    public void createControl(Composite parent) {
       initializeDialogUnits(parent);
+      boolean isConnectionOk = DbConnectionExceptionComposite.dbConnectionIsOk(parent);
+      if (isConnectionOk != false) {
+         Composite mainComposite = new Composite(parent, SWT.NONE);
+         mainComposite.setFont(parent.getFont());
+         mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         mainComposite.setLayout(new GridLayout());
 
-      Composite mainComposite = new Composite(parent, SWT.NONE);
-      mainComposite.setFont(parent.getFont());
-      mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      mainComposite.setLayout(new GridLayout());
+         Label label = new Label(mainComposite, SWT.NONE);
+         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+         Branch branch = getSelectedBranch();
+         String defaultBranch = branch != null ? branch.toString() : "None Found";
+         label.setText(String.format("Searching on current default branch: [%s]", defaultBranch));
 
-      Label label = new Label(mainComposite, SWT.NONE);
-      label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      label.setText("Searching on current default branch \"" + branchManager.getDefaultBranch() + "\"");
+         addFilterControls(mainComposite);
+         addTableControls(mainComposite);
+         addSearchScope(mainComposite);
+         addFilterListeners();
 
-      addFilterControls(mainComposite);
-      addTableControls(mainComposite);
-      addSearchScope(mainComposite);
-      addFilterListeners();
+         setControl(parent);
+         aContainer.setPerformActionEnabled(false);
 
-      setControl(parent);
-      aContainer.setPerformActionEnabled(false);
+         SkynetGuiPlugin.getInstance().setHelp(mainComposite, "artifact_search");
 
-      SkynetGuiPlugin.getInstance().setHelp(mainComposite, "artifact_search");
+         updateWidgets();
+         loadState();
+      } else {
+         setControl(parent);
+      }
+   }
 
-      updateWidgets();
-      loadState();
+   private Branch getSelectedBranch() {
+      return BranchPersistenceManager.getInstance().getDefaultBranch();
    }
 
    /**
@@ -173,7 +184,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       try {
          for (ArtifactSubtypeDescriptor descriptor : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
-               branchManager.getDefaultBranch())) {
+               getSelectedBranch())) {
             artifactTypeList.add(descriptor.getName());
             artifactTypeList.setData(descriptor.getName(), descriptor);
          }
@@ -209,7 +220,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       relationSideList.setSorter(new SearchSorter());
 
       try {
-         for (IRelationType linkDescriptor : RelationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
+         for (IRelationType linkDescriptor : RelationTypeManager.getValidTypes(getSelectedBranch())) {
             relationTypeList.add(linkDescriptor.getTypeName());
             relationTypeList.setData(linkDescriptor.getTypeName(), linkDescriptor);
          }
@@ -286,7 +297,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       attributeValue.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       try {
-         for (AttributeType type : AttributeTypeManager.getTypes(branchManager.getDefaultBranch())) {
+         for (AttributeType type : AttributeTypeManager.getTypes(getSelectedBranch())) {
             attributeTypeList.add(type.getName());
             attributeTypeList.setData(type.getName(), type);
          }
@@ -405,7 +416,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       NewSearchUI.activateSearchResultView();
       filterviewer.getFilterList().setAllSelected(allButton.getSelection());
       AbstractArtifactSearchQuery searchQuery =
-            new FilterArtifactSearchQuery(filterviewer.getFilterList(), branchManager.getDefaultBranch());
+            new FilterArtifactSearchQuery(filterviewer.getFilterList(), getSelectedBranch());
       NewSearchUI.runQueryInBackground(searchQuery);
       saveState();
       return true;
@@ -414,7 +425,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    public boolean performReplace() {
       filterviewer.getFilterList().setAllSelected(allButton.getSelection());
       AbstractArtifactSearchQuery searchQuery =
-            new FilterArtifactSearchQuery(filterviewer.getFilterList(), branchManager.getDefaultBranch());
+            new FilterArtifactSearchQuery(filterviewer.getFilterList(), getSelectedBranch());
 
       IStatus status = NewSearchUI.runQueryInForeground(getContainer().getRunnableContext(), searchQuery);
       if (status.matches(IStatus.CANCEL)) {
@@ -504,7 +515,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
     * Implements method from IDialogPage
     */
    public void setVisible(boolean visible) {
-      if (visible) {
+      if (visible && indexText != null) {
          indexText.setFocus();
       }
       updateOKStatus();
@@ -512,10 +523,11 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    }
 
    public static void updateOKStatus() {
-      if (filterviewer.getFilterList().getFilters().isEmpty())
+      if (filterviewer == null || filterviewer.getFilterList().getFilters().isEmpty()) {
          getContainer().setPerformActionEnabled(false);
-      else
+      } else {
          getContainer().setPerformActionEnabled(true);
+      }
    }
 
    public class SearchLabelProvider implements ILabelProvider {
