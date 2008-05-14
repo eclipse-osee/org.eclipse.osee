@@ -134,7 +134,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       ((ActionableItemWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedActionItems(ActionableItemArtifact.getActionableItems(Arrays.asList(new String[] {"SAW Code"})));
       NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       Collection<Artifact> arts = WorldView.getLoadedArtifacts();
-      testExpectedVersusActual(item.getName(), arts, ActionArtifact.class, 5);
+      testExpectedVersusActual(item.getName(), arts, ActionArtifact.class, 7);
    }
 
    public void testTeamDefinitionSearch() throws Exception {
@@ -143,7 +143,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       ((TeamWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList(new String[] {"SAW Code"})));
       NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       Collection<Artifact> arts = WorldView.getLoadedArtifacts();
-      testExpectedVersusActual(item.getName(), arts, ActionArtifact.class, 5);
+      testExpectedVersusActual(item.getName(), arts, ActionArtifact.class, 7);
    }
 
    public void testTeamDefinitionByVersionSearch() throws Exception {
@@ -154,7 +154,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
             Arrays.asList(new String[] {"SAW_Bld_2"})).iterator().next());
       NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       Collection<Artifact> arts = WorldView.getLoadedArtifacts();
-      testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 4);
+      testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 6);
    }
 
    // TODO Add test for "Teams"-"Show Team Versions"

@@ -16,7 +16,8 @@ public class DemoAtsTestSuite {
    public static Test suite() {
       TestSuite suite = new TestSuite("Test for org.eclipse.osee.ats.test.testDb - All ATS Tests");
       //$JUnit-BEGIN$
-      suite.addTestSuite(AtsNavigateItemsToWorldViewTest.class);
+      //      suite.addTestSuite(AtsNavigateItemsToWorldViewTest.class);
+      suite.addTestSuite(AtsNavigateItemsToTaskEditorTest.class);
       //$JUnit-END$
       return suite;
    }
