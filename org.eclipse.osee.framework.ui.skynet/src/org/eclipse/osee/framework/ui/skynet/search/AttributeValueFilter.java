@@ -42,7 +42,7 @@ public class AttributeValueFilter extends SearchFilter {
       OperatorAndValue result = handleWildCard(value);
       ISearchPrimitive primitive = new AttributeValueSearch(type, result.value, result.operator);
       if (not) primitive = new NotSearch(primitive);
-      filterViewer.addItem(primitive, filterName, type, result.value);
+      filterViewer.addItem(primitive, getFilterName(), type, result.value);
    }
 
    /* (non-Javadoc)
@@ -52,4 +52,15 @@ public class AttributeValueFilter extends SearchFilter {
    public boolean isValid() {
       return !attributeValue.getText().equals("");
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.search.SearchFilter#loadFromStorageString(org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer, java.lang.String, java.lang.String, java.lang.String, boolean)
+    */
+   @Override
+   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
+      ISearchPrimitive primitive = AttributeValueSearch.getPrimitive(storageString);
+      if (isNotEnabled) primitive = new NotSearch(primitive);
+      filterViewer.addItem(primitive, getFilterName(), type, value);
+   }
+
 }

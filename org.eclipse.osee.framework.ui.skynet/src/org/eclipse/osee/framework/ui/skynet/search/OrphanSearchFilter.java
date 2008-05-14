@@ -50,7 +50,7 @@ public class OrphanSearchFilter extends SearchFilter {
             if (not) {
                primitive = new NotSearch(primitive);
             }
-            filterViewer.addItem(primitive, filterName, typeName, "");
+            filterViewer.addItem(primitive, getFilterName(), typeName, "");
          }
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
@@ -67,4 +67,15 @@ public class OrphanSearchFilter extends SearchFilter {
       return true;
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.search.SearchFilter#loadFromStorageString(org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer, java.lang.String, java.lang.String, java.lang.String, boolean)
+    */
+   @Override
+   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
+      ISearchPrimitive primitive = OrphanArtifactSearch.getPrimitive(storageString);
+      if (isNotEnabled) {
+         primitive = new NotSearch(primitive);
+      }
+      filterViewer.addItem(primitive, getFilterName(), type, value);
+   }
 }

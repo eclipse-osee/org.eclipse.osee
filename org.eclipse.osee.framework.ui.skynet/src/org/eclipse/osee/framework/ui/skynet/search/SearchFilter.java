@@ -21,9 +21,9 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Ryan D. Brooks
  */
-public class SearchFilter {
+public abstract class SearchFilter {
    private static final Pattern wildCardPattern = Pattern.compile("(?<!\\\\)\\*");
-   protected String filterName;
+   private String filterName;
    protected Control optionsControl;
    protected boolean not;
 
@@ -33,9 +33,9 @@ public class SearchFilter {
       this.not = false;
    }
 
-   public void addFilterTo(FilterTableViewer filterViewer) {
+   public abstract void addFilterTo(FilterTableViewer filterViewer);
 
-   }
+   public abstract void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled);
 
    public boolean isValid() {
       return false;
@@ -73,4 +73,9 @@ public class SearchFilter {
    public void setNot(boolean not) {
       this.not = not;
    }
+
+   protected String getFilterName() {
+      return filterName;
+   }
+
 }

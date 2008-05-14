@@ -34,7 +34,7 @@ public class CorruptedArtifactSearchFilter extends SearchFilter {
    public void addFilterTo(FilterTableViewer filterViewer) {
       ISearchPrimitive primitive = new CorruptedArtifactSearch();
       if (not) primitive = new NotSearch(primitive);
-      filterViewer.addItem(primitive, filterName, "", "");
+      filterViewer.addItem(primitive, getFilterName(), "", "");
    }
 
    /*
@@ -45,6 +45,16 @@ public class CorruptedArtifactSearchFilter extends SearchFilter {
    @Override
    public boolean isValid() {
       return true;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.search.SearchFilter#loadFromStorageString(org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer, java.lang.String, java.lang.String, java.lang.String, boolean)
+    */
+   @Override
+   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
+      ISearchPrimitive primitive = new CorruptedArtifactSearch();
+      if (isNotEnabled) primitive = new NotSearch(primitive);
+      filterViewer.addItem(primitive, getFilterName(), type, value);
    }
 
 }

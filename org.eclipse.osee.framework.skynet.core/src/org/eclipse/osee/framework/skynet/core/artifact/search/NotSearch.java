@@ -55,7 +55,7 @@ public class NotSearch implements ISearchPrimitive {
     * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getStorageString()
     */
    public String getStorageString() {
-      return null;
+      return "Not [" + search.getStorageString() + "]";
    }
 
    /* (non-Javadoc)

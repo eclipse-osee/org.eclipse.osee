@@ -41,12 +41,11 @@ public class InRelationFilter extends SearchFilter {
       String type = relationTypeList.getCombo().getText();
       String sideName = relationSideList.getCombo().getText();
 
-      IRelationType linkDescriptor =
-            (IRelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
+      IRelationType linkDescriptor = (IRelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
       ISearchPrimitive primitive = new InRelationSearch(type, linkDescriptor.isSideAName(sideName));
       if (not) primitive = new NotSearch(primitive);
 
-      filterViewer.addItem(primitive, filterName, type, sideName);
+      filterViewer.addItem(primitive, getFilterName(), type, sideName);
    }
 
    /*
@@ -58,4 +57,15 @@ public class InRelationFilter extends SearchFilter {
    public boolean isValid() {
       return true;
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.search.SearchFilter#loadFromStorageString(org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer, java.lang.String, java.lang.String, java.lang.String, boolean)
+    */
+   @Override
+   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
+      ISearchPrimitive primitive = InRelationSearch.getPrimitive(storageString);
+      if (isNotEnabled) primitive = new NotSearch(primitive);
+      filterViewer.addItem(primitive, getFilterName(), type, value);
+   }
+
 }

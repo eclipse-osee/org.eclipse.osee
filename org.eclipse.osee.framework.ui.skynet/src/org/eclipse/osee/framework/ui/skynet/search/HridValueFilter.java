@@ -36,7 +36,7 @@ public class HridValueFilter extends SearchFilter {
       OperatorAndValue result = handleWildCard(hridValue.getText());
       ISearchPrimitive primitive = new ArtifactHridSearch(result.value, result.operator);
       if (not) primitive = new NotSearch(primitive);
-      filterViewer.addItem(primitive, filterName, "huid", result.value);
+      filterViewer.addItem(primitive, getFilterName(), "huid", result.value);
    }
 
    /* (non-Javadoc)
@@ -46,4 +46,15 @@ public class HridValueFilter extends SearchFilter {
    public boolean isValid() {
       return !hridValue.getText().equals("");
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.search.SearchFilter#loadFromStorageString(org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer, java.lang.String, java.lang.String, java.lang.String, boolean)
+    */
+   @Override
+   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
+      ISearchPrimitive primitive = ArtifactHridSearch.getPrimitive(storageString);
+      if (isNotEnabled) primitive = new NotSearch(primitive);
+      filterViewer.addItem(primitive, getFilterName(), type, value);
+   }
+
 }

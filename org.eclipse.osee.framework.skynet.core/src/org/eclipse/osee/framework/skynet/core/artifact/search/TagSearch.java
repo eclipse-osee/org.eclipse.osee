@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  * @author Jeff C. Phillips
  */
 public class TagSearch implements ISearchPrimitive {
-
+   private final static String TOKEN = ";";
    private static final LocalAliasTable TAG_ART_MAP_ALIAS = TAG_ART_MAP_TABLE.aliasAs("map");
    private static final LocalAliasTable TAG_ALIAS = TAG_TABLE.aliasAs("tag");
    private static final String SQL = TAG_ART_MAP_ALIAS.column("tag_id") + " = " + TAG_ALIAS.column("tag_id") + " AND ";
@@ -95,11 +95,23 @@ public class TagSearch implements ISearchPrimitive {
    }
 
    public String getStorageString() {
-      return null;
+      return tag + TOKEN + caseSensitive + TOKEN + partialMatch;
    }
 
    @Override
    public String toString() {
       return "Tag: " + tag;
+   }
+
+   public static TagSearch getPrimitive(String storageString) {
+      String[] results = storageString.split(TOKEN);
+      if (results.length != 3) throw new IllegalStateException(
+            "Value for " + TagSearch.class.getSimpleName() + " not parsable");
+
+      String tag = results[0];
+      boolean isCaseSensitive = Boolean.parseBoolean(results[1]);
+      boolean isPartial = Boolean.parseBoolean(results[2]);
+      TagSearch search = new TagSearch(tag, isCaseSensitive, isPartial);
+      return search;
    }
 }
