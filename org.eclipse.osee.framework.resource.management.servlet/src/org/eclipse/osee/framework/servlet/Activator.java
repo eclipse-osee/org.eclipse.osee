@@ -85,7 +85,7 @@ public class Activator implements BundleActivator {
          HttpService httpService = (HttpService) context.getService(reference);
          try {
             httpService.registerServlet("/resource", new ResourceManagerServlet(), null, null);
-            getLogger().log(Level.INFO, "Registered servlet");
+            getLogger().log(Level.INFO, "Registered servlet '/resource'");
          } catch (Exception ex) {
             getLogger().log(Level.SEVERE, "Error registering servlet", ex);
          }
@@ -95,7 +95,7 @@ public class Activator implements BundleActivator {
       public void removedService(ServiceReference reference, Object service) {
          HttpService httpService = (HttpService) service;
          httpService.unregister("/resource");
-         getLogger().log(Level.INFO, "De-registering servlet");
+         getLogger().log(Level.INFO, "De-registering servlet '/resource'");
          super.removedService(reference, service);
       }
    }
