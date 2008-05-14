@@ -145,8 +145,6 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActionable, ISelectionProvider {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactExplorer.class);
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-   private static AccessControlManager accessManager = AccessControlManager.getInstance();
    private static final Image ACCESS_DENIED_IMAGE = SkynetGuiPlugin.getInstance().getImage("lockkey.gif");
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
@@ -446,7 +444,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             BranchSelectionDialog branchSelection = new BranchSelectionDialog("Set Default Branch");
             int result = branchSelection.open();
             if (result == Window.OK) {
-               branchManager.setDefaultBranch(branchSelection.getSelection());
+               BranchPersistenceManager.getInstance().setDefaultBranch(branchSelection.getSelection());
             }
          }
       };
@@ -485,7 +483,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                      (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
                            IWorkbenchPage.VIEW_ACTIVATE);
                artifactExplorer.explore(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                     branchManager.getDefaultBranch()));
+                     BranchPersistenceManager.getInstance().getDefaultBranch()));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
                throw new RuntimeException(ex);
@@ -529,7 +527,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          attributesAction = new ShowAttributeAction(treeViewer, SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF);
          attributesAction.addToView(this);
          attributesAction.setValidAttributeTypes(SkynetViews.loadAttrTypesFromPreferenceStore(
-               SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF, branchManager.getDefaultBranch()));
+               SkynetGuiPlugin.ARTIFACT_EXPLORER_ATTRIBUTES_PREF,
+               BranchPersistenceManager.getInstance().getDefaultBranch()));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
@@ -570,7 +569,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
       try {
          Collection<ArtifactSubtypeDescriptor> descriptors =
-               ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(branchManager.getDefaultBranch());
+               ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
+                     BranchPersistenceManager.getInstance().getDefaultBranch());
          for (ArtifactSubtypeDescriptor descriptor : descriptors) {
             if (!descriptor.getName().equals("Root Artifact")) {
                MenuItem item = new MenuItem(subMenu, SWT.PUSH);
@@ -1221,7 +1221,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                if (object instanceof Artifact) {
                   Artifact artifact = (Artifact) object;
                   try {
-                     explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(), branchManager.getDefaultBranch()));
+                     explore(ArtifactQuery.getArtifactFromId(artifact.getGuid(),
+                           BranchPersistenceManager.getInstance().getDefaultBranch()));
                   } catch (IllegalArgumentException ex) {
                      logger.log(Level.SEVERE, ex.toString(), ex);
                   } catch (CoreException ex) {
@@ -1238,7 +1239,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    }
 
    private void onBranchChangeEvent() throws SQLException, IllegalArgumentException {
-      Branch defaultBranch = branchManager.getDefaultBranch();
+      Branch defaultBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
 
       Artifact candidateRoot = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch);
 
@@ -1296,7 +1297,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       try {
          if (memento != null && memento.getString(ROOT_GUID) != null) {
             Artifact previousArtifact =
-                  ArtifactQuery.getArtifactFromId(memento.getString(ROOT_GUID), branchManager.getDefaultBranch());
+                  ArtifactQuery.getArtifactFromId(memento.getString(ROOT_GUID),
+                        BranchPersistenceManager.getInstance().getDefaultBranch());
             explore(previousArtifact);
             return;
          }
@@ -1312,7 +1314,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
       try {
          explore(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-               branchManager.getDefaultBranch()));
+               BranchPersistenceManager.getInstance().getDefaultBranch()));
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
@@ -1503,7 +1505,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          Object myTreeItemObject = myTreeItems[0].getData();
          if (myTreeItemObject instanceof Artifact) {
             Artifact mySelectedArtifact = (Artifact) myTreeItemObject;
-            boolean writePermission = accessManager.checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
+            boolean writePermission =
+                  AccessControlManager.getInstance().checkObjectPermission(mySelectedArtifact, PermissionEnum.WRITE);
             renameArtifactMenuItem.setEnabled(writePermission);
          }
       }
