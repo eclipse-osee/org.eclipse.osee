@@ -363,10 +363,13 @@ public final class Lib {
 
    public static byte[] fileToBytes(File file) throws IOException {
       InputStream inputStream = new FileInputStream(file);
-      byte[] bytes = new byte[(int) file.length()];
-      inputStream.read(bytes);
-      inputStream.close();
-      return bytes;
+      try {
+         byte[] bytes = new byte[(int) file.length()];
+         inputStream.read(bytes);
+         return bytes;
+      } finally {
+         inputStream.close();
+      }
    }
 
    /**
@@ -1234,8 +1237,11 @@ public final class Lib {
 
    public static void writeBytesToFile(byte[] data, File file) throws IOException {
       OutputStream os = new FileOutputStream(file);
-      os.write(data);
-      os.close();
+      try {
+         os.write(data);
+      } finally {
+         os.close();
+      }
    }
 
    public static void extractJarEntry(File jarFile, File destination, String entry) throws IOException {
