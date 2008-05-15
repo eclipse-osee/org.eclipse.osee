@@ -39,8 +39,8 @@ import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 /**
@@ -168,10 +168,11 @@ public class WordUtil {
       }
    }
 
-   public static String textOnly(String string) {
-      string = paragraphPattern.matcher(Xml.unescape(string)).replaceAll(" ");
-      string = tagKiller.matcher(string).replaceAll("").trim();
-      return string;
+   public static String textOnly(final String string) {
+      String str = new String(string);
+      str = paragraphPattern.matcher(Xml.unescape(string)).replaceAll(" ");
+      str = tagKiller.matcher(string).replaceAll("").trim();
+      return str;
    }
 
    public static boolean isHeadingStyle(String paragraphStyle) {

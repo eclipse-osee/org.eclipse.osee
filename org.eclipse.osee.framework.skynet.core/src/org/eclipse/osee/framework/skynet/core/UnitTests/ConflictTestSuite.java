@@ -1,0 +1,45 @@
+/*
+ * Created on May 12, 2008
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.framework.skynet.core.UnitTests;
+
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+import org.eclipse.osee.framework.skynet.core.conflict.ConflictTestManager;
+
+/**
+ * @author Theron Virgin
+ */
+public class ConflictTestSuite {
+   public static void oneTimeSetUp() throws Exception {
+      ConflictTestManager.initializeConflictTest();
+   }
+
+   public static void oneTimeTearDown() throws Exception {
+      ConflictTestManager.cleanUpConflictTest();
+   }
+
+   public static Test suite() {
+      TestSuite suite = new TestSuite();
+      // Only include short tests
+      suite.addTest(new BranchPersistenceManagerTest("testGetMergeBranchNotCreated"));
+      suite.addTest(new RevisionManagerTest("testGetConflictsPerBranch"));
+      suite.addTest(new BranchPersistenceManagerTest("testGetMergeBranchCreated"));
+      suite.addTest(new RevisionManagerTest("testBranchHasConflicts"));
+
+      TestSetup wrapper = new TestSetup(suite) {
+         protected void setUp() throws Exception {
+            oneTimeSetUp();
+         }
+
+         protected void tearDown() throws Exception {
+            oneTimeTearDown();
+         }
+      };
+
+      return wrapper;
+   }
+}
