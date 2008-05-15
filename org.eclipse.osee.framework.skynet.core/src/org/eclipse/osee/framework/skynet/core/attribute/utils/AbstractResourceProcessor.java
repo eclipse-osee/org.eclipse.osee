@@ -15,8 +15,8 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
-import org.eclipse.osee.framework.skynet.core.linking.ResourceProcessor;
-import org.eclipse.osee.framework.skynet.core.linking.ResourceProcessor.AcquireResult;
+import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
+import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
 
 /**
  * @author Roberto E. Escobar
@@ -35,7 +35,7 @@ public abstract class AbstractResourceProcessor {
          URL url = getStorageURL(dataStore);
          inputStream = dataStore.getInputStream();
          URI uri =
-               ResourceProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
+               HttpProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
          if (uri != null) {
             dataStore.setLocator(uri.toASCIIString());
          }
@@ -52,7 +52,7 @@ public abstract class AbstractResourceProcessor {
       int code = -1;
       try {
          URL url = getAcquireURL(dataStore);
-         AcquireResult result = ResourceProcessor.acquire(url);
+         AcquireResult result = HttpProcessor.acquire(url);
          code = result.getCode();
          if (code == HttpURLConnection.HTTP_OK) {
             dataStore.setContent(result.getData(), "", result.getContentType(), result.getEncoding());
@@ -67,7 +67,7 @@ public abstract class AbstractResourceProcessor {
       int code = -1;
       try {
          URL url = getDeleteURL(dataStore);
-         String response = ResourceProcessor.delete(url);
+         String response = HttpProcessor.delete(url);
          if (response != null && response.equals("Deleted: " + dataStore.getLocator())) {
             dataStore.clear();
          }
