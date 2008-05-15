@@ -105,19 +105,14 @@ public class RelationPersistenceManager implements PersistenceManager {
     * 
     * @param relationLink The relationLink to persist.
     */
-   public void makePersistent(RelationLink relationLink) throws SQLException {
-      makePersistent(relationLink, false);
-   }
-
-   public void makePersistent(final RelationLink relationLink, final boolean recurse) throws SQLException {
-
+   public void makePersistent(final RelationLink relationLink) throws SQLException {
       if (relationLink.isDirty()) {
 
          AbstractSkynetTxTemplate relationPersistTx = new AbstractSkynetTxTemplate(relationLink.getBranch()) {
 
             @Override
             protected void handleTxWork() throws Exception {
-               trace(relationLink, recurse, getTxBuilder());
+               trace(relationLink, false, getTxBuilder());
             }
 
          };
@@ -276,8 +271,8 @@ public class RelationPersistenceManager implements PersistenceManager {
                // persisted by a one if it's artifact we don't get an infinite loop
                link.setNotDirty();
 
-               link.getArtifactA().persist(false, false);
-               link.getArtifactB().persist(false, false);
+               link.getArtifactA().persist(false);
+               link.getArtifactB().persist(false);
 
                // If the relation does not have a persistence memo then it is 'new'
                if (link.getPersistenceMemo() == null || link.isVersionControlled()) {
@@ -518,7 +513,7 @@ public class RelationPersistenceManager implements PersistenceManager {
          // Move insertArtLink to insertLocation
          RelationLinkGroup group = sideAArt.getLinkManager().getGroup(RelationSide.UNIVERSAL_GROUPING__MEMBERS);
          group.moveLink(targetLink, insertLink, insertLocation != InsertLocation.AfterTarget);
-         sideAArt.persist(true);
+         sideAArt.persist();
       }
 
    }

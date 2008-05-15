@@ -106,7 +106,7 @@ public class CreateNewUser extends AbstractBlam {
          }
       }
 
-      user.persist(true);
+      user.persist();
       ArtifactEditor.editArtifact(user);
       monitor.done();
    }

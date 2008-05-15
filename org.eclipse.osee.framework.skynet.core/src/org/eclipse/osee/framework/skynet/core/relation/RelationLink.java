@@ -32,7 +32,6 @@ public class RelationLink {
    private String rationale;
    private LinkPersistenceMemo memo;
    private IRelationType relationType;
-   private static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    protected boolean dirty;
    private int artAId;
@@ -92,11 +91,7 @@ public class RelationLink {
    }
 
    public void persist() throws SQLException {
-      persist(false);
-   }
-
-   public void persist(boolean recurse) throws SQLException {
-      relationManager.makePersistent(this, recurse);
+      RelationPersistenceManager.getInstance().makePersistent(this);
    }
 
    public void delete() throws SQLException {

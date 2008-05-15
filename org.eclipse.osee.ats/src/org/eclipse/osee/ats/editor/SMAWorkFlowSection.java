@@ -473,7 +473,7 @@ public class SMAWorkFlowSection extends SectionPart {
          // }
          smaMgr.setInTransition(true);
 
-         smaMgr.getSma().persist(true);
+         smaMgr.getSma().persist();
          smaMgr.getEditor().onDirtied();
 
          // Get transition to state

@@ -70,7 +70,7 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
             }
          }
       }
-      templateFolder.persistAttributesAndLinks();
+      templateFolder.persistAttributesAndRelations();
    }
 
    private Artifact getTemplateFolder() throws SQLException {
@@ -82,13 +82,13 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
       } catch (ArtifactDoesNotExist ex) {
          Artifact rootArt =
                ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                     BranchPersistenceManager.getCommonBranch(), true);
+                     BranchPersistenceManager.getCommonBranch());
 
          Artifact templateFolder =
                ArtifactTypeManager.addArtifact("Folder", BranchPersistenceManager.getCommonBranch(),
                      "Document Templates");
          rootArt.addChild(templateFolder);
-         rootArt.persist(true);
+         templateFolder.persistAttributesAndRelations();
          return templateFolder;
       }
       return null;

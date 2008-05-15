@@ -65,7 +65,7 @@ public final class Artifacts {
          @Override
          protected void handleTxWork() throws Exception {
             for (Artifact art : artifacts)
-               art.persist(recurse);
+               art.persist();
          }
 
       };

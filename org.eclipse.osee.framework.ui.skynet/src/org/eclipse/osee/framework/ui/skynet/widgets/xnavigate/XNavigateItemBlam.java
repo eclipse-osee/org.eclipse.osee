@@ -43,7 +43,7 @@ public class XNavigateItemBlam extends XNavigateItem {
       } catch (Exception ex) {
          workflow = BlamWorkflow.createBlamWorkflow(blamOperation);
          workflow.setDescriptiveName(getName());
-         workflow.persist(true);
+         workflow.persist();
       }
       workflow.setSoleOperation(blamOperation);
 

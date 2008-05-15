@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 
@@ -85,15 +84,12 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
    };
 
    private void populateProgramBranch(String branchName) throws SQLException {
-      ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
-      BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-
       String[] subsystems =
             new String[] {"Video Processing", "Robot API", "Other Device API", "Calibration", "Registration",
                   "Tool Tracking", "Telesurgery", "Volume", "Hardware", "Imaging", "Electrical", "Sensors",
                   "Hydraulics", "Navigation", "Backup", "Accuracy", "Propulsion", "Unknown"};
 
-      Branch programBranch = branchManager.getKeyedBranch(branchName);
+      Branch programBranch = BranchPersistenceManager.getKeyedBranch(branchName);
       Artifact sawProduct =
             ArtifactTypeManager.addArtifact(Requirements.COMPONENT, programBranch, "SAW Product Decomposition");
 
@@ -101,8 +97,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          sawProduct.addChild(ArtifactTypeManager.addArtifact(Requirements.COMPONENT, programBranch, subsystem));
       }
 
-      Artifact programRoot =
-            ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch, true);
+      Artifact programRoot = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch);
       programRoot.addChild(sawProduct);
 
       for (String name : new String[] {Requirements.SYSTEM_REQUIREMENTS, Requirements.SUBSYSTEM_REQUIREMENTS,
@@ -111,7 +106,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          programRoot.addChild(ArtifactTypeManager.addArtifact("Folder", programBranch, name));
       }
 
-      programRoot.persist(true);
+      programRoot.persist();
 
    }
 
@@ -134,10 +129,10 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
-         if (verName.contains("2")) ver.setSoleXAttributeValue(
-               ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
+         if (verName.contains("2")) ver.setSoleXAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
+               true);
          DemoTeams.getInstance().getTeamDef(Team.SAW_SW).relate(RelationSide.TeamDefinitionToVersion_Version, ver);
-         ver.persist(true);
+         ver.persist();
       }
 
       // Setup some sample builds for Widget B
@@ -147,10 +142,10 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
-         if (verName.contains("2")) ver.setSoleXAttributeValue(
-               ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
+         if (verName.contains("2")) ver.setSoleXAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
+               true);
          DemoTeams.getInstance().getTeamDef(Team.CIS_SW).relate(RelationSide.TeamDefinitionToVersion_Version, ver);
-         ver.persist(true);
+         ver.persist();
       }
    }
 }

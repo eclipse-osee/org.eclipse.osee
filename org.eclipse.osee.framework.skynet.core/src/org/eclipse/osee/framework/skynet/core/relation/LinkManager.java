@@ -172,7 +172,7 @@ public class LinkManager {
 
    public void persistLinks() throws SQLException {
       for (RelationLink link : links) {
-         link.persist(false);
+         link.persist();
       }
       RelationPersistenceManager.getInstance().deleteRelationLinks(deletedLinks, artifact.getBranch());
 

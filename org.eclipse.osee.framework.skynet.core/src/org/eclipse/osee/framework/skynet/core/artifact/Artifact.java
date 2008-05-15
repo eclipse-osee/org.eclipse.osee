@@ -850,35 +850,30 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public void persistAttributes() throws SQLException {
-      persist(false, true);
+      ArtifactPersistenceManager.makePersistent(this, false);
    }
 
-   public void persistAttributesAndLinks() throws SQLException {
+   public void persistAttributesAndRelations() throws SQLException {
       persistAttributes();
       getLinkManager().persistLinks();
    }
 
-   public void persistAttributesAndLinks(Set<IRelationEnumeration> linkTypes) throws SQLException {
-      persistAttributes();
+   public void persistRelations() throws SQLException {
       getLinkManager().persistLinks();
    }
 
-   public void persist(boolean recurse) throws SQLException {
-      persist(recurse, true);
+   public void persist() throws SQLException {
+      ArtifactPersistenceManager.makePersistent(this, true);
    }
 
    /**
     * make this method private
     * 
     * @param recurse
-    * @param persistAttributes
     * @throws SQLException
     */
-   public void persist(boolean recurse, boolean persistAttributes) throws SQLException {
-      if (artifactManager == null) {
-         throw new IllegalStateException("The object \"" + this + "\" does not have an associated persistence manager.");
-      }
-      artifactManager.makePersistent(this, recurse, persistAttributes);
+   public void persist(boolean recurse) throws SQLException {
+      ArtifactPersistenceManager.makePersistent(this, recurse);
    }
 
    /**

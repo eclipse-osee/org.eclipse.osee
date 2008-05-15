@@ -149,7 +149,7 @@ public class NewActionJob extends Job {
       for (TeamDefinitionArtifact teamDef : teams) {
          actionArt.createTeamWorkflow(teamDef, actionableItems, teamDef.getLeads(actionableItems));
       }
-      actionArt.persist(true);
+      actionArt.persist();
       return actionArt;
 
    }

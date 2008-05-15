@@ -53,7 +53,7 @@ public class AtsDatabaseConfig extends DbInitializationTask {
                   AtsPlugin.getAtsBranch());
       teamDef.relate(RelationSide.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram, decisionWorkflow, true);
 
-      teamDef.persist(true);
+      teamDef.persist();
    }
 
    private void createAtsTopLevelConfigObjects() throws SQLException {

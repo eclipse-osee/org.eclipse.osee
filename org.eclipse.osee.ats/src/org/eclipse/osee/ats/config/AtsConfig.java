@@ -78,7 +78,7 @@ public class AtsConfig {
 
             Artifact atsHeadingArtifact = getOrCreateAtsHeadingArtifact();
             atsHeadingArtifact.addChild(art);
-            atsHeadingArtifact.persist(true);
+            art.persistAttributesAndRelations();
          }
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -91,9 +91,9 @@ public class AtsConfig {
          try {
             Artifact rootArt =
                   ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                        BranchPersistenceManager.getAtsBranch(), true);
+                        BranchPersistenceManager.getAtsBranch());
             rootArt.addChild(art);
-            rootArt.persist(true);
+            art.persistAttributesAndRelations();
          } catch (SQLException ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }
@@ -107,9 +107,9 @@ public class AtsConfig {
          try {
             Artifact rootArt =
                   ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                        BranchPersistenceManager.getAtsBranch(), true);
+                        BranchPersistenceManager.getAtsBranch());
             rootArt.addChild(art);
-            rootArt.persist(true);
+            art.persistAttributesAndRelations();
          } catch (SQLException ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }

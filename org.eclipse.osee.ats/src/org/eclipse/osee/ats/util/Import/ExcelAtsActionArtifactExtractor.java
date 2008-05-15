@@ -218,7 +218,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                }
             }
             for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-               team.persist(true);
+               team.persist();
             }
             teamWfs.addAll(actionArt.getTeamWorkFlowArtifacts());
          }

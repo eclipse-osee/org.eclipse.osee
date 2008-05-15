@@ -170,19 +170,11 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       }
    }
 
-   public void makePersistent(Artifact artifact) throws SQLException {
-      makePersistent(artifact, false, true);
-   }
-
-   public void makePersistent(Artifact artifact, boolean recurse) throws SQLException {
-      makePersistent(artifact, recurse, true);
-   }
-
-   public void makePersistent(final Artifact artifact, final boolean recurse, boolean persistAttributes) throws SQLException {
+   public static void makePersistent(final Artifact artifact, final boolean recurse) throws SQLException {
       AbstractSkynetTxTemplate artifactPersistTx = new AbstractSkynetTxTemplate(artifact.getBranch()) {
          @Override
          protected void handleTxWork() throws Exception {
-            saveTrace(artifact, recurse, getTxBuilder());
+            instance.saveTrace(artifact, recurse, getTxBuilder());
          }
       };
       try {
@@ -204,7 +196,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          builder.addArtifact(artifact);
       }
 
-      if (recurse) artifact.getLinkManager().traceLinks(recurse, builder);
+      if (recurse) {
+         artifact.getLinkManager().traceLinks(recurse, builder);
+      }
    }
 
    private void notifyOnAttributeSave(Artifact artifact) {
@@ -244,7 +238,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          AttributeToTransactionOperation operation = new AttributeToTransactionOperation(artifact, transaction);
          operation.execute();
 
-         if (modType == ModificationType.NEW ? false : true) {
+         if (modType != ModificationType.NEW) {
             transaction.addRemoteEvent(RemoteArtifactEventFactory.makeEvent(artifact,
                   transaction.getTransactionNumber()));
          }

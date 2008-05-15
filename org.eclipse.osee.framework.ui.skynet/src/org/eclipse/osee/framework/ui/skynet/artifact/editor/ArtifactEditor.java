@@ -224,7 +224,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    public void doSave(IProgressMonitor monitor) {
       Artifact artifact = getEditorInput().getArtifact();
       try {
-         artifact.persistAttributesAndLinks();
+         artifact.persistAttributesAndRelations();
          firePropertyChange(PROP_DIRTY);
       } catch (SQLException ex) {
          onDirtied();

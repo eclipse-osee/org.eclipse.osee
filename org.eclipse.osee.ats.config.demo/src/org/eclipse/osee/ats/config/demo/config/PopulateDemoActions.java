@@ -201,7 +201,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                            "Verification Test " + str);
                verificationTests.add(newArt);
                verificationHeader.relate(RelationSide.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
-               newArt.persist(true);
+               newArt.persist();
             }
             Artifact verificationTestsArray[] = verificationTests.toArray(new Artifact[verificationTests.size()]);
 
@@ -217,7 +217,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                            "Validation Test " + str);
                validationTests.add(newArt);
                validationHeader.relate(RelationSide.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
-               newArt.persist(true);
+               newArt.persist();
             }
             Artifact validationTestsArray[] = validationTests.toArray(new Artifact[validationTests.size()]);
 
@@ -233,7 +233,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                            "integration Test " + str);
                integrationTests.add(newArt);
                integrationHeader.relate(RelationSide.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
-               newArt.persist(true);
+               newArt.persist();
             }
             Artifact integrationTestsArray[] = integrationTests.toArray(new Artifact[integrationTests.size()]);
 
@@ -333,7 +333,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Navigation",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
          art.relate(RelationSide.ALLOCATION__COMPONENT, navArt);
-         art.persist(true);
+         art.persist();
       }
 
       for (Artifact art : getSoftwareRequirements(SoftwareRequirementStrs.Event)) {
@@ -346,7 +346,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
          art.relate(RelationSide.ALLOCATION__COMPONENT, robotArt);
-         art.persist(true);
+         art.persist();
       }
 
       // Delete two artifacts
@@ -365,9 +365,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
          newArt.setSoleXAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          newArt.setSoleXAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
-         newArt.persist(true);
+         newArt.persist();
          parentArt.addChild(newArt);
-         parentArt.persist(true);
+         parentArt.persist();
       }
 
       sleep(2000L);
@@ -414,7 +414,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                      BranchPersistenceManager.getInstance().getDefaultBranch());
 
          art.relate(RelationSide.ALLOCATION__COMPONENT, comArt);
-         art.persist(true);
+         art.persist();
       }
 
       // Delete one artifacts
@@ -433,9 +433,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
          newArt.setSoleXAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          newArt.setSoleXAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
-         newArt.persist(true);
+         newArt.persist();
          parentArt.addChild(newArt);
-         parentArt.persist(true);
+         parentArt.persist();
       }
 
    }
@@ -522,13 +522,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
             for (TeamWorkFlowArtifact teamWf : actionArt.getTeamWorkFlowArtifacts()) {
                DefaultTeamWorkflowManager dtwm = new DefaultTeamWorkflowManager(teamWf);
                dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false);
-               teamWf.persist(true);
+               teamWf.persist();
                if (versionStr != null && !versionStr.equals("")) {
                   VersionArtifact verArt =
                         (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
                               versionStr, AtsPlugin.getAtsBranch());
                   teamWf.relate(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt);
-                  teamWf.persist(true);
+                  teamWf.persist();
                }
             }
          }

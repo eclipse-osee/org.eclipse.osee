@@ -114,8 +114,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#persist(boolean, boolean)
     */
    @Override
-   public void persist(boolean recurse, boolean persistAttributes) throws SQLException {
-      super.persist(recurse, persistAttributes);
+   public void persist(boolean recurse) throws SQLException {
+      super.persist(recurse);
       // Since multiple different ways exist to change the assignees,
       // notitification is performed on
       // the persist

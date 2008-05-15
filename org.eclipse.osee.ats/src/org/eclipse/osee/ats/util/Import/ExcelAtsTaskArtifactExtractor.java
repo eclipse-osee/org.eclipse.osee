@@ -176,7 +176,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
          AtsPlugin.setEmailEnabled(true);
 
          if (taskArt.isCompleted()) taskArt.transitionToCompleted(false);
-         taskArt.persist(true);
+         taskArt.persist();
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
             NotifyUsersJob job = new NotifyUsersJob(sma, NotifyUsersJob.NotifyType.Assignee);
             job.setPriority(Job.SHORT);

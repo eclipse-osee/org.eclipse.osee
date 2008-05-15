@@ -204,7 +204,7 @@ public class RoughArtifact {
          }
       }
 
-      realArtifact.persist(true);
+      realArtifact.persist();
       return realArtifact;
    }
 

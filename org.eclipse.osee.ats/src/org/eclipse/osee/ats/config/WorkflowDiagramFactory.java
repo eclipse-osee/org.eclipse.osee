@@ -65,7 +65,7 @@ public class WorkflowDiagramFactory {
 
       Artifact diagHeadArt = AtsConfig.getInstance().getOrCreateWorkflowDiagramsArtifact();
       diagHeadArt.addChild(art);
-      diagHeadArt.persist(true);
+      diagHeadArt.persist();
       return art;
    }
 

@@ -57,6 +57,7 @@ public class AttributeToTransactionOperation {
       for (Attribute<?> attribute : artifact.getAttributes()) {
          if (attribute.isDirty()) {
             addAttributeData(artifact, attribute, transaction);
+            attribute.getPersistenceMemo().setDirty(false);
          }
       }
 

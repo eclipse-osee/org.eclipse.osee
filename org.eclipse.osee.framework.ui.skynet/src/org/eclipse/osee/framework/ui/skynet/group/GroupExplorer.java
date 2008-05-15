@@ -599,8 +599,8 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                                        // Add items to new group
                                        targetArtifact.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, artifact, true);
                                     }
-                                    parentArtifact.persist(true);
-                                    targetArtifact.persist(true);
+                                    parentArtifact.persist();
+                                    targetArtifact.persist();
                                  }
                               };
 

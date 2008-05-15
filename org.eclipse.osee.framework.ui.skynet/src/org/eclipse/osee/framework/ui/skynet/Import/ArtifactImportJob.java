@@ -82,7 +82,7 @@ public class ArtifactImportJob extends Job {
                }
 
                artifactManager.setProgressMonitor(monitor);
-               importRoot.persist(true);
+               importRoot.persist();
                artifactManager.setProgressMonitor(null);
 
                monitor.setTaskName("Committing Transaction");
