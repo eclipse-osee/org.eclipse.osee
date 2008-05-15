@@ -211,10 +211,12 @@ public class ArtifactQueryBuilder {
          }
       }
 
-      Artifact artifact = ArtifactCache.get(this.guidOrHrid, branch);
-      if (artifact != null) {
-         artifacts.add(artifact);
-         searchIsNeeded = false;
+      if (this.guidOrHrid != null) {
+         Artifact artifact = ArtifactCache.get(this.guidOrHrid, branch);
+         if (artifact != null) {
+            artifacts.add(artifact);
+            searchIsNeeded = false;
+         }
       }
 
       if (searchIsNeeded) {
