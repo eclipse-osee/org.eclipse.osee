@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,8 +32,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
@@ -55,6 +59,8 @@ import org.xml.sax.SAXException;
  */
 public class UpdateArtifactJob extends UpdateJob {
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
+   private static final ArtifactPersistenceManager persistenceManager = ArtifactPersistenceManager.getInstance();
+   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UpdateArtifactJob.class);
    private static final Pattern guidPattern = Pattern.compile(".*\\(([^)]+)\\)[^()]*");
    private static final Pattern multiPattern = Pattern.compile(".*[^()]*");
    private Element oleDataElement;
@@ -218,8 +224,13 @@ public class UpdateArtifactJob extends UpdateJob {
                   }
                   content = stringBuffer.toString();
                }
-
-               artifact.setSoleXAttributeValue(WordAttribute.CONTENT_NAME, content);
+               //Only update if editing a single artifact or if in multi-edit mode only update if
+               //the artifact has pure text changes.
+               if (!WordUtil.textOnly(
+                     artifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME).toString()).equals(
+                     WordUtil.textOnly(content))) {
+                  artifact.setSoleXAttributeValue(WordAttribute.CONTENT_NAME, content);
+               }
                if (artifact.isDirty()) {
                   artifact.persistAttributes();
                   changedArtifacts.add(artifact);

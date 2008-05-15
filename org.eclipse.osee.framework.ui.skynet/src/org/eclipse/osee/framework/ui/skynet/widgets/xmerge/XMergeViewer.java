@@ -18,17 +18,19 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -45,6 +47,7 @@ import org.eclipse.swt.widgets.Tree;
 
 /**
  * @author Donald G. Dunne
+ * @author Theron Virgin
  */
 public class XMergeViewer extends XWidget implements IEventReceiver {
 
@@ -53,6 +56,8 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
    private Conflict[] conflicts;
+   private String displayLabelText;
+   private final static String CONFLICTS_RESOLVED = "\nAll Conflicts Are Resolved";
 
    /**
     * @param label
@@ -117,9 +122,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
 
    public void createTaskActionBar(Composite parent) {
 
-      // Button composite for state transitions, etc
       Composite bComp = new Composite(parent, SWT.NONE);
-      // bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
       bComp.setLayout(new GridLayout(2, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -129,7 +132,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
 
       extraInfoLabel = new Label(leftComp, SWT.NONE);
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      extraInfoLabel.setText("");
+      extraInfoLabel.setText("\n");
 
       Composite rightComp = new Composite(bComp, SWT.NONE);
       rightComp.setLayout(new GridLayout());
@@ -145,10 +148,13 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       item.setToolTipText("Show Change Report");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            //            if (xCommitViewer.getTransactionArtifactChanges() != null)
-            //               ChangeReportView.openViewUpon(xCommitViewer.getWorkingBranch());
-            //            else
-            //               AWorkbench.popup("ERROR", "Not implemented yet.");
+            if (conflicts.length != 0) {
+               try {
+                  ChangeView.open(conflicts[0].getSourceBranch());
+               } catch (Exception ex) {
+                  OSEELog.logException(XMergeViewer.class, ex, true);
+               }
+            }
          }
       });
 
@@ -157,7 +163,7 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            loadTable();
+            refreshTable();
          }
       });
 
@@ -169,32 +175,38 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
             xCommitViewer.getCustomize().handleTableCustomization();
          }
       });
+   }
 
-      refreshActionEnablement();
+   public void refreshTable() {
+      try {
+         if (!(conflicts.length == 0)) {
+            Conflict[] artifactChanges = new Conflict[0];
+            setConflicts(RevisionManager.getInstance().getConflictsPerBranch(conflicts[0].getSourceBranch(),
+                  conflicts[0].getDestBranch(), conflicts[0].getToTransactionId()).toArray(artifactChanges));
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(XMergeViewer.class, ex, true);
+      }
+      loadTable();
    }
 
    public void refreshActionEnablement() {
+
    }
 
    public void loadTable() {
-      //      try {
-      //         if (artifact != null && (artifact instanceof IBranchArtifact)) xCommitViewer.setWorkingBranch(((IBranchArtifact) artifact).getWorkingBranch());
-      //         extraInfoLabel.setText("Commit Status for branch: \"" + ((IBranchArtifact) artifact).getWorkingBranch() + "\" - \"" + ((IBranchArtifact) artifact).getWorkingBranch().getBranchShortName() + "\"");
-      //      } catch (Exception ex) {
-      //         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      //      }
       refresh();
    }
 
    @SuppressWarnings("unchecked")
-   public ArrayList<Branch> getSelectedBranches() {
-      ArrayList<Branch> items = new ArrayList<Branch>();
+   public ArrayList<Conflict> getSelectedConflicts() {
+      ArrayList<Conflict> items = new ArrayList<Conflict>();
       if (xCommitViewer == null) return items;
       if (xCommitViewer.getSelection().isEmpty()) return items;
       Iterator i = ((IStructuredSelection) xCommitViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         items.add((Branch) obj);
+         items.add((Conflict) obj);
       }
       return items;
    }
@@ -218,6 +230,19 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
       xCommitViewer.refresh();
       setLabelError();
       refreshActionEnablement();
+      int resolved = 0;
+      if (conflicts != null && conflicts.length != 0) {
+         for (Conflict conflict : conflicts) {
+            if (conflict.statusResolved()) {
+               resolved++;
+            }
+         }
+         if (resolved == conflicts.length) {
+            extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
+         } else {
+            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + conflicts.length + " <=> Resovled : " + resolved);
+         }
+      }
    }
 
    @Override
@@ -300,7 +325,23 @@ public class XMergeViewer extends XWidget implements IEventReceiver {
    public void setConflicts(Conflict[] conflicts) throws IllegalStateException, SQLException {
       this.conflicts = conflicts;
       loadTable();
-      xCommitViewer.setWorkingBranch(conflicts);
+      int resolved = 0;
+      for (Conflict conflict : conflicts) {
+         if (conflict.statusResolved()) {
+            resolved++;
+         }
+      }
+      xCommitViewer.setConflicts(conflicts);
+      if (conflicts != null && conflicts.length != 0) {
+         displayLabelText =
+               "Source Branch :  " + conflicts[0].getSourceBranch().getBranchName() + "\nDestination Branch :  " + conflicts[0].getDestBranch().getBranchName();
+         if (resolved == conflicts.length) {
+            extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
+         } else {
+            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + conflicts.length + " <=> Resovled : " + resolved);
+         }
+
+      }
 
    }
 }

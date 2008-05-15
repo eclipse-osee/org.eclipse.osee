@@ -10,6 +10,7 @@ Dim ver2
 Dim diffPath
 Dim wdCompareTargetSelected
 Dim wdFormatXML
+Dim visible
 
 Public Sub main()
 	wdCompareTargetSelected = 0   ' can you believe I have to define a system enum
@@ -43,6 +44,14 @@ Public Sub main()
 		Exit Sub
 	End If
 	
+	
+	If namedArguments.Exists("visible") Then
+		visible = namedArguments.Item("visible")
+	Else
+		MsgBox "required argument visible is missing"
+		Exit Sub
+	End If
+	
 	If namedArguments.Exists("diffPath") Then
 		diffPath = namedArguments.Item("diffPath")
 	Else
@@ -59,10 +68,14 @@ Public Sub main()
    oWord.ActiveDocument.SaveAs diffPath, wdFormatXML, , , False
     
     baseDoc.close()
-   	oWord.Visible = True
 
-'	oWord.Quit()
-'	set oWord = Nothing
+   If visible Then
+		oWord.Visible = True
+	Else 
+		oWord.Quit()
+		set oWord = Nothing
+	End If
+'	
 End Sub
 
 main

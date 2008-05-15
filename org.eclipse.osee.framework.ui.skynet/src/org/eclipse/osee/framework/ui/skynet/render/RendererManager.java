@@ -253,7 +253,7 @@ public class RendererManager {
             Artifact artifactToSelectRender = baseVersion == null ? newerVersion : baseVersion;
 
             getBestRenderer(PresentationType.DIFF, artifactToSelectRender).compare(baseVersion, newerVersion, option,
-                  monitor);
+                  monitor, null, true);
          }
       };
 

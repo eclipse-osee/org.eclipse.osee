@@ -119,7 +119,7 @@ public class WholeDocumentRenderer extends FileRenderer {
    }
 
    @Override
-   public void compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor) throws Exception {
+   public String compare(Artifact baseVersion, Artifact newerVersion, String option, IProgressMonitor monitor, String fileName, boolean visible) throws Exception {
       if (baseVersion == null && newerVersion == null) throw new IllegalArgumentException(
             "baseVersion and newerVersion can't both be null.");
 
@@ -141,22 +141,28 @@ public class WholeDocumentRenderer extends FileRenderer {
 
       String diffPath;
 
-      if (baseVersion != null) {
-         String baseFileStr = baseFile.getLocation().toOSString();
-         diffPath =
+      if (fileName == null || fileName.equals("")) {
+         if (baseVersion != null) {
+            String baseFileStr = baseFile.getLocation().toOSString();
+            diffPath =
                baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
+         } else {
+            String baseFileStr = newerFile.getLocation().toOSString();
+            diffPath =
+                  baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
+         }
       } else {
-         String baseFileStr = newerFile.getLocation().toOSString();
-         diffPath =
-               baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
+         String baseFileStr = baseFile.getLocation().toOSString();
+         diffPath = baseFileStr.substring(0, baseFileStr.lastIndexOf('\\')) + '\\' + fileName;
       }
 
-      compare(baseFile, newerFile, diffPath, true);
+      compare(baseFile, newerFile, diffPath, visible);
+
+      return diffPath;
    }
 
    private void compare(IFile baseFile, IFile newerFile, String diffPath, boolean visible) throws IOException, InterruptedException {
-      File vbDiffScript =
-            visible ? plugin.getPluginFile("support/compareDocs.vbs") : plugin.getPluginFile("support/notVisiblecompareDocs.vbs");
+      File vbDiffScript = plugin.getPluginFile("support/compareDocs.vbs");
 
       // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
       String cmd[] =
@@ -164,7 +170,7 @@ public class WholeDocumentRenderer extends FileRenderer {
                   "cmd",
                   "/s /c",
                   "\"" + vbDiffScript.getPath() + "\"",
-                  "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getLocation().toOSString() + "\" /ver2:\"" + newerFile.getLocation().toOSString()};
+                  "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getLocation().toOSString() + "\" /ver2:\"" + newerFile.getLocation().toOSString() + "\" /visible:\"" + visible};
 
       Process proc = Runtime.getRuntime().exec(cmd);
 

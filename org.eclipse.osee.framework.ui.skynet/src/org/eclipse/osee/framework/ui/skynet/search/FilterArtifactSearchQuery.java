@@ -63,7 +63,7 @@ public class FilterArtifactSearchQuery extends AbstractArtifactSearchQuery {
 
       ISearchConfirmer confirmer = new MaxMatchCountConfirmer();
       return ArtifactPersistenceManager.getInstance().getArtifacts(criteria, filterList.isAllSelected(), branch,
-            confirmer);
+            confirmer, false);
    }
 
    public String getCriteriaLabel() {

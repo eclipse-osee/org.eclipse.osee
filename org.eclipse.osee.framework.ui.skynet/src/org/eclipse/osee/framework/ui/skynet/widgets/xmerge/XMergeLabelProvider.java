@@ -13,9 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
@@ -27,6 +28,16 @@ public class XMergeLabelProvider implements ITableLabelProvider {
    Font font = null;
 
    private final MergeXViewer mergeXViewer;
+
+   private final static String SOURCE_IMAGE = "green_s.gif";
+   private final static String DEST_IMAGE = "blue_d.gif";
+   private final static String MERGE_IMAGE = "yellow_m.gif";
+   private final static String START_WIZARD_IMAGE = "conflict.gif";
+   private final static String MARKED_MERGED_IMAGE = "chkbox_enabled.gif";
+   private final static String EDITED_IMAGE = "chkbox_disabled.gif";
+   private final static String OUT_OF_DATE_IMAGE = "chkbox_enabled_conflicted.gif";
+   private final static String NO_CONFLICT_IMAGE = "accept.gif";
+   private final static String NOT_RESOLVABLE_IMAGE = "red_light.gif";
 
    public XMergeLabelProvider(MergeXViewer mergeXViewer) {
       super();
@@ -65,28 +76,31 @@ public class XMergeLabelProvider implements ITableLabelProvider {
     * @return column string
     * @throws SQLException
     */
-   public String getColumnText(Object element, int columnIndex, XViewerColumn xCol, MergeColumn aCol) {
+   public String getColumnText(Object element, int columnIndex, XViewerColumn xCol, MergeColumn aCol) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
+      if (!xCol.isShow()) return AttributeConflict.NO_VALUE; // Since not shown, don't display
       try {
-         if (!xCol.isShow()) return ""; // Since not shown, don't display
-         if (element instanceof AttributeConflict) {
-            AttributeConflict attributeChange = (AttributeConflict) element;
+         if (element instanceof Conflict) {
+            Conflict conflict = (Conflict) element;
             if (aCol == MergeColumn.Artifact_Name) {
-               return attributeChange.getArtifact().getDescriptiveName();
+               return conflict.getArtifactName();
             } else if (aCol == MergeColumn.Change_Item) {
-               return attributeChange.getDynamicAttributeDescriptor().getName();
+               return conflict.getChangeItem();
             } else if (aCol == MergeColumn.Source) {
-               return attributeChange.getSourceDisplayData();
-            } else if (aCol == MergeColumn.Destination)
-               return attributeChange.getDestDisplayData();
-            else if (aCol == MergeColumn.Merged) {
-               return attributeChange.getArtifact().getSoleAttributeValue(
-                     attributeChange.getDynamicAttributeDescriptor().getName(), "");
+               return conflict.getSourceDisplayData();
+            } else if (aCol == MergeColumn.Destination) {
+               return conflict.getDestDisplayData();
+            } else if (aCol == MergeColumn.Merged) {
+               return conflict.getMergeDisplayData();
+            } else if (aCol == MergeColumn.Type) {
+               return conflict.getArtifact().getArtifactTypeName();
             }
+
          }
+
       } catch (Exception ex) {
-         XViewerCells.getCellExceptionString(ex);
+         OSEELog.logException(XMergeLabelProvider.class, ex, true);
       }
-      return "";
+      return AttributeConflict.NO_VALUE;
    }
 
    public void dispose() {
@@ -108,8 +122,6 @@ public class XMergeLabelProvider implements ITableLabelProvider {
       return mergeXViewer;
    }
 
-   private int x = 0;
-
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof String) return null;
       XViewerColumn xCol = mergeXViewer.getXTreeColumn(columnIndex);
@@ -118,43 +130,41 @@ public class XMergeLabelProvider implements ITableLabelProvider {
       if (!xCol.isShow()) return null; // Since not shown, don't display
 
       if (element instanceof Conflict) {
-         Conflict conflict = (Conflict) element;
-
-         if (dCol == MergeColumn.Artifact_Name) {
-            try {
+         try {
+            Conflict conflict = (Conflict) element;
+            if (dCol == MergeColumn.Artifact_Name) {
                return conflict.getArtifactImage();
-            } catch (OseeCoreException ex) {
-               OSEELog.logException(XMergeContentProvider.class, ex, true);
-            } catch (SQLException ex) {
-               OSEELog.logException(XMergeContentProvider.class, ex, true);
+            } else if (dCol == MergeColumn.Type) {
+               return conflict.getArtifact().getImage();
+            } else if (dCol == MergeColumn.Change_Item) {
+               return conflict.getImage();
+            } else if (dCol == MergeColumn.Source) {
+               return SkynetGuiPlugin.getInstance().getImage(SOURCE_IMAGE);
+            } else if (dCol == MergeColumn.Destination) {
+               return SkynetGuiPlugin.getInstance().getImage(DEST_IMAGE);
+            } else if (dCol == MergeColumn.Merged) {
+               if (conflict.statusNotResolvable()) return null;
+               if ((conflict.sourceEqualsDestination()) && (conflict.mergeEqualsSource())) return SkynetGuiPlugin.getInstance().getImage(
+                     NO_CONFLICT_IMAGE);
+               if (conflict.statusUntouched()) return SkynetGuiPlugin.getInstance().getImage(START_WIZARD_IMAGE);
+               if (conflict.mergeEqualsDestination()) return SkynetGuiPlugin.getInstance().getImage(DEST_IMAGE);
+               if (conflict.mergeEqualsSource())
+                  return SkynetGuiPlugin.getInstance().getImage(SOURCE_IMAGE);
+               else
+                  return SkynetGuiPlugin.getInstance().getImage(MERGE_IMAGE);
+            } else if (dCol == MergeColumn.Conflict_Resolved) {
+               if (conflict.statusUntouched()) return null;
+               if (conflict.statusEdited()) return SkynetGuiPlugin.getInstance().getImage(EDITED_IMAGE);
+               if (conflict.statusResolved()) return SkynetGuiPlugin.getInstance().getImage(MARKED_MERGED_IMAGE);
+               if (conflict.statusOutOfDate()) return SkynetGuiPlugin.getInstance().getImage(OUT_OF_DATE_IMAGE);
+               if (conflict.statusNotResolvable()) return SkynetGuiPlugin.getInstance().getImage(NOT_RESOLVABLE_IMAGE);
             }
-         } else if (dCol == MergeColumn.Change_Item) {
-            return conflict.getImage();
-         } else if (dCol == MergeColumn.Source) {
-            return SkynetGuiPlugin.getInstance().getImage("green_s.gif");
-         } else if (dCol == MergeColumn.Destination) {
-            return SkynetGuiPlugin.getInstance().getImage("blue_d.gif");
-         } else if (dCol == MergeColumn.Merged) {
-            if (x++ < 6)
-               return SkynetGuiPlugin.getInstance().getImage("green_s.gif");
-            else if (x < 15)
-               return SkynetGuiPlugin.getInstance().getImage("blue_d.gif");
-            else
-               return SkynetGuiPlugin.getInstance().getImage("yellow_m.gif");
-         } else if (dCol == MergeColumn.Conflict_Resolved) {
-            if (x++ < 6)
-               return SkynetGuiPlugin.getInstance().getImage("chkbox_disabled.gif");
-            else if (x < 15)
-               return SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif");
-            else
-               return SkynetGuiPlugin.getInstance().getImage("chkbox_enabled_conflicted.gif");
+         } catch (Exception ex) {
+            OSEELog.logException(XMergeLabelProvider.class, ex, true);
          }
+
       }
 
-      if (dCol == MergeColumn.Source) {
-         //         return SkynetGuiPlugin.getInstance().getImage("branch.gif");
-         return null;
-      }
       return null;
    }
 

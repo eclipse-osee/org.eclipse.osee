@@ -728,15 +728,16 @@
        point="org.eclipse.ui.menus">
     <menuContribution
           locationURI="popup:org.eclipse.osee.framework.ui.skynetd.widgets.xmerge.MergeView">
-       <menu
-             label="Preview">
-          <command
-                commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
-          </command>
-          <command
-                commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
-          </command>
-       </menu>
+       <separator
+             name="org.eclipse.osee.framework.ui.skynet.mergeView.previewArtifactRecurse.separator"
+             visible="true">
+       </separator>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
+       </command>
+       <command
+             commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
+       </command>
     </menuContribution>
  </extension>
  <extension

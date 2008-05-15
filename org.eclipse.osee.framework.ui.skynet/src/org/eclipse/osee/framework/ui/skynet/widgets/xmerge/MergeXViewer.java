@@ -11,31 +11,33 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.mergeWizard.ConflictResolutionWizard;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerColumn;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
+ * @author Theron Virgin
  */
 public class MergeXViewer extends XViewer implements IEventReceiver {
 
@@ -87,7 +89,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
 
       // EDIT MENU BLOCK
       mm.insertBefore(MENU_GROUP_PRE, openMergeViewAction);
-      openMergeViewAction.setEnabled(getSelectedBranches().size() == 1 && getSelectedBranches().iterator().next().isBaselineBranch());
+      openMergeViewAction.setEnabled(true);
 
    }
 
@@ -112,7 +114,7 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setWorkingBranch(Conflict[] conflicts) throws SQLException {
+   public void setConflicts(Conflict[] conflicts) throws SQLException {
       this.conflicts = conflicts;
       setInput(conflicts);
    }
@@ -124,40 +126,6 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       getLabelProvider().dispose();
    }
 
-   public ArrayList<Branch> getSelectedBranches() {
-      ArrayList<Branch> arts = new ArrayList<Branch>();
-      TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) for (TreeItem item : items)
-         arts.add((Branch) item.getData());
-      return arts;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see osee.ats.viewer.XViewer#handleAltLeftClick(org.eclipse.swt.widgets.TreeColumn,
-    *      org.eclipse.swt.widgets.TreeItem)
-    */
-   @Override
-   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      try {
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         MergeColumn aCol = MergeColumn.getAtsXColumn(xCol);
-         Branch userRole = (Branch) treeItem.getData();
-         boolean modified = false;
-         AWorkbench.popup("ERROR", "Not handled");
-
-         if (modified) {
-            xCommitViewer.notifyXModifiedListeners();
-            update(userRole, null);
-            return true;
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiDebug.class, ex, true);
-      }
-      return false;
-   }
-
    /**
     * @return the xUserRoleViewer
     */
@@ -165,25 +133,78 @@ public class MergeXViewer extends XViewer implements IEventReceiver {
       return xCommitViewer;
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
     */
    public void onEvent(Event event) {
       xCommitViewer.refresh();
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#runOnEventInDisplayThread()
     */
    public boolean runOnEventInDisplayThread() {
       return true;
    }
 
-/**
- * @return the transactionArtifactChanges
- */
-public Conflict[] getTransactionArtifactChanges() {
-	return conflicts;
-}
+   /**
+    * @return the transactionArtifactChanges
+    */
+   public Conflict[] getTransactionArtifactChanges() {
+      return conflicts;
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewer#handleLeftClickInIconArea(org.eclipse.swt.widgets.TreeColumn,
+    *      org.eclipse.swt.widgets.TreeItem)
+    */
+   @Override
+   public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
+      Conflict conflict = (Conflict) treeItem.getData();
+      try {
+         Shell shell = Display.getCurrent().getActiveShell().getShell();
+         if (treeColumn.getText().equals(MergeColumn.Source.getName())) {
+            if (conflict.statusNotResolvable()) {
+               MergeUtility.showArtifactDeletedConflict(conflict, shell);
+            } else {
+               MergeUtility.setToSource(conflict, shell, true);
+            }
+         } else if (treeColumn.getText().equals(MergeColumn.Destination.getName())) {
+            if (conflict.statusNotResolvable()) {
+               MergeUtility.showArtifactDeletedConflict(conflict, shell);
+            } else {
+               MergeUtility.setToDest(conflict, shell, true);
+            }
+         } else if (treeColumn.getText().equals(MergeColumn.Merged.getName())) {
+            if (!(conflict.getConflictType().equals(Conflict.ConflictType.ARTIFACT))) {
+               ConflictResolutionWizard conWizard = new ConflictResolutionWizard(conflict);
+               WizardDialog dialog = new WizardDialog(shell, conWizard);
+               dialog.create();
+               if (dialog.open() == 0) {
+                  conWizard.getResolved();
+               }
+            }
+         } else if (treeColumn.getText().equals(MergeColumn.Conflict_Resolved.getName())) {
+            if (conflict.statusNotResolvable()) {
+               if (MergeUtility.showArtifactDeletedConflict(conflict, shell)) {
+                  xCommitViewer.refreshTable();
+               }
+            } else {
+               conflict.handleResolvedSelection();
+            }
+         }
+
+      } catch (Exception ex) {
+         OSEELog.logException(MergeXViewer.class, ex, true);
+      }
+      xCommitViewer.loadTable();
+      return super.handleLeftClickInIconArea(treeColumn, treeItem);
+   }
 
 }

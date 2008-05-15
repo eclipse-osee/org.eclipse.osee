@@ -26,9 +26,11 @@ public enum MergeColumn {
 
    Conflict_Resolved("Conflict Resolved", 25, SWT.LEFT, true, SortDataType.String, false),
 
-   Artifact_Name("Artifact", 250, SWT.LEFT, true, SortDataType.String, false),
+   Artifact_Name("Artifact", 200, SWT.LEFT, true, SortDataType.String, false),
+   
+   Type("Type", 150, SWT.LEFT, true, SortDataType.String, false),
 
-   Change_Item("Change Item", 200, SWT.LEFT, true, SortDataType.String, false),
+   Change_Item("Change Item", 150, SWT.LEFT, true, SortDataType.String, false),
 
    Source("Source", 100, SWT.LEFT, true, SortDataType.String, false),
 
