@@ -390,12 +390,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return null;
    }
 
-   public Collection<Artifact> getArtifacts(boolean includeDeletedArtifacts) throws SQLException {
-      List<ISearchPrimitive> activeCriteria = new LinkedList<ISearchPrimitive>();
-      activeCriteria.add(new ArtifactTypeSearch("%", Operator.LIKE));
-      return ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, this, includeDeletedArtifacts);
-   }
-   
    public Collection<Artifact> getArtifacts() throws SQLException {
       return ArtifactQuery.getArtifactsFromType("%", this);
    }
