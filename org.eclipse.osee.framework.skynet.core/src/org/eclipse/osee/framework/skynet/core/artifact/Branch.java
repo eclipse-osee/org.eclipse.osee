@@ -37,6 +37,34 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
  * @author Robert A. Fisher
  */
 public class Branch implements Comparable<Branch>, IAdaptable {
+   public static enum BranchType {
+      STANDARD(0), ROOT(1), BASELINE(2), MERGE(3);
+      private final int value;
+
+      BranchType(int value) {
+         this.value = value;
+      }
+
+      public final int getValue() {
+         return value;
+      }
+
+      public static BranchType getBranchType(Integer val) {
+         switch (val) {
+            case 0:
+               return STANDARD;
+            case 1:
+               return ROOT;
+            case 2:
+               return BASELINE;
+            case 3:
+               return MERGE;
+            default:
+               return STANDARD;
+         }
+      }
+   };
+
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final String UPDATE_BRANCH_SHORT_NAME =
          "UPDATE " + BRANCH_TABLE + " SET short_name = ? WHERE branch_id = ?";
@@ -51,11 +79,12 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    private Artifact associatedArtifact;
    private final Timestamp creationDate;
    private final String creationComment;
+   private final BranchType branchType;
    public static final int NULL_PARENT_BRANCH_ID = -1;
    public static final String COMMON_BRANCH_CONFIG_ID = "Common";
    private final Exception birthPlace = new Exception();
 
-   public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId) {
+   public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType) {
 
       this.branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
       this.branchId = branchId;
@@ -68,14 +97,15 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       this.creationComment = creationComment;
       this.associatedArtifactId = associatedArtifactId;
       this.associatedArtifact = null;
+      this.branchType = branchType;
 
       this.birthPlace.getStackTrace();
       BranchPersistenceManager.getInstance().cache(this);
    }
 
-   public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact) {
+   public Branch(String branchShortName, String branchName, int branchId, int parentBranchId, boolean archived, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) {
       this(branchShortName, branchName, branchId, parentBranchId, archived, authorId, creationDate, creationComment,
-            associatedArtifact.getArtId());
+            associatedArtifact.getArtId(), branchType);
       this.associatedArtifact = associatedArtifact;
    }
 
@@ -299,10 +329,10 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    // TODO fix this HACK
-   public boolean isBaselineBranch() {
-      System.out.println("Branch.isBaselineBranch...fix this");
-      return !getBranchName().contains("RPCR");
-   }
+   //   public boolean isBaselineBranch() {
+   //      System.out.println("Branch.isBaselineBranch...fix this");
+   //      return !getBranchName().contains("RPCR");
+   //   }
 
    /**
     * @return the associatedArtifactId
@@ -353,4 +383,21 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return ArtifactQuery.getArtifactsFromType("%", this);
    }
 
+   /**
+    * @return the branchType
+    */
+   //   public BranchType getBranchType() {
+   //      return branchType;
+   //   }
+   public boolean isRootBranch() {
+      return branchType.equals(BranchType.ROOT);
+   }
+
+   public boolean isBaselineBranch() {
+      return branchType.equals(BranchType.BASELINE);
+   }
+
+   public boolean isMergeBranch() {
+      return branchType.equals(BranchType.MERGE);
+   }
 }

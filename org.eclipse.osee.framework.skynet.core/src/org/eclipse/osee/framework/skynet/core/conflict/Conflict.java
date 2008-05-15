@@ -25,18 +25,66 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
+ * @author Theron Virgin
  */
 public abstract class Conflict implements IAdaptable {
+   public static enum Status {
+      UNTOUCHED(1), EDITED(2), RESOLVED(3), OUT_OF_DATE(4), NOT_RESOLVABLE(5);
+      private final int value;
 
-   private int sourceGamma;
-   private int destGamma;
+      Status(int value) {
+         this.value = value;
+      }
+
+      public final int Value() {
+         return value;
+      }
+
+      public static Status getStatus(int val) {
+         switch (val) {
+            case 1:
+               return UNTOUCHED;
+            case 2:
+               return EDITED;
+            case 3:
+               return RESOLVED;
+            case 4:
+               return OUT_OF_DATE;
+            case 5:
+               return NOT_RESOLVABLE;
+            default:
+               return UNTOUCHED;
+
+         }
+      }
+   };
+   public static enum ConflictType {
+      ATTRIBUTE(1), RELATION(2), ARTIFACT(3);
+      private final int value;
+
+      ConflictType(int value) {
+         this.value = value;
+      }
+
+      public final int Value() {
+         return value;
+      }
+   };
+
+   protected Status status;
+   protected int sourceGamma;
+   protected int destGamma;
    private int artId;
    private TransactionId toTransactionId;
    private TransactionId fromTransactionId;
    private Artifact artifact;
-   private ModificationType modType;
-   private ChangeType changeType;
-   private Branch mergeBranch;
+   private Artifact sourceArtifact;
+   private Artifact destArtifact;
+   private final ModificationType modType;
+   private final ChangeType changeType;
+   protected Branch mergeBranch;
+   protected Branch sourceBranch;
+   protected Branch destBranch;
 
    /**
     * @param sourceGamma
@@ -47,7 +95,7 @@ public abstract class Conflict implements IAdaptable {
     * @param transactionType
     * @param changeType
     */
-   public Conflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, Branch mergeBranch) {
+   public Conflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
       super();
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
@@ -56,6 +104,8 @@ public abstract class Conflict implements IAdaptable {
       this.fromTransactionId = fromTransactionId;
       this.modType = modType;
       this.changeType = changeType;
+      this.sourceBranch = sourceBranch;
+      this.destBranch = destBranch;
       this.mergeBranch = mergeBranch;
    }
 
@@ -76,14 +126,49 @@ public abstract class Conflict implements IAdaptable {
    /**
     * @return the artifact
     * @throws SQLException
-    * @throws MultipleArtifactsExist
-    * @throws ArtifactDoesNotExist
+    * @throws IllegalArgumentException
     */
-   public Artifact getArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public Artifact getArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
       if (artifact == null) {
-         artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch);
+         artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch, true);
       }
       return artifact;
+   }
+
+   /**
+    * @return the artifact
+    * @throws SQLException
+    * @throws IllegalArgumentException
+    */
+   public Artifact getSourceArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+      if (sourceArtifact == null) {
+         sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
+      }
+      return sourceArtifact;
+   }
+
+   /**
+    * @return the artifact
+    * @throws SQLException
+    * @throws IllegalArgumentException
+    */
+   public Artifact getDestArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+      if (destArtifact == null) {
+         destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, true);
+      }
+      return destArtifact;
+   }
+
+   public Branch getMergeBranch() {
+      return mergeBranch;
+   }
+
+   public Branch getSourceBranch() {
+      return sourceBranch;
+   }
+
+   public Branch getDestBranch() {
+      return destBranch;
    }
 
    /**
@@ -156,13 +241,108 @@ public abstract class Conflict implements IAdaptable {
       this.fromTransactionId = fromTransactionId;
    }
 
-   public Image getArtifactImage() throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public Image getArtifactImage() throws IllegalArgumentException, SQLException, Exception {
       return getArtifact().getArtifactType().getImage(getChangeType(), getModificationType());
    }
 
-   public abstract Image getImage();
+   public boolean okToOverwriteMerge() throws SQLException {
+      //      if (status.equals(Status.UNTOUCHED)) return true;
+      if (status.equals(Status.RESOLVED))
+      //         MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
+      return false;
+      //      if (mergeEqualsDestination() || mergeEqualsSource() || getStatus().equals(Status.UNTOUCHED) || (shell == null))
+      //         proceed = true;
+      //      else {
+      //         proceed = MessageDialog.openConfirm(shell, "Confirm", CLEAR_PROMPT);
+      //      }
+      //      return proceed;
+      return true;
+   }
 
-   public abstract String getSourceDisplayData();
+   public abstract Status computeStatus() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
 
-   public abstract String getDestDisplayData();
+   public Status computeStatus(int objectID, Status DefaultStatus) throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
+      Status passedStatus = DefaultStatus;
+      if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = Status.RESOLVED;
+      //      if (!mergeEqualsSource()) passedStatus = Status.EDITED;
+      if (isCleared()) passedStatus = Status.UNTOUCHED;
+      status =
+            ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
+                  getConflictType().Value(), passedStatus);
+      return status;
+   }
+
+   public void setStatus(Status status) throws SQLException {
+      if (this.status.equals(status)) return;
+      ConflictStatusManager.setStatus(status, sourceGamma, destGamma);
+      this.status = status;
+   }
+
+   public boolean statusUntouched() {
+      return status.equals(Status.UNTOUCHED);
+   }
+
+   public boolean statusResolved() {
+      return status.equals(Status.RESOLVED);
+   }
+
+   public boolean statusEdited() {
+      return status.equals(Status.EDITED);
+   }
+
+   public boolean statusOutOfDate() {
+      return status.equals(Status.OUT_OF_DATE);
+   }
+
+   public boolean statusNotResolvable() {
+      return status.equals(Status.NOT_RESOLVABLE);
+   }
+
+   public int getMergeBranchID() {
+      return mergeBranch.getBranchId();
+   }
+
+   public String getArtifactName() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+      return getArtifact().getDescriptiveName();
+   }
+
+   public void handleResolvedSelection() throws SQLException {
+      if (status.equals(Conflict.Status.EDITED)) {
+         setStatus(Conflict.Status.RESOLVED);
+      } else if (status.equals(Conflict.Status.RESOLVED)) {
+         setStatus(Conflict.Status.EDITED);
+      } else if (status.equals(Conflict.Status.OUT_OF_DATE)) {
+         setStatus(Conflict.Status.RESOLVED);
+      }
+   }
+
+   public abstract Image getImage() throws SQLException;
+
+   public abstract String getSourceDisplayData() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException;
+
+   public abstract String getDestDisplayData() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException;
+
+   protected abstract Object getMergeValue() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+
+   public abstract boolean mergeEqualsSource() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+
+   public abstract boolean mergeEqualsDestination() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+
+   public abstract boolean sourceEqualsDestination() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+
+   public abstract boolean setToSource() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+
+   public abstract boolean setToDest() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+
+   public abstract boolean clearValue() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+
+   public abstract String getMergeDisplayData() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+
+   public abstract String getChangeItem() throws SQLException, Exception;
+
+   public abstract ConflictType getConflictType();
+
+   protected abstract boolean isCleared() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
+
+   public abstract int getMergeGammaId() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
 }

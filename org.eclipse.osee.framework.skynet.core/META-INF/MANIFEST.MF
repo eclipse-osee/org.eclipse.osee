@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.jini,
  org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.ui.plugin
+ org.eclipse.osee.framework.ui.plugin,
+ org.junit
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.access,

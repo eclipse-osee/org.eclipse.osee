@@ -282,6 +282,7 @@
 		<Column id="PARENT_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ARCHIVED" defaultValue="not null" type="INTEGER" />
 		<Column id="ASSOCIATED_ART_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_TYPE" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_BRANCH_B_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID" />
 		<Index id="OSEE_BRANCH_A_IDX">
 			<AppliesTo id="ARCHIVED" />
@@ -560,4 +561,31 @@
     <Constraint schema="OSEE" id="OSEE_INFO_KEY_UN_IDX" type="UNIQUE" appliesTo="OSEE_KEY" />
   </Table>
 
+	<!-- __________________________________________________________ -->
+	<!--                                                            -->
+	<!--                                  OSEE Merge                -->
+	<!--                                                            -->
+	<!-- __________________________________________________________ -->
+	
+	<Table name="OSEE_DEFINE_MERGE" schema="OSEE">
+		<Column id="SOURCE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="DEST_BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="MERGE_BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__ODM_FK" type="FOREIGN KEY" appliesTo="MERGE_BRANCH_ID">
+			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
+   </Table>
+   
+   <Table name="OSEE_DEFINE_CONFLICT" schema="OSEE">
+		<Column id="CONFLICT_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="CONFLICT_TYPE" defaultValue="not null" type="INTEGER" />
+		<Column id="SOURCE_GAMMA_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="DEST_GAMMA_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="STATUS" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__ODC_FK" type="FOREIGN KEY" appliesTo="BRANCH_ID">
+			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
+		</Constraint>
+   </Table>
+	
 </TableConfig>

@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
@@ -57,6 +58,7 @@ import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch.BranchType;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -69,6 +71,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -80,7 +83,7 @@ public class BranchPersistenceManager implements PersistenceManager {
    private static final String READ_BRANCH_TABLE =
          "SELECT * FROM " + BRANCH_TABLE + " t1, " + TRANSACTION_DETAIL_TABLE + " t2 WHERE t1.branch_id = t2.branch_id and t2.transaction_id = (SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "= t1.branch_id)";
    private static final String READ_MERGE_BRANCHES =
-         "select * from osee_define_branch b1, osee_define_merge m2 where b1.branch_id = m2.merge_branch_id";
+         "select * from osee_define_branch b1, osee_define_merge m2, osee_define_tx_details t2 where b1.branch_id = m2.merge_branch_id and t2.branch_id = b1.branch_id and t2.tx_type = 1";
    private static final String CHANGED_RELATIONS =
          "SELECT t1.gamma_id, t2.rel_link_id, t2.a_art_id, t2.b_art_id, t2.modification_id, t2.rel_link_type_id, t2.a_order_value, t2.b_order_value, t2.rationale FROM (SELECT tx1.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx1, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td1 WHERE tx1.transaction_id = td1.transaction_id AND td1.branch_id = ? AND tx1.gamma_id NOT IN (SELECT tx2.gamma_id FROM " + SkynetDatabase.TRANSACTIONS_TABLE + " tx2, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " td2 WHERE tx2.transaction_id = td2.transaction_id AND td2.branch_id = ?)) t1 INNER JOIN " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t2 ON (t1.gamma_id=t2.gamma_id)";
    private static final String CHANGED_ARTIFACTS =
@@ -104,6 +107,7 @@ public class BranchPersistenceManager implements PersistenceManager {
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
+   private ArtifactPersistenceManager artifactManager;
    private BranchCreator branchCreator;
    private ConfigurationPersistenceManager configurationManager;
 
@@ -132,6 +136,7 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
     */
    public void onManagerWebInit() throws Exception {
+      artifactManager = ArtifactPersistenceManager.getInstance();
       branchCreator = BranchCreator.getInstance();
       configurationManager = ConfigurationPersistenceManager.getInstance();
    }
@@ -201,7 +206,7 @@ public class BranchPersistenceManager implements PersistenceManager {
 
                Branch branch = branchCache.get(branchId);
 
-               if (isArchived) {
+               if ((isArchived) || (!OseeProperties.getInstance().isDeveloper() && rSet.getInt("branch_type") == BranchType.MERGE.getValue())) {
                   if (branch != null) {
                      branchCache.remove(branch.getBranchId());
                   }
@@ -263,18 +268,21 @@ public class BranchPersistenceManager implements PersistenceManager {
 
       return new Branch(rSet.getString("short_name"), rSet.getString("branch_name"), branchId,
             rSet.getInt("parent_branch_id"), false, rSet.getInt("author"), rSet.getTimestamp("time"),
-            rSet.getString(TXD_COMMENT), associatedArtifactId);
+            rSet.getString(TXD_COMMENT), associatedArtifactId, BranchType.getBranchType(new Integer(
+                  rSet.getInt("branch_type"))));
    }
 
    /**
     * Calls the getMergeBranch method and if it returns null it will create a new merge branch based on the artIds from
     * the source branch.
     */
-   public Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destinBranch, ArrayList<Integer> artIds) throws Exception {
-      Branch mergeBranch = getMergeBranch(sourceBranch.getBranchId(), destinBranch.getBranchId());
+   public Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destBranch, ArrayList<Integer> expectedArtIds) throws Exception {
+      Branch mergeBranch = getMergeBranch(sourceBranch.getBranchId(), destBranch.getBranchId());
 
       if (mergeBranch == null) {
-         mergeBranch = branchCreator.createMergeBranch(sourceBranch, artIds);
+         mergeBranch = branchCreator.createMergeBranch(sourceBranch, destBranch, expectedArtIds);
+      } else {
+         MergeBranchManager.updateMergeBranch(mergeBranch, expectedArtIds, destBranch, sourceBranch);
       }
       return mergeBranch;
    }
@@ -317,6 +325,7 @@ public class BranchPersistenceManager implements PersistenceManager {
                } else {
                   if (branch == null) {
                      branch = initializeBranchObject(rSet);
+                     mergeBranchCache.put(sourceBranchId, destBranchId, branch);
                   }
                }
             }
@@ -430,7 +439,7 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public void commitBranch(final Branch childBranch, final boolean archiveChildBranch) throws SQLException, IllegalArgumentException {
+   public void commitBranch(final Branch childBranch, final boolean archiveChildBranch) throws SQLException, IllegalArgumentException, ConflictDetectionException, Exception {
       Branch parentBranch = childBranch.getParentBranch();
 
       if (parentBranch == null) {
@@ -448,7 +457,7 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws CommitConflictException
     * @throws IllegalArgumentException
     */
-   public void commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch) {
+   public void commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch) throws ConflictDetectionException, Exception {
       CommitJob commitJob = new CommitJob(toBranch, fromBranch, archiveFromBranch);
       Jobs.startJob(commitJob);
    }

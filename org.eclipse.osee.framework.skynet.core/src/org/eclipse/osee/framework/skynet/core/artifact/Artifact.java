@@ -347,12 +347,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param name TODO
     * @throws SQLException
     */
-   public void addNewChild(ArtifactSubtypeDescriptor descriptor, String name) throws SQLException {
+   public Artifact addNewChild(ArtifactSubtypeDescriptor descriptor, String name) throws SQLException {
       Artifact child = descriptor.makeNewArtifact(branch);
       child.setDescriptiveName(name);
       addChild(child);
       child.persistAttributes();
       child.getLinkManager().persistLinks();
+      return child;
    }
 
    public void addChildren(List<? extends Artifact> artifacts) throws SQLException {
@@ -405,8 +406,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                attributeClass = (Class<? extends Attribute<T>>) WordWholeDocumentAttribute.class;
             } else {
                attributeClass = (Class<? extends Attribute<T>>) WordTemplateAttribute.class;
-            }
          }
+      }
 
          Constructor<? extends Attribute<T>> attributeConstructor =
                attributeClass.getConstructor(new Class[] {AttributeType.class, Artifact.class});
@@ -422,7 +423,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       } catch (Exception ex) {
          // using reflections causes five different exceptions to be thrown which is too messy and will be very rare
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
+   }
       return null;
    }
 
@@ -827,6 +828,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             return true;
          }
       }
+
       return false;
    }
 
@@ -873,7 +875,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public void persist(boolean recurse) throws SQLException {
       ArtifactPersistenceManager.makePersistent(this, recurse);
-   }
+      }
 
    /**
     * Returns all of the descendants through the primary decomposition tree that have a particular human readable id.
@@ -964,6 +966,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public void delete() throws Exception {
       artifactManager.deleteArtifact(this);
+   }
+
+   /**
+    * Remove artifact from a specific branch in the database
+    * 
+    * @throws SQLException
+    */
+   public void purgeFromBranch() throws Exception {
+      artifactManager.purgeArtifactFromBranch(this);
    }
 
    /**
@@ -1229,7 +1240,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public Artifact duplicate(Branch branch) throws SQLException {
       Artifact newArtifact = artifactType.makeNewArtifact(branch);
-      copyAttributes(newArtifact);
+         copyAttributes(newArtifact);
       return newArtifact;
    }
 
@@ -1292,7 +1303,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       List<SkynetAttributeChange> dirtyAttributes = new LinkedList<SkynetAttributeChange>();
 
       for (Attribute<?> attribute : getAttributes()) {
-         if (attribute.isDirty()) {
+            if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(), attribute.getValue(),
                   attribute.getAttrId(), attribute.getGammaId()));
          }

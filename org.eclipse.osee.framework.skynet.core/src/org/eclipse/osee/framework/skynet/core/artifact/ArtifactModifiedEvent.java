@@ -19,7 +19,7 @@ public abstract class ArtifactModifiedEvent extends GuidEvent {
 
    private ModType modType;
    public enum ModType {
-      Deleted, Added, Changed, Reverted, Purged, PrePurge;
+      Deleted, Added, Changed, Reverted, Purged, PrePurge, PurgedFromBranch;
    };
 
    public static ModType getModType(String type) {

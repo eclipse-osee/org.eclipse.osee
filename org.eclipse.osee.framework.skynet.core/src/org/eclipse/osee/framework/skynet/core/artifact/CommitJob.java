@@ -11,7 +11,9 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,11 +29,14 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.remoteEvent.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.util.ConflictDetectionException;
 
 /**
  * Commits gammaIds from a Source branch into a destination branch.
@@ -66,16 +71,46 @@ class CommitJob extends Job {
    private static final String COMMIT_ARTIFACTS =
          "INSERT INTO OSEE_DEFINE_TXS(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, 1 FROM osee_define_txs tx1, osee_define_tx_details td2, osee_define_artifact_version av3 WHERE tx1.tx_current = 1 AND tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx1.gamma_id = av3.gamma_id";
 
+   private static final String UPDATE_MERGE_TRANSACTIONS =
+         "UPDATE osee_Define_txs set gamma_id = ? Where transaction_id = ? and gamma_id = ?";
+
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
+   private static final RevisionManager revisionManager = RevisionManager.getInstance();
    private IProgressMonitor monitor;
    private CommitDbTx commitDbTx;
 
-   public CommitJob(Branch toBranch, Branch fromBranch, boolean archiveBranch) {
+   public CommitJob(Branch toBranch, Branch fromBranch, boolean archiveBranch) throws ConflictDetectionException, SQLException, IOException, Exception {
       super("Committing Branch: " + fromBranch.getBranchName());
-      commitDbTx = new CommitDbTx(fromBranch, toBranch, archiveBranch);
+      boolean conflictsExist = false;
+      Collection<Conflict> conflicts = null;
+
+      if (fromBranch != null) {
+         conflictsExist = revisionManager.branchHasConflicts(fromBranch, toBranch);
+         //check for conflicts.
+         if (conflictsExist) {
+            //if conflicts get conflicts and make sure all are resolved.
+            conflicts =
+                  revisionManager.getConflictsPerBranch(fromBranch, toBranch,
+                        TransactionIdManager.getInstance().getStartEndPoint(fromBranch).getKey());
+            if (!conflicts.isEmpty()) {
+               boolean resolved = true;
+               for (Conflict conflict : conflicts) {
+                  if (!conflict.statusResolved()) {
+                     resolved = false;
+                     break;
+                  }
+               }
+               if (!resolved) {
+                  throw new ConflictDetectionException(
+                        "Trying to commit " + fromBranch.getBranchName() + " into " + toBranch.getBranchName() + " when " + conflicts.size() + " conflicts exist");
+               }
+            }
+         }
+      }
+      commitDbTx = new CommitDbTx(fromBranch, toBranch, archiveBranch, conflictsExist, conflicts);
    }
 
    /*
@@ -103,15 +138,19 @@ class CommitJob extends Job {
       private final Branch toBranch;
       private final Branch fromBranch;
       private final boolean archiveBranch;
+      private final boolean conflictsExist;
+      private final Collection<Conflict> conflicts;
       private boolean success = true;
       private int fromBranchId = -1;
 
-      private CommitDbTx(Branch fromBranch, Branch toBranch, boolean archiveBranch) {
+      private CommitDbTx(Branch fromBranch, Branch toBranch, boolean archiveBranch, boolean conflictsExist, Collection<Conflict> conflicts) {
          super();
          this.toBranch = toBranch;
          this.fromBranch = fromBranch;
          this.newTransactionNumber = -1;
          this.archiveBranch = archiveBranch;
+         this.conflictsExist = conflictsExist;
+         this.conflicts = conflicts;
       }
 
       /*
@@ -159,6 +198,17 @@ class CommitJob extends Job {
          insertCount +=
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_RELATIONS, SQL3DataType.INTEGER,
                      newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
+
+         //if (conflicts) add in all merge branch changes.  Over any other changes.
+         if (conflictsExist) {
+            for (Conflict conflict : conflicts) {
+               insertCount +=
+                     ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, SQL3DataType.INTEGER,
+                           conflict.getMergeGammaId(), SQL3DataType.INTEGER, newTransactionNumber,
+                           SQL3DataType.INTEGER, conflict.getSourceGamma());
+            }
+
+         }
 
          if (insertCount > 0) {
             transactionIdManager.resetEditableTransactionId(newTransactionNumber, toBranch);

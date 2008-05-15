@@ -47,7 +47,7 @@ public class SnapshotPersistenceManager {
    private static final String UPDATE_LAST_ACCESSED =
          "UPDATE " + SNAPSHOT_TABLE + " SET last_accessed=? WHERE namespace=? AND key_id=?";
    private static final String SELECT_SNAPSHOT =
-         "SELECT object, last_updated FROM " + SNAPSHOT_TABLE + " WHERE namespace=? AND key_id=?";
+         "SELECT object, last_updated FROM " + SNAPSHOT_TABLE + " WHERE namespace=? AND key=?";
    private static final String SELECT_KEYS = "SELECT key_id FROM " + SNAPSHOT_TABLE + " WHERE namespace=?";
    private static final SnapshotPersistenceManager instance = new SnapshotPersistenceManager();
 
