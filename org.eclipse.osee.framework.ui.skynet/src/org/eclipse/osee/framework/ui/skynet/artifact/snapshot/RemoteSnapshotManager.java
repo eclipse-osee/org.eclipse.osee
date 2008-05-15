@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
-import org.eclipse.osee.framework.skynet.core.linking.ResourceProcessor;
-import org.eclipse.osee.framework.skynet.core.linking.ResourceProcessor.AcquireResult;
+import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
+import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
 
 /**
  * @author Roberto E. Escobar
@@ -43,7 +43,7 @@ class RemoteSnapshotManager {
       ArtifactSnapshot toReturn = null;
       ObjectInputStream objectInputStream = null;
       try {
-         AcquireResult result = ResourceProcessor.acquire(getAcquireURL(key));
+         AcquireResult result = HttpProcessor.acquire(getAcquireURL(key));
          byte[] data = result.getData();
          if (data != null) {
             objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
@@ -68,7 +68,7 @@ class RemoteSnapshotManager {
    public void delete(Pair<String, String> key) {
       try {
          URL url = getDeleteURL(key);
-         String response = ResourceProcessor.delete(url);
+         String response = HttpProcessor.delete(url);
          if (response != null) {
             logger.log(Level.INFO, String.format("[%s]", response));
          }
@@ -87,7 +87,7 @@ class RemoteSnapshotManager {
 
          inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
          URL url = getStorageURL(snapshot);
-         ResourceProcessor.save(url, inputStream, "application", "ISO-8859-1");
+         HttpProcessor.save(url, inputStream, "application", "ISO-8859-1");
       } finally {
          if (inputStream != null) {
             inputStream.close();
