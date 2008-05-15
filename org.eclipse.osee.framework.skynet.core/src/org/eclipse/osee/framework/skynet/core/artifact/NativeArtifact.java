@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -39,7 +38,7 @@ public class NativeArtifact extends Artifact {
     * @param branch
     * @throws SQLException
     */
-   public NativeArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public NativeArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

@@ -19,11 +19,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -32,16 +33,19 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceMemo;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.LinkPersistenceMemo;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -49,6 +53,7 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
  * @author Ryan D. Brooks
  */
 public class ArtifactQueryBuilder {
+   private final List<Artifact> artifacts = new LinkedList<Artifact>();
    private final HashMap<String, NextAlias> nextAlias = new HashMap<String, NextAlias>();
    private final StringBuilder sql = new StringBuilder(1000);
    private final List<Object> dataList = new ArrayList<Object>();
@@ -58,6 +63,7 @@ public class ArtifactQueryBuilder {
    private AbstractArtifactSearchCriteria[] criteria;
    private final Branch branch;
    private int artifactId;
+   private boolean searchIsNeeded;
    private Collection<Integer> artifactIds;
    private ArtifactSubtypeDescriptor artifactType;
    private final boolean allowDeleted;
@@ -130,17 +136,67 @@ public class ArtifactQueryBuilder {
       this.allowDeleted = allowDeleted;
       this.guidOrHrid = guidOrHrid;
       this.artifactId = artifactId;
+      this.searchIsNeeded = true;
 
-      if (artifactIds != null) {
-         if (artifactIds.size() == 1) {
+      if (artifactIds != null && !artifactIds.isEmpty()) {
+         // remove from search list any that are already in the cache
+         Iterator<Integer> iterator = artifactIds.iterator();
+         while (iterator.hasNext()) {
+            Artifact artifact = ArtifactCache.get(iterator.next(), branch);
+            if (artifact != null) {
+               artifacts.add(artifact);
+               iterator.remove();
+            }
+         }
+         if (artifactIds.size() == 0) {
+            searchIsNeeded = false;
+         } else if (artifactIds.size() == 1) {
             this.artifactId = artifactIds.iterator().next();
          } else {
             this.artifactIds = artifactIds;
          }
       }
 
-      if (guidOrHrids != null) {
-         if (guidOrHrids.size() == 1) {
+      if (this.artifactId != 0) {
+         Artifact artifact = ArtifactCache.get(this.artifactId, branch);
+         if (artifact != null) {
+            artifacts.add(artifact);
+            searchIsNeeded = false;
+         }
+      }
+
+      if (artifactIds != null && !artifactIds.isEmpty()) {
+         // remove from search list any that are already in the cache
+         Iterator<Integer> iterator = artifactIds.iterator();
+         while (iterator.hasNext()) {
+            Artifact artifact = ArtifactCache.get(iterator.next(), branch);
+            if (artifact != null) {
+               artifacts.add(artifact);
+               iterator.remove();
+            }
+         }
+         if (artifactIds.size() == 0) {
+            searchIsNeeded = false;
+         } else if (artifactIds.size() == 1) {
+            this.artifactId = artifactIds.iterator().next();
+         } else {
+            this.artifactIds = artifactIds;
+         }
+      }
+
+      if (guidOrHrids != null && !guidOrHrids.isEmpty()) {
+         // remove from search list any that are already in the cache
+         Iterator<String> iterator = guidOrHrids.iterator();
+         while (iterator.hasNext()) {
+            Artifact artifact = ArtifactCache.get(iterator.next(), branch);
+            if (artifact != null) {
+               artifacts.add(artifact);
+               iterator.remove();
+            }
+         }
+         if (guidOrHrids.size() == 0) {
+            searchIsNeeded = false;
+         } else if (guidOrHrids.size() == 1) {
             this.guidOrHrid = guidOrHrids.get(0);
          } else {
             for (String id : guidOrHrids) {
@@ -155,12 +211,20 @@ public class ArtifactQueryBuilder {
          }
       }
 
-      nextAlias.put("osee_define_txs", new NextAlias("txs"));
-      nextAlias.put("osee_define_tx_details", new NextAlias("txd"));
-      nextAlias.put("osee_define_artifact", new NextAlias("art"));
-      nextAlias.put("osee_define_artifact_version", new NextAlias("arv"));
-      nextAlias.put("osee_define_attribute", new NextAlias("att"));
-      nextAlias.put("osee_define_rel_link", new NextAlias("rel"));
+      Artifact artifact = ArtifactCache.get(this.guidOrHrid, branch);
+      if (artifact != null) {
+         artifacts.add(artifact);
+         searchIsNeeded = false;
+      }
+
+      if (searchIsNeeded) {
+         nextAlias.put("osee_define_txs", new NextAlias("txs"));
+         nextAlias.put("osee_define_tx_details", new NextAlias("txd"));
+         nextAlias.put("osee_define_artifact", new NextAlias("art"));
+         nextAlias.put("osee_define_artifact_version", new NextAlias("arv"));
+         nextAlias.put("osee_define_attribute", new NextAlias("att"));
+         nextAlias.put("osee_define_rel_link", new NextAlias("rel"));
+      }
    }
 
    private String getArtifactsSql() throws SQLException {
@@ -266,8 +330,7 @@ public class ArtifactQueryBuilder {
       sql.append(".transaction_id AND ");
       sql.append(txdAlias);
       sql.append(".branch_id=? AND ");
-      dataList.add(SQL3DataType.INTEGER);
-      dataList.add(branch.getBranchId());
+      addParameter(SQL3DataType.INTEGER, branch.getBranchId());
    }
 
    public void addTxTablesSql() {
@@ -314,31 +377,25 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Artifact> getArtifacts(ISearchConfirmer confirmer) throws SQLException {
-      List<Artifact> artifacts = new LinkedList<Artifact>();
-      List<Artifact> artifactsToInit = new LinkedList<Artifact>();
       ConnectionHandlerStatement chStmt = null;
-      int artifactsCount = 0;
+      int artifactsCount = artifacts.size();
 
-      try {
-         chStmt = ConnectionHandler.runPreparedQuery(getArtifactsSql(), dataList.toArray());
-         ResultSet rSet = chStmt.getRset();
+      if (searchIsNeeded) {
+         try {
+            chStmt = ConnectionHandler.runPreparedQuery(getArtifactsSql(), dataList.toArray());
+            ResultSet rSet = chStmt.getRset();
 
-         while (rSet.next()) {
-            artifactsCount++;
-
-            Artifact artifact = ArtifactCache.getArtifact(rSet.getInt("art_id"), branch);
-            if (artifact == null) { // if not in cache
-               artifact = loadArtifactMetaData(rSet);
-               artifactsToInit.add(artifact);
+            while (rSet.next()) {
+               artifactsCount++;
+               artifacts.add(loadArtifactMetaData(rSet));
             }
-            artifacts.add(artifact);
+         } finally {
+            DbUtil.close(chStmt);
          }
-      } finally {
-         DbUtil.close(chStmt);
       }
 
       if (confirmer == null || confirmer.canProceed(artifactsCount)) {
-         loadArtifactsData(artifactsToInit, loadLevel);
+         loadArtifactsData(loadLevel);
       } else {
          artifacts.clear();
       }
@@ -394,12 +451,12 @@ public class ArtifactQueryBuilder {
 
    private Artifact loadArtifactMetaData(ResultSet rSet) throws SQLException {
       ArtifactSubtypeDescriptor artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
-      IArtifactFactory factory = artifactType.getFactory();
+      ArtifactFactory factory = artifactType.getFactory();
 
       Artifact artifact =
-            factory.getNewArtifact(rSet.getString("guid"), rSet.getString("human_readable_id"),
+            factory.loadExisitingArtifact(rSet.getString("guid"), rSet.getString("human_readable_id"),
                   artifactType.getFactoryKey(), branch, artifactType);
-      artifact.setPersistenceMemo(new ArtifactPersistenceMemo(null, rSet.getInt("art_id"), rSet.getInt("gamma_id")));
+      artifact.setIds(rSet.getInt("art_id"), rSet.getInt("gamma_id"));
 
       if (rSet.getInt("mod_type") == ModificationType.DELETED.getValue()) {
          artifact.setDeleted(rSet.getInt("transaction_id"));
@@ -413,9 +470,8 @@ public class ArtifactQueryBuilder {
     * @param artifacts
     * @param sql
     * @param localDataList
-    * @return artifact id for a single artifact search and 0 if a list of artifacts was used
     */
-   private int makeArtifactIdList(Iterator<Artifact> artifacts, StringBuilder sql, List<Object> localDataList) {
+   private void makeArtifactIdList(Iterator<Artifact> artifacts, StringBuilder sql, List<Object> localDataList) {
       StringBuilder list = new StringBuilder(8000);
       int count = 0;
       int artId = 0;
@@ -427,30 +483,46 @@ public class ArtifactQueryBuilder {
 
       if (count == 1) {
          sql.append("=?");
+         localDataList.add(SQL3DataType.INTEGER);
+         localDataList.add(artId);
       } else {
          sql.append(" IN (");
          sql.append(list, 0, list.length() - 1);
          sql.append(')');
-         artId = 0;
       }
-      return artId;
    }
 
    private String getAttributeSQL(Iterator<Artifact> artifacts, List<Object> attributeDataList) {
       StringBuilder sql = new StringBuilder(10000);
       sql.append("SELECT att1.* from osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.art_id");
 
-      int artId = makeArtifactIdList(artifacts, sql, attributeDataList);
-      if (artId != 0) {
-         attributeDataList.add(SQL3DataType.INTEGER);
-         attributeDataList.add(artId);
-      }
-      attributeDataList.add(SQL3DataType.INTEGER);
-      attributeDataList.add(branch.getBranchId());
+      makeArtifactIdList(artifacts, sql, attributeDataList);
 
       sql.append(" AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=");
       sql.append(TxChange.CURRENT.ordinal());
-      sql.append(" AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? ORDER BY att1.art_id");
+      sql.append(" AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=?");
+
+      attributeDataList.add(SQL3DataType.INTEGER);
+      attributeDataList.add(branch.getBranchId());
+
+      return sql.toString();
+   }
+
+   private String getRelationSQL(List<Artifact> artifacts, List<Object> relationDataList) {
+      StringBuilder sql = new StringBuilder(10000);
+      sql.append("SELECT rel1.*, txs1.* FROM osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE (rel1.a_art_id");
+
+      makeArtifactIdList(artifacts.iterator(), sql, relationDataList);
+      sql.append(" OR rel1.b_art_id");
+      makeArtifactIdList(artifacts.iterator(), sql, relationDataList);
+
+      sql.append(") AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=");
+      sql.append(TxChange.CURRENT.ordinal());
+      sql.append(" AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ?");
+
+      relationDataList.add(SQL3DataType.INTEGER);
+      relationDataList.add(branch.getBranchId());
+
       return sql.toString();
    }
 
@@ -461,14 +533,19 @@ public class ArtifactQueryBuilder {
     * @param transactionId
     * @throws SQLException
     */
-   private void loadArtifactsData(List<Artifact> artifacts, ArtifactLoad loadLevel) throws SQLException {
+   private void loadArtifactsData(ArtifactLoad loadLevel) throws SQLException {
+      if (artifacts.size() == 0) {
+         return;
+      }
       if (loadLevel == SHALLOW) {
          return;
       } else if (loadLevel == ATTRIBUTE) {
-         loadAttributesData(artifacts);
+         loadAttributesData();
       } else if (loadLevel == FULL) {
-         loadAttributesData(artifacts);
+         loadAttributesData();
+         loadRelationData();
       } else if (loadLevel == RELATION) {
+         loadRelationData();
       }
 
       for (Artifact artifact : artifacts) {
@@ -476,16 +553,75 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   private void loadAttributesData(List<Artifact> artifacts) throws SQLException {
-      java.util.Collections.sort(artifacts, new Comparator<Artifact>() {
+   private void loadRelationData() throws SQLException {
+      List<Artifact> artifactsNeedingRelations = new ArrayList<Artifact>(artifacts.size());
+      List<RelationLink> relations = new ArrayList<RelationLink>(artifacts.size() * 4);
+      Set<Integer> artifactIdsToLoad = new HashSet<Integer>(relations.size() + 1);
 
-         @Override
-         public int compare(Artifact o1, Artifact o2) {
-            return o1.getArtId() - o2.getArtId();
+      for (Artifact artifact : artifacts) {
+         if (!artifact.isLinkManagerLoaded()) {
+            artifactsNeedingRelations.add(artifact);
          }
-      });
-      Iterator<Artifact> artIdsIter = artifacts.iterator();
-      Iterator<Artifact> artifactIterator = artifacts.iterator();
+      }
+
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         List<Object> relationDataList = new ArrayList<Object>(6);
+         String sql = getRelationSQL(artifactsNeedingRelations, relationDataList);
+         chStmt = ConnectionHandler.runPreparedQuery(sql, relationDataList.toArray());
+
+         ResultSet rSet = chStmt.getRset();
+         while (rSet.next()) {
+            int relationId = rSet.getInt("rel_link_id");
+            int aArtId = rSet.getInt("a_art_id");
+            int bArtId = rSet.getInt("b_art_id");
+
+            Artifact artA = ArtifactCache.get(aArtId, branch);
+            Artifact artB = ArtifactCache.get(bArtId, branch);
+
+            RelationLink link = null;
+            if (artA != null) {
+               link = artA.getLinkManager().getRelation(relationId);
+            }
+            if (link == null && artB != null) {
+               link = artB.getLinkManager().getRelation(relationId);
+            }
+
+            if (link == null) {
+               artifactIdsToLoad.add(aArtId);
+               artifactIdsToLoad.add(bArtId);
+
+               int aOrderValue = rSet.getInt("a_order_value");
+               int bOrderValue = rSet.getInt("b_order_value");
+               int gammaId = rSet.getInt("gamma_id");
+               String rationale = rSet.getString("rationale");
+               if (rationale == null) rationale = "";
+               IRelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
+
+               link =
+                     new RelationLink(aArtId, bArtId, relationType, new LinkPersistenceMemo(relationId, gammaId),
+                           rationale, aOrderValue, bOrderValue, false);
+               relations.add(link);
+            }
+         }
+      } finally {
+         DbUtil.close(chStmt);
+      }
+
+      for (RelationLink relation : relations) {
+         relation.loadArtifacts(branch);
+      }
+   }
+
+   private void loadAttributesData() throws SQLException {
+      List<Artifact> artifactsNeedingAttributes = new ArrayList<Artifact>(artifacts.size());
+      for (Artifact artifact : artifacts) {
+         if (!artifact.isAttributesLoaded()) {
+            artifactsNeedingAttributes.add(artifact);
+         }
+      }
+
+      Iterator<Artifact> artIdsIter = artifactsNeedingAttributes.iterator();
       while (artIdsIter.hasNext()) {
 
          ConnectionHandlerStatement chStmt = null;
@@ -495,29 +631,18 @@ public class ArtifactQueryBuilder {
             chStmt = ConnectionHandler.runPreparedQuery(sql, attributeDataList.toArray());
 
             ResultSet rSet = chStmt.getRset();
-            int artId;
-            int lastArtId = -1; // Set to -1 to force a trigger on the first run of the loop
-            Artifact artifact = null;
             while (rSet.next()) {
-
-               artId = rSet.getInt("art_id");
-
-               // Get a new artifact reference if the ID has changed
-               if (artId != lastArtId) {
-                  lastArtId = artId;
-                  // if not the first pass add any missing attributes to satisfy minimum requirements
-                  if (artifact != null) {
-                     AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
-                  }
-                  artifact = artifactIterator.next();
-               }
-
+               Artifact artifact = ArtifactCache.get(rSet.getInt("art_id"), branch);
                AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
                      rSet.getString("value"), rSet.getString("uri"), rSet.getInt("attr_id"), rSet.getInt("gamma_id"));
             }
          } finally {
             DbUtil.close(chStmt);
          }
+      }
+
+      for (Artifact artifact : artifactsNeedingAttributes) {
+         AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
       }
    }
 }

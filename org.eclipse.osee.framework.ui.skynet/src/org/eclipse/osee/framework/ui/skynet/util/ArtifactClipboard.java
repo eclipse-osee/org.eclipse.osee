@@ -48,11 +48,11 @@ public class ArtifactClipboard {
          throw new IllegalArgumentException("Artifacts can not be empty.");
       }
 
-      clipboard.setContents(new Object[] {
-            new ArtifactData(artifactTransferData.toArray(Artifact.EMPTY_ARRAY), STATUS, viewId),
-            HTMLTransferFormatter.getHtml(artifactTransferData.toArray(Artifact.EMPTY_ARRAY)),
-            Collections.toString(textTransferData, null, ", ", null)}, new Transfer[] {ArtifactTransfer.getInstance(),
-            HTMLTransfer.getInstance(), TextTransfer.getInstance()});
+      Artifact[] artifacts = artifactTransferData.toArray(new Artifact[artifactTransferData.size()]);
+
+      clipboard.setContents(new Object[] {new ArtifactData(artifacts, STATUS, viewId),
+            HTMLTransferFormatter.getHtml(artifacts), Collections.toString(textTransferData, null, ", ", null)},
+            new Transfer[] {ArtifactTransfer.getInstance(), HTMLTransfer.getInstance(), TextTransfer.getInstance()});
    }
 
    public void setTextToClipboard(Collection<String> textTransferData) {

@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -55,7 +55,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @param branch
     * @throws SQLException
     */
-   public TeamDefinitionArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

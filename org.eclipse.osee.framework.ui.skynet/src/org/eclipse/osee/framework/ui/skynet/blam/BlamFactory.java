@@ -10,16 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
  * @author Ryan D. Brooks
  */
-public class BlamFactory extends ArtifactFactory<Artifact> {
+public class BlamFactory extends ArtifactFactory {
    private static BlamFactory factory = null;
 
    private BlamFactory(int factoryId) {
@@ -38,7 +37,7 @@ public class BlamFactory extends ArtifactFactory<Artifact> {
    }
 
    public @Override
-   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       if (factoryKey.equals(BlamWorkflow.ARTIFACT_NAME)) {
          return new BlamWorkflow(this, guid, humandReadableId, branch, artifactType);
       }

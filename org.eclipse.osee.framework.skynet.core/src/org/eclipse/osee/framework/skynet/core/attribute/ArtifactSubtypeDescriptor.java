@@ -26,10 +26,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictionType;
@@ -75,13 +75,13 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
    private static final String BASE = "base";
    private final int artTypeId;
    private final String factoryKey;
-   private final IArtifactFactory factory;
+   private final ArtifactFactory factory;
    private String name;
    private String namespace;
    transient private ImageRegistry imageRegistry;
    transient private InputStreamImageDescriptor imageDescriptor;
 
-   protected ArtifactSubtypeDescriptor(ArtifactSubtypeDescriptorCache artifactTypeCache, int artTypeId, String factoryKey, IArtifactFactory factory, String namespace, String name, InputStreamImageDescriptor imageDescriptor) {
+   protected ArtifactSubtypeDescriptor(ArtifactSubtypeDescriptorCache artifactTypeCache, int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, InputStreamImageDescriptor imageDescriptor) {
       this.artTypeId = artTypeId;
       this.factory = factory;
       this.name = name;
@@ -99,11 +99,11 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * 
     * @return Return artifact reference
     * @throws SQLException
-    * @see IArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor)
+    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
    public Artifact makeNewArtifact(Branch branch) throws SQLException {
-      return factory.makeNewArtifact(branch, this);
+      return factory.makeNewArtifact(branch, this, null, null);
    }
 
    /**
@@ -114,7 +114,7 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
     * @throws SQLException
-    * @see IArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String)
+    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
    public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws SQLException {
@@ -131,7 +131,7 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
    /**
     * @return Returns the factory.
     */
-   public IArtifactFactory getFactory() {
+   public ArtifactFactory getFactory() {
       return factory;
    }
 

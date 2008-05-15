@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core.artifact.operation;
 import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
@@ -29,7 +29,7 @@ public abstract class BlamIf extends Artifact {
     * @param branch
     * @throws SQLException
     */
-   public BlamIf(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public BlamIf(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

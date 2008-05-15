@@ -8,15 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact.factory;
+package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 
-public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFactory {
+public abstract class ArtifactFactory {
    private final int factoryId;
 
    protected ArtifactFactory(int factoryId) {
@@ -28,24 +26,37 @@ public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFa
       this.factoryId = factoryId;
    }
 
-   public A makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor descriptor) throws SQLException {
-      return makeNewArtifact(branch, descriptor, null, null);
-   }
-
    protected boolean compatibleWith(ArtifactSubtypeDescriptor descriptor) {
       return descriptor.getFactory().getFactoryId() == this.factoryId;
    }
 
-   public A makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor artifactType, String guid, String humandReadableId) throws SQLException {
+   /**
+    * Used to create a new artifact (one that has never been saved into the datastore)
+    * 
+    * @param branch
+    * @param artifactType
+    * @param guid
+    * @param humandReadableId
+    * @return
+    * @throws SQLException
+    */
+   public Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor artifactType, String guid, String humandReadableId) throws SQLException {
       if (!compatibleWith(artifactType)) {
          throw new IllegalArgumentException("The supplied descriptor is not appropriate for this factory");
       }
 
-      A artifact = getNewArtifact(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
+      Artifact artifact = getNewArtifact(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
       AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
+      ArtifactCache.cache(artifact);
       artifact.onBirth();
       artifact.onInitializationComplete();
 
+      return artifact;
+   }
+
+   public synchronized Artifact loadExisitingArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+      Artifact artifact = getNewArtifact(guid, humandReadableId, factoryKey, branch, artifactType);
+      ArtifactCache.cache(artifact);
       return artifact;
    }
 
@@ -57,9 +68,8 @@ public abstract class ArtifactFactory<A extends Artifact> implements IArtifactFa
     * 
     * @param branch branch on which this instance of this artifact will be associated
     * @return Return artifact reference
-    * @throws SQLException
     */
-   public abstract A getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException;
+   protected abstract Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType);
 
    public int getFactoryId() {
       return factoryId;

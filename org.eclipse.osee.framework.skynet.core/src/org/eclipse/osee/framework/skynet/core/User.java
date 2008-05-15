@@ -17,9 +17,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
@@ -49,7 +49,7 @@ public class User extends Artifact implements Serializable {
       if (EveryoneGroup.getInstance() != null) EveryoneGroup.getInstance().addGroupMember(this);
    }
 
-   public User(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public User(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

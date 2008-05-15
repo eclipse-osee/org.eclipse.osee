@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.artifact;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
@@ -21,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
  * 
  * @author Donald G. Dunne
  */
-public class DemoArtifactFactory extends ArtifactFactory<Artifact> {
+public class DemoArtifactFactory extends ArtifactFactory {
    private static DemoArtifactFactory factory = null;
 
    private DemoArtifactFactory(int factoryId) {
@@ -40,7 +39,7 @@ public class DemoArtifactFactory extends ArtifactFactory<Artifact> {
    }
 
    @Override
-   public Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       if (factoryKey.equals(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME)) return new DemoCodeTeamWorkflowArtifact(this,
             guid, humandReadableId, branch, artifactType);
       if (factoryKey.equals(DemoTestTeamWorkflowArtifact.ARTIFACT_NAME)) return new DemoTestTeamWorkflowArtifact(this,

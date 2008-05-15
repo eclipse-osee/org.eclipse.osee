@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.access;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,7 +52,6 @@ public class PolicyDialog extends Dialog {
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(PolicyDialog.class);
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final SkynetAuthentication skynetAuthentication = SkynetAuthentication.getInstance();
    private PolicyTableViewer policyTableViewer;
    private Button radEnabled;
@@ -93,20 +93,14 @@ public class PolicyDialog extends Dialog {
       subjectList.addAll(skynetAuthentication.getUsers());
       try {
          subjectList.addAll(artifactManager.getArtifacts(new ArtifactTypeSearch("User Group", Operator.EQUAL),
-               branchManager.getCommonBranch()));
+               BranchPersistenceManager.getCommonBranch()));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
 
-      Artifact[] subjectsArray = (Artifact[]) subjectList.toArray(Artifact.EMPTY_ARRAY);
-      Arrays.sort(subjectsArray, new Comparator<Artifact>() {
+      Collections.sort(subjectList);
 
-         public int compare(Artifact o1, Artifact o2) {
-            return o1.getDescriptiveName().compareToIgnoreCase(o2.getDescriptiveName());
-         }
-      });
-
-      for (Artifact subject : subjectsArray) {
+      for (Artifact subject : subjectList) {
          String name = subject.getDescriptiveName();
          cmbUsers.add(name);
          cmbUsers.setData(name, subject);

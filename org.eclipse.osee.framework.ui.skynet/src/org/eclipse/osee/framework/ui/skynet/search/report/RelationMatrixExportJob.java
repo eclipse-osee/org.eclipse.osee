@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -66,7 +66,7 @@ public class RelationMatrixExportJob extends ReportJob {
       header[columnIndex] = columnArtifact.getDescriptiveName();
 
       LinkManager linkManager = columnArtifact.getLinkManager();
-      for (IRelationLink link : columnArtifact.getRelations(relationType)) {
+      for (RelationLink link : columnArtifact.getRelations(relationType)) {
          String[] row = getAssociatedRow(linkManager.getOtherSideAritfact(link));
          String rationale = link.getRationale();
          if (rationale == null || rationale.trim().equals("")) {

@@ -221,7 +221,7 @@ public class WordRenderer extends FileRenderer {
       if (baseVersion != null) {
          String baseFileStr = baseFile.getLocation().toOSString();
          diffPath =
-               baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getPersistenceMemo().getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
+               baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
       } else {
          String baseFileStr = newerFile.getLocation().toOSString();
          diffPath =
@@ -415,9 +415,8 @@ public class WordRenderer extends FileRenderer {
             if (!firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {
                template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
                template =
-                     template.replaceAll(
-                           STYLES_END,
-                           STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "") + OLE_END);
+                     template.replaceAll(STYLES_END, STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(
+                           WordAttribute.OLE_DATA_NAME, "") + OLE_END);
             }
          } else {
             for (Artifact artifact : artifacts) {

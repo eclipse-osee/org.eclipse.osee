@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
-import java.sql.SQLException;
 import java.util.Arrays;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
 /**
  * @author Ryan D. Brooks
  */
-public class WordArtifactFactory extends ArtifactFactory<WordArtifact> {
+public class WordArtifactFactory extends ArtifactFactory {
    private static WordArtifactFactory factory = null;
    private static String[] WholeArtifactMatches =
          new String[] {"Checklist (WordML)", "Guideline", "How To", "Renderer Template", "Roadmap",
@@ -42,7 +42,7 @@ public class WordArtifactFactory extends ArtifactFactory<WordArtifact> {
    }
 
    @Override
-   public WordArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public WordArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       WordArtifact artifact = new WordArtifact(this, guid, humandReadableId, branch, artifactType);
       artifact.setWholeWordArtifact(Arrays.binarySearch(WholeArtifactMatches, factoryKey) >= 0);
       return artifact;

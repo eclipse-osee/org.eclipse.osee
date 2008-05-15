@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.Mod
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -54,11 +53,10 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribu
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
@@ -70,25 +68,27 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
-   public static final Artifact[] EMPTY_ARRAY = new Artifact[0];
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static int count = 0;
    public final int aaaSerialId = count++;
    private final Branch branch;
    private final String guid;
-   protected boolean dirty;
-   protected boolean inTransaction;
-   private boolean deleted;
+   protected boolean dirty = true;
+   protected boolean inTransaction = false;
+   private boolean deleted = false;
    private ArtifactSubtypeDescriptor artifactType;
    private String humanReadableId;
-   private LinkManager linkManager;
-   private ArtifactPersistenceMemo memo;
-   private IArtifactFactory parentFactory;
-   private int deletionTransactionId;
-   private HashCollection<String, Attribute<?>> attributes;
+   private final LinkManager linkManager = new LinkManager(this);
+   private ArtifactFactory parentFactory;
+   private int deletionTransactionId = -1;
+   private final HashCollection<String, Attribute<?>> attributes =
+         new HashCollection<String, Attribute<?>>(false, LinkedList.class, 4);
    private AttributeAnnotationManager annotationMgr;
+   private int transactionId;
+   private int artId;
+   private int gammaId;
 
-   protected Artifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   protected Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       if (guid == null) {
          this.guid = GUID.generateGuidStr();
       } else {
@@ -103,17 +103,29 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       this.parentFactory = parentFactory;
       this.branch = branch;
-      this.dirty = true;
-      this.inTransaction = false;
-      this.deleted = false;
-      this.memo = null;
       this.artifactType = artifactType;
-      this.deletionTransactionId = -1;
-      attributes = new HashCollection<String, Attribute<?>>(false, LinkedList.class, 4);
    }
 
    public boolean isInDb() {
-      return (memo != null);
+      return artId > 0;
+   }
+
+   /**
+    * A live artifact is one that can have its data updated to reflect its most current data in the datastore
+    * 
+    * @return whether this artifact is live
+    */
+   public boolean isLive() {
+      return transactionId == 0;
+   }
+
+   /**
+    * A historical artifact always corresponds to a fixed revision of an artifact
+    * 
+    * @return
+    */
+   public boolean isHistorical() {
+      return !isLive();
    }
 
    public boolean isAnnotation(ArtifactAnnotation.Type type) {
@@ -215,10 +227,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return Returns the artId.
     */
    public int getArtId() {
-
-      if (memo == null) throw new IllegalStateException("PersistenceMemo has not been set on this artifact");
-
-      return memo.getArtId();
+      return artId;
    }
 
    /**
@@ -302,8 +311,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public Set<Artifact> getChildren() throws SQLException {
-      checkLinkManager(false);
-
       return getArtifacts(DEFAULT_HIERARCHICAL__CHILD);
    }
 
@@ -460,6 +467,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public List<Attribute<?>> getAttributes() throws SQLException {
       return attributes.getValues();
+   }
+
+   public boolean isAttributesLoaded() {
+      return !attributes.isEmpty();
    }
 
    public Collection<AttributeType> getAttributeTypes() throws SQLException {
@@ -761,7 +772,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public IArtifactFactory getFactory() {
+   public ArtifactFactory getFactory() {
       return parentFactory;
    }
 
@@ -807,14 +818,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public boolean isDirty(boolean includeLinks) throws SQLException {
       boolean dirtyVal = dirty || anAttributeIsDirty();
       if (includeLinks) {
-         checkLinkManager(false);
          dirtyVal |= getLinkManager().isDirty();
       }
       return dirtyVal;
    }
 
    public boolean isReadOnly() {
-      return !isEditable() || !AccessControlManager.getInstance().checkObjectPermission(this, PermissionEnum.WRITE);
+      return isHistorical() || !AccessControlManager.getInstance().checkObjectPermission(this, PermissionEnum.WRITE);
    }
 
    private boolean anAttributeIsDirty() throws SQLException {
@@ -827,8 +837,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * Reverts this artifact back to the last state saved. This will have no effect if the artifact has not ever been
-    * saved.
+    * Reverts this artifact back to the last state saved. This will have no effect if the artifact has never been saved.
     * 
     * @throws SQLException
     * @throws IllegalStateException if the artifact is deleted
@@ -838,7 +847,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       attributes.clear();
       ArtifactPersistenceManager.setAttributesOnArtifact(this);
-      checkLinkManager(true);
+
+      linkManager.revert();
+
       dirty = false;
       SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ModType.Reverted, this));
    }
@@ -926,17 +937,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @throws SQLException
     */
-   public ArrayList<IRelationLink> getRelations(Artifact artifact) throws SQLException {
-      ArrayList<IRelationLink> links = new ArrayList<IRelationLink>();
-      for (IRelationLink link : getLinkManager().getLinks()) {
+   public ArrayList<RelationLink> getRelations(Artifact artifact) throws SQLException {
+      ArrayList<RelationLink> links = new ArrayList<RelationLink>();
+      for (RelationLink link : getLinkManager().getLinks()) {
          if (getLinkManager().getOtherSideAritfact(link).equals(artifact)) links.add(link);
       }
       return links;
    }
 
-   public ArrayList<IRelationLink> getRelations(IRelationType relationType) throws SQLException {
-      ArrayList<IRelationLink> links = new ArrayList<IRelationLink>();
-      for (IRelationLink link : getLinkManager().getLinks()) {
+   public ArrayList<RelationLink> getRelations(IRelationType relationType) throws SQLException {
+      ArrayList<RelationLink> links = new ArrayList<RelationLink>();
+      for (RelationLink link : getLinkManager().getLinks()) {
          if (link.getRelationType().equals(relationType)) {
             links.add(link);
          }
@@ -949,9 +960,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @throws SQLException
     */
-   public ArrayList<IRelationLink> getRelations(IRelationEnumeration side, Artifact artifact) throws SQLException {
-      ArrayList<IRelationLink> links = new ArrayList<IRelationLink>();
-      for (IRelationLink link : getLinkManager().getLinks()) {
+   public ArrayList<RelationLink> getRelations(IRelationEnumeration side, Artifact artifact) throws SQLException {
+      ArrayList<RelationLink> links = new ArrayList<RelationLink>();
+      for (RelationLink link : getLinkManager().getLinks()) {
          if (getLinkManager().getOtherSideAritfact(link).equals(artifact)) if (side.isThisType(link)) links.add(link);
       }
       return links;
@@ -997,22 +1008,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
+    * Ensures the linkManager has been created and populated with links and then returns it
+    * 
     * @return Returns the linkManager.
     * @throws SQLException
     */
    public LinkManager getLinkManager() throws SQLException {
-      checkLinkManager(false);
-      return linkManager;
-   }
-
-   public LinkManager createOrGetEmptyLinkManager() {
-      try {
-         if (linkManager == null) {
-            linkManager = new LinkManager(this);
-         }
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
+      linkManager.ensurePopulated();
       return linkManager;
    }
 
@@ -1078,26 +1080,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       if (persist) linkManager.persistLinks();
    }
 
-   /**
-    * Checks to make sure the linkManager has been created and populated with links. If the linkManager is null then it
-    * will be created and populated.
-    * 
-    * @param revert
-    */
-   private void checkLinkManager(boolean revert) throws SQLException {
-
-      if (revert && linkManager != null) {
-         linkManager.releaseManager();
-      }
-
-      if (linkManager == null || revert) {
-         linkManager = new LinkManager(this);
-         linkManager.populateLinks();
-      }
-   }
-
    public final boolean isLinkManagerLoaded() {
-      return linkManager != null;
+      return linkManager.isLoaded();
    }
 
    /**
@@ -1136,16 +1120,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return new String(id);
    }
 
-   public ArtifactPersistenceMemo getPersistenceMemo() {
-      return memo;
-   }
-
-   public void setPersistenceMemo(ArtifactPersistenceMemo memo) {
-      this.memo = memo;
-      ArtifactCache.getInstance().cache(this);
-      dirty = true;
-   }
-
    /**
     * @return Returns the descriptor.
     */
@@ -1156,29 +1130,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public String getVersionedName() {
       String name = getDescriptiveName();
 
-      if (!isEditable()) {
-         name += " [Rev:" + memo.getTransactionNumber() + "]";
+      if (isHistorical()) {
+         name += " [Rev:" + transactionId + "]";
       }
 
       return name;
-   }
-
-   public boolean isEditable() {
-      if (memo == null) {
-         return true;
-      }
-      return memo.isEditable();
-   }
-
-   /**
-    * Set the linkManager to null
-    */
-   public void clearLinkManager() {
-
-      if (linkManager != null) {
-         linkManager.setReleased();
-      }
-      linkManager = null;
    }
 
    /**
@@ -1206,7 +1162,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                   return new Result(true, art.getArtifactTypeName() + " \"" + art + "\" => dirty\n");
                }
                // Check the links to this artifact
-               for (IRelationLink link : getRelations(side, art))
+               for (RelationLink link : getRelations(side, art))
                   if (link.isDirty()) {
                      return new Result(true, "Link \"" + link + "\" => dirty\n");
                   }
@@ -1238,20 +1194,20 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private void saveRevertArtifactsFromRelations(Set<IRelationEnumeration> links, boolean revert) throws SQLException {
       Set<Artifact> artifactToManipulate = new HashSet<Artifact>();
       artifactToManipulate.add(this);
-      Set<IRelationLink> linksToManipulate = new HashSet<IRelationLink>();
+      Set<RelationLink> linksToManipulate = new HashSet<RelationLink>();
 
       // Loop through all relations and collect all artifact to operate on
       for (IRelationEnumeration side : links) {
          for (Artifact artifact : getArtifacts(side)) {
             artifactToManipulate.add(artifact);
             // Check the links to this artifact
-            for (IRelationLink link : getRelations(artifact)) {
+            for (RelationLink link : getRelations(artifact)) {
                linksToManipulate.add(link);
             }
          }
       }
       // Loop through all relations and persist/revert as necessary
-      for (IRelationLink link : linksToManipulate) {
+      for (RelationLink link : linksToManipulate) {
          if (link.isDirty()) {
             if (revert) {
                link.delete();
@@ -1301,16 +1257,38 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       try {
          clonedArtifact = artifactType.makeNewArtifact(getBranch(), guid, humanReadableId);
-         clonedArtifact.setPersistenceMemo(new ArtifactPersistenceMemo(
-               TransactionIdManager.getInstance().getEditableTransactionId(getBranch()), getArtId(),
-               getPersistenceMemo().getGammaId()));
-
+         clonedArtifact.setIds(artId, gammaId);
+         setDirty();
          copyAttributes(clonedArtifact);
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
 
       return clonedArtifact;
+   }
+
+   public void setIds(int artId, int gammaId) {
+      setIds(artId, gammaId, 0);
+   }
+
+   public void setIds(int artId, int gammaId, int transactionId) {
+      this.gammaId = gammaId;
+      this.artId = artId;
+      this.transactionId = transactionId;
+   }
+
+   /**
+    * @return the transaction number for this artifact if it is historical, otherwise 0
+    */
+   public int getTransactionNumber() {
+      return transactionId;
+   }
+
+   /**
+    * @return Returns the gammaId.
+    */
+   public int getGammaId() {
+      return gammaId;
    }
 
    /**

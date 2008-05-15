@@ -16,11 +16,10 @@ import java.util.Set;
 import org.eclipse.osee.ats.hyper.IHyperArtifact;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 
 public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IATSArtifact {
 
@@ -31,7 +30,7 @@ public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IA
     * @param branch
     * @throws SQLException
     */
-   public ATSArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public ATSArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
@@ -57,9 +56,8 @@ public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IA
    }
 
    public void getRelated(Map<Artifact, Object> allRelated) throws SQLException {
-      for (RelationLinkGroup group : getLinkManager().getGroups())
-         for (Artifact art : group.getArtifacts())
-            allRelated.put(art, this);
+      for (Artifact artifact : getLinkManager().getOtherSideArtifacts()) {
+         allRelated.put(artifact, this);
+      }
    }
-
 }

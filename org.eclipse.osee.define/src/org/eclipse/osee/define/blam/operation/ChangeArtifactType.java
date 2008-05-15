@@ -25,8 +25,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkBase;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -45,7 +44,7 @@ public class ChangeArtifactType extends AbstractBlam {
    private static final RelationPersistenceManager relationPersistenceManager =
          RelationPersistenceManager.getInstance();
    private List<Attribute<?>> attributesToPurge;
-   private List<RelationLinkBase> linksToPurge;
+   private List<RelationLink> linksToPurge;
 
    @SuppressWarnings("unchecked")
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -106,20 +105,15 @@ public class ChangeArtifactType extends AbstractBlam {
     * @throws SQLException
     */
    private void processRelations(Artifact artifact, ArtifactSubtypeDescriptor artifactType) throws SQLException {
-      linksToPurge = new LinkedList<RelationLinkBase>();
+      linksToPurge = new LinkedList<RelationLink>();
 
-      for (IRelationLink link : artifact.getLinkManager().getLinks()) {
+      for (RelationLink link : artifact.getLinkManager().getLinks()) {
+         int sideMax =
+               RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getArtifactA().equals(
+                     artifact));
 
-         if (link instanceof RelationLinkBase) {
-            RelationLinkBase linkBase = (RelationLinkBase) link;
-
-            int sideMax =
-                  RelationTypeManager.getRelationSideMax(linkBase.getRelationType(), artifactType,
-                        linkBase.getArtifactA().equals(artifact));
-
-            if (sideMax == 0) {
-               linksToPurge.add(linkBase);
-            }
+         if (sideMax == 0) {
+            linksToPurge.add(link);
          }
       }
    }

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.IAttributeChange;
-import org.eclipse.osee.framework.skynet.core.revision.IRelationLinkChange;
+import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.IRevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
@@ -261,8 +261,8 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          } else if (columnIndex == 3) {
             return "is:" + change.getChange();
          }
-      } else if (element instanceof IRelationLinkChange) {
-         IRelationLinkChange change = (IRelationLinkChange) element;
+      } else if (element instanceof RelationLinkChange) {
+         RelationLinkChange change = (RelationLinkChange) element;
 
          if (columnIndex == 0) {
             return String.valueOf(change.getGammaId());

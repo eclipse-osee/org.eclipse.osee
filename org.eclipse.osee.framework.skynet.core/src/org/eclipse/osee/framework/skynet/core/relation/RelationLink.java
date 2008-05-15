@@ -8,23 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 
 /**
- * @author Robert A. Fisher
+ * @author Jeff C. Phillips
  */
-public abstract class RelationLinkBase implements IRelationLink {
-
-   private static int count = 0;
-   public final int aaaSerialId = count++;
+public class RelationLink {
 
    private Artifact artA;
    private Artifact artB;
@@ -37,10 +35,10 @@ public abstract class RelationLinkBase implements IRelationLink {
    private static final RelationPersistenceManager relationManager = RelationPersistenceManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    protected boolean dirty;
+   private int artAId;
+   private int artBId;
 
-   protected RelationLinkBase(Artifact artA, Artifact artB, IRelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder) {
-      this.artA = artA;
-      this.artB = artB;
+   private RelationLink(IRelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
       this.relationType = relationType;
       this.memo = memo;
       this.rationale = rationale;
@@ -48,6 +46,35 @@ public abstract class RelationLinkBase implements IRelationLink {
       this.bOrder = bOrder;
       this.deleted = false;
       this.dirty = false;
+      this.dirty = dirty;
+   }
+
+   public RelationLink(Artifact artA, Artifact artB, IRelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
+      this(relationType, memo, rationale, aOrder, bOrder, dirty);
+      this.artA = artA;
+      this.artB = artB;
+   }
+
+   public RelationLink(int artAId, int artBId, IRelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
+      this(relationType, memo, rationale, aOrder, bOrder, dirty);
+      this.artAId = artAId;
+      this.artBId = artBId;
+   }
+
+   /**
+    * Do not call this method from application code
+    * 
+    * @param branch
+    * @throws SQLException
+    */
+   public void loadArtifacts(Branch branch) throws SQLException {
+      if (artA == null || artB == null) {
+         artA = ArtifactCache.get(artAId, branch);
+         artB = ArtifactCache.get(artBId, branch);
+
+         artA.getLinkManager().addLink(this);
+         artB.getLinkManager().addLink(this);
+      }
    }
 
    /**
@@ -61,7 +88,6 @@ public abstract class RelationLinkBase implements IRelationLink {
     * @return Returns the dirty.
     */
    public boolean isDirty() {
-      checkDeleted();
       return dirty;
    }
 
@@ -70,8 +96,6 @@ public abstract class RelationLinkBase implements IRelationLink {
    }
 
    public void persist(boolean recurse) throws SQLException {
-      checkDeleted();
-
       relationManager.makePersistent(this, recurse);
    }
 
@@ -91,89 +115,18 @@ public abstract class RelationLinkBase implements IRelationLink {
             ModType.Deleted.name(), this, getBranch()));
    }
 
-   protected void setDeleted() {
-      deleted = true;
-   }
-
-   protected void setNotDeleted() {
-      deleted = false;
-   }
-
-   protected void checkDeleted() {
-      // TODO fix this to be uncommented
-      // if (deleted)
-      // throw new IllegalStateException("This RelationLink has been deleted");
-   }
-
-   public Artifact getArtifact(String sideName) {
-      if (sideName == null) throw new IllegalArgumentException("sideName can not be null");
-
-      if (relationType.getSideAName().equals(sideName)) {
-         return artA;
-      } else if (relationType.getSideBName().equals(sideName)) {
-         return artB;
-      } else {
-         throw new IllegalArgumentException(
-               "sideName '" + sideName + "' does not match '" + relationType.getSideAName() + "' or '" + relationType.getSideBName() + "' for link type " + relationType.getTypeName());
-      }
-   }
-
    public Artifact getArtifactA() {
-      checkDeleted();
       return artA;
    }
 
    public Artifact getArtifactB() {
-      checkDeleted();
       return artB;
-   }
-
-   public void setArtifact(Artifact art, boolean sideA) {
-      if (sideA)
-         setArtifactA(art);
-      else
-         setArtifactB(art);
-   }
-
-   public void setArtifactA(Artifact artA) {
-      setArtifactA(artA, false);
-   }
-
-   public void setArtifactA(Artifact artA, boolean remoteEvent) {
-      checkDeleted();
-
-      if (artA == null) {
-         throw new IllegalArgumentException("artA can not be null.");
-      }
-      if (this.artA != null && this.artA.getArtId() != artA.getArtId() && !remoteEvent) {
-         throw new IllegalStateException("Artifact A has already been set.");
-      }
-
-      this.artA = artA;
-   }
-
-   public void setArtifactB(Artifact artB) {
-      setArtifactB(artB, false);
-   }
-
-   public void setArtifactB(Artifact artB, boolean remoteEvent) {
-      checkDeleted();
-
-      if (artB == null) {
-         throw new IllegalArgumentException("artB can not be null.");
-      }
-      if (this.artB != null && this.artB.getArtId() != artB.getArtId() && !remoteEvent) {
-         throw new IllegalStateException("Artifact B has already been set.");
-      }
-
-      this.artB = artB;
    }
 
    /**
     * @return Returns the order.
     */
    public int getAOrder() {
-      checkDeleted();
       return aOrder;
    }
 
@@ -182,7 +135,6 @@ public abstract class RelationLinkBase implements IRelationLink {
     */
    public void setAOrder(int order) {
       try {
-         checkDeleted();
          this.aOrder = order;
          dirty = true;
 
@@ -197,7 +149,6 @@ public abstract class RelationLinkBase implements IRelationLink {
     * @return Returns the order.
     */
    public int getBOrder() {
-      checkDeleted();
       return bOrder;
    }
 
@@ -206,7 +157,6 @@ public abstract class RelationLinkBase implements IRelationLink {
     */
    public void setBOrder(int order) {
       try {
-         checkDeleted();
          this.bOrder = order;
          dirty = true;
 
@@ -219,15 +169,15 @@ public abstract class RelationLinkBase implements IRelationLink {
       }
    }
 
-   public void swapAOrder(IRelationLink link) {
+   public void swapAOrder(RelationLink link) {
       swapOrder(link, true);
    }
 
-   public void swapBOrder(IRelationLink link) {
+   public void swapBOrder(RelationLink link) {
       swapOrder(link, false);
    }
 
-   private void swapOrder(IRelationLink link, boolean sideA) {
+   private void swapOrder(RelationLink link, boolean sideA) {
       if (link == null) throw new IllegalArgumentException("link can not be null.");
 
       // Swapping a link with itself has no effect.
@@ -251,7 +201,6 @@ public abstract class RelationLinkBase implements IRelationLink {
     * @return Returns the rationale.
     */
    public String getRationale() {
-      checkDeleted();
       return rationale;
    }
 
@@ -259,8 +208,6 @@ public abstract class RelationLinkBase implements IRelationLink {
     * @param rationale The rationale to set.
     */
    public void setRationale(String rationale, boolean notify) {
-      checkDeleted();
-
       if (rationale == null) throw new IllegalArgumentException("Rationale can not be null");
 
       if (this.rationale.equals(rationale)) return;
@@ -280,17 +227,14 @@ public abstract class RelationLinkBase implements IRelationLink {
    }
 
    public LinkPersistenceMemo getPersistenceMemo() {
-      checkDeleted();
       return memo;
    }
 
    public void setPersistenceMemo(LinkPersistenceMemo memo) {
-      checkDeleted();
       this.memo = (LinkPersistenceMemo) memo;
    }
 
    public String getSideNameFor(Artifact artifact) {
-      checkDeleted();
       return processArtifactSideName(artifact, false);
    }
 
@@ -320,7 +264,6 @@ public abstract class RelationLinkBase implements IRelationLink {
    }
 
    public String getSidePhrasingFor(Artifact artifact) {
-      checkDeleted();
       return processArtifactSidePhrasing(artifact, false);
    }
 
@@ -350,36 +293,39 @@ public abstract class RelationLinkBase implements IRelationLink {
    }
 
    public String getASideName() {
-      checkDeleted();
       return relationType.getSideAName();
    }
 
    public String getBSideName() {
-      checkDeleted();
       return relationType.getSideBName();
-   }
-
-   public String getName() {
-      checkDeleted();
-      return relationType.getTypeName();
-   }
-
-   /**
-    * @return Returns the aToBPhrasing.
-    */
-   public String getAToBPhrasing() {
-      return relationType.getAToBPhrasing();
-   }
-
-   /**
-    * @return Returns the bToAPhrasing.
-    */
-   public String getBToAPhrasing() {
-      return relationType.getBToAPhrasing();
    }
 
    public String toString() {
       return String.format("%s: %s(%s)<-->%s(%s)", relationType.getTypeName(), artA.getDescriptiveName(),
             Float.toString(aOrder), artB.getDescriptiveName(), Float.toString(bOrder));
+   }
+
+   public boolean isExplorable() {
+      return true;
+   }
+
+   public void setNotDirty() {
+      dirty = false;
+   }
+
+   public void setDirty() {
+      dirty = true;
+   }
+
+   public boolean isVersionControlled() {
+      return true;
+   }
+
+   public Branch getBranch() {
+      return getArtifactA().getBranch();
+   }
+
+   public void setDirty(boolean isDirty) {
+      dirty = isDirty;
    }
 }

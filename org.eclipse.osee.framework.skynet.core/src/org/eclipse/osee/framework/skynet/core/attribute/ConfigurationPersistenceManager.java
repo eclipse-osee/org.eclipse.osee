@@ -37,10 +37,10 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeValidityCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 
 /**
@@ -90,7 +90,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       if (!cacheArtifactSubtypeDescriptors.typeExists(namespace, artifactTypeName)) {
          int artTypeId = Query.getNextSeqVal(null, SkynetDatabase.ART_TYPE_ID_SEQ);
          InputStreamImageDescriptor imageDescriptor = getDefaultImageDescriptor(artifactTypeName);
-         IArtifactFactory factory = artifactFactoryCache.getFactoryFromName(factoryName);
+         ArtifactFactory factory = artifactFactoryCache.getFactoryFromName(factoryName);
 
          ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, SQL3DataType.INTEGER, artTypeId,
                SQL3DataType.INTEGER, factory.getFactoryId(), SQL3DataType.VARCHAR, namespace, SQL3DataType.VARCHAR,
@@ -236,11 +236,11 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return cacheArtifactSubtypeDescriptors.getDescriptor(artTypeId);
    }
 
-   public IArtifactFactory getFactoryFromId(int factoryId) {
+   public ArtifactFactory getFactoryFromId(int factoryId) {
       return artifactFactoryCache.getFactoryFromId(factoryId);
    }
 
-   public IArtifactFactory getFactoryFromName(String factoryName) throws IllegalStateException {
+   public ArtifactFactory getFactoryFromName(String factoryName) throws IllegalStateException {
       return artifactFactoryCache.getFactoryFromName(factoryName);
    }
 }

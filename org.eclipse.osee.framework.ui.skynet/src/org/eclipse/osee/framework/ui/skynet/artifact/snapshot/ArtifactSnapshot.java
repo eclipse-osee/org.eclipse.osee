@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Roberto E. Escobar
@@ -112,21 +111,17 @@ final class ArtifactSnapshot implements Serializable {
    }
 
    private int getGamma(Artifact artifact) {
-      return artifact.getPersistenceMemo().getGammaId();
+      return artifact.getGammaId();
    }
 
    private Timestamp getCreationDate(Artifact artifact) {
-      Timestamp toReturn = null;
-      TransactionId artifactTxId = artifact.getPersistenceMemo().getTransactionId();
-      artifactTxId.getTransactionNumber();
       List<TransactionData> txData =
             new ArrayList<TransactionData>(RevisionManager.getInstance().getTransactionsPerArtifact(artifact));
       for (TransactionData data : txData) {
          if (artifact.getArtId() == data.getAssociatedArtId()) {
-            toReturn = data.getTimeStamp();
-            break;
+            return data.getTimeStamp();
          }
       }
-      return toReturn;
+      return null;
    }
 }

@@ -158,8 +158,7 @@ public class SkynetAuthentication implements PersistenceManager {
    private void persistUser(User user) {
       duringUserCreation = true;
       try {
-         user.persistAttributes();
-         user.getLinkManager().persistLinks();
+         user.persistAttributesAndLinks();
       } catch (SQLException ex) {
          duringUserCreation = false;
          logger.log(Level.SEVERE, ex.toString(), ex);

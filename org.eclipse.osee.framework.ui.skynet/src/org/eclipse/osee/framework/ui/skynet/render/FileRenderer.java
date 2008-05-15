@@ -85,9 +85,9 @@ public abstract class FileRenderer extends FileSystemRenderer {
          name.append(artifact.getGuid());
          name.append(")");
 
-         if (!artifact.isEditable() || presentationType == PresentationType.DIFF) {
+         if (artifact.isHistorical() || presentationType == PresentationType.DIFF) {
             name.append("(");
-            name.append(artifact.getPersistenceMemo().getTransactionId().getTransactionNumber());
+            name.append(artifact.getTransactionNumber());
             name.append(")");
          }
 

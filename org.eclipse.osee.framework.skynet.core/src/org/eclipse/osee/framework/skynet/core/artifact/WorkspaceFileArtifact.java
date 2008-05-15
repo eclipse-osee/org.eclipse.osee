@@ -14,7 +14,6 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -37,7 +36,7 @@ public class WorkspaceFileArtifact extends Artifact {
     * @param branch
     * @throws SQLException
     */
-   public WorkspaceFileArtifact(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public WorkspaceFileArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

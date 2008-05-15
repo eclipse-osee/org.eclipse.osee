@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -124,7 +124,7 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
          for (RelationLinkGroup grp : currentArtifact.getLinkManager().getGroups()) {
             debug.report("relation " + grp.getDescriptor().getTypeName());
 
-            for (IRelationLink link : grp.getGroupSide()) {
+            for (RelationLink link : grp.getGroupSide()) {
                // Don't process link if onlyShowRel is populated and doesn't contain link name
                if (onlyShowRelations.size() > 0) {
                   if (!onlyShowRelations.contains(link.getRelationType().getTypeName())) continue;

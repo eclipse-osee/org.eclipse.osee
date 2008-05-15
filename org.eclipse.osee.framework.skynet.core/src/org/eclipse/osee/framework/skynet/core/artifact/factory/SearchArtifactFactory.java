@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
-import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.SearchArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
-public class SearchArtifactFactory extends ArtifactFactory<SearchArtifact> {
+public class SearchArtifactFactory extends ArtifactFactory {
    private static SearchArtifactFactory factory = null;
 
    private SearchArtifactFactory(int factoryId) {
@@ -34,7 +34,7 @@ public class SearchArtifactFactory extends ArtifactFactory<SearchArtifact> {
    }
 
    public @Override
-   SearchArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   SearchArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       return new SearchArtifact(this, guid, humandReadableId, branch, artifactType);
    }
 }

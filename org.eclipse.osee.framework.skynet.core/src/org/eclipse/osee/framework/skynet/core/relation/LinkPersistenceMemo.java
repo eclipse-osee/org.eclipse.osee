@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
-
 /**
  * @author Jeff C. Phillips
  * @author Robert A. Fisher
@@ -20,7 +19,7 @@ public class LinkPersistenceMemo {
    private int linkId;
    private int gammaId;
 
-   protected LinkPersistenceMemo(int linkId, int gammaId) {
+   public LinkPersistenceMemo(int linkId, int gammaId) {
       super();
       this.linkId = linkId;
       this.gammaId = gammaId;

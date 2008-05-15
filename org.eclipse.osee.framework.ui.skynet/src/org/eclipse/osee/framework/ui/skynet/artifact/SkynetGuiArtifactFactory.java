@@ -10,18 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustomizationArtifact;
 
 /**
  * @author Ryan D. Brooks
  */
-public class SkynetGuiArtifactFactory extends ArtifactFactory<Artifact> {
+public class SkynetGuiArtifactFactory extends ArtifactFactory {
    private static SkynetGuiArtifactFactory factory = null;
 
    private SkynetGuiArtifactFactory(int factoryId) {
@@ -40,7 +39,7 @@ public class SkynetGuiArtifactFactory extends ArtifactFactory<Artifact> {
    }
 
    public @Override
-   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       if (factoryKey.equals(XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME)) {
          return new XViewerCustomizationArtifact(this, guid, humandReadableId, branch, artifactType);
       }

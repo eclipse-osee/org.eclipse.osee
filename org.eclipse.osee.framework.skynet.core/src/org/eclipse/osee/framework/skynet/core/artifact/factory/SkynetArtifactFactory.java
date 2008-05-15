@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
 /**
  * @author Ryan D. Brooks
  */
-public class SkynetArtifactFactory extends ArtifactFactory<Artifact> {
+public class SkynetArtifactFactory extends ArtifactFactory {
    private static SkynetArtifactFactory factory = null;
 
    private SkynetArtifactFactory(int factoryId) {
@@ -39,7 +39,7 @@ public class SkynetArtifactFactory extends ArtifactFactory<Artifact> {
    }
 
    public @Override
-   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       if (factoryKey.equals(User.ARTIFACT_NAME)) {
          return new User(this, guid, humandReadableId, branch, artifactType);
       }

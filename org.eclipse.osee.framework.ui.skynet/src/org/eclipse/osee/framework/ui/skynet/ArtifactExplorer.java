@@ -1042,8 +1042,8 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       else
          setContentDescription("");
 
-      if (exploreRoot != null && exploreRoot.getPersistenceMemo() != null) {
-         Branch branch = exploreRoot.getPersistenceMemo().getTransactionId().getBranch();
+      if (exploreRoot != null && exploreRoot.isInDb()) {
+         Branch branch = exploreRoot.getBranch();
          if (editMenuItem != null) {
             editMenuItem.setText("Edit (" + StringFormat.truncate(branch.getBranchName(), 25) + ")");
          }
@@ -1173,13 +1173,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                   }
 
                   if (artifact.isDeleted() || artifactModifiedEvent.getType() == ArtifactModifiedEvent.ModType.Reverted) {
-                     Artifact parent = artifact.getParent();
-
-                     if (parent != null) {
-                        parent.clearLinkManager();
-                        parent.getLinkManager();
-                     }
-                     treeViewer.refresh(parent);
+                     treeViewer.refresh(artifact.getParent());
                   } else
                      treeViewer.refresh(artifact);
                }

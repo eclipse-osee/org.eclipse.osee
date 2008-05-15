@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.PermissionList;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.swt.widgets.Item;
 
 /**
@@ -48,7 +48,7 @@ public class RelationCellModifier implements ICellModifier {
          ex.printStackTrace();
          return false;
       }
-      return element instanceof IRelationLink;
+      return element instanceof RelationLink;
    }
 
    /*
@@ -57,7 +57,7 @@ public class RelationCellModifier implements ICellModifier {
     * @see org.eclipse.jface.viewers.ICellModifier#getValue(java.lang.Object, java.lang.String)
     */
    public Object getValue(Object element, String property) {
-      IRelationLink relLink = (IRelationLink) element;
+      RelationLink relLink = (RelationLink) element;
       return relLink.getRationale();
    }
 
@@ -72,7 +72,7 @@ public class RelationCellModifier implements ICellModifier {
       if (element instanceof Item) {
          element = ((Item) element).getData();
       }
-      IRelationLink relLink = (IRelationLink) element;
+      RelationLink relLink = (RelationLink) element;
       relLink.setRationale((String) value, true);
       treeViewer.update(element, null);
    }

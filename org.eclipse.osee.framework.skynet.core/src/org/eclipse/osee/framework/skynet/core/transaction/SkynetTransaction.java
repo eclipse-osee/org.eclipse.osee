@@ -268,7 +268,7 @@ public class SkynetTransaction {
          artifact.setInTransaction(false);
          if (!artifact.isDeleted()) {
             artifact.setNotDirty();
-            artifact.getPersistenceMemo().setGammaId(artIdToNewGamma.get(artifact.getArtId()));
+            artifact.setIds(artifact.getArtId(), artIdToNewGamma.get(artifact.getArtId()));
          }
       }
    }

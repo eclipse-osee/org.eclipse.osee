@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AHTML.CellItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -226,7 +226,7 @@ public class Overview {
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Name", "Rationale"}));
          for (Artifact art : arts) {
             String rationale = "";
-            IRelationLink link = parent.getRelations(side, art).iterator().next();
+            RelationLink link = parent.getRelations(side, art).iterator().next();
             if (!link.getRationale().equals("")) rationale = link.getRationale();
             String hyperStr = Overview.getOpenHyperlinkHtml(art);
             html.append(AHTML.addRowMultiColumnTable(new String[] {art.getArtifactTypeName(), hyperStr, rationale}));

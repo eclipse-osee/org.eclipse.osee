@@ -14,9 +14,9 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -29,7 +29,7 @@ public class VersionArtifact extends BasicArtifact {
       Released, UnReleased, Both
    };
 
-   public VersionArtifact(IArtifactFactory parentFactory, String guid, String humandReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public VersionArtifact(ArtifactFactory parentFactory, String guid, String humandReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       super(parentFactory, guid, humandReadableId, branch, artifactType);
    }
 

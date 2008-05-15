@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 
 /**
@@ -56,7 +56,7 @@ public class ArtifactSubtypeDescriptorCache {
          ResultSet rSet = chStmt.getRset();
          while (rSet.next()) {
             try {
-               IArtifactFactory factory = configurationManager.getFactoryFromId(rSet.getInt("factory_id"));
+               ArtifactFactory factory = configurationManager.getFactoryFromId(rSet.getInt("factory_id"));
                new ArtifactSubtypeDescriptor(this, rSet.getInt("art_type_id"), rSet.getString("factory_key"), factory,
                      rSet.getString("namespace"), rSet.getString("name"), new InputStreamImageDescriptor(
                            rSet.getBinaryStream("image")));

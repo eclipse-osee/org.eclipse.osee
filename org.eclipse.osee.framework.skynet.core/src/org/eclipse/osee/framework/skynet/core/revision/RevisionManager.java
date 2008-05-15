@@ -1204,14 +1204,13 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       Collection<Branch> otherBranches = new LinkedList<Branch>();
 
       // Can only be on other branches it has already been saved
-      if (artifact.getPersistenceMemo() != null) {
+      if (artifact.isInDb()) {
          ConnectionHandlerStatement chStmt = null;
 
          try {
             chStmt =
-                  ConnectionHandler.runPreparedQuery(OTHER_EDIT_SQL, SQL3DataType.INTEGER,
-                        artifact.getPersistenceMemo().getArtId(), SQL3DataType.INTEGER,
-                        artifact.getBranch().getBranchId(), SQL3DataType.INTEGER,
+                  ConnectionHandler.runPreparedQuery(OTHER_EDIT_SQL, SQL3DataType.INTEGER, artifact.getArtId(),
+                        SQL3DataType.INTEGER, artifact.getBranch().getBranchId(), SQL3DataType.INTEGER,
                         artifact.getBranch().getParentBranchId());
 
             ResultSet rset = chStmt.getRset();

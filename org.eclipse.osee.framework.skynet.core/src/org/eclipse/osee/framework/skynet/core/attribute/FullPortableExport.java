@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 
@@ -73,12 +73,12 @@ public class FullPortableExport {
    public void createRelationsSheet(Collection<Artifact> artifacts) throws IOException, SQLException {
       writeRelationsHeader();
 
-      HashSet<IRelationLink> links = new HashSet<IRelationLink>();
+      HashSet<RelationLink> links = new HashSet<RelationLink>();
       for (Artifact artifact : artifacts) {
          links.addAll(artifact.getLinkManager().getLinks());
       }
 
-      for (IRelationLink link : links) {
+      for (RelationLink link : links) {
          row[0] = link.getRelationType().getTypeName();
          row[1] = link.getArtifactA().getGuid();
          row[2] = link.getArtifactB().getGuid();

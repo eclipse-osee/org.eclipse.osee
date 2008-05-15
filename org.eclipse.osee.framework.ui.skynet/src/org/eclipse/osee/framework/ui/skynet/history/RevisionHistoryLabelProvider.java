@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.revision.IAttributeChange;
-import org.eclipse.osee.framework.skynet.core.revision.IRelationLinkChange;
+import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
@@ -80,8 +80,8 @@ public class RevisionHistoryLabelProvider implements ITableLabelProvider, ILabel
          } else if (columnIndex == 3) {
             return "is:" + change.getChange();
          }
-      } else if (element instanceof IRelationLinkChange) {
-         IRelationLinkChange change = (IRelationLinkChange) element;
+      } else if (element instanceof RelationLinkChange) {
+         RelationLinkChange change = (RelationLinkChange) element;
 
          if (columnIndex == 0) {
             return String.valueOf(change.getGammaId());

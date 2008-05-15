@@ -21,11 +21,11 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 
 /**
- * Builder class to handle how a group of arbitrary <code>Artifact</code>'s and <code>IRelationLink</code>'s are
+ * Builder class to handle how a group of arbitrary <code>Artifact</code>'s and <code>RelationLink</code>'s are
  * placed into <code>Transaction</code>'s for the Skynet versioning system.<br/><br/> <b>This class is used
  * internal to the Skynet system, and is not supported as part of the Skynet API</b>
  * 
@@ -70,12 +70,12 @@ public class SkynetTransactionBuilder {
          addArtifact(artifact);
    }
 
-   public void addLink(IRelationLink link) throws SQLException {
+   public void addLink(RelationLink link) throws SQLException {
       relationManager.doSave(link, getTransaction(link.isVersionControlled()));
    }
 
-   public void addLinks(Collection<IRelationLink> links) throws SQLException {
-      for (IRelationLink link : new ArrayList<IRelationLink>(links))
+   public void addLinks(Collection<RelationLink> links) throws SQLException {
+      for (RelationLink link : new ArrayList<RelationLink>(links))
          addLink(link);
    }
 
@@ -87,7 +87,7 @@ public class SkynetTransactionBuilder {
       artifactManager.doDelete(artifact, getTransaction(artifact.isVersionControlled()), this);
    }
 
-   public void deleteLink(IRelationLink link) throws SQLException {
+   public void deleteLink(RelationLink link) throws SQLException {
       relationManager.doDelete(link, getTransaction(link.isVersionControlled()));
    }
 

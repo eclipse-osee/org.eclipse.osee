@@ -62,7 +62,7 @@ class ArtifactSnapshotFactory {
       snapshotData.setRenderedData(getRenderedArtifactData(artifact));
       processImageLinks(snapshotData);
       logger.log(Level.INFO, String.format("Artifact Snapshot Render Time: [%s] - for artifact: [%s, %s]",
-            System.currentTimeMillis() - start, artifact.getGuid(), artifact.getPersistenceMemo().getGammaId()));
+            System.currentTimeMillis() - start, artifact.getGuid(), artifact.getGammaId()));
       return snapshotData;
    }
 

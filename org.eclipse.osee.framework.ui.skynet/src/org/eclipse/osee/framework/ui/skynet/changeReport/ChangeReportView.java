@@ -1157,7 +1157,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                }
             }
          }
-         return artifacts.toArray(Artifact.EMPTY_ARRAY);
+         return artifacts.toArray(new Artifact[artifacts.size()]);
       }
 
       @Override

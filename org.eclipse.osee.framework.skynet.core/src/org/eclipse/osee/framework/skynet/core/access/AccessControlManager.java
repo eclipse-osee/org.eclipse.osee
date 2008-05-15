@@ -374,7 +374,7 @@ public class AccessControlManager implements PersistenceManager {
       AccessObject accessObject = null;
 
       // The artifact is new and has not been persisted.
-      if (artifact.getPersistenceMemo() == null) return PermissionEnum.FULLACCESS;
+      if (!artifact.isInDb()) return PermissionEnum.FULLACCESS;
 
       Integer artId = artifact.getArtId();
       Integer branchId = artifact.getBranch().getBranchId();
@@ -750,7 +750,7 @@ public class AccessControlManager implements PersistenceManager {
     * @return - Returns true if the object has been locked on any branch.
     */
    public boolean hasLock(Artifact object) {
-      if (object.getPersistenceMemo() == null) return false;
+      if (!object.isInDb()) return false;
 
       return objectToBranchLockCache.containsKey(object.getArtId());
    }
@@ -785,7 +785,9 @@ public class AccessControlManager implements PersistenceManager {
    public boolean hasLockAccess(Artifact object) {
       boolean hasAccess = false;
 
-      if (object.getPersistenceMemo() == null) return true;
+      if (!object.isInDb()) {
+         return true;
+      }
 
       if (hasLock(object)) {
          hasAccess = objectToBranchLockCache.get(object.getArtId()) == object.getBranch().getBranchId();

@@ -30,7 +30,7 @@ class KeyGenerator {
     */
    public Pair<String, String> getKeyPair(Artifact artifact, Branch branch) throws UnsupportedEncodingException {
       String namespace = getNamespace(artifact, branch);
-      String key = Integer.toString(artifact.getPersistenceMemo().getGammaId());
+      String key = Integer.toString(artifact.getGammaId());
       return new Pair<String, String>(namespace, key);
    }
 

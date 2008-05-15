@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -84,7 +84,7 @@ public class SMARelationsComposite extends Composite {
    private void processArtifact(String name, Artifact thisArt) throws SQLException {
       for (RelationSide side : sides) {
          for (final Artifact art : thisArt.getArtifacts(side)) {
-            IRelationLink rel = thisArt.getRelations(art).iterator().next();
+            RelationLink rel = thisArt.getRelations(art).iterator().next();
             toolkit.createLabel(
                   this,
                   name + " \"" + thisArt.getArtifactTypeName() + "\" " + rel.getSidePhrasingFor(thisArt) + " \"" + art.getArtifactTypeName() + "\" ");

@@ -55,7 +55,7 @@ public class SkyWalkerOptions {
    protected AbstractLayoutAlgorithm defaultLayout;
    private Map<ArtifactSubtypeDescriptor, Boolean> artTypes;
    private Map<AttributeType, Boolean> showAttributes;
-   // IRelationLinkDescriptor and RelationLinkDescriptorSide
+   // RelationLinkDescriptor and RelationLinkDescriptorSide
    private Map<Object, Boolean> relTypes;
    private boolean filterEnabled = true;
    private Set<ISkyWalkerOptionsChangeListener> listeners = new HashSet<ISkyWalkerOptionsChangeListener>();
@@ -408,7 +408,7 @@ public class SkyWalkerOptions {
       return showAttributes.keySet();
    }
 
-   public Set<IRelationType> getAllIRelationLinkDescriptorTypes() {
+   public Set<IRelationType> getAllRelationLinkDescriptorTypes() {
       if (relTypes == null) return new HashSet<IRelationType>();
       Set<IRelationType> descs = new HashSet<IRelationType>();
       for (Object obj : relTypes.keySet()) {

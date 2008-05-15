@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
-import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 
 /**
@@ -25,7 +24,7 @@ public abstract class ArtifactOperation extends Artifact implements WorkflowStep
    public static final String PROVIDES_ACCEPTABLE_INPUT = "Provides Acceptable Input";
    public static final String ARTIFACT_NAME = "Artifact Operation";
 
-   public ArtifactOperation(IArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public ArtifactOperation(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

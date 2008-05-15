@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
@@ -53,10 +53,10 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
             Artifact dest = (Artifact) obj1;
             Artifact source = (Artifact) obj2;
             try {
-               Collection<IRelationLink> links = dest.getRelations(source);
+               Collection<RelationLink> links = dest.getRelations(source);
 
                Collection<String> linkNames = new ArrayList<String>(links.size());
-               for (IRelationLink link : links) {
+               for (RelationLink link : links) {
                   linkNames.add(link.getRelationType().getTypeName());
                }
                return Collections.toString("\n", linkNames);

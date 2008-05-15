@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.osgi.framework.Bundle;
 
 /**
@@ -37,13 +38,13 @@ import org.osgi.framework.Bundle;
 public class ArtifactFactoryCache implements PersistenceManager {
    private static final String SELECT_FROM_FACTORY = "SELECT * FROM osee_define_factory";
    private final HashMap<String, String> factoryBundleMap;
-   private final HashMap<String, IArtifactFactory> factoryNameMap;
-   private final HashMap<Integer, IArtifactFactory> factoryIdMap;
+   private final HashMap<String, ArtifactFactory> factoryNameMap;
+   private final HashMap<Integer, ArtifactFactory> factoryIdMap;
    private static final ArtifactFactoryCache instance = new ArtifactFactoryCache();
 
    private ArtifactFactoryCache() {
-      this.factoryNameMap = new HashMap<String, IArtifactFactory>();
-      this.factoryIdMap = new HashMap<Integer, IArtifactFactory>();
+      this.factoryNameMap = new HashMap<String, ArtifactFactory>();
+      this.factoryIdMap = new HashMap<Integer, ArtifactFactory>();
       this.factoryBundleMap = new HashMap<String, String>();
    }
 
@@ -61,7 +62,7 @@ public class ArtifactFactoryCache implements PersistenceManager {
       loadFactories();
    }
 
-   public IArtifactFactory getFactoryFromId(int factoryId) {
+   public ArtifactFactory getFactoryFromId(int factoryId) {
       return factoryIdMap.get(factoryId);
    }
 
@@ -79,8 +80,8 @@ public class ArtifactFactoryCache implements PersistenceManager {
       registerNewFactories();
    }
 
-   public IArtifactFactory getFactoryFromName(String factoryName) throws IllegalStateException {
-      IArtifactFactory factory = factoryNameMap.get(factoryName);
+   public ArtifactFactory getFactoryFromName(String factoryName) throws IllegalStateException {
+      ArtifactFactory factory = factoryNameMap.get(factoryName);
       if (factory == null) {
          throw new IllegalStateException("Failed to retrieve factory: " + factoryName + " from artifact factory cache");
       }
@@ -102,7 +103,7 @@ public class ArtifactFactoryCache implements PersistenceManager {
 
          Bundle bundle = Platform.getBundle(bundleSymbolicName);
          Method getInstance = bundle.loadClass(factoryClassName).getMethod("getInstance", new Class[] {int.class});
-         IArtifactFactory factory = (IArtifactFactory) getInstance.invoke(null, new Object[] {factoryId});
+         ArtifactFactory factory = (ArtifactFactory) getInstance.invoke(null, new Object[] {factoryId});
 
          factoryNameMap.put(factoryClassName, factory);
          factoryIdMap.put(factoryId, factory);

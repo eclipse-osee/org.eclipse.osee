@@ -41,28 +41,28 @@ public class RelationLinkSummary extends ChangeSummary<RelationLinkChange> imple
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.revision.IRelationLinkChange#getOtherArtifactDescriptor()
+    * @see org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange#getOtherArtifactDescriptor()
     */
    public ArtifactSubtypeDescriptor getOtherArtifactDescriptor() {
       return getNewestChange().getOtherArtifactDescriptor();
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.revision.IRelationLinkChange#getOtherArtifactName()
+    * @see org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange#getOtherArtifactName()
     */
    public String getOtherArtifactName() {
       return getNewestChange().getOtherArtifactName();
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.revision.IRelationLinkChange#getRationale()
+    * @see org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange#getRationale()
     */
    public String getRationale() {
       return getNewestChange().getRationale();
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.revision.IRelationLinkChange#getRelTypeName()
+    * @see org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange#getRelTypeName()
     */
    public String getRelTypeName() {
       return getNewestChange().getRelTypeName();

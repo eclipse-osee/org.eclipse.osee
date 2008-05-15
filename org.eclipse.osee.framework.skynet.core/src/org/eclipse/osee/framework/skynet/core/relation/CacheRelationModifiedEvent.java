@@ -24,7 +24,7 @@ public class CacheRelationModifiedEvent extends RelationModifiedEvent {
     * @param modType
     * @param sender
     */
-   public CacheRelationModifiedEvent(IRelationLink link, Branch branch, String relationType, String relationSide, ModType modType, Object sender) {
+   public CacheRelationModifiedEvent(RelationLink link, Branch branch, String relationType, String relationSide, ModType modType, Object sender) {
       super(link, branch, relationType, relationSide, modType, sender);
    }
 
@@ -35,7 +35,7 @@ public class CacheRelationModifiedEvent extends RelationModifiedEvent {
     * @param sender
     * @param branch TODO
     */
-   public CacheRelationModifiedEvent(IRelationLink link, String relationType, String relationSide, String modType, Object sender, Branch branch) {
+   public CacheRelationModifiedEvent(RelationLink link, String relationType, String relationSide, String modType, Object sender, Branch branch) {
       super(link, branch, relationType, relationSide, modType, sender);
 
    }

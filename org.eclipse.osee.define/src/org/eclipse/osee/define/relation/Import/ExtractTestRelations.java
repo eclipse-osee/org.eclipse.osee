@@ -108,7 +108,7 @@ public class ExtractTestRelations {
       reqArtifact.relate(null, getTestArtifact(testArtifactFile, reqArtifact.getBranch()));
       // Get a new test relation with the same tag as the requirement artifact
       //      UserRelation testRelation = relationManager.getUserRelationDescriptor("Test").makeNewUserRelation(reqArtifact.getTag());
-      //      IRelationLink link = relationManager.getIRelationLinkDescriptor("Test").makeNewLink();
+      //      RelationLink link = relationManager.getRelationLinkDescriptor("Test").makeNewLink();
 
       // Add the items to the relation
       //      link.setArtifact("Requirement", reqArtifact);

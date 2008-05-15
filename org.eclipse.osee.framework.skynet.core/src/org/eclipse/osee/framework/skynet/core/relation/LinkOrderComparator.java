@@ -17,7 +17,7 @@ import java.util.Comparator;
  * 
  * @author Robert A. Fisher
  */
-public class LinkOrderComparator implements Comparator<IRelationLink> {
+public class LinkOrderComparator implements Comparator<RelationLink> {
    boolean sideA;
 
    /**
@@ -27,7 +27,7 @@ public class LinkOrderComparator implements Comparator<IRelationLink> {
       this.sideA = sideA;
    }
 
-   public int compare(IRelationLink link1, IRelationLink link2) {
+   public int compare(RelationLink link1, RelationLink link2) {
       float val;
       if (sideA)
          val = link1.getAOrder() - link2.getAOrder();
@@ -35,11 +35,10 @@ public class LinkOrderComparator implements Comparator<IRelationLink> {
          val = link1.getBOrder() - link2.getBOrder();
       // TreeSet's like to remove stuff if zero is returned ... so don't do that if items differ
       if (val == 0 && link1 != link2)
-         return ((RelationLinkBase) link1).aaaSerialId - ((RelationLinkBase) link2).aaaSerialId;
+         return link1.getPersistenceMemo().getGammaId() - link2.getPersistenceMemo().getGammaId();
       else if (link1 == link2)
          return 0;
       else
          return val > 0 ? 1 : -1;
    }
-
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 /**
  * @author Jeff C. Phillips
@@ -30,7 +30,7 @@ public class RelationTransactionData implements ITransactionData {
 
    private static final int PRIME_NUMBER = 7;
 
-   private IRelationLink link;
+   private RelationLink link;
    private int gammaId;
    private int transactionId;
    private ModificationType modificationType;
@@ -38,7 +38,7 @@ public class RelationTransactionData implements ITransactionData {
    private List<Object> dataItems = new LinkedList<Object>();
    private List<Object> notCurrentDataItems = new LinkedList<Object>();
 
-   public RelationTransactionData(IRelationLink link, int gammaId, int transactionId, ModificationType modificationType, Branch branch) {
+   public RelationTransactionData(RelationLink link, int gammaId, int transactionId, ModificationType modificationType, Branch branch) {
       super();
       this.link = link;
       this.gammaId = gammaId;

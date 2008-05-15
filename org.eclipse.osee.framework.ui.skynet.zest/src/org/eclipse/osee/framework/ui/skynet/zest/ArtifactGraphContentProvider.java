@@ -13,14 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.zest;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
@@ -59,25 +58,13 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
     */
    public Object[] getConnectedTo(Object entity) {
       if (entity == input) {
-         List<Artifact> otherItems = new LinkedList<Artifact>();
-
          try {
-            LinkManager linkManager = input.getLinkManager();
-            for (RelationLinkGroup linkGroup : linkManager.getGroups()) {
-               otherItems.addAll(linkGroup.getArtifacts());
-            }
+            return input.getLinkManager().getOtherSideArtifacts().toArray();
          } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.toString(), ex);
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
-         return otherItems.toArray();
-      } else {
-         return new Object[] {input};
       }
-
-      //      if (entity instanceof Artifact) {
-      //         return ((Artifact)entity).getLinkManager().getOtherSideArtifacts().toArray();
-      //      }
-      //      return null;
+      return new Object[] {input};
    }
 
    /* (non-Javadoc)

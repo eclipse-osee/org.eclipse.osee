@@ -144,7 +144,7 @@ public class WholeDocumentRenderer extends FileRenderer {
       if (baseVersion != null) {
          String baseFileStr = baseFile.getLocation().toOSString();
          diffPath =
-               baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getPersistenceMemo().getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
+               baseFileStr.substring(0, baseFileStr.lastIndexOf(')')) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')'));
       } else {
          String baseFileStr = newerFile.getLocation().toOSString();
          diffPath =

@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -66,13 +66,12 @@ public class AttributeFindReplaceDialog extends Dialog {
    private Text txtFindRegEx;
    private Text txtReplaceStr;
 
-   private Artifact[] artifacts;
+   private List<Artifact> artifacts;
 
-   public AttributeFindReplaceDialog(Shell parentShell, Collection<Artifact> artifacts) {
+   public AttributeFindReplaceDialog(Shell parentShell, List<Artifact> artifacts) {
       super(parentShell);
 
-      this.artifacts = artifacts.toArray(Artifact.EMPTY_ARRAY);
-
+      this.artifacts = artifacts;
       setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation() | SWT.RESIZE);
    }
 
@@ -148,7 +147,7 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void checkEnabled() {
       boolean enable =
-            (cmbAttributeDescriptors.getInput() instanceof AttributeType[]) && (txtFindRegEx.getText().length() > 0) && (artifacts.length > 0);
+            (cmbAttributeDescriptors.getInput() instanceof AttributeType[]) && (txtFindRegEx.getText().length() > 0) && (!artifacts.isEmpty());
 
       getButton(IDialogConstants.OK_ID).setEnabled(enable);
    }
@@ -165,9 +164,9 @@ public class AttributeFindReplaceDialog extends Dialog {
          @Override
          protected IStatus run(final IProgressMonitor monitor) {
             IStatus toReturn = Status.CANCEL_STATUS;
-            Branch branch = artifacts[0].getBranch();
+            Branch branch = artifacts.get(0).getBranch();
             try {
-               monitor.beginTask("Find/Replace " + attributeName + " Attribute Value", artifacts.length);
+               monitor.beginTask("Find/Replace " + attributeName + " Attribute Value", artifacts.size());
 
                AbstractSkynetTxTemplate modifyArtifactTx = new AbstractSkynetTxTemplate(branch) {
 

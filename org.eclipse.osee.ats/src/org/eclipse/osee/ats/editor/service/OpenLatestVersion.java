@@ -41,7 +41,7 @@ public class OpenLatestVersion extends WorkPageService {
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) {
-      return isCurrentState(page) && !smaMgr.getSma().getPersistenceMemo().getTransactionId().isHead();
+      return isCurrentState(page) && !smaMgr.getSma().isLive();
    }
 
    /* (non-Javadoc)

@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.swt.graphics.Image;
@@ -44,8 +44,8 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    public Image getColumnImage(Object element, int columnIndex) {
       if (element instanceof IRelationType && columnIndex == 0) {
          return RELATION_IMAGE;
-      } else if (element instanceof IRelationLink && columnIndex == 0) {
-         IRelationLink link = (IRelationLink) element;
+      } else if (element instanceof RelationLink && columnIndex == 0) {
+         RelationLink link = (RelationLink) element;
          return (link.getArtifactA() == artifact) ? link.getArtifactB().getArtifactType().getImage() : link.getArtifactA().getArtifactType().getImage();
       }
       return null;
@@ -61,8 +61,8 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          if (columnIndex == 0) return ((RelationLinkGroup) element).getSideName();
       } else if (element instanceof IRelationType) {
          if (columnIndex == 0) return ((IRelationType) element).getTypeName();
-      } else if (element instanceof IRelationLink) {
-         IRelationLink link = (IRelationLink) element;
+      } else if (element instanceof RelationLink) {
+         RelationLink link = (RelationLink) element;
          if (columnIndex == 0)
             return (link.getArtifactA() == artifact) ? link.getArtifactB().getDescriptiveName() : link.getArtifactA().getDescriptiveName();
          else if (columnIndex == 1)

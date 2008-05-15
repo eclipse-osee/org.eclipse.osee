@@ -6,7 +6,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.IArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 
@@ -41,9 +40,7 @@ public class ArtifactTypeManager {
     * @throws SQLException
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch, String name) throws SQLException {
-      Artifact artifact =
-            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName).makeNewArtifact(
-                  branch);
+      Artifact artifact = addArtifact(artifactTypeName, branch);
       artifact.setDescriptiveName(name);
       return artifact;
    }
@@ -55,7 +52,7 @@ public class ArtifactTypeManager {
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
     * @throws SQLException
-    * @see IArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String)
+    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String)
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch, String guid, String humandReadableId) throws SQLException {
       return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName).makeNewArtifact(

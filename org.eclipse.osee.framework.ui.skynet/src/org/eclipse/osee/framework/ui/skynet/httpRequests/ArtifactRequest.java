@@ -78,7 +78,7 @@ public class ArtifactRequest implements IHttpServerRequest {
       }
       keyValues.put(BRANCH_ID_KEY, Integer.toString(branch));
       if (includeRevision) {
-         int txNumber = artifact.getPersistenceMemo().getTransactionNumber();
+         int txNumber = artifact.getTransactionNumber();
          keyValues.put(TRANSACTION_NUMBER_KEY, Integer.toString(txNumber));
       }
       return keyValues;

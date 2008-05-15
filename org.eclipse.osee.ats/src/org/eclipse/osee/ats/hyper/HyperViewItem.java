@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.swt.graphics.Image;
 
 public class HyperViewItem {
@@ -31,7 +31,7 @@ public class HyperViewItem {
    private boolean highlight = false;
    private boolean current = false;
    private boolean show = true;
-   private IRelationLink link;
+   private RelationLink link;
 
    public HyperViewItem(String title) {
       this(title, null);
@@ -189,11 +189,11 @@ public class HyperViewItem {
       this.relationDirty = relationDirty;
    }
 
-   public IRelationLink getLink() {
+   public RelationLink getLink() {
       return link;
    }
 
-   public void setLink(IRelationLink link) {
+   public void setLink(RelationLink link) {
       this.link = link;
    }
 }

@@ -156,7 +156,7 @@ public class GlobalMenu {
                   OSEELog.logException(SkynetGuiPlugin.class, ex, false);
                }
                ArtifactPersistenceManager.getInstance().deleteArtifact(
-                     artifactsToBeDeleted.toArray(Artifact.EMPTY_ARRAY));
+                     artifactsToBeDeleted.toArray(new Artifact[artifactsToBeDeleted.size()]));
                try {
                   for (GlobalMenuListener listener : listeners) {
                      listener.actioned(GlobalMenuItem.DeleteArtifacts, artifactsToBeDeleted);

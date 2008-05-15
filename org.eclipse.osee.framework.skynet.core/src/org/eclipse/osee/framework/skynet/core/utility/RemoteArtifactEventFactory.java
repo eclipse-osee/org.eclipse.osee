@@ -33,6 +33,6 @@ public class RemoteArtifactEventFactory {
             artifact.getArtTypeId(),
             artifact.getFactory().getClass().getCanonicalName(),
             artifact.getDirtyAttributeSkynetAttributeChanges(),
-            SkynetAuthentication.getInstance().getAuthenticatedUser().getPersistenceMemo() != null ? SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId() : -1);
+            SkynetAuthentication.getInstance().getAuthenticatedUser().isInDb() ? SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId() : -1);
    }
 }

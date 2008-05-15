@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions.LinkName;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -65,10 +65,10 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
                Artifact dest = (Artifact) obj1;
                Artifact source = (Artifact) obj2;
 
-               Collection<IRelationLink> links = dest.getRelations(source);
+               Collection<RelationLink> links = dest.getRelations(source);
 
                Collection<String> linkNames = new ArrayList<String>(links.size());
-               for (IRelationLink link : links) {
+               for (RelationLink link : links) {
                   if (options.getLinkName() == LinkName.Phrasing_A_to_B) {
                      if (link.getArtifactA().equals(source)) {
                         linkNames.add(source + " (" + link.getSidePhrasingFor(source) + ") " + dest);

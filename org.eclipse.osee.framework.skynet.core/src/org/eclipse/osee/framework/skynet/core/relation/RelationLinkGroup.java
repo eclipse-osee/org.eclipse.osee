@@ -40,7 +40,7 @@ public class RelationLinkGroup {
    private LinkManager linkManager;
    private IRelationType descriptor;
    private boolean sideA;
-   private TreeSet<IRelationLink> groupSide;
+   private TreeSet<RelationLink> groupSide;
    private SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final RelationPersistenceManager relationPersistenceManager =
          RelationPersistenceManager.getInstance();
@@ -55,11 +55,11 @@ public class RelationLinkGroup {
       this.linkManager = linkManager;
       this.descriptor = descriptor;
       this.sideA = sideA;
-      this.groupSide = new TreeSet<IRelationLink>(new LinkOrderComparator(!sideA));
+      this.groupSide = new TreeSet<RelationLink>(new LinkOrderComparator(!sideA));
    }
 
    public void fixOrder() {
-      TreeSet<IRelationLink> newOrderedLinks = new TreeSet<IRelationLink>(new LinkOrderComparator(!sideA));
+      TreeSet<RelationLink> newOrderedLinks = new TreeSet<RelationLink>(new LinkOrderComparator(!sideA));
       newOrderedLinks.addAll(groupSide);
       groupSide = newOrderedLinks;
    }
@@ -73,9 +73,7 @@ public class RelationLinkGroup {
     * 
     * @return Returns the groupSide.
     */
-   public Set<IRelationLink> getGroupSide() {
-      // Guard internal data from external modification
-      // return new HashSet<IRelationLink>(groupSide);
+   public Set<RelationLink> getGroupSide() {
       return groupSide;
    }
 
@@ -122,7 +120,7 @@ public class RelationLinkGroup {
       checkArtifact(artifact);
 
       // If a link already exists for this artifact, then return false
-      for (IRelationLink link : groupSide)
+      for (RelationLink link : groupSide)
          if (artifact == ((sideA) ? link.getArtifactA() : link.getArtifactB())) return false;
 
       // Check that both artifacts are valid for the type of relation
@@ -137,7 +135,7 @@ public class RelationLinkGroup {
          bOrder = artB.getLinkManager().ensureRelationGroupExists(descriptor, true).getLastOrderValue();
       }
 
-      IRelationLink link = new DynamicRelationLink(artA, artB, descriptor, null, "", aOrder, bOrder, true);
+      RelationLink link = new RelationLink(artA, artB, descriptor, null, "", aOrder, bOrder, true);
 
       link.getArtifactA().getLinkManager().addLink(link);
       link.getArtifactB().getLinkManager().addLink(link);
@@ -166,7 +164,7 @@ public class RelationLinkGroup {
     */
    public boolean removeArtifact(Artifact artifact) throws SQLException {
       // If a link exists for this artifact, then remove it
-      for (IRelationLink link : groupSide) {
+      for (RelationLink link : groupSide) {
          if (artifact == ((sideA) ? link.getArtifactA() : link.getArtifactB())) {
             link.delete();
             // TODO the link.delete() call is kicking this event also ...
@@ -181,10 +179,10 @@ public class RelationLinkGroup {
 
    public void removeAll() throws SQLException {
       // Must do this to keep from concurrent mod exception
-      ArrayList<IRelationLink> links = new ArrayList<IRelationLink>();
-      for (IRelationLink link : groupSide)
+      ArrayList<RelationLink> links = new ArrayList<RelationLink>();
+      for (RelationLink link : groupSide)
          links.add(link);
-      for (IRelationLink link : links)
+      for (RelationLink link : links)
          link.delete();
    }
 
@@ -196,7 +194,8 @@ public class RelationLinkGroup {
    }
 
    public String toString() {
-      return String.format("%s side of %s for %s", getSideName(), descriptor.getTypeName(), linkManager.getOwningArtifact());
+      return String.format("%s side of %s for %s", getSideName(), descriptor.getTypeName(),
+            linkManager.getOwningArtifact());
    }
 
    /**
@@ -227,7 +226,7 @@ public class RelationLinkGroup {
    public boolean hasArtifacts(Class<Artifact> artifactClass) {
       Artifact artToAdd;
 
-      for (IRelationLink link : groupSide) {
+      for (RelationLink link : groupSide) {
 
          if (sideA)
             artToAdd = link.getArtifactA();
@@ -248,7 +247,7 @@ public class RelationLinkGroup {
       Set<A> artifacts = new LinkedHashSet<A>();
       Artifact artToAdd;
 
-      for (IRelationLink link : groupSide) {
+      for (RelationLink link : groupSide) {
 
          if (sideA) {
             artToAdd = (link.getArtifactA().isDeleted() ? null : link.getArtifactA());
@@ -310,7 +309,7 @@ public class RelationLinkGroup {
       int orderValue;
 
       if (!groupSide.isEmpty()) {
-         IRelationLink lastLink = groupSide.last();
+         RelationLink lastLink = groupSide.last();
          orderValue = sideA ? lastLink.getBOrder() : lastLink.getAOrder();
       } else {
          // Leave considerable space to bisect prior to this order value
@@ -343,8 +342,8 @@ public class RelationLinkGroup {
     * @param dropLink The link to be transfered
     * @param isBeforeTarget If true the dropLink will be placed after the targetLink else it will be placed before.
     */
-   public void moveLink(IRelationLink targetLink, IRelationLink dropLink, boolean isBeforeTarget) {
-      IRelationLink neighborTargetLink = null;
+   public void moveLink(RelationLink targetLink, RelationLink dropLink, boolean isBeforeTarget) {
+      RelationLink neighborTargetLink = null;
       int neighborTargetOrder;
       int splitValue;
       int boundaryValue;
@@ -390,7 +389,7 @@ public class RelationLinkGroup {
     * @param boundaryValue
     * @return Returns the split value
     */
-   private int computeSplitValue(IRelationLink targetLink, IRelationLink neighborTargetLink, int boundaryValue) {
+   private int computeSplitValue(RelationLink targetLink, RelationLink neighborTargetLink, int boundaryValue) {
       return (int) (((long) computeTargetOrder(targetLink) + (long) computeNeighborTargetOrder(neighborTargetLink,
             boundaryValue)) / 2);
    }
@@ -399,7 +398,7 @@ public class RelationLinkGroup {
     * @param targetLink
     * @return Returns the target link order value.
     */
-   private int computeTargetOrder(IRelationLink targetLink) {
+   private int computeTargetOrder(RelationLink targetLink) {
       int targetOrder;
 
       if (sideA) {
@@ -415,7 +414,7 @@ public class RelationLinkGroup {
     * @param boundaryValue
     * @return Returns the order of the neighborTarget link.
     */
-   private int computeNeighborTargetOrder(IRelationLink neighborTargetLink, int boundaryValue) {
+   private int computeNeighborTargetOrder(RelationLink neighborTargetLink, int boundaryValue) {
       int neighborTargetOrder;
 
       if (sideA) {
@@ -431,7 +430,7 @@ public class RelationLinkGroup {
     * @param isMax
     * @return Returns the boundary split value.
     */
-   private int computeBoundarySplitValue(IRelationLink targetLink, boolean isMax) {
+   private int computeBoundarySplitValue(RelationLink targetLink, boolean isMax) {
       int targetOrder = computeTargetOrder(targetLink);
 
       if ((long) Integer.MAX_VALUE - (long) targetOrder <= TAIL_ADD_GAP) {
@@ -451,7 +450,7 @@ public class RelationLinkGroup {
          @Override
          protected void handleTxWork() throws Exception {
             int nextOrderValue = 0;
-            for (IRelationLink link : getGroupSide()) {
+            for (RelationLink link : getGroupSide()) {
                boolean isDirty = link.isDirty();
                nextOrderValue += delta;
                if (sideA) {
@@ -462,7 +461,7 @@ public class RelationLinkGroup {
                link.setDirty(isDirty);
             }
             relationPersistenceManager.updateRelationOrdersWithoutTransaction(getGroupSide().toArray(
-                  IRelationLink.EMPTY_ARRAY));
+                  new RelationLink[getGroupSide().size()]));
          }
 
       };
@@ -478,9 +477,9 @@ public class RelationLinkGroup {
     * @param targetLink
     * @return Returns the link after the target link.
     */
-   private IRelationLink getLinkBefore(IRelationLink targetLink) {
-      IRelationLink[] links = getGroupSide().toArray(IRelationLink.EMPTY_ARRAY);
-      IRelationLink afterLink = null;
+   private RelationLink getLinkBefore(RelationLink targetLink) {
+      RelationLink[] links = getGroupSide().toArray(new RelationLink[getGroupSide().size()]);
+      RelationLink afterLink = null;
 
       for (int i = 0; i < links.length; i++) {
          if (links[i].equals(targetLink) && i - 1 > -1) {
@@ -495,9 +494,9 @@ public class RelationLinkGroup {
     * @param targetLink
     * @return Returns the link before the target link.
     */
-   private IRelationLink getLinkAfter(IRelationLink targetLink) {
-      IRelationLink[] links = getGroupSide().toArray(IRelationLink.EMPTY_ARRAY);
-      IRelationLink beforeLink = null;
+   private RelationLink getLinkAfter(RelationLink targetLink) {
+      RelationLink[] links = getGroupSide().toArray(new RelationLink[getGroupSide().size()]);
+      RelationLink beforeLink = null;
 
       for (int i = 0; i < links.length; i++) {
          if (links[i].equals(targetLink) && i + 1 < links.length) {

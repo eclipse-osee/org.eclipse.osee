@@ -143,7 +143,7 @@ public class SMAManager {
    }
 
    public boolean isHistoricalVersion() {
-      return !sma.getPersistenceMemo().getTransactionId().isHead();
+      return sma.isHistorical();
    }
 
    public boolean isAccessControlWrite() {

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
  */
 public abstract class RelationModifiedEvent extends Event {
 
-   private IRelationLink link;
+   private RelationLink link;
    private String relationType;
    private String relationSide;
    private ModType modType;
@@ -37,7 +37,7 @@ public abstract class RelationModifiedEvent extends Event {
     * @param branch TODO
     * @param sender TODO
     */
-   public RelationModifiedEvent(IRelationLink link, Branch branch, String relationType, String relationSide, ModType modType, Object sender) {
+   public RelationModifiedEvent(RelationLink link, Branch branch, String relationType, String relationSide, ModType modType, Object sender) {
       super(sender);
       this.link = link;
       this.relationType = relationType;
@@ -45,7 +45,7 @@ public abstract class RelationModifiedEvent extends Event {
       this.modType = modType;
    }
 
-   public RelationModifiedEvent(IRelationLink link, Branch branch, String relationType, String relationSide, String modType, Object sender) {
+   public RelationModifiedEvent(RelationLink link, Branch branch, String relationType, String relationSide, String modType, Object sender) {
       this(link, branch, relationType, relationSide, getModType(modType), sender);
    }
 
@@ -70,7 +70,7 @@ public abstract class RelationModifiedEvent extends Event {
    /**
     * @return Returns the link.
     */
-   public IRelationLink getLink() {
+   public RelationLink getLink() {
       return link;
    }
 

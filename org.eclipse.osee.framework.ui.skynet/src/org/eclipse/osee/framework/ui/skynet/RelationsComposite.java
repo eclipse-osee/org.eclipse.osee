@@ -34,8 +34,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.relation.DynamicRelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
@@ -103,7 +102,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    private RelationLabelProvider relationLabelProvider;
    private ToolBar toolBar;
 
-   private Map<Integer, IRelationLink> artifactToLinkMap;
+   private Map<Integer, RelationLink> artifactToLinkMap;
 
    public RelationsComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact) {
       this(editor, parent, style, artifact, false, null);
@@ -122,7 +121,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       this.artifact = artifact;
       this.editor = editor;
       this.relationLabelProvider = new RelationLabelProvider(artifact);
-      this.artifactToLinkMap = new HashMap<Integer, IRelationLink>();
+      this.artifactToLinkMap = new HashMap<Integer, RelationLink>();
 
       createPartControl();
       eventManager = SkynetEventManager.getInstance();
@@ -172,9 +171,9 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       treeViewer.setSorter(new LabelSorter() {
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            if (e1 instanceof IRelationLink && e2 instanceof IRelationLink) {
-               IRelationLink link1 = (IRelationLink) e1;
-               IRelationLink link2 = (IRelationLink) e2;
+            if (e1 instanceof RelationLink && e2 instanceof RelationLink) {
+               RelationLink link1 = (RelationLink) e1;
+               RelationLink link2 = (RelationLink) e2;
 
                float val;
                if (link1.getArtifactA() == artifact)
@@ -469,8 +468,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       Object object = selection.getFirstElement();
       Artifact selectedArtifact;
 
-      if (object instanceof IRelationLink) {
-         IRelationLink link = (IRelationLink) object;
+      if (object instanceof RelationLink) {
+         RelationLink link = (RelationLink) object;
          selectedArtifact = (link.getArtifactA() == artifact) ? link.getArtifactB() : link.getArtifactA();
 
          ArtifactEditor.editArtifact(selectedArtifact);
@@ -483,8 +482,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
          Object object = iter.next();
-         if (object instanceof IRelationLink) {
-            IRelationLink link = (IRelationLink) object;
+         if (object instanceof RelationLink) {
+            RelationLink link = (RelationLink) object;
             selectedArtifacts.add(link.getArtifactB());
          }
       }
@@ -614,8 +613,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    private void performDeleteArtifact(IStructuredSelection selection) {
       Object object = selection.getFirstElement();
       try {
-         if (object instanceof DynamicRelationLink) {
-            DynamicRelationLink relLink = (DynamicRelationLink) object;
+         if (object instanceof RelationLink) {
+            RelationLink relLink = (RelationLink) object;
             Artifact artToDelete = null;
             if (relLink.getArtifactA() == artifact)
                artToDelete = relLink.getArtifactB();
@@ -643,8 +642,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       Object object = selection.getFirstElement();
 
       try {
-         if (object instanceof IRelationLink) {
-            ((IRelationLink) object).delete();
+         if (object instanceof RelationLink) {
+            ((RelationLink) object).delete();
          }
 
          else if (object instanceof IRelationType) {
@@ -719,29 +718,18 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       @Override
       public Artifact[] getArtifacts() {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-         Iterator<?> i = selection.iterator();
+         Object[] objects = selection.toArray();
          Artifact[] artifacts = null;
 
-         if (i.hasNext()) {
-            Artifact selectedArtifact = null;
-            Object object = i.next();
+         if (objects.length > 0 && objects[0] instanceof RelationLink) {
+            artifacts = new Artifact[objects.length];
 
-            // get other artifact from link
-            if (object instanceof DynamicRelationLink) {
-               DynamicRelationLink link;
-               String sideName;
-
-               Object[] objects = selection.toArray();
-               artifacts = new Artifact[objects.length];
-
-               for (int index = 0; index < objects.length; index++) {
-                  link = (DynamicRelationLink) objects[index];
-                  sideName = link.getSideNameForOtherArtifact(artifact);
-                  selectedArtifact = link.getArtifact(sideName);
-                  artifacts[index] = selectedArtifact;
-
-                  artifactToLinkMap.put(selectedArtifact.getArtId(), link);
-               }
+            for (int index = 0; index < objects.length; index++) {
+               RelationLink link = (RelationLink) objects[index];
+               Artifact selectedArtifact =
+                     artifact.equals(link.getArtifactA()) ? link.getArtifactB() : link.getArtifactA();
+               artifacts[index] = selectedArtifact;
+               artifactToLinkMap.put(selectedArtifact.getArtId(), link);
             }
          }
          return artifacts;
@@ -758,12 +746,12 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          if (selected != null && selected.getData() instanceof RelationLinkGroup) {
             event.detail = DND.DROP_COPY;
             tree.setInsertMark(null, false);
-         } else if (selected != null && selected.getData() instanceof IRelationLink) {
-            IRelationLink targetLink = (IRelationLink) selected.getData();
+         } else if (selected != null && selected.getData() instanceof RelationLink) {
+            RelationLink targetLink = (RelationLink) selected.getData();
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Object obj = selection.getFirstElement();
-            if (obj instanceof IRelationLink) {
-               IRelationLink dropTarget = (IRelationLink) obj;
+            if (obj instanceof RelationLink) {
+               RelationLink dropTarget = (RelationLink) obj;
 
                // the links must be in the same group
                if ((targetLink.getRelationType().getTypeName() + targetLink.getSideNameForOtherArtifact(artifact)).equals(dropTarget.getRelationType().getTypeName() + dropTarget.getSideNameForOtherArtifact(artifact))) {
@@ -802,10 +790,10 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          Object object = selected.getData();
 
          try {
-            if (object instanceof IRelationLink) {
-               IRelationLink targetLink = (IRelationLink) object;
+            if (object instanceof RelationLink) {
+               RelationLink targetLink = (RelationLink) object;
                Artifact transferredArtifact = ((ArtifactData) event.data).getArtifacts()[0];
-               IRelationLink dropLink = artifactToLinkMap.remove(transferredArtifact.getArtId());
+               RelationLink dropLink = artifactToLinkMap.remove(transferredArtifact.getArtId());
                RelationLinkGroup group;
 
                group =

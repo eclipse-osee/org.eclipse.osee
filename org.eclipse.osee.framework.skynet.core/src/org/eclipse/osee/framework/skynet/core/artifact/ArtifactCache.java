@@ -12,59 +12,78 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Ryan D. Brooks
  */
 public class ArtifactCache {
    // The keys for this are <artId, transactionId>
-   private final DoubleKeyHashMap<Integer, TransactionId, Artifact> artifactIdCache =
-         new DoubleKeyHashMap<Integer, TransactionId, Artifact>();
-   private final DoubleKeyHashMap<String, TransactionId, Artifact> artifactGuidCache =
-         new DoubleKeyHashMap<String, TransactionId, Artifact>();
+   private final DoubleKeyHashMap<Integer, Integer, Artifact> artifactIdCache =
+         new DoubleKeyHashMap<Integer, Integer, Artifact>();
+   private final DoubleKeyHashMap<String, Integer, Artifact> artifactGuidCache =
+         new DoubleKeyHashMap<String, Integer, Artifact>();
 
-   private final CompositeKeyHashMap<Integer, Branch, Artifact> artifactBranchCache =
+   private final CompositeKeyHashMap<Integer, Branch, Artifact> artifactIdBranchCache =
          new CompositeKeyHashMap<Integer, Branch, Artifact>(2000);
+
+   private final CompositeKeyHashMap<String, Branch, Artifact> guidBranchCache =
+         new CompositeKeyHashMap<String, Branch, Artifact>(2000);
 
    private static final ArtifactCache instance = new ArtifactCache();
 
    private ArtifactCache() {
    }
 
-   public static ArtifactCache getInstance() {
-      return instance;
-   }
-
    /**
-    * Make the factory aware of an artifact. This is necessary when a new Artifact is persisted.
+    * Cache the artifact so that we can avoid creating duplicate instances of an artifact
     * 
     * @param artifact
     */
-   public void cache(Artifact artifact) {
-      if (artifact.getPersistenceMemo().getTransactionId() == null) {
-         artifactBranchCache.put(artifact.getArtId(), artifact.getBranch(), artifact);
+   static void cache(Artifact artifact) {
+      if (artifact.isLive()) {
+         instance.artifactIdBranchCache.put(artifact.getArtId(), artifact.getBranch(), artifact);
+         instance.guidBranchCache.put(artifact.getGuid(), artifact.getBranch(), artifact);
       } else {
-         artifactIdCache.put(artifact.getArtId(), artifact.getPersistenceMemo().getTransactionId(), artifact);
-         artifactGuidCache.put(artifact.getGuid(), artifact.getPersistenceMemo().getTransactionId(), artifact);
+         instance.artifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
+         instance.artifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
       }
    }
 
-   public void deCache(Artifact artifact) {
-      artifactIdCache.remove(artifact.getArtId(), artifact.getPersistenceMemo().getTransactionId());
-      artifactGuidCache.remove(artifact.getGuid(), artifact.getPersistenceMemo().getTransactionId());
-      artifactBranchCache.remove(artifact.getArtId(), artifact.getBranch());
+   static void deCache(Artifact artifact) {
+      instance.artifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
+      instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
+      instance.artifactIdBranchCache.remove(artifact.getArtId(), artifact.getBranch());
+      instance.guidBranchCache.remove(artifact.getGuid(), artifact.getBranch());
    }
 
-   public Artifact getArtifactFromCache(int artId, TransactionId transactionId) {
-      return artifactIdCache.get(artId, transactionId);
+   public static Artifact get(Integer artId, Integer transactionNumber) {
+      return instance.artifactIdCache.get(artId, transactionNumber);
    }
 
-   public Artifact getArtifactFromCache(String guid, TransactionId transactionId) {
-      return artifactGuidCache.get(guid, transactionId);
+   public static Artifact get(String guid, Integer transactionNumber) {
+      return instance.artifactGuidCache.get(guid, transactionNumber);
    }
 
-   public static Artifact getArtifact(int artId, Branch branch) {
-      return instance.artifactBranchCache.get(artId, branch);
+   /**
+    * returns the active artifact with the given artifact id from the given branch if it is in the cache and null
+    * otherwise
+    * 
+    * @param artId
+    * @param branch
+    * @return
+    */
+   public static Artifact get(Integer artId, Branch branch) {
+      return instance.artifactIdBranchCache.get(artId, branch);
+   }
+
+   /**
+    * returns the active artifact with the given guid from the given branch if it is in the cache and null
+    * 
+    * @param guid
+    * @param branch
+    * @return
+    */
+   public static Artifact get(String guid, Branch branch) {
+      return instance.guidBranchCache.get(guid, branch);
    }
 }
