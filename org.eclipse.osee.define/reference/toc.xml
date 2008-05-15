@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
 <toc label="OSEE Define Requirements Management">
-	<link toc="../osee.skynet.gui/reference/skynet_toc.xml"/>
+	<link toc="PLUGINS_ROOT/org.eclipse.osee.framework.ui.skynet/reference/skynet_toc.xml"/>
 </toc>
