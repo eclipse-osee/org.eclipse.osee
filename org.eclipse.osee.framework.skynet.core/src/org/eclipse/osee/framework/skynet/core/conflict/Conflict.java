@@ -246,16 +246,9 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public boolean okToOverwriteMerge() throws SQLException {
-      //      if (status.equals(Status.UNTOUCHED)) return true;
-      if (status.equals(Status.RESOLVED))
-      //         MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
-      return false;
-      //      if (mergeEqualsDestination() || mergeEqualsSource() || getStatus().equals(Status.UNTOUCHED) || (shell == null))
-      //         proceed = true;
-      //      else {
-      //         proceed = MessageDialog.openConfirm(shell, "Confirm", CLEAR_PROMPT);
-      //      }
-      //      return proceed;
+      if (status.equals(Status.RESOLVED)) {
+         return false;
+      }
       return true;
    }
 
@@ -264,8 +257,6 @@ public abstract class Conflict implements IAdaptable {
    public Status computeStatus(int objectID, Status DefaultStatus) throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
       Status passedStatus = DefaultStatus;
       if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = Status.RESOLVED;
-      //      if (!mergeEqualsSource()) passedStatus = Status.EDITED;
-      if (isCleared()) passedStatus = Status.UNTOUCHED;
       status =
             ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
                   getConflictType().Value(), passedStatus);
@@ -322,8 +313,6 @@ public abstract class Conflict implements IAdaptable {
 
    public abstract String getDestDisplayData() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException;
 
-   protected abstract Object getMergeValue() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
-
    public abstract boolean mergeEqualsSource() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
 
    public abstract boolean mergeEqualsDestination() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
@@ -341,8 +330,6 @@ public abstract class Conflict implements IAdaptable {
    public abstract String getChangeItem() throws SQLException, Exception;
 
    public abstract ConflictType getConflictType();
-
-   protected abstract boolean isCleared() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
 
    public abstract int getMergeGammaId() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception;
 }

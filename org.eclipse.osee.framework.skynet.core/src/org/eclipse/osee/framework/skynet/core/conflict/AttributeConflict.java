@@ -22,10 +22,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeObjectConverter;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeIcons;
@@ -86,17 +85,15 @@ public class AttributeConflict extends Conflict {
       this.status = Status.EDITED;
       this.sourceValue = sourceValue;
       this.destValue = destValue;
-      if (sourceValue == null)
-         isWordAttribute = true;
-      else
-         isWordAttribute = false;
+      isWordAttribute = sourceValue == null;
    }
 
    public Attribute<?> getAttribute() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       if (attribute != null) return attribute;
-      Collection<Attribute<Object>> localAttributes = getArtifact().getAttributes(getDynamicAttributeDescriptor());
+      Collection<Attribute<Object>> localAttributes =
+            getArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
-         if (localAttribute.getPersistenceMemo().getAttrId() == attrId) {
+         if (localAttribute.getAttrId() == attrId) {
             attribute = localAttribute;
          }
       }
@@ -110,9 +107,9 @@ public class AttributeConflict extends Conflict {
    public Attribute<?> getSourceAttribute() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       if (sourceAttribute != null) return sourceAttribute;
       Collection<Attribute<Object>> localAttributes =
-            getSourceArtifact().getAttributes(getDynamicAttributeDescriptor());
+            getSourceArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
-         if (localAttribute.getPersistenceMemo().getAttrId() == attrId) {
+         if (localAttribute.getAttrId() == attrId) {
             sourceAttribute = localAttribute;
          }
       }
@@ -125,9 +122,10 @@ public class AttributeConflict extends Conflict {
 
    public Attribute<?> getDestAttribute() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       if (destAttribute != null) return destAttribute;
-      Collection<Attribute<Object>> localAttributes = getDestArtifact().getAttributes(getDynamicAttributeDescriptor());
+      Collection<Attribute<Object>> localAttributes =
+            getDestArtifact().getAttributes(getDynamicAttributeDescriptor().getName());
       for (Attribute<Object> localAttribute : localAttributes) {
-         if (localAttribute.getPersistenceMemo().getAttrId() == attrId) {
+         if (localAttribute.getAttrId() == attrId) {
             destAttribute = localAttribute;
          }
       }
@@ -151,19 +149,25 @@ public class AttributeConflict extends Conflict {
 
    public Object getSourceObject() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       if (sourceObject != null) return sourceObject;
-      if (isWordAttribute)
+      if (isWordAttribute) {
          sourceObject = getSourceAttribute().getValue();
-      else
-         sourceObject = AttributeObjectConverter.stringToObject(getAttribute(), sourceValue);
+      } else {
+         sourceObject =
+               AttributeObjectConverter.stringToObject(getDynamicAttributeDescriptor().getBaseAttributeClass(),
+                     sourceValue);
+      }
       return sourceObject;
    }
 
    public Object getDestObject() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       if (destObject != null) return destObject;
-      if (isWordAttribute)
+      if (isWordAttribute) {
          destObject = getDestAttribute().getValue();
-      else
-         destObject = AttributeObjectConverter.stringToObject(getAttribute(), destValue);
+      } else {
+         destObject =
+               AttributeObjectConverter.stringToObject(getDynamicAttributeDescriptor().getBaseAttributeClass(),
+                     destValue);
+      }
       return destObject;
    }
 
@@ -227,12 +231,12 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public boolean mergeEqualsSource() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
-      return (getMergeValue().equals(getSourceObject()));
+      return (getMergeObject().equals(getSourceObject()));
    }
 
    @Override
    public boolean mergeEqualsDestination() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
-      return (getMergeValue().equals(getDestObject()));
+      return (getMergeObject().equals(getDestObject()));
    }
 
    @Override
@@ -248,8 +252,7 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
-   @Override
-   public Object getMergeValue() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
+   public Object getMergeObject() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       return getAttribute().getValue();
    }
 
@@ -260,7 +263,7 @@ public class AttributeConflict extends Conflict {
 
    @SuppressWarnings("unchecked")
    public Class<? extends Attribute> getBaseAttributeClass() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
-      return getAttribute().getAttributeType().getBaseAttributeClass();
+      return getDynamicAttributeDescriptor().getBaseAttributeClass();
    }
 
    @Override
@@ -286,21 +289,13 @@ public class AttributeConflict extends Conflict {
       if (!okToOverwriteMerge()) return false;
       setStatus(Status.UNTOUCHED);
       if (isWordAttribute) {
-         ((WordAttribute) getAttribute()).clearAttribute();
+         ((WordAttribute) getAttribute()).initializeDefaultValue();
 
       } else {
-         getArtifact().setSoleXAttributeValue(getDynamicAttributeDescriptor().getName(),
-               AttributeObjectConverter.stringToObject(getAttribute(), NO_VALUE));
+         getArtifact().setSoleXAttributeValue(getDynamicAttributeDescriptor().getName(), NO_VALUE);
          getArtifact().persistAttributes();
       }
       return true;
-   }
-
-   @Override
-   public boolean isCleared() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
-      Attribute<?> attribute = getAttribute();
-      if (attribute instanceof BooleanAttribute) return false;
-      return (attribute.getValue().equals(AttributeObjectConverter.stringToObject(getAttribute(), NO_VALUE)));
    }
 
    protected void markStatusToReflectEdit() throws SQLException {
@@ -318,7 +313,7 @@ public class AttributeConflict extends Conflict {
          return NO_VALUE;
       }
       if (!isWordAttribute) {
-         return getMergeValue().toString();
+         return getMergeObject().toString();
       }
       return AttributeConflict.STREAM_DATA;
    }
@@ -376,7 +371,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public int getMergeGammaId() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
-      return getAttribute().getPersistenceMemo().getGammaId();
+      return getAttribute().getGammaId();
    }
 
 }
