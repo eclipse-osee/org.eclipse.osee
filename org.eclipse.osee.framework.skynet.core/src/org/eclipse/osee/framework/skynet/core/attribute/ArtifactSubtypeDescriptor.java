@@ -56,6 +56,10 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
    private static final ImageDescriptor incDeleted = SkynetActivator.getInstance().getImageDescriptor("inc_delete.gif");
    private static final ImageDescriptor conChange = SkynetActivator.getInstance().getImageDescriptor("con_change.gif");
    private static final ImageDescriptor conDeleted = SkynetActivator.getInstance().getImageDescriptor("con_delete.gif");
+   private static final ImageDescriptor conChangeSmall =
+         SkynetActivator.getInstance().getImageDescriptor("con_change_2.gif");
+   private static final ImageDescriptor conDeletedSmall =
+         SkynetActivator.getInstance().getImageDescriptor("con_delete_2.gif");
    private static final ImageDescriptor lockedAccess =
          SkynetActivator.getInstance().getImageDescriptor("green_lock.gif");
    private static final ImageDescriptor lockedNoAccess =
@@ -170,13 +174,20 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
    }
 
    public Image getImage(ChangeType changeType, ModificationType modType) {
+      return getImage(changeType, modType, false);
+   }
+
+   public Image getImage(ChangeType changeType, ModificationType modType, boolean small) {
       if (changeType == null) throw new IllegalArgumentException("changeType can not be null.");
       if (modType == null) throw new IllegalArgumentException("modType can not be null.");
       if (changeType == CONFLICTING && modType == NEW) throw new IllegalArgumentException(
             "conflicting new artifacts are not supported");
 
       checkImageRegistry();
-      return imageRegistry.get(BASE + changeType + modType);
+      if (small)
+         return imageRegistry.get(BASE + changeType + modType + "Small");
+      else
+         return imageRegistry.get(BASE + changeType + modType);
    }
 
    public Image getImage(ConflictionType conType) {
@@ -246,6 +257,10 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
          imageRegistry.put(BASE + OUTGOING + NEW, new OverlayImage(imageRegistry.get(BASE), outNew));
          imageRegistry.put(BASE + CONFLICTING + DELETED, new OverlayImage(imageRegistry.get(BASE), conDeleted));
          imageRegistry.put(BASE + CONFLICTING + CHANGE, new OverlayImage(imageRegistry.get(BASE), conChange));
+         imageRegistry.put(BASE + CONFLICTING + DELETED + "Small", new OverlayImage(imageRegistry.get(BASE),
+               conDeletedSmall));
+         imageRegistry.put(BASE + CONFLICTING + CHANGE + "Small", new OverlayImage(imageRegistry.get(BASE),
+               conChangeSmall));
          imageRegistry.put(BASE + WARNING, new OverlayImage(imageRegistry.get(BASE),
                ArtifactAnnotation.Type.Warning.getImageOverlayDescriptor(), 0, 8));
          imageRegistry.put(BASE + ERROR, new OverlayImage(imageRegistry.get(BASE),

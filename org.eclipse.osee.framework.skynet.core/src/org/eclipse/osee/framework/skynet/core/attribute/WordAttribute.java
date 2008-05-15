@@ -57,4 +57,11 @@ public abstract class WordAttribute extends StringAttribute implements IStreamSe
    public void setValueFromInputStream(InputStream value) throws IOException {
       setValue(Lib.inputStreamToString(value));
    }
+
+   public void clearAttribute() throws IOException {
+      setDefaultValue("");
+   }
+
+   protected abstract void setDefaultValue(String value) throws IOException;
+
 }

@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.io.IOException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -30,5 +31,12 @@ public class WordTemplateAttribute extends WordAttribute {
       }
       strB.append("</w:t>\n\t\t</w:r>\n\t</w:p>");
       setValue(strB.toString());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.WordAttribute#setDefaultValue(java.lang.String)
+    */
+   @Override
+   protected void setDefaultValue(String value) throws IOException {
    }
 }
