@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 /**
  * @author Roberto E. Escobar
  */
-public class ResourceProcessor {
+public class HttpProcessor {
 
-   private ResourceProcessor() {
+   private HttpProcessor() {
    }
 
    public static URI save(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
@@ -48,6 +48,30 @@ public class ResourceProcessor {
          throw new Exception(String.format("Error saving resource [%s]", ex.getLocalizedMessage()), ex);
       }
       return toReturn;
+   }
+
+   public static String post(URL url) throws Exception {
+      String response = null;
+      int code = -1;
+      InputStream inputStream = null;
+      try {
+         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+         connection.setRequestMethod("POST");
+         connection.connect();
+         // Wait for response
+         code = connection.getResponseCode();
+         if (code == HttpURLConnection.HTTP_ACCEPTED) {
+            inputStream = (InputStream) connection.getContent();
+            response = Lib.inputStreamToString(inputStream);
+         }
+      } catch (Exception ex) {
+         throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, code), ex);
+      } finally {
+         if (inputStream != null) {
+            inputStream.close();
+         }
+      }
+      return response;
    }
 
    public static AcquireResult acquire(URL url) throws Exception {

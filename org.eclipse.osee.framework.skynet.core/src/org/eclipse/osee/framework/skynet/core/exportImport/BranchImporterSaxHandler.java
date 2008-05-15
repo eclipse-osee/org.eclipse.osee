@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
-import org.eclipse.osee.framework.skynet.core.linking.ResourceProcessor;
+import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -312,7 +312,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             parameterMap.put("extension", Lib.getExtension(uriValue));
             String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("resource", parameterMap);
             URI result =
-                  ResourceProcessor.save(new URL(urlString), inputStream,
+                  HttpProcessor.save(new URL(urlString), inputStream,
                         HttpURLConnection.guessContentTypeFromName(uriValue), "ISO-8859-1");
             uriToStore = result.toASCIIString();
          } finally {
