@@ -1037,10 +1037,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          }
       }
 
-      if (exploreRoot != null)
-         setContentDescription(exploreRoot.getDescriptiveName());
-      else
-         setContentDescription("");
+      setContentDescription(exploreRoot != null ? exploreRoot.getDescriptiveName() : "");
 
       if (exploreRoot != null && exploreRoot.isInDb()) {
          Branch branch = exploreRoot.getBranch();
