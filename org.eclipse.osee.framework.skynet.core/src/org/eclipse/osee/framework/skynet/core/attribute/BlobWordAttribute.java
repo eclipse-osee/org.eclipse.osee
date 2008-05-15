@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.IOException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -22,7 +21,4 @@ public class BlobWordAttribute extends WordAttribute {
       super(attributeType, artifact);
    }
 
-   protected void setDefaultValue(String value) throws IOException {
-
-   }
 }
