@@ -52,9 +52,8 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -409,17 +408,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return getSql(searchCriteria, all, ARTIFACT_SELECT, dataList, transactionId.getBranch());
    }
 
-   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, TransactionId transactionId) throws SQLException {
-      LinkedList<Object> dataList = new LinkedList<Object>();
-      dataList.add(SQL3DataType.INTEGER);
-      dataList.add(transactionId.getBranch().getBranchId());
-      dataList.add(SQL3DataType.INTEGER);
-      dataList.add(transactionId.getTransactionNumber());
-
-      return getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, dataList, transactionId.getBranch()), dataList,
-            transactionId, null);
-   }
-
    private static String getSql(List<ISearchPrimitive> searchCriteria, boolean all, String header, List<Object> dataList, Branch branch) throws SQLException {
       StringBuilder sql = new StringBuilder(header);
 
@@ -476,27 +464,43 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return count;
    }
 
+   @Deprecated
+   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, TransactionId transactionId) throws SQLException {
+      LinkedList<Object> dataList = new LinkedList<Object>();
+      dataList.add(SQL3DataType.INTEGER);
+      dataList.add(transactionId.getBranch().getBranchId());
+      dataList.add(SQL3DataType.INTEGER);
+      dataList.add(transactionId.getTransactionNumber());
+
+      return getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, dataList, transactionId.getBranch()), dataList,
+            transactionId, null);
+   }
+
+   @Deprecated
    public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
       return getArtifacts(searchCriteria, transactionIdManager.getEditableTransactionId(branch));
    }
 
+   @Deprecated
    public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch) throws SQLException {
       return getArtifacts(searchCriteria, all, branch, null);
    }
 
+   @Deprecated
    public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws SQLException {
       LinkedList<Object> dataList = new LinkedList<Object>();
       TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
       return getArtifacts(getSql(searchCriteria, all, dataList, transactionId), dataList, transactionId, confirmer);
    }
 
+   @Deprecated
    public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, TransactionId transactionId) throws SQLException {
       LinkedList<Object> dataList = new LinkedList<Object>();
       return getArtifacts(getSql(searchCriteria, all, dataList, transactionId), dataList, transactionId, null);
    }
 
    @Deprecated
-   public Collection<Artifact> getArtifacts(String sql, List<Object> dataList, TransactionId transactionId, ISearchConfirmer confirmer) throws SQLException {
+   private Collection<Artifact> getArtifacts(String sql, List<Object> dataList, TransactionId transactionId, ISearchConfirmer confirmer) throws SQLException {
       Collection<Artifact> artifacts = new ArrayList<Artifact>(50);
       Collection<Artifact> artifactsToInit = new LinkedList<Artifact>();
 
@@ -875,7 +879,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    public Collection<Artifact> getArtifactsFromAttribute(String attributeName, String attributeValue, Branch branch) throws SQLException {
-      return getArtifacts(new AttributeValueSearch(attributeName, attributeValue, Operator.EQUAL), branch);
+      return ArtifactQuery.getArtifactsFromCriteria(branch, new AttributeValueCriteria(attributeName, attributeValue));
    }
 
    private Artifact createRoot(Branch branch) throws SQLException {

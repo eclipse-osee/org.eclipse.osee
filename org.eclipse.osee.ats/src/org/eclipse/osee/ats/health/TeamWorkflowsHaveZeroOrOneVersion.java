@@ -12,9 +12,8 @@
 package org.eclipse.osee.ats.health;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -24,12 +23,9 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -116,18 +112,11 @@ public class TeamWorkflowsHaveZeroOrOneVersion extends XNavigateItemAutoRunActio
       @Override
       protected void handleTxWork() throws Exception {
          if (monitor != null) monitor.subTask("Searching Team Workflows...");
-
-         // Get Team artifacts
-         List<ISearchPrimitive> artifactTypeCriteria = new LinkedList<ISearchPrimitive>();
-         java.util.Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
-         for (String artType : artTypeNames)
-            artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
-
-         Collection<Artifact> arts =
-               ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false, getTxBranch());
-
+         Collection<Artifact> arts = new ArrayList<Artifact>();
+         for (String artifactTypeName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
+            arts.addAll(ArtifactQuery.getArtifactsFromType(artifactTypeName, getTxBranch()));
+         }
          int x = 0;
-
          for (Artifact art : arts) {
             if (monitor != null) monitor.subTask(String.format("Processing %d/%d...", x++, arts.size()));
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;

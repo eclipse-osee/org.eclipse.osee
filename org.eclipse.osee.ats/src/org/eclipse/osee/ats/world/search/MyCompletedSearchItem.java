@@ -11,16 +11,12 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
 
 /**
  * @author Donald G. Dunne
@@ -41,19 +37,10 @@ public class MyCompletedSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(User user) throws Exception {
-
+      if (isCancelled()) return EMPTY_SET;
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
-      List<ISearchPrimitive> smaOrigCriteria = new LinkedList<ISearchPrimitive>();
-      smaOrigCriteria.add(new AttributeValueSearch(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
-            "state=\"Completed\" type=\"StateEntered\" userId=\"" + getSearchUser().getUserId() + "\"",
-            Operator.CONTAINS));
-
-      if (isCancelled()) return EMPTY_SET;
-      Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(smaOrigCriteria, true, AtsPlugin.getAtsBranch());
-
-      if (isCancelled()) return EMPTY_SET;
-      return arts;
+      String valueToMatch = "state=\"Completed\" type=\"StateEntered\" userId=\"" + getSearchUser().getUserId() + "\"";
+      return ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), new AttributeValueCriteria(
+            ATSAttributes.LOG_ATTRIBUTE.getStoreName(), valueToMatch));
    }
-
 }

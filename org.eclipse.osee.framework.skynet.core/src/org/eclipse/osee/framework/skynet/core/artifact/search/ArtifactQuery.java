@@ -204,6 +204,18 @@ public class ArtifactQuery {
    }
 
    /**
+    * search for artifacts on a particular branch that satisfy the given criteria
+    * 
+    * @param branch
+    * @param criteria
+    * @return
+    * @throws SQLException
+    */
+   public static List<Artifact> getArtifactsFromCriteria(Branch branch, AbstractArtifactSearchCriteria... criteria) throws SQLException {
+      return new ArtifactQueryBuilder(branch, FULL, criteria).getArtifacts(null);
+   }
+
+   /**
     * search for artifacts of the given type with an attribute of the given type and value
     * 
     * @param artifactTypeName

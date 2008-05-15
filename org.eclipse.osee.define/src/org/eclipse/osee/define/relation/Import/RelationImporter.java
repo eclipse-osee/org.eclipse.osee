@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.define.relation.Import;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
@@ -26,9 +23,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.xml.sax.InputSource;
@@ -72,10 +67,9 @@ public class RelationImporter implements RowProcessor {
       if (done) return;
       try {
          monitor.worked(1);
-         List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(Requirements.SUBSYSTEM_REQUIREMENT, EQUAL));
-         criteria.add(new AttributeValueSearch("Imported Paragraph Number", row[1], EQUAL));
-         Collection<Artifact> artifacts = artifactManager.getArtifacts(criteria, true, branch);
+         Collection<Artifact> artifacts =
+               ArtifactQuery.getArtifactsFromTypeAndAttribute(Requirements.SUBSYSTEM_REQUIREMENT,
+                     "Imported Paragraph Number", row[1], branch);
 
          Artifact rowArtifact;
          try {
@@ -126,19 +120,16 @@ public class RelationImporter implements RowProcessor {
     */
    public void processHeaderRow(String[] row) {
       monitor.setTaskName("Aquire Column Artifacts");
-      List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
       columnArtifacts = new Artifact[row.length - leadingColumnCount];
       for (int i = 0; i < columnArtifacts.length; i++) {
          monitor.worked(1);
          try {
-            criteria.add(new ArtifactTypeSearch(Requirements.COMPONENT, EQUAL));
-            criteria.add(new AttributeValueSearch("Name", row[i + leadingColumnCount], EQUAL));
-            Collection<Artifact> artifacts = artifactManager.getArtifacts(criteria, true, branch);
-            criteria.clear();
+            Collection<Artifact> artifacts =
+                  ArtifactQuery.getArtifactsFromTypeAndName(Requirements.COMPONENT, row[i + leadingColumnCount], branch);
 
             columnArtifacts[i] = getSoleArtifact(artifacts);
             monitor.subTask(columnArtifacts[i].getDescriptiveName());
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             System.out.println(ex);
          }
       }

@@ -11,15 +11,11 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
 /**
@@ -63,14 +59,9 @@ public class StateWorldSearchItem extends WorldSearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
-      List<ISearchPrimitive> baseCriteria;
-      baseCriteria = new LinkedList<ISearchPrimitive>();
-      baseCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            getSearchStateClass(), Operator.CONTAINS));
-
       Collection<Artifact> arts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(baseCriteria, true,
-                  BranchPersistenceManager.getAtsBranch());
+            ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), new AttributeValueCriteria(
+                  ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), getSearchStateClass()));
       if (isCancelled()) return EMPTY_SET;
       return arts;
 

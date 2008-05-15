@@ -12,11 +12,9 @@ package org.eclipse.osee.ats.artifact;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,12 +36,9 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -811,28 +806,27 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public static Set<String> getAllSMATypeNames() {
-      java.util.Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
-      artTypeNames.addAll(Arrays.asList(new String[] {TaskArtifact.ARTIFACT_NAME, DecisionReviewArtifact.ARTIFACT_NAME,
-            PeerToPeerReviewArtifact.ARTIFACT_NAME}));
+      Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
+      artTypeNames.add(TaskArtifact.ARTIFACT_NAME);
+      artTypeNames.add(DecisionReviewArtifact.ARTIFACT_NAME);
+      artTypeNames.add(PeerToPeerReviewArtifact.ARTIFACT_NAME);
       return artTypeNames;
    }
 
-   public static Collection<Artifact> getAllSMATypeArtifacts() throws SQLException {
-      List<ISearchPrimitive> artifactTypeCriteria = new LinkedList<ISearchPrimitive>();
-      for (String artType : getAllSMATypeNames())
-         artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
-
-      return ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
-            BranchPersistenceManager.getAtsBranch());
+   public static List<Artifact> getAllSMATypeArtifacts() throws SQLException {
+      List<Artifact> result = new ArrayList<Artifact>();
+      for (String artType : getAllSMATypeNames()) {
+         result.addAll(ArtifactQuery.getArtifactsFromType(artType, BranchPersistenceManager.getAtsBranch()));
+      }
+      return result;
    }
 
-   public static Collection<Artifact> getAllTeamWorkflowArtifacts() throws SQLException {
-      List<ISearchPrimitive> artifactTypeCriteria = new LinkedList<ISearchPrimitive>();
-      for (String artType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
-
-      return ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
-            BranchPersistenceManager.getAtsBranch());
+   public static List<Artifact> getAllTeamWorkflowArtifacts() throws SQLException {
+      List<Artifact> result = new ArrayList<Artifact>();
+      for (String artType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
+         result.addAll(ArtifactQuery.getArtifactsFromType(artType, BranchPersistenceManager.getAtsBranch()));
+      }
+      return result;
    }
 
    /* (non-Javadoc)

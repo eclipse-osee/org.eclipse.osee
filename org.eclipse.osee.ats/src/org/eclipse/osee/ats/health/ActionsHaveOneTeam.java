@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.health;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -24,11 +24,8 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -91,19 +88,13 @@ public class ActionsHaveOneTeam extends XNavigateItemAutoRunAction implements IA
    }
 
    private void runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
-      List<ISearchPrimitive> artifactTypeCriteria = new LinkedList<ISearchPrimitive>();
-
       // Get Team and Action artifacts
-      java.util.Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
+      Set<String> artTypeNames = TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames();
       artTypeNames.add(ActionArtifact.ARTIFACT_NAME);
-
-      for (String artType : artTypeNames)
-         artifactTypeCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
-
-      Collection<Artifact> artifacts =
-            ArtifactPersistenceManager.getInstance().getArtifacts(artifactTypeCriteria, false,
-                  BranchPersistenceManager.getAtsBranch());
-
+      List<Artifact> artifacts = new ArrayList<Artifact>();
+      for (String artType : artTypeNames) {
+         artifacts.addAll(ArtifactQuery.getArtifactsFromType(artType, BranchPersistenceManager.getAtsBranch()));
+      }
       int x = 0;
       for (Artifact art : artifacts) {
          if (monitor != null) monitor.subTask(String.format("Processing %d/%d...", x++, artifacts.size()));

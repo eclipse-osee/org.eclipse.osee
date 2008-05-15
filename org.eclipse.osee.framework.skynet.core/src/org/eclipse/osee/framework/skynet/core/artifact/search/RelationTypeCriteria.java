@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 /**
  * @author Ryan D. Brooks
  */
-public class RelationCriteria extends AbstractArtifactSearchCriteria {
+public class RelationTypeCriteria extends AbstractArtifactSearchCriteria {
    private IRelationEnumeration relationSide;
    private String txsAlias;
    private String txdAlias;
@@ -29,7 +29,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
     * @param relationSide the side to start following the link from
     * @param value
     */
-   public RelationCriteria(IRelationEnumeration relationSide) {
+   public RelationTypeCriteria(IRelationEnumeration relationSide) {
       super();
       this.relationSide = relationSide;
    }

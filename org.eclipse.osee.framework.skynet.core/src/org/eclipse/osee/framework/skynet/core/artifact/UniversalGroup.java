@@ -10,19 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -48,11 +43,7 @@ public class UniversalGroup {
 
    public static Collection<Artifact> getGroups(String groupName, Branch branch) {
       try {
-         List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(ARTIFACT_TYPE_NAME, EQUAL));
-         criteria.add(new AttributeValueSearch("Name", groupName, EQUAL));
-
-         return ArtifactPersistenceManager.getInstance().getArtifacts(criteria, true, branch);
+         return ArtifactQuery.getArtifactsFromTypeAndName(ARTIFACT_TYPE_NAME, groupName, branch);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.getMessage(), ex);
       }

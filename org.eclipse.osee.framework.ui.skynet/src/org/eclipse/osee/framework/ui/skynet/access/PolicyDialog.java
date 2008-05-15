@@ -27,8 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -92,8 +91,7 @@ public class PolicyDialog extends Dialog {
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
       subjectList.addAll(skynetAuthentication.getUsers());
       try {
-         subjectList.addAll(artifactManager.getArtifacts(new ArtifactTypeSearch("User Group", Operator.EQUAL),
-               BranchPersistenceManager.getCommonBranch()));
+         subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getCommonBranch()));
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }

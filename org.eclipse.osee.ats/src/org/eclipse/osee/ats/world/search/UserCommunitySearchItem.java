@@ -68,8 +68,9 @@ public class UserCommunitySearchItem extends WorldSearchItem {
 
       // Find all Team Workflows artifact types
       List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
-      for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
+      for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
          teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, Operator.EQUAL));
+      }
       FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
 
       List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();

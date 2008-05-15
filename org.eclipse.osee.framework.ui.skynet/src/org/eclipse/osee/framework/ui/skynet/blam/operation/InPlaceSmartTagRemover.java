@@ -52,7 +52,7 @@ public class InPlaceSmartTagRemover extends AbstractBlam {
             if (!currentValue.equals(cleanValue)) {
                InputStream in = new ByteArrayInputStream(cleanValue.getBytes());
                ConnectionHandler.runPreparedUpdate(UPDATE_ATTRIBUTE, SQL3DataType.BLOB, in, SQL3DataType.INTEGER,
-                     attribute.getPersistenceMemo().getGammaId());
+                     attribute.getGammaId());
             }
          }
          monitor.worked(1);
