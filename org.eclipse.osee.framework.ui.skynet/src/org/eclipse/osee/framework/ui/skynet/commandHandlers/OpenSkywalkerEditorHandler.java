@@ -42,4 +42,9 @@ public class OpenSkywalkerEditorHandler extends AbstractHandler {
       }
       return null;
    }
+
+   @Override
+   public boolean isEnabled() {
+      return true;
+   }
 }

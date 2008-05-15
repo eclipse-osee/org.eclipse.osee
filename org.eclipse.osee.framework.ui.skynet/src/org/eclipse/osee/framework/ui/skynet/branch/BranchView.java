@@ -75,6 +75,7 @@ import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.util.ConflictDetectionException;
 import org.eclipse.osee.framework.ui.plugin.event.AuthenticationEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -84,6 +85,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.plugin.util.Files;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -115,12 +117,14 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -319,7 +323,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
          public void menuAboutToShow(IMenuManager manager) {
-            BranchView.this.fillPopupMenu(manager);
+            fillPopupMenu(manager);
          }
       });
 
@@ -454,8 +458,10 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch selectedBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+            Shell shell = Display.getCurrent().getActiveShell().getShell();
             try {
                if (selectedBranch != null) {
+                  shell.setCursor(new Cursor(shell.getDisplay(), SWT.CURSOR_WAIT));
                   Conflict[] transactionArtifactChanges = new Conflict[0];
                   MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(selectedBranch,
                         selectedBranch.getParentBranch(),
@@ -464,6 +470,8 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                }
             } catch (Exception ex) {
                logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            } finally {
+               shell.setCursor(new Cursor(shell.getDisplay(), SWT.CURSOR_ARROW));
             }
 
             return null;
@@ -498,6 +506,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
+
             return null;
          }
 
@@ -1114,13 +1123,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          @Override
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-
-            Branch oldDefaultBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
-            Branch newDefaultBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-            BranchPersistenceManager.getInstance().setDefaultBranch(newDefaultBranch);
-
-            branchTable.update(new Object[] {oldDefaultBranch, newDefaultBranch}, null);
-
+            setDefaultBranch((Branch) ((JobbedNode) selection.getFirstElement()).getBackingData());
             return null;
          }
 
@@ -1272,29 +1275,47 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
          Branch fromBranch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
+         Branch toBranch = null;
 
          try {
-            Branch toBranch = null;
             if (useParentBranch) {
                toBranch = fromBranch.getParentBranch();
             } else {
                toBranch =
                      BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
             }
-            if (!useParentBranch && BranchPersistenceManager.getInstance().hasConflicts(fromBranch, toBranch)) {
-               if (MessageDialog.openConfirm(
-                     Display.getCurrent().getActiveShell(),
-                     "Commit Conflict",
-                     "This branch could not be directly commited into the destination branch because conflicts were detected." + " Therefore, a working branch will need to be created on the destination branch to allow for conflict resoultion." + "Would you like to contiune and create the working branch?")) {
+            //            if (!useParentBranch && BranchPersistenceManager.getInstance().hasConflicts(fromBranch, toBranch)) {
+            //               if (MessageDialog.openConfirm(
+            //                     Display.getCurrent().getActiveShell(),
+            //                     "Commit Conflict",
+            //                     "This branch could not be directly commited into the destination branch because conflicts were detected. Therefore, a working branch will need to be created on the destination branch to allow for conflict resoultion. Would you like to contiune and create the working branch?")) {
+            //
+            //                  toBranch =
+            //                        BranchPersistenceManager.getInstance().createWorkingBranchFromBranchChanges(fromBranch,
+            //                              toBranch, null);
+            //                  BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, false);
+            //
+            //               }
+            //            } else {
+            BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, true);
+            //            }
+         } catch (ConflictDetectionException ex) {
+            CheckBoxDialog dialog =
+                  new CheckBoxDialog(Display.getCurrent().getActiveShell(), "Commit Failed", null,
+                        "Commit Failed Due To Unresolved Conflicts",
+                        "Launch Merge Manager to handle unresolved conflicts", MessageDialog.QUESTION, 0);
 
-                  toBranch =
-                        BranchPersistenceManager.getInstance().createWorkingBranchFromBranchChanges(fromBranch,
-                              toBranch, null);
-                  BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, false);
+            try {
+               if (dialog.open() == Window.OK) {
+                  Conflict[] transactionArtifactChanges = new Conflict[0];
+                  MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(fromBranch, toBranch,
+                        TransactionIdManager.getInstance().getStartEndPoint(fromBranch).getKey()).toArray(
+                        transactionArtifactChanges));
                }
-            } else {
-               BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, true);
+            } catch (Exception exc) {
+               logger.log(Level.SEVERE, "Commit Branch Failed", exc);
             }
+
          } catch (Exception ex) {
             logger.log(Level.SEVERE, "Commit Branch Failed", ex);
          }
@@ -1787,5 +1808,11 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             provider.refresh();
          }
       }
+   }
+
+   public void setDefaultBranch(Branch newDefaultBranch) {
+      Branch oldDefaultBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
+      BranchPersistenceManager.getInstance().setDefaultBranch(newDefaultBranch);
+      branchTable.update(new Object[] {oldDefaultBranch, newDefaultBranch}, null);
    }
 }

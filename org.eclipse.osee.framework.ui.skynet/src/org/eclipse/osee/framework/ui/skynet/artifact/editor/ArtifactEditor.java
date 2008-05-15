@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.VisitorEvent;
 import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -542,7 +543,12 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          try {
             Artifact artifact = getEditorInput().getArtifact();
             if (artifact.getBranch().equals(branchManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
-               changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), branchManager.getDefaultBranch()));
+               try {
+                  changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), branchManager.getDefaultBranch()));
+               } catch (ArtifactDoesNotExist ex) {
+                  System.err.println("Attention: Artifact " + artifact.getArtId() + " does not exist on new default branch. Closing the editor.");
+                  changeToArtifact(null);
+               }
             }
             checkEnabledTooltems();
          } catch (Exception ex) {

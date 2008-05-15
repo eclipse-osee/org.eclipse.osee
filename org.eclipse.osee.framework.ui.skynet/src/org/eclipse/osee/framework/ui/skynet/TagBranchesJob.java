@@ -40,7 +40,7 @@ public class TagBranchesJob extends Job {
       monitor.beginTask("Tag Brances", branches.size());
       for (Branch branch : branches) {
          try {
-            Collection<Artifact> arts = branch.getArtifacts();
+            Collection<Artifact> arts = branch.getArtifacts(false);
             monitor.subTask("Tagging " + arts.size() + " artifacts from " + branch.getBranchName());
             for (Artifact artifact : arts) {
                try {
