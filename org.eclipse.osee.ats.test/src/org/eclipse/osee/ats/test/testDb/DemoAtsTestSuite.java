@@ -18,6 +18,7 @@ public class DemoAtsTestSuite {
       //$JUnit-BEGIN$
       suite.addTestSuite(AtsNavigateItemsToWorldViewTest.class);
       suite.addTestSuite(AtsNavigateItemsToTaskEditorTest.class);
+      suite.addTestSuite(AtsNavigateItemsToMassEditorTest.class);
       //$JUnit-END$
       return suite;
    }
