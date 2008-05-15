@@ -37,12 +37,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeReportInput;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
@@ -56,6 +58,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xcommit.CommitManagerView;
+import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
@@ -434,19 +437,26 @@ public class BranchManager {
          }
 
          try {
-            if (commitPopup && Display.getCurrent() != null) {
-               CheckBoxDialog cd = BranchView.createCommitDialog();
-
-               if (cd.open() != Window.OK) {
-                  return new Result("Operation Cancelled");
-               }
-            }
-
             BranchPersistenceManager.getInstance().commitBranch(branch, true);
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, "Commit Branch Failed", ex, popup);
-            return new Result("Commit Branch Failed: " + ex.getLocalizedMessage());
+         } catch (ConflictDetectionException ex) {
+            CheckBoxDialog dialog =
+                  new CheckBoxDialog(Display.getCurrent().getActiveShell(), "Commit Failed", null,
+                        "Commit Failed Due To Unresolved Conflicts",
+                        "Launch Merge Manager to handle unresolved conflicts", MessageDialog.QUESTION, 0);
+
+            try {
+               if (commitPopup && dialog.open() == Window.OK) {
+                  Conflict[] transactionArtifactChanges = new Conflict[0];
+                  MergeView.openViewUpon(RevisionManager.getInstance().getConflictsPerBranch(branch,
+                        branch.getParentBranch(), TransactionIdManager.getInstance().getStartEndPoint(branch).getKey()).toArray(
+                        transactionArtifactChanges));
+               }
+            } catch (Exception exc) {
+               OSEELog.logException(AtsPlugin.class, "Commit Branch Failed", ex, popup);
+               return new Result("Commit Branch Failed: " + ex.getLocalizedMessage());
+            }
          }
+
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Commit Branch Failed", ex, popup);
          return new Result("Commit Branch Failed" + ex.getLocalizedMessage());
