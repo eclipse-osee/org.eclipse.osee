@@ -110,27 +110,21 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User Community Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserCommunitySearchItem);
       ((UserCommunitySearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUserComm("Program 2");
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      Collection<Artifact> arts = WorldView.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, ActionArtifact.class, 6);
+      handleGeneralDoubleClickAndTestResults(item, ActionArtifact.class, 6);
    }
 
    public void testActionableItemSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Actionable Item Actions");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
       ((ActionableItemWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedActionItems(ActionableItemArtifact.getActionableItems(Arrays.asList(new String[] {"SAW Code"})));
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      Collection<Artifact> arts = WorldView.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, ActionArtifact.class, 7);
+      handleGeneralDoubleClickAndTestResults(item, ActionArtifact.class, 7);
    }
 
    public void testTeamDefinitionSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Actions");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorldSearchItem);
       ((TeamWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList(new String[] {"SAW Code"})));
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      Collection<Artifact> arts = WorldView.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, ActionArtifact.class, 7);
+      handleGeneralDoubleClickAndTestResults(item, ActionArtifact.class, 7);
    }
 
    public void testTeamDefinitionByVersionSearch() throws Exception {
@@ -139,9 +133,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       ((TeamVersionWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList(new String[] {"SAW Code"})));
       ((TeamVersionWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedVersion(VersionArtifact.getVersions(
             Arrays.asList(new String[] {"SAW_Bld_2"})).iterator().next());
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      Collection<Artifact> arts = WorldView.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 6);
+      handleGeneralDoubleClickAndTestResults(item, TeamWorkFlowArtifact.class, 6);
    }
 
    // TODO Add test for "Teams"-"Show Team Versions"
@@ -153,9 +145,13 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
             ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(user);
          }
       }
+      return handleGeneralDoubleClickAndTestResults(item, clazz, numOfType);
+   }
+
+   public Collection<Artifact> handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) {
       NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       Collection<Artifact> arts = WorldView.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(xNavigateItemName, arts, clazz, numOfType);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, clazz, numOfType);
       return WorldView.getLoadedArtifacts();
    }
 

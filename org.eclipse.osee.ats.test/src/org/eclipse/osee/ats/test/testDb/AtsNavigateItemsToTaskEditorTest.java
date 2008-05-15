@@ -16,11 +16,9 @@ import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.ats.world.search.EditTasksByTeamVersionSearchItem;
 import org.eclipse.osee.ats.world.search.MyTaskSearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -41,28 +39,18 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
       DemoTestUtil.setUpTest();
    }
 
-   public void testMyTasksTaskEditor() throws Exception {
+   public void testMyTasksEditor() throws Exception {
       closeTaskEditors();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("My Tasks (Editor)");
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      TaskEditor taskEditor = getTaskEditor();
-      assertTrue(taskEditor != null);
-      Collection<Artifact> arts = taskEditor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class,
-            PopulateDemoActions.getNumTasks());
+      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, PopulateDemoActions.getNumTasks());
    }
 
-   public void testUsersTasksTaskEditor() throws Exception {
+   public void testUsersTasksEditor() throws Exception {
       closeTaskEditors();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User's Tasks (Editor)");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof MyTaskSearchItem);
       ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      TaskEditor taskEditor = getTaskEditor();
-      assertTrue(taskEditor != null);
-      Collection<Artifact> arts = taskEditor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class,
-            PopulateDemoActions.getTaskTitles(true).size());
+      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, PopulateDemoActions.getTaskTitles(true).size());
    }
 
    public void testEditTasksTeamVersion() throws Exception {
@@ -72,12 +60,23 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
       ((EditTasksByTeamVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList(new String[] {"SAW Code"})));
       ((EditTasksByTeamVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedVersion(VersionArtifact.getVersions(
             Arrays.asList(new String[] {"SAW_Bld_2"})).iterator().next());
+      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, PopulateDemoActions.getNumTasks());
+   }
+
+   public void testEditTasksByUser() throws Exception {
+      closeTaskEditors();
+      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Edit Tasks by User");
+      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof MyTaskSearchItem);
+      ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
+      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, PopulateDemoActions.getTaskTitles(true).size());
+   }
+
+   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) {
       NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       TaskEditor taskEditor = getTaskEditor();
       assertTrue(taskEditor != null);
       Collection<Artifact> arts = taskEditor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class,
-            PopulateDemoActions.getNumTasks());
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, clazz, numOfType);
    }
 
    private TaskEditor getTaskEditor() {
@@ -101,19 +100,6 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
             page.closeEditor((TaskEditor) editor.getPart(false), false);
          }
       }
-   }
-
-   public Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, Class<?> clazz, int numOfType, User user) throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem(xNavigateItemName);
-      if (user != null && (item instanceof SearchNavigateItem)) {
-         if (((SearchNavigateItem) item).getWorldSearchItem() instanceof UserSearchItem) {
-            ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(user);
-         }
-      }
-      NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      Collection<Artifact> arts = WorldView.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(xNavigateItemName, arts, clazz, numOfType);
-      return WorldView.getLoadedArtifacts();
    }
 
 }
