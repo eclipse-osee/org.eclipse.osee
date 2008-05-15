@@ -121,6 +121,10 @@ public class BranchCreator implements PersistenceManager {
 
    private static final String INSERT_DEFAULT_BRANCH_NAMES =
          "INSERT INTO " + BRANCH_DEFINITIONS.columnsForInsert("static_branch_name", "mapped_branch_id");
+
+   private static final String MERGE_BRANCH_INSERT_QUERY =
+         "INSERT INTO osee_define_merge " + "(source_branch_id, dest_branch_id, merge_branch_id)  VALUES( ? , ? , ?)";
+
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
    private SkynetAuthentication skynetAuth;
@@ -157,7 +161,6 @@ public class BranchCreator implements PersistenceManager {
 
       // insert the new transaction data first.
       int newTransactionNumber = Query.getNextSeqVal(null, TRANSACTION_ID_SEQ);
-
       String query =
             "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("branch_id", "transaction_id", TXD_COMMENT,
                   "time", "author", "tx_type");
@@ -586,7 +589,6 @@ public class BranchCreator implements PersistenceManager {
             branchWithTransactionNumber =
                   new Pair<Branch, Integer>(mergeBranch, startTransactionId.getTransactionNumber());
          }
-
          String attributeGammas =
                "INSERT INTO OSEE_DEFINE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, attr1.gamma_id, txs2.mod_type, ? FROM osee_define_attribute attr1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in " + Collections.toString(
                      artIds, "(", ",", ")") + " GROUP BY t6.attr_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = attr1.gamma_id and attr1.attr_id = t4.attr_id order by attr1.gamma_id";
@@ -603,8 +605,6 @@ public class BranchCreator implements PersistenceManager {
 
          if (createBranch) {
             try {
-               String MERGE_BRANCH_INSERT_QUERY =
-                     "INSERT INTO osee_define_merge " + "(source_branch_id, dest_branch_id, merge_branch_id)  VALUES( ? , ? , ?)";
                chStmt =
                      ConnectionHandler.runPreparedQuery(MERGE_BRANCH_INSERT_QUERY, SQL3DataType.INTEGER,
                            sourceBranch.getBranchId(), SQL3DataType.INTEGER, destBranch.getBranchId(),

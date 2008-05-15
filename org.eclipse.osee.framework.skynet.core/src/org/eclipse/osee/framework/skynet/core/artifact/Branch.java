@@ -64,7 +64,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
          }
       }
    };
-
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final String UPDATE_BRANCH_SHORT_NAME =
          "UPDATE " + BRANCH_TABLE + " SET short_name = ? WHERE branch_id = ?";
@@ -329,10 +328,22 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    // TODO fix this HACK
+   public boolean isBaselineBranch() {
+      System.out.println("Branch.isBaselineBranch...fix this");
+      return !getBranchName().contains("RPCR");
+   }
+
+   public boolean isRootBranch() {
+      return branchType.equals(BranchType.ROOT);
+   }
+
    //   public boolean isBaselineBranch() {
-   //      System.out.println("Branch.isBaselineBranch...fix this");
-   //      return !getBranchName().contains("RPCR");
+   //      return branchType.equals(BranchType.BASELINE);
    //   }
+
+   public boolean isMergeBranch() {
+      return branchType.equals(BranchType.MERGE);
+   }
 
    /**
     * @return the associatedArtifactId
@@ -379,25 +390,14 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return null;
    }
 
+   public Collection<Artifact> getArtifacts(boolean includeDeletedArtifacts) throws SQLException {
+      List<ISearchPrimitive> activeCriteria = new LinkedList<ISearchPrimitive>();
+      activeCriteria.add(new ArtifactTypeSearch("%", Operator.LIKE));
+      return ArtifactPersistenceManager.getInstance().getArtifacts(activeCriteria, true, this, includeDeletedArtifacts);
+   }
+   
    public Collection<Artifact> getArtifacts() throws SQLException {
       return ArtifactQuery.getArtifactsFromType("%", this);
    }
 
-   /**
-    * @return the branchType
-    */
-   //   public BranchType getBranchType() {
-   //      return branchType;
-   //   }
-   public boolean isRootBranch() {
-      return branchType.equals(BranchType.ROOT);
-   }
-
-   public boolean isBaselineBranch() {
-      return branchType.equals(BranchType.BASELINE);
-   }
-
-   public boolean isMergeBranch() {
-      return branchType.equals(BranchType.MERGE);
-   }
 }
