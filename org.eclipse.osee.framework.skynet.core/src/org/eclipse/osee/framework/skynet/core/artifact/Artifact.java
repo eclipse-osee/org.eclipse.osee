@@ -365,21 +365,20 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       Attribute<Object> foundAttribute = null;
 
       for (Attribute<Object> attribute : getAttributes(attrChange.getName())) {
-         AttributeMemo memo = attribute.getPersistenceMemo();
          if (!attribute.isInDatastore()) {
-            memo.setIds(attrChange.getAttributeId(), attrChange.getGammaId());
+            attribute.setIds(attrChange.getAttributeId(), attrChange.getGammaId());
             foundAttribute = attribute;
             break;
          }
 
-         if (memo.getAttrId() == attrChange.getAttributeId()) {
+         if (attribute.getAttrId() == attrChange.getAttributeId()) {
             foundAttribute = attribute;
             break;
          }
       }
       if (foundAttribute == null) {
          foundAttribute = createAttribute(AttributeTypeManager.getType(attrChange.getName()));
-         foundAttribute.getPersistenceMemo().setIds(attrChange.getAttributeId(), attrChange.getGammaId());
+         foundAttribute.setIds(attrChange.getAttributeId(), attrChange.getGammaId());
       }
       foundAttribute.setValue(attrChange.getValue());
    }
@@ -781,7 +780,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       dirty = false;
 
       for (Attribute<?> attribute : getAttributes()) {
-         attribute.getPersistenceMemo().setDirty(false);
+         attribute.setNotDirty();
       }
    }
 
@@ -1295,7 +1294,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       for (Attribute<?> attribute : getAttributes()) {
          if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(), attribute.getValue(),
-                  attribute.getPersistenceMemo().getAttrId(), attribute.getPersistenceMemo().getGammaId()));
+                  attribute.getAttrId(), attribute.getGammaId()));
          }
       }
       return dirtyAttributes;

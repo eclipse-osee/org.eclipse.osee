@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
@@ -57,12 +56,11 @@ public class AttributeToTransactionOperation {
       for (Attribute<?> attribute : artifact.getAttributes()) {
          if (attribute.isDirty()) {
             addAttributeData(artifact, attribute, transaction);
-            attribute.getPersistenceMemo().setDirty(false);
          }
       }
 
       for (Attribute<?> attribute : artifact.getAttributes()) {
-         if (attribute.getPersistenceMemo().isDeleted()) {
+         if (attribute.isDeleted()) {
             deleteAttribute(attribute, transaction, artifact);
          }
       }
@@ -80,7 +78,7 @@ public class AttributeToTransactionOperation {
       ModType modType = null;
       ModificationType attrModType = null;
       if (attribute.isInDatastore()) {
-         attribute.getPersistenceMemo().setGammaId(SkynetDatabase.getNextGammaId());
+         attribute.setGammaId(SkynetDatabase.getNextGammaId());
 
          modType = ModType.Changed;
          attrModType = ModificationType.CHANGE;
@@ -96,7 +94,6 @@ public class AttributeToTransactionOperation {
    }
 
    private void nonVersionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws Exception {
-      AttributeMemo memo = attribute.getPersistenceMemo();
       IAttributeDataProvider dataProvider = attribute.getAttributeDataProvider();
       if (!attribute.isInDatastore()) {
          createNewAttributeMemo(attribute);
@@ -108,27 +105,26 @@ public class AttributeToTransactionOperation {
          dataProvider.persist();
          DAOToSQL daoToSql = new DAOToSQL(dataProvider.getData());
          transaction.addToBatch(UPDATE_TRANSACTION_TABLE, SQL3DataType.VARCHAR, transaction.getComment(),
-               SQL3DataType.TIMESTAMP, GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER, memo.getGammaId(),
-               SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
+               SQL3DataType.TIMESTAMP, GlobalTime.GreenwichMeanTimestamp(), SQL3DataType.INTEGER,
+               attribute.getGammaId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
 
          transaction.addToBatch(UPDATE_ATTRIBUTE, SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-               memo.getAttrId(), SQL3DataType.INTEGER, attribute.getAttributeType().getAttrTypeId(),
-               SQL3DataType.INTEGER, memo.getGammaId(), SQL3DataType.VARCHAR, daoToSql.getValue(),
+               attribute.getAttrId(), SQL3DataType.INTEGER, attribute.getAttributeType().getAttrTypeId(),
+               SQL3DataType.INTEGER, attribute.getGammaId(), SQL3DataType.VARCHAR, daoToSql.getValue(),
                SQL3DataType.VARCHAR, daoToSql.getUri());
       }
    }
 
    private AttributeTransactionData createAttributeTxData(Artifact artifact, Attribute<?> attribute, DAOToSQL dao, SkynetTransaction transaction, ModificationType attrModType) throws Exception {
-      AttributeMemo memo = attribute.getPersistenceMemo();
-      return new AttributeTransactionData(artifact.getArtId(), memo.getAttrId(),
-            attribute.getAttributeType().getAttrTypeId(), dao.getValue(), memo.getGammaId(),
+      return new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
+            attribute.getAttributeType().getAttrTypeId(), dao.getValue(), attribute.getGammaId(),
             transaction.getTransactionNumber(), dao.getUri(), attrModType, transaction.getBranch());
    }
 
    private void createNewAttributeMemo(Attribute<?> attribute) throws SQLException {
       int gammaId = SkynetDatabase.getNextGammaId();
       int attrId = Query.getNextSeqVal(null, SkynetDatabase.ATTR_ID_SEQ);
-      attribute.getPersistenceMemo().setIds(attrId, gammaId);
+      attribute.setIds(attrId, gammaId);
    }
 
    /**
@@ -142,9 +138,9 @@ public class AttributeToTransactionOperation {
       if (!attribute.isInDatastore()) return;
 
       int gammaId = SkynetDatabase.getNextGammaId();
-      transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(),
-            attribute.getPersistenceMemo().getAttrId(), attribute.getAttributeType().getAttrTypeId(), null, gammaId,
-            transaction.getTransactionNumber(), null, ModificationType.DELETED, transaction.getBranch()));
+      transaction.addTransactionDataItem(new AttributeTransactionData(artifact.getArtId(), attribute.getAttrId(),
+            attribute.getAttributeType().getAttrTypeId(), null, gammaId, transaction.getTransactionNumber(), null,
+            ModificationType.DELETED, transaction.getBranch()));
 
       transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
    }
@@ -192,7 +188,7 @@ public class AttributeToTransactionOperation {
          AttributeType attributeType = AttributeTypeManager.getType(atttributeTypeId);
          Attribute<?> attribute = artifact.createAttribute(attributeType);
          attribute.getAttributeDataProvider().loadData(value, uri);
-         attribute.getPersistenceMemo().setIds(attributeId, gamma_id);
+         attribute.setIds(attributeId, gamma_id);
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }

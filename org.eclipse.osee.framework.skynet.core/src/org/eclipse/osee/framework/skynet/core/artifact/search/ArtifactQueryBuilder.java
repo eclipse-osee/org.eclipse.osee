@@ -631,9 +631,6 @@ public class ArtifactQueryBuilder {
             ResultSet rSet = chStmt.getRset();
             while (rSet.next()) {
                Artifact artifact = ArtifactCache.get(rSet.getInt("art_id"), branch);
-               if (artifact == null) {
-                  int i = 5;
-               }
                AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
                      rSet.getString("value"), rSet.getString("uri"), rSet.getInt("attr_id"), rSet.getInt("gamma_id"));
             }

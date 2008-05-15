@@ -97,6 +97,6 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     */
    @Override
    public void purge() throws Exception {
-      ArtifactPersistenceManager.purgeAttribute(getAttribute(), getAttribute().getPersistenceMemo().getAttrId());
+      ArtifactPersistenceManager.purgeAttribute(getAttribute(), getAttribute().getAttrId());
    }
 }

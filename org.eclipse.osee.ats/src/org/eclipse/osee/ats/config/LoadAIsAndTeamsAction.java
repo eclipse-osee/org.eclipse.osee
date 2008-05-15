@@ -88,7 +88,6 @@ public class LoadAIsAndTeamsAction extends Action {
             "Importing ATS Config from ActionableItems.vue.\n\nAre you sure?")) return;
 
       for (Entry<String, String> entry : loadResources().entrySet()) {
-         // System.out.println(" Loading " + entry.getKey());
          AtsWorkFlow workFlow =
                WorkflowDiagramFactory.getInstance().getWorkFlowFromFileContents(entry.getKey(), entry.getValue());
          processWorkflow(workFlow);

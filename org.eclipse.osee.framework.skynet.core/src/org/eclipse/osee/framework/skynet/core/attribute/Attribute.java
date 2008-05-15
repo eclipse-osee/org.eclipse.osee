@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.AttributeMemo;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
@@ -22,14 +21,16 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
  */
 public abstract class Attribute<T> {
    private final AttributeType attributeType;
-   private AttributeMemo memo;
    private Artifact artifact;
    private IAttributeDataProvider attributeDataProvider;
+   private int attrId;
+   private int gammaId;
+   private boolean deleted;
+   private boolean dirty;
 
    protected Attribute(AttributeType attributeType, Artifact artifact) {
       this.attributeType = attributeType;
       this.artifact = artifact;
-      this.memo = new AttributeMemo();
    }
 
    /**
@@ -46,21 +47,21 @@ public abstract class Attribute<T> {
       return attributeType;
    }
 
-   public AttributeMemo getPersistenceMemo() {
-      return memo;
-   }
-
    /**
     * @return <b>true</b> if this attribute is dirty
     */
    public boolean isDirty() {
-      return memo.isDirty();
+      return dirty;
    }
 
    public void setDirty() {
-      memo.setDirty(true);
+      dirty = true;
       artifact.setInTransaction(false);
       SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
+   }
+
+   public void setNotDirty() {
+      dirty = false;
    }
 
    public Artifact getArtifact() {
@@ -71,7 +72,7 @@ public abstract class Attribute<T> {
     * Deletes the attribute
     */
    public void delete() {
-      memo.setDeleted(true);
+      deleted = true;
    }
 
    public boolean canDelete() {
@@ -83,7 +84,6 @@ public abstract class Attribute<T> {
     */
    public void purge() throws Exception {
       getAttributeDataProvider().purge();
-      memo.setDeleted(true);
    }
 
    /*
@@ -117,10 +117,37 @@ public abstract class Attribute<T> {
     * @return
     */
    public boolean isInDatastore() {
-      return memo.getGammaId() > 0;
+      return gammaId > 0;
    }
 
    public void initializeDefaultValue() {
 
+   }
+
+   /**
+    * @return Returns the attrId.
+    */
+   public int getAttrId() {
+      return attrId;
+   }
+
+   public int getGammaId() {
+      return gammaId;
+   }
+
+   public void setGammaId(int gammaId) {
+      this.gammaId = gammaId;
+   }
+
+   public void setIds(int attrId, int gammaId) {
+      this.attrId = attrId;
+      this.gammaId = gammaId;
+   }
+
+   /**
+    * @return the deleted
+    */
+   public boolean isDeleted() {
+      return deleted;
    }
 }

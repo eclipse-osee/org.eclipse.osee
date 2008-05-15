@@ -226,7 +226,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       if (!artifact.isInDb()) {
          addArtifactData(artifact, transaction, artGamma);
-         artifact.setDirty();
       }
 
       processTransactionForArtifact(artifact, modType, transaction, artGamma);
@@ -319,8 +318,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             artifact = loadArtifactMetaData(rSet, transactionId.getBranch(), false);
 
             setAttributesOnArtifact(artifact);
-            // This artifact is fresh, so mark it as not dirty
-            artifact.setNotDirty();
 
             artifact.onInitializationComplete();
          } finally {
@@ -619,7 +616,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       }
 
       for (Artifact artifact : artifacts) {
-         artifact.setNotDirty(); // The artifacts are fresh, so mark them as not dirty
          artifact.onInitializationComplete();
       }
    }
@@ -838,9 +834,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                if (links.size() > 0) {
                   for (RelationLink link : links) {
                      if (link.getArtifactA() == oldArtifact) {
-                        link.setArtifactA(newArtifact, true);
+                        // link.setArtifactA(newArtifact, true);
                      } else if (link.getArtifactB() == oldArtifact) {
-                        link.setArtifactB(newArtifact, true);
+                        //link.setArtifactB(newArtifact, true);
                      } else {
                         throw new IllegalArgumentException("oldArtifact does not belong on one of the links supplied.");
                      }

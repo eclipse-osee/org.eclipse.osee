@@ -47,7 +47,7 @@ public class AttributeResourceProcessor extends AbstractResourceProcessor {
 
       Map<String, String> parameterMap = new HashMap<String, String>();
       parameterMap.put("protocol", "attr");
-      parameterMap.put("seed", Integer.toString(attribute.getPersistenceMemo().getGammaId()));
+      parameterMap.put("seed", Integer.toString(attribute.getGammaId()));
       parameterMap.put("name", artifact.getHumanReadableId());
       String extension = dataToStore.getExtension();
       if (Strings.isValid(extension) != false) {
