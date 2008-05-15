@@ -46,7 +46,7 @@ public class User extends Artifact implements Serializable {
    @Override
    public void onBirth() throws SQLException {
       super.onBirth();
-      if (EveryoneGroup.getInstance() != null) EveryoneGroup.getInstance().addGroupMember(this);
+      EveryoneGroup.addGroupMember(this);
    }
 
    public User(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {

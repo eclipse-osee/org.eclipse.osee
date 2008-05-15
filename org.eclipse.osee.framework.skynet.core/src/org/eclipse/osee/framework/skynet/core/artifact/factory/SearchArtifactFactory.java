@@ -34,7 +34,7 @@ public class SearchArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   SearchArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   SearchArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       return new SearchArtifact(this, guid, humandReadableId, branch, artifactType);
    }
 }

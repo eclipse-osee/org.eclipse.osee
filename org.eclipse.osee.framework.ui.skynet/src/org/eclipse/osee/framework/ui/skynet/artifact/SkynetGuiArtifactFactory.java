@@ -39,7 +39,7 @@ public class SkynetGuiArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       if (factoryKey.equals(XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME)) {
          return new XViewerCustomizationArtifact(this, guid, humandReadableId, branch, artifactType);
       }

@@ -62,8 +62,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOp
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor;
 import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
@@ -266,6 +266,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             artifact.getHumanReadableId());
 
       artifact.setIds(artId, gammaId);
+      ArtifactCache.cache(artifact);
    }
 
    private static final String SELECT_ARTIFACT_START =
@@ -321,7 +322,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                      "The artifact with " + idString + " or does not exist for transaction \"" + transactionId + "\"");
             }
 
-            artifact = prepArtifact(rSet, transactionId);
+            artifact = loadArtifactMetaData(rSet, transactionId.getBranch(), false);
 
             setAttributesOnArtifact(artifact);
             // This artifact is fresh, so mark it as not dirty
@@ -503,6 +504,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return getArtifacts(getSql(searchCriteria, all, dataList, transactionId), dataList, transactionId, null);
    }
 
+   @Deprecated
    public Collection<Artifact> getArtifacts(String sql, List<Object> dataList, TransactionId transactionId, ISearchConfirmer confirmer) throws SQLException {
       Collection<Artifact> artifacts = new ArrayList<Artifact>(50);
       Collection<Artifact> artifactsToInit = new LinkedList<Artifact>();
@@ -518,7 +520,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
             Artifact artifact = ArtifactCache.get(rSet.getInt("art_id"), transactionId.getTransactionNumber());
             if (artifact == null) { // if not in cache
-               artifact = prepArtifact(rSet, transactionId);
+               artifact = loadArtifactMetaData(rSet, transactionId.getBranch(), true);
                artifactsToInit.add(artifact);
             }
             artifacts.add(artifact);
@@ -536,21 +538,13 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return artifacts;
    }
 
-   private Artifact prepArtifact(ResultSet rSet, TransactionId transactionId) throws SQLException {
-      ArtifactSubtypeDescriptor artifactType =
-            configurationManager.getArtifactSubtypeDescriptor(rSet.getInt("art_type_id"));
+   public static Artifact loadArtifactMetaData(ResultSet rSet, Branch branch, boolean active) throws SQLException {
+      ArtifactSubtypeDescriptor artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
       ArtifactFactory factory = artifactType.getFactory();
 
-      Artifact artifact =
-            factory.loadExisitingArtifact(rSet.getString("guid"), rSet.getString("human_readable_id"),
-                  artifactType.getFactoryKey(), transactionId.getBranch(), artifactType);
-      artifact.setIds(rSet.getInt("art_id"), rSet.getInt("gamma_id"), transactionId.getTransactionNumber());
-
-      if (rSet.getInt("mod_type") == ModificationType.DELETED.getValue()) {
-         artifact.setDeleted(rSet.getInt("transaction_id"));
-      }
-
-      return artifact;
+      return factory.loadExisitingArtifact(rSet.getInt("art_id"), rSet.getInt("gamma_id"), rSet.getString("guid"),
+            rSet.getString("human_readable_id"), artifactType.getFactoryKey(), branch, artifactType,
+            rSet.getInt("transaction_id"), ModificationType.getMod(rSet.getInt("mod_type")), active);
    }
 
    /**
@@ -896,7 +890,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    private Artifact createRoot(Branch branch) throws SQLException {
       Artifact root = ArtifactTypeManager.addArtifact(ROOT_ARTIFACT_TYPE_NAME, branch, DEFAULT_HIERARCHY_ROOT_NAME);
-      root.setDescriptiveName(DEFAULT_HIERARCHY_ROOT_NAME);
       root.persistAttributes();
       return root;
    }

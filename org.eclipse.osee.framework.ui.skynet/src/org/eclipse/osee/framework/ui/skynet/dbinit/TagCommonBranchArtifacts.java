@@ -11,20 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.dbinit;
 
 import java.sql.Connection;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.TagArtifactsJob;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -39,20 +29,9 @@ public class TagCommonBranchArtifacts extends DbInitializationTask {
     * @see org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask#run(java.sql.Connection)
     */
    public void run(Connection connection) throws Exception {
-      Branch branch = BranchPersistenceManager.getCommonBranch();
-      List<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-
-      for (ArtifactSubtypeDescriptor artifactType : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
-            branch)) {
-         criteria.add(new ArtifactTypeSearch(artifactType.getName(), Operator.EQUAL));
-      }
-
-      Collection<Artifact> arts = ArtifactPersistenceManager.getInstance().getArtifacts(criteria, false, branch);
-
-      TagArtifactsJob job = new TagArtifactsJob(arts);
-      job.setUser(true);
-      job.setPriority(Job.LONG);
-      job.schedule();
+      TagArtifactsJob job =
+            new TagArtifactsJob(ArtifactQuery.getArtifactsFromBranch(BranchPersistenceManager.getCommonBranch()));
+      Jobs.startJob(job);
       try {
          job.join();
       } catch (InterruptedException ex) {

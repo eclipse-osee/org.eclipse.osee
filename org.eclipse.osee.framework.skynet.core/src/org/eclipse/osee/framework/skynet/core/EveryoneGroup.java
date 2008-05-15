@@ -11,21 +11,14 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 
@@ -34,34 +27,23 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
  */
 public class EveryoneGroup extends Group {
    private static final String GROUP_NAME = "Everyone";
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationManager =
-         ConfigurationPersistenceManager.getInstance();
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-   private static final EveryoneGroup reference = new EveryoneGroup();
+   private static final EveryoneGroup instance = new EveryoneGroup();
    private Artifact everyoneGroup;
-   private List<ISearchPrimitive> searchCriteria;
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(EveryoneGroup.class);
-
-   public static EveryoneGroup getInstance() {
-      return reference;
-   }
 
    private EveryoneGroup() {
       super(GROUP_NAME);
 
-      searchCriteria = new LinkedList<ISearchPrimitive>();
-      searchCriteria.add(new ArtifactTypeSearch("User Group", Operator.EQUAL));
-      searchCriteria.add(new AttributeValueSearch("Name", GROUP_NAME, Operator.EQUAL));
-
       try {
-         Collection<Artifact> searchResults =
-               artifactManager.getArtifacts(searchCriteria, true, branchManager.getCommonBranch());
+         List<Artifact> artifacts =
+               ArtifactQuery.getArtifactsFromTypeAndName("User Group", GROUP_NAME,
+                     BranchPersistenceManager.getCommonBranch());
 
-         if (searchResults != null && searchResults.size() != 0) {
-            everyoneGroup = searchResults.iterator().next();
+         if (!artifacts.isEmpty()) {
+            everyoneGroup = artifacts.get(0);
          } else {
-            everyoneGroup = ArtifactTypeManager.addArtifact("User Group", branchManager.getCommonBranch(), GROUP_NAME);
+            everyoneGroup =
+                  ArtifactTypeManager.addArtifact("User Group", BranchPersistenceManager.getCommonBranch(), GROUP_NAME);
 
             boolean wasNotInDbInit = !SkynetDbInit.isDbInit();
             if (wasNotInDbInit) { // EveryoneGroup needs to be created under the special condition of the init
@@ -80,8 +62,8 @@ public class EveryoneGroup extends Group {
    /**
     * @return Returns the everyoneGroup.
     */
-   public Artifact getEveryoneGroup() {
-      return everyoneGroup;
+   public static Artifact getEveryoneGroup() {
+      return instance.everyoneGroup;
    }
 
    /**
@@ -90,7 +72,7 @@ public class EveryoneGroup extends Group {
     * @param user
     * @throws SQLException
     */
-   public void addGroupMember(User user) throws SQLException {
-      everyoneGroup.relate(RelationSide.Users_User, user);
+   public static void addGroupMember(User user) throws SQLException {
+      instance.everyoneGroup.relate(RelationSide.Users_User, user);
    }
 }

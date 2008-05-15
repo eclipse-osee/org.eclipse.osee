@@ -39,7 +39,7 @@ public class SkynetArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       if (factoryKey.equals(User.ARTIFACT_NAME)) {
          return new User(this, guid, humandReadableId, branch, artifactType);
       }

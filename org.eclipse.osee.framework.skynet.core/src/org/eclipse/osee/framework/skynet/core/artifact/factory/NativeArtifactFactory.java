@@ -37,7 +37,7 @@ public class NativeArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   NativeArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   NativeArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       return new NativeArtifact(this, guid, humandReadableId, branch, artifactType);
    }
 }

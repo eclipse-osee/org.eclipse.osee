@@ -37,7 +37,7 @@ public class BasicArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   BasicArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   BasicArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       return new BasicArtifact(this, guid, humandReadableId, branch, artifactType);
    }
 }

@@ -33,9 +33,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -99,6 +98,10 @@ public class ArtifactQueryBuilder {
 
    public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch, ArtifactLoad loadLevel) {
       this(null, 0, null, null, artifactType, branch, false, loadLevel);
+   }
+
+   public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel) {
+      this(null, 0, null, null, null, branch, false, loadLevel);
    }
 
    private static String ensureValid(String id) {
@@ -389,7 +392,7 @@ public class ArtifactQueryBuilder {
 
             while (rSet.next()) {
                artifactsCount++;
-               artifacts.add(loadArtifactMetaData(rSet));
+               artifacts.add(ArtifactPersistenceManager.loadArtifactMetaData(rSet, branch, true));
             }
          } finally {
             DbUtil.close(chStmt);
@@ -451,21 +454,6 @@ public class ArtifactQueryBuilder {
       return message.toString();
    }
 
-   private Artifact loadArtifactMetaData(ResultSet rSet) throws SQLException {
-      ArtifactSubtypeDescriptor artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
-      ArtifactFactory factory = artifactType.getFactory();
-
-      Artifact artifact =
-            factory.loadExisitingArtifact(rSet.getString("guid"), rSet.getString("human_readable_id"),
-                  artifactType.getFactoryKey(), branch, artifactType);
-      artifact.setIds(rSet.getInt("art_id"), rSet.getInt("gamma_id"));
-
-      if (rSet.getInt("mod_type") == ModificationType.DELETED.getValue()) {
-         artifact.setDeleted(rSet.getInt("transaction_id"));
-      }
-      return artifact;
-   }
-
    /**
     * The in clause is limited to 1000 values at a time
     * 
@@ -510,13 +498,13 @@ public class ArtifactQueryBuilder {
       return sql.toString();
    }
 
-   private String getRelationSQL(List<Artifact> artifacts, List<Object> relationDataList) {
+   private String getRelationSQL(Iterator<Artifact> artifacts, List<Object> relationDataList) {
       StringBuilder sql = new StringBuilder(10000);
       sql.append("SELECT rel1.*, txs1.* FROM osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE (rel1.a_art_id");
 
-      makeArtifactIdList(artifacts.iterator(), sql, relationDataList);
+      makeArtifactIdList(artifacts, sql, relationDataList);
       sql.append(" OR rel1.b_art_id");
-      makeArtifactIdList(artifacts.iterator(), sql, relationDataList);
+      makeArtifactIdList(artifacts, sql, relationDataList);
 
       sql.append(") AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=");
       sql.append(TxChange.CURRENT.ordinal());
@@ -566,52 +554,60 @@ public class ArtifactQueryBuilder {
          }
       }
 
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         List<Object> relationDataList = new ArrayList<Object>(6);
-         String sql = getRelationSQL(artifactsNeedingRelations, relationDataList);
-         chStmt = ConnectionHandler.runPreparedQuery(sql, relationDataList.toArray());
+      Iterator<Artifact> artIdsIter = artifactsNeedingRelations.iterator();
+      while (artIdsIter.hasNext()) {
 
-         ResultSet rSet = chStmt.getRset();
-         while (rSet.next()) {
-            int relationId = rSet.getInt("rel_link_id");
-            int aArtId = rSet.getInt("a_art_id");
-            int bArtId = rSet.getInt("b_art_id");
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            List<Object> relationDataList = new ArrayList<Object>(6);
+            String sql = getRelationSQL(artIdsIter, relationDataList);
+            chStmt = ConnectionHandler.runPreparedQuery(sql, relationDataList.toArray());
 
-            Artifact artA = ArtifactCache.get(aArtId, branch);
-            Artifact artB = ArtifactCache.get(bArtId, branch);
+            ResultSet rSet = chStmt.getRset();
+            while (rSet.next()) {
+               int relationId = rSet.getInt("rel_link_id");
+               int aArtId = rSet.getInt("a_art_id");
+               int bArtId = rSet.getInt("b_art_id");
 
-            RelationLink link = null;
-            if (artA != null) {
-               link = artA.getLinkManager().getRelation(relationId);
+               Artifact artA = ArtifactCache.get(aArtId, branch);
+               Artifact artB = ArtifactCache.get(bArtId, branch);
+
+               RelationLink link = null;
+               if (artA != null) {
+                  link = artA.getLinkManager().getRelation(relationId);
+               }
+               if (link == null && artB != null) {
+                  link = artB.getLinkManager().getRelation(relationId);
+               }
+
+               if (link == null) {
+                  artifactIdsToLoad.add(aArtId);
+                  artifactIdsToLoad.add(bArtId);
+
+                  int aOrderValue = rSet.getInt("a_order_value");
+                  int bOrderValue = rSet.getInt("b_order_value");
+                  int gammaId = rSet.getInt("gamma_id");
+                  String rationale = rSet.getString("rationale");
+                  if (rationale == null) rationale = "";
+                  IRelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
+
+                  link =
+                        new RelationLink(aArtId, bArtId, relationType, new LinkPersistenceMemo(relationId, gammaId),
+                              rationale, aOrderValue, bOrderValue, false);
+                  relations.add(link);
+               }
             }
-            if (link == null && artB != null) {
-               link = artB.getLinkManager().getRelation(relationId);
-            }
-
-            if (link == null) {
-               artifactIdsToLoad.add(aArtId);
-               artifactIdsToLoad.add(bArtId);
-
-               int aOrderValue = rSet.getInt("a_order_value");
-               int bOrderValue = rSet.getInt("b_order_value");
-               int gammaId = rSet.getInt("gamma_id");
-               String rationale = rSet.getString("rationale");
-               if (rationale == null) rationale = "";
-               IRelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
-
-               link =
-                     new RelationLink(aArtId, bArtId, relationType, new LinkPersistenceMemo(relationId, gammaId),
-                           rationale, aOrderValue, bOrderValue, false);
-               relations.add(link);
-            }
+         } finally {
+            DbUtil.close(chStmt);
          }
-      } finally {
-         DbUtil.close(chStmt);
       }
 
       for (RelationLink relation : relations) {
          relation.loadArtifacts(branch);
+      }
+
+      for (Artifact artifact : artifactsNeedingRelations) {
+         artifact.setLinksLoaded();
       }
    }
 
@@ -635,6 +631,9 @@ public class ArtifactQueryBuilder {
             ResultSet rSet = chStmt.getRset();
             while (rSet.next()) {
                Artifact artifact = ArtifactCache.get(rSet.getInt("art_id"), branch);
+               if (artifact == null) {
+                  int i = 5;
+               }
                AttributeToTransactionOperation.initializeAttribute(artifact, rSet.getInt("attr_type_id"),
                      rSet.getString("value"), rSet.getString("uri"), rSet.getInt("attr_id"), rSet.getInt("gamma_id"));
             }

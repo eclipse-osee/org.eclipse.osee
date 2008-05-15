@@ -37,7 +37,7 @@ public class BlamFactory extends ArtifactFactory {
    }
 
    public @Override
-   Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       if (factoryKey.equals(BlamWorkflow.ARTIFACT_NAME)) {
          return new BlamWorkflow(this, guid, humandReadableId, branch, artifactType);
       }

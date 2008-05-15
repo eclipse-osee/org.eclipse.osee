@@ -37,7 +37,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       if (factoryKey.equals(ActionArtifact.ARTIFACT_NAME)) return new ActionArtifact(this, guid, humandReadableId,
             branch, artifactType);
       if (factoryKey.equals(TaskArtifact.ARTIFACT_NAME)) return new TaskArtifact(this, guid, humandReadableId, branch,

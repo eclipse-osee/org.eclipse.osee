@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 
 public abstract class ArtifactFactory {
    private final int factoryId;
@@ -45,17 +46,28 @@ public abstract class ArtifactFactory {
          throw new IllegalArgumentException("The supplied descriptor is not appropriate for this factory");
       }
 
-      Artifact artifact = getNewArtifact(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
+      Artifact artifact =
+            getArtifactInstance(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
       AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
-      ArtifactCache.cache(artifact);
       artifact.onBirth();
       artifact.onInitializationComplete();
 
       return artifact;
    }
 
-   public synchronized Artifact loadExisitingArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
-      Artifact artifact = getNewArtifact(guid, humandReadableId, factoryKey, branch, artifactType);
+   public synchronized Artifact loadExisitingArtifact(int artId, int gammaId, String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType, int transactionId, ModificationType modType, boolean active) {
+      Artifact artifact = getArtifactInstance(guid, humandReadableId, factoryKey, branch, artifactType);
+
+      if (modType == ModificationType.DELETED) {
+         artifact.setDeleted(transactionId);
+      }
+
+      if (active) {
+         artifact.setIds(artId, gammaId);
+      } else {
+         artifact.setIds(artId, gammaId, transactionId);
+      }
+
       ArtifactCache.cache(artifact);
       return artifact;
    }
@@ -69,7 +81,7 @@ public abstract class ArtifactFactory {
     * @param branch branch on which this instance of this artifact will be associated
     * @return Return artifact reference
     */
-   protected abstract Artifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType);
+   protected abstract Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType);
 
    public int getFactoryId() {
       return factoryId;

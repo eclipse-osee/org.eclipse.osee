@@ -342,12 +342,16 @@ public class LinkManager {
     */
    public synchronized void ensurePopulated() throws SQLException {
       if (!linksLoaded && artifact.isInDb()) {
-         RelationPersistenceManager.getInstance().populateArtifactRelations(artifact);
+         throw new UnsupportedOperationException();
       }
    }
 
    public boolean isLoaded() {
       return linksLoaded;
+   }
+
+   public void setLinksLoaded() {
+      linksLoaded = true;
    }
 
    /**

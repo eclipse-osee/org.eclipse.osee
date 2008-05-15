@@ -36,7 +36,7 @@ public class SpreadsheetArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Spreadsheet getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public Spreadsheet getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       return new Spreadsheet(this, guid, humandReadableId, branch, artifactType);
    }
 }

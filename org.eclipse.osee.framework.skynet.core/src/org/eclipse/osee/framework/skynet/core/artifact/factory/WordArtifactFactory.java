@@ -42,7 +42,7 @@ public class WordArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public WordArtifact getNewArtifact(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public WordArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       WordArtifact artifact = new WordArtifact(this, guid, humandReadableId, branch, artifactType);
       artifact.setWholeWordArtifact(Arrays.binarySearch(WholeArtifactMatches, factoryKey) >= 0);
       return artifact;

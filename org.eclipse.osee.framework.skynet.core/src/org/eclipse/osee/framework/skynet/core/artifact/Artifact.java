@@ -53,9 +53,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribu
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -104,6 +104,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       this.parentFactory = parentFactory;
       this.branch = branch;
       this.artifactType = artifactType;
+      linkManager.setLinksLoaded();
    }
 
    public boolean isInDb() {
@@ -751,13 +752,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                   "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
                   getArtifactTypeName(), getGuid()));
          }
-         Attribute<String> attribute = getSoleAttribute("Name");
-         if (attribute == null) {
-            addAttribute("Name", UNNAMED);
-            return UNNAMED;
-         } else {
-            return attribute.getValue();
-         }
+         return getSoleAttributeValue("Name");
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          return ex.getLocalizedMessage();
@@ -1016,6 +1011,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public LinkManager getLinkManager() throws SQLException {
       linkManager.ensurePopulated();
       return linkManager;
+   }
+
+   public void setLinksLoaded() {
+      linkManager.setLinksLoaded();
    }
 
    /**
