@@ -18,7 +18,8 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
+import org.eclipse.osee.ats.config.demo.config.DemoDbGroups;
+import org.eclipse.osee.ats.config.demo.config.DemoDbTasks;
 import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.NavigateView;
@@ -60,7 +61,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       runGeneralLoadingTest("My Reviews - All", PeerToPeerReviewArtifact.class, 3, null);
       runGeneralLoadingTest("My Subscribed", TeamWorkFlowArtifact.class, 1, null);
       runGeneralLoadingTest("My Team Workflows", TeamWorkFlowArtifact.class, 11, null);
-      runGeneralLoadingTest("My Tasks (WorldView)", TaskArtifact.class, PopulateDemoActions.getNumTasks(), null);
+      runGeneralLoadingTest("My Tasks (WorldView)", TaskArtifact.class, DemoDbTasks.getNumTasks(), null);
       runGeneralLoadingTest("My Originator - InWork", ActionArtifact.class, 9, null);
       runGeneralLoadingTest("My Originator - All", ActionArtifact.class, 16, null);
       runGeneralLoadingTest("My Completed", TeamWorkFlowArtifact.class, 23, null);
@@ -83,8 +84,8 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       runGeneralLoadingTest("User's Reviews - InWork", PeerToPeerReviewArtifact.class, 0, kayJones);
       runGeneralLoadingTest("User's Reviews - All", PeerToPeerReviewArtifact.class, 0, kayJones);
       runGeneralLoadingTest("User's Subscribed", TeamWorkFlowArtifact.class, 0, kayJones);
-      runGeneralLoadingTest("User's Tasks (WorldView)", TaskArtifact.class,
-            PopulateDemoActions.getTaskTitles(true).size(), kayJones);
+      runGeneralLoadingTest("User's Tasks (WorldView)", TaskArtifact.class, DemoDbTasks.getTaskTitles(true).size(),
+            kayJones);
       runGeneralLoadingTest("User's Favorites", TeamWorkFlowArtifact.class, 0, kayJones);
       runGeneralLoadingTest("User's Team Workflows", TeamWorkFlowArtifact.class, 8, kayJones);
       runGeneralLoadingTest("User's Originator - InWork", ActionArtifact.class, 0, kayJones);
@@ -94,8 +95,8 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
 
    public void testGroupsSearch() throws Exception {
       Artifact groupArt =
-            ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME,
-                  PopulateDemoActions.TEST_GROUP_NAME, AtsPlugin.getAtsBranch());
+            ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, DemoDbGroups.TEST_GROUP_NAME,
+                  AtsPlugin.getAtsBranch());
       assertTrue(groupArt != null);
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Groups Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof GroupWorldSearchItem);
@@ -106,7 +107,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Actions", arts, ActionArtifact.class, 2);
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Teams", arts, TeamWorkFlowArtifact.class, 4);
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Tasks", arts, TaskArtifact.class,
-            PopulateDemoActions.getNumTasks());
+            DemoDbTasks.getNumTasks());
    }
 
    public void testUserCommunitySearch() throws Exception {

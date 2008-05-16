@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
+import org.eclipse.osee.ats.config.demo.config.DemoDbTasks;
 import org.eclipse.osee.ats.config.demo.util.DemoUsers;
 import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.navigate.NavigateView;
@@ -42,7 +42,7 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
    public void testMyTasksEditor() throws Exception {
       closeTaskEditors();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("My Tasks (Editor)");
-      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, PopulateDemoActions.getNumTasks());
+      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getNumTasks());
    }
 
    public void testUsersTasksEditor() throws Exception {
@@ -50,7 +50,7 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User's Tasks (Editor)");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof MyTaskSearchItem);
       ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
-      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, PopulateDemoActions.getTaskTitles(true).size());
+      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getTaskTitles(true).size());
    }
 
    public void testEditTasksTeamVersion() throws Exception {
@@ -60,7 +60,7 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
       ((EditTasksByTeamVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDefs(TeamDefinitionArtifact.getTeamDefinitions(Arrays.asList(new String[] {"SAW Code"})));
       ((EditTasksByTeamVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedVersion(VersionArtifact.getVersions(
             Arrays.asList(new String[] {"SAW_Bld_2"})).iterator().next());
-      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, PopulateDemoActions.getNumTasks());
+      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getNumTasks());
    }
 
    public void testEditTasksByUser() throws Exception {
@@ -68,7 +68,7 @@ public class AtsNavigateItemsToTaskEditorTest extends TestCase {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Edit Tasks by User");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof MyTaskSearchItem);
       ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(DemoUsers.getDemoUser(DemoUsers.Kay_Jones));
-      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, PopulateDemoActions.getTaskTitles(true).size());
+      handleGeneralDoubleClickAndTestResults(item, TaskArtifact.class, DemoDbTasks.getTaskTitles(true).size());
    }
 
    public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) {
