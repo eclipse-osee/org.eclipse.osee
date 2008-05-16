@@ -1456,8 +1456,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return false;
    }
 
-   public int getRemainingAttributeCount(AttributeType attributeType) {
-      return attributeType.getMaxOccurrences() - attributes.getValues(attributeType.getName()).size();
+   public int getRemainingAttributeCount(AttributeType attributeType) throws SQLException {
+      return attributeType.getMaxOccurrences() - getAttributeCount(attributeType.getName());
    }
 
    public int getAttributeCount(String attributeTypeName) throws SQLException {

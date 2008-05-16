@@ -216,7 +216,11 @@ public class AttributesComposite extends Composite {
          public void widgetArmed(ArmEvent e) {
             MenuItem addItem = (MenuItem) e.getSource();
             for (MenuItem attrItem : addItem.getMenu().getItems()) {
-               attrItem.setEnabled(artifact.getRemainingAttributeCount((AttributeType) attrItem.getData()) > 0);
+               try {
+                  attrItem.setEnabled(artifact.getRemainingAttributeCount((AttributeType) attrItem.getData()) > 0);
+               } catch (SQLException ex) {
+
+               }
             }
          }
       });
