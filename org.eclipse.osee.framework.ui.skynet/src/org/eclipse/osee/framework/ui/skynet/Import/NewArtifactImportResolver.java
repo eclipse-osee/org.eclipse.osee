@@ -12,10 +12,12 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.PolymorphicArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * @author Ryan D. Brooks
@@ -30,21 +32,24 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver#resolve(org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact)
     */
-   public Artifact resolve(RoughArtifact roughArtifact) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
+   public Artifact resolve(final RoughArtifact roughArtifact) throws SQLException, IllegalStateException, IOException, OseeCoreException {
       ArtifactSubtypeDescriptor descriptor = roughArtifact.getDescriptorForGetReal();
 
       Artifact realArtifact = null;
+      ArtifactFactory factory = null;
       if (usePolymorphicArtifactFactory) {
-         realArtifact =
-               polymorphicArtifactFactory.makeNewArtifact(roughArtifact.getBranch(), descriptor,
-                     roughArtifact.getGuid(), roughArtifact.getHumandReadableId());
+         factory = polymorphicArtifactFactory;
       } else {
-         realArtifact =
-               descriptor.makeNewArtifact(roughArtifact.getBranch(), roughArtifact.getGuid(),
-                     roughArtifact.getHumandReadableId());
+         factory = descriptor.getFactory();
       }
-
-      roughArtifact.conferAttributesUpon(realArtifact);
+      realArtifact =
+            factory.makeNewArtifact(roughArtifact.getBranch(), descriptor, roughArtifact.getGuid(),
+                  roughArtifact.getHumandReadableId(), new ArtifactProcessor() {
+                     @Override
+                     public void run(Artifact artifact) throws OseeCoreException {
+                        roughArtifact.conferAttributesUpon(artifact);
+                     }
+                  });
 
       return realArtifact;
    }

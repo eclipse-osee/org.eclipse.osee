@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,10 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 /**
  * @author Robert A. Fisher
@@ -107,21 +106,28 @@ public class RoughArtifact {
       return number.isChild(otherArtifact.number);
    }
 
-   public void conferAttributesUpon(Artifact artifact) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
-      for (NameAndVal roughtAttribute : attributes) {
-         if (roughtAttribute.getValue() != null) {
-            artifact.addAttribute(roughtAttribute.getName(), roughtAttribute.getValue());
+   public void conferAttributesUpon(Artifact artifact) throws OseeCoreException {
+      try {
+         for (NameAndVal roughtAttribute : attributes) {
+            if (roughtAttribute.getValue() != null) {
+               artifact.addAttribute(roughtAttribute.getName(), roughtAttribute.getValue());
+            }
          }
+         setFileAttributes(artifact);
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
       }
-
-      setFileAttributes(artifact);
    }
 
-   private void setFileAttributes(Artifact artifact) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
-      if (fileAttributes != null) {
-         for (Entry<String, File> entry : fileAttributes.entrySet()) {
-            artifact.setSoleAttributeFromStream(entry.getKey(), new FileInputStream(entry.getValue()));
+   private void setFileAttributes(Artifact artifact) throws OseeCoreException {
+      try {
+         if (fileAttributes != null) {
+            for (Entry<String, File> entry : fileAttributes.entrySet()) {
+               artifact.setSoleAttributeFromStream(entry.getKey(), new FileInputStream(entry.getValue()));
+            }
          }
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
       }
    }
 
@@ -212,7 +218,7 @@ public class RoughArtifact {
       return children.isEmpty() || forcePrimaryType ? primaryDescriptor : headingDescriptor;
    }
 
-   public void updateValues(Artifact artifact) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
+   public void updateValues(Artifact artifact) throws OseeCoreException, SQLException {
       for (NameAndVal value : attributes) {
          artifact.setSoleXAttributeValue(value.getName(), value.getValue());
       }

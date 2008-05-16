@@ -14,13 +14,13 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
@@ -39,7 +39,7 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
       processTemplatesForDBInit();
    }
 
-   private void processTemplatesForDBInit() throws SQLException, IllegalStateException, IOException, MultipleAttributesExist {
+   private void processTemplatesForDBInit() throws SQLException, IllegalStateException, IOException, OseeCoreException {
 
       Artifact templateFolder = getTemplateFolder();
       IExtensionPoint ep =

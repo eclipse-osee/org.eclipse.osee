@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
 import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamWorkflow;
@@ -35,7 +36,7 @@ public class XNavigateItemBlam extends XNavigateItem {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws SQLException, OseeCoreException {
       BlamWorkflow workflow;
       try {
          workflow =

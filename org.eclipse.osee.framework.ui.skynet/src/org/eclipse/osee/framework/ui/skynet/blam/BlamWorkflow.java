@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -68,7 +69,7 @@ public class BlamWorkflow extends Artifact {
       this.layoutDatas = new LinkedList<DynamicXWidgetLayoutData>();
    }
 
-   public static BlamWorkflow createBlamWorkflow(BlamOperation soleOperation) throws SQLException {
+   public static BlamWorkflow createBlamWorkflow(BlamOperation soleOperation) throws SQLException, OseeCoreException {
       BlamWorkflow blamWorkflow =
             (BlamWorkflow) ArtifactTypeManager.addArtifact(ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
       return blamWorkflow;
