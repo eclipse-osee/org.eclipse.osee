@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
@@ -40,14 +41,34 @@ public abstract class ArtifactFactory {
     * @param humandReadableId
     * @return
     * @throws SQLException
+    * @throws OseeCoreException
+    * @deprecated Use {@link #makeNewArtifact(Branch,ArtifactSubtypeDescriptor,String,String,ArtifactProcessor)} instead
     */
-   public Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor artifactType, String guid, String humandReadableId) throws SQLException {
+   public Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor artifactType, String guid, String humandReadableId) throws OseeCoreException {
+      return makeNewArtifact(branch, artifactType, guid, humandReadableId, null);
+   }
+
+   /**
+    * Used to create a new artifact (one that has never been saved into the datastore)
+    * 
+    * @param branch
+    * @param artifactType
+    * @param guid
+    * @param humandReadableId
+    * @param earlyArtifactInitialization TODO
+    * @return
+    * @throws SQLException
+    */
+   public Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor artifactType, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
       if (!compatibleWith(artifactType)) {
          throw new IllegalArgumentException("The supplied descriptor is not appropriate for this factory");
       }
 
       Artifact artifact =
             getArtifactInstance(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
+      if (earlyArtifactInitialization != null) {
+         earlyArtifactInitialization.run(artifact);
+      }
       AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
       artifact.setLinksLoaded();
       artifact.onBirth();

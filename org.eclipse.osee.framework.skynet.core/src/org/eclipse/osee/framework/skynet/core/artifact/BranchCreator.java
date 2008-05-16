@@ -377,12 +377,7 @@ public class BranchCreator implements PersistenceManager {
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
    public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, MultipleAttributesExist, IllegalArgumentException, UserNotInDatabase, MultipleArtifactsExist {
-      Branch branch =
-            initializeBranch(shortBranchName, branchName, null, -1, GlobalTime.GreenwichMeanTimestamp(), "", null,
-                  BranchType.ROOT);
-      if (staticBranchName != null) ConnectionHandler.runPreparedUpdate(INSERT_DEFAULT_BRANCH_NAMES,
-            SQL3DataType.VARCHAR, staticBranchName, SQL3DataType.INTEGER, branch.getBranchId());
-      return branch;
+      return HttpBranchCreation.createRootBranch(skynetAuth, shortBranchName, branchName, staticBranchName);
    }
 
    /**
@@ -450,12 +445,8 @@ public class BranchCreator implements PersistenceManager {
     * @throws SQLException
     */
    public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws Exception {
-
-      CreateChildBranchTx createChildBranchTx =
-            new CreateChildBranchTx(parentTransactionId, childBranchShortName, childBranchName, associatedArtifact,
-                  compressArtTypes, preserveArtTypes);
-      createChildBranchTx.execute();
-      return createChildBranchTx.getChildBranch();
+      return HttpBranchCreation.createChildBranch(skynetAuth, parentTransactionId, childBranchShortName,
+            childBranchName, associatedArtifact, preserveMetaData, compressArtTypes, preserveArtTypes);
    }
 
    private final class CreateChildBranchTx extends AbstractDbTxTemplate {

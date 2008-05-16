@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -82,7 +83,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private final LinkManager linkManager = new LinkManager(this);
    private ArtifactFactory parentFactory;
    private int deletionTransactionId = -1;
-   private final HashCollection<String, Attribute<?>> attributes =
+   private HashCollection<String, Attribute<?>> attributes =
          new HashCollection<String, Attribute<?>>(false, LinkedList.class, 4);
    private AttributeAnnotationManager annotationMgr;
    private int transactionId;
@@ -91,6 +92,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private boolean linksLoaded;
 
    protected Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+
       if (guid == null) {
          this.guid = GUID.generateGuidStr();
       } else {
@@ -214,7 +216,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * Called upon completion of the initialization of an artifact when it is initially created. This allows sub-class
     * artifacts to set default attributes or do default processing.
     */
-   public void onBirth() throws SQLException {
+   public void onBirth() throws OseeCoreException {
    };
 
    /**
@@ -347,8 +349,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param artifactType
     * @param name TODO
     * @throws SQLException
+    * @throws OseeCoreException
     */
-   public Artifact addNewChild(ArtifactSubtypeDescriptor descriptor, String name) throws SQLException {
+   public Artifact addNewChild(ArtifactSubtypeDescriptor descriptor, String name) throws SQLException, OseeCoreException {
       Artifact child = descriptor.makeNewArtifact(branch);
       child.setDescriptiveName(name);
       addChild(child);
@@ -1251,9 +1254,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * Creates a new artifact and duplicates all of its attribute data.
     * 
+    * @throws OseeCoreException
     * @throws Exception
     */
-   public Artifact duplicate(Branch branch) throws SQLException {
+   public Artifact duplicate(Branch branch) throws SQLException, OseeCoreException {
       Artifact newArtifact = artifactType.makeNewArtifact(branch);
       copyAttributes(newArtifact);
       return newArtifact;

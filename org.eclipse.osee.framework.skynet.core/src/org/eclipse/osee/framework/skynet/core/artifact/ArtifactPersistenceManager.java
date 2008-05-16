@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeCh
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.ArtifactVersionIncrementedEvent;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
@@ -546,6 +547,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @param artifact The artifact to acquire the attributes for.
     * @param branch The tag to get the data for.
     * @throws SQLException
+    * @throws OseeCoreException
     */
    public static void setAttributesOnArtifact(Artifact artifact) throws SQLException {
       ConnectionHandlerStatement chStmt = null;
@@ -565,7 +567,11 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       } finally {
          DbUtil.close(chStmt);
       }
-      AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
+      try {
+         AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
+      } catch (OseeCoreException ex) {
+         throw new SQLException(ex);
+      }
    }
 
    /**

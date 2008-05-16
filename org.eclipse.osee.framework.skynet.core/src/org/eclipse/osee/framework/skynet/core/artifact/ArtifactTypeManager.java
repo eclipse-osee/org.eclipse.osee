@@ -6,6 +6,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 
@@ -24,8 +25,9 @@ public class ArtifactTypeManager {
     * @param branch
     * @return
     * @throws SQLException
+    * @throws OseeCoreException
     */
-   public static Artifact addArtifact(String artifactTypeName, Branch branch) throws SQLException {
+   public static Artifact addArtifact(String artifactTypeName, Branch branch) throws SQLException, OseeCoreException {
       return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName).makeNewArtifact(
             branch);
    }
@@ -40,7 +42,12 @@ public class ArtifactTypeManager {
     * @throws SQLException
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch, String name) throws SQLException {
-      Artifact artifact = addArtifact(artifactTypeName, branch);
+      Artifact artifact;
+      try {
+         artifact = addArtifact(artifactTypeName, branch);
+      } catch (OseeCoreException ex) {
+         throw new SQLException(ex);
+      }
       artifact.setDescriptiveName(name);
       return artifact;
    }
@@ -52,9 +59,10 @@ public class ArtifactTypeManager {
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
     * @throws SQLException
-    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String)
+    * @throws OseeCoreException
+    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String, ArtifactProcessor)
     */
-   public static Artifact addArtifact(String artifactTypeName, Branch branch, String guid, String humandReadableId) throws SQLException {
+   public static Artifact addArtifact(String artifactTypeName, Branch branch, String guid, String humandReadableId) throws SQLException, OseeCoreException {
       return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName).makeNewArtifact(
             branch, guid, humandReadableId);
    }

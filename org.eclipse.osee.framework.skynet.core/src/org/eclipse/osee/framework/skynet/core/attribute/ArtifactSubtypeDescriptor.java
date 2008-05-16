@@ -24,9 +24,11 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
@@ -103,11 +105,12 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * 
     * @return Return artifact reference
     * @throws SQLException
+    * @throws OseeCoreException
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
-   public Artifact makeNewArtifact(Branch branch) throws SQLException {
-      return factory.makeNewArtifact(branch, this, null, null);
+   public Artifact makeNewArtifact(Branch branch) throws SQLException, OseeCoreException {
+      return factory.makeNewArtifact(branch, this, null, null, null);
    }
 
    /**
@@ -118,11 +121,12 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
     * @throws SQLException
-    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String)
+    * @throws OseeCoreException
+    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String, ArtifactProcessor)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
-   public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws SQLException {
-      return factory.makeNewArtifact(branch, this, guid, humandReadableId);
+   public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws SQLException, OseeCoreException {
+      return factory.makeNewArtifact(branch, this, guid, humandReadableId, null);
    }
 
    /**

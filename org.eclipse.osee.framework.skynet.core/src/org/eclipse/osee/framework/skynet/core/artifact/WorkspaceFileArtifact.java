@@ -14,13 +14,12 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
-import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -40,7 +39,7 @@ public class WorkspaceFileArtifact extends Artifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws MultipleArtifactsExist, SQLException, MultipleAttributesExist {
+   public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws SQLException, OseeCoreException {
       Artifact artifact = null;
       int descriptorSelected = -1;
       ArtifactSubtypeDescriptor descriptor = null;

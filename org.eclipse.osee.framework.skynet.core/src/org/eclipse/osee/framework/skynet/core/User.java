@@ -44,9 +44,13 @@ public class User extends Artifact implements Serializable {
     * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#onBirth()
     */
    @Override
-   public void onBirth() throws SQLException {
+   public void onBirth() throws OseeCoreException {
       super.onBirth();
-      EveryoneGroup.addGroupMember(this);
+      try {
+         EveryoneGroup.addGroupMember(this);
+      } catch (SQLException ex) {
+         throw new OseeCoreException(ex.getMessage(), ex);
+      }
    }
 
    public User(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {

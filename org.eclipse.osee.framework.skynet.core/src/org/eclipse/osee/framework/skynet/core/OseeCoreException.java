@@ -30,4 +30,11 @@ public class OseeCoreException extends Exception {
    public OseeCoreException(String message, Throwable cause) {
       super(message, cause);
    }
+
+   /**
+    * @param cause
+    */
+   public OseeCoreException(Throwable cause) {
+      super(cause);
+   }
 }
