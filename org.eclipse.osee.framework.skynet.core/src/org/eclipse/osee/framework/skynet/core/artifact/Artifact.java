@@ -475,7 +475,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    private void ensureAttributesLoaded() throws SQLException {
-      if (!isAttributesLoaded()) {
+      if (!isAttributesLoaded() && isInDb()) {
          ArtifactLoader.loadArtifactData(this, branch, ArtifactLoad.ATTRIBUTE);
       }
    }
