@@ -42,32 +42,30 @@ public class MergeUtility {
    public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) return;
       if (okToOverwriteEditedValue(conflict, shell, prompt)) {
-         if (!conflict.clearValue()) {
-            MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
-         }
+         conflict.clearValue();
       }
    }
 
    public static void setToDest(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) return;
       if (okToOverwriteEditedValue(conflict, shell, prompt)) {
-         if (!conflict.setToDest()) {
-            MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
-         }
+         conflict.setToDest();
       }
    }
 
    public static void setToSource(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) return;
       if (okToOverwriteEditedValue(conflict, shell, prompt)) {
-         if (!conflict.setToSource()) {
-            MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
-         }
+         conflict.setToSource();
       }
    }
 
    public static boolean okToOverwriteEditedValue(Conflict conflict, Shell shell, boolean prompt) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       boolean proceed = true;
+      if (conflict.statusResolved()) {
+         MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
+         return false;
+      }
       if (!(conflict.mergeEqualsDestination() || conflict.mergeEqualsSource() || conflict.statusUntouched()) && prompt) {
          proceed = MessageDialog.openConfirm(shell, "Confirm", CLEAR_PROMPT);
       }

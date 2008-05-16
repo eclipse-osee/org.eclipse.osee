@@ -85,8 +85,8 @@ public class ArtifactQueryBuilder {
       this(null, 0, null, null, artifactType, branch, false, loadLevel);
    }
 
-   public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel) {
-      this(null, 0, null, null, null, branch, false, loadLevel);
+   public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
+      this(null, 0, null, null, null, branch, allowDeleted, loadLevel);
    }
 
    private static String ensureValid(String id) {

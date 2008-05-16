@@ -74,7 +74,7 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
          }
       }
       if (obj instanceof AttributeConflict) try {
-         Object object = ((AttributeConflict) obj).getMergeValue();
+         Object object = ((AttributeConflict) obj).getMergeObject();
          if (object instanceof Date)
             date = (Date) object;
          else
@@ -100,9 +100,9 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
          for (Object object : attributeHolder) {
             if (object instanceof Artifact) {
                if (selected == null)
-                  ((Artifact) object).setSoleStringAttributeValue(attributeName, "");
+                  ((Artifact) object).setSoleXAttributeValue(attributeName, "");
                else
-                  ((Artifact) object).setSoleStringAttributeValue(attributeName, selected.getTime() + "");
+                  ((Artifact) object).setSoleXAttributeValue(attributeName, selected.getTime() + "");
                if (persist) ((Artifact) object).persistAttributes();
             }
             if (object instanceof AttributeConflict) {

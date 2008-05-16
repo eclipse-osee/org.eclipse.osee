@@ -93,7 +93,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
          }
       } else if (obj instanceof AttributeConflict) {
          try {
-            editor.setSelected(((AttributeConflict) obj).getMergeValue().toString());
+            editor.setSelected(((AttributeConflict) obj).getMergeObject().toString());
          } catch (Exception ex) {
             OSEELog.logException(EmbeddedEnumAttributeEditor.class, ex, true);
          }
@@ -110,7 +110,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       try {
          for (Object object : attributeHolder) {
             if (object instanceof Artifact) {
-               ((Artifact) object).setSoleStringAttributeValue(attributeName, selection);
+               ((Artifact) object).setSoleXAttributeValue(attributeName, selection);
                if (persist) ((Artifact) object).persistAttributes();
             }
             if (object instanceof AttributeConflict) {

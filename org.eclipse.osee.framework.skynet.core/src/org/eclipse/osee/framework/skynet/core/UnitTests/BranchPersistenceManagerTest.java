@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictTestManager;
 
 /**
@@ -167,7 +168,7 @@ public class BranchPersistenceManagerTest extends TestCase {
                branchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
                      ConflictTestManager.getDestBranch().getBranchId());
          assertFalse(mergeBranch == null);
-         Collection<Artifact> artifacts = mergeBranch.getArtifacts();
+         Collection<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(mergeBranch, true);
          assertTrue(artifacts.toArray().length == ConflictTestManager.numberOfArtifactsOnMergeBranch());
       } catch (Exception ex) {
          fail(ex.getMessage());

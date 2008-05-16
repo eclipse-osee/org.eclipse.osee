@@ -81,7 +81,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
          }
       } else if (obj instanceof AttributeConflict) {
          try {
-            editor.setEntry(((AttributeConflict) obj).getMergeValue().toString());
+            editor.setEntry(((AttributeConflict) obj).getMergeObject().toString());
          } catch (Exception ex) {
             OSEELog.logException(EmbeddedStringAttributeEditor.class, ex, true);
          }
@@ -99,7 +99,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
          try {
             for (Object object : attributeHolders) {
                if (object instanceof Artifact) {
-                  ((Artifact) object).setSoleStringAttributeValue(attributeName, editor.getEntry());
+                  ((Artifact) object).setSoleXAttributeValue(attributeName, editor.getEntry());
                   if (persist) ((Artifact) object).persistAttributes();
                }
                if (object instanceof AttributeConflict) {

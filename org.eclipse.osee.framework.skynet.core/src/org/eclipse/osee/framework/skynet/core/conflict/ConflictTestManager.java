@@ -36,6 +36,7 @@ public class ConflictTestManager {
    private static final ArtifactPersistenceManager artifactPersistenceManager =
          ArtifactPersistenceManager.getInstance();
    private static int NUMBER_OF_CONFLICTS = 6;
+   private static int NUMBER_OF_ARTIFACTS_ON_BRANCH = 3;
 
    public static void initializeConflictTest() throws Exception {
       // Create a new destination branch from the Branch with BranchID = 2
@@ -57,6 +58,7 @@ public class ConflictTestManager {
       if (rootArtifact == null) {
          throw new Exception("Could not find the Root Artifact");
       }
+      // If you fail here you probably don't have your resource server running
       for (int i = 0; i < NUMBER_OF_ARTIFACTS - NUMBER_OF_VERSION_ARTIFACTS; i++) {
          destArtifacts[i] = rootArtifact.addNewChild(descriptor, "Test Artifact Number " + i);
       }
@@ -79,6 +81,7 @@ public class ConflictTestManager {
       tranId.setHead(true);
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          sourceArtifacts[i] = artifactPersistenceManager.getArtifactFromId(destArtifacts[i].getArtId(), tranId);
+         sourceArtifacts[i].setIds(sourceArtifacts[i].getArtId(), sourceArtifacts[i].getGammaId(), 0);
       }
       // create attribute conflicts
 
@@ -187,4 +190,7 @@ public class ConflictTestManager {
       return NUMBER_OF_CONFLICTS;
    }
 
+   public static int numberOfArtifactsOnMergeBranch() {
+      return NUMBER_OF_ARTIFACTS_ON_BRANCH;
+   }
 }

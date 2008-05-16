@@ -53,7 +53,7 @@ public class ArtifactQuery {
     */
    public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist {
       try {
-         return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getArtifact();
+      return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getArtifact();
       } catch (MultipleArtifactsExist ex) {
          // it is not possible to have two artifacts with the same artifact id
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -174,8 +174,8 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(artifactType, branch, FULL).getArtifacts(null);
    }
 
-   public static List<Artifact> getArtifactsFromBranch(Branch branch) throws SQLException {
-      return new ArtifactQueryBuilder(branch, FULL).getArtifacts(null);
+   public static List<Artifact> getArtifactsFromBranch(Branch branch, boolean allowDeleted) throws SQLException {
+      return new ArtifactQueryBuilder(branch, FULL, allowDeleted).getArtifacts(null);
    }
 
    public static List<Artifact> getArtifactsFromType(String artifactTypeName, Branch branch) throws SQLException {

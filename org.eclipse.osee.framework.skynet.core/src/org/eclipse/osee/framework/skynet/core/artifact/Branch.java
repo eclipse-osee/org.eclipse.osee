@@ -390,8 +390,4 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       return null;
    }
 
-   public Collection<Artifact> getArtifacts() throws SQLException {
-      return ArtifactQuery.getArtifactsFromType("%", this);
-   }
-
 }

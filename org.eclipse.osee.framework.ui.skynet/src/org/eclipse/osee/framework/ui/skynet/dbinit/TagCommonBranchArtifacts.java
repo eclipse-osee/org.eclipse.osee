@@ -30,7 +30,7 @@ public class TagCommonBranchArtifacts extends DbInitializationTask {
     */
    public void run(Connection connection) throws Exception {
       TagArtifactsJob job =
-            new TagArtifactsJob(ArtifactQuery.getArtifactsFromBranch(BranchPersistenceManager.getCommonBranch()));
+            new TagArtifactsJob(ArtifactQuery.getArtifactsFromBranch(BranchPersistenceManager.getCommonBranch(), false));
       Jobs.startJob(job);
       try {
          job.join();

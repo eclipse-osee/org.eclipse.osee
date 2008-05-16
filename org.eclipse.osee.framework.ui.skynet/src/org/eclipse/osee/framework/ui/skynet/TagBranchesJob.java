@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -40,7 +41,7 @@ public class TagBranchesJob extends Job {
       monitor.beginTask("Tag Brances", branches.size());
       for (Branch branch : branches) {
          try {
-            Collection<Artifact> arts = branch.getArtifacts(false);
+            Collection<Artifact> arts = ArtifactQuery.getArtifactsFromBranch(branch, false);
             monitor.subTask("Tagging " + arts.size() + " artifacts from " + branch.getBranchName());
             for (Artifact artifact : arts) {
                try {

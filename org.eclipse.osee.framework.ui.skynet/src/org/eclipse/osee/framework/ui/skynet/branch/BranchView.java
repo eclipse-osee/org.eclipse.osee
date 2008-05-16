@@ -85,7 +85,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.plugin.util.Files;
 import org.eclipse.osee.framework.ui.plugin.util.JobbedNode;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -1284,21 +1283,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                toBranch =
                      BranchPersistenceManager.getInstance().getBranch(Integer.parseInt(event.getParameter(BRANCH_ID)));
             }
-            //            if (!useParentBranch && BranchPersistenceManager.getInstance().hasConflicts(fromBranch, toBranch)) {
-            //               if (MessageDialog.openConfirm(
-            //                     Display.getCurrent().getActiveShell(),
-            //                     "Commit Conflict",
-            //                     "This branch could not be directly commited into the destination branch because conflicts were detected. Therefore, a working branch will need to be created on the destination branch to allow for conflict resoultion. Would you like to contiune and create the working branch?")) {
-            //
-            //                  toBranch =
-            //                        BranchPersistenceManager.getInstance().createWorkingBranchFromBranchChanges(fromBranch,
-            //                              toBranch, null);
-            //                  BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, false);
-            //
-            //               }
-            //            } else {
             BranchPersistenceManager.getInstance().commitBranch(fromBranch, toBranch, true);
-            //            }
          } catch (ConflictDetectionException ex) {
             CheckBoxDialog dialog =
                   new CheckBoxDialog(Display.getCurrent().getActiveShell(), "Commit Failed", null,

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Theron Virgin
@@ -37,7 +38,7 @@ public class MergeBranchManager {
    public static void updateMergeBranch(Branch mergeBranch, ArrayList<Integer> expectedArtIds, Branch destBranch, Branch sourceBranch) throws Exception {
       Collection<Integer> allMergeBranchArtifacts = getAllMergeArtifacts(mergeBranch);
       Collection<Integer> allMergeBranchArtifactsCopy = new HashSet<Integer>(allMergeBranchArtifacts);
-      Collection<Artifact> goodMergeBranchArtifacts = mergeBranch.getArtifacts();
+      Collection<Artifact> goodMergeBranchArtifacts = ArtifactQuery.getArtifactsFromBranch(mergeBranch, true);
 
       //Delete any damaged artifacts (from a source revert) on the merge branch
       for (Artifact artifact : goodMergeBranchArtifacts) {
