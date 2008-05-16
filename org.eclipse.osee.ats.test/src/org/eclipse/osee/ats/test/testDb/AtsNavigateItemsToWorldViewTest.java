@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
+import org.eclipse.osee.ats.world.search.StateWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamVersionWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
@@ -178,6 +179,19 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting Peer ToPeer Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
       handleGeneralDoubleClickAndTestResults(item, PeerToPeerReviewArtifact.class, 1);
+   }
+
+   public void testSearchByCurrentState() throws Exception {
+      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Search by Current State");
+      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof StateWorldSearchItem);
+      ((StateWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedStateClass("Implement");
+      handleGeneralDoubleClickAndTestResults(item, TeamWorkFlowArtifact.class, 20);
+   }
+
+   public void testSearchForAuthorizeActions() throws Exception {
+      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Search for Authorize Actions");
+      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof StateWorldSearchItem);
+      handleGeneralDoubleClickAndTestResults(item, TeamWorkFlowArtifact.class, 0);
    }
 
    public Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, Class<?> clazz, int numOfType, User user) throws Exception {
