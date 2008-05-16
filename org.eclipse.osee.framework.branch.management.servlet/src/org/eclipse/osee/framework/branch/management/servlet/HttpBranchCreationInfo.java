@@ -1,6 +1,7 @@
 package org.eclipse.osee.framework.branch.management.servlet;
 
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 
 class HttpBranchCreationInfo {
 
@@ -34,6 +35,7 @@ class HttpBranchCreationInfo {
       if (branchShortName == null) {
          branchShortName = branchName;
       }
+      branchShortName = StringFormat.truncate(branchShortName, 25);
       creationComment = req.getParameter("creationComment");//required
       if (creationComment == null || creationComment.length() == 0) {
          throw new IllegalArgumentException("A 'creationComment' parameter must be specified");
