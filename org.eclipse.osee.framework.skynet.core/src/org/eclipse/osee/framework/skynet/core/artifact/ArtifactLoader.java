@@ -139,7 +139,7 @@ public final class ArtifactLoader {
       List<RelationLink> relations = new ArrayList<RelationLink>(artifacts.size() * 4);
       Set<Integer> artifactIdsToLoad = null;
       if (otherSideLoadLevel != SHALLOW) {
-         new HashSet<Integer>(relations.size() + 1);
+         artifactIdsToLoad = new HashSet<Integer>(relations.size() + 1);
       }
 
       for (Artifact artifact : artifacts) {
