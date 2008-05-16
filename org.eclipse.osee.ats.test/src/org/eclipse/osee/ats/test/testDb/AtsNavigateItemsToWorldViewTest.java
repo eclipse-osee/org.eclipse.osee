@@ -56,7 +56,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    }
 
    public void testMySearches() throws Exception {
-      runGeneralLoadingTest("My World", ActionArtifact.class, 8, null);
+      runGeneralLoadingTest("My World", ActionArtifact.class, 9, null);
       runGeneralLoadingTest("My Reviews", PeerToPeerReviewArtifact.class, 2, null);
       // TODO Transition Review to Completed and another to Cancelled and test My Reviews - All returns them
       runGeneralLoadingTest("My Reviews - All", PeerToPeerReviewArtifact.class, 3, null);
@@ -82,8 +82,8 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
       User kayJones = DemoUsers.getDemoUser(DemoUsers.Kay_Jones);
       assertTrue(kayJones != null);
       runGeneralLoadingTest("User's World", ActionArtifact.class, 5, kayJones);
-      runGeneralLoadingTest("User's Reviews - InWork", PeerToPeerReviewArtifact.class, 0, kayJones);
-      runGeneralLoadingTest("User's Reviews - All", PeerToPeerReviewArtifact.class, 0, kayJones);
+      runGeneralLoadingTest("User's Reviews - InWork", PeerToPeerReviewArtifact.class, 1, kayJones);
+      runGeneralLoadingTest("User's Reviews - All", PeerToPeerReviewArtifact.class, 2, kayJones);
       runGeneralLoadingTest("User's Subscribed", TeamWorkFlowArtifact.class, 0, kayJones);
       runGeneralLoadingTest("User's Tasks (WorldView)", TaskArtifact.class, DemoDbTasks.getTaskTitles(true).size(),
             kayJones);
@@ -160,25 +160,25 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    public void testShowOpenDecisionReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open Decision Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      handleGeneralDoubleClickAndTestResults(item, DecisionReviewArtifact.class, 99);
+      handleGeneralDoubleClickAndTestResults(item, DecisionReviewArtifact.class, 3);
    }
 
    public void testShowWorkflowsWaitingForDecisionReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting Decision Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      handleGeneralDoubleClickAndTestResults(item, DecisionReviewArtifact.class, 99);
+      handleGeneralDoubleClickAndTestResults(item, TeamWorkFlowArtifact.class, 1);
    }
 
    public void testShowOpenPeerToPeerReviewsSearch() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open Peer ToPeer Reviews");
+      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open PeerToPeer Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
       handleGeneralDoubleClickAndTestResults(item, PeerToPeerReviewArtifact.class, 2);
    }
 
    public void testShowWorkflowsWaitingForPeerToPeerReviewsSearch() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting Peer ToPeer Reviews");
+      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting PeerToPeer Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      handleGeneralDoubleClickAndTestResults(item, PeerToPeerReviewArtifact.class, 1);
+      handleGeneralDoubleClickAndTestResults(item, TeamWorkFlowArtifact.class, 1);
    }
 
    public void testSearchByCurrentState() throws Exception {
@@ -191,6 +191,7 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    public void testSearchForAuthorizeActions() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Search for Authorize Actions");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof StateWorldSearchItem);
+      System.out.println("Waiting...");
       handleGeneralDoubleClickAndTestResults(item, TeamWorkFlowArtifact.class, 0);
    }
 
