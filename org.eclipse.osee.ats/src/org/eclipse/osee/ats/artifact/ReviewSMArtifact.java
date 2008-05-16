@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public abstract class ReviewSMArtifact extends StateMachineArtifact {
 
-   public DefectManager defectManager;
-   public UserRoleManager userRoleManager;
+   protected DefectManager defectManager;
+   protected UserRoleManager userRoleManager;
    private XActionableItemsDam actionableItemsDam;
 
    /**

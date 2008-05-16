@@ -46,17 +46,18 @@ public class UserRole {
    };
 
    public UserRole() {
-      this(Role.Reviewer, SkynetAuthentication.getInstance().getAuthenticatedUser(), null);
+      this(Role.Reviewer, SkynetAuthentication.getInstance().getAuthenticatedUser(), null, null);
    }
 
    public UserRole(Role role, User user) {
-      this(role, user, 0.0);
+      this(role, user, 0.0, false);
    }
 
-   public UserRole(Role role, User user, Double hoursSpent) {
+   public UserRole(Role role, User user, Double hoursSpent, Boolean completed) {
       this.role = role;
       this.user = user;
       this.hoursSpent = hoursSpent;
+      this.completed = completed;
    }
 
    public UserRole(String xml) {

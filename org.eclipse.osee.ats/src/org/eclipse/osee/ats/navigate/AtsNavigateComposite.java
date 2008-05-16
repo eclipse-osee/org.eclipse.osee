@@ -51,29 +51,34 @@ public class AtsNavigateComposite extends XNavigateComposite {
       IStructuredSelection sel = (IStructuredSelection) filteredTree.getViewer().getSelection();
       if (!sel.iterator().hasNext()) return;
       XNavigateItem item = (XNavigateItem) sel.iterator().next();
+      handleDoubleClick(item);
+   }
+
+   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) {
       if (item instanceof SearchNavigateItem) {
          WorldSearchItem worldSearchItem = ((SearchNavigateItem) item).getWorldSearchItem();
          if (worldSearchItem.getLoadView() == LoadView.WorldView)
-            openWorld(worldSearchItem);
-         else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) openTaskEditor(worldSearchItem);
+            openWorld(worldSearchItem, tableLoadOptions);
+         else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) openTaskEditor(worldSearchItem,
+               tableLoadOptions);
       } else
-         super.handleDoubleClick();
+         super.handleDoubleClick(item, tableLoadOptions);
    }
 
-   public static void openWorld(WorldSearchItem searchItem) {
+   public static void openWorld(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       try {
          WorldView worldView = (WorldView) page.showView(WorldView.VIEW_ID);
-         worldView.loadTable(searchItem, true);
+         worldView.loadTable(searchItem, tableLoadOptions);
       } catch (PartInitException e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
                "Couldn't Launch Search View " + e1.getMessage());
       }
    }
 
-   public static void openTaskEditor(WorldSearchItem searchItem) {
+   public static void openTaskEditor(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) {
       try {
-         TaskEditor.loadTable(searchItem, false);
+         TaskEditor.loadTable(searchItem, tableLoadOptions);
       } catch (Exception e1) {
          OSEELog.logException(AtsPlugin.class, null, true);
       }

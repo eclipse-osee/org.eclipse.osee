@@ -19,10 +19,12 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -41,7 +43,7 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class OverviewPage extends FormPage implements IActionable {
    private final BlamWorkflow workflow;
-   private final DynamicXWidgetLayout dynamicXWidgetLayout;
+   private DynamicXWidgetLayout dynamicXWidgetLayout;
    private final XFormToolkit toolkit;
    private Composite parametersContainer;
    private final WorkflowEditor editor;
@@ -55,7 +57,17 @@ public class OverviewPage extends FormPage implements IActionable {
       this.editor = editor;
       this.toolkit = editor.getToolkit();
       this.workflow = editor.getWorkflow();
-      this.dynamicXWidgetLayout = new DynamicXWidgetLayout();
+      try {
+         BlamOperation blamOperation = workflow.getOperations().iterator().next();
+         this.dynamicXWidgetLayout = null;
+         if (blamOperation instanceof IDynamicWidgetLayoutListener) {
+            this.dynamicXWidgetLayout = new DynamicXWidgetLayout((IDynamicWidgetLayoutListener) blamOperation, null);
+         } else {
+            this.dynamicXWidgetLayout = new DynamicXWidgetLayout();
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
    }
 
    public void update(DynamicXWidgetLayout dynamicXWidgetLayout) throws Exception {

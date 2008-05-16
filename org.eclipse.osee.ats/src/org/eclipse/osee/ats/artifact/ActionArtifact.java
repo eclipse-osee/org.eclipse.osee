@@ -805,7 +805,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          if (aia.getImpactedTeamDefs().contains(teamDef)) teamArt.getActionableItemsDam().addActionableItem(aia);
 
       // Initialize state machine
-      teamArt.getSmaMgr().getStateMgr().initializeStateMachine(DefaultTeamState.Endorse.name());
+      teamArt.getSmaMgr().getStateMgr().initializeStateMachine(DefaultTeamState.Endorse.name(), assignees);
       teamArt.getLog().addLog(LogType.StateEntered, DefaultTeamState.Endorse.name(), "");
 
       // Relate WorkFlow to Team Definition (by guid due to relation loading

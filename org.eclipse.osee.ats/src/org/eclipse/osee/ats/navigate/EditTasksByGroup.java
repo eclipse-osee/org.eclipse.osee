@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -43,7 +44,7 @@ public class EditTasksByGroup extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run() throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
       GroupListDialog dialog = new GroupListDialog(Display.getCurrent().getActiveShell());
       if (dialog.open() == 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();

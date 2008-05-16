@@ -61,6 +61,24 @@ public class DefectItem {
       }
    };
 
+   public DefectItem() {
+   }
+
+   public DefectItem(User user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) {
+      if (user != null) this.user = user;
+      if (severity != null) this.severity = severity;
+      if (disposition != null) this.disposition = disposition;
+      if (injectionActivity != null) this.injectionActivity = injectionActivity;
+      if (description != null) this.description = description;
+      if (resolution != null) this.resolution = resolution;
+      if (location != null) this.location = location;
+      if (date != null) this.date = date;
+   }
+
+   public DefectItem(String xml) {
+      fromXml(xml);
+   }
+
    public void update(DefectItem dItem) throws SQLException, MultipleAttributesExist {
       fromXml(dItem.toXml());
    }
@@ -103,16 +121,9 @@ public class DefectItem {
       }
    };
 
-   public DefectItem() {
-   }
-
    public String getDate(String pattern) {
       if (pattern != null) return (new SimpleDateFormat(pattern)).format(date);
       return date.toString();
-   }
-
-   public DefectItem(String xml) {
-      fromXml(xml);
    }
 
    @Override

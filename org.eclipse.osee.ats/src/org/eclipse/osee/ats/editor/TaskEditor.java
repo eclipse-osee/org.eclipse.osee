@@ -11,9 +11,11 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -34,6 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
@@ -61,7 +64,9 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       onDirtied();
    }
 
-   public static void editArtifacts(final TaskEditorInput input) {
+   public static void editArtifacts(final TaskEditorInput input, TableLoadOption... tableLoadOptions) {
+      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
+      options.addAll(Arrays.asList(tableLoadOptions));
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -74,8 +79,12 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
-      });
+      }, options.contains(TableLoadOption.ForcePend));
 
+   }
+
+   public ArrayList<Artifact> getLoadedArtifacts() {
+      return taskComposite.getXTask().getXViewer().getLoadedArtifacts();
    }
 
    public boolean isSaveOnCloseNeeded() {
@@ -251,7 +260,9 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return true;
    }
 
-   public static void loadTable(WorldSearchItem searchItem, boolean sort) {
+   public static void loadTable(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) {
+      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
+      options.addAll(Arrays.asList(tableLoadOptions));
       searchItem.setCancelled(false);
       if (!ConnectionHandler.isConnected()) {
          AWorkbench.popup("ERROR", "DB Connection Unavailable");
@@ -260,15 +271,16 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
       if (searchItem == null) return;
 
-      searchItem.performUI(SearchType.Search);
+      if (!options.contains(TableLoadOption.NoUI)) searchItem.performUI(SearchType.Search);
       if (searchItem.isCancelled()) return;
 
       LoadTableJob job = null;
       try {
-         job = new LoadTableJob(searchItem, SearchType.Search, sort);
+         job = new LoadTableJob(searchItem, SearchType.Search, tableLoadOptions);
          job.setUser(false);
          job.setPriority(Job.LONG);
          job.schedule();
+         if (options.contains(TableLoadOption.ForcePend)) job.join();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Load Table Failed", ex, true);
       }
@@ -277,16 +289,16 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    private static class LoadTableJob extends Job {
 
       @SuppressWarnings("unused")
-      private final boolean sort;
       private final WorldSearchItem searchItem;
       private boolean cancel = false;
       private final SearchType searchType;
+      private final TableLoadOption[] tableLoadOptions;
 
-      public LoadTableJob(WorldSearchItem searchItem, SearchType searchType, boolean sort) {
+      public LoadTableJob(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) {
          super("Loading \"" + searchItem.getSelectedName(searchType) + "\"...");
          this.searchItem = searchItem;
          this.searchType = searchType;
-         this.sort = sort;
+         this.tableLoadOptions = tableLoadOptions;
       }
 
       /*
@@ -326,7 +338,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
                   new TaskEditorInput(
                         "Tasks for \"" + (searchItem.getSelectedName(searchType) != null ? searchItem.getSelectedName(searchType) : "") + "\"",
                         taskArts);
-            TaskEditor.editArtifacts(input);
+            TaskEditor.editArtifacts(input, tableLoadOptions);
 
          } catch (final Exception ex) {
             monitor.done();

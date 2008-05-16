@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
  * @author Donald G. Dunne
@@ -45,24 +46,23 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run() throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
       final ActionableItemListDialog ld = new ActionableItemListDialog(Active.Both);
       ld.setMessage("Select Actionable Items to Review\n\nNOTE: To create a review against " + "an Action and Team Workflow\nopen the object in ATS and select the " + "review to create from the editor.");
       int result = ld.open();
       if (result == 0) {
          try {
-            AbstractSkynetTxTemplate txWrapper =
-                  new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-                     @Override
-                     protected void handleTxWork() throws Exception {
-                        PeerToPeerReviewArtifact peerArt =
-                              ReviewManager.createNewPeerToPeerReview(null, null,
-                                    SkynetAuthentication.getInstance().getAuthenticatedUser(), new Date());
-                        peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+               @Override
+               protected void handleTxWork() throws Exception {
+                  PeerToPeerReviewArtifact peerArt =
+                        ReviewManager.createNewPeerToPeerReview(null, null,
+                              SkynetAuthentication.getInstance().getAuthenticatedUser(), new Date());
+                  peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
                         peerArt.persist();
-                        AtsLib.openAtsAction(peerArt, AtsOpenOption.OpenAll);
-                     }
-                  };
+                  AtsLib.openAtsAction(peerArt, AtsOpenOption.OpenAll);
+               }
+            };
             txWrapper.execute();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);

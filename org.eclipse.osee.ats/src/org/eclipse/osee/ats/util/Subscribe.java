@@ -32,9 +32,14 @@ public class Subscribe {
    }
 
    public void toggleSubscribe() {
+      toggleSubscribe(true);
+   }
+
+   public void toggleSubscribe(boolean prompt) {
       try {
          if (((ISubscribableArtifact) sma).amISubscribed()) {
-            boolean result =
+            boolean result = true;
+            if (prompt) result =
                   MessageDialog.openQuestion(
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Un-Subscribe",
@@ -43,7 +48,8 @@ public class Subscribe {
                ((ISubscribableArtifact) sma).removeSubscribed(SkynetAuthentication.getInstance().getAuthenticatedUser());
             }
          } else {
-            boolean result =
+            boolean result = true;
+            if (prompt) result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Subscribe",
                         "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
@@ -56,5 +62,4 @@ public class Subscribe {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
    }
-
 }

@@ -220,4 +220,11 @@ public class TeamWorldSearchItem extends WorldSearchItem {
       this.showFinished = showFinished;
    }
 
+   /**
+    * @param selectedTeamDefs the selectedTeamDefs to set
+    */
+   public void setSelectedTeamDefs(Set<TeamDefinitionArtifact> selectedTeamDefs) {
+      this.selectedTeamDefs = selectedTeamDefs;
+   }
+
 }

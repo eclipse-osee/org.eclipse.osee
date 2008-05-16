@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
 /**
@@ -26,7 +25,6 @@ public abstract class WorldSearchItem {
    private final String name;
    protected static Set<Artifact> EMPTY_SET = new HashSet<Artifact>();
    protected boolean cancelled = false;
-   protected ArtifactPersistenceManager apm = ArtifactPersistenceManager.getInstance();
    private LoadView loadView;
    public static enum LoadView {
       WorldView, TaskEditor, None
@@ -34,6 +32,12 @@ public abstract class WorldSearchItem {
    public static enum SearchType {
       Search, ReSearch
    };
+   public static enum ShowType {
+      ShowAction, ShowTeamWorkflow
+   }
+   public static enum RecurseType {
+      None, RecurseChildren
+   }
 
    public WorldSearchItem(String name) {
       this(name, LoadView.WorldView);
@@ -122,4 +126,7 @@ public abstract class WorldSearchItem {
       this.loadView = loadView;
    }
 
+   public String toString() {
+      return getName();
+   }
 }

@@ -24,8 +24,6 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -52,9 +50,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
@@ -108,61 +103,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    void enableGlobalPrint() {
-      printAction = new Action("Print") {
-         /*
-          * (non-Javadoc)
-          * 
-          * @see org.eclipse.jface.action.Action#run()
-          */
-         @Override
-         public void run() {
-            try {
-               StringBuffer sb = new StringBuffer();
-               sb.append(AHTML.beginMultiColumnTable(100));
-               sb.append(AHTML.addRowMultiColumnTable(new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Title: ",
-                     smaMgr.getSma().getDescriptiveName())}));
-               sb.append(AHTML.endMultiColumnTable());
-               sb.append(AHTML.beginMultiColumnTable(100));
-               sb.append(AHTML.addRowMultiColumnTable(new String[] {
-               //
-                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ",
-                           ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewState()),
-                     //
-                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-                           ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewTeam()),
-                     //
-                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ",
-                           ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewActivePoc()),
-                     //
-                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ",
-                           ((IWorldViewArtifact) smaMgr.getSma()).getWorldViewOriginator()),
-                     //
-                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", XDate.getDateStr(
-                           smaMgr.getSma().getLog().getCreationDate(), XDate.MMDDYYHHMM))
-
-               }));
-               sb.append(AHTML.endMultiColumnTable());
-               sb.append(AHTML.beginMultiColumnTable(100));
-               sb.append(AHTML.addRowMultiColumnTable(new String[] {
-                     //
-                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", smaMgr.getSma().getArtifactTypeName()),
-                     AHTML.getLabelValueStr(AHTML.LABEL_FONT, "HRID: ", smaMgr.getSma().getHumanReadableId()),
-                     (smaMgr.getSma().getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT,
-                           "Action HRID: ", smaMgr.getSma().getParentActionArtifact().getHumanReadableId()))}));
-               sb.append(AHTML.endMultiColumnTable());
-               sb.append(workFlowTab.getHtml());
-               sb.append(taskComposite.getHtml());
-               sb.append(AHTML.newline());
-               sb.append(smaMgr.getSma().getLog().getHtml());
-               XResultData resultData = new XResultData(AtsPlugin.getLogger());
-               resultData.addRaw(sb.toString());
-               resultData.report(smaMgr.getSma().getDescriptiveName(), Manipulations.RAW_HTML);
-            } catch (Exception ex) {
-               OSEELog.logException(AtsPlugin.class, ex, true);
-            }
-
-         }
-      };
+      printAction = new SMAPrint(smaMgr, workFlowTab, taskComposite);
       getEditorSite().getActionBars().setGlobalActionHandler(ActionFactory.PRINT.getId(), printAction);
    }
 

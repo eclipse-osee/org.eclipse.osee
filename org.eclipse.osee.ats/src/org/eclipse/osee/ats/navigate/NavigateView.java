@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.ActionDebug;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -31,8 +32,12 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -127,6 +132,27 @@ public class NavigateView extends ViewPart implements IActionable {
 
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");
 
+   }
+
+   /**
+    * Provided for tests to be able to simulate a double-click
+    * 
+    * @param item
+    */
+   public void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) {
+      System.out.println("Simulating NavigateView Double-Click for \"" + item.getName() + "\"...");
+      xNavComp.handleDoubleClick(item, tableLoadOptions);
+   }
+
+   public static NavigateView getNavigateView() {
+      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      try {
+         return (NavigateView) page.showView(NavigateView.VIEW_ID);
+      } catch (PartInitException e1) {
+         MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
+               "Couldn't Launch OSEE ATS NavigateView " + e1.getMessage());
+      }
+      return null;
    }
 
    public String getActionDescription() {

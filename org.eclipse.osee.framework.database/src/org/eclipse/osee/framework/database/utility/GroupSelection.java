@@ -80,11 +80,27 @@ public class GroupSelection {
       initGroups.put(listName, dbInitTasks);
    }
 
+   /**
+    * Call to get DB Init Tasks from choice made by User
+    * 
+    * @return
+    */
    public List<String> getDbInitTasks() {
       if (choice == null) {
          chooser("Select Init Group To Run.", new ArrayList<String>(initGroups.keySet()));
       }
       return initGroups.get(choice);
+   }
+
+   /**
+    * Call get get DB Init Tasks from specified taskId
+    * 
+    * @param dbInitTaskId
+    * @return
+    */
+   public List<String> getDbInitTasks(String dbInitTaskId) {
+      populateDbInitChoices();
+      return initGroups.get(dbInitTaskId);
    }
 
    private String chooser(String message, List<String> choices) {

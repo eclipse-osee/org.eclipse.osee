@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultPage.Manipulations;
 import org.eclipse.swt.widgets.Display;
@@ -59,7 +60,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run() throws Exception {
+   public void run(TableLoadOption... tableLoadOptions) throws Exception {
       TeamDefinitionArtifact teamDef = getTeamDefinition();
       if (teamDef == null) return;
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;

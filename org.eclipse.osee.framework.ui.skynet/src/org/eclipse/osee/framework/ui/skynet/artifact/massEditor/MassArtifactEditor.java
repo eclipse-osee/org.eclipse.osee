@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -74,7 +76,9 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       onDirtied();
    }
 
-   public static void editArtifacts(final String name, final Collection<? extends Artifact> artifacts) {
+   public static void editArtifacts(final String name, final Collection<? extends Artifact> artifacts, TableLoadOption... tableLoadOptions) {
+      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
+      options.addAll(Arrays.asList(tableLoadOptions));
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             boolean accessControlFilteredResults = false;
@@ -101,28 +105,11 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }
-      });
+      }, options.contains(TableLoadOption.ForcePend));
    }
 
-   public static void editArtifact(final Artifact artifact) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            try {
-               if (!AccessControlManager.getInstance().checkObjectPermission(
-                     SkynetAuthentication.getInstance().getAuthenticatedUser(), artifact, PermissionEnum.READ)) {
-                  OSEELog.logInfo(
-                        SkynetGuiPlugin.class,
-                        "The user " + SkynetAuthentication.getInstance().getAuthenticatedUser() + " does not have read access to " + artifact,
-                        true);
-                  return;
-               }
-               AWorkbench.getActivePage().openEditor(
-                     new MassArtifactEditorInput("", Arrays.asList(new Artifact[] {artifact})), EDITOR_ID);
-            } catch (PartInitException ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-            }
-         }
-      });
+   public static void editArtifact(final Artifact artifact, TableLoadOption... tableLoadOptions) {
+      editArtifacts("", Arrays.asList(new Artifact[] {artifact}));
    }
 
    public void createTaskActionBar(Composite parent) {
@@ -192,6 +179,10 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }
+   }
+
+   public ArrayList<Artifact> getLoadedArtifacts() {
+      return xViewer.getLoadedArtifacts();
    }
 
    /*

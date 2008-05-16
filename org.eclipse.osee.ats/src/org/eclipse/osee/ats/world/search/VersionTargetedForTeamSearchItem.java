@@ -32,6 +32,7 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
    private VersionArtifact selectedVersionArt;
    private final boolean returnAction;
    private final TeamDefinitionArtifact teamDef;
+   private TeamDefinitionArtifact selectedTeamDef;
 
    public VersionTargetedForTeamSearchItem(TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction) {
       this(null, teamDef, versionArt, returnAction);
@@ -99,6 +100,13 @@ public class VersionTargetedForTeamSearchItem extends WorldSearchItem {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
       cancelled = true;
+   }
+
+   /**
+    * @param selectedVersionArt the selectedVersionArt to set
+    */
+   public void setSelectedVersionArt(VersionArtifact selectedVersionArt) {
+      this.selectedVersionArt = selectedVersionArt;
    }
 
 }

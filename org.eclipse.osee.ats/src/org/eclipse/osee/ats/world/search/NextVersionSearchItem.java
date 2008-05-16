@@ -104,4 +104,11 @@ public class NextVersionSearchItem extends WorldSearchItem {
       cancelled = true;
    }
 
+   /**
+    * @param selectedTeamDef the selectedTeamDef to set
+    */
+   public void setSelectedTeamDef(TeamDefinitionArtifact selectedTeamDef) {
+      this.selectedTeamDef = selectedTeamDef;
+   }
+
 }

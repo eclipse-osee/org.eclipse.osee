@@ -732,12 +732,12 @@
              name="org.eclipse.osee.framework.ui.skynet.mergeView.previewArtifactRecurse.separator"
              visible="true">
        </separator>
-       <command
+          <command
              commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
-       </command>
-       <command
+          </command>
+          <command
              commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
-       </command>
+          </command>
     </menuContribution>
  </extension>
  <extension
@@ -885,6 +885,12 @@
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
     <Operation
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.SwitchParentBranch">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.framework.ui.skynet.blam.operation.XWidgetPopulateExample">
     </Operation>
  </extension>
 </plugin>

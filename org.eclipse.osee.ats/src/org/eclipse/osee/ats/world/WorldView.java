@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -65,6 +66,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -132,7 +134,10 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       if (artifact instanceof IWorldViewArtifact) xViewer.refresh(artifact);
    }
 
-   public static void loadIt(final String name, final Collection<? extends Artifact> arts) {
+   public static void loadIt(final String name, final Collection<? extends Artifact> arts, final TableLoadOption... tableLoadOptions) {
+      final Set<TableLoadOption> options = new HashSet<TableLoadOption>();
+      options.addAll(Arrays.asList(tableLoadOptions));
+      options.add(TableLoadOption.ClearLastSearchItem);
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -141,20 +146,26 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
             IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
             try {
                WorldView worldView = (WorldView) page.showView(WorldView.VIEW_ID);
-               worldView.load(name, arts);
+               worldView.load(name, arts, options.toArray(new TableLoadOption[options.size()]));
             } catch (PartInitException e1) {
                OSEELog.logSevere(AtsPlugin.class, "Couldn't Launch XViewer Dev View ", true);
             }
          }
-      });
+      }, options.contains(TableLoadOption.ForcePend));
    }
 
-   public void load(final String name, final Collection<? extends Artifact> arts) {
-      load(name, arts, true);
+   public void load(final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOptions) {
+      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
+      options.addAll(Arrays.asList(tableLoadOptions));
+      options.add(TableLoadOption.ClearLastSearchItem);
+      load(null, name, arts, tableLoadOptions);
    }
 
-   public void load(final String name, final Collection<? extends Artifact> arts, boolean clearLastSearchItem) {
-      if (clearLastSearchItem) lastSearchItem = null;
+   public void load(final WorldSearchItem searchItem, final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOptions) {
+      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
+      options.addAll(Arrays.asList(tableLoadOptions));
+      options.add(TableLoadOption.ClearLastSearchItem);
+      if (options.contains(TableLoadOption.ClearLastSearchItem)) lastSearchItem = null;
       Displays.ensureInDisplayThread(new Runnable() {
          /* (non-Javadoc)
           * @see java.lang.Runnable#run()
@@ -360,12 +371,14 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       }
    }
 
-   public void loadTable(WorldSearchItem searchItem, boolean sort) {
+   public void loadTable(WorldSearchItem searchItem, TableLoadOption... tableLoadOptions) {
       searchItem.setCancelled(false);
-      loadTable(searchItem, SearchType.Search, sort);
+      loadTable(searchItem, SearchType.Search, tableLoadOptions);
    }
 
-   public void loadTable(WorldSearchItem searchItem, SearchType searchType, boolean sort) {
+   public void loadTable(WorldSearchItem searchItem, SearchType searchType, TableLoadOption... tableLoadOptions) {
+      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
+      options.addAll(Arrays.asList(tableLoadOptions));
       searchItem.setCancelled(false);
       this.lastSearchItem = searchItem;
       debug.report("loadTable", true);
@@ -376,15 +389,16 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
 
       if (searchItem == null) return;
 
-      searchItem.performUI(searchType);
+      if (!options.contains(TableLoadOption.NoUI)) searchItem.performUI(searchType);
       if (searchItem.isCancelled()) return;
 
       LoadTableJob job = null;
       try {
-         job = new LoadTableJob(searchItem, SearchType.Search, this, sort);
+         job = new LoadTableJob(searchItem, SearchType.Search, this);
          job.setUser(false);
          job.setPriority(Job.LONG);
          job.schedule();
+         if (options.contains(TableLoadOption.ForcePend)) job.join();
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Load Table Failed", ex, true);
       }
@@ -393,16 +407,14 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
    private class LoadTableJob extends Job {
 
       @SuppressWarnings("unused")
-      private final boolean sort;
       private final WorldSearchItem searchItem;
       private boolean cancel = false;
       private final SearchType searchType;
 
-      public LoadTableJob(WorldSearchItem searchItem, SearchType searchType, WorldView worldView, boolean sort) {
+      public LoadTableJob(WorldSearchItem searchItem, SearchType searchType, WorldView worldView) {
          super("Loading \"" + searchItem.getSelectedName(searchType) + "\"...");
          this.searchItem = searchItem;
          this.searchType = searchType;
-         this.sort = sort;
       }
 
       /*
@@ -434,8 +446,9 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
                   return Status.OK_STATUS;
                }
             }
-            load((searchItem.getSelectedName(searchType) != null ? searchItem.getSelectedName(searchType) : ""),
-                  artifacts, false);
+            load(searchItem,
+                  (searchItem.getSelectedName(searchType) != null ? searchItem.getSelectedName(searchType) : ""),
+                  artifacts);
          } catch (final Exception ex) {
             String str = "Exception occurred. Network may be down.";
             if (ex.getLocalizedMessage() != null && !ex.getLocalizedMessage().equals("")) str +=
@@ -482,11 +495,20 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       Action myWorldAction = new Action("My World") {
 
          public void run() {
-            loadTable(AtsNavigateViewItems.getInstance().getMyWorldSearchItem(), true);
+            loadTable(AtsNavigateViewItems.getInstance().getMyWorldSearchItem());
          }
       };
       myWorldAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("MyWorld.gif"));
       myWorldAction.setToolTipText("My World");
+
+      Action expandAllAction = new Action("Expand All") {
+
+         public void run() {
+            xViewer.expandAll();
+         }
+      };
+      expandAllAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("expandAll.gif"));
+      expandAllAction.setToolTipText("Expand All");
 
       filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", Action.AS_CHECK_BOX) {
 
@@ -505,7 +527,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       Action refreshAction = new Action("Refresh") {
 
          public void run() {
-            if (lastSearchItem != null) loadTable(lastSearchItem, SearchType.ReSearch, true);
+            if (lastSearchItem != null) loadTable(lastSearchItem, SearchType.ReSearch);
          }
       };
       refreshAction.setImageDescriptor(AtsPlugin.getInstance().getImageDescriptor("refresh.gif"));
@@ -556,6 +578,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(myWorldAction);
       toolbarManager.add(new NewAction());
+      toolbarManager.add(expandAllAction);
       toolbarManager.add(refreshAction);
 
       IMenuManager manager = getViewSite().getActionBars().getMenuManager();
@@ -572,6 +595,10 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       }
       xViewer.addCustomizeToViewToolbar(this);
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS World");
+   }
+
+   public static ArrayList<Artifact> getLoadedArtifacts() {
+      return WorldView.getWorldView().getxViewer().getLoadedArtifacts();
    }
 
    public void updateExtendedStatusString() {

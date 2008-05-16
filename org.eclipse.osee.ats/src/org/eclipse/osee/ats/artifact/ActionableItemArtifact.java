@@ -79,10 +79,10 @@ public class ActionableItemArtifact extends Artifact {
       return search.getArtifacts(ActionableItemArtifact.class);
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> aiaStrs) throws Exception {
+   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws Exception {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
-      for (String aia : aiaStrs) {
-         aias.add(getSoleActionableItem(aia));
+      for (String actionableItemName : actionableItemNames) {
+         aias.add(getSoleActionableItem(actionableItemName));
       }
       return aias;
    }

@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.world.WorldView;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
  * @author Donald G. Dunne
@@ -43,7 +44,7 @@ public class EditTasksBySelectedWorkflows extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run() throws Exception {
+   public void run(TableLoadOption... tableLoadOptions) throws Exception {
       Set<StateMachineArtifact> smas = WorldView.getWorldView().getxViewer().getSelectedSMAArtifacts();
       if (smas.size() == 0) {
          AWorkbench.popup("ERROR", "Must select Action Workflows in ATS World to edit tasks.");

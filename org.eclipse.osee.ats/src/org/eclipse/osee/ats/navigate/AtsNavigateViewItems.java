@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.health.TeamWorkflowsHaveZeroOrOneVersion;
 import org.eclipse.osee.ats.health.UnAssignedAssignedAtsObjects;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
 import org.eclipse.osee.ats.report.ExtendedStatusReportItem;
+import org.eclipse.osee.ats.util.DoesNotWorkItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtIdSearchItem;
 import org.eclipse.osee.ats.world.search.AtsAttributeSearchItem;
@@ -118,9 +119,9 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
       XNavigateItem otherItems = new XNavigateItem(null, "Other My Searches");
       new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("My Team Workflows", skynetAuth.getAuthenticatedUser()));
-      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Task (WorldView)", skynetAuth.getAuthenticatedUser(),
-            LoadView.WorldView));
-      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Task (Editor)", skynetAuth.getAuthenticatedUser(),
+      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Tasks (WorldView)",
+            skynetAuth.getAuthenticatedUser(), LoadView.WorldView));
+      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Tasks (Editor)", skynetAuth.getAuthenticatedUser(),
             LoadView.TaskEditor));
       new SearchNavigateItem(otherItems, new MySubscribedSearchItem("My Subscribed", skynetAuth.getAuthenticatedUser()));
       new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - InWork",
@@ -266,6 +267,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          criteria = new LinkedList<ISearchPrimitive>();
          criteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, Operator.EQUAL));
          new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Tasks", criteria, true));
+
+         new DoesNotWorkItem(adminItems);
 
          XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
          new AttributeDuplication(healthItems);

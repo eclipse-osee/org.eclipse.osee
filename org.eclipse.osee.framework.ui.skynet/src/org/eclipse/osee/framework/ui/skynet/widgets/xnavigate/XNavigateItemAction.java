@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -46,7 +47,8 @@ public class XNavigateItemAction extends XNavigateItem {
       this.promptFirst = promptFirst;
    }
 
-   public void run() throws Exception {
+   @Override
+   public void run(TableLoadOption... tableLoadOptions) throws Exception {
       if (action != null) {
          if (promptFirst) {
             Displays.ensureInDisplayThread(new Runnable() {

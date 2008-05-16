@@ -86,8 +86,8 @@ public class TaskManager {
       taskArt.setSoleXAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
             smaMgr.getStateMgr().getCurrentStateName());
 
-      if (persist) taskArt.persistAttributes();
-      smaMgr.getSma().relate(RelationSide.SmaToTask_Task, taskArt, persist);
+      smaMgr.getSma().relate(RelationSide.SmaToTask_Task, taskArt, false);
+      if (persist) taskArt.persist(true);
 
       return taskArt;
    }

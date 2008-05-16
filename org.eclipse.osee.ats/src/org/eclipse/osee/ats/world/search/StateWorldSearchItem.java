@@ -79,4 +79,11 @@ public class StateWorldSearchItem extends WorldSearchItem {
       cancelled = true;
    }
 
+   /**
+    * @param selectedStateClass the selectedStateClass to set
+    */
+   public void setSelectedStateClass(String selectedStateClass) {
+      this.selectedStateClass = selectedStateClass;
+   }
+
 }

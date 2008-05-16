@@ -107,4 +107,11 @@ public class UserCommunitySearchItem extends WorldSearchItem {
       }
    }
 
+   /**
+    * @param selectedUserComm the selectedUserComm to set
+    */
+   public void setSelectedUserComm(String selectedUserComm) {
+      this.selectedUserComm = selectedUserComm;
+   }
+
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
@@ -59,7 +60,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run() throws Exception {
+   public void run(TableLoadOption... tableLoadOptions) throws Exception {
       String usePublishToFilename = publishToFilename;
       if (usePublishToFilename == null) {
          final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell().getShell(), SWT.SAVE);

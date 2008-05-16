@@ -58,8 +58,8 @@ public class XComboBooleanDam extends XCombo implements IArtifactWidget {
    public Result isDirty() throws Exception {
       try {
          String enteredValue = get();
-         String storedValue = artifact.getSoleAttributeValue(attributeTypeName);
-         if (!enteredValue.equals(storedValue)) {
+         boolean storedValue = artifact.getSoleAttributeValue(attributeTypeName);
+         if (enteredValue.equals("yes") != storedValue) {
             return new Result(true, attributeTypeName + " is dirty");
          }
       } catch (AttributeDoesNotExist ex) {

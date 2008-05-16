@@ -15,6 +15,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.util.Import.ActionImportWizard;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -37,7 +38,7 @@ public class ImportActionsViaSpreadsheet extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run() throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
       ActionImportWizard actionWizard = new ActionImportWizard();
       WizardDialog dialog =
             new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), actionWizard);

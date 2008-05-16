@@ -46,6 +46,9 @@ public class XNavigateComposite extends Composite {
    private static PatternFilter patternFilter = new PatternFilter();
    protected final XNavigateViewItems navigateViewItems;
    private List<XNavigateItem> items;
+   public static enum TableLoadOption {
+      None, ForcePend, ClearLastSearchItem, NoUI
+   };
 
    /**
     * @param parent
@@ -185,16 +188,20 @@ public class XNavigateComposite extends Composite {
    };
 
    protected void handleDoubleClick() {
-      disposeTooltip();
       IStructuredSelection sel = (IStructuredSelection) filteredTree.getViewer().getSelection();
       if (!sel.iterator().hasNext()) return;
       XNavigateItem item = (XNavigateItem) sel.iterator().next();
+      handleDoubleClick(item);
+   }
+
+   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) {
+      disposeTooltip();
 
       if (item.getChildren().size() > 0) {
          filteredTree.getViewer().setExpandedState(item, true);
       } else {
          try {
-            item.run();
+            item.run(tableLoadOptions);
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }

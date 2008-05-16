@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
-import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -53,10 +52,17 @@ public class UniversalGroup {
    public static Artifact addGroup(String name, Branch branch) throws Exception {
       if (getGroups(name, branch).size() > 0) throw new IllegalArgumentException("Group Already Exists");
 
-      AddGroupTx addGroupTx = null;
-      addGroupTx = new AddGroupTx(branch, name);
-      addGroupTx.execute();
-      return addGroupTx.getGroupArtifact();
+      Artifact groupArt = ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, branch, name);
+      groupArt.persistAttributes();
+      Artifact groupRoot = getTopUniversalGroupArtifact(branch);
+      if (groupRoot == null) {
+         groupRoot = createTopUniversalGroupArtifact(branch);
+         if (groupRoot == null) {
+            throw new IllegalStateException("Could not create top universal group artifact.");
+         }
+      }
+      groupRoot.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, groupArt, true);
+      return groupArt;
    }
 
    public static Artifact getTopUniversalGroupArtifact(Branch branch) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
@@ -78,35 +84,4 @@ public class UniversalGroup {
       return artifacts.iterator().next();
    }
 
-   static private final class AddGroupTx extends AbstractSkynetTxTemplate {
-      private String name;
-      private Artifact groupArt;
-
-      public AddGroupTx(Branch branch, String name) {
-         super(branch);
-         this.name = name;
-         this.groupArt = null;
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.skynet.core.transaction.AbstractTxTemplate#handleTxWork()
-       */
-      @Override
-      protected void handleTxWork() throws Exception {
-         Artifact groupArt = ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, getTxBranch(), name);
-         groupArt.persistAttributes();
-         Artifact groupRoot = getTopUniversalGroupArtifact(getTxBranch());
-         if (groupRoot == null) {
-            groupRoot = createTopUniversalGroupArtifact(getTxBranch());
-            if (groupRoot == null) {
-               throw new IllegalStateException("Could not create top universal group artifact.");
-            }
-         }
-         groupRoot.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, groupArt, true);
-      }
-
-      private Artifact getGroupArtifact() {
-         return groupArt;
-      }
-   }
 }

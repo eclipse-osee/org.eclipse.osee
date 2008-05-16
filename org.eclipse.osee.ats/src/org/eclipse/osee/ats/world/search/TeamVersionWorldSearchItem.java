@@ -243,4 +243,18 @@ public class TeamVersionWorldSearchItem extends WorldSearchItem {
       this.recurseChildren = recurseChildren;
    }
 
+   /**
+    * @param selectedTeamDefs the selectedTeamDefs to set
+    */
+   public void setSelectedTeamDefs(Set<TeamDefinitionArtifact> selectedTeamDefs) {
+      this.selectedTeamDefs = selectedTeamDefs;
+   }
+
+   /**
+    * @param selectedVersion the selectedVersion to set
+    */
+   public void setSelectedVersion(VersionArtifact selectedVersion) {
+      this.selectedVersion = selectedVersion;
+   }
+
 }

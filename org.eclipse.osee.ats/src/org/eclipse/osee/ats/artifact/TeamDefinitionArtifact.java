@@ -348,4 +348,25 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       }
       return null;
    }
+
+   public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames) throws Exception {
+      Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
+      for (String teamDefName : teamDefNames) {
+         teamDefs.add(getSoleTeamDefinition(teamDefName));
+      }
+      return teamDefs;
+   }
+
+   /**
+    * Refrain from using this method as Team Definition names can be changed by the user.
+    * 
+    * @param name
+    * @return
+    * @throws SQLException
+    */
+   public static TeamDefinitionArtifact getSoleTeamDefinition(String name) throws Exception {
+      return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, name,
+            AtsPlugin.getAtsBranch());
+   }
+
 }

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -63,8 +64,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
          }
       }
       if (groupTypes.contains(GroupType.Both) || groupTypes.contains(GroupType.UserGroups)) {
-         for (Artifact art : ArtifactQuery.getArtifactsFromType("User Group",
-               BranchPersistenceManager.getAtsBranch())) {
+         for (Artifact art : ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getAtsBranch())) {
             // Only add group if have read permissions
             if (!art.getDescriptiveName().equals("Root Artifact") && AccessControlManager.getInstance().checkObjectPermission(
                   art, PermissionEnum.READ)) groupOptions.add(art);
@@ -79,7 +79,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run() throws Exception {
+   public void run(TableLoadOption... tableLoadOptions) throws Exception {
       Set<Artifact> groupOptions =
             getEmailGroupsAndUserGroups(SkynetAuthentication.getInstance().getAuthenticatedUser(), groupType);
       UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(groupOptions);

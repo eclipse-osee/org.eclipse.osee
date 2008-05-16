@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -60,7 +61,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run() throws Exception {
+   public void run(TableLoadOption... tableLoadOptions) throws Exception {
       Collection<TeamDefinitionArtifact> teamDefs = getTeamDefinitions();
       if (teamDefs == null || teamDefs.size() == 0) return;
       Set<String> emails = new HashSet<String>();

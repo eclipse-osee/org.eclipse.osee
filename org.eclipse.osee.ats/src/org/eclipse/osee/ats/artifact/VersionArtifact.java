@@ -13,10 +13,14 @@ package org.eclipse.osee.ats.artifact;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -105,6 +109,25 @@ public class VersionArtifact extends BasicArtifact {
 
    public Date getReleaseDate() throws IllegalStateException, SQLException, MultipleAttributesExist {
       return getSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), null);
+   }
+
+   public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames) throws Exception {
+      Set<VersionArtifact> teamDefs = new HashSet<VersionArtifact>();
+      for (String teamDefName : teamDefNames) {
+         teamDefs.add(getSoleVersion(teamDefName));
+      }
+      return teamDefs;
+   }
+
+   /**
+    * Refrain from using this method as Version Artifact names can be changed by the user.
+    * 
+    * @param name
+    * @return
+    * @throws SQLException
+    */
+   public static VersionArtifact getSoleVersion(String name) throws Exception {
+      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ARTIFACT_NAME, name, AtsPlugin.getAtsBranch());
    }
 
 }

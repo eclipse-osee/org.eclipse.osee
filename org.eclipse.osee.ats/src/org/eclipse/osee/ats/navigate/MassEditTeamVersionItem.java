@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
  * @author Donald G. Dunne
@@ -32,6 +33,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
 
    private final String teamDefName;
    private final TeamDefinitionArtifact teamDef;
+   private TeamDefinitionArtifact selectedTeamDef;
 
    public MassEditTeamVersionItem(XNavigateItem parent, String teamDefName) {
       this("Show Team Versions", parent, teamDefName);
@@ -59,6 +61,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    }
 
    private TeamDefinitionArtifact getTeamDefinition() throws Exception {
+      if (selectedTeamDef != null) return selectedTeamDef;
       if (teamDef != null) return teamDef;
       if (teamDefName != null && !teamDefName.equals("")) {
          try {
@@ -84,7 +87,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run() throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
       try {
          TeamDefinitionArtifact teamDef = getTeamDefinition();
          if (teamDef == null) return;
@@ -93,9 +96,17 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
             return;
          }
          MassArtifactEditor.editArtifacts(getName(), teamDef.getTeamDefinitionHoldingVersions().getVersionsArtifacts());
+         selectedTeamDef = null;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
+   }
+
+   /**
+    * @param selectedTeamDef the selectedTeamDef to set
+    */
+   public void setSelectedTeamDef(TeamDefinitionArtifact selectedTeamDef) {
+      this.selectedTeamDef = selectedTeamDef;
    }
 
 }

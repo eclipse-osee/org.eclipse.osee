@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAutoRunAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 import org.eclipse.swt.widgets.Display;
 
@@ -56,7 +57,7 @@ public class OrphanedTasks extends XNavigateItemAutoRunAction implements IAutoRu
     * @see org.eclipse.osee.ats.navigate.ActionNavigateItem#run()
     */
    @Override
-   public void run() throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
       Jobs.startJob(new LoadArtifactsJob(getName()), true);
    }
@@ -98,8 +99,7 @@ public class OrphanedTasks extends XNavigateItemAutoRunAction implements IAutoRu
    private List<TaskArtifact> runIt(IProgressMonitor monitor, XResultData rd) throws Exception {
       final List<TaskArtifact> orphanedTasks = new ArrayList<TaskArtifact>();
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactsFromType(TaskArtifact.ARTIFACT_NAME,
-                  BranchPersistenceManager.getAtsBranch());
+            ArtifactQuery.getArtifactsFromType(TaskArtifact.ARTIFACT_NAME, BranchPersistenceManager.getAtsBranch());
       int x = 0;
       for (Artifact art : arts) {
          TaskArtifact taskArt = (TaskArtifact) art;

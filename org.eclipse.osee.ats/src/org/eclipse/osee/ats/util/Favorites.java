@@ -32,14 +32,20 @@ public class Favorites {
    }
 
    public void toggleFavorite() {
+      toggleFavorite(true);
+   }
+
+   public void toggleFavorite(boolean prompt) {
       try {
          if (((IFavoriteableArtifact) sma).amIFavorite()) {
-            boolean result =
+            boolean result = true;
+            if (prompt) result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
             if (result) ((IFavoriteableArtifact) sma).removeFavorite(SkynetAuthentication.getInstance().getAuthenticatedUser());
          } else {
-            boolean result =
+            boolean result = true;
+            if (prompt) result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Favorite", "Are you sure you wish add this as a Favorite?");
             if (result) ((IFavoriteableArtifact) sma).addFavorite(SkynetAuthentication.getInstance().getAuthenticatedUser());

@@ -8,41 +8,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.navigate;
+package org.eclipse.osee.ats.util;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import org.eclipse.osee.ats.world.WorldView;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
+import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
  */
-public class VisitedItems extends XNavigateItemAction {
-
-   public static List<Artifact> visited = new ArrayList<Artifact>();
-
-   public static List<Artifact> getReverseVisited() {
-      List<Artifact> revArts = new ArrayList<Artifact>();
-      for (int x = visited.size(); x <= 0; x--) {
-         revArts.add(visited.get(x));
-      }
-      return revArts;
-   }
-
-   public static void addVisited(Artifact art) {
-      if (!visited.contains(art)) visited.add(art);
-   }
+public class DoesNotWorkItem extends XNavigateItemAction {
 
    /**
     * @param parent
     */
-   public VisitedItems(XNavigateItem parent) {
-      super(parent, "My Recently Visited");
+   public DoesNotWorkItem(XNavigateItem parent) {
+      super(parent, "Does Not Work - Demo MyWorld");
    }
 
    /*
@@ -52,7 +38,16 @@ public class VisitedItems extends XNavigateItemAction {
     */
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws SQLException {
-      WorldView.loadIt(getName(), visited, tableLoadOptions);
+      String name = "Does not work";
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), name, name)) return;
+
+      XNavigateItem item = AtsNavigateViewItems.getInstance().getSearchNavigateItems().get(1);
+      System.out.println("Item " + item.getName());
+      NavigateView.getNavigateView().handleDoubleClick(item);
+
+      //      XResultData.runExample();
+
+      // fixOseePeerReviews();
    }
 
 }

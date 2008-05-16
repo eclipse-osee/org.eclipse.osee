@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.TeamVersionListDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
  * @author Donald G. Dunne
@@ -29,7 +30,7 @@ public class GenerateVersionReportItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run() throws SQLException {
+   public void run(TableLoadOption... tableLoadOptions) throws SQLException {
       TeamVersionListDialog ld = new TeamVersionListDialog(Active.Both);
       int result = ld.open();
       if (result == 0) {

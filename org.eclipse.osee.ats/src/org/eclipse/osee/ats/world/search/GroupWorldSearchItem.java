@@ -89,4 +89,11 @@ public class GroupWorldSearchItem extends WorldSearchItem {
       }
    }
 
+   /**
+    * @param selectedGroup the selectedGroup to set
+    */
+   public void setSelectedGroup(Artifact selectedGroup) {
+      this.selectedGroup = selectedGroup;
+   }
+
 }

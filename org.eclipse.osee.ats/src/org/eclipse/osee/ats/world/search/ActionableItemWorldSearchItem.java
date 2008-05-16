@@ -219,4 +219,11 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       this.recurseChildren = recurseChildren;
    }
 
+   /**
+    * @param selectedActionItems the selectedActionItems to set
+    */
+   public void setSelectedActionItems(Set<ActionableItemArtifact> selectedActionItems) {
+      this.selectedActionItems = selectedActionItems;
+   }
+
 }

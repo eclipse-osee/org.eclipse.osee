@@ -95,7 +95,7 @@ public class WorldContentProvider implements ITreeContentProvider {
             rootSet.clear();
             xViewer.refresh();
          };
-      });
+      }, true);
    }
 
    public Object[] getChildren(Object parentElement) {

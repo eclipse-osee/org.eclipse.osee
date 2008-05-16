@@ -82,4 +82,11 @@ public abstract class UserSearchItem extends WorldSearchItem {
       }
       cancelled = true;
    }
+
+   /**
+    * @param selectedUser the selectedUser to set
+    */
+   public void setSelectedUser(User selectedUser) {
+      this.selectedUser = selectedUser;
+   }
 }
