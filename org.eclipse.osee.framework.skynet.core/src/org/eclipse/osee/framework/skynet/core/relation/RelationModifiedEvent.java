@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 
 /**
@@ -74,7 +76,7 @@ public abstract class RelationModifiedEvent extends Event {
       return link;
    }
 
-   public boolean effectsArtifact(Artifact artifact) {
+   public boolean effectsArtifact(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
       boolean isEffected = false;
 
       isEffected =

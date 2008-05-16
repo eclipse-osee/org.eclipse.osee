@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
@@ -23,14 +25,13 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
  * @author Jeff C. Phillips
  */
 public class SrsProducer implements IWordMlProducer {
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
 
-   public BlamVariableMap process(BlamVariableMap variableMap) throws SQLException, IllegalStateException, IOException {
+   public BlamVariableMap process(BlamVariableMap variableMap) throws SQLException, IllegalStateException, IOException, MultipleArtifactsExist, ArtifactDoesNotExist {
       if (variableMap == null) throw new IllegalArgumentException("variableMap must not be null");
 
       String name = variableMap.getString("Name");
       Branch branch = variableMap.getBranch("Branch");
-      Artifact root = artifactManager.getDefaultHierarchyRootArtifact(branch);
+      Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch);
       Artifact softwareRequirement = root.getChild(Requirements.SOFTWARE_REQUIREMENTS);
       Artifact crewInterface = softwareRequirement.getChild("Crew Interface");
       Artifact subsystemManagement = softwareRequirement.getChild("Subsystem Management");

@@ -61,6 +61,9 @@ public abstract class TransactionEvent extends Event {
     * This method rolls up the transaction event data into pieces most widely used by applications. Calling getEventData
     * with an artifact will retrieve cached data instead of requiring each UI to loop through all localEvents looking
     * for events tied to that artifact.
+    * 
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist
     */
    private void processLookups() {
       // Use modified

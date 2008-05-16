@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -50,7 +52,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    public static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactImportPage.class);
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final ConfigurationPersistenceManager configurationManager =
          ConfigurationPersistenceManager.getInstance();
    private final Artifact destinationArtifact;
@@ -394,14 +395,14 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       }
    }
 
-   public Artifact getImportRoot() throws SQLException {
+   public Artifact getImportRoot() throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
       Artifact importRoot;
 
       if (radImportUnderDhRoot.getSelection()) {
-         importRoot = artifactManager.getDefaultHierarchyRootArtifact(getSelectedBranch());
+         importRoot = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(getSelectedBranch());
       } else if (radImportUnderNamedRootFolder.getSelection()) {
          importRoot =
-               artifactManager.getDefaultHierarchyRootArtifact(getSelectedBranch()).getChild(
+               ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(getSelectedBranch()).getChild(
                      txtImportUnderFolderName.getText());
       } else if (radImportUnderSelection.getSelection()) {
          importRoot = destinationArtifact;

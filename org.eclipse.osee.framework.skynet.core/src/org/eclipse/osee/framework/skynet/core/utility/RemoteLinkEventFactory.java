@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import java.sql.SQLException;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
  */
 public class RemoteLinkEventFactory {
 
-   public static NetworkNewRelationLinkEvent makeEvent(RelationLink link, int transactionNumber) {
+   public static NetworkNewRelationLinkEvent makeEvent(RelationLink link, int transactionNumber) throws SQLException {
 
       if (link == null || transactionNumber < 0) {
          throw new IllegalStateException("Link or transactionNumber can not be null.");

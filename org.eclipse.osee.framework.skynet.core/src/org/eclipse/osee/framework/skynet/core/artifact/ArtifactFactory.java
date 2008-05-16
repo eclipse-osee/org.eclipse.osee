@@ -49,6 +49,7 @@ public abstract class ArtifactFactory {
       Artifact artifact =
             getArtifactInstance(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
       AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
+      artifact.setLinksLoaded();
       artifact.onBirth();
       artifact.onInitializationComplete();
 

@@ -168,8 +168,7 @@ public class SkynetTransaction {
       boolean deleteTransactionDetail = false;
 
       try {
-         //Verify that the stripechecker is working correclty
-         performStripeCheckAndSetArtifactsNotDirty();
+         setArtifactsNotDirty();
 
          boolean insertBatchToTransactions = executeBatchToTransactions(monitor);
          boolean insertTransactionDataItems = executeTransactionDataItems();
@@ -214,6 +213,18 @@ public class SkynetTransaction {
                transactionData.getTransactionChangeData().toArray());
       }
       return insertTransactionDataItems;
+   }
+
+   private void setArtifactsNotDirty() throws SQLException {
+      for (ITransactionData transactionData : transactionItems.keySet()) {
+         if (transactionData instanceof ArtifactTransactionData) {
+            Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();
+            artifact.setInTransaction(false);
+            if (!artifact.isDeleted()) {
+               artifact.setNotDirty();
+            }
+         }
+      }
    }
 
    private void performStripeCheckAndSetArtifactsNotDirty() throws SQLException {
@@ -268,7 +279,6 @@ public class SkynetTransaction {
          artifact.setInTransaction(false);
          if (!artifact.isDeleted()) {
             artifact.setNotDirty();
-            artifact.setIds(artifact.getArtId(), artIdToNewGamma.get(artifact.getArtId()));
          }
       }
    }

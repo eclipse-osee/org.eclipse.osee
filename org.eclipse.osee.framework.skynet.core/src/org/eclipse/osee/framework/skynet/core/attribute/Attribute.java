@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
@@ -76,7 +77,11 @@ public abstract class Attribute<T> {
    }
 
    public boolean canDelete() {
-      return artifact.getAttributeCount(attributeType.getName()) > attributeType.getMinOccurrences();
+      try {
+         return artifact.getAttributeCount(attributeType.getName()) > attributeType.getMinOccurrences();
+      } catch (SQLException ex) {
+         return false;
+      }
    }
 
    /**

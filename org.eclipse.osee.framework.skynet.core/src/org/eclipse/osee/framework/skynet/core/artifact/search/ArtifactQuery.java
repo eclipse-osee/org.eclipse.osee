@@ -14,10 +14,12 @@ import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -34,9 +36,8 @@ public class ArtifactQuery {
     * @return exactly one artifact by one its id - otherwise throw an exception
     * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
-    * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromId(int artId, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+   public static Artifact getArtifactFromId(int artId, Branch branch) throws SQLException, ArtifactDoesNotExist {
       return getArtifactFromId(artId, branch, false);
    }
 
@@ -49,10 +50,15 @@ public class ArtifactQuery {
     * @return exactly one artifact by one its id - otherwise throw an exception
     * @throws SQLException
     * @throws ArtifactDoesNotExist if no artifacts are found
-    * @throws MultipleArtifactsExist if more than one artifact is found
     */
-   public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getArtifact();
+   public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist {
+      try {
+         return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getArtifact();
+      } catch (MultipleArtifactsExist ex) {
+         // it is not possible to have two artifacts with the same artifact id
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         return null;
+      }
    }
 
    /**
@@ -173,8 +179,7 @@ public class ArtifactQuery {
    }
 
    public static List<Artifact> getArtifactsFromType(String artifactTypeName, Branch branch) throws SQLException {
-      return new ArtifactQueryBuilder(ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            artifactTypeName), branch, FULL).getArtifacts(null);
+      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL).getArtifacts(null);
    }
 
    /**
@@ -187,8 +192,7 @@ public class ArtifactQuery {
     * @throws SQLException
     */
    public static List<Artifact> getArtifactsFromTypeAnd(String artifactTypeName, Branch branch, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
-      return new ArtifactQueryBuilder(ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(
-            artifactTypeName), branch, FULL, criteria).getArtifacts(null);
+      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL, criteria).getArtifacts(null);
    }
 
    /**
@@ -230,10 +234,8 @@ public class ArtifactQuery {
    }
 
    private static ArtifactQueryBuilder queryFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
-      ArtifactSubtypeDescriptor artifactType =
-            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName);
-      return new ArtifactQueryBuilder(artifactType, branch, FULL, new AttributeValueCriteria(attributeTypeName,
-            attributeValue));
+      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL,
+            new AttributeValueCriteria(attributeTypeName, attributeValue));
    }
 
    public static List<Artifact> getArtifactsFromHistoricalAttributeValue(String attributeValue, Branch branch) throws SQLException {

@@ -45,8 +45,10 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.Mod
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionBuilder;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.data.RelationTransactionData;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteLinkEventFactory;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 
@@ -332,10 +334,12 @@ public class RelationPersistenceManager implements PersistenceManager {
    public void populateArtifactRelations(Artifact artifact) throws SQLException {
       int previousRelationId = -1;
       int branchId = artifact.getBranch().getBranchId();
-      int transactionId = artifact.getTransactionNumber();
-      if (transactionId == 0) {
+      TransactionId transactionId;
+      if (artifact.getTransactionNumber() == 0) {
+         transactionId = TransactionIdManager.getInstance().getEditableTransactionId(artifact.getBranch());
+      } else {
          transactionId =
-               TransactionIdManager.getInstance().getEditableTransactionId(artifact.getBranch()).getTransactionNumber();
+               TransactionIdManager.getInstance().getPossiblyEditableTransactionId(artifact.getTransactionNumber());
       }
       ConnectionHandlerStatement chStmt = null;
 
@@ -363,7 +367,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       }
    }
 
-   private void loadLinkData(ResultSet rSet, int relId, int transactionId) throws SQLException {
+   private void loadLinkData(ResultSet rSet, int relId, TransactionId transactionId) throws SQLException {
       RelationLink link = null;
       String rationale = rSet.getString("rationale");
       int aArtId = rSet.getInt("a_art_id");
@@ -372,7 +376,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       int bOrderValue = rSet.getInt("b_order_value");
       int gammaId = rSet.getInt("gamma_id");
 
-      link = RelationCache.getRelation(relId, transactionId);
+      link = RelationCache.getRelation(relId, transactionId.getTransactionNumber());
 
       if (link == null) {
          try {
@@ -385,12 +389,12 @@ public class RelationPersistenceManager implements PersistenceManager {
                         (rationale != null && !rationale.equals("null")) ? rationale : "", aOrderValue, bOrderValue,
                         false);
 
-            RelationCache.cache(link, transactionId);
+            RelationCache.cache(link, transactionId.getTransactionNumber());
 
-            if (link.getArtifactA().isLinkManagerLoaded()) {
+            if (link.getArtifactA().isLinksLoaded()) {
                link.getArtifactA().getLinkManager().addLink(link);
             }
-            if (link.getArtifactB().isLinkManagerLoaded()) {
+            if (link.getArtifactB().isLinksLoaded()) {
                link.getArtifactB().getLinkManager().addLink(link);
             }
          } catch (RuntimeException ex) {
@@ -445,9 +449,9 @@ public class RelationPersistenceManager implements PersistenceManager {
                Artifact aArt = link.getArtifactA();
                Artifact bArt = link.getArtifactB();
 
-               if (aArt.isLinkManagerLoaded()) aArt.getLinkManager().removeLink(link);
+               if (aArt.isLinksLoaded()) aArt.getLinkManager().removeLink(link);
 
-               if (bArt.isLinkManagerLoaded()) bArt.getLinkManager().removeLink(link);
+               if (bArt.isLinksLoaded()) bArt.getLinkManager().removeLink(link);
 
                localEvents.add(new TransactionRelationModifiedEvent(link, branch, link.getRelationType().getTypeName(),
                      link.getASideName(), ModType.Deleted, this));
@@ -470,8 +474,8 @@ public class RelationPersistenceManager implements PersistenceManager {
                   RelationLink newLink =
                         new RelationLink(artA, artB, relationType, memo, rationale, aOrder, bOrder, false);
 
-                  if (artA.isLinkManagerLoaded()) artA.getLinkManager().addLink(newLink);
-                  if (artB.isLinkManagerLoaded()) artB.getLinkManager().addLink(newLink);
+                  if (artA.isLinksLoaded()) artA.getLinkManager().addLink(newLink);
+                  if (artB.isLinksLoaded()) artB.getLinkManager().addLink(newLink);
 
                   RelationCache.cache(newLink, newTransactionId);
                   localEvents.add(new TransactionRelationModifiedEvent(newLink, branch,
@@ -569,7 +573,7 @@ public class RelationPersistenceManager implements PersistenceManager {
 
    }
 
-   public void moveObjectA(Artifact sideAArt, Artifact sideBArt, RelationSide relSide, Direction dir) throws SQLException {
+   public void moveObjectA(Artifact sideAArt, Artifact sideBArt, RelationSide relSide, Direction dir) throws SQLException, ArtifactDoesNotExist {
       Set<Artifact> arts = sideBArt.getArtifacts(relSide);
       Artifact prevArt = null;
       Artifact nextArt = null;

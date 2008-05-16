@@ -11,12 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.transaction.data;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 
 /**
  * @author Jeff C. Phillips
@@ -50,7 +52,8 @@ public class RelationTransactionData implements ITransactionData {
    }
 
    /**
-    * 
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist
     */
    private void populateDataList() {
       dataItems.add(SQL3DataType.INTEGER);

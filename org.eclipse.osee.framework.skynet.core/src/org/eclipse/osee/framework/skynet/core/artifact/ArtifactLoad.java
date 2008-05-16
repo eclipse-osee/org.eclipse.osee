@@ -11,5 +11,5 @@ package org.eclipse.osee.framework.skynet.core.artifact;
  * @author Ryan D. Brooks
  */
 public enum ArtifactLoad {
-   SHALLOW, FULL, RELATION, ATTRIBUTE;
+   SHALLOW, FULL, RELATION, ATTRIBUTE, FULL_ATTRIBUTE, FULL_FULL, SHALLOW_FULL;
 }

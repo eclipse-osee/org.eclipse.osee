@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 
 /**
@@ -39,9 +41,6 @@ import org.eclipse.osee.framework.skynet.core.util.Requirements;
  * @author Donald G. Dunne
  */
 public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
-
-   private Artifact systemReq;
-
    public void run(Connection connection) throws Exception {
       // Imports ATS workflow vue diagrams as id specified in extension point
       (new ImportWorkflowAction(false, AtsPlugin.PLUGIN_ID)).run();
@@ -83,7 +82,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
       CIS_Bld_1, CIS_Bld_2, CIS_Bld_3;
    };
 
-   private void populateProgramBranch(String branchName) throws SQLException {
+   private void populateProgramBranch(String branchName) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
       String[] subsystems =
             new String[] {"Video Processing", "Robot API", "Other Device API", "Calibration", "Registration",
                   "Tool Tracking", "Telesurgery", "Volume", "Hardware", "Imaging", "Electrical", "Sensors",
@@ -97,7 +96,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          sawProduct.addChild(ArtifactTypeManager.addArtifact(Requirements.COMPONENT, programBranch, subsystem));
       }
 
-      Artifact programRoot = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(programBranch);
+      Artifact programRoot = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(programBranch);
       programRoot.addChild(sawProduct);
 
       for (String name : new String[] {Requirements.SYSTEM_REQUIREMENTS, Requirements.SUBSYSTEM_REQUIREMENTS,

@@ -43,11 +43,9 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
    protected TreeViewer viewer;
    private final ArtifactExplorer artifactExplorer;
    private static final AccessControlManager accessManager = AccessControlManager.getInstance();
-   private boolean noChildren;
 
    public ArtifactContentProvider(ArtifactExplorer artifactExplorer) {
       this.artifactExplorer = artifactExplorer;
-      this.noChildren = false;
    }
 
    /*
@@ -70,15 +68,6 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * @see IContentProvider#inputChanged(Viewer, Object, Object)
     */
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      // this.viewer = (TreeViewer) viewer;
-
-      noChildren = newInput instanceof Collection;
-      // if (oldInput != null) {
-      // ((Artifact) oldInput).removeListenerRecursively(this);
-      // }
-      // if (newInput != null) { // TODO: must handle fact that only root item has a listener added
-      // ((Artifact) newInput).addListener(this);
-      // }
    }
 
    /**
@@ -90,7 +79,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     */
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof Artifact && !noChildren) {
+      if (parentElement instanceof Artifact) {
          Artifact parentItem = (Artifact) parentElement;
 
          try {
@@ -136,15 +125,6 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * @see ITreeContentProvider#hasChildren(Object)
     */
    public boolean hasChildren(Object element) {
-
-      if (noChildren) return false;
-
-      /*
-       * might be inefficient if getChildren is not a lightweight opperation; return true; is very
-       * efficient, but will initially cause all nodes to display a plus which is removed if you try
-       * to expand the node and it has no children
-       */
-
       /*
        * If the item is an artifact, then use it's optimized check. If it is not an artifact, then
        * resort to asking the general children
@@ -156,7 +136,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
             if (artifact.isDeleted()) return false;
 
             try {
-               return artifact.getChildren().size() > 0;
+               return artifact.hasChildren();
             } catch (SQLException ex) {
                logger.log(Level.SEVERE, ex.toString(), ex);
                // Assume it has children if an error happens

@@ -167,7 +167,7 @@ public class BranchPersistenceManagerTest extends TestCase {
                branchPersistenceManager.getMergeBranch(ConflictTestManager.getSourceBranch().getBranchId(),
                      ConflictTestManager.getDestBranch().getBranchId());
          assertFalse(mergeBranch == null);
-         Collection<Artifact> artifacts = mergeBranch.getArtifacts(true);
+         Collection<Artifact> artifacts = mergeBranch.getArtifacts();
          assertTrue(artifacts.toArray().length == ConflictTestManager.numberOfArtifactsOnMergeBranch());
       } catch (Exception ex) {
          fail(ex.getMessage());

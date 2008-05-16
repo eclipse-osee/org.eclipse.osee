@@ -33,9 +33,8 @@ public class PublishPids extends AbstractBlam {
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Branch");
-      ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
       RendererManager rendererManager = RendererManager.getInstance();
-      Artifact root = artifactManager.getDefaultHierarchyRootArtifact(branch);
+      Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch);
       Artifact subsysTopFolder = root.getChild(Requirements.SUBSYSTEM_REQUIREMENTS);
 
       monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons

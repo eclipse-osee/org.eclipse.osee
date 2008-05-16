@@ -57,7 +57,9 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -68,7 +70,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static int count = 0;
    public final int aaaSerialId = count++;
    private final Branch branch;
@@ -87,6 +88,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private int transactionId;
    private int artId;
    private int gammaId;
+   private boolean linksLoaded;
 
    protected Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
       if (guid == null) {
@@ -104,7 +106,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       this.parentFactory = parentFactory;
       this.branch = branch;
       this.artifactType = artifactType;
-      linkManager.setLinksLoaded();
    }
 
    public boolean isInDb() {
@@ -288,8 +289,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return getLinkManager().getSoleArtifact(DEFAULT_HIERARCHICAL__PARENT);
    }
 
-   public boolean isOrphan() throws SQLException {
-      Artifact root = artifactManager.getDefaultHierarchyRootArtifact(getBranch());
+   public boolean isOrphan() throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
+      Artifact root = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(getBranch());
       for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
          if (parent.equals(root)) {
             return false;
@@ -343,7 +344,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * creates a new child using descriptor, relates it to its parent, and persists the child
     * 
-    * @param descriptor
+    * @param artifactType
     * @param name TODO
     * @throws SQLException
     */
@@ -406,8 +407,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                attributeClass = (Class<? extends Attribute<T>>) WordWholeDocumentAttribute.class;
             } else {
                attributeClass = (Class<? extends Attribute<T>>) WordTemplateAttribute.class;
+            }
          }
-      }
 
          Constructor<? extends Attribute<T>> attributeConstructor =
                attributeClass.getConstructor(new Class[] {AttributeType.class, Artifact.class});
@@ -418,12 +419,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          IAttributeDataProvider provider = providerConstructor.newInstance(new Object[] {attribute});
          attribute.setAttributeDataProvider(provider);
          attribute.initializeDefaultValue();
+         attribute.setNotDirty(); //the initializeDefaultValue() may have called setValue and it also sets dirty
          attributes.put(attributeType.getName(), attribute);
          return attribute;
       } catch (Exception ex) {
          // using reflections causes five different exceptions to be thrown which is too messy and will be very rare
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-   }
+      }
       return null;
    }
 
@@ -453,6 +455,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public <T> List<Attribute<T>> getAttributes(String attributeTypeName) throws SQLException {
+      ensureAttributesLoaded();
       Collection<Attribute<?>> selectedAttributes = attributes.getValues(attributeTypeName);
       if (selectedAttributes == null) {
          return java.util.Collections.emptyList();
@@ -461,13 +464,20 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * The use of this method is discouraged since it directly returns Attributres.
+    * The use of this method is discouraged since it directly returns Attributes.
     * 
     * @return
     * @throws SQLException
     */
    public List<Attribute<?>> getAttributes() throws SQLException {
+      ensureAttributesLoaded();
       return attributes.getValues();
+   }
+
+   private void ensureAttributesLoaded() throws SQLException {
+      if (!isAttributesLoaded()) {
+         ArtifactLoader.loadArtifactData(this, branch, ArtifactLoad.ATTRIBUTE);
+      }
    }
 
    public boolean isAttributesLoaded() {
@@ -480,6 +490,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    private <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws SQLException, MultipleAttributesExist {
+      ensureAttributesLoaded();
       Collection<Attribute<?>> soleAttributes = attributes.getValues(attributeTypeName);
       if (soleAttributes == null) {
          return null;
@@ -514,6 +525,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public <T> T getSoleAttributeValue(String attributeTypeName) throws AttributeDoesNotExist, MultipleAttributesExist, SQLException {
+      ensureAttributesLoaded();
       Collection<Attribute<?>> soleAttributes = attributes.getValues(attributeTypeName);
       if (soleAttributes == null) {
          throw new AttributeDoesNotExist(
@@ -671,6 +683,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public void setAttributeValues(String attributeTypeName, Collection<String> dataStrs) throws Exception {
+      ensureAttributesLoaded();
+
       ArrayList<String> storedNames = new ArrayList<String>();
 
       AttributeType attributeType = AttributeTypeManager.getType(attributeTypeName);
@@ -734,6 +748,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public List<String> getAttributesToStringList(String attributeTypeName) throws SQLException {
+      ensureAttributesLoaded();
+
       List<String> items = new ArrayList<String>();
       Collection<Attribute<?>> selectedAttributes = attributes.getValues(attributeTypeName);
 
@@ -828,7 +844,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
             return true;
          }
       }
-
       return false;
    }
 
@@ -875,7 +890,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public void persist(boolean recurse) throws SQLException {
       ArtifactPersistenceManager.makePersistent(this, recurse);
-      }
+   }
 
    /**
     * Returns all of the descendants through the primary decomposition tree that have a particular human readable id.
@@ -910,7 +925,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       Collection<Artifact> descendants = new LinkedList<Artifact>();
 
       try {
-         if (isLinkManagerLoaded()) {
+         if (isLinksLoaded()) {
             for (Artifact child : getChildren()) {
                descendants.add(child);
                descendants.addAll(child.getLoadedDescendants());
@@ -965,7 +980,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public void delete() throws Exception {
-      artifactManager.deleteArtifact(this);
+      ArtifactPersistenceManager.deleteArtifact(this);
    }
 
    /**
@@ -974,7 +989,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public void purgeFromBranch() throws Exception {
-      artifactManager.purgeArtifactFromBranch(this);
+      ArtifactPersistenceManager.getInstance().purgeArtifactFromBranch(this);
    }
 
    /**
@@ -983,7 +998,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public void purge() throws SQLException {
-      artifactManager.purgeArtifact(this);
+      ArtifactPersistenceManager.purgeArtifact(this);
    }
 
    public boolean isDeleted() {
@@ -1019,7 +1034,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public void setLinksLoaded() {
-      linkManager.setLinksLoaded();
+      linksLoaded = true;
    }
 
    /**
@@ -1084,8 +1099,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       if (persist) linkManager.persistLinks();
    }
 
-   public final boolean isLinkManagerLoaded() {
-      return linkManager.isLoaded();
+   public final boolean isLinksLoaded() {
+      return linksLoaded;
    }
 
    /**
@@ -1240,7 +1255,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public Artifact duplicate(Branch branch) throws SQLException {
       Artifact newArtifact = artifactType.makeNewArtifact(branch);
-         copyAttributes(newArtifact);
+      copyAttributes(newArtifact);
       return newArtifact;
    }
 
@@ -1248,27 +1263,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       for (Attribute<?> attribute : getAttributes()) {
          artifact.addAttribute(attribute.getAttributeType().getName(), attribute.getValue());
       }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#clone()
-    */
-   @Override
-   protected Object clone() throws CloneNotSupportedException {
-      Artifact clonedArtifact = null;
-
-      try {
-         clonedArtifact = artifactType.makeNewArtifact(getBranch(), guid, humanReadableId);
-         clonedArtifact.setIds(artId, gammaId);
-         setDirty();
-         copyAttributes(clonedArtifact);
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-
-      return clonedArtifact;
    }
 
    public void setIds(int artId, int gammaId) {
@@ -1303,7 +1297,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       List<SkynetAttributeChange> dirtyAttributes = new LinkedList<SkynetAttributeChange>();
 
       for (Attribute<?> attribute : getAttributes()) {
-            if (attribute.isDirty()) {
+         if (attribute.isDirty()) {
             dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(), attribute.getValue(),
                   attribute.getAttrId(), attribute.getGammaId()));
          }
@@ -1318,7 +1312,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public void changeArtifactType(ArtifactSubtypeDescriptor artifactType) throws SQLException {
-      artifactManager.changeArtifactSubStype(this, artifactType);
+      ArtifactPersistenceManager.changeArtifactSubStype(this, artifactType);
       this.artifactType = artifactType;
    }
 
@@ -1466,11 +1460,21 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return attributeType.getMaxOccurrences() - attributes.getValues(attributeType.getName()).size();
    }
 
-   public int getAttributeCount(String attributeTypeName) {
+   public int getAttributeCount(String attributeTypeName) throws SQLException {
+      ensureAttributesLoaded();
+
       Collection<Attribute<?>> tempAttributes = attributes.getValues(attributeTypeName);
       if (tempAttributes == null) {
          return 0;
       }
       return tempAttributes.size();
+   }
+
+   /**
+    * @return
+    * @throws SQLException
+    */
+   public boolean hasChildren() throws SQLException {
+      return getLinkManager().getRelationCount(DEFAULT_HIERARCHICAL__CHILD) > 0;
    }
 }

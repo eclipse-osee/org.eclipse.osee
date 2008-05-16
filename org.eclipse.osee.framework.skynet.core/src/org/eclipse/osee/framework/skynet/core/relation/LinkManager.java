@@ -19,7 +19,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionBuilder;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 
 /**
  * @author Jeff C. Phillips
@@ -32,7 +35,6 @@ public class LinkManager {
    private final Map<IRelationType, RelationLinkGroup> sideALinks;
    private final Map<IRelationType, RelationLinkGroup> sideBLinks;
    private boolean inTrace;
-   private boolean linksLoaded;
    private static final RelationLinkGroup[] dummyRelationLinkGroups = new RelationLinkGroup[0];
    private static final RelationLink[] dummyRelationLinks = new RelationLink[0];
 
@@ -90,7 +92,7 @@ public class LinkManager {
       return sideA ? sideALinks : sideBLinks;
    }
 
-   public void addLink(RelationLink link) {
+   public void addLink(RelationLink link) throws SQLException {
       descriptors.add(link.getRelationType());
       addLinkToGroup(link);
       if (link.isDeleted())
@@ -99,7 +101,7 @@ public class LinkManager {
          links.add(link);
    }
 
-   private void addLinkToGroup(RelationLink link) {
+   private void addLinkToGroup(RelationLink link) throws SQLException {
       Map<IRelationType, RelationLinkGroup> hash = artifact == link.getArtifactA() ? sideBLinks : sideALinks;
       Artifact artA = link.getArtifactA();
       Artifact artB = link.getArtifactB();
@@ -128,9 +130,10 @@ public class LinkManager {
     * 
     * @param link
     * @throws SQLException
+    * @throws ArtifactDoesNotExist
     */
    protected void removeLink(RelationLink link) throws SQLException {
-      boolean useSideB = (link.getArtifactA().isLinkManagerLoaded() && this == link.getArtifactA().getLinkManager());
+      boolean useSideB = (link.getArtifactA().isLinksLoaded() && this == link.getArtifactA().getLinkManager());
 
       if (unhashLink((useSideB) ? sideBLinks : sideALinks, link) && !((useSideB) ? sideALinks : sideBLinks).containsKey(link.getRelationType())) {
 
@@ -205,7 +208,7 @@ public class LinkManager {
          return null;
    }
 
-   public String getSide(RelationLink currentLink) {
+   public String getSide(RelationLink currentLink) throws SQLException {
       for (RelationLink link : links) {
          if (currentLink == link) {
             if (artifact == link.getArtifactA())
@@ -250,7 +253,7 @@ public class LinkManager {
       return groups;
    }
 
-   public Set<Artifact> getOtherSideArtifacts() {
+   public Set<Artifact> getOtherSideArtifacts() throws SQLException {
       Set<Artifact> arts = new HashSet<Artifact>(links.size());
 
       for (RelationLink link : links)
@@ -259,7 +262,7 @@ public class LinkManager {
       return arts;
    }
 
-   public Artifact getOtherSideAritfact(RelationLink link) {
+   public Artifact getOtherSideAritfact(RelationLink link) throws SQLException {
       if (link == null) throw new IllegalArgumentException("link can not be null");
 
       if (artifact == link.getArtifactA())
@@ -298,6 +301,20 @@ public class LinkManager {
          return Collections.emptySet();
       }
       return group.getArtifacts();
+   }
+
+   public int getRelationCount(IRelationEnumeration side) throws SQLException {
+      RelationLinkGroup group = null;
+      if (side.isSideA()) {
+         group = sideALinks.get(side.getRelationType());
+      } else {
+         group = sideBLinks.get(side.getRelationType());
+      }
+
+      if (group == null) {
+         return 0;
+      }
+      return group.getLinkCount();
    }
 
    private boolean hasArtifacts(RelationLinkGroup group) {
@@ -341,17 +358,9 @@ public class LinkManager {
     * @throws SQLException
     */
    public synchronized void ensurePopulated() throws SQLException {
-      if (!linksLoaded && artifact.isInDb()) {
-         throw new UnsupportedOperationException();
+      if (!artifact.isLinksLoaded() && artifact.isInDb()) {
+         ArtifactLoader.loadArtifactData(artifact, artifact.getBranch(), ArtifactLoad.FULL_FULL);
       }
-   }
-
-   public boolean isLoaded() {
-      return linksLoaded;
-   }
-
-   public void setLinksLoaded() {
-      linksLoaded = true;
    }
 
    /**
@@ -465,13 +474,13 @@ public class LinkManager {
     * Purges all links from runtime.
     * 
     * @throws SQLException
+    * @throws ArtifactDoesNotExist
     */
    public void purge() throws SQLException {
-      Artifact otherSideArtifact;
       for (RelationLink link : getLinks()) {
-         otherSideArtifact = getOtherSideAritfact(link);
+         Artifact otherSideArtifact = link.getOtherSideAritfactIfAvailable(artifact);
 
-         if (otherSideArtifact.isLinkManagerLoaded()) {
+         if (otherSideArtifact != null && otherSideArtifact.isLinksLoaded()) {
             otherSideArtifact.getLinkManager().removeLink(link);
          }
       }

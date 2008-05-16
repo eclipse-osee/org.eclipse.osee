@@ -63,7 +63,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    @Override
    public void setValue(byte[] data) {
       try {
-         if (Arrays.equals(dataStore.getContent(), data) != true) {
+         if (!Arrays.equals(dataStore.getContent(), data)) {
             if (data != null) {
                byte[] compressed;
                try {

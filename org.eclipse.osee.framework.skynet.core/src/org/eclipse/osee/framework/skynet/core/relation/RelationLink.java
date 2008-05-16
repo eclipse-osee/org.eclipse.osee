@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 
@@ -61,19 +62,29 @@ public class RelationLink {
    }
 
    /**
-    * Do not call this method from application code
+    * Do not call this method from application code. Only designed for active artifacts (the <artifact, branch> cache is
+    * used)
     * 
     * @param branch
     * @throws SQLException
     */
    public void loadArtifacts(Branch branch) throws SQLException {
-      if (artA == null || artB == null) {
-         artA = ArtifactCache.get(artAId, branch);
-         artB = ArtifactCache.get(artBId, branch);
-
+      artA = ArtifactCache.get(artAId, branch);
+      if (artA != null && artA.isLinksLoaded()) {
          artA.getLinkManager().addLink(this);
+      }
+
+      artB = ArtifactCache.get(artBId, branch);
+      if (artB != null && artB.isLinksLoaded()) {
          artB.getLinkManager().addLink(this);
       }
+   }
+
+   public Artifact getOtherSideAritfactIfAvailable(Artifact artifact) {
+      if (artifact == artA) {
+         return artB;
+      }
+      return artA;
    }
 
    /**
@@ -97,11 +108,11 @@ public class RelationLink {
    public void delete() throws SQLException {
       deleted = true;
       // There must be at least one link manager loaded to access delete
-      if (!artA.isLinkManagerLoaded() && !artB.isLinkManagerLoaded()) throw new IllegalStateException(
+      if (!artA.isLinksLoaded() && !artB.isLinksLoaded()) throw new IllegalStateException(
             "Invalid state where neither link manager is loaded");
       // Only one of these needs to be called in order to delete a link
-      if (artA.isLinkManagerLoaded()) artA.getLinkManager().deleteLink(this);
-      if (artB.isLinkManagerLoaded()) artB.getLinkManager().deleteLink(this);
+      if (artA.isLinksLoaded()) artA.getLinkManager().deleteLink(this);
+      if (artB.isLinksLoaded()) artB.getLinkManager().deleteLink(this);
       kickDeleteLinkEvent();
    }
 
@@ -111,10 +122,30 @@ public class RelationLink {
    }
 
    public Artifact getArtifactA() {
+      if (artA == null) {
+         try {
+            artA = ArtifactQuery.getArtifactFromId(artAId, artB.getBranch());
+         } catch (Exception ex) {
+         }
+      }
       return artA;
    }
 
+   public Artifact getArtifactAIfAvailable() {
+      return artA;
+   }
+
+   public Artifact getArtifactBIfAvailable() {
+      return artB;
+   }
+
    public Artifact getArtifactB() {
+      if (artB == null) {
+         try {
+            artB = ArtifactQuery.getArtifactFromId(artBId, artA.getBranch());
+         } catch (Exception ex) {
+         }
+      }
       return artB;
    }
 
@@ -133,8 +164,8 @@ public class RelationLink {
          this.aOrder = order;
          dirty = true;
 
-         if (artA.isLinkManagerLoaded()) artA.getLinkManager().fixOrderingOf(this, true);
-         if (artB.isLinkManagerLoaded()) artB.getLinkManager().fixOrderingOf(this, false);
+         if (artA.isLinksLoaded()) artA.getLinkManager().fixOrderingOf(this, true);
+         if (artB.isLinksLoaded()) artB.getLinkManager().fixOrderingOf(this, false);
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
@@ -156,8 +187,8 @@ public class RelationLink {
          dirty = true;
 
          if (memo != null) {
-            if (artA.isLinkManagerLoaded()) artA.getLinkManager().fixOrderingOf(this, true);
-            if (artB.isLinkManagerLoaded()) artB.getLinkManager().fixOrderingOf(this, false);
+            if (artA.isLinksLoaded()) artA.getLinkManager().fixOrderingOf(this, true);
+            if (artB.isLinksLoaded()) artB.getLinkManager().fixOrderingOf(this, false);
          }
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);

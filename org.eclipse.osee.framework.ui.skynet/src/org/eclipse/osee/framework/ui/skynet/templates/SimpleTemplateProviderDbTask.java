@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -75,21 +74,22 @@ public class SimpleTemplateProviderDbTask implements IDbInitializationTask {
 
    private Artifact getTemplateFolder() throws SQLException {
       try {
-         return ArtifactQuery.getArtifactFromTypeAndName("Folder", "Document Templates",
-               BranchPersistenceManager.getCommonBranch());
-      } catch (MultipleArtifactsExist ex) {
-         OSEELog.logException(SimpleTemplateProviderDbTask.class, ex.getLocalizedMessage(), ex, false);
-      } catch (ArtifactDoesNotExist ex) {
-         Artifact rootArt =
-               ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                     BranchPersistenceManager.getCommonBranch());
+         try {
+            return ArtifactQuery.getArtifactFromTypeAndName("Folder", "Document Templates",
+                  BranchPersistenceManager.getCommonBranch());
+         } catch (ArtifactDoesNotExist ex) {
+            Artifact rootArt =
+                  ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getCommonBranch());
 
-         Artifact templateFolder =
-               ArtifactTypeManager.addArtifact("Folder", BranchPersistenceManager.getCommonBranch(),
-                     "Document Templates");
-         rootArt.addChild(templateFolder);
-         templateFolder.persistAttributesAndRelations();
-         return templateFolder;
+            Artifact templateFolder =
+                  ArtifactTypeManager.addArtifact("Folder", BranchPersistenceManager.getCommonBranch(),
+                        "Document Templates");
+            rootArt.addChild(templateFolder);
+            templateFolder.persistAttributesAndRelations();
+            return templateFolder;
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SimpleTemplateProviderDbTask.class, ex.getLocalizedMessage(), ex, false);
       }
       return null;
    }

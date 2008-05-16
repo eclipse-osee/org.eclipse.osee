@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.zest;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -33,7 +32,6 @@ import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
  */
 public class SkyWalkerView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.skyWalkerView";
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private GraphViewer viewer;
 
    /* (non-Javadoc)
@@ -68,9 +66,8 @@ public class SkyWalkerView extends ViewPart implements IActionable {
 
       });
       try {
-         viewer.setInput(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-               branchManager.getDefaultBranch()));
-      } catch (SQLException ex) {
+         viewer.setInput(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getInstance().getDefaultBranch()));
+      } catch (Exception ex) {
          ex.printStackTrace();
       }
    }

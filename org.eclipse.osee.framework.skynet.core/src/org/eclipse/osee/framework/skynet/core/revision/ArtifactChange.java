@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -48,7 +49,7 @@ public class ArtifactChange extends RevisionChange {
 
    transient private Artifact conflictingModArtifact;
    private int conflictingArtId;
-   private int conflictingArtTransactionId;
+   private TransactionId conflictingArtTransactionId;
    private TransactionId deletedTransactionId;
 
    @Override
@@ -143,16 +144,16 @@ public class ArtifactChange extends RevisionChange {
             (getModType() == ModificationType.DELETED ? lastGoodTransactionId : toTransactionId);
 
       if (artifact == null && transactionId != null) {
-         artifact = loadArtifact(transactionId.getTransactionNumber(), artifact, artId);
+         artifact = loadArtifact(transactionId, artifact, artId);
       }
       return artifact;
    }
 
-   private Artifact loadArtifact(int transactionId, Artifact artifact, int artId) throws SQLException {
+   private Artifact loadArtifact(TransactionId transactionId, Artifact artifact, int artId) throws SQLException {
       // the memo is checked on the cached artifact in case our original artifact was editable,
       // modified, and no longer on the transaction
       try {
-         if (artifact == null || artifact.getTransactionNumber() != transactionId || (artifact.getTransactionNumber() == transactionId && artifact.isLive() != transactionId.isEditable())) {
+         if (artifact == null || artifact.getTransactionNumber() != transactionId.getTransactionNumber() || (artifact.getTransactionNumber() == transactionId.getTransactionNumber() && artifact.isLive() != transactionId.isEditable())) {
             artifact = artifactPersistenceManager.getArtifactFromId(artId, transactionId);
          }
       } catch (IllegalArgumentException ex) {
@@ -207,7 +208,7 @@ public class ArtifactChange extends RevisionChange {
     * @return Returns the conflictingModArtifact.
     */
    public Artifact getConflictingModArtifact() throws SQLException {
-      if (conflictingModArtifact == null && conflictingArtTransactionId != 0) {
+      if (conflictingModArtifact == null && conflictingArtTransactionId.getTransactionNumber() != 0) {
          conflictingModArtifact = loadArtifact(conflictingArtTransactionId, conflictingModArtifact, conflictingArtId);
       }
       return conflictingModArtifact;
@@ -215,11 +216,14 @@ public class ArtifactChange extends RevisionChange {
 
    /**
     * @param conflictingModArtifact The conflictingModArtifact to set.
+    * @throws SQLException
     */
-   public void setConflictingModArtifact(Artifact conflictingModArtifact) {
+   public void setConflictingModArtifact(Artifact conflictingModArtifact) throws SQLException {
       this.conflictingModArtifact = conflictingModArtifact;
       this.conflictingArtId = conflictingModArtifact.getArtId();
-      this.conflictingArtTransactionId = conflictingModArtifact.getTransactionNumber();
+      this.conflictingArtTransactionId =
+            TransactionIdManager.getInstance().getPossiblyEditableTransactionId(
+                  conflictingModArtifact.getTransactionNumber());
    }
 
    /*

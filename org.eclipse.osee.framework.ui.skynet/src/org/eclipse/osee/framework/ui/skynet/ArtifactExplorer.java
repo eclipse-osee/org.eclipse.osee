@@ -482,8 +482,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                artifactExplorer =
                      (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.generateGuidStr(),
                            IWorkbenchPage.VIEW_ACTIVATE);
-               artifactExplorer.explore(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                     BranchPersistenceManager.getInstance().getDefaultBranch()));
+               artifactExplorer.explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getInstance().getDefaultBranch()));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
                throw new RuntimeException(ex);
@@ -1229,22 +1228,22 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       }
    }
 
-   private void onBranchChangeEvent() throws SQLException, IllegalArgumentException {
+   private void onBranchChangeEvent() throws SQLException {
       Branch defaultBranch = BranchPersistenceManager.getInstance().getDefaultBranch();
 
-      Artifact candidateRoot = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(defaultBranch);
-
-      if (exploreRoot != null) {
-         try {
-            candidateRoot = ArtifactQuery.getArtifactFromId(exploreRoot.getGuid(), defaultBranch);
-         } catch (OseeCoreException ex) {
-            // this will happen if the previous root does not exist on this branch, so the DefaultHierarchyRootArtifact will be used if we do nothing
-         }
-      }
-
       try {
+         Artifact candidateRoot = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(defaultBranch);
+
+         if (exploreRoot != null) {
+            try {
+               candidateRoot = ArtifactQuery.getArtifactFromId(exploreRoot.getGuid(), defaultBranch);
+            } catch (OseeCoreException ex) {
+               // this will happen if the previous root does not exist on this branch, so the DefaultHierarchyRootArtifact will be used if we do nothing
+            }
+         }
+
          explore(candidateRoot);
-      } catch (CoreException ex) {
+      } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       updateEnablementsEtAl();
@@ -1304,8 +1303,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       }
 
       try {
-         explore(ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-               BranchPersistenceManager.getInstance().getDefaultBranch()));
+         explore(ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getInstance().getDefaultBranch()));
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

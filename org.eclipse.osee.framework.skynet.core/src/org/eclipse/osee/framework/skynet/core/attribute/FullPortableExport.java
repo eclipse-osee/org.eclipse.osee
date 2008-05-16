@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
 
@@ -70,7 +71,7 @@ public class FullPortableExport {
       columnIndexHash = new HashMap<String, Integer>();
    }
 
-   public void createRelationsSheet(Collection<Artifact> artifacts) throws IOException, SQLException {
+   public void createRelationsSheet(Collection<Artifact> artifacts) throws IOException, SQLException, ArtifactDoesNotExist {
       writeRelationsHeader();
 
       HashSet<RelationLink> links = new HashSet<RelationLink>();
@@ -80,8 +81,8 @@ public class FullPortableExport {
 
       for (RelationLink link : links) {
          row[0] = link.getRelationType().getTypeName();
-         row[1] = link.getArtifactA().getGuid();
          row[2] = link.getArtifactB().getGuid();
+         row[1] = link.getArtifactA().getGuid();
          row[3] = String.valueOf(link.getAOrder());
          row[4] = String.valueOf(link.getBOrder());
          String rationale = link.getRationale();

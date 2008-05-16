@@ -56,8 +56,7 @@ public class DeleteArtifactHandler extends AbstractHandler {
                         " Are you sure you want to delete this artifact and all of the default hierarchy children?",
                         MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == 0) {
-               ArtifactPersistenceManager.getInstance().deleteArtifact(
-                     artifacts.toArray(new Artifact[artifacts.size()]));
+               ArtifactPersistenceManager.deleteArtifact(artifacts.toArray(new Artifact[artifacts.size()]));
             }
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);

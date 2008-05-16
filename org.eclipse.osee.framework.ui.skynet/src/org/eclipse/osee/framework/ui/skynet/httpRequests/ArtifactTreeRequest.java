@@ -71,7 +71,7 @@ public class ArtifactTreeRequest implements IHttpServerRequest {
          if (Strings.isValid(guidLevel)) {
             artifact = ArtifactQuery.getArtifactFromId(guidLevel, branch);
          } else {
-            artifact = ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(branch);
+            artifact = ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch);
          }
 
          Document doc = Jaxp.newDocument();

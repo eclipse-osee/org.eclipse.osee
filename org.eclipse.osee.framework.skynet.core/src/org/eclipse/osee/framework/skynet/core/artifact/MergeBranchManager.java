@@ -37,7 +37,7 @@ public class MergeBranchManager {
    public static void updateMergeBranch(Branch mergeBranch, ArrayList<Integer> expectedArtIds, Branch destBranch, Branch sourceBranch) throws Exception {
       Collection<Integer> allMergeBranchArtifacts = getAllMergeArtifacts(mergeBranch);
       Collection<Integer> allMergeBranchArtifactsCopy = new HashSet<Integer>(allMergeBranchArtifacts);
-      Collection<Artifact> goodMergeBranchArtifacts = mergeBranch.getArtifacts(true);
+      Collection<Artifact> goodMergeBranchArtifacts = mergeBranch.getArtifacts();
 
       //Delete any damaged artifacts (from a source revert) on the merge branch
       for (Artifact artifact : goodMergeBranchArtifacts) {

@@ -132,8 +132,10 @@ public class ArtifactRequest implements IHttpServerRequest {
       String branchNameKey = httpRequest.getParameter(BRANCH_NAME_KEY);
       String transactionKey = httpRequest.getParameter(TRANSACTION_NUMBER_KEY);
       Artifact toReturn;
-      if (Strings.isValid(transactionKey)) {
-         toReturn = getArtifactBasedOnTransactionNumber(guidKey, Integer.parseInt(transactionKey));
+
+      int transactionId;
+      if (Strings.isValid(transactionKey) && (transactionId = Integer.parseInt(transactionKey)) > 0) {
+         toReturn = getArtifactBasedOnTransactionNumber(guidKey, transactionId);
       } else {
          toReturn = getLatestArtifactForBranch(guidKey, branchIdKey, branchNameKey);
       }

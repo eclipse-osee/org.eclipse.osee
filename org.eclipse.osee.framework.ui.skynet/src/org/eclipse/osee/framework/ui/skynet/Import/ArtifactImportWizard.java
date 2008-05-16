@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
@@ -73,8 +73,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       if (reuseArtifactRoot == null) {
          artifactResolver = new NewArtifactImportResolver();
       } else { // only non-null when reuse artifacts is checked
-         Collection<AttributeType> identifyingAttributes =
-               attributeTypePage.getSelectedAttributeDescriptors();
+         Collection<AttributeType> identifyingAttributes = attributeTypePage.getSelectedAttributeDescriptors();
          artifactResolver = new RootAndAttributeBasedArtifactResolver(identifyingAttributes, false);
       }
 
@@ -88,8 +87,8 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
          ArtifactExtractor extractor = getNewArtifactExtractor(mainDescriptor, branch, reuseArtifactRoot != null);
          Artifact importRoot = mainPage.getImportRoot();
          Jobs.startJob(new ArtifactImportJob(file, importRoot, extractor, branch, artifactResolver));
-      } catch (SQLException ex) {
-         ErrorDialog.openError(getShell(), "Define Import Error", "An error has occured while importing a document.",
+      } catch (Exception ex) {
+         ErrorDialog.openError(getShell(), "Import Error", "An error has occured while importing a document.",
                new Status(IStatus.ERROR, "org.eclipse.osee.framework.jdk.core", IStatus.ERROR,
                      "Exception occured during artifact import", ex));
       }
@@ -158,8 +157,8 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
                attributeTypePage.setDescriptors(rootAttributes);
             } else {
                HashSet<AttributeType> importAttributes =
-                     new HashSet<AttributeType>(manager.getAttributeTypesFromArtifactType(
-                           importDescriptor, mainPage.getSelectedBranch()));
+                     new HashSet<AttributeType>(manager.getAttributeTypesFromArtifactType(importDescriptor,
+                           mainPage.getSelectedBranch()));
 
                attributeTypePage.setDescription("Identifying attributes common to " + rootDescriptor.getName() + " and " + importDescriptor.getName() + " artifacts");
 
