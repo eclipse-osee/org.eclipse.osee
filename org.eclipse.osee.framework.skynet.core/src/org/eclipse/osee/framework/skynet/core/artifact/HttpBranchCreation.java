@@ -42,6 +42,7 @@ public class HttpBranchCreation {
       parameters.put("branchName", childBranchName);
       parameters.put("function", "createChildBranch");
       parameters.put("authorId", Integer.toString(getAuthorId(skynetAuth)));
+      parameters.put("parentBranchId", Integer.toString(parentTransactionId.getBranch().getBranchId()));
       parameters.put("associatedArtifactId", Integer.toString(getAssociatedArtifactId(skynetAuth, associatedArtifact)));
       parameters.put(
             "creationComment",
