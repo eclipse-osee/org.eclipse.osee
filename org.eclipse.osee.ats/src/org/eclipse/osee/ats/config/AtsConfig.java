@@ -90,11 +90,10 @@ public class AtsConfig {
       if (art.getParent() == null) {
          try {
             Artifact rootArt =
-                  ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                        BranchPersistenceManager.getAtsBranch());
+                  ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getAtsBranch());
             rootArt.addChild(art);
             art.persistAttributesAndRelations();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }
       }
@@ -106,11 +105,10 @@ public class AtsConfig {
       if (art.getParent() == null) {
          try {
             Artifact rootArt =
-                  ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(
-                        BranchPersistenceManager.getAtsBranch());
+                  ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(BranchPersistenceManager.getAtsBranch());
             rootArt.addChild(art);
             art.persistAttributesAndRelations();
-         } catch (SQLException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }
       }
