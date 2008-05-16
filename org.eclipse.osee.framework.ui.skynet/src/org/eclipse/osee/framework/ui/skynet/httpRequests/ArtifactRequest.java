@@ -69,7 +69,7 @@ public class ArtifactRequest implements IHttpServerRequest {
       return instance;
    }
 
-   private Map<String, String> getParameters(Artifact artifact, boolean includeRevision) {
+   private Map<String, String> getParameters(Artifact artifact) {
       Map<String, String> keyValues = new HashMap<String, String>();
       String guid = artifact.getGuid();
       int branch = artifact.getBranch().getBranchId();
@@ -77,15 +77,15 @@ public class ArtifactRequest implements IHttpServerRequest {
          keyValues.put(GUID_KEY, guid);
       }
       keyValues.put(BRANCH_ID_KEY, Integer.toString(branch));
-      if (includeRevision) {
+      if (artifact.isHistorical()) {
          int txNumber = artifact.getTransactionNumber();
          keyValues.put(TRANSACTION_NUMBER_KEY, Integer.toString(txNumber));
       }
       return keyValues;
    }
 
-   public String getUrl(Artifact artifact, boolean includeRevision) {
-      return urlBuilder.getUrlForLocalSkynetHttpServer(getRequestType(), getParameters(artifact, includeRevision));
+   public String getUrl(Artifact artifact) {
+      return urlBuilder.getUrlForLocalSkynetHttpServer(getRequestType(), getParameters(artifact));
    }
 
    /*
@@ -133,9 +133,8 @@ public class ArtifactRequest implements IHttpServerRequest {
       String transactionKey = httpRequest.getParameter(TRANSACTION_NUMBER_KEY);
       Artifact toReturn;
 
-      int transactionId;
-      if (Strings.isValid(transactionKey) && (transactionId = Integer.parseInt(transactionKey)) > 0) {
-         toReturn = getArtifactBasedOnTransactionNumber(guidKey, transactionId);
+      if (Strings.isValid(transactionKey)) {
+         toReturn = getArtifactBasedOnTransactionNumber(guidKey, Integer.parseInt(transactionKey));
       } else {
          toReturn = getLatestArtifactForBranch(guidKey, branchIdKey, branchNameKey);
       }
