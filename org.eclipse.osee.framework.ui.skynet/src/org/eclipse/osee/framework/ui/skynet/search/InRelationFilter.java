@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.swt.widgets.Control;
 
@@ -41,7 +41,7 @@ public class InRelationFilter extends SearchFilter {
       String type = relationTypeList.getCombo().getText();
       String sideName = relationSideList.getCombo().getText();
 
-      IRelationType linkDescriptor = (IRelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
+      RelationType linkDescriptor = (RelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
       ISearchPrimitive primitive = new InRelationSearch(type, linkDescriptor.isSideAName(sideName));
       if (not) primitive = new NotSearch(primitive);
 

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 /**
  * @author Robert A. Fisher
  */
-public class RelationType implements IRelationType {
+public class RelationType implements Comparable<RelationType> {
    private int relationTypeId;
    private String namespace;
    private String typeName;
@@ -98,7 +98,7 @@ public class RelationType implements IRelationType {
     * 
     * @see java.lang.Comparable#compareTo(T)
     */
-   public int compareTo(IRelationType descriptor) {
+   public int compareTo(RelationType descriptor) {
       return typeName.compareTo(descriptor.getTypeName());
    }
 
@@ -126,9 +126,8 @@ public class RelationType implements IRelationType {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.relation.IRelationType#getRelationTypeId()
+    * @see org.eclipse.osee.framework.skynet.core.relation.RelationType#getRelationTypeId()
     */
-   @Override
    public int getRelationTypeId() {
       return relationTypeId;
    }

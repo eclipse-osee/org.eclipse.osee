@@ -31,9 +31,9 @@ public class LinkManager {
    private Artifact artifact;
    private final Set<RelationLink> links;
    public final Set<RelationLink> deletedLinks;
-   private final Set<IRelationType> descriptors;
-   private final Map<IRelationType, RelationLinkGroup> sideALinks;
-   private final Map<IRelationType, RelationLinkGroup> sideBLinks;
+   private final Set<RelationType> descriptors;
+   private final Map<RelationType, RelationLinkGroup> sideALinks;
+   private final Map<RelationType, RelationLinkGroup> sideBLinks;
    private boolean inTrace;
    private static final RelationLinkGroup[] dummyRelationLinkGroups = new RelationLinkGroup[0];
    private static final RelationLink[] dummyRelationLinks = new RelationLink[0];
@@ -42,9 +42,9 @@ public class LinkManager {
       this.artifact = artifact;
       this.links = Collections.synchronizedSet(new HashSet<RelationLink>());
       this.deletedLinks = Collections.synchronizedSet(new HashSet<RelationLink>());
-      this.descriptors = Collections.synchronizedSet(new HashSet<IRelationType>());
-      this.sideALinks = Collections.synchronizedMap(new HashMap<IRelationType, RelationLinkGroup>());
-      this.sideBLinks = Collections.synchronizedMap(new HashMap<IRelationType, RelationLinkGroup>());
+      this.descriptors = Collections.synchronizedSet(new HashSet<RelationType>());
+      this.sideALinks = Collections.synchronizedMap(new HashMap<RelationType, RelationLinkGroup>());
+      this.sideBLinks = Collections.synchronizedMap(new HashMap<RelationType, RelationLinkGroup>());
       this.inTrace = false;
    }
 
@@ -64,7 +64,7 @@ public class LinkManager {
     * @param descriptor
     * @param sideName
     */
-   public RelationLinkGroup ensureRelationGroupExists(IRelationType descriptor, String sideName) {
+   public RelationLinkGroup ensureRelationGroupExists(RelationType descriptor, String sideName) {
       return ensureRelationGroupExists(descriptor, descriptor.isSideAName(sideName));
    }
 
@@ -72,8 +72,8 @@ public class LinkManager {
       return ensureRelationGroupExists(relationSide.getRelationType(), relationSide.isSideA());
    }
 
-   public RelationLinkGroup ensureRelationGroupExists(IRelationType descriptor, boolean sideA) {
-      Map<IRelationType, RelationLinkGroup> hash = getHash(sideA);
+   public RelationLinkGroup ensureRelationGroupExists(RelationType descriptor, boolean sideA) {
+      Map<RelationType, RelationLinkGroup> hash = getHash(sideA);
       RelationLinkGroup group = hash.get(descriptor);
 
       if (group != null) return group;
@@ -88,7 +88,7 @@ public class LinkManager {
     * @param sideA
     * @return Return side link map referrence
     */
-   private Map<IRelationType, RelationLinkGroup> getHash(boolean sideA) {
+   private Map<RelationType, RelationLinkGroup> getHash(boolean sideA) {
       return sideA ? sideALinks : sideBLinks;
    }
 
@@ -102,7 +102,7 @@ public class LinkManager {
    }
 
    private void addLinkToGroup(RelationLink link) throws SQLException {
-      Map<IRelationType, RelationLinkGroup> hash = artifact == link.getArtifactA() ? sideBLinks : sideALinks;
+      Map<RelationType, RelationLinkGroup> hash = artifact == link.getArtifactA() ? sideBLinks : sideALinks;
       Artifact artA = link.getArtifactA();
       Artifact artB = link.getArtifactB();
 
@@ -146,7 +146,7 @@ public class LinkManager {
       deletedLinks.remove(link);
    }
 
-   private boolean unhashLink(Map<IRelationType, RelationLinkGroup> hash, RelationLink link) {
+   private boolean unhashLink(Map<RelationType, RelationLinkGroup> hash, RelationLink link) {
       RelationLinkGroup group = hash.get(link.getRelationType());
       if (group == null) {
          return false;
@@ -220,7 +220,7 @@ public class LinkManager {
    }
 
    public RelationLinkGroup getGroup(IRelationEnumeration side) throws SQLException {
-      IRelationType relationType = side.getRelationType();
+      RelationType relationType = side.getRelationType();
       if (relationType == null) {
          throw new IllegalStateException(String.format("Relation Type was null for %s and %s on branch %s",
                side.getTypeName(), side.getSideName(artifact.getBranch()), getOwningArtifact().getBranch()));
@@ -229,7 +229,7 @@ public class LinkManager {
       }
    }
 
-   public Set<RelationLinkGroup> getGroups(IRelationType descriptor) {
+   public Set<RelationLinkGroup> getGroups(RelationType descriptor) {
       Set<RelationLinkGroup> groups = new HashSet<RelationLinkGroup>(2);
       RelationLinkGroup group1 = sideALinks.get(descriptor);
       RelationLinkGroup group2 = sideBLinks.get(descriptor);
@@ -326,21 +326,21 @@ public class LinkManager {
     * 
     * @return return link descriptors reference
     */
-   public Set<IRelationType> getLinkDescriptors() {
+   public Set<RelationType> getLinkDescriptors() {
       return descriptors;
    }
 
-   public RelationLinkGroup getSideAGroup(IRelationType descriptor) {
+   public RelationLinkGroup getSideAGroup(RelationType descriptor) {
       if (descriptor == null) throw new IllegalArgumentException("descriptor can not be null");
       return sideALinks.get(descriptor);
    }
 
-   public RelationLinkGroup getSideBGroup(IRelationType descriptor) {
+   public RelationLinkGroup getSideBGroup(RelationType descriptor) {
       if (descriptor == null) throw new IllegalArgumentException("descriptor can not be null");
       return sideBLinks.get(descriptor);
    }
 
-   public RelationLinkGroup getSideGroup(IRelationType descriptor, boolean sideA) {
+   public RelationLinkGroup getSideGroup(RelationType descriptor, boolean sideA) {
       if (sideA)
          return getSideAGroup(descriptor);
       else
@@ -386,7 +386,7 @@ public class LinkManager {
     * @param descriptor
     * @throws SQLException
     */
-   public void deleteGroups(IRelationType descriptor) throws SQLException {
+   public void deleteGroups(RelationType descriptor) throws SQLException {
       if (descriptor == null) return;
 
       for (RelationLinkGroup group : getGroups(descriptor).toArray(dummyRelationLinkGroups)) {
@@ -427,7 +427,7 @@ public class LinkManager {
       cleanUpEmptyGroups(sideBLinks);
    }
 
-   private void cleanUpEmptyGroups(Map<IRelationType, RelationLinkGroup> side) {
+   private void cleanUpEmptyGroups(Map<RelationType, RelationLinkGroup> side) {
 
       Iterator<RelationLinkGroup> iterator = side.values().iterator();
       RelationLinkGroup group;
@@ -451,7 +451,7 @@ public class LinkManager {
     * 
     * @throws SQLException
     */
-   public void ensureLinkValidity(IRelationType relationType, boolean sideA, Artifact otherArtifact) throws SQLException {
+   public void ensureLinkValidity(RelationType relationType, boolean sideA, Artifact otherArtifact) throws SQLException {
       if (getOwningArtifact() == otherArtifact) throw new IllegalArgumentException(
             "An artifact can not be related to itself: " + otherArtifact.getDescriptiveName() + " - " + otherArtifact.getGuid());
 
@@ -467,7 +467,7 @@ public class LinkManager {
     * 
     * @throws SQLException
     */
-   public void ensureHalfLinksValidity(IRelationType relationType, boolean sideA, int artifactCount) throws SQLException {
+   public void ensureHalfLinksValidity(RelationType relationType, boolean sideA, int artifactCount) throws SQLException {
       RelationTypeManager.ensureSideWillSupportArtifact(relationType, sideA, getOwningArtifact(), artifactCount);
    }
 

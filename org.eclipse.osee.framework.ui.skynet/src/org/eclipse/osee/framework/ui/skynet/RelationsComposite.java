@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -289,7 +289,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       public void handleEvent(Event event) {
          try {
             boolean isNewRelationCreated = false;
-            IRelationType selectedDescriptor = (IRelationType) ((MenuItem) event.widget).getData();
+            RelationType selectedDescriptor = (RelationType) ((MenuItem) event.widget).getData();
 
             boolean canBeOnSideA = canBeOnSide(selectedDescriptor, true);
             boolean canBeOnSideB = canBeOnSide(selectedDescriptor, false);
@@ -320,7 +320,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       }
    }
 
-   private boolean canBeOnSide(IRelationType relationType, boolean sideA) throws SQLException {
+   private boolean canBeOnSide(RelationType relationType, boolean sideA) throws SQLException {
       int sideMax = RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), sideA);
       RelationLinkGroup otherSideGroup = artifact.getLinkManager().getSideGroup(relationType, !sideA);
 
@@ -395,7 +395,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       boolean isRelatable = false;
 
       try {
-         for (IRelationType relationDescriptor : RelationTypeManager.getValidTypes(artifact.getArtifactType(),
+         for (RelationType relationDescriptor : RelationTypeManager.getValidTypes(artifact.getArtifactType(),
                artifact.getBranch())) {
             MenuItem mItem = new MenuItem(newMenu, SWT.PUSH);
             mItem.setData(relationDescriptor);
@@ -427,7 +427,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
                boolean canBeOnSideB;
 
                for (MenuItem item : items) {
-                  IRelationType descriptor = (IRelationType) item.getData();
+                  RelationType descriptor = (RelationType) item.getData();
                   canBeOnSideA = canBeOnSide(descriptor, true);
                   canBeOnSideB = canBeOnSide(descriptor, false);
 
@@ -646,8 +646,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
             ((RelationLink) object).delete();
          }
 
-         else if (object instanceof IRelationType) {
-            IRelationType descriptor = (IRelationType) object;
+         else if (object instanceof RelationType) {
+            RelationType descriptor = (RelationType) object;
             artifact.getLinkManager().deleteGroups(descriptor);
          }
 

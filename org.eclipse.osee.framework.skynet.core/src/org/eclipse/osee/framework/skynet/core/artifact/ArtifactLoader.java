@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkPersistenceMemo;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -186,7 +186,7 @@ public final class ArtifactLoader {
                   int gammaId = rSet.getInt("gamma_id");
                   String rationale = rSet.getString("rationale");
                   if (rationale == null) rationale = "";
-                  IRelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
+                  RelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
 
                   link =
                         new RelationLink(aArtId, bArtId, relationType, new LinkPersistenceMemo(relationId, gammaId),

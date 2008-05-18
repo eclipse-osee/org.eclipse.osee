@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribu
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
@@ -920,7 +920,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return links;
    }
 
-   public ArrayList<RelationLink> getRelations(IRelationType relationType) throws SQLException {
+   public ArrayList<RelationLink> getRelations(RelationType relationType) throws SQLException {
       ArrayList<RelationLink> links = new ArrayList<RelationLink>();
       for (RelationLink link : getLinkManager().getLinks()) {
          if (link.getRelationType().equals(relationType)) {

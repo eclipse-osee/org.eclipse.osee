@@ -20,7 +20,7 @@ public interface IRelationEnumeration {
 
    public String getTypeName();
 
-   public IRelationType getRelationType() throws SQLException;
+   public RelationType getRelationType() throws SQLException;
 
    public boolean isThisType(RelationLink link);
 }

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -46,7 +46,7 @@ public class RoughRelation {
    }
 
    public void makeReal(Branch branch, IProgressMonitor monitor) throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
-      IRelationType descriptor = RelationTypeManager.getType(relTypeName);
+      RelationType descriptor = RelationTypeManager.getType(relTypeName);
       Artifact aArt = ArtifactQuery.getArtifactFromId(aGuid, branch);
       Artifact bArt = ArtifactQuery.getArtifactFromId(bGuid, branch);
 

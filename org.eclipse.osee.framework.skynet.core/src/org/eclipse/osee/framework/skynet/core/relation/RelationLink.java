@@ -32,13 +32,13 @@ public class RelationLink {
    private int bOrder;
    private String rationale;
    private LinkPersistenceMemo memo;
-   private IRelationType relationType;
+   private RelationType relationType;
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    protected boolean dirty;
    private int artAId;
    private int artBId;
 
-   private RelationLink(IRelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
+   private RelationLink(RelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
       this.relationType = relationType;
       this.memo = memo;
       this.rationale = rationale;
@@ -49,13 +49,13 @@ public class RelationLink {
       this.dirty = dirty;
    }
 
-   public RelationLink(Artifact artA, Artifact artB, IRelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
+   public RelationLink(Artifact artA, Artifact artB, RelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
       this(relationType, memo, rationale, aOrder, bOrder, dirty);
       this.artA = artA;
       this.artB = artB;
    }
 
-   public RelationLink(int artAId, int artBId, IRelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
+   public RelationLink(int artAId, int artBId, RelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
       this(relationType, memo, rationale, aOrder, bOrder, dirty);
       this.artAId = artAId;
       this.artBId = artBId;
@@ -248,7 +248,7 @@ public class RelationLink {
       }
    }
 
-   public IRelationType getRelationType() {
+   public RelationType getRelationType() {
       return relationType;
    }
 

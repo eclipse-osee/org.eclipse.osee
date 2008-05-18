@@ -54,7 +54,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifi
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -577,7 +577,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
 
       try {
-         for (IRelationType descriptor : RelationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
+         for (RelationType descriptor : RelationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
             final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
             addReportJobCommand(menuManager, matrixManager, reportJob);
          }
@@ -591,7 +591,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
       MenuManager matrixManager = new MenuManager("Relation Matrix Reports");
       try {
 
-         for (IRelationType descriptor : RelationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
+         for (RelationType descriptor : RelationTypeManager.getValidTypes(branchManager.getDefaultBranch())) {
             final ReportJob reportJob = new RelationMatrixExportJob(descriptor);
             createReportJobCommand(menuManager, matrixManager, reportJob);
          }

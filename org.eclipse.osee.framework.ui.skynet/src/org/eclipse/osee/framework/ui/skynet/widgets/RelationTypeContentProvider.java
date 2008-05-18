@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -32,7 +32,7 @@ public class RelationTypeContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Branch) {
          ArrayList<Object> descriptors = new ArrayList<Object>();
          try {
-            for (IRelationType descriptor : RelationTypeManager.getValidTypes((Branch) parentElement)) {
+            for (RelationType descriptor : RelationTypeManager.getValidTypes((Branch) parentElement)) {
                descriptors.add((Object) descriptor);
             }
             return descriptors.toArray();

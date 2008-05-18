@@ -382,7 +382,7 @@ public class RelationPersistenceManager implements PersistenceManager {
          try {
             Artifact artA = artifactManager.getArtifactFromId(aArtId, transactionId);
             Artifact artB = artifactManager.getArtifactFromId(bArtId, transactionId);
-            IRelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
+            RelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
 
             link =
                   new RelationLink(artA, artB, relationType, new LinkPersistenceMemo(relId, gammaId),
@@ -464,7 +464,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                Artifact artB = ArtifactCache.get(artBId, branch);
 
                if (artA != null && artB != null) {
-                  IRelationType relationType = RelationTypeManager.getType(newRelationEvent.getRelTypeId());
+                  RelationType relationType = RelationTypeManager.getType(newRelationEvent.getRelTypeId());
 
                   LinkPersistenceMemo memo = new LinkPersistenceMemo(relId, gammaId);
                   String rationale = newRelationEvent.getRationale();

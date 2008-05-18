@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -125,7 +125,7 @@ public class SkyWalkerOptions {
       if (relTypes == null) {
          relTypes = new HashMap<Object, Boolean>();
          try {
-            for (IRelationType descriptor : RelationTypeManager.getValidTypes(artifact.getBranch())) {
+            for (RelationType descriptor : RelationTypeManager.getValidTypes(artifact.getBranch())) {
                relTypes.put(descriptor, true);
                relTypes.put(new RelTypeContentProvider.RelationLinkDescriptorSide(descriptor, true), true);
                relTypes.put(new RelTypeContentProvider.RelationLinkDescriptorSide(descriptor, false), true);
@@ -408,11 +408,11 @@ public class SkyWalkerOptions {
       return showAttributes.keySet();
    }
 
-   public Set<IRelationType> getAllRelationLinkDescriptorTypes() {
-      if (relTypes == null) return new HashSet<IRelationType>();
-      Set<IRelationType> descs = new HashSet<IRelationType>();
+   public Set<RelationType> getAllRelationLinkDescriptorTypes() {
+      if (relTypes == null) return new HashSet<RelationType>();
+      Set<RelationType> descs = new HashSet<RelationType>();
       for (Object obj : relTypes.keySet()) {
-         if (obj instanceof IRelationType) descs.add((IRelationType) obj);
+         if (obj instanceof RelationType) descs.add((RelationType) obj);
       }
       return descs;
    }

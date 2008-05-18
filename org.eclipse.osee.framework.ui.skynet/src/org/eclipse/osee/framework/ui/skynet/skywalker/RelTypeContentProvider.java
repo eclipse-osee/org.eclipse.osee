@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.skywalker;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
  * @author Donald G. Dunne
@@ -36,18 +36,18 @@ public class RelTypeContentProvider implements ITreeContentProvider {
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) return ((Collection) parentElement).toArray();
-      if (parentElement instanceof IRelationType) {
-         return new Object[] {new RelationLinkDescriptorSide((IRelationType) parentElement, true),
-               new RelationLinkDescriptorSide((IRelationType) parentElement, false)};
+      if (parentElement instanceof RelationType) {
+         return new Object[] {new RelationLinkDescriptorSide((RelationType) parentElement, true),
+               new RelationLinkDescriptorSide((RelationType) parentElement, false)};
       }
       return new Object[] {};
    }
 
    public static class RelationLinkDescriptorSide {
-      private final IRelationType desc;
+      private final RelationType desc;
       private final Boolean sideA;
 
-      public RelationLinkDescriptorSide(IRelationType desc, boolean sideA) {
+      public RelationLinkDescriptorSide(RelationType desc, boolean sideA) {
          this.desc = desc;
          this.sideA = sideA;
       }
@@ -89,7 +89,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
       /**
        * @return the desc
        */
-      public IRelationType getDesc() {
+      public RelationType getDesc() {
          return desc;
       }
 
@@ -110,7 +110,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
     * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
     */
    public boolean hasChildren(Object element) {
-      return (element instanceof IRelationType);
+      return (element instanceof RelationType);
    }
 
    /*

@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -207,7 +207,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       relationSideList.setSorter(new SearchSorter());
 
       try {
-         for (IRelationType linkDescriptor : RelationTypeManager.getValidTypes(getSelectedBranch())) {
+         for (RelationType linkDescriptor : RelationTypeManager.getValidTypes(getSelectedBranch())) {
             relationTypeList.add(linkDescriptor.getTypeName());
             relationTypeList.setData(linkDescriptor.getTypeName(), linkDescriptor);
          }
@@ -219,8 +219,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          @Override
          public void widgetSelected(SelectionEvent e) {
             relationSideList.getCombo().removeAll();
-            IRelationType linkDescriptor =
-                  (IRelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
+            RelationType linkDescriptor =
+                  (RelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
             relationSideList.add(linkDescriptor.getSideAName());
             relationSideList.add(linkDescriptor.getSideBName());
             relationSideList.getCombo().select(0);
@@ -231,7 +231,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       if (relationTypeList.getCombo().getItemCount() > 0) { // ensure we don't get a null pointer
          // exception when there are no relation types in the db
          relationTypeList.getCombo().select(0);
-         IRelationType linkDescriptor = (IRelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
+         RelationType linkDescriptor = (RelationType) relationTypeList.getData(relationTypeList.getCombo().getText());
          relationSideList.add(linkDescriptor.getSideAName());
          relationSideList.add(linkDescriptor.getSideBName());
          relationSideList.getCombo().select(0);

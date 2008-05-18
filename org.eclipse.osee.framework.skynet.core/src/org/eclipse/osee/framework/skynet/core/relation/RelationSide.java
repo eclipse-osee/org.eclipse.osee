@@ -113,7 +113,7 @@ public enum RelationSide implements IRelationEnumeration {
    }
 
    public static IRelationEnumeration getRelationSide(String relationType, String relationSide, Branch branch) throws SQLException {
-      IRelationType desc = RelationTypeManager.getType(relationType);
+      RelationType desc = RelationTypeManager.getType(relationType);
       boolean isSideA = (desc.getSideAName().equals(relationSide));
       return RelationPersistenceManager.sideHash.get(relationType, isSideA);
    }
@@ -139,7 +139,7 @@ public enum RelationSide implements IRelationEnumeration {
       return typeName;
    }
 
-   public IRelationType getRelationType() throws SQLException {
+   public RelationType getRelationType() throws SQLException {
       return RelationTypeManager.getType(typeName);
    }
 

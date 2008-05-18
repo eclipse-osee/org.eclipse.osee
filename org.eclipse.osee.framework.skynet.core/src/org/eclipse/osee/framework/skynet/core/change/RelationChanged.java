@@ -8,7 +8,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.swt.graphics.Image;
 
@@ -24,7 +24,7 @@ public class RelationChanged extends Change {
    private String rationale;
    private int aLinkOrder;
    private int bLinkOrder;
-   private IRelationType relationType;
+   private RelationType relationType;
 
    /**
     * @param aArtTypeId
@@ -42,7 +42,7 @@ public class RelationChanged extends Change {
     * @param aLinkOrder
     * @param relationType
     */
-   public RelationChanged(Branch branch, int aArtTypeId, String aArtName, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, IRelationType relationType) {
+   public RelationChanged(Branch branch, int aArtTypeId, String aArtName, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType) {
       super(branch, aArtTypeId, aArtName, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
@@ -107,7 +107,7 @@ public class RelationChanged extends Change {
    /**
     * @return the relationType
     */
-   public IRelationType getRelationType() {
+   public RelationType getRelationType() {
       return relationType;
    }
 

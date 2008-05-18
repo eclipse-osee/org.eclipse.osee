@@ -38,14 +38,14 @@ public class RelationLinkGroup {
    private static final int TAIL_ADD_GAP = (int) Math.pow(2, 22);
 
    private LinkManager linkManager;
-   private IRelationType descriptor;
+   private RelationType descriptor;
    private boolean sideA;
    private TreeSet<RelationLink> groupSide;
    private SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final RelationPersistenceManager relationPersistenceManager =
          RelationPersistenceManager.getInstance();
 
-   protected RelationLinkGroup(LinkManager linkManager, IRelationType descriptor, boolean sideA) {
+   protected RelationLinkGroup(LinkManager linkManager, RelationType descriptor, boolean sideA) {
       super();
 
       if (linkManager == null) throw new IllegalArgumentException("linkManager can not be null");
@@ -264,7 +264,7 @@ public class RelationLinkGroup {
       return artifacts;
    }
 
-   public IRelationType getDescriptor() {
+   public RelationType getDescriptor() {
       return descriptor;
    }
 

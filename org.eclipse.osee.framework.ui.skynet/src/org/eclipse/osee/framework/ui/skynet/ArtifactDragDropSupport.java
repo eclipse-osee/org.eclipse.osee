@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
@@ -57,7 +57,7 @@ public class ArtifactDragDropSupport {
 
    private static void ensureLinkValidity(RelationLinkGroup group, Artifact artifact) throws SQLException {
       boolean sideA = group.isSideA();
-      IRelationType linkDescriptor = group.getDescriptor();
+      RelationType linkDescriptor = group.getDescriptor();
       LinkManager linkManager = group.getLinkManager();
       linkManager.ensureLinkValidity(linkDescriptor, sideA, artifact);
    }
@@ -65,7 +65,7 @@ public class ArtifactDragDropSupport {
    private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) throws SQLException {
       RelationLinkGroup group = window.getRelationGroup();
       boolean sideA = group.isSideA();
-      IRelationType linkDescriptor = group.getDescriptor();
+      RelationType linkDescriptor = group.getDescriptor();
       LinkManager linkManager = group.getLinkManager();
 
       try {
