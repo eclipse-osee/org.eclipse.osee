@@ -86,7 +86,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
       }
       try {
          storeValue(value);
-         getAttribute().setDirty();
+
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }

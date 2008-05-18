@@ -93,9 +93,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    private static final String INSERT_ARTIFACT =
          "INSERT INTO " + ARTIFACT_TABLE + " (art_id, art_type_id, guid, human_readable_id) VALUES (?, ?, ?, ?)";
 
-   private static final String UPDATE_ATTRIBUTE =
-         "UPDATE " + ATTRIBUTE_VERSION_TABLE + " SET value = ?, content = ? WHERE art_id = ? and attr_id = ? and gamma_id = ?";
-
    private static final String REMOVE_EMPTY_TRANSACTION_DETAILS =
          "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " NOT IN " + "(SELECT " + TRANSACTIONS_TABLE.column("transaction_id") + " FROM " + TRANSACTIONS_TABLE + ")";
 
@@ -354,7 +351,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                         artifactType, rSet.getInt("transaction_id"), ModificationType.getMod(rSet.getInt("mod_type")),
                         false);
 
-            setAttributesOnArtifact(artifact);
+            setAttributesOnHistoricalArtifact(artifact);
 
             artifact.onInitializationComplete();
          } finally {
@@ -367,8 +364,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    private static final String ARTIFACT_SELECT =
          "SELECT " + ARTIFACT_TABLE.column("*") + ", " + TRANSACTIONS_TABLE.column("*") + " FROM " + ARTIFACT_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + ", " + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + TRANSACTIONS_TABLE.column("gamma_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ?)" + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "<>" + ModificationType.DELETED + " AND ";
-   private static final String ARTIFACT_ALL_SELECT =
-         "SELECT " + ARTIFACT_TABLE.column("*") + ", " + TRANSACTIONS_TABLE.column("*") + " FROM " + ARTIFACT_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + ", " + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + TRANSACTIONS_TABLE.column("gamma_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ?)" + " AND ";
 
    private static final String ARTIFACT_ID_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
@@ -549,7 +544,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @throws SQLException
     * @throws OseeCoreException
     */
-   public static void setAttributesOnArtifact(Artifact artifact) throws SQLException {
+   public static void setAttributesOnHistoricalArtifact(Artifact artifact) throws SQLException {
       ConnectionHandlerStatement chStmt = null;
       try {
          // Acquire previously stored attributes
@@ -746,7 +741,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       }
 
       artifact.getLinkManager().purge();
-      artifact.setDeleted();
       SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ModType.Purged, instance));
    }
 
@@ -875,8 +869,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                }
 
                Artifact newArtifact = null; // used to be (Artifact) oldArtifact.clone();
-               setChangedAttributesOnNewArtifact(newArtifact,
-                     ((NetworkArtifactModifiedEvent) event).getAttributeChanges());
+              /* setChangedAttributesOnNewArtifact(newArtifact,
+                     ((NetworkArtifactModifiedEvent) event).getAttributeChanges());*/
 
                if (links.size() > 0) {
                   for (RelationLink link : links) {
@@ -901,12 +895,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          }
       } catch (Exception e) {
          logger.log(Level.SEVERE, e.toString(), e);
-      }
-   }
-
-   private void setChangedAttributesOnNewArtifact(Artifact artifact, Collection<SkynetAttributeChange> changes) throws SQLException {
-      for (SkynetAttributeChange change : changes) {
-         artifact.setAttribute(change);
       }
    }
 

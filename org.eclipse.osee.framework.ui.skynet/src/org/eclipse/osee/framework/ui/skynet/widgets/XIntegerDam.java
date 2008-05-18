@@ -43,7 +43,7 @@ public class XIntegerDam extends XInteger implements IArtifactWidget {
             artifact.deleteSoleAttribute(attributeTypeName);
          } else {
             Integer enteredValue = getInteger();
-            artifact.setSoleXAttributeValue(attributeTypeName, enteredValue);
+            artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
          }
       } catch (NumberFormatException ex) {
          // do nothing

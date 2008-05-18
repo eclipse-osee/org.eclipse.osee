@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.InRelationSearchAttribute;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 
@@ -159,29 +158,5 @@ public class InRelationSearch implements ISearchPrimitive {
    public String toString() {
       return "In Relation: " + typeNames + " from";
       //"side " + ((sideA)?"A":"B");
-   }
-
-   public String getStorageString() {
-      StringBuffer storage = new StringBuffer();
-
-      storage.append(Boolean.toString(sideA));
-      for (String typeName : typeNames) {
-         storage.append(TOKEN);
-         storage.append(typeName);
-      }
-
-      return storage.toString();
-   }
-
-   public static InRelationSearch getPrimitive(String storageString) {
-      String[] values = storageString.split(TOKEN);
-      if (values.length < 2) throw new IllegalStateException(
-            "Value for " + InRelationSearchAttribute.class.getSimpleName() + " not parsable");
-
-      String[] names = new String[values.length - 1];
-      for (int x = 0; x < names.length; x++)
-         names[x] = values[x + 1];
-
-      return new InRelationSearch(names, Boolean.parseBoolean(values[0]), null);
    }
 }

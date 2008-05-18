@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeValueSearchAttribute;
 
 /**
  * @author Robert A. Fisher
@@ -33,7 +32,6 @@ public class AttributeValueSearch implements ISearchPrimitive {
    private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_1 =
          new LocalAliasTable(ATTRIBUTE_TYPE_TABLE, "attr_type_1");
    private static final String tables = ATTRIBUTE_ALIAS_1 + "," + ATTRIBUTE_TYPE_ALIAS_1 + "," + TRANSACTIONS_TABLE;
-   private final static String TOKEN = ";";
 
    /**
     * @param attributeName
@@ -108,6 +106,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
       return sql;
    }
 
+   @Override
    public String getTableSql(List<Object> dataList, Branch branch) {
       return tables;
    }
@@ -116,17 +115,4 @@ public class AttributeValueSearch implements ISearchPrimitive {
    public String toString() {
       return "Attribute value: " + attributeName + operator + "\"" + attributeValue + "\"";
    }
-
-   public String getStorageString() {
-      return attributeName + TOKEN + (attributeValue == null ? "" : attributeValue) + TOKEN + (operator == null ? "" : operator.name());
-   }
-
-   public static AttributeValueSearch getPrimitive(String storageString) {
-      String[] values = storageString.split(TOKEN);
-      if (values.length != 3) throw new IllegalStateException(
-            "Value for " + AttributeValueSearchAttribute.class.getSimpleName() + " not parsable");
-
-      return new AttributeValueSearch(values[0], values[1], Operator.valueOf(values[2]));
-   }
-
 }

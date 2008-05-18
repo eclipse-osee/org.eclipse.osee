@@ -70,7 +70,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
    public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName) throws Exception {
       Branch branch = BranchPersistenceManager.getInstance().getBranch(branchName);
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
-      verArt.setSoleXAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), branch.getBranchId());
+      verArt.setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), branch.getBranchId());
       verArt.persistAttributes();
    }
 
@@ -128,7 +128,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
-         if (verName.contains("2")) ver.setSoleXAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
+         if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
                true);
          DemoTeams.getInstance().getTeamDef(Team.SAW_SW).relate(RelationSide.TeamDefinitionToVersion_Version, ver);
          ver.persist();
@@ -141,7 +141,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
-         if (verName.contains("2")) ver.setSoleXAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
+         if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
                true);
          DemoTeams.getInstance().getTeamDef(Team.CIS_SW).relate(RelationSide.TeamDefinitionToVersion_Version, ver);
          ver.persist();

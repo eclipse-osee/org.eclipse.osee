@@ -57,10 +57,6 @@ public class CommittingArtifactSearch implements ISearchPrimitive {
       return "Committed: " + artId;
    }
 
-   public String getStorageString() {
-      return artId.toString();
-   }
-
    public static CommittingArtifactSearch getPrimitive(String storageString) throws NumberFormatException {
       return new CommittingArtifactSearch(Integer.parseInt(storageString));
    }

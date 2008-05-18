@@ -63,13 +63,6 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
       return tables;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getStorageString()
-    */
-   public String getStorageString() {
-      return LABEL + aritfactType.getName() + ";";
-   }
-
    @Override
    public String toString() {
       return LABEL + aritfactType.getName();

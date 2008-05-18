@@ -10,28 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.text.DateFormat;
-import java.util.Date;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Ryan D. Brooks
  */
 public final class SimpleDateAttribute extends DateAttribute {
-
    public SimpleDateAttribute(AttributeType attributeType, Artifact artifact) {
       super(attributeType, artifact);
    }
-
-   @Override
-   public void setFromString(String value) throws Exception {
-      Date toSet = null;
-      if (value == null || value.equals("")) {
-         toSet = new Date(1);
-      } else {
-         toSet = DateFormat.getDateInstance().parse(value);
-      }
-      setValue(toSet);
-   }
-
 }

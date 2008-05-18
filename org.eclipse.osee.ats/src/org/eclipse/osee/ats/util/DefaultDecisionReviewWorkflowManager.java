@@ -77,7 +77,7 @@ public class DefaultDecisionReviewWorkflowManager {
    }
 
    public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws Exception {
-      reviewArt.setSoleXAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), decision);
+      reviewArt.setSoleAttributeValue(ATSAttributes.DECISION_ATTRIBUTE.getStoreName(), decision);
       reviewArt.getSmaMgr().getStateMgr().setHoursSpent(stateHoursSpent);
       reviewArt.getSmaMgr().getStateMgr().setPercentComplete(statePercentComplete);
       return Result.TrueResult;

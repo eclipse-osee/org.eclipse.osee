@@ -22,8 +22,6 @@ public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
       super(attributeType, artifact);
    }
 
-   public abstract void setFromString(String value) throws Exception;
-
    @Override
    protected ICharacterAttributeDataProvider getAttributeDataProvider() {
       // this cast is always safe since the the data provider passed in the constructor to 

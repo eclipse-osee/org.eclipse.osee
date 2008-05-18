@@ -247,7 +247,7 @@ public class AttributeConflict extends Conflict {
    public boolean setAttributeValue(Object value) throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
       if (!okToOverwriteMerge()) return false;
       markStatusToReflectEdit();
-      getArtifact().setSoleXAttributeValue(getDynamicAttributeDescriptor().getName(), value);
+      getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), value);
       getArtifact().persistAttributes();
       return true;
    }
@@ -270,7 +270,7 @@ public class AttributeConflict extends Conflict {
    public boolean setToSource() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       if (!okToOverwriteMerge()) return false;
       markStatusToReflectEdit();
-      getArtifact().setSoleXAttributeValue(getDynamicAttributeDescriptor().getName(), getSourceObject());
+      getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getSourceObject());
       getArtifact().persistAttributes();
       return true;
    }
@@ -279,7 +279,7 @@ public class AttributeConflict extends Conflict {
    public boolean setToDest() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, AttributeDoesNotExist, Exception {
       if (!okToOverwriteMerge()) return false;
       markStatusToReflectEdit();
-      getArtifact().setSoleXAttributeValue(getDynamicAttributeDescriptor().getName(), getDestObject());
+      getArtifact().setSoleAttributeValue(getDynamicAttributeDescriptor().getName(), getDestObject());
       getArtifact().persistAttributes();
       return true;
    }
@@ -289,7 +289,7 @@ public class AttributeConflict extends Conflict {
       if (!okToOverwriteMerge()) return false;
       setStatus(Status.UNTOUCHED);
       if (isWordAttribute) {
-         ((WordAttribute) getAttribute()).initializeDefaultValue();
+         ((WordAttribute) getAttribute()).initializeToDefaultValue();
 
       } else {
          getArtifact().setSoleXAttributeValue(getDynamicAttributeDescriptor().getName(), NO_VALUE);

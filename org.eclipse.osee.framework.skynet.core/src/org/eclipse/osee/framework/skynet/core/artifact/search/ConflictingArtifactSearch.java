@@ -142,10 +142,6 @@ public class ConflictingArtifactSearch implements ISearchPrimitive {
 
    }
 
-   public String getStorageString() {
-      return parentBranchId + TOKEN + parentBaseTransactionNumber + TOKEN + parentHeadTransactionNumber + TOKEN + childBranchId + TOKEN + childBaseTransactionNumber + TOKEN + childHeadTransactionNumber;
-   }
-
    public static ConflictingArtifactSearch getPrimitive(String storageString) {
       String[] values = storageString.split(TOKEN);
       if (values.length != 6) throw new IllegalStateException(

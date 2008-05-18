@@ -89,8 +89,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                return;
             }
 
-            verArt.setSoleXAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), true);
-            verArt.setSoleXAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), new Date());
+            verArt.setSoleAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), true);
+            verArt.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), new Date());
             verArt.setNextVersion(false);
             verArt.persistAttributes();
 

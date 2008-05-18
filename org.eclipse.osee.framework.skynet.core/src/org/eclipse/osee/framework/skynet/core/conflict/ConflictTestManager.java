@@ -97,9 +97,9 @@ public class ConflictTestManager {
       destArtifacts[2].setSoleXAttributeValue("Name", "Test Artifact Number 2 - Destination");
       destArtifacts[2].persistAttributes();
       // Attribute Conflicts for Artifact # 8 A Date change
-      sourceArtifacts[8].setSoleXAttributeValue("ats.Release Date", new Date(20000));
+      sourceArtifacts[8].setSoleAttributeValue("ats.Release Date", new Date(20000));
       sourceArtifacts[8].persistAttributes();
-      destArtifacts[8].setSoleXAttributeValue("ats.Release Date", new Date(50000));
+      destArtifacts[8].setSoleAttributeValue("ats.Release Date", new Date(50000));
       destArtifacts[8].persistAttributes();
       // create artifact conflicts
 

@@ -10,10 +10,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkNewBranchEvent;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
@@ -37,13 +35,13 @@ public class HttpBranchCreation {
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
 
-   public static Branch createChildBranch(SkynetAuthentication skynetAuth, final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws Exception {
+   public static Branch createChildBranch(SkynetAuthentication skynetAuth, final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactSubtypeDescriptor> compressArtTypes, Collection<ArtifactSubtypeDescriptor> preserveArtTypes) throws SQLException, OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("branchName", childBranchName);
       parameters.put("function", "createChildBranch");
-      parameters.put("authorId", Integer.toString(getAuthorId(skynetAuth)));
+      parameters.put("authorId", Integer.toString(getAuthorId()));
       parameters.put("parentBranchId", Integer.toString(parentTransactionId.getBranch().getBranchId()));
-      parameters.put("associatedArtifactId", Integer.toString(getAssociatedArtifactId(skynetAuth, associatedArtifact)));
+      parameters.put("associatedArtifactId", Integer.toString(getAssociatedArtifactId(associatedArtifact)));
       parameters.put(
             "creationComment",
             BranchPersistenceManager.NEW_BRANCH_COMMENT + parentTransactionId.getBranch().getBranchName() + "(" + parentTransactionId.getTransactionNumber() + ")");
@@ -63,17 +61,16 @@ public class HttpBranchCreation {
     * @param staticBranchName null if no static key is desired
     * @return branch object
     * @throws SQLException
-    * @throws UserNotInDatabase
-    * @throws MultipleArtifactsExist
+    * @throws OseeCoreException
     * @see BranchPersistenceManager#createRootBranch(String, String, int)
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
-   public static Branch createRootBranch(SkynetAuthentication skynetAuth, String shortBranchName, String branchName, String staticBranchName) throws SQLException, MultipleAttributesExist, IllegalArgumentException, UserNotInDatabase, MultipleArtifactsExist {
+   public static Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("branchName", branchName);
       parameters.put("function", "createRootBranch");
       parameters.put("authorId", "-1");
-      parameters.put("associatedArtifactId", Integer.toString(getAssociatedArtifactId(skynetAuth, null)));
+      parameters.put("associatedArtifactId", Integer.toString(getAssociatedArtifactId(null)));
       parameters.put("creationComment", String.format("Root Branch [%s] Creation", branchName));
       if (shortBranchName != null && shortBranchName.length() > 0) {
          parameters.put("shortBranchName", shortBranchName);
@@ -84,20 +81,16 @@ public class HttpBranchCreation {
       return commonServletBranchingCode(parameters);
    }
 
-   private static Branch commonServletBranchingCode(Map<String, String> parameters) {
+   private static Branch commonServletBranchingCode(Map<String, String> parameters) throws OseeCoreException {
       Branch branch = null;
+      String response = "";
       try {
-         String response =
+         response =
                HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("branch", parameters)));
-         try {
-            int branchId = Integer.parseInt(response);
-            branch = BranchPersistenceManager.getInstance().getBranch(branchId);
-         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException(String.format("Unable to create branch. Error msg [%s]", response), ex);
-         }
+         int branchId = Integer.parseInt(response);
+         branch = BranchPersistenceManager.getInstance().getBranch(branchId);
       } catch (Exception ex) {
-         OseeLog.log(SkynetActivator.class.getName(), Level.SEVERE, ex.toString(), ex);
-         throw new IllegalArgumentException(ex);
+         throw new OseeCoreException(response);
       }
       eventManager.kick(new LocalNewBranchEvent(new Object(), branch.getBranchId()));
       remoteEventManager.kick(new NetworkNewBranchEvent(branch.getBranchId(),
@@ -105,10 +98,10 @@ public class HttpBranchCreation {
       return branch;
    }
 
-   private static int getAssociatedArtifactId(SkynetAuthentication skynetAuth, Artifact associatedArtifact) throws MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist, SQLException {
+   private static int getAssociatedArtifactId(Artifact associatedArtifact) throws MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist, SQLException {
       int associatedArtifactId = -1;
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
-         associatedArtifact = skynetAuth.getUser(UserEnum.NoOne);
+         associatedArtifact = SkynetAuthentication.getUser(UserEnum.NoOne);
       }
       if (associatedArtifact != null) {
          associatedArtifactId = associatedArtifact.getArtId();
@@ -116,11 +109,11 @@ public class HttpBranchCreation {
       return associatedArtifactId;
    }
 
-   private static int getAuthorId(SkynetAuthentication skynetAuth) throws MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist, SQLException {
+   private static int getAuthorId() throws MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist, SQLException {
       if (SkynetDbInit.isDbInit()) {
          return -1;
       }
-      User userToBlame = skynetAuth.getAuthenticatedUser();
-      return (userToBlame == null) ? skynetAuth.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
+      User userToBlame = SkynetAuthentication.getUser();
+      return (userToBlame == null) ? SkynetAuthentication.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
    }
 }

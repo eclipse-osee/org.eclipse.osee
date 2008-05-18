@@ -124,7 +124,7 @@ public class ArtifactPromptChange {
             if (diag.isNoneSelected())
                artifact.deleteSoleAttribute(attributeName);
             else
-               artifact.setSoleXAttributeValue(attributeName, diag.getSelectedDate());
+               artifact.setSoleAttributeValue(attributeName, diag.getSelectedDate());
             if (persist) artifact.persistAttributes();
          }
       }
@@ -216,7 +216,7 @@ public class ArtifactPromptChange {
       int result = md.open();
       if (result == 256) {
          for (Artifact sma : smas) {
-            sma.setSoleXAttributeValue(attributeName, md.getToggleState());
+            sma.setSoleAttributeValue(attributeName, md.getToggleState());
             if (persist) sma.persistAttributes();
          }
          return true;

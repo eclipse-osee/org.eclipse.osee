@@ -359,7 +359,7 @@ public class LinkManager {
     */
    public synchronized void ensurePopulated() throws SQLException {
       if (!artifact.isLinksLoaded() && artifact.isInDb()) {
-         ArtifactLoader.loadArtifactData(artifact, artifact.getBranch(), ArtifactLoad.FULL_FULL);
+         ArtifactLoader.loadArtifactData(artifact, ArtifactLoad.FULL_FULL);
       }
    }
 
@@ -377,6 +377,7 @@ public class LinkManager {
       descriptors.clear();
       sideALinks.clear();
       sideBLinks.clear();
+      ArtifactLoader.loadArtifactData(artifact, ArtifactLoad.RELATION);
    }
 
    /**

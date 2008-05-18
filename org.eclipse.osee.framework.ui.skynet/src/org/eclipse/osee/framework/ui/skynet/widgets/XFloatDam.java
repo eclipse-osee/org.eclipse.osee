@@ -57,7 +57,7 @@ public class XFloatDam extends XFloat implements IArtifactWidget {
             artifact.deleteSoleAttribute(attributeTypeName);
          } else {
             Double enteredValue = getFloat();
-            artifact.setSoleXAttributeValue(attributeTypeName, enteredValue);
+            artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
          }
       } catch (NumberFormatException ex) {
          // do nothing

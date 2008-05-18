@@ -94,10 +94,6 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
          return "Transactions: " + fromTransactionNumber + " to " + toTransactionNumber;
    }
 
-   public String getStorageString() {
-      return fromTransactionNumber + TOKEN + toTransactionNumber;
-   }
-
    public static RelationInTransactionSearch getPrimitive(String storageString) throws NumberFormatException, SQLException {
       String[] values = storageString.split(TOKEN);
       if (values.length != 2) throw new IllegalArgumentException("Unable to parse the storage string:" + storageString);

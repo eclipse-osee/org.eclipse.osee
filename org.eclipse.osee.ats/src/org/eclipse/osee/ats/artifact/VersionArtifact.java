@@ -54,11 +54,11 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public void setReleased(boolean released) throws SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), released);
+      setSoleAttributeValue(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), released);
    }
 
    public void setNextVersion(boolean nextVersion) throws SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), nextVersion);
+      setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), nextVersion);
    }
 
    public String getFullName() throws SQLException, MultipleAttributesExist {

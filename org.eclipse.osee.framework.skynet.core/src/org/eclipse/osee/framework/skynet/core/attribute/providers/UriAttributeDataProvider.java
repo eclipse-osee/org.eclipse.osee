@@ -77,7 +77,6 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
                dataStore.clear();
                dataStore.setLocator(loc);
             }
-            getAttribute().setDirty();
          }
       } catch (Exception ex1) {
          logger.log(Level.SEVERE, ex1.toString(), ex1);

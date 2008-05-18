@@ -73,6 +73,6 @@ public class NativeArtifact extends Artifact {
    }
 
    public void setNativeContent(InputStream inputStream) throws IOException, SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(CONTENT_NAME, inputStream);
+      setSoleAttributeValue(CONTENT_NAME, inputStream);
    }
 }

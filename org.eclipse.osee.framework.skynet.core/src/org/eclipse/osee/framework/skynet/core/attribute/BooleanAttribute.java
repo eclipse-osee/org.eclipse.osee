@@ -22,42 +22,21 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
       super(attributeType, artifact);
    }
 
+   @Override
    public Boolean getValue() {
       return getAttributeDataProvider().getValueAsString().equals(booleanChoices[0]);
    }
 
-   public void setValue(Boolean value) {
+   @Override
+   public void subClassSetValue(Boolean value) {
       getAttributeDataProvider().setValue(value ? booleanChoices[0] : booleanChoices[1]);
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
     */
    @Override
-   public String getDisplayableString() {
-      String toDisplay = getAttributeDataProvider().getDisplayableString();
-      return toDisplay;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setFromString(java.lang.String)
-    */
-   @Override
-   public void setFromString(String value) throws Exception {
-      boolean result = value != null && value.equalsIgnoreCase(BooleanAttribute.booleanChoices[0]);
-      setValue(Boolean.valueOf(result));
-   }
-
-   @Override
-   public String toString() {
-      return getAttributeType().getName() + " - " + getValue();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
-    */
-   @Override
-   public void initializeDefaultValue() {
-      getAttributeDataProvider().setValue(getAttributeType().getDefaultValue());
+   protected Boolean convertStringToValue(String value) {
+      return value != null && value.equalsIgnoreCase(booleanChoices[0]);
    }
 }

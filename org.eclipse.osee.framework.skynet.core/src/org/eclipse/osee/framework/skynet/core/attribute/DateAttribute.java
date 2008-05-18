@@ -40,16 +40,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    }
 
    /**
-    * Sets date
-    * 
-    * @param value value or null to clear
-    */
-   public void setValue(Date value) {
-      String toSet = value != null ? Long.toString(value.getTime()) : "";
-      getAttributeDataProvider().setValue(toSet);
-   }
-
-   /**
     * Return current date or null if not set
     * 
     * @return date or null if not set
@@ -81,12 +71,34 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
       return toReturn;
    }
 
+   /**
+    * Sets date
+    * 
+    * @param value value or null to clear
+    */
+   @Override
+   public void subClassSetValue(Date value) {
+      String toSet = value != null ? Long.toString(value.getTime()) : "";
+      getAttributeDataProvider().setValue(toSet);
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
     */
    @Override
    public String getDisplayableString() {
       return getAsFormattedString(DateAttribute.MMDDYYHHMM);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
+    */
+   @Override
+   protected Date convertStringToValue(String value) {
+      if (value == null || value.equals("")) {
+         return null;
+      }
+      return new Date(Long.parseLong(value));
    }
 
    /**
@@ -98,31 +110,5 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    public String getAsFormattedString(DateFormat dateFormat) {
       Date date = getValue();
       return date != null ? dateFormat.format(getValue()) : "";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setFromString(java.lang.String)
-    */
-   @Override
-   public void setFromString(String value) throws Exception {
-      Date toSet = null;
-      if (value == null || value.equals("")) {
-         toSet = new Date(1);
-      } else {
-         toSet = new Date(Long.parseLong(value));
-      }
-      setValue(toSet);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
-    */
-   @Override
-   public void initializeDefaultValue() {
-      String defaultValue = getAttributeType().getDefaultValue();
-      if (defaultValue == null) {
-         defaultValue = "";
-      }
-      getAttributeDataProvider().setValue(defaultValue);
    }
 }

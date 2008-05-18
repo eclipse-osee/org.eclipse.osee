@@ -97,10 +97,10 @@ public final class ArtifactLoader {
       return false;
    }
 
-   public static void loadArtifactData(Artifact artifact, Branch branch, ArtifactLoad loadLevel) throws SQLException {
+   public static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws SQLException {
       List<Artifact> artifacts = new ArrayList<Artifact>(1);
       artifacts.add(artifact);
-      loadArtifactsData(artifacts, branch, loadLevel);
+      loadArtifactsData(artifacts, artifact.getBranch(), loadLevel);
    }
 
    /**

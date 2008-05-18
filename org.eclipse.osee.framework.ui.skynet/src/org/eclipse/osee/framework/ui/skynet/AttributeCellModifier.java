@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BinaryAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
-import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.DateValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.StringValue;
@@ -73,20 +73,16 @@ public class AttributeCellModifier implements ICellModifier {
          enumeratedValue.setValue(attribute.getDisplayableString());
          enumeratedValue.setChocies(((EnumeratedAttribute) attribute).getChoices());
          return enumeratedValue;
-      } else if (object instanceof Boolean) {
+      } else if (attribute instanceof BooleanAttribute) {
          enumeratedValue.setValue(attribute.getDisplayableString());
          enumeratedValue.setChocies(BooleanAttribute.booleanChoices);
          return enumeratedValue;
       } else if (object instanceof Date) {
          dateValue.setValue((Date) object);
          return dateValue;
-      } else if (object instanceof String || object instanceof Integer || object instanceof Double) {
+      } else {
          stringValue.setValue(attribute.getDisplayableString());
          return stringValue;
-      } else {
-         StringValue val = new StringValue();
-         val.setValue(attribute.getDisplayableString());
-         return val;
       }
    }
 
@@ -98,26 +94,25 @@ public class AttributeCellModifier implements ICellModifier {
     */
    public void modify(Object element, String property, Object value) {
       // Note that it is possible for an SWT Item to be passed instead of the model element.
-      //      if (element == null ) return;
       if (element instanceof Item) {
          element = ((Item) element).getData();
       }
-      Attribute attribute = (Attribute) element;
+      try {
+         Attribute<?> attribute = (Attribute<?>) element;
 
-      if (attribute instanceof DateAttribute) {
-         if (value instanceof GregorianCalendar) {
-            ((DateAttribute) attribute).setValue(new Date(((GregorianCalendar) value).getTimeInMillis()));
+         if (attribute instanceof DateAttribute) {
+            if (value instanceof GregorianCalendar) {
+               ((DateAttribute) attribute).setValue(new Date(((GregorianCalendar) value).getTimeInMillis()));
 
-         } else {
-            ((DateAttribute) attribute).setValue((Date) value);
+            } else {
+               ((DateAttribute) attribute).setValue((Date) value);
+            }
+         } else if (!(attribute instanceof BinaryAttribute)) {
+            //binary attributes should not be changed.
+            attribute.setFromString((String) value);
          }
-      } else if (attribute instanceof BooleanAttribute) {
-         ((BooleanAttribute) attribute).setValue(value.equals("yes"));
-      } else if (attribute instanceof FloatingPointAttribute) {
-         ((FloatingPointAttribute) attribute).setValue(new Double((String) value).doubleValue());
-      } else if (!(attribute instanceof BinaryAttribute)) {
-         //binary attributes should not be changed.
-         attribute.setValue(value);
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
       tableViewer.update(element, null);
       editor.onDirtied();

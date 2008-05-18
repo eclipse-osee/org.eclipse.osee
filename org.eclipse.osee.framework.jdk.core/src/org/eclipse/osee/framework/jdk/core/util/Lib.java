@@ -334,11 +334,11 @@ public final class Lib {
       return CharBuffer.wrap(chars);
    }
 
-   public static java.io.InputStream stringToInputStream(String xml) throws Exception {
-      if (xml == null) return null;
-      xml = xml.trim();
+   public static java.io.InputStream stringToInputStream(String value) throws Exception {
+      if (value == null) return null;
+      value = value.trim();
       java.io.InputStream in = null;
-      in = new java.io.ByteArrayInputStream(xml.getBytes("UTF-8"));
+      in = new java.io.ByteArrayInputStream(value.getBytes("UTF-8"));
       return in;
    }
 

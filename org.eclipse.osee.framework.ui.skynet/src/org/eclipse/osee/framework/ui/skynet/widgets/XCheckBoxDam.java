@@ -42,7 +42,7 @@ public class XCheckBoxDam extends XCheckBox implements IArtifactWidget {
    @Override
    public void saveToArtifact() throws Exception {
       try {
-         artifact.setSoleXAttributeValue(attributeTypeName, checkButton.getSelection());
+         artifact.setSoleAttributeValue(attributeTypeName, checkButton.getSelection());
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

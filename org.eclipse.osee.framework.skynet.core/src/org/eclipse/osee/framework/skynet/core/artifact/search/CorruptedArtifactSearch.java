@@ -48,13 +48,6 @@ public class CorruptedArtifactSearch implements ISearchPrimitive {
       return tableSql;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive#getStorageString()
-    */
-   public String getStorageString() {
-      return "";
-   }
-
    @Override
    public String toString() {
       return getClass().getName();

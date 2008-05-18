@@ -76,7 +76,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       }
 
       if (usesVersions) {
-         tda.setSoleXAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
+         tda.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
       }
       tda.persist();
 

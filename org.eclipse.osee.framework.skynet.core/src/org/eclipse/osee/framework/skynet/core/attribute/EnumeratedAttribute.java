@@ -22,7 +22,7 @@ import org.w3c.dom.NodeList;
 /**
  * @author Ryan D. Brooks
  */
-public class EnumeratedAttribute extends CharacterBackedAttribute<String> {
+public class EnumeratedAttribute extends StringAttribute {
    private String[] choices;
    // When an enumerated attribute is required for an artifact, yet doesn't exist yet, it is created upon
    // init of the artifact and given the "Unspecified" value
@@ -51,52 +51,11 @@ public class EnumeratedAttribute extends CharacterBackedAttribute<String> {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getValue()
-    */
-   @Override
-   public String getValue() {
-      return getAttributeDataProvider().getValueAsString();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
-    */
-   @Override
-   public void setValue(String value) {
-      getAttributeDataProvider().setValue(value);
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
     */
    @Override
    public String getDisplayableString() {
       String toDisplay = getAttributeDataProvider().getDisplayableString();
       return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setFromString(java.lang.String)
-    */
-   @Override
-   public void setFromString(String value) throws Exception {
-      String toSet = value;
-      if (value != null) {
-         for (String choice : choices) {
-            if (value.equals(choice)) {
-               toSet = choice;
-               break;
-            }
-         }
-      }
-      setValue(toSet);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
-    */
-   @Override
-   public void initializeDefaultValue() {
-      getAttributeDataProvider().setValue(getAttributeType().getDefaultValue());
    }
 }

@@ -76,7 +76,7 @@ public class CreateNewUser extends AbstractBlam {
       user.setSoleXAttributeValue("User Id", userId);
 
       boolean active = variableMap.getBoolean("Active");
-      user.setSoleXAttributeValue("Active", active);
+      user.setSoleAttributeValue("Active", active);
 
       String email = variableMap.getString("Email");
       if (email.equals("")) {

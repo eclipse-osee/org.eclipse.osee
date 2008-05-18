@@ -44,7 +44,7 @@ public class XDateDam extends XDate implements IArtifactWidget {
             artifact.deleteSoleAttribute(attributeTypeName);
          } else {
             Date enteredValue = getDate();
-            artifact.setSoleXAttributeValue(attributeTypeName, enteredValue);
+            artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

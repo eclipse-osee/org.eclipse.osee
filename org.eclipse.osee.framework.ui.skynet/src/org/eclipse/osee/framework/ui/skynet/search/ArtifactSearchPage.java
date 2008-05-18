@@ -13,11 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.DialogPage;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -36,8 +33,6 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
-import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -68,10 +63,6 @@ import org.eclipse.swt.widgets.Text;
  * @author Michael S. Rodgers
  */
 public class ArtifactSearchPage extends DialogPage implements ISearchPage, IReplacePage {
-   private static final Pattern storageStringPattern = Pattern.compile("(.*?);(.*?);(.*?);(.*)");
-   private static final Pattern notSearchPrimitivePattern = Pattern.compile("Not \\[(.*)\\]");
-   private static final String FILTERS_STORAGE_KEY = ".filters";
-
    private static ISearchPageContainer aContainer;
 
    private Button addButton;
@@ -89,9 +80,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    private SearchFilter HRID_VALUE_FILTER;
    private SearchFilter ATTRIBUTE_VALUE_FILTER;
    private SearchFilter INDEX_SEARCH_FILTER;
-
-   private final Matcher storageStringMatcher = storageStringPattern.matcher("");
-   private final Matcher notSearchPrimitiveMatcher = notSearchPrimitivePattern.matcher("");
 
    public void createControl(Composite parent) {
       initializeDialogUnits(parent);
@@ -119,7 +107,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          SkynetGuiPlugin.getInstance().setHelp(mainComposite, "artifact_search");
 
          updateWidgets();
-         loadState();
       } else {
          setControl(parent);
       }
@@ -418,7 +405,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       AbstractArtifactSearchQuery searchQuery =
             new FilterArtifactSearchQuery(filterviewer.getFilterList(), getSelectedBranch());
       NewSearchUI.runQueryInBackground(searchQuery);
-      saveState();
       return true;
    }
 
@@ -452,63 +438,6 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             }
          }
       });
-   }
-
-   private String asString(FilterModel model) {
-      StringBuilder builder = new StringBuilder();
-      builder.append(model.getSearch());
-      builder.append(";");
-      builder.append(model.getType());
-      builder.append(";");
-      builder.append(model.getValue());
-      builder.append(";");
-      builder.append(model.getSearchPrimitive().getStorageString());
-      return builder.toString();
-   }
-
-   private void processStoredFilter(String entry) {
-      storageStringMatcher.reset(entry);
-      if (storageStringMatcher.find()) {
-         String searchPrimitive = storageStringMatcher.group(1);
-         String type = storageStringMatcher.group(2);
-         String value = storageStringMatcher.group(3);
-         String storageString = storageStringMatcher.group(4);
-         boolean isNotEnabled = false;
-         notSearchPrimitiveMatcher.reset(storageString);
-         if (notSearchPrimitiveMatcher.find()) {
-            isNotEnabled = true;
-            storageString = notSearchPrimitiveMatcher.group(1);
-         }
-         SearchFilter searchFilter = (SearchFilter) searchTypeList.getData(searchPrimitive);
-         searchFilter.loadFromStorageString(filterviewer, type, value, storageString, isNotEnabled);
-         searchFilter.getFilterName();
-      }
-   }
-
-   protected void saveState() {
-      IDialogSettings dialogSettings = SkynetGuiPlugin.getInstance().getDialogSettings();
-      if (dialogSettings != null) {
-
-         List<String> filterString = new ArrayList<String>();
-         FilterModelList filterList = filterviewer.getFilterList();
-         for (FilterModel model : filterList.getFilters()) {
-            filterString.add(asString(model));
-         }
-         dialogSettings.put(SkynetGuiPlugin.PLUGIN_ID + FILTERS_STORAGE_KEY,
-               filterString.toArray(new String[filterString.size()]));
-      }
-   }
-
-   protected void loadState() {
-      IDialogSettings dialogSettings = SkynetGuiPlugin.getInstance().getDialogSettings();
-      if (dialogSettings != null) {
-         String[] filters = dialogSettings.getArray(SkynetGuiPlugin.PLUGIN_ID + FILTERS_STORAGE_KEY);
-         if (filters != null) {
-            for (String entry : filters) {
-               processStoredFilter(entry);
-            }
-         }
-      }
    }
 
    /*

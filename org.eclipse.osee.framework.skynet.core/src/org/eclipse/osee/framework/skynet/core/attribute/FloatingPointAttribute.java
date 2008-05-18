@@ -32,45 +32,33 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
     */
    @Override
-   public void setValue(Double value) {
+   public void subClassSetValue(Double value) {
       getAttributeDataProvider().setValue(String.valueOf(value));
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
-    */
-   @Override
-   public String getDisplayableString() {
-      return getAttributeDataProvider().getDisplayableString();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setFromString(java.lang.String)
-    */
-   @Override
-   public void setFromString(String value) throws Exception {
-      Double toSet = null;
-      if (value == null || value.equals("")) {
-         toSet = new Double(0);
-      } else {
-         toSet = new Double(value);
-      }
-      setValue(toSet);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
     */
    @Override
-   public void initializeDefaultValue() {
-      getAttributeDataProvider().setValue(getAttributeType().getDefaultValue());
+   public void initializeToDefaultValue() {
       String defaultValue = getAttributeType().getDefaultValue();
       if (!Strings.isValid(defaultValue)) {
          defaultValue = "0.0";
       }
       getAttributeDataProvider().setValue(defaultValue);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
+    */
+   @Override
+   protected Double convertStringToValue(String value) {
+      if (value == null || value.equals("")) {
+         return null;
+      }
+      return new Double(value);
    }
 }

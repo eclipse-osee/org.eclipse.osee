@@ -35,8 +35,6 @@ public abstract class SearchFilter {
 
    public abstract void addFilterTo(FilterTableViewer filterViewer);
 
-   public abstract void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled);
-
    public boolean isValid() {
       return false;
    }

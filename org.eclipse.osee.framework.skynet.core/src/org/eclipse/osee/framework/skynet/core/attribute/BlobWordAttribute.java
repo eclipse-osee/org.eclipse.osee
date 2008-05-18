@@ -16,9 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Jeff C. Phillips
  */
 public class BlobWordAttribute extends WordAttribute {
-
    public BlobWordAttribute(AttributeType attributeType, Artifact artifact) {
       super(attributeType, artifact);
    }
-
 }

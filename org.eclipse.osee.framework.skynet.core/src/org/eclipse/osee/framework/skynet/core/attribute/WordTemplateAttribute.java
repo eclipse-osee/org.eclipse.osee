@@ -20,7 +20,7 @@ public class WordTemplateAttribute extends WordAttribute {
     * @see org.eclipse.osee.framework.skynet.core.attribute.StringAttribute#initializeDefaultValue()
     */
    @Override
-   public void initializeDefaultValue() {
+   public void initializeToDefaultValue() {
       String value = getAttributeType().getDefaultValue();
       StringBuilder strB = new StringBuilder(300);
       strB.append("<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\">\n\t<w:r>\n\t\t<w:t>");
@@ -29,7 +29,6 @@ public class WordTemplateAttribute extends WordAttribute {
          strB.append(value);
       }
       strB.append("</w:t>\n\t\t</w:r>\n\t</w:p>");
-      setValue(strB.toString());
+      subClassSetValue(strB.toString());
    }
-
 }

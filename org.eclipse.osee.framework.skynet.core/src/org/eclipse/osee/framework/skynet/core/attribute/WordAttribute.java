@@ -10,16 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.IOException;
-import java.io.InputStream;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @author Jeff C. Phillips
  */
-public abstract class WordAttribute extends StringAttribute implements IStreamSetableAttribute {
+public abstract class WordAttribute extends StringAttribute {
    public static final String CONTENT_NAME = "Word Formatted Content";
    public static final String OLE_DATA_NAME = "Word Ole Data";
 
@@ -34,28 +31,11 @@ public abstract class WordAttribute extends StringAttribute implements IStreamSe
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
-    */
-   @Override
-   public String getDisplayableString() {
-      return super.getDisplayableString();
-   }
-
-   /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
     */
    @Override
-   public void setValue(String value) {
+   public void subClassSetValue(String value) {
       value = WordUtil.removeWordMarkupSmartTags(value);
-      super.setValue(value);
+      super.subClassSetValue(value);
    }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IStreamableAttribute#setValueFromInputStream(java.io.InputStream)
-    */
-   @Override
-   public void setValueFromInputStream(InputStream value) throws IOException {
-      setValue(Lib.inputStreamToString(value));
-   }
-
 }

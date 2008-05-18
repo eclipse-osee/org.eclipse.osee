@@ -13,24 +13,15 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 
-public final class CompressedContentAttribute extends BinaryAttribute<InputStream> implements IStreamSetableAttribute {
+public final class CompressedContentAttribute extends BinaryAttribute<InputStream> {
 
    public CompressedContentAttribute(AttributeType attributeType, Artifact artifact) {
       super(attributeType, artifact);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
-    */
-   @Override
-   public String getDisplayableString() {
-      return getAttributeDataProvider().getDisplayableString();
    }
 
    /* (non-Javadoc)
@@ -45,21 +36,25 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
     */
    @Override
-   public void setValue(InputStream value) {
-      try {
-         setValueFromInputStream(value);
-      } catch (IOException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
-      }
+   public void subClassSetValue(InputStream value) throws OseeCoreException {
+      setValueFromInputStream(value);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.IStreamableAttribute#setValueFromInputStream(java.io.InputStream)
     */
    @Override
-   public void setValueFromInputStream(InputStream value) throws IOException {
-      byte[] data = Lib.inputStreamToBytes(value);
-      getAttributeDataProvider().setValue(data);
+   public void setValueFromInputStream(InputStream value) throws OseeCoreException {
+      try {
+         if (value == null) {
+            getAttributeDataProvider().setValue(null);
+         } else {
+            byte[] data = Lib.inputStreamToBytes(value);
+            getAttributeDataProvider().setValue(data);
+         }
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    /* (non-Javadoc)
@@ -69,5 +64,17 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) {
       super.setAttributeDataProvider(attributeDataProvider);
       attributeDataProvider.setDisplayableString(getAttributeType().getName());
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
+    */
+   @Override
+   protected InputStream convertStringToValue(String value) throws OseeCoreException {
+      try {
+         return Lib.stringToInputStream(value);
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 }

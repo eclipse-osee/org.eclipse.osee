@@ -362,7 +362,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                // Add validation required flag if Decision review is required
                if (aData.getCreateReviews().length > 0) {
                   for (CreateReview createReview : aData.getCreateReviews()) {
-                     if (createReview == CreateReview.Decision) teamWf.setSoleXAttributeValue(
+                     if (createReview == CreateReview.Decision) teamWf.setSoleAttributeValue(
                            ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), true);
                   }
                }

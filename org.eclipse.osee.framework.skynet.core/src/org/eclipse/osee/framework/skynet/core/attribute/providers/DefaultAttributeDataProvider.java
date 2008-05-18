@@ -63,7 +63,6 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
          return;
       }
       this.value = value;
-      getAttribute().setDirty();
    }
 
    /* (non-Javadoc)

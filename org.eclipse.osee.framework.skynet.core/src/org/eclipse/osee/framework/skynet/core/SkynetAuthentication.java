@@ -172,11 +172,11 @@ public class SkynetAuthentication implements PersistenceManager {
       return user;
    }
 
-   public User getUser(OseeUser userEnum) throws SQLException, MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist {
-      User user = enumeratedUserCache.get(userEnum);
+   public static User getUser(OseeUser userEnum) throws SQLException, MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist {
+      User user = instance.enumeratedUserCache.get(userEnum);
       if (user == null) {
          user = getUserByIdWithError(userEnum.getUserID());
-         enumeratedUserCache.put(userEnum, user);
+         instance.enumeratedUserCache.put(userEnum, user);
       }
       return user;
    }
@@ -233,18 +233,18 @@ public class SkynetAuthentication implements PersistenceManager {
       return (ArrayList<User>) activeUserCache.clone();
    }
 
-   public User getUserByIdWithError(String userId) throws SQLException, MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist {
+   public static User getUserByIdWithError(String userId) throws SQLException, MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist {
       if (userId == null || userId.equals("")) {
          throw new IllegalArgumentException("UserId can't be null or \"\"");
       }
-      User user = nameOrIdToUserCache.get(userId);
+      User user = instance.nameOrIdToUserCache.get(userId);
 
       if (user == null) {
          try {
             user =
                   (User) ArtifactQuery.getArtifactFromTypeAndAttribute(User.ARTIFACT_NAME, User.userIdAttributeName,
                         userId, BranchPersistenceManager.getCommonBranch());
-            addUserToMap(user);
+            instance.addUserToMap(user);
          } catch (ArtifactDoesNotExist ex) {
             // Note this is normal for the creation of this user (i.e. db init)
             throw new UserNotInDatabase("User requested by id \"" + userId + "\" was not found.", ex);

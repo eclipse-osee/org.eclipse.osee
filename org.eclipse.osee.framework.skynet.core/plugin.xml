@@ -146,9 +146,6 @@
       <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
          <ArtifactFactory
-               classname="org.eclipse.osee.framework.skynet.core.artifact.factory.SearchArtifactFactory">
-         </ArtifactFactory>
-         <ArtifactFactory
                classname="org.eclipse.osee.framework.skynet.core.artifact.factory.BasicArtifactFactory">
          </ArtifactFactory>
          <ArtifactFactory
@@ -314,30 +311,6 @@
             point="org.eclipse.osee.framework.skynet.core.AttributeType">
          <CharacterBackedAttributeType
                class="org.eclipse.osee.framework.skynet.core.attribute.BlobWordAttribute">
-         </CharacterBackedAttributeType>
-      </extension>
-       <extension
-            id="ArtifactTypeSearchAttribute"
-            name="ArtifactTypeSearchAttribute"
-            point="org.eclipse.osee.framework.skynet.core.AttributeType">
-         <CharacterBackedAttributeType
-               class="org.eclipse.osee.framework.skynet.core.attribute.ArtifactTypeSearchAttribute">
-         </CharacterBackedAttributeType>
-      </extension>
-       <extension
-            id="AttributeValueSearchAttribute"
-            name="AttributeValueSearchAttribute"
-            point="org.eclipse.osee.framework.skynet.core.AttributeType">
-         <CharacterBackedAttributeType
-               class="org.eclipse.osee.framework.skynet.core.attribute.AttributeValueSearchAttribute">
-         </CharacterBackedAttributeType>
-      </extension>
-       <extension
-            id="InRelationSearchAttribute"
-            name="InRelationSearchAttribute"
-            point="org.eclipse.osee.framework.skynet.core.AttributeType">
-         <CharacterBackedAttributeType
-               class="org.eclipse.osee.framework.skynet.core.attribute.InRelationSearchAttribute">
          </CharacterBackedAttributeType>
       </extension>
        <extension

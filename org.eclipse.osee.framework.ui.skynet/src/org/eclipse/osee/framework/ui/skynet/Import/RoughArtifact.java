@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -119,15 +120,11 @@ public class RoughArtifact {
       }
    }
 
-   private void setFileAttributes(Artifact artifact) throws OseeCoreException {
-      try {
-         if (fileAttributes != null) {
-            for (Entry<String, File> entry : fileAttributes.entrySet()) {
-               artifact.setSoleAttributeFromStream(entry.getKey(), new FileInputStream(entry.getValue()));
-            }
+   private void setFileAttributes(Artifact artifact) throws OseeCoreException, FileNotFoundException, SQLException {
+      if (fileAttributes != null) {
+         for (Entry<String, File> entry : fileAttributes.entrySet()) {
+            artifact.setSoleAttributeFromStream(entry.getKey(), new FileInputStream(entry.getValue()));
          }
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex);
       }
    }
 
@@ -218,9 +215,9 @@ public class RoughArtifact {
       return children.isEmpty() || forcePrimaryType ? primaryDescriptor : headingDescriptor;
    }
 
-   public void updateValues(Artifact artifact) throws OseeCoreException, SQLException {
+   public void updateValues(Artifact artifact) throws OseeCoreException, SQLException, FileNotFoundException {
       for (NameAndVal value : attributes) {
-         artifact.setSoleXAttributeValue(value.getName(), value.getValue());
+         artifact.setSoleAttributeFromString(value.getName(), value.getValue());
       }
 
       setFileAttributes(artifact);

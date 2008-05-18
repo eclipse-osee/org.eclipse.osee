@@ -39,11 +39,4 @@ public interface ISearchPrimitive {
     * @see ISearchPrimitive#getCriteriaSql(List, Branch)
     */
    public String getTableSql(List<Object> dataList, Branch branch);
-
-   /**
-    * Returns a string which can be used to later reacquire the primitive in full
-    * 
-    * @return Return storage string
-    */
-   public String getStorageString();
 }

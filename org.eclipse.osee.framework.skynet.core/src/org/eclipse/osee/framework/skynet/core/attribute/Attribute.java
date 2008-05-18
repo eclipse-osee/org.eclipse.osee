@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
@@ -34,18 +38,57 @@ public abstract class Attribute<T> {
       this.artifact = artifact;
    }
 
-   /**
-    * @return the attribute name/value description
+   public void setValue(T value) throws OseeCoreException {
+      subClassSetValue(value);
+      setDirty();
+   }
+
+   public void setFromString(String value) throws OseeCoreException {
+      subClassSetValue(convertStringToValue(value));
+      setDirty();
+   }
+
+   protected abstract T convertStringToValue(String value) throws OseeCoreException;
+
+   public void initializeToDefaultValue() throws OseeCoreException {
+      subClassSetValue(convertStringToValue(getAttributeType().getDefaultValue()));
+   }
+
+   public void setValueFromInputStream(InputStream value) throws OseeCoreException {
+      try {
+         setFromString(Lib.inputStreamToString(value));
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
+   }
+
+   protected abstract void subClassSetValue(T value) throws OseeCoreException;
+
+   public abstract T getValue();
+
+   public String getDisplayableString() {
+      return getAttributeDataProvider().getDisplayableString();
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see java.lang.Object#toString()
     */
-   public String getNameValueDescription() {
-      return attributeType.getName() + ": " + toString();
+   @Override
+   public String toString() {
+      return getDisplayableString();
    }
 
    /**
-    * @return attributeType Attribute Type Information
+    * @param attributeDataProvider the attributeDataProvider to set
     */
-   public AttributeType getAttributeType() {
-      return attributeType;
+   public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) {
+      this.attributeDataProvider = attributeDataProvider;
+   }
+
+   protected IAttributeDataProvider getAttributeDataProvider() {
+      return attributeDataProvider;
    }
 
    /**
@@ -70,6 +113,20 @@ public abstract class Attribute<T> {
    }
 
    /**
+    * @return the attribute name/value description
+    */
+   public String getNameValueDescription() {
+      return attributeType.getName() + ": " + toString();
+   }
+
+   /**
+    * @return attributeType Attribute Type Information
+    */
+   public AttributeType getAttributeType() {
+      return attributeType;
+   }
+
+   /**
     * Deletes the attribute
     */
    public void delete() {
@@ -91,42 +148,11 @@ public abstract class Attribute<T> {
       getAttributeDataProvider().purge();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#toString()
-    */
-   @Override
-   public String toString() {
-      return getDisplayableString();
-   }
-
-   public abstract void setValue(T value);
-
-   public abstract T getValue();
-
-   public abstract String getDisplayableString();
-
-   /**
-    * @param attributeDataProvider the attributeDataProvider to set
-    */
-   public void setAttributeDataProvider(IAttributeDataProvider attributeDataProvider) {
-      this.attributeDataProvider = attributeDataProvider;
-   }
-
-   protected IAttributeDataProvider getAttributeDataProvider() {
-      return attributeDataProvider;
-   }
-
    /**
     * @return
     */
    public boolean isInDatastore() {
       return gammaId > 0;
-   }
-
-   public void initializeDefaultValue() {
-
    }
 
    /**

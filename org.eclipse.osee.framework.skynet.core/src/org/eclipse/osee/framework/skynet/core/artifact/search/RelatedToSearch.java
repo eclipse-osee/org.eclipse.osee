@@ -74,10 +74,6 @@ public class RelatedToSearch implements ISearchPrimitive {
       return "Related to art_id: " + artId + " on side: " + (sideA ? "A" : "B");
    }
 
-   public String getStorageString() {
-      return Integer.toString(artId) + TOKEN + Boolean.toString(sideA);
-   }
-
    public static RelatedToSearch getPrimitive(String storageString) {
       String[] values = storageString.split(TOKEN);
       if (values.length != 2) throw new IllegalStateException(

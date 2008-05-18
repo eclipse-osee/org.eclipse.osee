@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -32,44 +33,21 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
     */
    @Override
-   public void setValue(Integer value) {
+   public void subClassSetValue(Integer value) {
       getAttributeDataProvider().setValue(Integer.toString(value));
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
     */
    @Override
-   public String getDisplayableString() {
-      return getAttributeDataProvider().getDisplayableString();
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setFromString(java.lang.String)
-    */
-   @Override
-   public void setFromString(String value) throws Exception {
-      Integer toSet = null;
+   protected Integer convertStringToValue(String value) throws OseeCoreException {
       if (value == null || value.equals("")) {
-         toSet = new Integer(0);
-      } else {
-         toSet = new Integer(value);
+         return new Integer(0);
       }
-      setValue(toSet);
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#initializeDefaultValue()
-    */
-   @Override
-   public void initializeDefaultValue() {
-      String defaultValue = getAttributeType().getDefaultValue();
-      if (!Strings.isValid(defaultValue)) {
-         defaultValue = "0";
-      }
-      getAttributeDataProvider().setValue(defaultValue);
+      return Integer.parseInt(value);
    }
 }

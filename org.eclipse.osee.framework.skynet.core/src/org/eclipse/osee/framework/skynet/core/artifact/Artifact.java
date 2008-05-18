@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__CHILD;
 import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__PARENT;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
@@ -48,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CharacterBackedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.IStreamSetableAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordTemplateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
@@ -366,28 +364,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public void setAttribute(SkynetAttributeChange attrChange) throws SQLException {
-      Attribute<Object> foundAttribute = null;
-
-      for (Attribute<Object> attribute : getAttributes(attrChange.getName())) {
-         if (!attribute.isInDatastore()) {
-            attribute.setIds(attrChange.getAttributeId(), attrChange.getGammaId());
-            foundAttribute = attribute;
-            break;
-         }
-
-         if (attribute.getAttrId() == attrChange.getAttributeId()) {
-            foundAttribute = attribute;
-            break;
-         }
-      }
-      if (foundAttribute == null) {
-         foundAttribute = createAttribute(AttributeTypeManager.getType(attrChange.getName()));
-         foundAttribute.setIds(attrChange.getAttributeId(), attrChange.getGammaId());
-      }
-      foundAttribute.setValue(attrChange.getValue());
-   }
-
    /**
     * Creates a new <code>Attribute</code> of the given attribute type. This method should not be called by
     * applications. Use addAttribute() instead
@@ -421,8 +397,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                attributeType.getProviderAttributeClass().getConstructor(new Class[] {Attribute.class});
          IAttributeDataProvider provider = providerConstructor.newInstance(new Object[] {attribute});
          attribute.setAttributeDataProvider(provider);
-         attribute.initializeDefaultValue();
-         attribute.setNotDirty(); //the initializeDefaultValue() may have called setValue and it also sets dirty
+         attribute.initializeToDefaultValue();
          attributes.put(attributeType.getName(), attribute);
          return attribute;
       } catch (Exception ex) {
@@ -479,7 +454,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    private void ensureAttributesLoaded() throws SQLException {
       if (!isAttributesLoaded() && isInDb()) {
-         ArtifactLoader.loadArtifactData(this, branch, ArtifactLoad.ATTRIBUTE);
+         ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
       }
    }
 
@@ -634,11 +609,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     * @throws MultipleAttributesExist
     */
-   public <T> void setSoleXAttributeValue(String attributeTypeName, T value) throws SQLException, MultipleAttributesExist {
-      getOrCreateSoleAttribute(attributeTypeName).setValue(value);
+   public <T> void setSoleAttributeValue(String attributeTypeName, T value) throws SQLException, MultipleAttributesExist {
+      try {
+         getOrCreateSoleAttribute(attributeTypeName).setValue(value);
+      } catch (OseeCoreException ex) {
+         throw new SQLException(ex);
+      }
    }
 
-   @SuppressWarnings("unchecked")
+   @Deprecated
+   /**
+    * should call setSoleAttributeValue() unless the value needs to be converted from a string in which (less common)
+    * case call setSoleAttributeFromString
+    */
    public <T> void setSoleXAttributeValue(String attributeTypeName, String value) throws SQLException, MultipleAttributesExist {
       Attribute<T> attribute = getOrCreateSoleAttribute(attributeTypeName);
       if (attribute instanceof CharacterBackedAttribute) {
@@ -654,13 +637,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public void setSoleAttributeFromStream(String attributeTypeName, InputStream stream) throws SQLException, IOException, MultipleAttributesExist {
-      Attribute<Object> attribute = getOrCreateSoleAttribute(attributeTypeName);
-      if (attribute instanceof IStreamSetableAttribute) {
-         ((IStreamSetableAttribute) attribute).setValueFromInputStream(stream);
-      } else {
-         throw new UnsupportedOperationException();
-      }
+   public <T> void setSoleAttributeFromString(String attributeTypeName, String value) throws OseeCoreException, SQLException {
+      getOrCreateSoleAttribute(attributeTypeName).setFromString(value);
+   }
+
+   public void setSoleAttributeFromStream(String attributeTypeName, InputStream stream) throws OseeCoreException, MultipleAttributesExist, SQLException {
+      getOrCreateSoleAttribute(attributeTypeName).setValueFromInputStream(stream);
    }
 
    /**
@@ -742,7 +724,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public <T> void addAttribute(String attributeTypeName, T value) throws SQLException {
-      createAttribute(AttributeTypeManager.getType(attributeTypeName)).setValue(value);
+      try {
+         createAttribute(AttributeTypeManager.getType(attributeTypeName)).setValue(value);
+      } catch (OseeCoreException ex) {
+         throw new SQLException(ex);
+      }
    }
 
    /**
@@ -860,7 +846,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       if (!isInDb()) return;
 
       attributes.clear();
-      ArtifactPersistenceManager.setAttributesOnArtifact(this);
+      ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
 
       linkManager.revert();
 

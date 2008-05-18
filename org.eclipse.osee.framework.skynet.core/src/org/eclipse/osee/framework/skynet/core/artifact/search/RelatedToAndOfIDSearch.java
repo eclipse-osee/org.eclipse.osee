@@ -54,10 +54,6 @@ public class RelatedToAndOfIDSearch implements ISearchPrimitive {
       return "Related to art_id: " + artId + " With rel type: " + relType;
    }
 
-   public String getStorageString() {
-      return Integer.toString(artId) + "," + Integer.toString(relType);
-   }
-
    public static RelatedToAndOfIDSearch getPrimitive(String storageString) {
       String[] args = storageString.split(",");
       return new RelatedToAndOfIDSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]));

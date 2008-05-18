@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkNewBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -371,13 +372,12 @@ public class BranchCreator implements PersistenceManager {
     * @param staticBranchName null if no static key is desired
     * @return branch object
     * @throws SQLException
-    * @throws UserNotInDatabase
-    * @throws MultipleArtifactsExist
+    * @throws OseeCoreException
     * @see BranchPersistenceManager#createRootBranch(String, String, int)
     * @see BranchPersistenceManager#getKeyedBranch(String)
     */
-   public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, MultipleAttributesExist, IllegalArgumentException, UserNotInDatabase, MultipleArtifactsExist {
-      return HttpBranchCreation.createRootBranch(skynetAuth, shortBranchName, branchName, staticBranchName);
+   public Branch createRootBranch(String shortBranchName, String branchName, String staticBranchName) throws SQLException, OseeCoreException {
+      return HttpBranchCreation.createRootBranch(shortBranchName, branchName, staticBranchName);
    }
 
    /**

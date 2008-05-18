@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 
@@ -55,8 +56,9 @@ public class AttributeAnnotationManager {
     * 
     * @param newAnnotation
     * @throws SQLException
+    * @throws OseeCoreException
     */
-   public void addAnnotation(ArtifactAnnotation newAnnotation) throws SQLException {
+   public void addAnnotation(ArtifactAnnotation newAnnotation) throws OseeCoreException, SQLException {
 
       // Update attribute if it already exists
       for (Attribute<String> attr : getAttributes()) {

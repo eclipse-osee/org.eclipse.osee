@@ -94,10 +94,6 @@ public class TagSearch implements ISearchPrimitive {
       return TABLES;
    }
 
-   public String getStorageString() {
-      return tag + TOKEN + caseSensitive + TOKEN + partialMatch;
-   }
-
    @Override
    public String toString() {
       return "Tag: " + tag;

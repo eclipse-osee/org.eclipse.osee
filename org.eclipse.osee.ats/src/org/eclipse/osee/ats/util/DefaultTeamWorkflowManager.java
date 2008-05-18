@@ -102,7 +102,7 @@ public class DefaultTeamWorkflowManager {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Endorse")) return new Result(
             "Action not in Endorse state");
       if (propRes == null || propRes.equals(""))
-         teamArt.setSoleXAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
+         teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleXAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
       smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
@@ -114,14 +114,14 @@ public class DefaultTeamWorkflowManager {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Analyze")) return new Result(
             "Action not in Analyze state");
       if (problem == null || problem.equals(""))
-         teamArt.setSoleXAttributeValue(ATSAttributes.PROBLEM_OVERRIDE_ATTRIBUTE.getStoreName(), true);
+         teamArt.setSoleAttributeValue(ATSAttributes.PROBLEM_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleXAttributeValue(ATSAttributes.PROBLEM_ATTRIBUTE.getStoreName(), problem);
       if (propRes == null || propRes.equals(""))
-         teamArt.setSoleXAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
+         teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleXAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
-      teamArt.setSoleXAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate);
+      teamArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate);
       smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
       smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
       return Result.TrueResult;
@@ -139,7 +139,7 @@ public class DefaultTeamWorkflowManager {
       if (!smaMgr.getStateMgr().getCurrentStateName().equals("Implement")) return new Result(
             "Action not in Implement state");
       if (resolution == null || resolution.equals(""))
-         teamArt.setSoleXAttributeValue(ATSAttributes.RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
+         teamArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
          teamArt.setSoleXAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), resolution);
       smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);

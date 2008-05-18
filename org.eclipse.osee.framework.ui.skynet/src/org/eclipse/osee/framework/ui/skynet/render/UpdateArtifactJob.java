@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -21,7 +22,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -128,7 +129,7 @@ public class UpdateArtifactJob extends UpdateJob {
       eventManager.kick(new VisitorEvent(artifact, this));
    }
 
-   private void updateWholeDocumentArtifact(Artifact artifact) throws SQLException, IOException, MultipleAttributesExist {
+   private void updateWholeDocumentArtifact(Artifact artifact) throws MultipleAttributesExist, FileNotFoundException, OseeCoreException, SQLException {
       artifact.setSoleAttributeFromStream(WordAttribute.CONTENT_NAME, new FileInputStream(workingFile));
       artifact.persistAttributes();
       eventManager.kick(new VisitorEvent(artifact, this));
@@ -184,7 +185,7 @@ public class UpdateArtifactJob extends UpdateJob {
                if (oleDataElement == null && containsOleData) {
                   artifact.setSoleXAttributeValue(WordAttribute.OLE_DATA_NAME, "");
                } else if (oleDataElement != null && singleArtifact) {
-                  artifact.setSoleXAttributeValue(WordAttribute.OLE_DATA_NAME, new ByteArrayInputStream(
+                  artifact.setSoleAttributeValue(WordAttribute.OLE_DATA_NAME, new ByteArrayInputStream(
                         WordRenderer.getFormattedContent(oleDataElement)));
                }
 
@@ -226,8 +227,7 @@ public class UpdateArtifactJob extends UpdateJob {
                }
                //Only update if editing a single artifact or if in multi-edit mode only update if
                //the artifact has pure text changes.
-               if (!WordUtil.textOnly(
-                     artifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME).toString()).equals(
+               if (!WordUtil.textOnly(artifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME).toString()).equals(
                      WordUtil.textOnly(content))) {
                   artifact.setSoleXAttributeValue(WordAttribute.CONTENT_NAME, content);
                }

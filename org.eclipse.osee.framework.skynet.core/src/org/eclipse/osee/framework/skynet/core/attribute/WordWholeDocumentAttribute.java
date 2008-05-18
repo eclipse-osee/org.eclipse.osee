@@ -35,12 +35,12 @@ public class WordWholeDocumentAttribute extends WordAttribute {
     * @see org.eclipse.osee.framework.skynet.core.attribute.StringAttribute#initializeDefaultValue()
     */
    @Override
-   public void initializeDefaultValue() {
+   public void initializeToDefaultValue() {
       String value = getAttributeType().getDefaultValue();
       if (value == null || value.matches("")) {
          value = emptyDocumentContent;
       }
-      setValue(value);
+      subClassSetValue(value);
    }
 
 }

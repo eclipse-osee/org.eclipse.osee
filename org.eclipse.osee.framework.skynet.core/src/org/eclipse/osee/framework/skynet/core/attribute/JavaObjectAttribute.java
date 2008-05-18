@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -30,9 +31,13 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
     */
    @Override
    public Object getValue() {
+      return getObjectFromBytes(getAttributeDataProvider().getValueAsBytes());
+   }
+
+   private Object getObjectFromBytes(byte[] bytes) {
       Object obj = null;
       try {
-         InputStream inputStream = new ByteArrayInputStream(getAttributeDataProvider().getValueAsBytes());
+         InputStream inputStream = new ByteArrayInputStream(bytes);
          if (inputStream != null) {
             ObjectInputStream objectStream = new ObjectInputStream(inputStream);
             obj = objectStream.readObject();
@@ -45,10 +50,10 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
     */
    @Override
-   public void setValue(Object value) {
+   public void subClassSetValue(Object value) {
       try {
          ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
          ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
@@ -63,10 +68,10 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#getDisplayableString()
+    * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#convertStringToValue(java.lang.String)
     */
    @Override
-   public String getDisplayableString() {
-      return getAttributeDataProvider().getDisplayableString();
+   protected Object convertStringToValue(String value) throws OseeCoreException {
+      return getObjectFromBytes(value.getBytes());
    }
 }

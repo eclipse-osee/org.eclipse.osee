@@ -151,7 +151,7 @@ public class User extends Artifact implements Serializable {
    }
 
    public void setActive(boolean required) throws SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(Attributes.Active.toString(), required);
+      setSoleAttributeValue(Attributes.Active.toString(), required);
    }
 
    @Override

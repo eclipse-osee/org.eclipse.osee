@@ -72,7 +72,7 @@ public class ReviewManager {
          decRev.setSoleXAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
          decRev.setSoleXAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
-         decRev.setSoleXAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(),
+         decRev.setSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(),
                smaMgr.getWorkPage().isValidateReviewBlocking());
 
          SMAManager revSmaMgr = new SMAManager(decRev);
@@ -107,7 +107,7 @@ public class ReviewManager {
       }
 
       peerToPeerRev.getLog().addLog(LogType.Originated, "", "", origDate, origUser);
-      peerToPeerRev.setSoleXAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
+      peerToPeerRev.setSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(), false);
 
       // Initialize state machine
       peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());

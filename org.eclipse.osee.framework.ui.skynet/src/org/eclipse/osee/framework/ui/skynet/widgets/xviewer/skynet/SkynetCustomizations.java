@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,7 +64,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       return custDatas;
    }
 
-   private static void saveCustomization(CustomizeData custData, Artifact saveArt) throws SQLException {
+   private static void saveCustomization(CustomizeData custData, Artifact saveArt) throws SQLException, OseeCoreException {
       boolean found = false;
       Collection<Attribute<String>> attributes = saveArt.getAttributes(CUSTOMIZATION_ATTRIBUTE_NAME);
       for (Attribute<String> attribute : attributes) {
@@ -80,7 +81,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       saveArt.persistAttributes();
    }
 
-   public void saveCustomization(CustomizeData custData) throws SQLException {
+   public void saveCustomization(CustomizeData custData) throws SQLException, OseeCoreException {
       if (custData.isPersonal())
          saveCustomization(custData, SkynetAuthentication.getInstance().getAuthenticatedUser());
       else
