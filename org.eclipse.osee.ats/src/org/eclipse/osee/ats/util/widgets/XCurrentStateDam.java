@@ -40,7 +40,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
 
    @Override
    public void setState(SMAState state) throws Exception {
-      sma.setSoleXAttributeValue(attributeTypeName, state.toXml());
+      sma.setSoleAttributeValue(attributeTypeName, state.toXml());
    }
 
    public void logMetrics() throws Exception {

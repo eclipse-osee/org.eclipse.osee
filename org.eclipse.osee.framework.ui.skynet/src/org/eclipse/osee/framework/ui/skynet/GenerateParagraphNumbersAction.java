@@ -99,7 +99,7 @@ public class GenerateParagraphNumbersAction extends Action {
             String paragraphNumber = producer.startOutlineSubSection("", "", null).toString();
 
             monitor.subTask(paragraphNumber + " " + artifact.getDescriptiveName());
-            artifact.setSoleXAttributeValue("Imported Paragraph Number", paragraphNumber);
+            artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber);
             artifact.persistAttributes();
             monitor.worked(1);
 

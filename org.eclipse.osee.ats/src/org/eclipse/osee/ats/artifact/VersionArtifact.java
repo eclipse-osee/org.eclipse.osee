@@ -66,7 +66,7 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public void setFullName(String name) throws SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), name);
+      setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), name);
    }
 
    public String getDescription() throws SQLException, MultipleAttributesExist {
@@ -74,7 +74,7 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public void setDescription(String desc) throws SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+      setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
    }
 
    public Collection<TeamWorkFlowArtifact> getTargetedForTeamArtifacts() throws SQLException {

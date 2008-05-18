@@ -100,9 +100,9 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
          for (Object object : attributeHolder) {
             if (object instanceof Artifact) {
                if (selected == null)
-                  ((Artifact) object).setSoleXAttributeValue(attributeName, "");
+                  ((Artifact) object).setSoleAttributeValue(attributeName, "");
                else
-                  ((Artifact) object).setSoleXAttributeValue(attributeName, selected.getTime() + "");
+                  ((Artifact) object).setSoleAttributeValue(attributeName, selected.getTime() + "");
                if (persist) ((Artifact) object).persistAttributes();
             }
             if (object instanceof AttributeConflict) {

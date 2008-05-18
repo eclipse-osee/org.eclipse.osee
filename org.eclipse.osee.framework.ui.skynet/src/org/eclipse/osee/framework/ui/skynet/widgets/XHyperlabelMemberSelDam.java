@@ -75,7 +75,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
          if (selectedStrValue == null || selectedStrValue.equals("")) {
             artifact.deleteSoleAttribute(attributeTypeName);
          } else {
-            artifact.setSoleXAttributeValue(attributeTypeName, selectedStrValue);
+            artifact.setSoleAttributeValue(attributeTypeName, selectedStrValue);
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

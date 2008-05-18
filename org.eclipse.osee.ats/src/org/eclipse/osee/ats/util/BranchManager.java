@@ -237,7 +237,7 @@ public class BranchManager {
     * @throws MultipleAttributesExist
     */
    public void setParentBranchId(int branchId) throws SQLException, MultipleAttributesExist {
-      smaMgr.getSma().setSoleXAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
+      smaMgr.getSma().setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
             String.valueOf(branchId));
    }
 

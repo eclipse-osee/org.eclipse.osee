@@ -123,7 +123,7 @@ public class User extends Artifact implements Serializable {
    }
 
    public void setUserID(String userId) throws SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(userIdAttributeName, userId);
+      setSoleAttributeValue(userIdAttributeName, userId);
    }
 
    public String getEmail() throws SQLException, MultipleAttributesExist {
@@ -131,7 +131,7 @@ public class User extends Artifact implements Serializable {
    }
 
    public void setEmail(String email) throws SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(Attributes.Email.toString(), email);
+      setSoleAttributeValue(Attributes.Email.toString(), email);
    }
 
    public String getName() {
@@ -143,7 +143,7 @@ public class User extends Artifact implements Serializable {
    }
 
    public void setPhone(String phone) throws SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(Attributes.Phone.toString(), phone);
+      setSoleAttributeValue(Attributes.Phone.toString(), phone);
    }
 
    public Boolean isActive() throws SQLException, MultipleAttributesExist, AttributeDoesNotExist, MultipleAttributesExist {

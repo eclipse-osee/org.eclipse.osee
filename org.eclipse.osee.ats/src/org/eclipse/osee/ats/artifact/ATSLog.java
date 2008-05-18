@@ -101,7 +101,7 @@ public class ATSLog {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         artifact.setSoleXAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
+         artifact.setSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't create ats log document", ex, true);
       }

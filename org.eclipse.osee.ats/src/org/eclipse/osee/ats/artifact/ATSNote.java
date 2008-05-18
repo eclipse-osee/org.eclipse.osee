@@ -91,7 +91,7 @@ public class ATSNote {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         artifact.setSoleXAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(),
+         artifact.setSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(),
                Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't create ats note document", ex, true);

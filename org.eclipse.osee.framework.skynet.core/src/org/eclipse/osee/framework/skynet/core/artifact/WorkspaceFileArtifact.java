@@ -62,8 +62,8 @@ public class WorkspaceFileArtifact extends Artifact {
          if (descriptorSelected == 0) {
             descriptor = dialog.getEntry();
             artifact = descriptor.makeNewArtifact(branchManager.getDefaultBranch());
-            artifact.setSoleXAttributeValue("Content URL", location);
-            artifact.setSoleXAttributeValue("Name", new File(location).getName());
+            artifact.setSoleAttributeValue("Content URL", location);
+            artifact.setSoleAttributeValue("Name", new File(location).getName());
             artifact.persistAttributes();
          }
       }

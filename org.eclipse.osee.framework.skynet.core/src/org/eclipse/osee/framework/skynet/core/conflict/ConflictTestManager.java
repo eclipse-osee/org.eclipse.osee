@@ -86,15 +86,15 @@ public class ConflictTestManager {
       // create attribute conflicts
 
       // Attribute Conflicts for Artifact # 2 A bunch of changes
-      sourceArtifacts[2].setSoleXAttributeValue("Safety Criticality", "2");
-      sourceArtifacts[2].setSoleXAttributeValue("Page Type", "Landscape");
-      sourceArtifacts[2].setSoleXAttributeValue("Subsystem", "Electrical");
-      sourceArtifacts[2].setSoleXAttributeValue("Name", "Test Artifact Number 2 - Source");
+      sourceArtifacts[2].setSoleAttributeValue("Safety Criticality", "2");
+      sourceArtifacts[2].setSoleAttributeValue("Page Type", "Landscape");
+      sourceArtifacts[2].setSoleAttributeValue("Subsystem", "Electrical");
+      sourceArtifacts[2].setSoleAttributeValue("Name", "Test Artifact Number 2 - Source");
       sourceArtifacts[2].persistAttributes();
-      destArtifacts[2].setSoleXAttributeValue("Safety Criticality", "3");
-      destArtifacts[2].setSoleXAttributeValue("Page Type", "Landscape");
-      destArtifacts[2].setSoleXAttributeValue("Subsystem", "Sights");
-      destArtifacts[2].setSoleXAttributeValue("Name", "Test Artifact Number 2 - Destination");
+      destArtifacts[2].setSoleAttributeValue("Safety Criticality", "3");
+      destArtifacts[2].setSoleAttributeValue("Page Type", "Landscape");
+      destArtifacts[2].setSoleAttributeValue("Subsystem", "Sights");
+      destArtifacts[2].setSoleAttributeValue("Name", "Test Artifact Number 2 - Destination");
       destArtifacts[2].persistAttributes();
       // Attribute Conflicts for Artifact # 8 A Date change
       sourceArtifacts[8].setSoleAttributeValue("ats.Release Date", new Date(20000));
@@ -103,24 +103,24 @@ public class ConflictTestManager {
       destArtifacts[8].persistAttributes();
       // create artifact conflicts
 
-      sourceArtifacts[5].setSoleXAttributeValue("Safety Criticality", "2");
-      sourceArtifacts[5].setSoleXAttributeValue("Page Type", "Landscape");
-      sourceArtifacts[5].setSoleXAttributeValue("Subsystem", "Electrical");
-      sourceArtifacts[5].setSoleXAttributeValue("Name", "Test Artifact Number 5 - Source");
+      sourceArtifacts[5].setSoleAttributeValue("Safety Criticality", "2");
+      sourceArtifacts[5].setSoleAttributeValue("Page Type", "Landscape");
+      sourceArtifacts[5].setSoleAttributeValue("Subsystem", "Electrical");
+      sourceArtifacts[5].setSoleAttributeValue("Name", "Test Artifact Number 5 - Source");
       sourceArtifacts[5].persistAttributes();
-      destArtifacts[5].setSoleXAttributeValue("Safety Criticality", "3");
-      destArtifacts[5].setSoleXAttributeValue("Page Type", "Landscape");
+      destArtifacts[5].setSoleAttributeValue("Safety Criticality", "3");
+      destArtifacts[5].setSoleAttributeValue("Page Type", "Landscape");
       destArtifacts[5].delete();
       destArtifacts[5].persistAttributes();
 
-      sourceArtifacts[3].setSoleXAttributeValue("Safety Criticality", "2");
-      sourceArtifacts[3].setSoleXAttributeValue("Page Type", "Landscape");
-      sourceArtifacts[3].setSoleXAttributeValue("Subsystem", "Electrical");
-      sourceArtifacts[3].setSoleXAttributeValue("Name", "Test Artifact Number 3 - Source");
+      sourceArtifacts[3].setSoleAttributeValue("Safety Criticality", "2");
+      sourceArtifacts[3].setSoleAttributeValue("Page Type", "Landscape");
+      sourceArtifacts[3].setSoleAttributeValue("Subsystem", "Electrical");
+      sourceArtifacts[3].setSoleAttributeValue("Name", "Test Artifact Number 3 - Source");
       sourceArtifacts[3].delete();
       sourceArtifacts[3].persistAttributes();
-      destArtifacts[3].setSoleXAttributeValue("Safety Criticality", "3");
-      destArtifacts[3].setSoleXAttributeValue("Page Type", "Landscape");
+      destArtifacts[3].setSoleAttributeValue("Safety Criticality", "3");
+      destArtifacts[3].setSoleAttributeValue("Page Type", "Landscape");
       destArtifacts[3].persistAttributes();
       // **** create relation conflicts *** //
 

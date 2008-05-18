@@ -71,14 +71,14 @@ public class NewDecisionReviewJob extends Job {
                   AtsPlugin.getAtsBranch(), "Should we do this?  Yes will require followup, No will not");
 
       if (teamParent != null) teamParent.relate(RelationSide.TeamWorkflowToReview_Review, decRev);
-      if (againstCurrentState) decRev.setSoleXAttributeValue(
+      if (againstCurrentState) decRev.setSoleAttributeValue(
             ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
             teamParent.getSmaMgr().getStateMgr().getCurrentStateName());
 
       decRev.getLog().addLog(LogType.Originated, "", "");
-      decRev.setSoleXAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(),
+      decRev.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(),
             "Enter description of the decision, if any");
-      decRev.setSoleXAttributeValue(
+      decRev.setSoleAttributeValue(
             ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
             "Yes;Followup;<" + SkynetAuthentication.getInstance().getAuthenticatedUser().getUserId() + ">\n" + "No;Completed;");
 

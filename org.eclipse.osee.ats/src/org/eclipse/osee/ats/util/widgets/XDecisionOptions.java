@@ -85,7 +85,7 @@ public class XDecisionOptions {
    }
 
    public void setDecisionOptions(String decisionOptions) throws IllegalStateException, SQLException, MultipleAttributesExist {
-      sma.setSoleXAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
+      sma.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
             toXml(getDecisionOptions(decisionOptions)));
    }
 

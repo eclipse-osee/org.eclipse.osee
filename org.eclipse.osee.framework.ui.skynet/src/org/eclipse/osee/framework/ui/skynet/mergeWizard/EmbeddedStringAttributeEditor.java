@@ -99,7 +99,7 @@ public class EmbeddedStringAttributeEditor implements IEmbeddedAttributeEditor {
          try {
             for (Object object : attributeHolders) {
                if (object instanceof Artifact) {
-                  ((Artifact) object).setSoleXAttributeValue(attributeName, editor.getEntry());
+                  ((Artifact) object).setSoleAttributeFromString(attributeName, editor.getEntry());
                   if (persist) ((Artifact) object).persistAttributes();
                }
                if (object instanceof AttributeConflict) {

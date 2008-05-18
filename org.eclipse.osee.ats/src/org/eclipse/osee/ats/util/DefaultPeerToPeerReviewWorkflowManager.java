@@ -73,7 +73,7 @@ public class DefaultPeerToPeerReviewWorkflowManager {
             "Action not in Prepare state");
       if (roles != null) for (UserRole role : roles)
          reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false);
-      reviewArt.setSoleXAttributeValue(ATSAttributes.LOCATION_ATTRIBUTE.getStoreName(), reviewMaterials);
+      reviewArt.setSoleAttributeValue(ATSAttributes.LOCATION_ATTRIBUTE.getStoreName(), reviewMaterials);
       reviewArt.getSmaMgr().getStateMgr().setHoursSpent(stateHoursSpent);
       reviewArt.getSmaMgr().getStateMgr().setPercentComplete(statePercentComplete);
       return Result.TrueResult;

@@ -153,7 +153,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    public void transitionToCancelled(String reason, boolean persist) throws SQLException, MultipleAttributesExist {
       if (smaMgr.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Cancelled.name())) return;
-      setSoleXAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getStoreName(), reason);
+      setSoleAttributeValue(ATSAttributes.CANCEL_REASON_ATTRIBUTE.getStoreName(), reason);
       Result result = smaMgr.transition(DefaultTeamState.Cancelled.name(), (User) null, persist);
       if (result.isFalse()) result.popup();
    }

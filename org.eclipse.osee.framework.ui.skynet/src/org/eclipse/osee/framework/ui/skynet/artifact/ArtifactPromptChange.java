@@ -189,9 +189,9 @@ public class ArtifactPromptChange {
          for (Artifact sma : smas) {
             String value = ed.getEntry();
             if (result == 0) {
-               sma.setSoleXAttributeValue(attributeName, value);
+               sma.setSoleAttributeValue(attributeName, value);
             } else {
-               sma.setSoleXAttributeValue(attributeName, "");
+               sma.setSoleAttributeValue(attributeName, "");
             }
             if (persist) sma.persistAttributes();
          }

@@ -131,7 +131,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             desc = team.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
          else if (!desc.equals(team.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) return;
       }
-      if (!desc.equals(getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) setSoleXAttributeValue(
+      if (!desc.equals(getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) setSoleAttributeValue(
             ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
    }
 
@@ -193,7 +193,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public void setChangeType(ChangeType type) throws SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
+      setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
    }
 
    public ChangeType getChangeType() throws SQLException, MultipleAttributesExist {
@@ -205,7 +205,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public void setPriority(PriorityType type) throws SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
+      setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
    }
 
    /**
@@ -854,10 +854,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     */
    public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, Boolean validationRequired, Date needByDate) throws Exception {
       art.setDescriptiveName(title);
-      if (!desc.equals("")) art.setSoleXAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
-      art.setSoleXAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
+      if (!desc.equals("")) art.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+      art.setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
       art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
-      if (priority != null) art.setSoleXAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
+      if (priority != null) art.setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             priority.getShortName());
       if (needByDate != null) art.setSoleAttributeValue(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName(), needByDate);
       if (validationRequired) art.setSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(),

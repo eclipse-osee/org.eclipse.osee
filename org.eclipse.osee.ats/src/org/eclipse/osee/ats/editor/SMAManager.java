@@ -440,7 +440,7 @@ public class SMAManager {
                for (StateMachineArtifact sma : smas) {
                   sma.getSmaMgr().getStateMgr().setHoursSpent(hours + sma.getSmaMgr().getStateMgr().getHoursSpent());
                   sma.getSmaMgr().getStateMgr().setPercentComplete(tsd.getPercent().getInt());
-                  sma.setSoleXAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
+                  sma.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(),
                         tsd.getSelectedOptionDef().getName());
                   sma.statusChanged();
                }

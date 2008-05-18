@@ -104,7 +104,7 @@ public class DefaultTeamWorkflowManager {
       if (propRes == null || propRes.equals(""))
          teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
-         teamArt.setSoleXAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
+         teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
       smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
       smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
       return Result.TrueResult;
@@ -116,11 +116,11 @@ public class DefaultTeamWorkflowManager {
       if (problem == null || problem.equals(""))
          teamArt.setSoleAttributeValue(ATSAttributes.PROBLEM_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
-         teamArt.setSoleXAttributeValue(ATSAttributes.PROBLEM_ATTRIBUTE.getStoreName(), problem);
+         teamArt.setSoleAttributeValue(ATSAttributes.PROBLEM_ATTRIBUTE.getStoreName(), problem);
       if (propRes == null || propRes.equals(""))
          teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
-         teamArt.setSoleXAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
+         teamArt.setSoleAttributeValue(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(), propRes);
       teamArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hourEstimate);
       smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
       smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
@@ -141,7 +141,7 @@ public class DefaultTeamWorkflowManager {
       if (resolution == null || resolution.equals(""))
          teamArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_OVERRIDE_ATTRIBUTE.getStoreName(), true);
       else
-         teamArt.setSoleXAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), resolution);
+         teamArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), resolution);
       smaMgr.getStateMgr().setHoursSpent(stateHoursSpent);
       smaMgr.getStateMgr().setPercentComplete(statePercentComplete);
       return Result.TrueResult;

@@ -747,7 +747,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       if (myTreeItemObject instanceof Artifact) {
          Artifact myArtifact = (Artifact) myTreeItemObject;
          try {
-            myArtifact.setSoleXAttributeValue("Name", newLabel);
+            myArtifact.setSoleAttributeValue("Name", newLabel);
             myArtifact.persistAttributes();
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);

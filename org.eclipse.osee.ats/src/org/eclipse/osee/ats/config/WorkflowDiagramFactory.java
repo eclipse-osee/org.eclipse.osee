@@ -59,7 +59,7 @@ public class WorkflowDiagramFactory {
       art =
             (NativeArtifact) ArtifactTypeManager.addArtifact(GENERAL_DOCUMENT_ARTIFACT_NAME,
                   BranchPersistenceManager.getAtsBranch(), name);
-      art.setSoleXAttributeValue("Extension", "vue");
+      art.setSoleAttributeValue("Extension", "vue");
       art.setNativeContent(inputStream);
       art.persistAttributes();
 

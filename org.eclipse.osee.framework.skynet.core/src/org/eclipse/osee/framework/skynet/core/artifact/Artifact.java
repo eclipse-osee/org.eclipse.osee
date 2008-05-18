@@ -617,26 +617,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   @Deprecated
-   /**
-    * should call setSoleAttributeValue() unless the value needs to be converted from a string in which (less common)
-    * case call setSoleAttributeFromString
-    */
-   public <T> void setSoleXAttributeValue(String attributeTypeName, String value) throws SQLException, MultipleAttributesExist {
-      Attribute<T> attribute = getOrCreateSoleAttribute(attributeTypeName);
-      if (attribute instanceof CharacterBackedAttribute) {
-         try {
-            ((CharacterBackedAttribute) attribute).setFromString(value);
-         } catch (Exception ex) {
-            throw new IllegalStateException(String.format("Unable to set attribute [%s] to [%s]",
-                  attribute.getAttributeType(), value));
-         }
-      } else {
-         throw new IllegalStateException(String.format("Attribute [%s] does not support this operation.",
-               attribute.getAttributeType()));
-      }
-   }
-
    public <T> void setSoleAttributeFromString(String attributeTypeName, String value) throws OseeCoreException, SQLException {
       getOrCreateSoleAttribute(attributeTypeName).setFromString(value);
    }
@@ -766,7 +746,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public void setDescriptiveName(String name) throws SQLException {
       try {
-         setSoleXAttributeValue("Name", name);
+         setSoleAttributeValue("Name", name);
       } catch (MultipleAttributesExist ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }

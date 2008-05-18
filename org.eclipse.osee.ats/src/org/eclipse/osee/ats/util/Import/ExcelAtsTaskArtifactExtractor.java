@@ -131,7 +131,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
             } else if (headerRow[i].equalsIgnoreCase(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName())) {
                String str = row[i];
                if (str != null && !str.equals("")) {
-                  taskArt.setSoleXAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), str);
+                  taskArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), str);
                }
             } else if (headerRow[i].equalsIgnoreCase(ATSAttributes.TITLE_ATTRIBUTE.getStoreName())) {
                String str = row[i];

@@ -64,8 +64,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       tda =
             (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
                   BranchPersistenceManager.getAtsBranch(), name);
-      tda.setSoleXAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
-      tda.setSoleXAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
+      tda.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
+      tda.setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
          tda.relate(RelationSide.TeamLead_Lead, user);
          // All leads are members

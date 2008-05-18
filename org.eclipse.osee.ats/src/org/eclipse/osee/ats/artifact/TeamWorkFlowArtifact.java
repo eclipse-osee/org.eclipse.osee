@@ -170,7 +170,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public void setChangeType(ChangeType type) throws IllegalStateException, SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
+      setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), type.name());
    }
 
    public PriorityType getPriority() throws SQLException, MultipleAttributesExist {
@@ -178,7 +178,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public void setPriority(PriorityType type) throws IllegalStateException, SQLException, MultipleAttributesExist {
-      setSoleXAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
+      setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), type.getShortName());
    }
 
    /**
@@ -189,7 +189,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public void setTeamDefinition(TeamDefinitionArtifact tda) throws IllegalStateException, SQLException, MultipleAttributesExist {
-      this.setSoleXAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid());
+      this.setSoleAttributeValue(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid());
    }
 
    public TeamDefinitionArtifact getTeamDefinition() throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist, MultipleArtifactsExist {

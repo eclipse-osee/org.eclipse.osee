@@ -292,7 +292,7 @@ public class AttributeConflict extends Conflict {
          ((WordAttribute) getAttribute()).initializeToDefaultValue();
 
       } else {
-         getArtifact().setSoleXAttributeValue(getDynamicAttributeDescriptor().getName(), NO_VALUE);
+         getArtifact().setSoleAttributeFromString(getDynamicAttributeDescriptor().getName(), NO_VALUE);
          getArtifact().persistAttributes();
       }
       return true;

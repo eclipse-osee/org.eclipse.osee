@@ -301,8 +301,8 @@ public class RelationExplorerWindow {
                if (descriptor != null) {
                   try {
                      artifact = descriptor.makeNewArtifact(BranchPersistenceManager.getInstance().getDefaultBranch());
-                     artifact.setSoleXAttributeValue("Name", model.getName());
-                     artifact.setSoleXAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
+                     artifact.setSoleAttributeValue("Name", model.getName());
+                     artifact.setSoleAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
                      artifact.persistAttributes();
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);

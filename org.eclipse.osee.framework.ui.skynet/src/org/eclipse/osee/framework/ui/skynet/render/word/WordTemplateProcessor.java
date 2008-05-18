@@ -467,7 +467,7 @@ public class WordTemplateProcessor {
 
          if (paragraphNumber != null && saveParagraphNumOnArtifact) {
             if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-               artifact.setSoleXAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
+               artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
                artifact.persistAttributes();
             }
          }

@@ -43,7 +43,7 @@ public class XComboDam extends XCombo implements IArtifactWidget {
             artifact.deleteSoleAttribute(attributeTypeName);
          } else {
             String enteredValue = get();
-            artifact.setSoleXAttributeValue(attributeTypeName, enteredValue);
+            artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
