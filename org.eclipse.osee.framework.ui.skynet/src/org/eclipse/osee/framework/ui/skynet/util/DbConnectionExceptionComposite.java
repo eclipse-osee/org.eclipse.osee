@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.swt.widgets.Composite;
 
@@ -39,7 +41,11 @@ public class DbConnectionExceptionComposite extends ExceptionComposite {
          ConnectionHandler.getConnection();
       } catch (Exception ex) {
          if (parent != null) new DbConnectionExceptionComposite(parent, ex);
-         return false;
+      }
+      Result result = SkynetGuiPlugin.areOSEEServicesAvailable();
+      if (result.isFalse()) {
+         new DbConnectionExceptionComposite(parent, new IllegalStateException(
+               "OSEE Service(s) Unavailable: " + result.getText()));
       }
       return true;
    }

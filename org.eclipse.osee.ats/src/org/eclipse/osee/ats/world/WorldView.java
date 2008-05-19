@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -59,6 +58,7 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -382,7 +382,8 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
       searchItem.setCancelled(false);
       this.lastSearchItem = searchItem;
       debug.report("loadTable", true);
-      if (!ConnectionHandler.isConnected()) {
+      Result result = AtsPlugin.areOSEEServicesAvailable();
+      if (result.isFalse()) {
          AWorkbench.popup("ERROR", "DB Connection Unavailable");
          return;
       }

@@ -26,8 +26,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.ActivatorHelper;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Control;
@@ -284,4 +287,20 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       }
       return exceptionString;
    }
+
+   /**
+    * Checks that OSEE is connected to all necessary application services
+    * 
+    * @return Result.isFalse if not connected with getText() of problem
+    */
+   public static Result areOSEEServicesAvailable() {
+      if (!ConnectionHandler.isConnected()) {
+         return new Result("DB Connection Unavailable");
+      }
+      if (!OseeApplicationServer.isApplicationServerAlive()) {
+         return new Result("OSEE Application Server Unavailable");
+      }
+      return Result.TrueResult;
+   }
+
 }
