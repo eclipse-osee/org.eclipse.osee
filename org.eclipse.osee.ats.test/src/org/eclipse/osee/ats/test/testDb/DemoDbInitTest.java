@@ -11,6 +11,7 @@ import org.eclipse.osee.framework.database.initialize.LaunchOseeDbConfigClient;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
+import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 
 /**
  * @author Donald G. Dunne
@@ -26,6 +27,11 @@ public class DemoDbInitTest extends TestCase {
    }
 
    public void testDemoDbInit() throws Exception {
+      System.out.println("Validating OSEE Application Server...");
+      if (!OseeApplicationServer.isApplicationServerAlive()) {
+         System.err.println("No OSEE Application Server running.\nExiting.");
+         return;
+      }
       System.out.println("Begin Database Initialization...");
       LaunchOseeDbConfigClient configClient = new LaunchOseeDbConfigClient(OseeDb.getDefaultDatabaseService());
       configClient.run(OseeDbConnection.getConnection(), GroupSelection.getInstance().getDbInitTasks(

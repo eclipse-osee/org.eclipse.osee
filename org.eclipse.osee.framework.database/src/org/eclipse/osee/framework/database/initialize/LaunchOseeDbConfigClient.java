@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.database.core.DbClientThread;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
 import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -146,6 +147,12 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       System.out.println("\nAre you sure you want to configure: " + dbName + ":" + userName);
       String line = waitForUserResponse();
       if (line.equalsIgnoreCase("Y")) {
+
+         System.out.println("Validating OSEE Application Server...");
+         if (!OseeApplicationServer.isApplicationServerAlive()) {
+            System.err.println("No OSEE Application Server running.\nExiting.");
+            return;
+         }
          System.out.println("Configuring Database...");
 
          LaunchOseeDbConfigClient configClient = new LaunchOseeDbConfigClient(dbInfo);
