@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.skynet.core.dbinit;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.OseeDb;
+import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeResourceServer;
 
 /**
  * @author Roberto E. Escobar
@@ -31,6 +31,6 @@ public class ResourceServers {
                      "Invalid resource server address [%s]. Please ensure db service info has a valid resource server defined.",
                      resourceServer));
       }
-      OseeResourceServer.setOseeServer(resourceServer);
+      OseeApplicationServer.setApplicationOseeServer(resourceServer);
    }
 }

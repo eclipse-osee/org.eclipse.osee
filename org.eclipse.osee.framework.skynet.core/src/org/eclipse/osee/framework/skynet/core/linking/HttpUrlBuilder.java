@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeResourceServer;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 
 /**
@@ -112,7 +112,7 @@ public class HttpUrlBuilder {
    }
 
    public String getResourceServerPrefix() throws SQLException {
-      String address = OseeResourceServer.getOseeServer();
+      String address = OseeApplicationServer.getOseeApplicationServer();
       if (address.endsWith("/") != true) {
          address += "/";
       }
