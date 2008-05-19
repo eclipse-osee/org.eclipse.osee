@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.test.testDb;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import junit.framework.TestCase;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -142,7 +143,9 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    }
 
    public void testTargetedForVersionTeamSearch() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Workflows Targeted-For Version");
+      List<XNavigateItem> items = NavigateTestUtil.getAtsNavigateItems("Workflows Targeted-For Version");
+      // First one is the global one
+      XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof VersionTargetedForTeamSearchItem);
       ((VersionTargetedForTeamSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedVersionArt(VersionArtifact.getVersions(
             Arrays.asList(new String[] {"SAW_Bld_2"})).iterator().next());
@@ -150,10 +153,12 @@ public class AtsNavigateItemsToWorldViewTest extends TestCase {
    }
 
    public void testTargetedForTeamSearch() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Workflows Targeted-For Next Version");
+      List<XNavigateItem> items = NavigateTestUtil.getAtsNavigateItems("Workflows Targeted-For Next Version");
+      // First one is the global one
+      XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof NextVersionSearchItem);
       ((NextVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDef(TeamDefinitionArtifact.getTeamDefinitions(
-            Arrays.asList(new String[] {"SAW Code"})).iterator().next());
+            Arrays.asList(new String[] {"SAW SW"})).iterator().next());
       handleGeneralDoubleClickAndTestResults(item, TeamWorkFlowArtifact.class, 19);
    }
 

@@ -39,7 +39,8 @@ public class MyCompletedSearchItem extends UserSearchItem {
    protected Collection<Artifact> searchIt(User user) throws Exception {
       if (isCancelled()) return EMPTY_SET;
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
-      String valueToMatch = "state=\"Completed\" type=\"StateEntered\" userId=\"" + getSearchUser().getUserId() + "\"";
+      String valueToMatch =
+            "%state=\"Completed\" type=\"StateEntered\" userId=\"" + getSearchUser().getUserId() + "\"%";
       return ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), new AttributeValueCriteria(
             ATSAttributes.LOG_ATTRIBUTE.getStoreName(), valueToMatch));
    }

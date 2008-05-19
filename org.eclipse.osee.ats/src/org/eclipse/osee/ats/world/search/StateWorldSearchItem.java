@@ -61,7 +61,7 @@ public class StateWorldSearchItem extends WorldSearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       Collection<Artifact> arts =
             ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), new AttributeValueCriteria(
-                  ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), getSearchStateClass()));
+                  ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), getSearchStateClass() + ";%"));
       if (isCancelled()) return EMPTY_SET;
       return arts;
 
