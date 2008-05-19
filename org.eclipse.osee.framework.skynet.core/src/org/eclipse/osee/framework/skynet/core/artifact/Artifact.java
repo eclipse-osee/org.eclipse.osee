@@ -52,10 +52,10 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribu
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -365,13 +365,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * Creates a new <code>Attribute</code> of the given attribute type. This method should not be called by
+    * Creates an instance of <code>Attribute</code> of the given attribute type. This method should not be called by
     * applications. Use addAttribute() instead
     * 
-    * @param artifact
-    * @return the newly created attribute
+    * @param <T>
+    * @param attributeType
+    * @param existingAttribute specifies whether this attribute is new or is being loaded from the database
+    * @return
     */
-   public <T> Attribute<T> createAttribute(AttributeType attributeType) {
+   public <T> Attribute<T> createAttribute(AttributeType attributeType, boolean newAttribute) {
       try {
 
          Object[] params = new Object[] {attributeType, this};
@@ -397,8 +399,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                attributeType.getProviderAttributeClass().getConstructor(new Class[] {Attribute.class});
          IAttributeDataProvider provider = providerConstructor.newInstance(new Object[] {attribute});
          attribute.setAttributeDataProvider(provider);
-         attribute.initializeToDefaultValue();
+
          attributes.put(attributeType.getName(), attribute);
+         if (newAttribute) {
+            attribute.initializeToDefaultValue();
+         }
          return attribute;
       } catch (Exception ex) {
          // using reflections causes five different exceptions to be thrown which is too messy and will be very rare
@@ -483,7 +488,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private <T> Attribute<T> getOrCreateSoleAttribute(String attributeTypeName) throws SQLException, MultipleAttributesExist {
       Attribute<T> attribute = getSoleAttribute(attributeTypeName);
       if (attribute == null) {
-         attribute = createAttribute(AttributeTypeManager.getType(attributeTypeName));
+         attribute = createAttribute(AttributeTypeManager.getType(attributeTypeName), true);
       }
       return attribute;
    }
@@ -705,7 +710,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public <T> void addAttribute(String attributeTypeName, T value) throws SQLException {
       try {
-         createAttribute(AttributeTypeManager.getType(attributeTypeName)).setValue(value);
+         createAttribute(AttributeTypeManager.getType(attributeTypeName), true).setValue(value);
       } catch (OseeCoreException ex) {
          throw new SQLException(ex);
       }

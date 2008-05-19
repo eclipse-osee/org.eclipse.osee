@@ -38,7 +38,7 @@ public class AttributeMenuSelectionListener extends SelectionAdapter {
    @Override
    public void widgetSelected(SelectionEvent ev) {
       AttributeType attributeType = (AttributeType) ((MenuItem) ev.getSource()).getData();
-      attrsComp.getArtifact().createAttribute(attributeType);
+      attrsComp.getArtifact().createAttribute(attributeType, true);
 
       tableViewer.refresh();
       attrsComp.layout();

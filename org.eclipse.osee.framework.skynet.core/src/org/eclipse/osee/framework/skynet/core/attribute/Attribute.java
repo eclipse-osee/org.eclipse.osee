@@ -52,6 +52,7 @@ public abstract class Attribute<T> {
 
    public void initializeToDefaultValue() throws OseeCoreException {
       subClassSetValue(convertStringToValue(getAttributeType().getDefaultValue()));
+      dirty = true;
    }
 
    public void setValueFromInputStream(InputStream value) throws OseeCoreException {
@@ -62,6 +63,13 @@ public abstract class Attribute<T> {
       }
    }
 
+   /**
+    * Subclasses must provide an implementation of this method and in general should not override the other set value
+    * methods
+    * 
+    * @param value
+    * @throws OseeCoreException
+    */
    protected abstract void subClassSetValue(T value) throws OseeCoreException;
 
    public abstract T getValue();

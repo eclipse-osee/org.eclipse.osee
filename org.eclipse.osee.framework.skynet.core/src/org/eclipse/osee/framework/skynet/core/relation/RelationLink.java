@@ -33,7 +33,6 @@ public class RelationLink {
    private String rationale;
    private LinkPersistenceMemo memo;
    private RelationType relationType;
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    protected boolean dirty;
    private int artAId;
    private int artBId;
@@ -117,8 +116,9 @@ public class RelationLink {
    }
 
    private void kickDeleteLinkEvent() {
-      eventManager.kick(new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
-            ModType.Deleted.name(), this, getBranch()));
+      SkynetEventManager.getInstance().kick(
+            new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
+                  ModType.Deleted.name(), this, getBranch()));
    }
 
    public Artifact getArtifactA() {
@@ -243,8 +243,9 @@ public class RelationLink {
       dirty = true;
 
       if (notify) {
-         eventManager.kick(new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
-               ModType.RationaleMod.name(), this, getBranch()));
+         SkynetEventManager.getInstance().kick(
+               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
+                     ModType.RationaleMod.name(), this, getBranch()));
       }
    }
 
