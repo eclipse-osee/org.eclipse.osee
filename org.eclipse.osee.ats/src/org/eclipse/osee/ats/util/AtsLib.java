@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
@@ -31,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -157,6 +159,21 @@ public class AtsLib implements IAtsLib {
    }
 
    public void createATSAction(String initialDescription, String actionableItem) {
+
+      // Ensure actionable item is configured for ATS before continuing
+      try {
+         Artifact aia =
+               ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, actionableItem,
+                     AtsPlugin.getAtsBranch());
+      } catch (ArtifactDoesNotExist ex) {
+         AWorkbench.popup(
+               "Configuration Error",
+               "Actionable Item \"" + actionableItem + "\" is not configured for ATS tracking.\n\nAction can not be created.");
+         return;
+      } catch (Exception ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+         return;
+      }
 
       NewAction newAction = new NewAction(actionableItem);
       newAction.setInitialDescription(initialDescription);
