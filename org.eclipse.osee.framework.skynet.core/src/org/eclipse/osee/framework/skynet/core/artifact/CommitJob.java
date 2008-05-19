@@ -88,7 +88,9 @@ class CommitJob extends Job {
       Collection<Conflict> conflicts = null;
 
       if (fromBranch != null) {
+         if (false) //Turn off conflict detection until its working correctly.
          conflictsExist = revisionManager.branchHasConflicts(fromBranch, toBranch);
+
          //check for conflicts.
          if (conflictsExist) {
             //if conflicts get conflicts and make sure all are resolved.
