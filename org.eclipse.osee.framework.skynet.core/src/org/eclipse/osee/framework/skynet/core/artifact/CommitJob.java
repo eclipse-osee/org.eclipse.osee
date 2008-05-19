@@ -204,12 +204,13 @@ class CommitJob extends Job {
          //if (conflicts) add in all merge branch changes.  Over any other changes.
          if (conflictsExist) {
             for (Conflict conflict : conflicts) {
-               insertCount +=
-                     ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, SQL3DataType.INTEGER,
-                           conflict.getMergeGammaId(), SQL3DataType.INTEGER, newTransactionNumber,
-                           SQL3DataType.INTEGER, conflict.getSourceGamma());
+               if (!conflict.mergeEqualsDestination()) {
+                  insertCount +=
+                        ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, SQL3DataType.INTEGER,
+                              conflict.getMergeGammaId(), SQL3DataType.INTEGER, newTransactionNumber,
+                              SQL3DataType.INTEGER, conflict.getSourceGamma());
+               }
             }
-
          }
 
          if (insertCount > 0) {
