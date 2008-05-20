@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -29,7 +28,13 @@ public class XWidgetPopulateExample extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      AWorkbench.popup("Execute", "Blam is an example only.  Nothing done.");
+      //      AWorkbench.popup("Execute", "Blam is an example only.  Nothing done.");
+      appendResultLine("Test Output Line\n");
+      appendResultLine("Test Output Line\n");
+      appendResultLine("Test Output Line\n");
+      appendResultLine("Test Output Line\n");
+      appendResultLine("Test Output Line\n");
+      appendResultLine("Test Output Line\n");
       monitor.done();
    }
 

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.List;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.IHelpContextIds;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -33,8 +32,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -50,6 +49,8 @@ public class OverviewPage extends FormPage implements IActionable {
    private Text outputText;
    private Section parameterSection;
    private Section outputSection;
+   private IManagedForm managedForm;
+   private Composite outputComp;
 
    public OverviewPage(WorkflowEditor editor) {
       super(editor, "overview", "Blam Workflow");
@@ -142,58 +143,81 @@ public class OverviewPage extends FormPage implements IActionable {
    }
 
    private void fillBody(IManagedForm managedForm) {
-      Composite body = managedForm.getForm().getBody();
-      GridLayout gridLayout = new GridLayout(1, true);
+      this.managedForm = managedForm;
+      ScrolledForm scrolledForm = managedForm.getForm();
+      GridLayout gridLayout = new GridLayout(1, false);
+      Composite body = scrolledForm.getBody();
       body.setLayout(gridLayout);
+      body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
 
       PlatformUI.getWorkbench().getHelpSystem().setHelp(body, IHelpContextIds.MAIN_WORKFLOW_PAGE);
 
-      createUsageSection(body);
-      createOutputSection(body);
-      createParametersSection(body);
+      managedForm.addPart(new SectionPart(createUsageSection(body)));
+      managedForm.addPart(new SectionPart(createOutputSection(body)));
+      managedForm.addPart(new SectionPart(createParametersSection(body)));
+      managedForm.refresh();
    }
 
-   private void createUsageSection(Composite body) {
-      Section section = toolkit.createSection(body, Section.TWISTIE | Section.TITLE_BAR);
+   private Section createUsageSection(Composite body) {
+      Section section = toolkit.createSection(body, Section.TITLE_BAR);
       section.setText("Description and Usage");
-      section.setExpanded(true);
-      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       toolkit.addHelpLinkToSection(section, "/org.eclipse.pde.doc.user/guide/pde_running.htm");
 
-      FormText formText = toolkit.createFormText(section, true);
-      formText.setWhitespaceNormalized(true);
-      formText.setFont("header", JFaceResources.getHeaderFont());
-      formText.setFont("code", JFaceResources.getTextFont());
-      formText.setText(workflow.getDescriptionUsage(), false, false);
-      section.setClient(formText);
+      Composite mainComp = toolkit.createClientContainer(section, 1);
+      // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
+      GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+      gridData.widthHint = 400;
+      mainComp.setLayoutData(gridData);
+      mainComp.layout();
+
+      Text formText = toolkit.createText(mainComp, workflow.getDescriptionUsage(), SWT.WRAP);
+      gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+      gridData.widthHint = 400;
+      formText.setLayoutData(gridData);
+
+      section.layout();
+      return section;
    }
 
-   private void createParametersSection(Composite body) {
-      parameterSection = toolkit.createSection(body, Section.TWISTIE | Section.TITLE_BAR);
-      parameterSection.setText("Parameters");
-      parameterSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-      parametersContainer = toolkit.createClientContainer(parameterSection, 2);
-   }
-
-   private void createOutputSection(Composite body) {
-      outputSection = toolkit.createSection(body, Section.TWISTIE | Section.TITLE_BAR);
+   private Section createOutputSection(Composite body) {
+      outputSection = toolkit.createSection(body, Section.TITLE_BAR);
       outputSection.setText("Output");
-      outputSection.setExpanded(true);
-      outputSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      outputSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      Composite outputContainer = toolkit.createClientContainer(outputSection, 2);
+      outputComp = toolkit.createClientContainer(outputSection, 1);
+      // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
+      GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+      gridData.widthHint = 400;
+      outputComp.setLayoutData(gridData);
+      outputComp.layout();
 
-      outputText = toolkit.createText(outputContainer, "Workflow has not yet run\n", SWT.MULTI);
-      outputText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      outputText = toolkit.createText(outputComp, "Workflow has not yet run\n", SWT.WRAP);
+      gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
+      gridData.widthHint = 400;
+      outputText.setLayoutData(gridData);
+
+      outputSection.layout();
+
+      return outputSection;
    }
 
    /**
     * @param line
     */
    public void appendOuputLine(String additionalOutput) {
-      outputText.append(additionalOutput + "\n");
-      outputText.redraw();
+      outputText.append(additionalOutput);
+      managedForm.reflow(true);
+   }
+
+   private Section createParametersSection(Composite body) {
+      parameterSection = toolkit.createSection(body, Section.TITLE_BAR);
+      parameterSection.setText("Parameters");
+      parameterSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+      parametersContainer = toolkit.createClientContainer(parameterSection, 1);
+
+      return parameterSection;
    }
 
    /**
