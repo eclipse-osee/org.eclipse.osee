@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactMo
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.ArtifactVersionIncrementedEvent;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
@@ -65,7 +64,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor;
 import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -839,62 +837,49 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @param event
     */
    public void updateArtifactCache(ISkynetArtifactEvent event, Collection<Event> localEvents, TransactionId newTransactionId, TransactionId notEditableTransactionId) {
-      if (true) throw new UnsupportedOperationException();
       try {
          int artId = event.getArtId();
          int branchId = event.getBranchId();
-         String factoryName = event.getFactoryName();
-         Collection<RelationLink> links;
-         ArtifactFactory factory = configurationManager.getFactoryFromName(factoryName);
+         int transactionNumber = event.getTransactionId();
 
-         if (factory == null) throw new IllegalArgumentException(
-               "The factory for this artifact remote event could not be determined.");
+         Artifact artifact = ArtifactCache.get(artId, branchManager.getBranch(branchId));
 
-         Artifact oldArtifact = ArtifactCache.get(artId, branchManager.getBranch(branchId));
-         if (oldArtifact != null) {
-
-            // this forces the links to load
-            oldArtifact.isDirty(true);
-
-            if (newTransactionId.getTransactionNumber() != notEditableTransactionId.getTransactionNumber()) {
-               // oldArtifact.setTransactionId(notEditableTransactionId);
-            }
+         if (artifact != null && artifact.isLive()) {
+            ModType modType = null;
 
             if (event instanceof NetworkArtifactModifiedEvent) {
-               // only if links are loaded
-               if (oldArtifact.isLinksLoaded()) {
-                  links = oldArtifact.getLinkManager().getLinks();
-               } else {
-                  links = new ArrayList<RelationLink>(0);
-               }
-
-               Artifact newArtifact = null; // used to be (Artifact) oldArtifact.clone();
-              /* setChangedAttributesOnNewArtifact(newArtifact,
-                     ((NetworkArtifactModifiedEvent) event).getAttributeChanges());*/
-
-               if (links.size() > 0) {
-                  for (RelationLink link : links) {
-                     if (link.getArtifactA() == oldArtifact) {
-                        // link.setArtifactA(newArtifact, true);
-                     } else if (link.getArtifactB() == oldArtifact) {
-                        //link.setArtifactB(newArtifact, true);
-                     } else {
-                        throw new IllegalArgumentException("oldArtifact does not belong on one of the links supplied.");
-                     }
-                     // newArtifact.createOrGetEmptyLinkManager().addLink(link);
-                  }
-               }
-
-               newArtifact.setNotDirty();
-
-               localEvents.add(new ArtifactVersionIncrementedEvent(oldArtifact, newArtifact, this));
+               setChangedAttributesOnNewArtifact(artifact, ((NetworkArtifactModifiedEvent) event).getAttributeChanges());
+               modType = ModType.Changed;
             } else if (event instanceof NetworkArtifactDeletedEvent) {
-               oldArtifact.setDeleted();
-               localEvents.add(new TransactionArtifactModifiedEvent(oldArtifact, ModType.Deleted, this));
+               artifact.setDeleted(transactionNumber);
+               modType = ModType.Deleted;
             }
+            localEvents.add(new TransactionArtifactModifiedEvent(artifact, modType, this));
+            artifact.setNotDirty();
          }
       } catch (Exception e) {
          logger.log(Level.SEVERE, e.toString(), e);
+      }
+   }
+
+   /**
+    * @param artifact
+    * @param attributeChanges
+    * @throws SQLException
+    * @throws OseeCoreException
+    */
+   private void setChangedAttributesOnNewArtifact(Artifact artifact, Collection<SkynetAttributeChange> attributeChanges) throws SQLException, OseeCoreException {
+      List<String> dirtyAttributeName = new LinkedList<String>();
+
+      for (SkynetAttributeChange skynetAttributeChange : attributeChanges) {
+         for (Attribute<Object> attribute : artifact.getAttributes(skynetAttributeChange.getName())) {
+            if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
+               if (attribute.isDirty()) {
+                  dirtyAttributeName.add(attribute.getNameValueDescription());
+               }
+               attribute.setValue(skynetAttributeChange.getValue());
+            }
+         }
       }
    }
 
