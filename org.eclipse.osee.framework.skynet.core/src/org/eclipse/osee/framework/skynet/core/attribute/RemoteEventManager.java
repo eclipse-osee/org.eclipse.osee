@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.remoteEvent;
+package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
@@ -62,7 +62,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
-import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent;
