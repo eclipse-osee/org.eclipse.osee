@@ -9,16 +9,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.common.io.Streams;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.resource.management.StandardOptions;
 
 /**
  * @author Roberto E. Escobar
@@ -44,7 +47,7 @@ public class ArtifactFileServlet extends HttpServlet {
          }
          IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
          Options options = new Options();
-         options.put("decompress.before.sending", true);
+         options.put(StandardOptions.DecompressOnAquire.name(), true);
          IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
 
          if (resource != null) {
@@ -66,14 +69,14 @@ public class ArtifactFileServlet extends HttpServlet {
             Streams.inputStreamToOutputStream(inputStream, response.getOutputStream());
          } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write(String.format("Unable to find resource: [%s]", request.getRequestURI()));
+            response.getWriter().write(String.format("Unable to find resource: [%s]", request.getQueryString()));
          }
       } catch (NumberFormatException ex) {
          handleError(response, HttpServletResponse.SC_BAD_REQUEST, String.format("Invalid Branch Id: [%s]",
-               request.getRequestURI()), ex);
+               request.getQueryString()), ex);
       } catch (Exception ex) {
          handleError(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, String.format(
-               "Unable to acquire resource: [%s]", request.getRequestURI()), ex);
+               "Unable to acquire resource: [%s]", request.getQueryString()), ex);
       } finally {
          if (inputStream != null) {
             inputStream.close();

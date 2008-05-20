@@ -71,7 +71,7 @@ public class Activator implements BundleActivator {
          HttpService httpService = (HttpService) context.getService(reference);
          try {
             httpService.registerServlet("/GET.ARTIFACT", new ArtifactFileServlet(), null, null);
-            System.out.println("Registered servlet 'GET.ARTIFACT'");
+            System.out.println("Registered servlet '/GET.ARTIFACT'");
          } catch (Exception ex) {
          }
          return httpService;
@@ -80,7 +80,7 @@ public class Activator implements BundleActivator {
       public void removedService(ServiceReference reference, Object service) {
          HttpService httpService = (HttpService) service;
          httpService.unregister("/GET.ARTIFACT");
-         System.out.println("De-registering servlet 'GET.ARTIFACT'");
+         System.out.println("De-registering servlet '/GET.ARTIFACT'");
          super.removedService(reference, service);
       }
    }
