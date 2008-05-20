@@ -63,4 +63,15 @@ public class ConnectionHandlerStatement {
       this.statement = statement;
    }
 
+   public void close() {
+      try {
+         if (rset != null) {
+            rset.close();
+         }
+         if (statement != null) {
+            statement.close();
+         }
+      } catch (SQLException ex) {
+      }
+   }
 }
