@@ -179,8 +179,8 @@ public final class ArtifactLoader {
                   String rationale = rSet.getString("rationale");
 
                   relation =
-                        new RelationLink(aArtifactId, bArtifactId, relationType, relationId, gammaId, rationale,
-                              aOrderValue, bOrderValue);
+                        new RelationLink(aArtifactId, bArtifactId, branch, branch, relationType, relationId, gammaId,
+                              rationale, aOrderValue, bOrderValue);
 
                   RelationManager.manageRelation(relation, true);
                   RelationManager.manageRelation(relation, false);

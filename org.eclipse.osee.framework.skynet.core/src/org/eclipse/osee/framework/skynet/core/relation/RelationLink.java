@@ -40,7 +40,7 @@ public class RelationLink {
    private Branch aBranch;
    private Branch bBranch;
 
-   public RelationLink(int aArtifactId, int bArtifactId, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder) {
+   public RelationLink(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder) {
       this.relationType = relationType;
       this.relationId = relationId;
       this.gammaId = gammaId;
@@ -51,10 +51,13 @@ public class RelationLink {
       this.dirty = false;
       this.aArtifactId = aArtifactId;
       this.bArtifactId = bArtifactId;
+      this.aBranch = aBranch;
+      this.bBranch = bBranch;
    }
 
-   public RelationLink(int aArtifactId, int bArtifactId, RelationType relationType, String rationale) {
-      this(aArtifactId, bArtifactId, relationType, 0, 0, rationale, 0, 0);
+   public RelationLink(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale) {
+      this(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(), bArtifact.getBranch(), relationType, 0,
+            0, rationale, 0, 0);
    }
 
    @Deprecated

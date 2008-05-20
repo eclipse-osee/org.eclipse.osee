@@ -207,7 +207,7 @@ public class RelationManager {
       RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
 
       if (relation == null) {
-         relation = new RelationLink(artifactA.getArtId(), artifactB.getArtId(), relationType, rationale);
+         relation = new RelationLink(artifactA, artifactB, relationType, rationale);
 
          relation.setDirty();
          RelationManager.manageRelation(relation, true);
