@@ -355,6 +355,77 @@ public final class ConnectionHandler {
       }
    }
 
+   public static int runPreparedUpdate(Connection connection, String query, List<Object[]> datas) throws SQLException {
+      QueryRecord record = new QueryRecord("<batchable: batched> " + query, SQL3DataType.INTEGER, datas.size());
+      PreparedStatement preparedStatement = connection.prepareStatement(query);
+      int returnCount = 0;
+      try {
+         record.markStart();
+         boolean needExecute = false;
+         int count = 0;
+         for (Object[] data : datas) {
+            count++;
+            populateValuesForPreparedStatement(preparedStatement, data);
+            preparedStatement.addBatch();
+            preparedStatement.clearParameters();
+            needExecute = true;
+            if (count > 2000) {
+               int[] updates = preparedStatement.executeBatch();
+               for (int update : updates) {
+                  returnCount += update;
+               }
+               count = 0;
+               needExecute = false;
+            }
+         }
+         if (needExecute) {
+            int[] updates = preparedStatement.executeBatch();
+            for (int update : updates) {
+               returnCount += update;
+            }
+         }
+
+         record.markEnd();
+      } catch (SQLException ex) {
+         record.setSqlException(ex);
+         SQLException exlist;
+         if ((exlist = ex.getNextException()) != null) {
+            System.out.println("this is the next exception");
+            exlist.printStackTrace();
+         }
+         StringBuilder details = new StringBuilder(datas.size() * datas.get(0).length * 20);
+         details.append("[ DATA OBJECT: \n");
+         for (Object[] data : datas) {
+            for (int i = 0; i < data.length; i++) {
+               details.append(i);
+               details.append(": ");
+               Object dataValue = data[i];
+               if (dataValue != null) {
+                  details.append(dataValue.getClass().getName());
+                  details.append(":");
+
+                  String value = dataValue.toString();
+                  if (value.length() > 50) {
+                     details.append(value.substring(0, 35));
+                  } else {
+                     details.append(value);
+                  }
+                  details.append("\n");
+               } else {
+                  details.append("NULL\n");
+               }
+            }
+         }
+         details.append("]\n");
+         OseeLog.log(Activator.class.getName(), Level.SEVERE, "sql update failed: \n" + query + "\n" + details + "\n",
+               ex);
+         throw ex;
+      } finally {
+         preparedStatement.close();
+      }
+      return returnCount;
+   }
+
    private static void populateValuesForPreparedStatement(PreparedStatement preparedStatement, Object... data) throws SQLException {
 
       for (int i = 0, preparedIndex = 1; i < data.length; i += 2, preparedIndex++) {
