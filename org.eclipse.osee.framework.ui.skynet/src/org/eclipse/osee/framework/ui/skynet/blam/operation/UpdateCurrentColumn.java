@@ -68,6 +68,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
             "Updating attributes, artifacts, and relations current_tx column from transaction id [%d].", txNumber));
       Connection connection = null;
       try {
+         int rowsUpdated;
          List<UpdateHelper> updates = new ArrayList<UpdateHelper>();
          connection = OseeDbConnection.getConnection();
          updateBaselinedTransactionsToCurrent(connection, txNumber);
@@ -76,12 +77,14 @@ public class UpdateCurrentColumn extends AbstractBlam {
          getUpdates(connection, updates, 3, SELECT_RELATIONS_TO_UPDATE, txNumber);
          long time = System.currentTimeMillis();
          appendResultLine(String.format("Going to update [%d] items to a 0 tx_current value.", updates.size()));
-         updateTxCurrentToZero(connection, updates);
-         appendResultLine(String.format("Took [%d]ms to update.", (System.currentTimeMillis() - time)));
+         rowsUpdated = updateTxCurrentToZero(connection, updates);
+         appendResultLine(String.format("Took [%d]ms to update [%d] rows.", (System.currentTimeMillis() - time),
+               rowsUpdated));
          time = System.currentTimeMillis();
          appendResultLine(String.format("Going to update [%d] items to a 1 tx_current value.", updates.size()));
-         updateTxCurrentToOne(connection, updates);
-         appendResultLine(String.format("Took [%d]ms to update.", (System.currentTimeMillis() - time)));
+         rowsUpdated = updateTxCurrentToOne(connection, updates);
+         appendResultLine(String.format("Took [%d]ms to update [%d] rows.", (System.currentTimeMillis() - time),
+               rowsUpdated));
       } finally {
          if (connection != null) {
             connection.close();
@@ -120,12 +123,12 @@ public class UpdateCurrentColumn extends AbstractBlam {
     * @param updates
     * @throws SQLException
     */
-   private void updateTxCurrentToOne(Connection connection, List<UpdateHelper> updates) throws SQLException {
+   private int updateTxCurrentToOne(Connection connection, List<UpdateHelper> updates) throws SQLException {
       List<Object[]> batchArgs = new ArrayList<Object[]>();
       for (UpdateHelper data : updates) {
          batchArgs.add(new Object[] {SQL3DataType.BIGINT, data.gamma_id, SQL3DataType.INTEGER, data.transaction_id});
       }
-      ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_CURRENT_TO_1, batchArgs);
+      return ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_CURRENT_TO_1, batchArgs);
    }
 
    /**
@@ -133,7 +136,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
     * @param updates
     * @throws SQLException
     */
-   private void updateTxCurrentToZero(Connection connection, List<UpdateHelper> updates) throws SQLException {
+   private int updateTxCurrentToZero(Connection connection, List<UpdateHelper> updates) throws SQLException {
+      int rowsUpdated = 0;
       List<Object[]> attrBatchArgs = new ArrayList<Object[]>();
       List<Object[]> artBatchArgs = new ArrayList<Object[]>();
       List<Object[]> linkBatchArgs = new ArrayList<Object[]>();
@@ -149,9 +153,10 @@ public class UpdateCurrentColumn extends AbstractBlam {
                   SQL3DataType.INTEGER, data.branch_id, SQL3DataType.INTEGER, data.id});
          }
       }
-      ConnectionHandler.runPreparedUpdate(connection, UPDATE_ATTRIBUTE_CURRENT_TO_0, attrBatchArgs);
-      ConnectionHandler.runPreparedUpdate(connection, UPDATE_ARTIFACT_CURRENT_TO_0, artBatchArgs);
-      ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATION_CURRENT_TO_0, linkBatchArgs);
+      rowsUpdated += ConnectionHandler.runPreparedUpdate(connection, UPDATE_ATTRIBUTE_CURRENT_TO_0, attrBatchArgs);
+      rowsUpdated += ConnectionHandler.runPreparedUpdate(connection, UPDATE_ARTIFACT_CURRENT_TO_0, artBatchArgs);
+      rowsUpdated += ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATION_CURRENT_TO_0, linkBatchArgs);
+      return rowsUpdated;
    }
 
    private void getUpdates(Connection connection, List<UpdateHelper> updates, int type, String query, int txNumber) throws SQLException {
