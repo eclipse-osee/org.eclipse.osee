@@ -95,7 +95,7 @@ public abstract class Attribute<T> {
       this.attributeDataProvider = attributeDataProvider;
    }
 
-   public IAttributeDataProvider getAttributeDataProvider() {
+   protected IAttributeDataProvider getAttributeDataProvider() {
       return attributeDataProvider;
    }
 
