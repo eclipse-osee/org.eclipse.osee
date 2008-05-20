@@ -47,7 +47,7 @@ public class SkynetAuthentication implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetAuthentication.class);
    private OseeAuthentication oseeAuthentication;
    private int noOneArtifactId;
-   private boolean createUserWhenNotInDatabase = false;
+   private boolean createUserWhenNotInDatabase = true;
 
    public static enum UserStatusEnum {
       Active, InActive, Both
