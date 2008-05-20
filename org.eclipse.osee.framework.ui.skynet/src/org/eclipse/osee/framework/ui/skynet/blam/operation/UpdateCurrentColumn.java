@@ -43,6 +43,10 @@ public class UpdateCurrentColumn extends AbstractBlam {
          "update osee_define_txs set tx_current = 1 where gamma_id = ? and transaction_id = ?";
    private static final String SELECT_BASELINED_TRANSACTIONS =
          "SELECT txs1.gamma_id, txs1.transaction_id from osee_define_txs txs1, osee_define_tx_details txd1 where txd1.tx_type = 1 and txd1.transaction_id > ? and txd1.transaction_id = txs1.transaction_id";
+   private static final String UPDATE_TX_DETAILS_NON_BASELINE_TRANSACTIONS_TO_0 =
+         "UPDATE osee_Define_tx_details SET tx_type = 0 WHERE tx_type <> 1";
+   private static final String UPDATE_TX_DETAILS_BASELINE_TRANSACTIONS_TO_1 =
+         "UPDATE osee_Define_tx_details SET tx_type = 1 WHERE osee_comment LIKE '%New Branch%'";
 
    private class UpdateHelper {
       int type;
@@ -57,6 +61,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
       int txNumber = 0;
+      int txTypeNumber = 0;
       try {
          txNumber = Integer.parseInt(variableMap.getString("From Transaction Number"));
       } catch (NumberFormatException ex) {
@@ -71,11 +76,13 @@ public class UpdateCurrentColumn extends AbstractBlam {
          int rowsUpdated;
          List<UpdateHelper> updates = new ArrayList<UpdateHelper>();
          connection = OseeDbConnection.getConnection();
+         updateBaselineTransactions(connection, txTypeNumber);
          updateBaselinedTransactionsToCurrent(connection, txNumber);
          getUpdates(connection, updates, 1, SELECT_ATTRIBUTES_TO_UPDATE, txNumber);
          getUpdates(connection, updates, 2, SELECT_ARTIFACTS_TO_UPDATE, txNumber);
          getUpdates(connection, updates, 3, SELECT_RELATIONS_TO_UPDATE, txNumber);
          long time = System.currentTimeMillis();
+         appendResultLine(String.format("Update [%d] transactions to baseline transactions.", txTypeNumber));
          appendResultLine(String.format("Going to update [%d] items to a 0 tx_current value.", updates.size()));
          rowsUpdated = updateTxCurrentToZero(connection, updates);
          appendResultLine(String.format("Took [%d]ms to update [%d] rows.", (System.currentTimeMillis() - time),
@@ -91,6 +98,16 @@ public class UpdateCurrentColumn extends AbstractBlam {
          }
       }
 
+   }
+
+   /**
+    * @param connection
+    * @param txTypeNumber
+    * @throws SQLException
+    */
+   private void updateBaselineTransactions(Connection connection, int txTypeNumber) throws SQLException {
+      txTypeNumber += ConnectionHandler.runPreparedUpdate(connection, UPDATE_TX_DETAILS_NON_BASELINE_TRANSACTIONS_TO_0);
+      txTypeNumber += ConnectionHandler.runPreparedUpdate(connection, UPDATE_TX_DETAILS_BASELINE_TRANSACTIONS_TO_1);
    }
 
    /**

@@ -1266,15 +1266,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    /**
     * @return Returns dirty attributes.
-    * @throws SQLException
+    * @throws Exception
     */
-   public Collection<SkynetAttributeChange> getDirtyAttributeSkynetAttributeChanges() throws SQLException {
+   public Collection<SkynetAttributeChange> getDirtyAttributeSkynetAttributeChanges() throws Exception {
       List<SkynetAttributeChange> dirtyAttributes = new LinkedList<SkynetAttributeChange>();
 
       for (Attribute<?> attribute : getAttributes()) {
          if (attribute.isDirty()) {
-            dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(), attribute.getValue(),
-                  attribute.getAttrId(), attribute.getGammaId()));
+            dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getName(),
+                  attribute.getAttributeDataProvider().getData(), attribute.getAttrId(), attribute.getGammaId()));
          }
       }
       return dirtyAttributes;

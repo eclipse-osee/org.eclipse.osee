@@ -42,7 +42,7 @@ public class SkynetAttributeChange implements SkynetChange {
    /**
     * @return Returns the value.
     */
-   public Object getValue() {
+   public Object getData() {
       return value;
    }
 

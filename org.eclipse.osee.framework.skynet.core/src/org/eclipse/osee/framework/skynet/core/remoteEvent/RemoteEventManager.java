@@ -404,7 +404,7 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
                         if (attribute.isDirty()) {
                            dirtyAttributeName.add(attribute.getNameValueDescription());
                         }
-                        attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getValue());
+                        attribute.getAttributeDataProvider().loadData(skynetAttributeChange.getData());
                      }
                   }
                }

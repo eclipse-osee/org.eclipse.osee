@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -42,7 +41,6 @@ public class RendererManager {
    private static final RendererManager instance = new RendererManager();
    private static final ConfigurationPersistenceManager configurationManager =
          ConfigurationPersistenceManager.getInstance();
-   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private final HashMap<String, IRenderer> renderers;
    private HashCollection<ArtifactSubtypeDescriptor, IRenderer> applicableArtifactSubTypes;
 
