@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Servlet Plug-in
+Bundle-SymbolicName: org.eclipse.osee.framework.artifact.servlet
+Bundle-Version: 0.2.0.qualifier
+Bundle-Activator: org.eclipse.osee.framework.artifact.servlet.Activator
+Bundle-Vendor: Boeing
+Eclipse-LazyStart: true
+Import-Package: javax.servlet;version="2.4.0",
+ javax.servlet.http;version="2.4.0",
+ org.eclipse.osee.framework.db.connection,
+ org.eclipse.osee.framework.db.connection.info,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.framework.resource.common.io,
+ org.eclipse.osee.framework.resource.management,
+ org.osgi.framework;version="1.3.0",
+ org.osgi.service.http;version="1.2.0",
+ org.osgi.util.tracker;version="1.3.3"
