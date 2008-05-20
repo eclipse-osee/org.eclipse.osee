@@ -74,6 +74,12 @@ class CommitJob extends Job {
    private static final String UPDATE_MERGE_TRANSACTIONS =
          "UPDATE osee_Define_txs set gamma_id = ? Where transaction_id = ? and gamma_id = ?";
 
+   private static final String DELETE_MERGE_TRANSACTIONS =
+         "DELETE from osee_Define_txs Where transaction_id = ? and gamma_id = ?";
+
+   private static final String UPDATE_CURRENT_TRANSACTIONS =
+         "UPDATE osee_Define_txs tx1 set tx_current = 1 WHERE EXISTS (SELECT 'x' from osee_define_tx_details det WHERE det.branch_id = ? and det.transaction_id = tx1.transaction_id and tx1.gamma_id = ?)";
+
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
@@ -90,7 +96,6 @@ class CommitJob extends Job {
       if (fromBranch != null) {
          if (false) //Turn off conflict detection until its working correctly.
          conflictsExist = revisionManager.branchHasConflicts(fromBranch, toBranch);
-
          //check for conflicts.
          if (conflictsExist) {
             //if conflicts get conflicts and make sure all are resolved.
@@ -201,16 +206,22 @@ class CommitJob extends Job {
                ConnectionHandler.runPreparedUpdateReturnCount(COMMIT_RELATIONS, SQL3DataType.INTEGER,
                      newTransactionNumber, SQL3DataType.INTEGER, fromBranchId);
 
-         //if (conflicts) add in all merge branch changes.  Over any other changes.
+         //add in all merge branch changes over any other source branch changes.
          if (conflictsExist) {
             for (Conflict conflict : conflicts) {
-               if (!conflict.mergeEqualsDestination()) {
+               if (!conflict.mergeEqualsDestination()) {//Only update if merge value is different than the destination Value
                   insertCount +=
                         ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, SQL3DataType.INTEGER,
                               conflict.getMergeGammaId(), SQL3DataType.INTEGER, newTransactionNumber,
                               SQL3DataType.INTEGER, conflict.getSourceGamma());
+               } else { //If merge value is the same as the destination value remove the Source Branch updates from the table.
+                  ConnectionHandler.runPreparedUpdateReturnCount(DELETE_MERGE_TRANSACTIONS, SQL3DataType.INTEGER,
+                        newTransactionNumber, SQL3DataType.INTEGER, conflict.getSourceGamma());
+                  ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_TRANSACTIONS, SQL3DataType.INTEGER,
+                        toBranch.getBranchId(), SQL3DataType.INTEGER, conflict.getDestGamma());
                }
             }
+
          }
 
          if (insertCount > 0) {

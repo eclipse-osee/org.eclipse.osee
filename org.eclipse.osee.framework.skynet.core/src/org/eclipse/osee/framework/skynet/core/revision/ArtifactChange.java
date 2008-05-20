@@ -208,6 +208,7 @@ public class ArtifactChange extends RevisionChange {
     * @return Returns the conflictingModArtifact.
     */
    public Artifact getConflictingModArtifact() throws SQLException {
+      if (conflictingArtTransactionId == null) return null;
       if (conflictingModArtifact == null && conflictingArtTransactionId.getTransactionNumber() != 0) {
          conflictingModArtifact = loadArtifact(conflictingArtTransactionId, conflictingModArtifact, conflictingArtId);
       }

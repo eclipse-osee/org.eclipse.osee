@@ -263,7 +263,7 @@ public abstract class Conflict implements IAdaptable {
       return status;
    }
 
-   public void setStatus(Status status) throws SQLException {
+   public void setStatus(Status status) throws Exception {
       if (this.status.equals(status)) return;
       ConflictStatusManager.setStatus(status, sourceGamma, destGamma);
       this.status = status;
@@ -297,7 +297,7 @@ public abstract class Conflict implements IAdaptable {
       return getArtifact().getDescriptiveName();
    }
 
-   public void handleResolvedSelection() throws SQLException {
+   public void handleResolvedSelection() throws Exception {
       if (status.equals(Conflict.Status.EDITED)) {
          setStatus(Conflict.Status.RESOLVED);
       } else if (status.equals(Conflict.Status.RESOLVED)) {

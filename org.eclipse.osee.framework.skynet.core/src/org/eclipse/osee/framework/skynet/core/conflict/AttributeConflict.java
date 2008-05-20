@@ -298,7 +298,7 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
-   protected void markStatusToReflectEdit() throws SQLException {
+   protected void markStatusToReflectEdit() throws Exception {
       if ((status.equals(Status.UNTOUCHED)) || (status.equals(Status.OUT_OF_DATE))) setStatus(Status.EDITED);
    }
 
