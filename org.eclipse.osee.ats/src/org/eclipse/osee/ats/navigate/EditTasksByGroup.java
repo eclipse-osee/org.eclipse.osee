@@ -49,7 +49,7 @@ public class EditTasksByGroup extends XNavigateItemAction {
       if (dialog.open() == 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
          Artifact selectedGroup = (Artifact) dialog.getResult()[0];
-         for (Artifact art : selectedGroup.getArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS)) {
+         for (Artifact art : selectedGroup.getRelatedArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS)) {
             if (art instanceof TaskArtifact) {
                taskArts.add((TaskArtifact) art);
             }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__CHILD;
-import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__PARENT;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
@@ -51,11 +50,13 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordTemplateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -78,7 +79,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private boolean deleted = false;
    private ArtifactSubtypeDescriptor artifactType;
    private String humanReadableId;
-   private final LinkManager linkManager = new LinkManager(this);
    private ArtifactFactory parentFactory;
    private int deletionTransactionId = -1;
    private HashCollection<String, Attribute<?>> attributes =
@@ -109,7 +109,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public boolean isInDb() {
-      return artId > 0;
+      return gammaId > 0;
    }
 
    /**
@@ -176,24 +176,56 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       // return controlLevel.isVersionControlled();
    }
 
-   public boolean hasArtifacts(IRelationEnumeration side) {
+   /**
+    * All the artifacts related to this artifact by relations of type relationType are returned in a list order based on
+    * the stored relation order
+    * 
+    * @param relationType
+    * @return
+    * @throws ArtifactDoesNotExist
+    * @throws OseeDataStoreException
+    */
+   public List<Artifact> getRelatedArtifacts(String relationType) throws ArtifactDoesNotExist, OseeDataStoreException {
       try {
-         return getLinkManager().hasArtifacts(side);
+         return RelationManager.getRelatedArtifacts(this, RelationTypeManager.getType(relationType));
       } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         throw new OseeDataStoreException(ex);
       }
-      return false;
-
    }
 
-   public Set<Artifact> getArtifacts(IRelationEnumeration side) throws SQLException {
-      return getLinkManager().getArtifacts(side);
+   /**
+    * Get the exactly one artifact related to this artifact by relations of type relationType are returned in a list
+    * order based on
+    * 
+    * @param relationType
+    * @return
+    * @throws ArtifactDoesNotExist
+    * @throws OseeDataStoreException
+    * @throws MultipleArtifactsExist
+    */
+   public Artifact getRelatedArtifact(String relationType) throws ArtifactDoesNotExist, OseeDataStoreException, MultipleArtifactsExist {
+      try {
+         return RelationManager.getRelatedArtifact(this, RelationTypeManager.getType(relationType));
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
    }
 
-   public Artifact getFirstArtifact(IRelationEnumeration side) throws SQLException {
-      Collection<Artifact> arts = this.getArtifacts(side);
-      if (arts.size() > 0) return arts.iterator().next();
-      return null;
+   public int getRelatedArtifactsCount(String relationType) throws OseeDataStoreException {
+      try {
+         return RelationManager.getRelatedArtifactsCount(this, RelationTypeManager.getType(relationType));
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   @Deprecated
+   public Set<Artifact> getRelatedArtifacts(IRelationEnumeration side) throws SQLException {
+      try {
+         return new HashSet<Artifact>(getRelatedArtifacts(side.getTypeName()));
+      } catch (OseeCoreException ex) {
+         throw new SQLException(ex);
+      }
    }
 
    /**
@@ -203,11 +235,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public <A extends Artifact> Set<A> getArtifacts(IRelationEnumeration side, Class<A> clazz) throws SQLException {
-      RelationLinkGroup group = getLinkManager().getGroup(side);
-
-      if (group == null) return new HashSet<A>();
-
-      return group.getArtifacts(clazz);
+      Set<A> artifacts = new HashSet<A>();
+      try {
+         for (Artifact artifact : getRelatedArtifacts(side.getTypeName())) {
+            artifacts.add((A) artifact);
+         }
+      } catch (OseeCoreException ex) {
+         throw new SQLException(ex);
+      }
+      return artifacts;
    }
 
    /**
@@ -286,7 +322,14 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public Artifact getParent() throws SQLException {
-      return getLinkManager().getSoleArtifact(DEFAULT_HIERARCHICAL__PARENT);
+      try {
+         return RelationManager.getRelatedArtifact(this, RelationTypeManager.getType("Default Hierarchical"));
+      } catch (ArtifactDoesNotExist ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (MultipleArtifactsExist ex) {
+         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
+      return null;
    }
 
    public boolean isOrphan() throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
@@ -313,7 +356,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public Set<Artifact> getChildren() throws SQLException {
-      return getArtifacts(DEFAULT_HIERARCHICAL__CHILD);
+      return getRelatedArtifacts(DEFAULT_HIERARCHICAL__CHILD);
    }
 
    /**
@@ -338,7 +381,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public void addChild(Artifact artifact) throws SQLException {
-      relate(DEFAULT_HIERARCHICAL__CHILD, artifact);
+      addRelation(DEFAULT_HIERARCHICAL__CHILD, artifact, null);
    }
 
    /**
@@ -353,8 +396,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       Artifact child = descriptor.makeNewArtifact(branch);
       child.setDescriptiveName(name);
       addChild(child);
-      child.persistAttributes();
-      child.getLinkManager().persistLinks();
+      child.persistAttributesAndRelations();
       return child;
    }
 
@@ -803,7 +845,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public boolean isDirty(boolean includeLinks) throws SQLException {
       boolean dirtyVal = dirty || anAttributeIsDirty();
       if (includeLinks) {
-         dirtyVal |= getLinkManager().isDirty();
+         dirtyVal |= RelationManager.hasDirtyLinks(this);
       }
       return dirtyVal;
    }
@@ -831,11 +873,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       if (!isInDb()) return;
 
       attributes.clear();
-      ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);
-
-      linkManager.revert();
-
       dirty = false;
+      linksLoaded = false;
+      RelationManager.revertRelationsFor(this);
+
+      ArtifactLoader.loadArtifactData(this, ArtifactLoad.FULL);
       SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ModType.Reverted, this));
    }
 
@@ -845,11 +887,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public void persistAttributesAndRelations() throws SQLException {
       persistAttributes();
-      getLinkManager().persistLinks();
+      RelationManager.persistRelationsFor(this);
    }
 
    public void persistRelations() throws SQLException {
-      getLinkManager().persistLinks();
+      RelationManager.persistRelationsFor(this);
    }
 
    public void persist() throws SQLException {
@@ -917,20 +959,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @throws SQLException
     */
+   @Deprecated
    public ArrayList<RelationLink> getRelations(Artifact artifact) throws SQLException {
+      if (true) throw new UnsupportedOperationException();
       ArrayList<RelationLink> links = new ArrayList<RelationLink>();
       for (RelationLink link : getLinkManager().getLinks()) {
          if (getLinkManager().getOtherSideAritfact(link).equals(artifact)) links.add(link);
-      }
-      return links;
-   }
-
-   public ArrayList<RelationLink> getRelations(RelationType relationType) throws SQLException {
-      ArrayList<RelationLink> links = new ArrayList<RelationLink>();
-      for (RelationLink link : getLinkManager().getLinks()) {
-         if (link.getRelationType().equals(relationType)) {
-            links.add(link);
-         }
       }
       return links;
    }
@@ -940,7 +974,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @throws SQLException
     */
+   @Deprecated
    public ArrayList<RelationLink> getRelations(IRelationEnumeration side, Artifact artifact) throws SQLException {
+      if (true) throw new UnsupportedOperationException();
       ArrayList<RelationLink> links = new ArrayList<RelationLink>();
       for (RelationLink link : getLinkManager().getLinks()) {
          if (getLinkManager().getOtherSideAritfact(link).equals(artifact)) if (side.isThisType(link)) links.add(link);
@@ -1003,61 +1039,39 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public LinkManager getLinkManager() throws SQLException {
-      linkManager.ensurePopulated();
-      return linkManager;
+      return null;
    }
 
    public void setLinksLoaded() {
       linksLoaded = true;
    }
 
+   public void addRelation(IRelationEnumeration relationSide, Artifact artifact, String rationale) throws SQLException {
+      boolean sideA = relationSide.isSideA();
+      Artifact artifactA = sideA ? artifact : this;
+      Artifact artifactB = sideA ? this : artifact;
+      RelationManager.addRelation(relationSide.getRelationType(), artifactA, artifactB, rationale);
+   }
+
    /**
+    * Use addRelation instead
+    * 
     * @param relationSide
     * @param artifact
+    * @param persist
     * @throws SQLException
     */
-   public void relate(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
-      relate(relationSide, artifact, null, false);
-   }
-
+   @Deprecated
    public void relate(IRelationEnumeration relationSide, Artifact artifact, boolean persist) throws SQLException {
-      relate(relationSide, artifact, null, persist);
+      addRelation(relationSide, artifact, null);
+      persistRelations();
    }
 
-   public void relate(IRelationEnumeration relationSide, Artifact artifact, String rationale, boolean persist) throws SQLException {
-      getLinkManager().ensureRelationGroupExists(relationSide).addArtifact(artifact, rationale, persist);
-   }
-
-   public void relate(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, boolean persist) throws SQLException {
-      relate(relationSide, artifacts, null, persist);
-   }
-
-   public void relate(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, String rationale, boolean persist) throws SQLException {
-      for (Artifact art : artifacts)
-         relate(relationSide, art, rationale, persist);
-   }
-
-   public void relate(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) {
-      try {
-         relate(relationSide, artifacts, false);
-      } catch (SQLException ex) {
-         // This should never happen
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-   }
-
-   public void unrelate(IRelationEnumeration relationSide, Artifact artifact) {
-      try {
-         unrelate(relationSide, artifact, false);
-      } catch (SQLException ex) {
-         // Should never happen because not persisting
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-   }
-
-   public void unrelate(IRelationEnumeration relationSide, Artifact artifact, boolean persist) throws SQLException {
-      getLinkManager().ensureRelationGroupExists(relationSide).removeArtifact(artifact);
-      if (persist) linkManager.persistLinks();
+   public void deleteRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
+      boolean sideA = relationSide.isSideA();
+      Artifact artifactA = sideA ? artifact : this;
+      Artifact artifactB = sideA ? this : artifact;
+      RelationManager.deleteRelation(relationSide.getRelationType(), artifactA, artifactB);
    }
 
    public void relateReplace(IRelationEnumeration relationSide, Artifact artifact, boolean persist) throws SQLException {
@@ -1065,12 +1079,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public void relateReplace(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, boolean persist) throws SQLException {
+      if (true) throw new UnsupportedOperationException();
       RelationLinkGroup group = getLinkManager().ensureRelationGroupExists(relationSide);
       group.removeAll();
       for (Artifact art : artifacts) {
          group.addArtifact(art);
       }
-      if (persist) linkManager.persistLinks();
+      if (persist) persistRelations();
    }
 
    public final boolean isLinksLoaded() {
@@ -1149,7 +1164,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          }
          // Loop through all relations
          for (IRelationEnumeration side : links) {
-            for (Artifact art : getArtifacts(side)) {
+            for (Artifact art : getRelatedArtifacts(side)) {
                // Check artifact dirty
                if (art.isDirty()) {
                   return new Result(true, art.getArtifactTypeName() + " \"" + art + "\" => dirty\n");
@@ -1191,7 +1206,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       // Loop through all relations and collect all artifact to operate on
       for (IRelationEnumeration side : links) {
-         for (Artifact artifact : getArtifacts(side)) {
+         for (Artifact artifact : getRelatedArtifacts(side)) {
             artifactToManipulate.add(artifact);
             // Check the links to this artifact
             for (RelationLink link : getRelations(artifact)) {
@@ -1219,7 +1234,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
       // Persist link manager to ensure deleted links get persisted
       //TODO: this defeats the whole purpose of a selective persist based on link type
-      getLinkManager().persistLinks();
+      persistRelations();
    }
 
    /**
@@ -1240,13 +1255,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public void setIds(int artId, int gammaId) {
-      setIds(artId, gammaId, 0);
-   }
-
-   public void setIds(int artId, int gammaId, int transactionId) {
+   public void setIds(int gammaId, int transactionId) {
       this.gammaId = gammaId;
-      this.artId = artId;
       this.transactionId = transactionId;
    }
 
@@ -1417,7 +1427,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    @Override
    public int hashCode() {
-      return 31 * guid.hashCode();
+      return (37 * guid.hashCode()) + branch.hashCode();
    }
 
    /* (non-Javadoc)
@@ -1426,7 +1436,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof Artifact) {
-         return guid.hashCode() == ((Artifact) obj).getGuid().hashCode();
+         Artifact otherArtifact = (Artifact) obj;
+         return guid == otherArtifact.guid && branch.equals(otherArtifact.branch);
       }
       return false;
    }
@@ -1445,11 +1456,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return tempAttributes.size();
    }
 
-   /**
-    * @return
-    * @throws SQLException
-    */
-   public boolean hasChildren() throws SQLException {
-      return getLinkManager().getRelationCount(DEFAULT_HIERARCHICAL__CHILD) > 0;
+   void setArtId(int artifactId) {
+      this.artId = artifactId;
    }
 }

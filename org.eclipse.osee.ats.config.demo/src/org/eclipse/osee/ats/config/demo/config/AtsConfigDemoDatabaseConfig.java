@@ -130,7 +130,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
                true);
-         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).relate(RelationSide.TeamDefinitionToVersion_Version, ver);
+         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(RelationSide.TeamDefinitionToVersion_Version, ver, null);
          ver.persist();
       }
 
@@ -143,7 +143,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
                true);
-         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).relate(RelationSide.TeamDefinitionToVersion_Version, ver);
+         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(RelationSide.TeamDefinitionToVersion_Version, ver, null);
          ver.persist();
       }
    }

@@ -74,8 +74,8 @@ public class SMARelationsComposite extends Composite {
 
    public static boolean relationExists(StateMachineArtifact smaArt) throws SQLException {
       for (RelationSide side : sides) {
-         if (smaArt.getArtifacts(side).size() > 0) return true;
-         if (smaArt.getParentActionArtifact() != null && smaArt.getParentActionArtifact().getArtifacts(side).size() > 0) return true;
+         if (smaArt.getRelatedArtifacts(side).size() > 0) return true;
+         if (smaArt.getParentActionArtifact() != null && smaArt.getParentActionArtifact().getRelatedArtifacts(side).size() > 0) return true;
       }
       if ((smaArt instanceof ReviewSMArtifact) && ((ReviewSMArtifact) smaArt).getActionableItemsDam().getActionableItemGuids().size() > 0) return true;
       return false;
@@ -83,7 +83,7 @@ public class SMARelationsComposite extends Composite {
 
    private void processArtifact(String name, Artifact thisArt) throws SQLException {
       for (RelationSide side : sides) {
-         for (final Artifact art : thisArt.getArtifacts(side)) {
+         for (final Artifact art : thisArt.getRelatedArtifacts(side)) {
             RelationLink rel = thisArt.getRelations(art).iterator().next();
             toolkit.createLabel(
                   this,

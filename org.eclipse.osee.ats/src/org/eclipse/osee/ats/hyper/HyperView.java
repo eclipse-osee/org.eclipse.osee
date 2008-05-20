@@ -589,7 +589,7 @@ public class HyperView extends ViewPart implements IPartListener {
                         Artifact artA = hvi.getLink().getArtifactA();
                         hvi.getLink().delete();
                         try {
-                           artA.getLinkManager().persistLinks();
+                           artA.persistRelations();
                         } catch (SQLException ex) {
                            OSEELog.logException(AtsPlugin.class, ex, true);
                         }

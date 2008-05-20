@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -101,7 +102,7 @@ public class ReviewManager {
                   BranchPersistenceManager.getAtsBranch(), "Peer to Peer Review");
 
       if (teamParent != null) {
-         teamParent.relate(RelationSide.TeamWorkflowToReview_Review, peerToPeerRev);
+         teamParent.addRelation(RelationSide.TeamWorkflowToReview_Review, peerToPeerRev, null);
          if (againstState != null) peerToPeerRev.setSoleAttributeValue(
                ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
       }
@@ -182,7 +183,12 @@ public class ReviewManager {
    }
 
    public boolean hasReviews() {
-      return smaMgr.getSma().hasArtifacts(RelationSide.TeamWorkflowToReview_Review);
+      try {
+         return smaMgr.getSma().getRelatedArtifactsCount("TeamWorkflowToReview") > 0;
+      } catch (OseeDataStoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+         return false;
+      }
    }
 
    public Result areReviewsComplete() {

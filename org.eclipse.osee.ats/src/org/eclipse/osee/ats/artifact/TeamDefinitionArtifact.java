@@ -67,12 +67,12 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       tda.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       tda.setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
-         tda.relate(RelationSide.TeamLead_Lead, user);
+         tda.addRelation(RelationSide.TeamLead_Lead, user, null);
          // All leads are members
-         tda.relate(RelationSide.TeamMember_Member, user);
+         tda.addRelation(RelationSide.TeamMember_Member, user, null);
       }
       for (User user : members) {
-         tda.relate(RelationSide.TeamMember_Member, user);
+         tda.addRelation(RelationSide.TeamMember_Member, user, null);
       }
 
       if (usesVersions) {
@@ -90,7 +90,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
       // Relate to actionable items
       for (ActionableItemArtifact aia : actionableItems) {
-         tda.relate(RelationSide.TeamActionableItem_ActionableItem, aia);
+         tda.addRelation(RelationSide.TeamActionableItem_ActionableItem, aia, null);
       }
 
       tda.persist();
@@ -175,7 +175,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public static Set<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws SQLException {
-      if (aia.getArtifacts(RelationSide.TeamActionableItem_Team).size() > 0) {
+      if (aia.getRelatedArtifacts(RelationSide.TeamActionableItem_Team).size() > 0) {
          return aia.getArtifacts(RelationSide.TeamActionableItem_Team, TeamDefinitionArtifact.class);
       }
       Artifact parentArt = aia.getParent();
@@ -190,7 +190,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public static void getTeamFromItemAndChildren(ActionableItemArtifact aia, Set<TeamDefinitionArtifact> aiaTeams) throws SQLException {
-      if (aia.getArtifacts(RelationSide.TeamActionableItem_Team).size() > 0) aiaTeams.addAll(aia.getArtifacts(
+      if (aia.getRelatedArtifacts(RelationSide.TeamActionableItem_Team).size() > 0) aiaTeams.addAll(aia.getArtifacts(
             RelationSide.TeamActionableItem_Team, TeamDefinitionArtifact.class));
       for (Artifact childArt : aia.getChildren()) {
          if (childArt instanceof ActionableItemArtifact) getTeamFromItemAndChildren((ActionableItemArtifact) childArt,

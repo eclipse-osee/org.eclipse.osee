@@ -11,10 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
+import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 
 public abstract class ArtifactFactory {
    private final int factoryId;
@@ -39,22 +41,6 @@ public abstract class ArtifactFactory {
     * @param artifactType
     * @param guid
     * @param humandReadableId
-    * @return
-    * @throws SQLException
-    * @throws OseeCoreException
-    * @deprecated Use {@link #makeNewArtifact(Branch,ArtifactSubtypeDescriptor,String,String,ArtifactProcessor)} instead
-    */
-   public Artifact makeNewArtifact(Branch branch, ArtifactSubtypeDescriptor artifactType, String guid, String humandReadableId) throws OseeCoreException {
-      return makeNewArtifact(branch, artifactType, guid, humandReadableId, null);
-   }
-
-   /**
-    * Used to create a new artifact (one that has never been saved into the datastore)
-    * 
-    * @param branch
-    * @param artifactType
-    * @param guid
-    * @param humandReadableId
     * @param earlyArtifactInitialization TODO
     * @return
     * @throws SQLException
@@ -66,10 +52,17 @@ public abstract class ArtifactFactory {
 
       Artifact artifact =
             getArtifactInstance(guid, humandReadableId, artifactType.getFactoryKey(), branch, artifactType);
+
+      try {
+         artifact.setArtId(SkynetDatabase.getNextArtifactId());
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
       if (earlyArtifactInitialization != null) {
          earlyArtifactInitialization.run(artifact);
       }
       AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
+      ArtifactCache.cache(artifact);
       artifact.setLinksLoaded();
       artifact.onBirth();
       artifact.onInitializationComplete();
@@ -84,11 +77,8 @@ public abstract class ArtifactFactory {
          artifact.setDeleted(transactionId);
       }
 
-      if (active) {
-         artifact.setIds(artId, gammaId);
-      } else {
-         artifact.setIds(artId, gammaId, transactionId);
-      }
+      artifact.setArtId(artId);
+      artifact.setIds(gammaId, active ? 0 : transactionId);
 
       ArtifactCache.cache(artifact);
       return artifact;

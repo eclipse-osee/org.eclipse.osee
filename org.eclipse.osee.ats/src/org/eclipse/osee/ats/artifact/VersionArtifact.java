@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
 public class VersionArtifact extends BasicArtifact {
@@ -100,7 +101,13 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public TeamDefinitionArtifact getTeamDefinitionArtifact() throws SQLException {
-      return (TeamDefinitionArtifact) getFirstArtifact(RelationSide.TeamDefinitionToVersion_TeamDefinition);
+      try {
+         return (TeamDefinitionArtifact) getRelatedArtifact("TeamDefinitionToVersion");
+      } catch (ArtifactDoesNotExist ex) {
+         return null;
+      } catch (Exception ex) {
+         throw new SQLException(ex);
+      }
    }
 
    public Date getEstimatedReleaseDate() throws IllegalStateException, SQLException, MultipleAttributesExist {

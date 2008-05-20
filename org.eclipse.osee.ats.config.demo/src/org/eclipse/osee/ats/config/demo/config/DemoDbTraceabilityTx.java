@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.config.demo.config;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +15,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
@@ -26,6 +28,12 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
 
    public DemoDbTraceabilityTx(Branch branch, boolean popup) {
       super(branch);
+   }
+
+   private void relate(IRelationEnumeration relationSide, Artifact artifact, Collection<Artifact> artifacts) throws SQLException {
+      for (Artifact otherArtifact : artifacts) {
+         artifact.addRelation(relationSide, otherArtifact, null);
+      }
    }
 
    @Override
@@ -47,20 +55,28 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
 
          // Relate System to SubSystem to Software Requirements
          for (Artifact systemArt : systemArts) {
-            systemArt.relate(RelationSide.REQUIREMENT_TRACE__LOWER_LEVEL, subSystemArts, true);
+            relate(RelationSide.REQUIREMENT_TRACE__LOWER_LEVEL, systemArt, subSystemArts);
+            systemArt.persistRelations();
 
             for (Artifact subSystemArt : subSystemArts) {
-               subSystemArt.relate(RelationSide.REQUIREMENT_TRACE__LOWER_LEVEL, softArts, true);
+               relate(RelationSide.REQUIREMENT_TRACE__LOWER_LEVEL, subSystemArt, softArts);
+               subSystemArt.persistRelations();
             }
          }
 
          // Relate System, SubSystem and Software Requirements to Componets
-         for (Artifact art : systemArts)
-            art.relate(RelationSide.ALLOCATION__COMPONENT, component, true);
-         for (Artifact art : subSystemArts)
-            art.relate(RelationSide.ALLOCATION__COMPONENT, component, true);
-         for (Artifact art : softArts)
-            art.relate(RelationSide.ALLOCATION__COMPONENT, component, true);
+         for (Artifact art : systemArts) {
+            relate(RelationSide.ALLOCATION__COMPONENT, art, component);
+            art.persistRelations();
+         }
+         for (Artifact art : subSystemArts) {
+            relate(RelationSide.ALLOCATION__COMPONENT, art, component);
+            art.persistRelations();
+         }
+         for (Artifact art : softArts) {
+            relate(RelationSide.ALLOCATION__COMPONENT, art, component);
+            art.persistRelations();
+         }
 
          // Create Test Script Artifacts
          Set<Artifact> verificationTests = new HashSet<Artifact>();

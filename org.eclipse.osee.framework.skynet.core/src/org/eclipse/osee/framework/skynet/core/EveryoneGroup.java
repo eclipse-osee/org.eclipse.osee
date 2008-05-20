@@ -73,6 +73,6 @@ public class EveryoneGroup extends Group {
     * @throws SQLException
     */
    public static void addGroupMember(User user) throws SQLException {
-      instance.everyoneGroup.relate(RelationSide.Users_User, user);
+      instance.everyoneGroup.addRelation(RelationSide.Users_User, user, null);
    }
 }

@@ -32,10 +32,10 @@ public class RemoteLinkEventFactory {
       Artifact bArtifact = link.getArtifactB();
 
       return new NetworkNewRelationLinkEvent(
-            link.getPersistenceMemo().getGammaId(),
+            link.getGammaId(),
             link.getBranch().getBranchId(),
             transactionNumber,
-            link.getPersistenceMemo().getLinkId(),
+            link.getRelationId(),
             aArtifact.getArtId(),
             aArtifact.getArtTypeId(),
             bArtifact.getArtId(),

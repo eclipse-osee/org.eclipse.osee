@@ -220,7 +220,7 @@ public class Overview {
 
    public void addRelationTable(String name, RelationSide side, Artifact parent) {
       try {
-         Set<Artifact> arts = parent.getArtifacts(side);
+         Set<Artifact> arts = parent.getRelatedArtifacts(side);
          if (arts.size() == 0) return;
          startBorderTable(false, name);
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Name", "Rationale"}));

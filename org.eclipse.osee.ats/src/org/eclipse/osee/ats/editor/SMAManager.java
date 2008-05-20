@@ -571,8 +571,7 @@ public class SMAManager {
                         verArt.getReleaseDate());
             if (verArt.getReleaseDate() != null) diag.setSelectedDate(verArt.getReleaseDate());
             if (diag.open() == 0) {
-               verArt.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
-                     diag.getSelectedDate());
+               verArt.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), diag.getSelectedDate());
                verArt.persistAttributes();
                return true;
             }
@@ -719,8 +718,9 @@ public class SMAManager {
       if (result.isTrue()) {
          for (VersionArtifact verArt : sma.getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version,
                VersionArtifact.class)) {
-            sma.unrelate(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt, true);
+            sma.deleteRelation(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt);
          }
+         sma.persistRelations();
       }
       return result;
    }

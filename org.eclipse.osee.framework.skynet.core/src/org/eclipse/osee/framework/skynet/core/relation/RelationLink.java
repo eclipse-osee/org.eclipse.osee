@@ -19,71 +19,92 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 
 /**
  * @author Jeff C. Phillips
  */
 public class RelationLink {
-
+   private int relationId;
+   private int gammaId;
    private Artifact artA;
    private Artifact artB;
    private boolean deleted;
    private int aOrder;
    private int bOrder;
    private String rationale;
-   private LinkPersistenceMemo memo;
    private RelationType relationType;
-   protected boolean dirty;
-   private int artAId;
-   private int artBId;
+   private boolean dirty;
+   private int aArtifactId;
+   private int bArtifactId;
+   private Branch aBranch;
+   private Branch bBranch;
 
-   private RelationLink(RelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
+   public RelationLink(int aArtifactId, int bArtifactId, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder) {
       this.relationType = relationType;
-      this.memo = memo;
-      this.rationale = rationale;
+      this.relationId = relationId;
+      this.gammaId = gammaId;
+      this.rationale = rationale == null ? "" : rationale;
       this.aOrder = aOrder;
       this.bOrder = bOrder;
       this.deleted = false;
       this.dirty = false;
-      this.dirty = dirty;
+      this.aArtifactId = aArtifactId;
+      this.bArtifactId = bArtifactId;
    }
 
-   public RelationLink(Artifact artA, Artifact artB, RelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
-      this(relationType, memo, rationale, aOrder, bOrder, dirty);
-      this.artA = artA;
-      this.artB = artB;
+   public RelationLink(int aArtifactId, int bArtifactId, RelationType relationType, String rationale) {
+      this(aArtifactId, bArtifactId, relationType, 0, 0, rationale, 0, 0);
    }
 
-   public RelationLink(int artAId, int artBId, RelationType relationType, LinkPersistenceMemo memo, String rationale, int aOrder, int bOrder, boolean dirty) {
-      this(relationType, memo, rationale, aOrder, bOrder, dirty);
-      this.artAId = artAId;
-      this.artBId = artBId;
-   }
-
-   /**
-    * Do not call this method from application code. Only designed for active artifacts (the <artifact, branch> cache is
-    * used)
-    * 
-    * @param branch
-    * @throws SQLException
-    */
-   public void loadArtifacts(Branch branch) throws SQLException {
-      artA = ArtifactCache.get(artAId, branch);
-      if (artA != null && artA.isLinksLoaded()) {
-         artA.getLinkManager().addLink(this);
-      }
-
-      artB = ArtifactCache.get(artBId, branch);
-      if (artB != null && artB.isLinksLoaded()) {
-         artB.getLinkManager().addLink(this);
-      }
-   }
-
+   @Deprecated
    public Artifact getOtherSideAritfactIfAvailable(Artifact artifact) {
       if (artifact == artA) {
          return artB;
       }
       return artA;
+   }
+
+   public boolean isOnSideA(Artifact artifact) {
+      if (aArtifactId == artifact.getArtId()) {
+         return true;
+      }
+      if (bArtifactId == artifact.getArtId()) {
+         return true;
+      }
+      throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
+   }
+
+   /**
+    * @return the aArtifactId
+    */
+   public int getAArtifactId() {
+      return aArtifactId;
+   }
+
+   /**
+    * @return the bArtifactId
+    */
+   public int getBArtifactId() {
+      return bArtifactId;
+   }
+
+   public int getArtifactId(boolean sideA) {
+      return sideA ? aArtifactId : bArtifactId;
+   }
+
+   /**
+    * @return the aBranch
+    */
+   public Branch getABranch() {
+      return aBranch;
+   }
+
+   /**
+    * @return the bBranch
+    */
+   public Branch getBBranch() {
+      return bBranch;
    }
 
    /**
@@ -100,8 +121,11 @@ public class RelationLink {
       return dirty;
    }
 
+   @Deprecated
    public void persist() throws SQLException {
-      RelationPersistenceManager.getInstance().makePersistent(this);
+      if (dirty) {
+         RelationPersistenceManager.makePersistent(this);
+      }
    }
 
    public void delete() throws SQLException {
@@ -112,37 +136,35 @@ public class RelationLink {
       // Only one of these needs to be called in order to delete a link
       if (artA.isLinksLoaded()) artA.getLinkManager().deleteLink(this);
       if (artB.isLinksLoaded()) artB.getLinkManager().deleteLink(this);
-      kickDeleteLinkEvent();
-   }
 
-   private void kickDeleteLinkEvent() {
       SkynetEventManager.getInstance().kick(
             new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
-                  ModType.Deleted.name(), this, getBranch()));
+                  ModType.Deleted.name(), this, getABranch()));
+
+   }
+
+   public Artifact getArtifact(boolean sideA) throws ArtifactDoesNotExist, SQLException {
+      Artifact relatedArtifact = ArtifactCache.get(getArtifactId(sideA), getBranch(sideA));
+      if (relatedArtifact == null) {
+         return ArtifactQuery.getArtifactFromId(getArtifactId(sideA), getBranch(sideA));
+      }
+      return null; // by design this return should never happen
    }
 
    public Artifact getArtifactA() {
       if (artA == null) {
          try {
-            artA = ArtifactQuery.getArtifactFromId(artAId, artB.getBranch());
+            artA = ArtifactQuery.getArtifactFromId(aArtifactId, artB.getBranch());
          } catch (Exception ex) {
          }
       }
       return artA;
    }
 
-   public Artifact getArtifactAIfAvailable() {
-      return artA;
-   }
-
-   public Artifact getArtifactBIfAvailable() {
-      return artB;
-   }
-
    public Artifact getArtifactB() {
       if (artB == null) {
          try {
-            artB = ArtifactQuery.getArtifactFromId(artBId, artA.getBranch());
+            artB = ArtifactQuery.getArtifactFromId(bArtifactId, artA.getBranch());
          } catch (Exception ex) {
          }
       }
@@ -178,6 +200,10 @@ public class RelationLink {
       return bOrder;
    }
 
+   public int getOrder(boolean sideA) {
+      return sideA ? aOrder : bOrder;
+   }
+
    /**
     * @param order The order to set.
     */
@@ -186,7 +212,7 @@ public class RelationLink {
          this.bOrder = order;
          dirty = true;
 
-         if (memo != null) {
+         if (isInDb()) {
             if (artA.isLinksLoaded()) artA.getLinkManager().fixOrderingOf(this, true);
             if (artB.isLinksLoaded()) artB.getLinkManager().fixOrderingOf(this, false);
          }
@@ -245,20 +271,12 @@ public class RelationLink {
       if (notify) {
          SkynetEventManager.getInstance().kick(
                new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
-                     ModType.RationaleMod.name(), this, getBranch()));
+                     ModType.RationaleMod.name(), this, getABranch()));
       }
    }
 
    public RelationType getRelationType() {
       return relationType;
-   }
-
-   public LinkPersistenceMemo getPersistenceMemo() {
-      return memo;
-   }
-
-   public void setPersistenceMemo(LinkPersistenceMemo memo) {
-      this.memo = (LinkPersistenceMemo) memo;
    }
 
    public String getSideNameFor(Artifact artifact) {
@@ -348,11 +366,42 @@ public class RelationLink {
       return true;
    }
 
-   public Branch getBranch() {
-      return getArtifactA().getBranch();
+   public Branch getBranch(boolean sideA) {
+      return sideA ? aBranch : bBranch;
    }
 
    public void setDirty(boolean isDirty) {
       dirty = isDirty;
+   }
+
+   public void setPersistenceIds(int relationId, int gammaId) {
+      this.relationId = relationId;
+      this.gammaId = gammaId;
+   }
+
+   public int getRelationId() {
+      return relationId;
+   }
+
+   public int getGammaId() {
+      return gammaId;
+   }
+
+   public boolean isInDb() {
+      return gammaId > 0;
+   }
+
+   /**
+    * @param gammaId2
+    */
+   public void setGammaId(int gammaId) {
+      this.gammaId = gammaId;
+   }
+
+   /**
+    * @return
+    */
+   public Branch getBranch() {
+      return getBranch(true);
    }
 }

@@ -273,14 +273,10 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    private void addArtifactData(Artifact artifact, SkynetTransaction transaction, int gammaId) throws SQLException {
-      int artId = SkynetDatabase.getNextArtifactId();
-
-      transaction.addToBatch(INSERT_ARTIFACT, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
+      transaction.addToBatch(INSERT_ARTIFACT, SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
             artifact.getArtTypeId(), SQL3DataType.VARCHAR, artifact.getGuid(), SQL3DataType.VARCHAR,
             artifact.getHumanReadableId());
-
-      artifact.setIds(artId, gammaId);
-      ArtifactCache.cache(artifact);
+      artifact.setIds(gammaId, 0);
    }
 
    private static final String SELECT_ARTIFACT_START =

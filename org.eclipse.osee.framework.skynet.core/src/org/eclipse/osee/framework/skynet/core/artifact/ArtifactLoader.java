@@ -34,9 +34,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.LinkPersistenceMemo;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
@@ -137,10 +137,9 @@ public final class ArtifactLoader {
 
    private static void loadRelationData(Collection<Artifact> artifacts, Branch branch, ArtifactLoad otherSideLoadLevel) throws SQLException {
       List<Artifact> artifactsNeedingRelations = new ArrayList<Artifact>(artifacts.size());
-      List<RelationLink> relations = new ArrayList<RelationLink>(artifacts.size() * 4);
       Set<Integer> artifactIdsToLoad = null;
       if (otherSideLoadLevel != SHALLOW) {
-         artifactIdsToLoad = new HashSet<Integer>(relations.size() + 1);
+         artifactIdsToLoad = new HashSet<Integer>(artifacts.size() * 4);
       }
 
       for (Artifact artifact : artifacts) {
@@ -161,37 +160,30 @@ public final class ArtifactLoader {
             ResultSet rSet = chStmt.getRset();
             while (rSet.next()) {
                int relationId = rSet.getInt("rel_link_id");
-               int aArtId = rSet.getInt("a_art_id");
-               int bArtId = rSet.getInt("b_art_id");
+               int aArtifactId = rSet.getInt("a_art_id");
+               int bArtifactId = rSet.getInt("b_art_id");
+               RelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
 
-               Artifact artA = ArtifactCache.get(aArtId, branch);
-               Artifact artB = ArtifactCache.get(bArtId, branch);
+               RelationLink relation =
+                     RelationManager.getLoadedRelation(relationType, aArtifactId, bArtifactId, branch, branch);
 
-               RelationLink link = null;
-               if (artA != null && artA.isLinksLoaded()) {
-                  link = artA.getLinkManager().getRelation(relationId);
-               }
-               if (link == null && artB != null && artB.isLinksLoaded()) {
-                  link = artB.getLinkManager().getRelation(relationId);
-               }
-
-               if (link == null) {
+               if (relation == null) {
                   if (otherSideLoadLevel != SHALLOW) {
-                     artifactIdsToLoad.add(aArtId);
-                     artifactIdsToLoad.add(bArtId);
+                     artifactIdsToLoad.add(aArtifactId);
+                     artifactIdsToLoad.add(bArtifactId);
                   }
 
                   int aOrderValue = rSet.getInt("a_order_value");
                   int bOrderValue = rSet.getInt("b_order_value");
                   int gammaId = rSet.getInt("gamma_id");
                   String rationale = rSet.getString("rationale");
-                  if (rationale == null) rationale = "";
-                  RelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
 
-                  link =
-                        new RelationLink(aArtId, bArtId, relationType, new LinkPersistenceMemo(relationId, gammaId),
-                              rationale, aOrderValue, bOrderValue, false);
-                  relations.add(link);
+                  relation =
+                        new RelationLink(aArtifactId, bArtifactId, relationType, relationId, gammaId, rationale,
+                              aOrderValue, bOrderValue);
+
+                  RelationManager.manageRelation(relation, true);
+                  RelationManager.manageRelation(relation, false);
                }
             }
          } finally {
@@ -207,10 +199,6 @@ public final class ArtifactLoader {
       // must do this before calling relation.loadArtifacts so it will not skip over these artifacts
       for (Artifact artifact : artifactsNeedingRelations) {
          artifact.setLinksLoaded();
-      }
-
-      for (RelationLink relation : relations) {
-         relation.loadArtifacts(branch);
       }
    }
 

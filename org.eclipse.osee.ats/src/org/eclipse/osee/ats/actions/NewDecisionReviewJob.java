@@ -70,7 +70,7 @@ public class NewDecisionReviewJob extends Job {
             (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(DecisionReviewArtifact.ARTIFACT_NAME,
                   AtsPlugin.getAtsBranch(), "Should we do this?  Yes will require followup, No will not");
 
-      if (teamParent != null) teamParent.relate(RelationSide.TeamWorkflowToReview_Review, decRev);
+      if (teamParent != null) teamParent.addRelation(RelationSide.TeamWorkflowToReview_Review, decRev, null);
       if (againstCurrentState) decRev.setSoleAttributeValue(
             ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
             teamParent.getSmaMgr().getStateMgr().getCurrentStateName());

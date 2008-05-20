@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import java.sql.SQLException;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -20,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class RemoteArtifactEventFactory {
 
-   public static NetworkArtifactModifiedEvent makeEvent(Artifact artifact, int transactionNumber) throws IllegalStateException, SQLException {
+   public static NetworkArtifactModifiedEvent makeEvent(Artifact artifact, int transactionNumber) throws Exception {
 
       if (artifact == null || transactionNumber < 0) {
          throw new IllegalStateException("Artifact or transactionNumber can not be null.");

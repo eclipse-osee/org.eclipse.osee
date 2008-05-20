@@ -114,7 +114,7 @@ public class GroupExplorerItem implements IEventReceiver {
          for (GroupExplorerItem item : getGroupItems()) {
             removeGroupItem(item);
          }
-         for (Artifact art : artifact.getArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS)) {
+         for (Artifact art : artifact.getRelatedArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS)) {
             addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
          }
       } catch (SQLException ex) {

@@ -287,16 +287,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public void removeSubscribed(User user) throws SQLException {
-      unrelate(RelationSide.SubscribedUser_User, user, true);
+      deleteRelation(RelationSide.SubscribedUser_User, user);
+      persistRelations();
    }
 
    public boolean isSubscribed(User user) throws SQLException {
-      return (getArtifacts(RelationSide.SubscribedUser_User).contains(user));
+      return (getRelatedArtifacts(RelationSide.SubscribedUser_User).contains(user));
    }
 
    public ArrayList<User> getSubscribed() throws SQLException {
       ArrayList<User> arts = new ArrayList<User>();
-      for (Artifact art : getArtifacts(RelationSide.SubscribedUser_User))
+      for (Artifact art : getRelatedArtifacts(RelationSide.SubscribedUser_User))
          arts.add((User) art);
       return arts;
    }
@@ -306,16 +307,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    public void removeFavorite(User user) throws SQLException {
-      unrelate(RelationSide.FavoriteUser_User, user, true);
+      deleteRelation(RelationSide.FavoriteUser_User, user);
+      persistRelations();
    }
 
    public boolean isFavorite(User user) throws SQLException {
-      return (getArtifacts(RelationSide.FavoriteUser_User).contains(user));
+      return (getRelatedArtifacts(RelationSide.FavoriteUser_User).contains(user));
    }
 
    public ArrayList<User> getFavorites() throws SQLException {
       ArrayList<User> arts = new ArrayList<User>();
-      for (Artifact art : getArtifacts(RelationSide.FavoriteUser_User))
+      for (Artifact art : getRelatedArtifacts(RelationSide.FavoriteUser_User))
          arts.add((User) art);
       return arts;
    }

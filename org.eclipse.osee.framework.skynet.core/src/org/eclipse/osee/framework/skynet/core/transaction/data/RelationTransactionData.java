@@ -57,7 +57,7 @@ public class RelationTransactionData implements ITransactionData {
     */
    private void populateDataList() {
       dataItems.add(SQL3DataType.INTEGER);
-      dataItems.add(link.getPersistenceMemo().getLinkId());
+      dataItems.add(link.getRelationId());
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getRelationType().getRelationTypeId());
       dataItems.add(SQL3DataType.INTEGER);
@@ -78,7 +78,7 @@ public class RelationTransactionData implements ITransactionData {
       notCurrentDataItems.add(SQL3DataType.INTEGER);
       notCurrentDataItems.add(branch.getBranchId());
       notCurrentDataItems.add(SQL3DataType.INTEGER);
-      notCurrentDataItems.add(link.getPersistenceMemo().getLinkId());
+      notCurrentDataItems.add(link.getRelationId());
    }
 
    /* (non-Javadoc)
@@ -101,7 +101,7 @@ public class RelationTransactionData implements ITransactionData {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof RelationTransactionData) {
-         return ((RelationTransactionData) obj).link.getPersistenceMemo().getLinkId() == link.getPersistenceMemo().getLinkId();
+         return ((RelationTransactionData) obj).link.getRelationId() == link.getRelationId();
       }
       return false;
    }
@@ -111,7 +111,7 @@ public class RelationTransactionData implements ITransactionData {
     */
    @Override
    public int hashCode() {
-      return link.getPersistenceMemo().getLinkId() * PRIME_NUMBER;
+      return link.getRelationId() * PRIME_NUMBER;
    }
 
    /* (non-Javadoc)

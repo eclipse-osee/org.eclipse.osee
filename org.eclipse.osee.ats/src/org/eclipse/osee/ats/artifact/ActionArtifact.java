@@ -813,7 +813,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       teamArt.setTeamDefinition(teamDef);
 
       // Relate Action to WorkFlow
-      relate(RelationSide.ActionToWorkflow_WorkFlow, teamArt);
+      addRelation(RelationSide.ActionToWorkflow_WorkFlow, teamArt, null);
 
       teamArt.persist();
 

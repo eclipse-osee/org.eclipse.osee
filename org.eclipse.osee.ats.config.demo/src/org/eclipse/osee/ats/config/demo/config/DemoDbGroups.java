@@ -38,20 +38,25 @@ public class DemoDbGroups {
          groupArt.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, codeArt.getParentActionArtifact(), true);
 
          // Add All Team Workflows to Universal Group
-         groupArt.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS,
-               codeArt.getParentActionArtifact().getTeamWorkFlowArtifacts(), true);
+         for (Artifact teamWorkflow : codeArt.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
+            groupArt.addRelation(RelationSide.UNIVERSAL_GROUPING__MEMBERS, teamWorkflow, null);
+         }
+         groupArt.persistRelations();
 
          // Relate codeArt to SAW_Bld_2
-         codeArt.relate(RelationSide.TeamWorkflowTargetedForVersion_Version, ArtifactQuery.getArtifactFromTypeAndName(
-               VersionArtifact.ARTIFACT_NAME, SawBuilds.SAW_Bld_2.name(), AtsPlugin.getAtsBranch()));
+         codeArt.addRelation(RelationSide.TeamWorkflowTargetedForVersion_Version,
+               ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, SawBuilds.SAW_Bld_2.name(),
+                     AtsPlugin.getAtsBranch()), null);
 
          codeArt.persist(true);
 
       }
 
       // Add all Tasks to Group
-      groupArt.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, ArtifactQuery.getArtifactsFromType(
-            TaskArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch()), true);
+      for (Artifact task : ArtifactQuery.getArtifactsFromType(TaskArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch())) {
+         groupArt.addRelation(RelationSide.UNIVERSAL_GROUPING__MEMBERS, task, null);
+      }
+      groupArt.persistRelations();
 
       return codeWorkflows;
    }

@@ -730,9 +730,11 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
                   for (Artifact art : artsToRelate) {
                      if (art instanceof TaskArtifact) {
                         TaskArtifact taskArt = (TaskArtifact) art;
-                        if (taskArt.getParentSMA() != null) taskArt.unrelate(RelationSide.SmaToTask_Sma,
-                              taskArt.getParentSMA(), true);
-                        taskArt.relate(RelationSide.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma(), true);
+                        if (taskArt.getParentSMA() != null) {
+                           taskArt.deleteRelation(RelationSide.SmaToTask_Sma, taskArt.getParentSMA());
+                        }
+                        taskArt.addRelation(RelationSide.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma(), null);
+                        taskArt.persistRelations();
                      }
                   }
                }

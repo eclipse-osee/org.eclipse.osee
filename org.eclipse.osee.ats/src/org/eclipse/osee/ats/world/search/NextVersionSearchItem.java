@@ -78,7 +78,7 @@ public class NextVersionSearchItem extends WorldSearchItem {
          return EMPTY_SET;
       }
       Set<Artifact> arts =
-            getTeamDefinition(searchType).getNextReleaseVersion().getArtifacts(
+            getTeamDefinition(searchType).getNextReleaseVersion().getRelatedArtifacts(
                   RelationSide.TeamWorkflowTargetedForVersion_Workflow);
       if (isCancelled()) return EMPTY_SET;
       return arts;

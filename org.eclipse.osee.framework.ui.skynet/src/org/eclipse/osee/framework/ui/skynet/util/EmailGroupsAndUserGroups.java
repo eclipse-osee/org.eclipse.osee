@@ -89,7 +89,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
          Set<String> emails = new HashSet<String>();
          for (Artifact artifact : dialog.getSelection()) {
             if (artifact.getArtifactTypeName().equals("Universal Group")) {
-               for (Artifact userArt : artifact.getArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS)) {
+               for (Artifact userArt : artifact.getRelatedArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS)) {
                   if (userArt instanceof User) {
                      emails.add(((User) userArt).getEmail());
                   }

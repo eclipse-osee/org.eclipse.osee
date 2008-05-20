@@ -92,7 +92,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
 
          if (subsystemRequirement.isOfType("Subsystem Requirement")) {
             boolean loopNeverRan = true;
-            for (Artifact subsystemDesign : subsystemRequirement.getArtifacts(RelationSide.Design__Design)) {
+            for (Artifact subsystemDesign : subsystemRequirement.getRelatedArtifacts(RelationSide.Design__Design)) {
                if (subsystemDesign.isOfType("Subsystem Design")) {
                   loopNeverRan = false;
                   excelWriter.writeCell(subsystemDesign.getSoleAttributeValue("Imported Paragraph Number", ""), 2);

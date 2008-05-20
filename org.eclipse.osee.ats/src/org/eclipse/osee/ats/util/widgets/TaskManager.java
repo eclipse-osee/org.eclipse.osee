@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -60,7 +61,12 @@ public class TaskManager {
    }
 
    public boolean hasTaskArtifacts() {
-      return smaMgr.getSma().hasArtifacts(RelationSide.SmaToTask_Task);
+      try {
+         return smaMgr.getSma().getRelatedArtifactsCount("SmaToTask") > 0;
+      } catch (OseeDataStoreException ex) {
+         OSEELog.logException(AtsPlugin.class, ex, true);
+         return false;
+      }
    }
 
    public TaskArtifact createNewTask(String title, boolean persist) throws Exception {
@@ -86,7 +92,7 @@ public class TaskManager {
       taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
             smaMgr.getStateMgr().getCurrentStateName());
 
-      smaMgr.getSma().relate(RelationSide.SmaToTask_Task, taskArt, false);
+      smaMgr.getSma().addRelation(RelationSide.SmaToTask_Task, taskArt, null);
       if (persist) taskArt.persist(true);
 
       return taskArt;

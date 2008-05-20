@@ -229,7 +229,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Artifact navArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Navigation",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
-         art.relate(RelationSide.ALLOCATION__COMPONENT, navArt);
+         art.addRelation(RelationSide.ALLOCATION__COMPONENT, navArt, null);
          art.persist();
       }
 
@@ -242,7 +242,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Artifact robotArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
-         art.relate(RelationSide.ALLOCATION__COMPONENT, robotArt);
+         art.addRelation(RelationSide.ALLOCATION__COMPONENT, robotArt, null);
          art.persist();
       }
 
@@ -304,7 +304,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
 
-         art.relate(RelationSide.ALLOCATION__COMPONENT, comArt);
+         art.addRelation(RelationSide.ALLOCATION__COMPONENT, comArt, null);
          art.persist();
       }
 
@@ -373,7 +373,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   VersionArtifact verArt =
                         (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
                               versionStr, AtsPlugin.getAtsBranch());
-                  teamWf.relate(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt);
+                  teamWf.addRelation(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt, null);
                   teamWf.persist();
                }
             }

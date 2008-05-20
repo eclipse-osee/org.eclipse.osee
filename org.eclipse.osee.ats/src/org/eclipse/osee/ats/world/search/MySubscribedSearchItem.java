@@ -35,6 +35,6 @@ public class MySubscribedSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(User user) throws Exception {
-      return user.getArtifacts(RelationSide.SubscribedUser_Artifact);
+      return user.getRelatedArtifacts(RelationSide.SubscribedUser_Artifact);
    }
 }

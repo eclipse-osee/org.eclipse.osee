@@ -17,12 +17,13 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -45,7 +46,7 @@ public class RelationMatrixExportJob extends ReportJob {
    }
 
    @Override
-   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws CoreException, IOException, SQLException, MultipleAttributesExist {
+   public void generateReport(List<Artifact> selectedArtifacts, IProgressMonitor monitor) throws CoreException, IOException, SQLException, MultipleAttributesExist, ArtifactDoesNotExist {
       matrix.clear();
       columnCount = selectedArtifacts.size() + 2; // use first column is the artifact name and 2nd is its identifier
       header = new String[columnCount];
@@ -62,13 +63,12 @@ public class RelationMatrixExportJob extends ReportJob {
       writeMatrix();
    }
 
-   private void saveRelationsForColumn(Artifact columnArtifact, int columnIndex) throws SQLException, MultipleAttributesExist {
+   private void saveRelationsForColumn(Artifact columnArtifact, int columnIndex) throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist {
       header[columnIndex] = columnArtifact.getDescriptiveName();
 
-      LinkManager linkManager = columnArtifact.getLinkManager();
-      for (RelationLink link : columnArtifact.getRelations(relationType)) {
-         String[] row = getAssociatedRow(linkManager.getOtherSideAritfact(link));
-         String rationale = link.getRationale();
+      for (ObjectPair<Artifact, String> relation : RelationManager.getRelations(columnArtifact, relationType)) {
+         String[] row = getAssociatedRow(relation.object1);
+         String rationale = relation.object2;
          if (rationale == null || rationale.trim().equals("")) {
             row[columnIndex] = "X";
          } else {

@@ -135,21 +135,6 @@ public class RelationLinkGroup {
          bOrder = artB.getLinkManager().ensureRelationGroupExists(descriptor, true).getLastOrderValue();
       }
 
-      RelationLink link = new RelationLink(artA, artB, descriptor, null, "", aOrder, bOrder, true);
-
-      link.getArtifactA().getLinkManager().addLink(link);
-      link.getArtifactB().getLinkManager().addLink(link);
-
-      if (rationale != null && !rationale.equals("")) {
-         link.setRationale(rationale, true);
-      }
-
-      if (persist)
-         link.persist();
-      else
-         eventManager.kick(new CacheRelationModifiedEvent(link, link.getRelationType().getTypeName(),
-               link.getASideName(), ModType.Added.name(), this, link.getBranch()));
-
       return true;
    }
 
@@ -215,31 +200,8 @@ public class RelationLinkGroup {
       throw new IllegalArgumentException("Group does not contain side name");
    }
 
-   public boolean hasArtifacts() {
-      return hasArtifacts(Artifact.class);
-   }
-
    public Set<Artifact> getArtifacts() {
       return getArtifacts(Artifact.class);
-   }
-
-   public boolean hasArtifacts(Class<Artifact> artifactClass) {
-      Artifact artToAdd;
-
-      for (RelationLink link : groupSide) {
-
-         if (sideA)
-            artToAdd = link.getArtifactA();
-         else
-            artToAdd = link.getArtifactB();
-
-         if (!artifactClass.isInstance(artToAdd)) throw new IllegalArgumentException(
-               "Not all artifacts are of type " + artifactClass);
-
-         if (artToAdd != null) return true;
-      }
-
-      return false;
    }
 
    @SuppressWarnings("unchecked")
@@ -273,15 +235,6 @@ public class RelationLinkGroup {
          return "<this> " + descriptor.getBToAPhrasing() + " <" + descriptor.getSideAName() + ">";
       else
          return "<this> " + descriptor.getAToBPhrasing() + " <" + descriptor.getSideBName() + ">";
-   }
-
-   public void setArtifact(Artifact artifact) throws SQLException {
-      checkArtifact(artifact);
-
-      removeAll();
-      addArtifact(artifact);
-
-      linkManager.persistLinks();
    }
 
    /**

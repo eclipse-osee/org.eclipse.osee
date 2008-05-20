@@ -226,7 +226,10 @@ public class LoadAIsAndTeamsAction extends Action {
             }
 
             if (teamDefArt != null) {
-               teamDefArt.relate(RelationSide.TeamActionableItem_ActionableItem, actionableItems);
+               for (Artifact actionableItem : actionableItems) {
+                  teamDefArt.addRelation(RelationSide.TeamActionableItem_ActionableItem, actionableItem, null);
+               }
+               teamDefArt.persistRelations();
             }
          }
          if (teamDefArt == null) {
@@ -242,7 +245,7 @@ public class LoadAIsAndTeamsAction extends Action {
             Artifact workflowArt =
                   ArtifactQuery.getArtifactFromTypeAndName(WorkflowDiagramFactory.GENERAL_DOCUMENT_ARTIFACT_NAME,
                         workflowId, AtsPlugin.getAtsBranch());
-            teamDefArt.relate(RelationSide.TeamDefinitionToWorkflowDiagram_WorkflowDiagram, workflowArt);
+            teamDefArt.addRelation(RelationSide.TeamDefinitionToWorkflowDiagram_WorkflowDiagram, workflowArt, null);
          }
 
          teamDefArt.persist();
@@ -294,7 +297,7 @@ public class LoadAIsAndTeamsAction extends Action {
                aia.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, staticId);
             }
             for (User user : leads) {
-               aia.relate(RelationSide.TeamLead_Lead, user);
+               aia.addRelation(RelationSide.TeamLead_Lead, user, null);
             }
 
             aia.persistAttributes();

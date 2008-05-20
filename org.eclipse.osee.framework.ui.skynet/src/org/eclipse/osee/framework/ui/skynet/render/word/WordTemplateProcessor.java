@@ -477,7 +477,7 @@ public class WordTemplateProcessor {
 
       if (performedOutLining) {
          if (recurseChildren) {
-            for (Artifact childArtifact : artifact.getArtifacts(outlineRelation)) {
+            for (Artifact childArtifact : artifact.getRelatedArtifacts(outlineRelation)) {
                processObjectArtifact(childArtifact, wordMl, outlineType);
             }
          }
@@ -519,7 +519,7 @@ public class WordTemplateProcessor {
       }
 
       if (attributeTypeName.equals("TIS Traceability")) {
-         for (Artifact requirement : artifact.getArtifacts(RelationSide.Verification__Requirement)) {
+         for (Artifact requirement : artifact.getRelatedArtifacts(RelationSide.Verification__Requirement)) {
             wordMl.addParagraph(requirement.getSoleAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
          }
          return;

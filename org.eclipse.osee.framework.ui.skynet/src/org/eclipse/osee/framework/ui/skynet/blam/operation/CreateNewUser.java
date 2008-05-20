@@ -98,9 +98,9 @@ public class CreateNewUser extends AbstractBlam {
          for (Artifact groupArt : groupArts) {
             if (groupNameListItem.getName().equals(groupArt.getDescriptiveName())) {
                if (groupArt.getArtifactTypeName().equals("Universal Group")) {
-                  groupArt.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, user);
+                  groupArt.addRelation(RelationSide.UNIVERSAL_GROUPING__MEMBERS, user, null);
                } else if (groupArt.getArtifactTypeName().equals("User Group")) {
-                  groupArt.relate(RelationSide.Users_User, user);
+                  groupArt.addRelation(RelationSide.Users_User, user, null);
                }
             }
          }

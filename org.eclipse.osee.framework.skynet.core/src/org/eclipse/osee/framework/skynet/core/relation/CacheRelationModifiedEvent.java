@@ -43,13 +43,13 @@ public class CacheRelationModifiedEvent extends RelationModifiedEvent {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof CacheRelationModifiedEvent) {
-         return (getLink().getPersistenceMemo().getLinkId() == (((CacheRelationModifiedEvent) obj).getLink().getPersistenceMemo().getLinkId()));
+         return (getLink().getRelationId() == (((CacheRelationModifiedEvent) obj).getLink().getRelationId()));
       }
       return super.equals(obj);
    }
 
    @Override
    public int hashCode() {
-      return getLink().getPersistenceMemo().getLinkId();
+      return getLink().getRelationId();
    }
 }

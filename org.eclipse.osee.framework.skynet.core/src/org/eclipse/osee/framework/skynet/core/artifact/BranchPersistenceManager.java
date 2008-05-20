@@ -748,10 +748,16 @@ public class BranchPersistenceManager implements PersistenceManager {
                            artifact.getFactory().getClass().getCanonicalName(),
                            SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
             } else {
-               remoteEvent = RemoteArtifactEventFactory.makeEvent(artifact, newTransactionNumber);
+               try {
+                  remoteEvent = RemoteArtifactEventFactory.makeEvent(artifact, newTransactionNumber);
+               } catch (Exception ex) {
+                  continue;
+               }
             }
 
-            if (!remoteEvents.contains(remoteEvent)) remoteEvents.add(remoteEvent);
+            if (!remoteEvents.contains(remoteEvent)) {
+               remoteEvents.add(remoteEvent);
+            }
          } while (chStmt.next());
       } finally {
          DbUtil.close(chStmt);

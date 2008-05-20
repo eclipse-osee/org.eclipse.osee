@@ -92,7 +92,8 @@ public class RelationImporter implements RowProcessor {
                   if (rationale.equalsIgnoreCase("x")) {
                      rationale = "";
                   }
-                  columnArtifacts[i].relate(RelationSide.ALLOCATION__REQUIREMENT, rowArtifact, rationale, true);
+                  columnArtifacts[i].addRelation(RelationSide.ALLOCATION__REQUIREMENT, rowArtifact, rationale);
+                  columnArtifacts[i].persistRelations();
                }
             }
          }

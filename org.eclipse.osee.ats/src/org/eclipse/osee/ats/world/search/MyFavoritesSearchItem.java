@@ -35,7 +35,7 @@ public class MyFavoritesSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(User user) throws Exception {
-      return user.getArtifacts(RelationSide.FavoriteUser_Artifact);
+      return user.getRelatedArtifacts(RelationSide.FavoriteUser_Artifact);
    }
 
    @Override

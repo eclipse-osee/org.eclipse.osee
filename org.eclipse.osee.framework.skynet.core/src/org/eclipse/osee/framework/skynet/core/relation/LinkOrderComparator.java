@@ -35,7 +35,7 @@ public class LinkOrderComparator implements Comparator<RelationLink> {
          val = link1.getBOrder() - link2.getBOrder();
       // TreeSet's like to remove stuff if zero is returned ... so don't do that if items differ
       if (val == 0 && link1 != link2)
-         return link1.getPersistenceMemo().getGammaId() - link2.getPersistenceMemo().getGammaId();
+         return link1.getGammaId() - link2.getGammaId();
       else if (link1 == link2)
          return 0;
       else

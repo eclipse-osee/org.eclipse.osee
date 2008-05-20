@@ -74,10 +74,10 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
             ArtifactPersistenceManager.getInstance().getArtifacts(smaCriteria, true,
                   BranchPersistenceManager.getAtsBranch());
 
-      arts.addAll(user.getArtifacts(RelationSide.TeamLead_Team));
-      arts.addAll(user.getArtifacts(RelationSide.TeamMember_Team));
-      arts.addAll(user.getArtifacts(RelationSide.FavoriteUser_Artifact));
-      arts.addAll(user.getArtifacts(RelationSide.SubscribedUser_Artifact));
+      arts.addAll(user.getRelatedArtifacts(RelationSide.TeamLead_Team));
+      arts.addAll(user.getRelatedArtifacts(RelationSide.TeamMember_Team));
+      arts.addAll(user.getRelatedArtifacts(RelationSide.FavoriteUser_Artifact));
+      arts.addAll(user.getRelatedArtifacts(RelationSide.SubscribedUser_Artifact));
 
       if (isCancelled()) return EMPTY_SET;
       return arts;

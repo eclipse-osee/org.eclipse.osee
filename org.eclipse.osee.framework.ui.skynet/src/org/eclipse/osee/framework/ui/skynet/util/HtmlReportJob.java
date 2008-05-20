@@ -128,7 +128,7 @@ public class HtmlReportJob extends Job {
       if (includeAttributes) sb.append(AHTML.addSimpleTableRow(processAttributes(art, recurseChildren,
             includeAttributes, onlyAttributeNames)));
       int x = 1;
-      if (recurseChildren) for (Artifact child : art.getArtifacts(side)) {
+      if (recurseChildren) for (Artifact child : art.getRelatedArtifacts(side)) {
          sb.append(AHTML.addSimpleTableRow(processArtifact(child, paraNum + "." + x++, side, recurseChildren,
                includeAttributes, onlyAttributeNames)));
       }

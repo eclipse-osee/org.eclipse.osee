@@ -150,7 +150,7 @@ public final class Artifacts {
             Artifact parentCursor = artifact;
             Collection<Artifact> candidates;
             for (;;) {
-               candidates = parentCursor.getArtifacts(parentSide);
+               candidates = parentCursor.getRelatedArtifacts(parentSide);
                if (candidates.isEmpty()) {
                   rootArtifacts.add(artifact);
                   break;
@@ -243,7 +243,7 @@ public final class Artifacts {
             Artifact parentCursor = artifact;
             Collection<Artifact> parentCandidates;
             for (;;) {
-               parentCandidates = parentCursor.getArtifacts(parentSide);
+               parentCandidates = parentCursor.getRelatedArtifacts(parentSide);
                if (parentCandidates.isEmpty()) {
                   // Not a descendant, so ignore it
                   break;
@@ -297,7 +297,7 @@ public final class Artifacts {
     * @throws IllegalArgumentException if any parameter is null
     * @throws IllegalArgumentException if level is less than zero
     * @throws SQLException See
-    *            {@link Artifact#getArtifacts(org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration)}
+    *            {@link Artifact#getRelatedArtifacts(org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration)}
     */
    public static Collection<Artifact> getDescendantsAtLevel(Artifact root, RelationSide childSide, int level) throws SQLException {
       if (root == null) throw new IllegalArgumentException("root can not be null");
@@ -315,7 +315,7 @@ public final class Artifacts {
       if (level == 0) {
          levelArtifacts.add(ancestor);
       } else {
-         for (Artifact artifact : ancestor.getArtifacts(childSide)) {
+         for (Artifact artifact : ancestor.getRelatedArtifacts(childSide)) {
             addAtLevelZero(levelArtifacts, artifact, childSide, level - 1);
          }
       }

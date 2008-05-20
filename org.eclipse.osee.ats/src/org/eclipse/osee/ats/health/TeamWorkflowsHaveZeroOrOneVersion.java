@@ -122,8 +122,8 @@ public class TeamWorkflowsHaveZeroOrOneVersion extends XNavigateItemAutoRunActio
          for (Artifact art : arts) {
             if (monitor != null) monitor.subTask(String.format("Processing %d/%d...", x++, arts.size()));
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
-            if (teamArt.getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version).size() > 1) {
-               rd.logError("Team workflow " + teamArt.getHumanReadableId() + " has " + teamArt.getArtifacts(
+            if (teamArt.getRelatedArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version).size() > 1) {
+               rd.logError("Team workflow " + teamArt.getHumanReadableId() + " has " + teamArt.getRelatedArtifacts(
                      RelationSide.TeamWorkflowTargetedForVersion_Version).size() + " versions");
             }
          }

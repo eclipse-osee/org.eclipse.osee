@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -21,14 +20,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetRelationLinkEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkModifiedEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -36,17 +32,13 @@ import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionBuilder;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.data.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteLinkEventFactory;
@@ -64,9 +56,6 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
  */
 public class RelationPersistenceManager implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationPersistenceManager.class);
-   private static final String SELECT_LINKS =
-         "SELECT rl_1.*, txs1.* FROM osee_define_rel_link rl_1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE (rl_1.a_art_id = ?  OR rl_1.b_art_id = ?) AND rl_1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? order by rl_1.rel_link_id, txs1.transaction_id desc";
-
    private static final String UPDATE_RELATION_ORDERS =
          "UPDATE " + RELATION_LINK_VERSION_TABLE + " t1 SET a_order_value=?, b_order_value=? WHERE gamma_id=?";
    private ArtifactPersistenceManager artifactManager;
@@ -107,39 +96,36 @@ public class RelationPersistenceManager implements PersistenceManager {
     * 
     * @param relationLink The relationLink to persist.
     */
-   public void makePersistent(final RelationLink relationLink) throws SQLException {
-      if (relationLink.isDirty()) {
+   public static void makePersistent(final RelationLink relationLink) throws SQLException {
+      AbstractSkynetTxTemplate relationPersistTx = new AbstractSkynetTxTemplate(relationLink.getBranch(true)) {
 
-         AbstractSkynetTxTemplate relationPersistTx = new AbstractSkynetTxTemplate(relationLink.getBranch()) {
-
-            @Override
-            protected void handleTxWork() throws Exception {
-               trace(relationLink, false, getTxBuilder());
-            }
-
-         };
-         try {
-            relationPersistTx.execute();
-         } catch (Exception ex) {
-            throw new SQLException(ex.getLocalizedMessage());
+         @Override
+         protected void handleTxWork() throws Exception {
+            trace(relationLink, false, getTxBuilder());
          }
+
+      };
+      try {
+         relationPersistTx.execute();
+      } catch (Exception ex) {
+         throw new SQLException(ex.getLocalizedMessage());
       }
    }
 
-   public void trace(RelationLink relationLink, boolean recurse, SkynetTransactionBuilder builder) throws Exception {
-      if (relationLink.isDirty()) {
+   public static void trace(RelationLink relationLink, boolean recurse, SkynetTransactionBuilder builder) throws Exception {
+      if (relationLink.isDeleted()) {
+         builder.deleteLink(relationLink);
+      } else {
          builder.addLink(relationLink);
 
          if (recurse) {
-            artifactManager.saveTrace(relationLink.getArtifactA(), recurse, builder);
-            artifactManager.saveTrace(relationLink.getArtifactB(), recurse, builder);
+            ArtifactPersistenceManager.getInstance().saveTrace(relationLink.getArtifactA(), recurse, builder);
+            ArtifactPersistenceManager.getInstance().saveTrace(relationLink.getArtifactB(), recurse, builder);
          }
       }
    }
 
    private void insertRelationLinkTable(RelationLink relationLink, SkynetTransaction transaction) throws SQLException {
-
-      int linkId;
       int gammaId = SkynetDatabase.getNextGammaId();
       Artifact aArtifact = relationLink.getArtifactA();
       Artifact bArtifact = relationLink.getArtifactB();
@@ -150,22 +136,19 @@ public class RelationPersistenceManager implements PersistenceManager {
       ModType modType;
       ModificationType modId;
 
-      if (relationLink.getPersistenceMemo() == null) {
-         linkId = Query.getNextSeqVal(null, SkynetDatabase.REL_LINK_ID_SEQ);
-         relationLink.setPersistenceMemo(new LinkPersistenceMemo(linkId, gammaId));
-         RelationCache.cache(relationLink, transaction.getTransactionId().getTransactionNumber());
+      if (!relationLink.isInDb()) {
+         int relationId = Query.getNextSeqVal(null, SkynetDatabase.REL_LINK_ID_SEQ);
+         relationLink.setPersistenceIds(relationId, gammaId);
          transaction.addRemoteEvent(RemoteLinkEventFactory.makeEvent(relationLink, transaction.getTransactionNumber()));
          modType = ModType.Added;
          modId = ModificationType.NEW;
       } else {
-         LinkPersistenceMemo memo = relationLink.getPersistenceMemo();
-         relationLink.getPersistenceMemo().setGammaId(gammaId);
-         linkId = memo.getLinkId();
+         relationLink.setGammaId(gammaId);
 
-         transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(
-               relationLink.getPersistenceMemo().getGammaId(), relationLink.getBranch().getBranchId(),
-               transaction.getTransactionNumber(), linkId, aArtId, aArtTypeId, bArtId, bArtTypeId,
-               relationLink.getRationale(), relationLink.getAOrder(), relationLink.getBOrder(),
+         transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(relationLink.getGammaId(),
+               relationLink.getBranch().getBranchId(), transaction.getTransactionNumber(),
+               relationLink.getRelationId(), aArtId, aArtTypeId, bArtId, bArtTypeId, relationLink.getRationale(),
+               relationLink.getAOrder(), relationLink.getBOrder(),
                aArtifact.getFactory().getClass().getCanonicalName(),
                bArtifact.getFactory().getClass().getCanonicalName(),
                SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
@@ -184,13 +167,13 @@ public class RelationPersistenceManager implements PersistenceManager {
    /**
     * Remove all relations stored in the list awaiting to be deleted.
     */
-   protected void deleteRelationLinks(final Collection<RelationLink> links, Branch branch) throws SQLException {
+   static void deleteRelationLinks(final Collection<RelationLink> links, Branch branch) throws SQLException {
 
       if (!links.isEmpty()) {
          AbstractSkynetTxTemplate deleteRelationsTx = new AbstractSkynetTxTemplate(branch) {
 
             @Override
-            protected void handleTxWork() throws Exception {
+            protected void handleTxWork() throws SQLException {
                for (RelationLink link : links) {
                   getTxBuilder().deleteLink(link);
                }
@@ -208,7 +191,7 @@ public class RelationPersistenceManager implements PersistenceManager {
    public void doDelete(RelationLink relationLink, SkynetTransaction transaction) throws SQLException {
       // if the persistence memo is null the link has never been saved, therefore it does not
       // need to be version controlled.
-      if (relationLink.getPersistenceMemo() == null) return;
+      if (!relationLink.isInDb()) return;
 
       int gammaId = SkynetDatabase.getNextGammaId();
       Artifact aArtifact = relationLink.getArtifactA();
@@ -221,10 +204,10 @@ public class RelationPersistenceManager implements PersistenceManager {
       transaction.addTransactionDataItem(new RelationTransactionData(relationLink, gammaId,
             transaction.getTransactionNumber(), ModificationType.DELETED, transaction.getBranch()));
 
-      transaction.addRemoteEvent(new NetworkRelationLinkDeletedEvent(relationLink.getPersistenceMemo().getGammaId(),
-            relationLink.getBranch().getBranchId(), transaction.getTransactionNumber(),
-            relationLink.getPersistenceMemo().getLinkId(), aArtId, aArtTypeId, bArtId, bArtTypeId,
-            aArtifact.getFactory().getClass().getCanonicalName(), bArtifact.getFactory().getClass().getCanonicalName(),
+      transaction.addRemoteEvent(new NetworkRelationLinkDeletedEvent(relationLink.getGammaId(),
+            relationLink.getBranch().getBranchId(), transaction.getTransactionNumber(), relationLink.getRelationId(),
+            aArtId, aArtTypeId, bArtId, bArtTypeId, aArtifact.getFactory().getClass().getCanonicalName(),
+            bArtifact.getFactory().getClass().getCanonicalName(),
             SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 
       transaction.addLocalEvent(new TransactionRelationModifiedEvent(relationLink, aArtifact.getBranch(),
@@ -249,7 +232,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       for (RelationLink link : links) {
          if (!firstTime) deleteSql.append(" , ");
 
-         deleteSql.append(link.getPersistenceMemo().getLinkId());
+         deleteSql.append(link.getRelationId());
          firstTime = false;
          link.delete();
       }
@@ -277,7 +260,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                link.getArtifactB().persist(false);
 
                // If the relation does not have a persistence memo then it is 'new'
-               if (link.getPersistenceMemo() == null || link.isVersionControlled()) {
+               if (!link.isInDb() || link.isVersionControlled()) {
                   insertRelationLinkTable(link, transaction);
                } else {
                   Artifact aArtifact = link.getArtifactA();
@@ -288,18 +271,18 @@ public class RelationPersistenceManager implements PersistenceManager {
                   int bArtTypeId = bArtifact.getArtTypeId();
                   int aOrder = link.getAOrder();
                   int bOrder = link.getBOrder();
-                  int linkId = link.getPersistenceMemo().getLinkId();
+                  int relationId = link.getRelationId();
                   String rationale = link.getRationale();
 
                   ConnectionHandler.runPreparedUpdate(
                         "UPDATE " + RELATION_LINK_VERSION_TABLE + " SET a_art_id=?, b_art_id=?, a_order_value=?, b_order_value=?, rationale=? WHERE rel_link_id=?",
                         SQL3DataType.INTEGER, aArtId, SQL3DataType.INTEGER, bArtId, SQL3DataType.INTEGER, aOrder,
-                        SQL3DataType.INTEGER, bOrder, SQL3DataType.VARCHAR, rationale, SQL3DataType.INTEGER, linkId);
+                        SQL3DataType.INTEGER, bOrder, SQL3DataType.VARCHAR, rationale, SQL3DataType.INTEGER, relationId);
 
-                  transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(
-                        link.getPersistenceMemo().getGammaId(), link.getBranch().getBranchId(),
-                        transaction.getTransactionNumber(), linkId, aArtId, aArtTypeId, bArtId, bArtTypeId, rationale,
-                        aOrder, bOrder, aArtifact.getFactory().getClass().getCanonicalName(),
+                  transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(link.getGammaId(),
+                        link.getBranch().getBranchId(), transaction.getTransactionNumber(), relationId, aArtId,
+                        aArtTypeId, bArtId, bArtTypeId, rationale, aOrder, bOrder,
+                        aArtifact.getFactory().getClass().getCanonicalName(),
                         bArtifact.getFactory().getClass().getCanonicalName(),
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 
@@ -326,89 +309,9 @@ public class RelationPersistenceManager implements PersistenceManager {
 
       for (RelationLink link : links) {
          data.add(new Object[] {SQL3DataType.INTEGER, link.getAOrder(), SQL3DataType.INTEGER, link.getBOrder(),
-               SQL3DataType.INTEGER, link.getPersistenceMemo().getGammaId()});
+               SQL3DataType.INTEGER, link.getGammaId()});
       }
       ConnectionHandler.runPreparedUpdateBatch(UPDATE_RELATION_ORDERS, data);
-   }
-
-   public void populateArtifactRelations(Artifact artifact) throws SQLException {
-      int previousRelationId = -1;
-      int branchId = artifact.getBranch().getBranchId();
-      TransactionId transactionId;
-      if (artifact.getTransactionNumber() == 0) {
-         transactionId = TransactionIdManager.getInstance().getEditableTransactionId(artifact.getBranch());
-      } else {
-         transactionId =
-               TransactionIdManager.getInstance().getPossiblyEditableTransactionId(artifact.getTransactionNumber());
-      }
-      ConnectionHandlerStatement chStmt = null;
-
-      try {
-         chStmt =
-               ConnectionHandler.runPreparedQuery(100, SELECT_LINKS, SQL3DataType.INTEGER, artifact.getArtId(),
-                     SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER, transactionId,
-                     SQL3DataType.INTEGER, branchId);
-         ResultSet rSet = chStmt.getRset();
-
-         while (rSet.next()) {
-            int relId = rSet.getInt("rel_link_id");
-            if (relId == previousRelationId) {
-               continue;
-            }
-            previousRelationId = relId;
-            if (rSet.getInt("modification_id") == ModificationType.DELETED.getValue()) {
-               continue;
-            }
-            loadLinkData(rSet, relId, transactionId);
-
-         }
-      } finally {
-         DbUtil.close(chStmt);
-      }
-   }
-
-   private void loadLinkData(ResultSet rSet, int relId, TransactionId transactionId) throws SQLException {
-      RelationLink link = null;
-      String rationale = rSet.getString("rationale");
-      int aArtId = rSet.getInt("a_art_id");
-      int bArtId = rSet.getInt("b_art_id");
-      int aOrderValue = rSet.getInt("a_order_value");
-      int bOrderValue = rSet.getInt("b_order_value");
-      int gammaId = rSet.getInt("gamma_id");
-
-      link = RelationCache.getRelation(relId, transactionId.getTransactionNumber());
-
-      if (link == null) {
-         try {
-            Artifact artA = artifactManager.getArtifactFromId(aArtId, transactionId);
-            Artifact artB = artifactManager.getArtifactFromId(bArtId, transactionId);
-            RelationType relationType = RelationTypeManager.getType(rSet.getInt("rel_link_type_id"));
-
-            link =
-                  new RelationLink(artA, artB, relationType, new LinkPersistenceMemo(relId, gammaId),
-                        (rationale != null && !rationale.equals("null")) ? rationale : "", aOrderValue, bOrderValue,
-                        false);
-
-            RelationCache.cache(link, transactionId.getTransactionNumber());
-
-            if (link.getArtifactA().isLinksLoaded()) {
-               link.getArtifactA().getLinkManager().addLink(link);
-            }
-            if (link.getArtifactB().isLinksLoaded()) {
-               link.getArtifactB().getLinkManager().addLink(link);
-            }
-         } catch (RuntimeException ex) {
-            logger.log(Level.WARNING,
-                  ex.getLocalizedMessage() + ": relId = " + relId + " a_art_id = " + aArtId + " b_art_id = " + bArtId,
-                  ex);
-         }
-      } else {
-         if (!link.getArtifactA().getLinkManager().deletedLinks.contains(link) && !link.isDeleted()) {
-
-            link.getArtifactA().getLinkManager().addLink(link);
-            link.getArtifactB().getLinkManager().addLink(link);
-         }
-      }
    }
 
    /**
@@ -417,6 +320,7 @@ public class RelationPersistenceManager implements PersistenceManager {
     * @param event
     */
    public void updateRelationCache(ISkynetRelationLinkEvent event, Collection<Event> localEvents, int newTransactionId) {
+      /*
       try {
          Integer relId = event.getRelId();
          Integer gammaId = event.getGammaId();
@@ -471,13 +375,16 @@ public class RelationPersistenceManager implements PersistenceManager {
                   int aOrder = newRelationEvent.getAOrder();
                   int bOrder = newRelationEvent.getBOrder();
 
-                  RelationLink newLink =
+                  RelationLink newLink = null;
+                  new links should not be created as part of an update
+                   RelationLink newLink =
                         new RelationLink(artA, artB, relationType, memo, rationale, aOrder, bOrder, false);
+                       
 
                   if (artA.isLinksLoaded()) artA.getLinkManager().addLink(newLink);
                   if (artB.isLinksLoaded()) artB.getLinkManager().addLink(newLink);
 
-                  RelationCache.cache(newLink, newTransactionId);
+                  //RelationCache.cache(newLink, newTransactionId);
                   localEvents.add(new TransactionRelationModifiedEvent(newLink, branch,
                         newLink.getRelationType().getTypeName(), newLink.getASideName(), ModType.Added, this));
                }
@@ -487,12 +394,12 @@ public class RelationPersistenceManager implements PersistenceManager {
          }
       } catch (SQLException e) {
          logger.log(Level.SEVERE, e.toString(), e);
-      }
+      }*/
    }
 
    public void insertObjectsOnSideB(Artifact sideAArt, Artifact targetArt, Collection<Artifact> insertArtifacts, RelationSide relSide, InsertLocation insertLocation) throws SQLException {
       // Ensure all insertArts exist first; if not, add them
-      Set<Artifact> bSideArts = sideAArt.getArtifacts(relSide);
+      Set<Artifact> bSideArts = sideAArt.getRelatedArtifacts(relSide);
       for (Artifact insertArtifact : insertArtifacts) {
          if (!bSideArts.contains(insertArtifact)) sideAArt.relate(relSide, insertArtifact, true);
       }
@@ -523,7 +430,7 @@ public class RelationPersistenceManager implements PersistenceManager {
    }
 
    public void moveObjectB(Artifact sideAArt, Artifact sideBArt, RelationSide relSide, Direction dir) throws SQLException {
-      Set<Artifact> arts = sideAArt.getArtifacts(relSide);
+      Set<Artifact> arts = sideAArt.getRelatedArtifacts(relSide);
       Artifact prevArt = null;
       Artifact nextArt = null;
       Object objs[] = arts.toArray();
@@ -574,7 +481,7 @@ public class RelationPersistenceManager implements PersistenceManager {
    }
 
    public void moveObjectA(Artifact sideAArt, Artifact sideBArt, RelationSide relSide, Direction dir) throws SQLException, ArtifactDoesNotExist {
-      Set<Artifact> arts = sideBArt.getArtifacts(relSide);
+      Set<Artifact> arts = sideBArt.getRelatedArtifacts(relSide);
       Artifact prevArt = null;
       Artifact nextArt = null;
       Object objs[] = arts.toArray();

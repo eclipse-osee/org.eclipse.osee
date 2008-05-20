@@ -267,8 +267,9 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                   @Override
                   protected void handleTxWork() throws Exception {
                      for (GroupExplorerItem item : items) {
-                        item.getArtifact().unrelate(RelationSide.UNIVERSAL_GROUPING__GROUP,
-                              item.getParentItem().getArtifact(), true);
+                        item.getArtifact().deleteRelation(RelationSide.UNIVERSAL_GROUPING__GROUP,
+                              item.getParentItem().getArtifact());
+                        item.getArtifact().persistRelations();
                      }
                   }
                };
@@ -595,12 +596,13 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                                  protected void handleTxWork() throws Exception {
                                     for (Artifact artifact : insertArts) {
                                        // Remove item from old group
-                                       parentArtifact.unrelate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, artifact, true);
+                                       parentArtifact.deleteRelation(RelationSide.UNIVERSAL_GROUPING__MEMBERS, artifact);
                                        // Add items to new group
-                                       targetArtifact.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, artifact, true);
+                                       targetArtifact.addRelation(RelationSide.UNIVERSAL_GROUPING__MEMBERS, artifact,
+                                             null);
                                     }
-                                    parentArtifact.persist();
-                                    targetArtifact.persist();
+                                    parentArtifact.persistAttributesAndRelations();
+                                    targetArtifact.persistAttributesAndRelations();
                                  }
                               };
 

@@ -175,11 +175,13 @@ public class LinkManager {
 
    public void persistLinks() throws SQLException {
       for (RelationLink link : links) {
-         link.persist();
+         if (link.isDirty()) {
+            RelationPersistenceManager.makePersistent(link);
+         }
       }
       RelationPersistenceManager.getInstance().deleteRelationLinks(deletedLinks, artifact.getBranch());
 
-      for (RelationLink link : deletedLinks.toArray(dummyRelationLinks)) {
+      for (RelationLink link : deletedLinks) {
          link.getArtifactA().getLinkManager().deletedLinks.remove(link);
          link.getArtifactB().getLinkManager().deletedLinks.remove(link);
       }
@@ -267,24 +269,8 @@ public class LinkManager {
 
       if (artifact == link.getArtifactA())
          return link.getArtifactB();
-      else if (artifact == link.getArtifactB())
-         return link.getArtifactA();
-      else
-         throw new IllegalArgumentException(
-               "The link " + link.getPersistenceMemo() + " does not pertain to this link manager for artifact " + artifact.getGuid() + ". Artifact a: " + (link.getArtifactA() == null ? null : link.getArtifactA().getGuid()) + " Artifact b: " + (link.getArtifactB() == null ? null : link.getArtifactB().getGuid()));
-   }
-
-   public boolean hasArtifacts(IRelationEnumeration side) throws SQLException {
-      if (side == null) throw new IllegalArgumentException("side can not be null");
-
-      if (side.isSideA()) {
-         RelationLinkGroup group = sideALinks.get(side.getRelationType());
-         if (group != null) return hasArtifacts(group);
-      } else {
-         RelationLinkGroup group = sideBLinks.get(side.getRelationType());
-         if (group != null) return hasArtifacts(group);
-      }
-      return false;
+      else if (artifact == link.getArtifactB()) return link.getArtifactA();
+      return null;
    }
 
    public Set<Artifact> getArtifacts(IRelationEnumeration side) throws SQLException {
@@ -315,10 +301,6 @@ public class LinkManager {
          return 0;
       }
       return group.getLinkCount();
-   }
-
-   private boolean hasArtifacts(RelationLinkGroup group) {
-      return group.hasArtifacts();
    }
 
    /**
@@ -486,14 +468,5 @@ public class LinkManager {
          }
       }
       links.clear();
-   }
-
-   public RelationLink getRelation(int relationId) {
-      for (RelationLink relation : links) {
-         if (relation.getPersistenceMemo().getLinkId() == relationId) {
-            return relation;
-         }
-      }
-      return null;
    }
 }

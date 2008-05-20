@@ -287,7 +287,13 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public VersionArtifact getTargetedForVersion() throws SQLException {
-      return (VersionArtifact) getFirstArtifact(RelationSide.TeamWorkflowTargetedForVersion_Version);
+      try {
+         return (VersionArtifact) getRelatedArtifact("TeamWorkflowTargetedForVersion");
+      } catch (ArtifactDoesNotExist ex) {
+         return null;
+      } catch (Exception ex) {
+         throw new SQLException(ex);
+      }
    }
 
    @Override

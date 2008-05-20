@@ -23,7 +23,7 @@ public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
    }
 
    @Override
-   protected ICharacterAttributeDataProvider getAttributeDataProvider() {
+   public ICharacterAttributeDataProvider getAttributeDataProvider() {
       // this cast is always safe since the the data provider passed in the constructor to 
       // the super class is of type  ICharacterAttributeDataProvider
       return (ICharacterAttributeDataProvider) super.getAttributeDataProvider();
