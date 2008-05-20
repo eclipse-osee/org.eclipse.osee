@@ -39,10 +39,7 @@ import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.messaging.event.skynet.ISkynetArtifactEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactModifiedEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
@@ -77,7 +74,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransacti
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -829,58 +825,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    public static Artifact getDefaultHierarchyRootArtifact(Branch branch) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
       return getDefaultHierarchyRootArtifact(branch, false);
-   }
-
-   /**
-    * Updates local cache
-    * 
-    * @param event
-    */
-   public void updateArtifactCache(ISkynetArtifactEvent event, Collection<Event> localEvents, TransactionId newTransactionId, TransactionId notEditableTransactionId) {
-      try {
-         int artId = event.getArtId();
-         int branchId = event.getBranchId();
-         int transactionNumber = event.getTransactionId();
-
-         Artifact artifact = ArtifactCache.get(artId, branchManager.getBranch(branchId));
-
-         if (artifact != null && artifact.isLive()) {
-            ModType modType = null;
-
-            if (event instanceof NetworkArtifactModifiedEvent) {
-               setChangedAttributesOnNewArtifact(artifact, ((NetworkArtifactModifiedEvent) event).getAttributeChanges());
-               modType = ModType.Changed;
-            } else if (event instanceof NetworkArtifactDeletedEvent) {
-               artifact.setDeleted(transactionNumber);
-               modType = ModType.Deleted;
-            }
-            localEvents.add(new TransactionArtifactModifiedEvent(artifact, modType, this));
-            artifact.setNotDirty();
-         }
-      } catch (Exception e) {
-         logger.log(Level.SEVERE, e.toString(), e);
-      }
-   }
-
-   /**
-    * @param artifact
-    * @param attributeChanges
-    * @throws SQLException
-    * @throws OseeCoreException
-    */
-   private void setChangedAttributesOnNewArtifact(Artifact artifact, Collection<SkynetAttributeChange> attributeChanges) throws SQLException, OseeCoreException {
-      List<String> dirtyAttributeName = new LinkedList<String>();
-
-      for (SkynetAttributeChange skynetAttributeChange : attributeChanges) {
-         for (Attribute<Object> attribute : artifact.getAttributes(skynetAttributeChange.getName())) {
-            if (attribute.getAttrId() == skynetAttributeChange.getAttributeId()) {
-               if (attribute.isDirty()) {
-                  dirtyAttributeName.add(attribute.getNameValueDescription());
-               }
-               attribute.setValue(skynetAttributeChange.getValue());
-            }
-         }
-      }
    }
 
    public void bulkLoadArtifacts(Collection<? extends Artifact> arts, Branch branch) throws SQLException, IllegalArgumentException {
