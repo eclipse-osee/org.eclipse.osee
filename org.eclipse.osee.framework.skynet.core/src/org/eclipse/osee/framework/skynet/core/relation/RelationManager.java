@@ -170,8 +170,6 @@ public class RelationManager {
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (!relation.isDeleted()) {
-               artifactCount++;
-
                if (relationSide == null) {
                   artifactCount++;
                } else {
@@ -250,8 +248,8 @@ public class RelationManager {
    }
 
    public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws SQLException {
-      ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_B, artifactB.getArtifactType(), 1);
-      ensureSideWillSupport(artifactB, relationType, RelationSide.SIDE_A, artifactA.getArtifactType(), 1);
+      ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_A, artifactA.getArtifactType(), 1);
+      ensureSideWillSupport(artifactB, relationType, RelationSide.SIDE_B, artifactB.getArtifactType(), 1);
    }
 
    /**
@@ -266,14 +264,14 @@ public class RelationManager {
     */
    public static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, ArtifactType artifactType, int artifactCount) throws SQLException {
       int maxCount = RelationTypeManager.getRelationSideMax(relationType, artifactType, relationSide);
-      int usedCount = getRelatedArtifactsCount(artifact, relationType, relationSide);
+      int usedCount = getRelatedArtifactsCount(artifact, relationType, relationSide.oppositeSide());
 
       if (maxCount == 0) {
          throw new IllegalArgumentException(String.format(
                "Artifact \"%s\" of type \"%s\" does not belong on side \"%s\" of relation \"%s\"",
                artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
                relationType.getTypeName()));
-      } else if (usedCount + artifactCount > maxCount) {
+      } else if (maxCount == 1 && usedCount + artifactCount > maxCount) {
          throw new IllegalArgumentException(
                String.format(
                      "Artifact \"%s\" of type \"%s\" can not be added to \"%s\" of relation \"%s\" because doing so would exceed the side maximum of %d for this artifact type",
