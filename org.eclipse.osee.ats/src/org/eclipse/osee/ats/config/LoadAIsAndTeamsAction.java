@@ -143,12 +143,12 @@ public class LoadAIsAndTeamsAction extends Action {
                // Create Actionable Items
                AtsWorkPage workPage = workFlow.getAtsPage("Actionable Items");
                addActionableItem(atsHeading, workPage);
-               atsHeading.persist();
+               atsHeading.persistAttributesAndRelations();
 
                // Create Teams
                workPage = workFlow.getAtsPage("Teams");
                addTeam(atsHeading, workPage);
-               atsHeading.persist();
+               atsHeading.persistAttributesAndRelations();
 
             }
          };
@@ -248,7 +248,7 @@ public class LoadAIsAndTeamsAction extends Action {
             teamDefArt.addRelation(RelationSide.TeamDefinitionToWorkflowDiagram_WorkflowDiagram, workflowArt, null);
          }
 
-         teamDefArt.persist();
+         teamDefArt.persistAttributesAndRelations();
       }
 
       // Handle all team children

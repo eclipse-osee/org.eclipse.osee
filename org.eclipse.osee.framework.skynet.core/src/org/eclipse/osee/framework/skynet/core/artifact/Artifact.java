@@ -321,11 +321,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return getDescriptiveName();
    }
 
+   //TODO should not return null but currently application code expects it to
    public Artifact getParent() throws SQLException {
       try {
          return RelationManager.getRelatedArtifact(this, RelationTypeManager.getType("Default Hierarchical"));
       } catch (ArtifactDoesNotExist ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         return null;
       } catch (MultipleArtifactsExist ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
@@ -885,17 +886,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       ArtifactPersistenceManager.makePersistent(this, false);
    }
 
-   public void persistAttributesAndRelations() throws SQLException {
-      persistAttributes();
-      RelationManager.persistRelationsFor(this);
-   }
-
    public void persistRelations() throws SQLException {
       RelationManager.persistRelationsFor(this);
    }
 
-   public void persist() throws SQLException {
-      ArtifactPersistenceManager.makePersistent(this, true);
+   public void persistAttributesAndRelations() throws SQLException {
+      persistAttributes();
+      RelationManager.persistRelationsFor(this);
    }
 
    /**

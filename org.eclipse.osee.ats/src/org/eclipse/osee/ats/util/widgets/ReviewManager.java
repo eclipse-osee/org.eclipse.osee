@@ -114,7 +114,7 @@ public class ReviewManager {
       peerToPeerRev.getSmaMgr().getStateMgr().initializeStateMachine(DecisionReviewArtifact.StateNames.Prepare.name());
       peerToPeerRev.getLog().addLog(LogType.StateEntered, DecisionReviewArtifact.StateNames.Prepare.name(), "",
             origDate, origUser);
-      peerToPeerRev.persist();
+      peerToPeerRev.persistAttributesAndRelations();
       return peerToPeerRev;
    }
 

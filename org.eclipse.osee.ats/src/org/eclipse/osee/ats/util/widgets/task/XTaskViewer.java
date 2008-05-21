@@ -450,7 +450,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
                      str = str.replaceAll("\r", "");
                      if (!str.equals("")) {
                         TaskArtifact taskArt = iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(str, true);
-                        taskArt.persist();
+                        taskArt.persistAttributesAndRelations();
                      }
                   }
                }

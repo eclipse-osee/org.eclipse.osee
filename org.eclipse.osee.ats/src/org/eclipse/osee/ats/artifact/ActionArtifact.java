@@ -815,7 +815,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       // Relate Action to WorkFlow
       addRelation(RelationSide.ActionToWorkflow_WorkFlow, teamArt, null);
 
-      teamArt.persist();
+      teamArt.persistAttributesAndRelations();
 
       return teamArt;
    }

@@ -230,7 +230,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Navigation",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
          art.addRelation(RelationSide.ALLOCATION__COMPONENT, navArt, null);
-         art.persist();
+         art.persistAttributesAndRelations();
       }
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Event)) {
@@ -243,7 +243,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
          art.addRelation(RelationSide.ALLOCATION__COMPONENT, robotArt, null);
-         art.persist();
+         art.persistAttributesAndRelations();
       }
 
       // Delete two artifacts
@@ -262,9 +262,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          newArt.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
-         newArt.persist();
+         newArt.persistAttributesAndRelations();
          parentArt.addChild(newArt);
-         parentArt.persist();
+         parentArt.persistAttributesAndRelations();
       }
 
       DemoDbUtil.sleep(2000L);
@@ -305,7 +305,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                      BranchPersistenceManager.getInstance().getDefaultBranch());
 
          art.addRelation(RelationSide.ALLOCATION__COMPONENT, comArt, null);
-         art.persist();
+         art.persistAttributesAndRelations();
       }
 
       // Delete one artifacts
@@ -324,7 +324,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          newArt.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
-         newArt.persist();
+         newArt.persistAttributesAndRelations();
          parentArt.addChild(newArt);
          parentArt.persist(true);
       }
@@ -368,13 +368,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
                }
                // Transition to desired state
                dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false);
-               teamWf.persist();
+               teamWf.persistAttributesAndRelations();
                if (versionStr != null && !versionStr.equals("")) {
                   VersionArtifact verArt =
                         (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
                               versionStr, AtsPlugin.getAtsBranch());
                   teamWf.addRelation(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt, null);
-                  teamWf.persist();
+                  teamWf.persistAttributesAndRelations();
                }
             }
          }

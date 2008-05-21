@@ -207,7 +207,7 @@ public class RoughArtifact {
          }
       }
 
-      realArtifact.persist();
+      realArtifact.persistAttributesAndRelations();
       return realArtifact;
    }
 

@@ -50,7 +50,7 @@ public class NewDecisionReviewJob extends Job {
             @Override
             protected void handleTxWork() throws Exception {
                decisionReviewArtifact = createNewDecisionReview(teamParent, againstCurrentState);
-               decisionReviewArtifact.persist();
+               decisionReviewArtifact.persistAttributesAndRelations();
             }
 
          };

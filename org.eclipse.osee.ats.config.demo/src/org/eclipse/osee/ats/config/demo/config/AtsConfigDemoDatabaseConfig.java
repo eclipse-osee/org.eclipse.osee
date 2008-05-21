@@ -105,7 +105,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          programRoot.addChild(ArtifactTypeManager.addArtifact("Folder", programBranch, name));
       }
 
-      programRoot.persist();
+      programRoot.persistAttributesAndRelations();
 
    }
 
@@ -131,7 +131,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
                true);
          DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(RelationSide.TeamDefinitionToVersion_Version, ver, null);
-         ver.persist();
+         ver.persistAttributesAndRelations();
       }
 
       // Setup some sample builds for Widget B
@@ -144,7 +144,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
                true);
          DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(RelationSide.TeamDefinitionToVersion_Version, ver, null);
-         ver.persist();
+         ver.persistAttributesAndRelations();
       }
    }
 }

@@ -78,7 +78,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       if (usesVersions) {
          tda.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
       }
-      tda.persist();
+      tda.persistAttributesAndRelations();
 
       Artifact parentTeamDefinition = parentTeamDef;
       if (parentTeamDefinition == null) {
@@ -86,14 +86,14 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          parentTeamDef = AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact();
       }
       parentTeamDef.addChild(tda);
-      parentTeamDef.persist();
+      parentTeamDef.persistAttributesAndRelations();
 
       // Relate to actionable items
       for (ActionableItemArtifact aia : actionableItems) {
          tda.addRelation(RelationSide.TeamActionableItem_ActionableItem, aia, null);
       }
 
-      tda.persist();
+      tda.persistAttributesAndRelations();
       return tda;
    }
 

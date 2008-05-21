@@ -69,7 +69,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    public void doSave(IProgressMonitor monitor) {
       for (Artifact art : artifacts)
          try {
-            art.persist();
+            art.persistAttributesAndRelations();
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }

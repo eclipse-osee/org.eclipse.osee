@@ -406,7 +406,7 @@ public class RelationPersistenceManager implements PersistenceManager {
          // Move insertArtLink to insertLocation
          RelationLinkGroup group = sideAArt.getLinkManager().getGroup(RelationSide.UNIVERSAL_GROUPING__MEMBERS);
          group.moveLink(targetLink, insertLink, insertLocation != InsertLocation.AfterTarget);
-         sideAArt.persist();
+         sideAArt.persistAttributesAndRelations();
       }
 
    }

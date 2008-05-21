@@ -59,7 +59,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
                         ReviewManager.createNewPeerToPeerReview(null, null,
                               SkynetAuthentication.getInstance().getAuthenticatedUser(), new Date());
                   peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
-                        peerArt.persist();
+                        peerArt.persistAttributesAndRelations();
                   AtsLib.openAtsAction(peerArt, AtsOpenOption.OpenAll);
                }
             };

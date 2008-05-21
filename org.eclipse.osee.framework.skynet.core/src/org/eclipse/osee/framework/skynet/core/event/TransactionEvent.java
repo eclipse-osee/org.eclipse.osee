@@ -38,11 +38,11 @@ public abstract class TransactionEvent extends Event {
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private CoreDebug debug = new CoreDebug(false, "TE");
    private boolean processedLookups = false;
-   private Set<Artifact> modified = new HashSet<Artifact>();
-   private Set<Artifact> deleted = new HashSet<Artifact>();
-   private Set<Artifact> purged = new HashSet<Artifact>();
-   private Set<Artifact> relChanged = new HashSet<Artifact>();
-   private Set<Artifact> artifactVersionIncremented = new HashSet<Artifact>();
+   private Set<Integer> modified = new HashSet<Integer>();
+   private Set<Integer> deleted = new HashSet<Integer>();
+   private Set<Integer> purged = new HashSet<Integer>();
+   private Set<Integer> relChanged = new HashSet<Integer>();
+   private Set<Integer> artifactVersionIncremented = new HashSet<Integer>();
    private Map<Artifact, ArtifactVersionIncrementedEvent> artifactVersionIncrementedEvent =
          new HashMap<Artifact, ArtifactVersionIncrementedEvent>();
 
@@ -76,9 +76,9 @@ public abstract class TransactionEvent extends Event {
          if (event instanceof ArtifactModifiedEvent) {
             try {
                Artifact artifact = ((ArtifactModifiedEvent) event).getArtifact();
-               modified.add(artifact);
-               if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Deleted) deleted.add(artifact);
-               if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Purged) purged.add(artifact);
+               modified.add(artifact.getArtId());
+               if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Deleted) deleted.add(artifact.getArtId());
+               if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Purged) purged.add(artifact.getArtId());
                debug.report("   MATCH FOUND ");
             } catch (ArtifactDoesNotExist ex) {
                SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -90,14 +90,14 @@ public abstract class TransactionEvent extends Event {
 
          } else if (event instanceof RelationModifiedEvent) {
             debug.report("   MATCH FOUND ");
-            relChanged.add(((RelationModifiedEvent) event).getLink().getArtifactA());
-            relChanged.add(((RelationModifiedEvent) event).getLink().getArtifactB());
+            relChanged.add(((RelationModifiedEvent) event).getLink().getAArtifactId());
+            relChanged.add(((RelationModifiedEvent) event).getLink().getBArtifactId());
          } else if (event instanceof ArtifactVersionIncrementedEvent) {
             debug.report("   MATCH FOUND ");
             artifactVersionIncrementedEvent.put(((ArtifactVersionIncrementedEvent) event).getOldVersion(),
                   ((ArtifactVersionIncrementedEvent) event));
-            artifactVersionIncremented.add(((ArtifactVersionIncrementedEvent) event).getOldVersion());
-            artifactVersionIncremented.add(((ArtifactVersionIncrementedEvent) event).getNewVersion());
+            artifactVersionIncremented.add(((ArtifactVersionIncrementedEvent) event).getOldVersion().getArtId());
+            artifactVersionIncremented.add(((ArtifactVersionIncrementedEvent) event).getNewVersion().getArtId());
          }
       }
    }
@@ -130,12 +130,12 @@ public abstract class TransactionEvent extends Event {
     */
    public EventData getEventData(Artifact artifact) {
       EventData ed = new EventData();
-      ed.setDeleted(deleted.contains(artifact));
-      ed.setModified(modified.contains(artifact));
-      ed.setRelChange(relChanged.contains(artifact));
-      ed.setPurged(purged.contains(artifact));
-      ed.setArtifactVersionIncremented(artifactVersionIncremented.contains(artifact));
-      ed.setAvie(artifactVersionIncrementedEvent.get(artifact));
+      ed.setDeleted(deleted.contains(artifact.getArtId()));
+      ed.setModified(modified.contains(artifact.getArtId()));
+      ed.setRelChange(relChanged.contains(artifact.getArtId()));
+      ed.setPurged(purged.contains(artifact.getArtId()));
+      ed.setArtifactVersionIncremented(artifactVersionIncremented.contains(artifact.getArtId()));
+      ed.setAvie(artifactVersionIncrementedEvent.get(artifact.getArtId()));
       ed.setHasEvent(ed.isRelChange() || ed.isDeleted() || ed.isModified() || ed.isPurged());
       return ed;
    }
