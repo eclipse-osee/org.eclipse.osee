@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
@@ -193,6 +194,18 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
+   public Set<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws SQLException {
+      //      try {
+      try {
+         return new HashSet<Artifact>(RelationManager.getRelatedArtifacts(this, relationEnum));
+      } catch (ArtifactDoesNotExist ex) {
+         throw new SQLException(ex);
+      }
+      //      } catch (SQLException ex) {
+      //         throw new OseeDataStoreException(ex);
+      //      }
+   }
+
    /**
     * Get the exactly one artifact related to this artifact by relations of type relationType are returned in a list
     * order based on
@@ -219,14 +232,14 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   @Deprecated
-   public Set<Artifact> getRelatedArtifacts(IRelationEnumeration side) throws SQLException {
-      try {
-         return new HashSet<Artifact>(getRelatedArtifacts(side.getTypeName()));
-      } catch (OseeCoreException ex) {
-         throw new SQLException(ex);
-      }
-   }
+   //   @Deprecated
+   //   public Set<Artifact> getRelatedArtifacts(IRelationEnumeration side) throws SQLException {
+   //      try {
+   //         return new HashSet<Artifact>(getRelatedArtifacts(side.getTypeName()));
+   //      } catch (OseeCoreException ex) {
+   //         throw new SQLException(ex);
+   //      }
+   //   }
 
    /**
     * @param <A>
@@ -324,7 +337,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    //TODO should not return null but currently application code expects it to
    public Artifact getParent() throws SQLException {
       try {
-         return RelationManager.getRelatedArtifact(this, RelationTypeManager.getType("Default Hierarchical"));
+         return RelationManager.getRelatedArtifact(this, RelationSide.DEFAULT_HIERARCHICAL__CHILD);
       } catch (ArtifactDoesNotExist ex) {
          return null;
       } catch (MultipleArtifactsExist ex) {

@@ -73,7 +73,7 @@ public class RelationLink {
          return true;
       }
       if (bArtifactId == artifact.getArtId()) {
-         return true;
+         return false;
       }
       throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
    }
