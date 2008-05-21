@@ -48,6 +48,9 @@ import org.eclipse.osee.framework.messaging.event.skynet.NetworkRenameBranchEven
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactModifiedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkBroadcastEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkModifiedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetDisconnectClientsEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -69,7 +72,11 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetServiceEvent;
+import org.eclipse.osee.framework.skynet.core.relation.LinkPersistenceMemo;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager.TransactionSwitch;
@@ -355,18 +362,11 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
                   } else if (event instanceof ISkynetArtifactEvent) {
                      updateArtifacts((ISkynetArtifactEvent) event, localEvents);
                   } else if (event instanceof ISkynetRelationLinkEvent) {
-                     ISkynetRelationLinkEvent skynetRelationLinkEvent = (ISkynetRelationLinkEvent) event;
-
-                     if (skynetRelationLinkEvent != null) {
-                        relationPersistenceManager.updateRelationCache(skynetRelationLinkEvent, localEvents,
-                              editableTransactionId.getTransactionNumber());
-                     }
-                  } else {
-                     logger.log(Level.INFO, "Unexpected ISkynetEvent " + event.getClass().getName());
+                     updateRelations((ISkynetRelationLinkEvent) event, localEvents,
+                           editableTransactionId.getTransactionNumber());
                   }
                }
                eventManager.kick(new RemoteTransactionEvent(localEvents, this));
-
                clearTransactionIds();
                return Status.OK_STATUS;
             }
@@ -383,7 +383,7 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
     * 
     * @param event
     */
-   public static void updateArtifacts(ISkynetArtifactEvent event, Collection<Event> localEvents) {
+   private static void updateArtifacts(ISkynetArtifactEvent event, Collection<Event> localEvents) {
       if (event == null) return;
 
       try {
@@ -416,6 +416,55 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
             artifact.setNotDirty();
          }
       } catch (Exception e) {
+         logger.log(Level.SEVERE, e.toString(), e);
+      }
+   }
+
+   /**
+    * @param event
+    * @param localEvents
+    * @param newTransactionId
+    */
+   private static void updateRelations(ISkynetRelationLinkEvent event, Collection<Event> localEvents, int newTransactionId) {
+      if (event == null) return;
+
+      try {
+         Integer relTypeId = event.getRelTypeId();
+         Integer relId = event.getRelId();
+         Integer gammaId = event.getGammaId();
+         Branch branch = BranchPersistenceManager.getInstance().getBranch(event.getBranchId());
+         int artAId = event.getArtAId();
+         int artBId = event.getArtBId();
+         org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType modType = null;
+
+         RelationLink link = RelationManager.getRelation(relTypeId, artAId, artBId, branch);
+
+         if (link != null) {
+            if (event instanceof NetworkRelationLinkModifiedEvent) {
+               NetworkRelationLinkModifiedEvent networkRelationLinkModifiedEvent =
+                     (NetworkRelationLinkModifiedEvent) event;
+               link.setAOrder(networkRelationLinkModifiedEvent.getAOrder());
+               link.setBOrder(networkRelationLinkModifiedEvent.getBOrder());
+               link.setRationale(networkRelationLinkModifiedEvent.getRationale(), false);
+               modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Changed;
+            } else if (event instanceof NetworkRelationLinkDeletedEvent) {
+               //link.setDeleated();
+               modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Deleted;
+            }
+         } else if (event instanceof NetworkNewRelationLinkEvent) {
+            NetworkNewRelationLinkEvent newRelationLinkEvent = (NetworkNewRelationLinkEvent) event;
+            LinkPersistenceMemo memo = new LinkPersistenceMemo(relId, gammaId);
+            String rationale = newRelationLinkEvent.getRationale();
+            int aOrder = newRelationLinkEvent.getAOrder();
+            int bOrder = newRelationLinkEvent.getBOrder();
+            //            link = new RelationLink(artAId, artBId, relTypeId, memo, rationale, aOrder, bOrder, false);
+            modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Added;
+         }
+
+         localEvents.add(new TransactionRelationModifiedEvent(link, branch, link.getRelationType().getTypeName(),
+               link.getASideName(), modType, RemoteEventManager.instance));
+         link.setNotDirty();
+      } catch (SQLException e) {
          logger.log(Level.SEVERE, e.toString(), e);
       }
    }
