@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.common
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.2.0.qualifier
 Bundle-Vendor: Boeing
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.osee.framework.resource.common.io

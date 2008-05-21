@@ -174,9 +174,10 @@ public class BranchCreation implements IBranchCreation {
        */
       @Override
       public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws SQLException {
-         ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, SQL3DataType.INTEGER,
-               newTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
-
+         int updates =
+               ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, SQL3DataType.INTEGER,
+                     newTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
+         System.out.println(updates);
       }
    }
 }

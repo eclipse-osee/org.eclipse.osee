@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.locator.attribute.test
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.2.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.resource.locator.attribute.test.Activator
 Bundle-Vendor: Boeing
 Eclipse-LazyStart: true
