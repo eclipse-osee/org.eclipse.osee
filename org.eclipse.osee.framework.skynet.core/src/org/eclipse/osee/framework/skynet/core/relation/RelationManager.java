@@ -236,7 +236,7 @@ public class RelationManager {
     * @throws SQLException
     */
    public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws SQLException {
-      ensureRelationCanBeAdded(relationType, artifactA, artifactA);
+      ensureRelationCanBeAdded(relationType, artifactA, artifactB);
 
       RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
 
