@@ -49,7 +49,7 @@ public class DataConversion {
    private static final String sqlExtensionTypes =
          "SELECT attr1.art_id,  attr1.value FROM osee_define_attribute attr1 WHERE attr1.ATTR_TYPE_ID = ?";
    private static final String sql =
-         "SELECT attr1.gamma_id,  attr1.content,  art1.human_readable_id,  attr1.uri,  art1.art_id,  attrt1.NAME FROM osee_define_attribute attr1,  osee_define_artifact art1,  osee_define_attribute_type attrt1 WHERE attr1.content IS NOT NULL AND attr1.art_id = art1.art_id and attr1.ATTR_TYPE_ID = attrt1.ATTR_TYPE_ID";
+         "SELECT attr1.gamma_id,  attr1.content,  art1.human_readable_id,  attr1.uri,  art1.art_id,  attrt1.name, art1.guid " + "FROM osee_define_attribute attr1,  osee_define_artifact art1,  osee_define_attribute_type attrt1 WHERE attr1.content IS NOT NULL AND attr1.art_id = art1.art_id and attr1.ATTR_TYPE_ID = attrt1.ATTR_TYPE_ID";
    private static final String updateUri = "update osee_define_attribute set uri = ? where gamma_id = ?";
 
    private volatile boolean runConversion;
@@ -123,6 +123,14 @@ public class DataConversion {
                String uri = rs.getString(4);
                String typeName = rs.getString(6);
                long artId = rs.getLong(5);
+               String guid = rs.getString(7);
+
+               String fileExtension = "";
+               if (typeToExtension.containsKey(typeName)) {
+                  fileExtension = typeToExtension.get(typeName);
+               } else if (nativeExtension.containsKey(artId)) {
+                  fileExtension = nativeExtension.get(artId);
+               }
 
                boolean resourceExists = false;
                if (uri != null && uri.length() > 0) {
@@ -132,14 +140,13 @@ public class DataConversion {
 
                if (!resourceExists) {
                   IResourceLocator locator = locatorManager.generateResourceLocator("attr", gamma, hrId);
-                  IResource resource = new DbResource(rs.getBinaryStream(2));
+                  IResource resource = new DbResource(rs.getBinaryStream(2), typeName, guid, fileExtension);
+
                   Options options = new Options();
-                  options.put(StandardOptions.CompressOnSave.name(), "true");
-                  options.put(StandardOptions.Overwrite.name(), "true");
-                  if (typeToExtension.containsKey(typeName)) {
-                     options.put(StandardOptions.Extension.name(), typeToExtension.get(typeName));
-                  } else if (nativeExtension.containsKey(artId)) {
-                     options.put(StandardOptions.Extension.name(), nativeExtension.get(artId));
+                  options.put(StandardOptions.CompressOnSave.name(), true);
+                  options.put(StandardOptions.Overwrite.name(), true);
+                  if (fileExtension != null && fileExtension.length() > 0) {
+                     options.put(StandardOptions.Extension.name(), fileExtension);
                   }
                   try {
                      IResourceLocator actuallLocator = resourceManager.save(locator, resource, options);
