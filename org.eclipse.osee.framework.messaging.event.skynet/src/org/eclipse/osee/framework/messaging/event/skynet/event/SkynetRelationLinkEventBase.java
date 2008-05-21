@@ -20,11 +20,11 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
 
    private final Integer relId;
    private final int artAId;
-   private final int artATypeId;
+   private int artATypeId;
    private final int artBId;
-   private final int artBTypeId;
-   private final String aFactoryName;
-   private final String bFactoryName;
+   private int artBTypeId;
+   private String aFactoryName;
+   private String bFactoryName;
    private int gammaId;
 
    /**
@@ -32,20 +32,14 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
     * @param transactionId
     * @param relId
     * @param artAId
-    * @param artATypeId
     * @param artBId
-    * @param artBTypeId
     * @param author TODO
     */
-   public SkynetRelationLinkEventBase(int gammaId, int branchId, int transactionId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, String aFactoryName, String bFactoryName, int author) {
+   public SkynetRelationLinkEventBase(int gammaId, int branchId, int transactionId, Integer relId, int artAId, int artBId, int author) {
       super(branchId, transactionId, author);
       this.relId = relId;
       this.artAId = artAId;
-      this.artATypeId = artATypeId;
       this.artBId = artBId;
-      this.artBTypeId = artBTypeId;
-      this.aFactoryName = aFactoryName;
-      this.bFactoryName = bFactoryName;
       this.gammaId = gammaId;
    }
 

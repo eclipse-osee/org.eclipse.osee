@@ -73,27 +73,6 @@ public class User extends Artifact implements Serializable {
       }
    }
 
-   public boolean equals(Object obj) {
-      User otherUser = null;
-      try {
-         if (obj == null) return false;
-         if (obj instanceof User) {
-            otherUser = (User) obj;
-            if (otherUser.getUserId().equals(getUserId())) {
-               return true;
-            } else {
-               return false;
-            }
-         } else {
-            return false;
-         }
-
-      } catch (Exception ex) {
-         // do nothing
-      }
-      return false;
-   }
-
    public boolean isMe() throws SQLException, MultipleAttributesExist {
       try {
          return (getUserId().equals(SkynetAuthentication.getInstance().getAuthenticatedUser().getUserId()));
@@ -107,15 +86,6 @@ public class User extends Artifact implements Serializable {
          if (users[i].equals(this)) return true;
       }
       return false;
-   }
-
-   public int hashCode() {
-      try {
-         return getUserId().hashCode();
-      } catch (Exception ex) {
-         // do nothing
-      }
-      return 0;
    }
 
    public String getUserId() throws SQLException, MultipleAttributesExist {

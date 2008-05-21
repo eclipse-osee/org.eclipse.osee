@@ -35,23 +35,16 @@ public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
     * @param transactionId
     * @param relId
     * @param artAId
-    * @param artATypeId
     * @param artBId
-    * @param artBTypeId
     * @param author TODO
     */
-   public NetworkNewRelationLinkEvent(int gammaId, int branchId, int transactionId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, int relTypeId, String aFactoryName, String bFactoryName, String aGuid, String bGuid, String aHuamnId, String bHuamnId, String descriptorName, int author) {
-      super(gammaId, branchId, transactionId, relId, artAId, artATypeId, artBId, artBTypeId, aFactoryName,
-            bFactoryName, author);
+   public NetworkNewRelationLinkEvent(int gammaId, int branchId, int transactionId, Integer relId, int artAId, int artBId, String rationale, int aOrder, int bOrder, int relTypeId, String descriptorName, int author) {
+      super(gammaId, branchId, transactionId, relId, artAId, artBId, author);
 
       this.rationale = rationale;
       this.aOrder = aOrder;
       this.bOrder = bOrder;
       this.relTypeId = relTypeId;
-      this.aGuid = aGuid;
-      this.bGuid = bGuid;
-      this.aHumanId = aHuamnId;
-      this.bHumanId = bHuamnId;
       this.descriptorName = descriptorName;
    }
 

@@ -27,7 +27,6 @@ public class NetworkRelationLinkDeletedEvent extends SkynetRelationLinkEventBase
     * @param author TODO
     */
    public NetworkRelationLinkDeletedEvent(int gammaId, int branchId, int transactionId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, String aFactoryName, String bFactoryName, int author) {
-      super(gammaId, branchId, transactionId, relId, artAId, artATypeId, artBId, artBTypeId, aFactoryName,
-            bFactoryName, author);
+      super(gammaId, branchId, transactionId, relId, artAId, artBId, author);
    }
 }

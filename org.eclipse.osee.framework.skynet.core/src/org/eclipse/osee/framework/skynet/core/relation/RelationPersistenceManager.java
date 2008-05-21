@@ -127,12 +127,6 @@ public class RelationPersistenceManager implements PersistenceManager {
 
    private void insertRelationLinkTable(RelationLink relationLink, SkynetTransaction transaction) throws SQLException {
       int gammaId = SkynetDatabase.getNextGammaId();
-      Artifact aArtifact = relationLink.getArtifactA();
-      Artifact bArtifact = relationLink.getArtifactB();
-      int aArtId = aArtifact.getArtId();
-      int aArtTypeId = aArtifact.getArtTypeId();
-      int bArtId = bArtifact.getArtId();
-      int bArtTypeId = bArtifact.getArtTypeId();
       ModType modType;
       ModificationType modId;
 
@@ -147,10 +141,8 @@ public class RelationPersistenceManager implements PersistenceManager {
 
          transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(relationLink.getGammaId(),
                relationLink.getBranch().getBranchId(), transaction.getTransactionNumber(),
-               relationLink.getRelationId(), aArtId, aArtTypeId, bArtId, bArtTypeId, relationLink.getRationale(),
-               relationLink.getAOrder(), relationLink.getBOrder(),
-               aArtifact.getFactory().getClass().getCanonicalName(),
-               bArtifact.getFactory().getClass().getCanonicalName(),
+               relationLink.getRelationId(), relationLink.getAArtifactId(), relationLink.getBArtifactId(),
+               relationLink.getRationale(), relationLink.getAOrder(), relationLink.getBOrder(),
                SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 
          modType = ModType.Changed;
@@ -160,7 +152,7 @@ public class RelationPersistenceManager implements PersistenceManager {
       transaction.addTransactionDataItem(new RelationTransactionData(relationLink, gammaId,
             transaction.getTransactionNumber(), modId, transaction.getBranch()));
 
-      transaction.addLocalEvent(new TransactionRelationModifiedEvent(relationLink, aArtifact.getBranch(),
+      transaction.addLocalEvent(new TransactionRelationModifiedEvent(relationLink, relationLink.getBranch(),
             relationLink.getRelationType().getTypeName(), relationLink.getASideName(), modType, this));
    }
 
@@ -256,19 +248,10 @@ public class RelationPersistenceManager implements PersistenceManager {
                // persisted by a one if it's artifact we don't get an infinite loop
                link.setNotDirty();
 
-               link.getArtifactA().persist(false);
-               link.getArtifactB().persist(false);
-
                // If the relation does not have a persistence memo then it is 'new'
                if (!link.isInDb() || link.isVersionControlled()) {
                   insertRelationLinkTable(link, transaction);
                } else {
-                  Artifact aArtifact = link.getArtifactA();
-                  Artifact bArtifact = link.getArtifactB();
-                  int aArtId = aArtifact.getArtId();
-                  int aArtTypeId = aArtifact.getArtTypeId();
-                  int bArtId = bArtifact.getArtId();
-                  int bArtTypeId = bArtifact.getArtTypeId();
                   int aOrder = link.getAOrder();
                   int bOrder = link.getBOrder();
                   int relationId = link.getRelationId();
@@ -276,17 +259,16 @@ public class RelationPersistenceManager implements PersistenceManager {
 
                   ConnectionHandler.runPreparedUpdate(
                         "UPDATE " + RELATION_LINK_VERSION_TABLE + " SET a_art_id=?, b_art_id=?, a_order_value=?, b_order_value=?, rationale=? WHERE rel_link_id=?",
-                        SQL3DataType.INTEGER, aArtId, SQL3DataType.INTEGER, bArtId, SQL3DataType.INTEGER, aOrder,
-                        SQL3DataType.INTEGER, bOrder, SQL3DataType.VARCHAR, rationale, SQL3DataType.INTEGER, relationId);
+                        SQL3DataType.INTEGER, link.getAArtifactId(), SQL3DataType.INTEGER, link.getBArtifactId(),
+                        SQL3DataType.INTEGER, aOrder, SQL3DataType.INTEGER, bOrder, SQL3DataType.VARCHAR, rationale,
+                        SQL3DataType.INTEGER, relationId);
 
                   transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(link.getGammaId(),
-                        link.getBranch().getBranchId(), transaction.getTransactionNumber(), relationId, aArtId,
-                        aArtTypeId, bArtId, bArtTypeId, rationale, aOrder, bOrder,
-                        aArtifact.getFactory().getClass().getCanonicalName(),
-                        bArtifact.getFactory().getClass().getCanonicalName(),
+                        link.getBranch().getBranchId(), transaction.getTransactionNumber(), relationId,
+                        link.getAArtifactId(), link.getBArtifactId(), rationale, aOrder, bOrder,
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
 
-                  transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, aArtifact.getBranch(),
+                  transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, link.getBranch(),
                         link.getRelationType().getTypeName(), link.getASideName(), ModType.Changed, this));
 
                }

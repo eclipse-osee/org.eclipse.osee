@@ -25,14 +25,11 @@ public class NetworkRelationLinkModifiedEvent extends SkynetRelationLinkEventBas
     * @param transactionId
     * @param relId
     * @param artAId
-    * @param artATypeId
     * @param artBId
-    * @param artBTypeId
     * @param author TODO
     */
-   public NetworkRelationLinkModifiedEvent(int gammaId, int branchId, int transactionId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, String aFactoryName, String bFactoryName, int author) {
-      super(gammaId, branchId, transactionId, relId, artAId, artATypeId, artBId, artBTypeId, aFactoryName,
-            bFactoryName, author);
+   public NetworkRelationLinkModifiedEvent(int gammaId, int branchId, int transactionId, int relId, int artAId, int artBId, String rationale, int aOrder, int bOrder, int author) {
+      super(gammaId, branchId, transactionId, relId, artAId, artBId, author);
 
       this.rationale = rationale;
       this.aOrder = aOrder;

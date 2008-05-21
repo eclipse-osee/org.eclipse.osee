@@ -61,9 +61,9 @@ public class RelationTransactionData implements ITransactionData {
       dataItems.add(SQL3DataType.INTEGER);
       dataItems.add(link.getRelationType().getRelationTypeId());
       dataItems.add(SQL3DataType.INTEGER);
-      dataItems.add(link.getArtifactA().getArtId());
+      dataItems.add(link.getAArtifactId());
       dataItems.add(SQL3DataType.INTEGER);
-      dataItems.add(link.getArtifactB().getArtId());
+      dataItems.add(link.getBArtifactId());
       dataItems.add(SQL3DataType.VARCHAR);
       dataItems.add(link.getRationale());
       dataItems.add(SQL3DataType.INTEGER);

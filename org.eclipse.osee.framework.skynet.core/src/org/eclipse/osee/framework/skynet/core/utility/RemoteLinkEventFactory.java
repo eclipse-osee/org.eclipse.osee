@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.utility;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 /**
@@ -28,28 +27,17 @@ public class RemoteLinkEventFactory {
          throw new IllegalStateException("Link or transactionNumber can not be null.");
       }
 
-      Artifact aArtifact = link.getArtifactA();
-      Artifact bArtifact = link.getArtifactB();
-
       return new NetworkNewRelationLinkEvent(
             link.getGammaId(),
             link.getBranch().getBranchId(),
             transactionNumber,
             link.getRelationId(),
-            aArtifact.getArtId(),
-            aArtifact.getArtTypeId(),
-            bArtifact.getArtId(),
-            bArtifact.getArtTypeId(),
+            link.getAArtifactId(),
+            link.getBArtifactId(),
             link.getRationale(),
             link.getAOrder(),
             link.getBOrder(),
             link.getRelationType().getRelationTypeId(),
-            aArtifact.getFactory().getClass().getCanonicalName(),
-            bArtifact.getFactory().getClass().getCanonicalName(),
-            aArtifact.getGuid(),
-            bArtifact.getGuid(),
-            aArtifact.getHumanReadableId(),
-            bArtifact.getHumanReadableId(),
             link.getRelationType().getTypeName(),
             SkynetAuthentication.getInstance().getAuthenticatedUser().isInDb() ? SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId() : -1);
 
