@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -41,10 +40,8 @@ import org.eclipse.swt.widgets.Display;
 public class ChangeArtifactType extends AbstractBlam {
    private static final ConfigurationPersistenceManager configurationPersistenceManager =
          ConfigurationPersistenceManager.getInstance();
-   private static final RelationPersistenceManager relationPersistenceManager =
-         RelationPersistenceManager.getInstance();
    private List<Attribute<?>> attributesToPurge;
-   private List<RelationLink> linksToPurge;
+   private List<RelationLink> relationsToDelete;
 
    @SuppressWarnings("unchecked")
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -105,14 +102,14 @@ public class ChangeArtifactType extends AbstractBlam {
     * @throws SQLException
     */
    private void processRelations(Artifact artifact, ArtifactType artifactType) throws SQLException {
-      linksToPurge = new LinkedList<RelationLink>();
+      relationsToDelete = new LinkedList<RelationLink>();
 
       for (RelationLink link : artifact.getLinkManager().getLinks()) {
          int sideMax =
                RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getSide(artifact));
 
          if (sideMax == 0) {
-            linksToPurge.add(link);
+            relationsToDelete.add(link);
          }
       }
    }
@@ -124,7 +121,7 @@ public class ChangeArtifactType extends AbstractBlam {
     *         artifact type else false.
     */
    private boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactType descriptor) {
-      if (!linksToPurge.isEmpty() || !attributesToPurge.isEmpty()) {
+      if (!relationsToDelete.isEmpty() || !attributesToPurge.isEmpty()) {
          ArtifactChangeMessageRunnable messageRunnable = new ArtifactChangeMessageRunnable(artifact, descriptor);
          Displays.ensureInDisplayThread(messageRunnable, true);
          return messageRunnable.isAccept();
@@ -148,8 +145,8 @@ public class ChangeArtifactType extends AbstractBlam {
                MessageDialog.openQuestion(
                      Display.getCurrent().getActiveShell(),
                      "Confirm Artifact Type Change ",
-                     "There has been a conflict in changing " + artifact.getDescriptiveName() + " to " + descriptor.getName() + " type. \n" + "The following data will need to be purged " + (linksToPurge.isEmpty() ? "" : Collections.toString(
-                           linksToPurge, ":", ",", null)) + (attributesToPurge.isEmpty() ? "" : Collections.toString(
+                     "There has been a conflict in changing " + artifact.getDescriptiveName() + " to " + descriptor.getName() + " type. \n" + "The following data will need to be purged " + (relationsToDelete.isEmpty() ? "" : Collections.toString(
+                           relationsToDelete, ":", ",", null)) + (attributesToPurge.isEmpty() ? "" : Collections.toString(
                            attributesToPurge, ":", ",", null)));
       }
 
@@ -173,8 +170,8 @@ public class ChangeArtifactType extends AbstractBlam {
          attribute.purge();
       }
 
-      if (!linksToPurge.isEmpty()) {
-         relationPersistenceManager.purgeRelationLinks(linksToPurge);
+      for (RelationLink relation : relationsToDelete) {
+         relation.delete();
       }
 
       artifact.changeArtifactType(descriptor);
