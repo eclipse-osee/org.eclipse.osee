@@ -389,12 +389,12 @@ public class Xml {
       if (!isSeriousXPath(xPathExpression) && startingNode.getNodeType() == Node.ELEMENT_NODE) {
          Element foundElement = Jaxp.findElement((Element) startingNode, xPathExpression);
          if (foundElement != null) {
-            resultString = Jaxp.getElementCharacterData(foundElement).trim();
+            resultString = selectNodesText(foundElement).trim();
          }
       } else {
          Node[] selectedNodes = selectNodeList(startingNode, xPathExpression);
          if (selectedNodes.length == 1) {
-            resultString = Jaxp.getElementCharacterData((Element) selectedNodes[0]).trim();
+            resultString = selectNodesText((Element) selectedNodes[0]).trim();
          }
       }
       return resultString;
