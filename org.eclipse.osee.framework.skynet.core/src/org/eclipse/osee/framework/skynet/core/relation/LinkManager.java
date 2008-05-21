@@ -31,7 +31,6 @@ public class LinkManager {
    private final Map<RelationType, RelationLinkGroup> sideALinks;
    private final Map<RelationType, RelationLinkGroup> sideBLinks;
    private boolean inTrace;
-   private static final RelationLinkGroup[] dummyRelationLinkGroups = new RelationLinkGroup[0];
    private static final RelationLink[] dummyRelationLinks = new RelationLink[0];
 
    public LinkManager(Artifact artifact) {

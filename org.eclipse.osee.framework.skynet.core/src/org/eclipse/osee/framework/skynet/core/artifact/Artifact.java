@@ -1001,6 +1001,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public void purge() throws SQLException {
+      if (true) {
+         throw new UnsupportedOperationException("Purge has been disabled until further notice.");
+      }
       ArtifactPersistenceManager.purgeArtifact(this);
    }
 

@@ -208,33 +208,6 @@ public class RelationPersistenceManager implements PersistenceManager {
             relationLink.getRelationType().getTypeName(), relationLink.getASideName(), ModType.Deleted, this));
    }
 
-   /**
-    * Remove all relations stored in the list awaiting to be deleted.
-    * 
-    * @throws SQLException
-    */
-   public void purgeRelationLinks(Collection<RelationLink> links) throws SQLException {
-      boolean firstTime = true;
-
-      if (links.isEmpty()) return;
-
-      // TODO this will fail if over 1000 links are removed at once ... consider handling this by
-      // breaking into chunks
-      StringBuffer deleteSql =
-            new StringBuffer(" Delete from " + RELATION_LINK_VERSION_TABLE + " WHERE REL_LINK_ID in ( ");
-
-      for (RelationLink link : links) {
-         if (!firstTime) deleteSql.append(" , ");
-
-         deleteSql.append(link.getRelationId());
-         firstTime = false;
-         link.delete();
-      }
-      deleteSql.append(" ) ");
-      ConnectionHandler.runPreparedUpdate(deleteSql.toString());
-      links.clear();
-   }
-
    public void doSave(RelationLink link, SkynetTransaction transaction) throws SQLException, ArtifactDoesNotExist {
       // The relation will be clean by the end of this, so mark it early so that this relation won't be
       // persisted by its other artifact

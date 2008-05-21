@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor;
 import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -730,7 +731,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          purgeArtifact(child);
       }
 
-      need to purge Links here
+      RelationManager.purgeRelationsFor(artifact);
       SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ModType.Purged, instance));
    }
 

@@ -12,9 +12,12 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -294,8 +297,25 @@ public class RelationManager {
                   relation.delete();
                }
             }
-
          }
+      }
+   }
+
+   /**
+    * Remove all relations stored in the list awaiting to be deleted.
+    * 
+    * @throws SQLException
+    */
+   public static void purgeRelationsFor(Artifact artifact) throws SQLException {
+      Collection<RelationLink> links = artifactToRelations.get(artifact);
+      if (!links.isEmpty()) {
+         List<Object[]> batchArgs = new ArrayList<Object[]>(links.size());
+         String PURGE_RELATION = "Delete from osee_define_rel_link WHERE rel_link_id = ?";
+         for (RelationLink link : links) {
+            batchArgs.add(new Object[] {SQL3DataType.INTEGER, link.getRelationId()});
+            link.markAsPurged();
+         }
+         ConnectionHandler.runPreparedUpdateBatch(PURGE_RELATION, batchArgs);
       }
    }
 }

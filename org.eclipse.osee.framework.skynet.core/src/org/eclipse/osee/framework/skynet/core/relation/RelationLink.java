@@ -143,12 +143,18 @@ public class RelationLink {
    }
 
    public void delete() {
+      if (!deleted) {
+         deleted = true;
+         dirty = true;
+         SkynetEventManager.getInstance().kick(
+               new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
+                     ModType.Deleted.name(), this, getBranch()));
+      }
+   }
+
+   void markAsPurged() {
       deleted = true;
-
-      SkynetEventManager.getInstance().kick(
-            new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
-                  ModType.Deleted.name(), this, getBranch()));
-
+      dirty = false;
    }
 
    public Artifact getArtifact(RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
