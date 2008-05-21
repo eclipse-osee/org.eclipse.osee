@@ -162,7 +162,7 @@ public class RelationLink {
       if (relatedArtifact == null) {
          return ArtifactQuery.getArtifactFromId(getArtifactId(relationSide), getBranch(relationSide));
       }
-      return null; // by design this return should never happen
+      return relatedArtifact;
    }
 
    public Artifact getArtifactOnOtherSide(Artifact artifact) throws ArtifactDoesNotExist, SQLException {

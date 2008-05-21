@@ -276,7 +276,7 @@ public class RelationManager {
       } else if (usedCount + artifactCount > maxCount) {
          throw new IllegalArgumentException(
                String.format(
-                     "Artifact \"%s\" of type \"%s\" can not be added to side \"%s\" of relation \"%s\" because doing so would exceed the side maximum of %d for this artifact type",
+                     "Artifact \"%s\" of type \"%s\" can not be added to \"%s\" of relation \"%s\" because doing so would exceed the side maximum of %d for this artifact type",
                      artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationSide.toString(),
                      relationType.getTypeName(), maxCount));
       }
