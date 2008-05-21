@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
@@ -192,7 +193,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
-      }
+   }
 
    public Set<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws SQLException {
       try {
@@ -1463,5 +1464,24 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    void setArtId(int artifactId) {
       this.artId = artifactId;
+   }
+
+   /**
+    * Andy this just needs to return the relation tpyes that have links
+    * 
+    * @return
+    */
+   public List<RelationType> getRelationTypes() {
+      return null;
+   }
+
+   /**
+    * Andy this needs to return a list of relations from a specific relation type
+    * 
+    * @param relationType
+    * @return
+    */
+   public List<RelationLink> getRelations(RelationType relationType) {
+      return null;
    }
 }

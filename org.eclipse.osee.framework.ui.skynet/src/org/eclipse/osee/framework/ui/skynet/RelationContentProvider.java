@@ -11,8 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -21,10 +20,10 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 
 /**
  * The basis for the comments in this class can be found at
@@ -76,47 +75,25 @@ public class RelationContentProvider implements ITreeContentProvider {
     * @see ITreeContentProvider#getChildren(Object)
     */
    public Object[] getChildren(Object parentElement) {
-
       try {
          if (parentElement instanceof RelationType) {
-            RelationType descriptor = (RelationType) parentElement;
+            RelationType relationType = (RelationType) parentElement;
             Artifact parent = (Artifact) viewer.getInput();
-            LinkManager linkManager = parent.getLinkManager();
+            List<RelationLink> relations = parent.getRelations(relationType);
 
-            Collection<RelationLinkGroup> groups = new LinkedList<RelationLinkGroup>();
-            RelationLinkGroup group;
-
-            group = linkManager.getSideAGroup(descriptor);
-            if (group != null) {
-               groups.add(group);
-               for (Artifact art : group.getArtifacts())
-                  eventManager.register(RelationModifiedEvent.class, art, relComp);
+            for (RelationLink relationLink : relations) {
+               eventManager.register(RelationModifiedEvent.class, relationLink.getArtifactOnOtherSide(parent), relComp);
             }
-            group = linkManager.getSideBGroup(descriptor);
-            if (group != null) {
-               groups.add(group);
-               for (Artifact art : group.getArtifacts())
-                  eventManager.register(RelationModifiedEvent.class, art, relComp);
-            }
-            return groups.toArray();
-         } else if (parentElement instanceof RelationLinkGroup) {
-            return ((RelationLinkGroup) parentElement).getGroupSide().toArray();
+            eventManager.register(RelationModifiedEvent.class, parent, relComp);
+            return relations.toArray();
          }
       } catch (SQLException ex) {
+         SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } catch (ArtifactDoesNotExist ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
       return EMPTY_ARRAY;
    }
-
-   //   /**
-   //    * Expands the parents children if the number of children are less than or equal the maxium
-   //    * number allowed.
-   //    */
-   //   private void expandTreeViewer(TreeViewer treeViewer, Object parent, int numberOfChildren) {
-   //      if (numberOfChildren <= EXPAND_CHILDREN_LEVEL) {
-   //         treeViewer.expandToLevel(parent, 1);
-   //      }
-   //   }
 
    /*
     * @see ITreeContentProvider#getParent(Object)
@@ -153,10 +130,11 @@ public class RelationContentProvider implements ITreeContentProvider {
    public Object[] getElements(Object inputElement) {
       try {
          if (inputElement instanceof Artifact) {
-            return ((Artifact) inputElement).getLinkManager().getLinkDescriptors().toArray();
+            Artifact artifact = (Artifact) inputElement;
+            return artifact.getRelationTypes().toArray();
          }
          throw new IllegalArgumentException("Unsupported input type:" + inputElement.getClass().getCanonicalName());
-      } catch (SQLException ex) {
+      } catch (Exception ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
       return new Object[] {};
