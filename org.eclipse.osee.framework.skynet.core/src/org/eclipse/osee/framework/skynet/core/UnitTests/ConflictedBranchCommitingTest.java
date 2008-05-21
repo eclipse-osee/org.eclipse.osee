@@ -1,5 +1,5 @@
 /*
- * Created on May 12, 2008
+ * Created on May 7, 2008
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
@@ -9,14 +9,13 @@ import junit.framework.TestCase;
 
 /**
  * @author Theron Virgin
- *
  */
-public class MergeBranchManagerTest extends TestCase {
+public class ConflictedBranchCommitingTest extends TestCase {
 
    /**
     * @param name
     */
-   public MergeBranchManagerTest(String name) {
+   public ConflictedBranchCommitingTest(String name) {
       super(name);
    }
 
@@ -32,13 +31,6 @@ public class MergeBranchManagerTest extends TestCase {
     */
    protected void tearDown() throws Exception {
       super.tearDown();
-   }
-
-   /**
-    * Test method for {@link org.eclipse.osee.framework.skynet.core.artifact.MergeBranchManager#updateMergeBranch(org.eclipse.osee.framework.skynet.core.artifact.Branch, java.util.ArrayList, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Branch)}.
-    */
-   public void testUpdateMergeBranch() {
-      fail("Not yet implemented");
    }
 
 }

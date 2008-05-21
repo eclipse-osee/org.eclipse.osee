@@ -33,7 +33,6 @@ public abstract class Change implements IAdaptable {
    private Artifact artifact;
    private ModificationType modType;
    private ChangeType changeType;
-   private String artName;
    private Branch branch;
    protected int artTypeId;
 
@@ -46,7 +45,7 @@ public abstract class Change implements IAdaptable {
     * @param modType
     * @param changeType
     */
-   public Change(Branch branch, int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
+   public Change(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -55,7 +54,6 @@ public abstract class Change implements IAdaptable {
       this.fromTransactionId = fromTransactionId;
       this.modType = modType;
       this.changeType = changeType;
-      this.artName = artName;
       this.artTypeId = artTypeId;
    }
 
@@ -94,8 +92,8 @@ public abstract class Change implements IAdaptable {
       return artifact;
    }
 
-   public String getArtifactName() {
-      return artName;
+   public String getArtifactName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+      return getArtifact().getDescriptiveName();
    }
 
    /**
@@ -157,14 +155,7 @@ public abstract class Change implements IAdaptable {
 
    public abstract String getItemTypeName() throws Exception;
 
-   public abstract String getName();
+   public abstract String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException;
 
    public abstract String getItemKind();
-
-   /**
-    * @param artName the artName to set
-    */
-   public void setArtName(String artName) {
-      this.artName = artName;
-   }
 }

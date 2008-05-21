@@ -13,6 +13,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -33,8 +35,8 @@ public class ArtifactChanged extends Change {
     * @param modType
     * @param changeType
     */
-   public ArtifactChanged(Branch branch, int artTypeId, String artName, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
-      super(branch, artTypeId, artName, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
+   public ArtifactChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType) {
+      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType);
    }
 
    /**
@@ -69,7 +71,7 @@ public class ArtifactChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getName()
     */
    @Override
-   public String getName() {
+   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
       return getArtifactName();
    }
 

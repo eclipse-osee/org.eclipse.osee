@@ -8,8 +8,11 @@ package org.eclipse.osee.framework.skynet.core.change;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -28,7 +31,6 @@ public class RelationChanged extends Change {
 
    /**
     * @param aArtTypeId
-    * @param aArtName
     * @param sourceGamma
     * @param aArtId
     * @param toTransactionId
@@ -42,8 +44,8 @@ public class RelationChanged extends Change {
     * @param aLinkOrder
     * @param relationType
     */
-   public RelationChanged(Branch branch, int aArtTypeId, String aArtName, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType) {
-      super(branch, aArtTypeId, aArtName, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType);
+   public RelationChanged(Branch branch, int aArtTypeId, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType) {
+      super(branch, aArtTypeId, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
@@ -78,8 +80,13 @@ public class RelationChanged extends Change {
 
    /**
     * @return the bArtifact
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist
     */
-   public Artifact getBArtifact() {
+   public Artifact getBArtifact() throws ArtifactDoesNotExist, SQLException {
+      if (bArtifact == null) {
+         bArtifact = ArtifactQuery.getArtifactFromId(bArtId, getBranch());
+      }
       return bArtifact;
    }
 
@@ -136,8 +143,8 @@ public class RelationChanged extends Change {
     * @see org.eclipse.osee.framework.skynet.core.change.Change#getName()
     */
    @Override
-   public String getName() {
-      return getArtifactName() + " <-> " + getBArtName();
+   public String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
+      return getArtifactName() + " <-> " + getBArtifact().getDescriptiveName();
    }
 
    /* (non-Javadoc)

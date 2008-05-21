@@ -72,9 +72,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetServiceEvent;
-import org.eclipse.osee.framework.skynet.core.relation.LinkPersistenceMemo;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -437,7 +435,7 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
          int artBId = event.getArtBId();
          org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType modType = null;
 
-         RelationLink link = RelationManager.getRelation(relTypeId, artAId, artBId, branch);
+         RelationLink link = null;//RelationManager.getRelation(relTypeId, artAId, artBId, branch);
 
          if (link != null) {
             if (event instanceof NetworkRelationLinkModifiedEvent) {
@@ -453,14 +451,13 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
             }
          } else if (event instanceof NetworkNewRelationLinkEvent) {
             NetworkNewRelationLinkEvent newRelationLinkEvent = (NetworkNewRelationLinkEvent) event;
-            LinkPersistenceMemo memo = new LinkPersistenceMemo(relId, gammaId);
+            //            LinkPersistenceMemo memo = new LinkPersistenceMemo(relId, gammaId);
             String rationale = newRelationLinkEvent.getRationale();
             int aOrder = newRelationLinkEvent.getAOrder();
             int bOrder = newRelationLinkEvent.getBOrder();
             //            link = new RelationLink(artAId, artBId, relTypeId, memo, rationale, aOrder, bOrder, false);
             modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Added;
          }
-
          localEvents.add(new TransactionRelationModifiedEvent(link, branch, link.getRelationType().getTypeName(),
                link.getASideName(), modType, RemoteEventManager.instance));
          link.setNotDirty();

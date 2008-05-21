@@ -19,12 +19,9 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
    private static final long serialVersionUID = 154870900652138769L;
 
    private final Integer relId;
+   private final int relTypeId;
    private final int artAId;
-   private int artATypeId;
    private final int artBId;
-   private int artBTypeId;
-   private String aFactoryName;
-   private String bFactoryName;
    private int gammaId;
 
    /**
@@ -35,12 +32,13 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
     * @param artBId
     * @param author TODO
     */
-   public SkynetRelationLinkEventBase(int gammaId, int branchId, int transactionId, Integer relId, int artAId, int artBId, int author) {
+   public SkynetRelationLinkEventBase(int relTypeId, int gammaId, int branchId, int transactionId, Integer relId, int artAId, int artBId, int author) {
       super(branchId, transactionId, author);
       this.relId = relId;
       this.artAId = artAId;
       this.artBId = artBId;
       this.gammaId = gammaId;
+      this.relTypeId = relTypeId;
    }
 
    /**
@@ -51,24 +49,10 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
    }
 
    /**
-    * @return Returns the artATypeId.
-    */
-   public int getArtATypeId() {
-      return artATypeId;
-   }
-
-   /**
     * @return Returns the artBId.
     */
    public int getArtBId() {
       return artBId;
-   }
-
-   /**
-    * @return Returns the artBTypeId.
-    */
-   public int getArtBTypeId() {
-      return artBTypeId;
    }
 
    /**
@@ -78,21 +62,14 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
       return relId;
    }
 
-   /**
-    * @return Returns the aFactoryName.
-    */
-   public String getAFactoryName() {
-      return aFactoryName;
-   }
-
-   /**
-    * @return Returns the bFactoryName.
-    */
-   public String getBFactoryName() {
-      return bFactoryName;
-   }
-
    public Integer getGammaId() {
       return gammaId;
+   }
+
+   /**
+    * @return the relTypeId
+    */
+   public int getRelTypeId() {
+      return relTypeId;
    }
 }

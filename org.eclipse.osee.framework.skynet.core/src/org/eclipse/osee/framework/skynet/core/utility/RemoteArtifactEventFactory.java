@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactModifiedEvent;
+import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -18,20 +22,29 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Jeff C. Phillips
  */
 public class RemoteArtifactEventFactory {
+   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RemoteArtifactEventFactory.class);
 
    public static NetworkArtifactModifiedEvent makeEvent(Artifact artifact, int transactionNumber) throws Exception {
+      NetworkArtifactModifiedEvent networkArtifactModifiedEvent = null;
 
       if (artifact == null || transactionNumber < 0) {
          throw new IllegalStateException("Artifact or transactionNumber can not be null.");
       }
 
-      return new NetworkArtifactModifiedEvent(
-            artifact.getBranch().getBranchId(),
-            transactionNumber,
-            artifact.getArtId(),
-            artifact.getArtTypeId(),
-            artifact.getFactory().getClass().getCanonicalName(),
-            artifact.getDirtyAttributeSkynetAttributeChanges(),
-            SkynetAuthentication.getInstance().getAuthenticatedUser().isInDb() ? SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId() : -1);
+      try {
+         networkArtifactModifiedEvent =
+               new NetworkArtifactModifiedEvent(
+                     artifact.getBranch().getBranchId(),
+                     transactionNumber,
+                     artifact.getArtId(),
+                     artifact.getArtTypeId(),
+                     artifact.getFactory().getClass().getCanonicalName(),
+                     artifact.getDirtySkynetAttributeChanges(),
+                     SkynetAuthentication.getInstance().getAuthenticatedUser().isInDb() ? SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId() : -1);
+      } catch (Exception ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
+
+      return networkArtifactModifiedEvent;
    }
 }

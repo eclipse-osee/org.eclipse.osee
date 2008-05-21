@@ -92,8 +92,10 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                   new JobFamily(baseArtifacts.get(0), newerArtifacts.get(newerArtifacts.size() - 1), DIFF_ARTIFACT,
                         "Diff", newerArtifacts.get(newerArtifacts.size() - 1).getDescriptiveName());
             aFamilyMember.schedule();
-         } else if (myIRenderer instanceof WordRenderer) {
-            WordRenderer renderer = (WordRenderer) myIRenderer;
+         } else {
+            //All other artifacts types can be rendered by the wordRenderer so the are displayed in the word change report.
+            WordRenderer renderer =
+                  (WordRenderer) RendererManager.getInstance().getRendererById(WordRenderer.WORD_RENDERER_EXTENSION);
             try {
                renderer.compareArtifacts(baseArtifacts, newerArtifacts, DIFF_ARTIFACT, null,
                      selectedItem.getBaselineTransactionId().getBranch());

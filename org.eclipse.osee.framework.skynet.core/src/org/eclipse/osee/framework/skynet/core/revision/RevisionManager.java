@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactIdSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationInTransactionSearch;
@@ -92,7 +93,6 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
  * @author Jeff C. Phillips
  */
 public class RevisionManager implements PersistenceManager, IEventReceiver {
-
    private static final String BRANCH_ATTRIBUTE_IS_CHANGES =
          "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type, t8.art_type_id FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
@@ -419,56 +419,16 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     */
    private Collection<Change> getChangesPerBranch(Branch sourceBranch, int transactionIdNumber) throws SQLException {
       ArrayList<Change> changes = new ArrayList<Change>();
-      Map<Integer, Change> changeItemsNeedData = new HashMap<Integer, Change>();
       Set<Integer> artIds = new HashSet<Integer>();
 
-      loadAttributeChanges(sourceBranch, transactionIdNumber, artIds, changeItemsNeedData);
-      loadRelationChanges(sourceBranch, transactionIdNumber, artIds, changeItemsNeedData);
-      loadDeletedArtifactChanges(sourceBranch, transactionIdNumber, artIds, changeItemsNeedData);
+      loadAttributeChanges(sourceBranch, transactionIdNumber, artIds, changes);
+      loadRelationChanges(sourceBranch, transactionIdNumber, artIds, changes);
+      loadDeletedArtifactChanges(sourceBranch, transactionIdNumber, artIds, changes);
 
-      setArtifactNames(sourceBranch, changeItemsNeedData, changes, artIds);
+      //preload artifacts for performance.
+      ArtifactQuery.getArtifactsFromIds(artIds, sourceBranch, true);
 
       return changes;
-   }
-
-   /**
-    * @param changeItemsNeedName
-    * @param changes
-    * @param artIds
-    * @throws SQLException
-    */
-   private void setArtifactNames(Branch sourceBranch, Map<Integer, Change> changeItemsNeedData, ArrayList<Change> changes, Set<Integer> artIds) throws SQLException {
-      if (changeItemsNeedData.isEmpty()) {
-         return;
-      }
-
-      Map<Integer, String> artIdsToName = new HashMap<Integer, String>();
-      ConnectionHandlerStatement connectionHandlerStatement = null;
-      String ART_NAMES =
-            "select value, art_id from osee_define_attribute t1, osee_define_attribute_type t2, osee_define_txs t3, osee_define_tx_details t4 where t4.branch_id = ? and t4.transaction_id = t3.transaction_id and t3.gamma_id = t1.gamma_id and t1.art_id in " + Collections.toString(
-                  artIds, "(", ",", ")") + " and t1.attr_type_id = t2.attr_type_id and t2.name = 'Name' order by t1.gamma_id, art_id";
-      try {
-         connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(ART_NAMES, SQL3DataType.INTEGER, sourceBranch.getBranchId());
-         ResultSet resultSet = connectionHandlerStatement.getRset();
-
-         while (resultSet.next()) {
-            artIdsToName.put(resultSet.getInt("art_id"), resultSet.getString("value"));
-         }
-
-         for (Change change : changeItemsNeedData.values()) {
-            if (change instanceof RelationChanged) {
-               RelationChanged relationChanged = (RelationChanged) change;
-               relationChanged.setArtName(artIdsToName.get(relationChanged.getArtId()));
-               relationChanged.setBArtName(artIdsToName.get(relationChanged.getBArtId()));
-            } else {
-               change.setArtName(artIdsToName.get(change.getArtId()));
-            }
-         }
-      } finally {
-         DbUtil.close(connectionHandlerStatement);
-      }
-      changes.addAll(changeItemsNeedData.values());
    }
 
    /**
@@ -476,7 +436,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param changes
     * @throws SQLException
     */
-   private void loadDeletedArtifactChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, Map<Integer, Change> changeItemsNeedData) throws SQLException {
+   private void loadDeletedArtifactChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
          //Changes per a branch
@@ -496,8 +456,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
          while (resultSet.next()) {
             int artId = resultSet.getInt("art_id");
             artIds.add(artId);
-            changeItemsNeedData.put(artId, new ArtifactChanged(sourceBranch, resultSet.getInt("art_type_id"),
-                  "Name not set", resultSet.getInt("gamma_id"), artId, null, null,
+            changes.add(artId, new ArtifactChanged(sourceBranch, resultSet.getInt("art_type_id"),
+                  resultSet.getInt("gamma_id"), artId, null, null,
                   ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING));
          }
       } finally {
@@ -510,7 +470,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param changes
     * @throws SQLException
     */
-   private void loadRelationChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, Map<Integer, Change> changeItemsNeedData) throws SQLException {
+   private void loadRelationChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes) throws SQLException {
       ConnectionHandlerStatement connectionHandlerStatement = null;
       try {
          //Changes per a branch
@@ -533,8 +493,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             artIds.add(aArtId);
             artIds.add(bArtId);
 
-            changeItemsNeedData.put(relLinkId, new RelationChanged(sourceBranch, -1, "Name not set",
-                  resultSet.getInt("gamma_id"), aArtId, null, null,
+            changes.add(new RelationChanged(sourceBranch, -1, resultSet.getInt("gamma_id"), aArtId, null, null,
                   ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING, bArtId, relLinkId,
                   resultSet.getString("rationale"), resultSet.getInt("a_order_value"),
                   resultSet.getInt("b_order_value"), RelationTypeManager.getType(resultSet.getInt("rel_link_type_id"))));
@@ -549,7 +508,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @param changes
     * @throws SQLException
     */
-   private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, Map<Integer, Change> changeItemsNeedData) throws SQLException {
+   private void loadAttributeChanges(Branch sourceBranch, int transactionNumber, Set<Integer> artIds, ArrayList<Change> changes) throws SQLException {
+      Map<Integer, Change> mightNeedWasValue = new HashMap<Integer, Change>();
       ConnectionHandlerStatement connectionHandlerStatement = null;
       boolean hasBranch = sourceBranch != null;
       TransactionId sourceHeadTransactionId;
@@ -590,14 +550,16 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             String isValue = resultSet.getString("is_value");
 
             attributeChanged =
-                  new AttributeChanged(sourceBranch, artTypeId, "Name not set", sourceGamma, artId,
-                        sourceEndTransactionId, sourceHeadTransactionId,
-                        hasBranch ? ModificationType.NEW : ModificationType.getMod(modType), ChangeType.OUTGOING,
-                        isValue, "", attrId, attrTypeId);
-            changeItemsNeedData.put(attrId, attributeChanged);
+                  new AttributeChanged(sourceBranch, artTypeId, sourceGamma, artId, sourceEndTransactionId,
+                        sourceHeadTransactionId, hasBranch ? ModificationType.NEW : ModificationType.getMod(modType),
+                        ChangeType.OUTGOING, isValue, "", attrId, attrTypeId);
+
+            changes.add(attributeChanged);
+            mightNeedWasValue.put(attrId, attributeChanged);
             artIds.add(artId);
          }
 
+         //Load was values for branch change report only
          if (hasBranch && !artIds.isEmpty()) {
             String BRANCH_ATTRIBUTE_WAS_CHANGE =
                   "SELECT t3.attr_id, t3.value as was_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t2.tx_type = 1 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id AND t3.art_id IN " + Collections.toString(
@@ -612,8 +574,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                int attrId = resultSet.getInt("attr_id");
                String wasValue = resultSet.getString("was_value");
 
-               if (changeItemsNeedData.containsKey(attrId) && changeItemsNeedData.get(attrId) instanceof AttributeChanged) {
-                  AttributeChanged changed = (AttributeChanged) changeItemsNeedData.get(attrId);
+               if (mightNeedWasValue.containsKey(attrId) && mightNeedWasValue.get(attrId) instanceof AttributeChanged) {
+                  AttributeChanged changed = (AttributeChanged) mightNeedWasValue.get(attrId);
                   changed.setModType(ModificationType.getMod(modType));
                   changed.setWasValue(wasValue);
                }

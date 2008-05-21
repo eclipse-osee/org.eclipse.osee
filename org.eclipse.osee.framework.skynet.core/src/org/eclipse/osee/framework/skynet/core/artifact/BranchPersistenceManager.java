@@ -634,8 +634,9 @@ public class BranchPersistenceManager implements PersistenceManager {
             bArtifact = ArtifactQuery.getArtifactFromId(bArtId, parentBranch);
 
             remoteRelationEvent =
-                  new NetworkRelationLinkDeletedEvent(gammaId, parentBranch.getBranchId(), newTransactionNumber, relId,
-                        aArtifact.getArtId(), aArtifact.getArtTypeId(), bArtifact.getArtId(), bArtifact.getArtTypeId(),
+                  new NetworkRelationLinkDeletedEvent(relTypeId, gammaId, parentBranch.getBranchId(),
+                        newTransactionNumber, relId, aArtifact.getArtId(), aArtifact.getArtTypeId(),
+                        bArtifact.getArtId(), bArtifact.getArtTypeId(),
                         aArtifact.getFactory().getClass().getCanonicalName(),
                         bArtifact.getFactory().getClass().getCanonicalName(),
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
@@ -645,8 +646,8 @@ public class BranchPersistenceManager implements PersistenceManager {
 
             remoteRelationEvent =
                   new NetworkRelationLinkModifiedEvent(gammaId, parentBranch.getBranchId(), newTransactionNumber,
-                        relId, aArtifact.getArtId(), bArtifact.getArtId(), rationale,
-                        aOrderValue, bOrderValue, SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
+                        relId, aArtifact.getArtId(), bArtifact.getArtId(), rationale, aOrderValue, bOrderValue,
+                        SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId(), relTypeId);
          } else if (modType == ModificationType.NEW.getValue()) {
             aArtifact = ArtifactQuery.getArtifactFromId(aArtId, childBranch);
             bArtifact = ArtifactQuery.getArtifactFromId(bArtId, childBranch);

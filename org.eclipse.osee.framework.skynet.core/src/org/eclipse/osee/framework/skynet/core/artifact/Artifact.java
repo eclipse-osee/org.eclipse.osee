@@ -1275,7 +1275,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return Returns dirty attributes.
     * @throws Exception
     */
-   public Collection<SkynetAttributeChange> getDirtyAttributeSkynetAttributeChanges() throws Exception {
+   public Collection<SkynetAttributeChange> getDirtySkynetAttributeChanges() throws Exception {
       List<SkynetAttributeChange> dirtyAttributes = new LinkedList<SkynetAttributeChange>();
 
       for (Attribute<?> attribute : getAttributes()) {
