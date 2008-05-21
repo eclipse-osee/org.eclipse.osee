@@ -130,8 +130,8 @@ public class RelationManager {
       List<RelationLink> selectedRelations = relations.get(artifact, relationType);
 
       if (selectedRelations == null) {
-         throw new ArtifactDoesNotExist(
-               "There is not an artifact related to " + artifact + " by a relation of type " + relationType);
+         throw new ArtifactDoesNotExist(String.format("There is no artifact related to %s by a relation of type %s",
+               artifact, relationType));
       }
 
       List<RelationLink> trimmedRelations = new ArrayList<RelationLink>(selectedRelations.size());
@@ -142,8 +142,9 @@ public class RelationManager {
       }
 
       if (trimmedRelations.size() > 1) {
-         throw new MultipleArtifactsExist(
-               "There are " + trimmedRelations.size() + " artifacts related to " + artifact + " by a relation of type " + relationType + " instead of the expected 1.");
+         throw new MultipleArtifactsExist(String.format(
+               "There are %s artifacts related to %s by a relation of type %s instead of the expected 1.",
+               trimmedRelations.size(), artifact, relationType));
       }
       RelationLink relation = trimmedRelations.get(0);
       boolean otherSide = !relation.isOnSideA(artifact);
