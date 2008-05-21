@@ -192,7 +192,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
-   }
+      }
 
    public Set<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws SQLException {
       try {
@@ -509,6 +509,15 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public Collection<AttributeType> getAttributeTypes() throws SQLException {
       return ConfigurationPersistenceManager.getInstance().getAttributeTypesFromArtifactType(getArtifactTypeName(),
             branch);
+   }
+
+   public AttributeType getAttributeType(String attributeTypeName) throws SQLException {
+      for (AttributeType attributeType : getAttributeTypes()) {
+         if (attributeType.getName().equals(attributeTypeName)) {
+            return attributeType;
+         }
+      }
+      return null;
    }
 
    private <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws SQLException, MultipleAttributesExist {

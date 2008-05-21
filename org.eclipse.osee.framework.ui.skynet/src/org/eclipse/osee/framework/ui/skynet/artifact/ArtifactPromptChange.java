@@ -73,48 +73,47 @@ public class ArtifactPromptChange {
       return false;
    }
 
-   public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX, artifacts, persist);
    }
 
-   public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangeIntegerAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, VALID_INTEGER_REG_EX,
             Arrays.asList(new Artifact[] {artifact}), persist);
    }
 
-   public static boolean promptChangePercentAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangePercentAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, VALID_PERCENT_REG_EX,
             Arrays.asList(new Artifact[] {artifact}), persist);
    }
 
-   public static boolean promptChangePercentAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangePercentAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, VALID_PERCENT_REG_EX, artifacts, persist);
    }
 
-   public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
       return promptChangeFloatAttribute(attributeName, displayName, Arrays.asList(new Artifact[] {artifact}), persist);
    }
 
-   public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangeFloatAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, VALID_FLOAT_REG_EX, smas, persist);
    }
 
-   public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Artifact artifact, boolean persist) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, null, Arrays.asList(new Artifact[] {artifact}),
             persist);
    }
 
-   public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangeStringAttribute(String attributeName, String displayName, final Collection<? extends Artifact> smas, boolean persist) throws Exception {
       return promptChangeStringAttribute(attributeName, displayName, null, smas, persist);
    }
 
-   public static boolean promptChangeDate(String attributeName, String displayName, Artifact artifact, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangeDate(String attributeName, String displayName, Artifact artifact, boolean persist) throws Exception {
       return promptChangeDate(attributeName, displayName, Arrays.asList(new Artifact[] {artifact}), persist);
    }
 
-   public static boolean promptChangeDate(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws SQLException, MultipleAttributesExist {
-      // prompt that current release is (get from attribute); want to
-      // change
+   public static boolean promptChangeDate(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) throws Exception {
+      // prompt that current release is (get from attribute); want to change
       DateSelectionDialog diag =
             new DateSelectionDialog("Select " + displayName, "Select " + displayName,
                   artifacts.size() == 1 ? artifacts.iterator().next().getSoleAttributeValue(attributeName, null,
@@ -169,7 +168,7 @@ public class ArtifactPromptChange {
       return true;
    }
 
-   public static boolean promptChangeStringAttribute(String attributeName, String displayName, String validationRegEx, final Collection<? extends Artifact> smas, boolean persist) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
+   public static boolean promptChangeStringAttribute(String attributeName, String displayName, String validationRegEx, final Collection<? extends Artifact> smas, boolean persist) throws Exception {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Enter " + displayName, null,
                   "Enter " + displayName, MessageDialog.QUESTION, new String[] {"OK", "Clear", "Cancel"}, 0);
@@ -189,9 +188,9 @@ public class ArtifactPromptChange {
          for (Artifact sma : smas) {
             String value = ed.getEntry();
             if (result == 0) {
-               sma.setSoleAttributeValue(attributeName, value);
+               sma.setSoleAttributeFromString(attributeName, value);
             } else {
-               sma.setSoleAttributeValue(attributeName, "");
+               sma.deleteSoleAttribute(attributeName);
             }
             if (persist) sma.persistAttributes();
          }

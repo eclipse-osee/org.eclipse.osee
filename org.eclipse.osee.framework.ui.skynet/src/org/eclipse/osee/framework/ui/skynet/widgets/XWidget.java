@@ -140,7 +140,10 @@ public abstract class XWidget {
       this.toolkit = toolkit;
       createWidgets(parent, horizontalSpan);
       if (getControl() != null) toolkit.adapt(getControl(), true, true);
-      if (labelWidget != null) toolkit.adapt(labelWidget, true, true);
+      if (labelWidget != null) {
+         toolkit.adapt(labelWidget, true, true);
+         toolkit.adapt(labelWidget.getParent(), true, true);
+      }
    }
 
    /**

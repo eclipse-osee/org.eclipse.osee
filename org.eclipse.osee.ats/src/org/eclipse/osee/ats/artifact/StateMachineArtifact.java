@@ -487,19 +487,21 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public double getRemainHoursFromArtifact() throws Exception {
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return 0;
       double est = getWorldViewEstimatedHours();
-      if (getWorldViewStatePercentComplete() == 0) return getWorldViewEstimatedHours();
-      int implementStatePercent = smaMgr.getStateMgr().getPercentComplete(DefaultTeamState.Implement.name());
-      if (implementStatePercent == 0) return getWorldViewEstimatedHours();
-      double remain = getWorldViewEstimatedHours() - (est * (implementStatePercent / 100.0));
+      if (est == 0) return getWorldViewEstimatedHours();
+      double remain = est - (est * (getPercentCompleteSMATotal() / 100.0));
       return remain;
    }
 
    public double getRemainHoursTotal() throws Exception {
-      return getRemainHoursFromArtifact() + getRemainFromTasks();
+      return getRemainHoursFromArtifact() + getRemainFromTasks() + getRemainFromReviews();
    }
 
    public double getRemainFromTasks() throws Exception {
       return smaMgr.getTaskMgr().getRemainHours();
+   }
+
+   public double getRemainFromReviews() throws Exception {
+      return smaMgr.getReviewManager().getRemainHours();
    }
 
    public double getWorldViewRemainHours() throws Exception {

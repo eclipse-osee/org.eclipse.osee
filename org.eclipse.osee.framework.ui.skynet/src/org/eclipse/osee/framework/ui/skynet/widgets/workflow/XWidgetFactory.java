@@ -75,9 +75,12 @@ public class XWidgetFactory {
       }
 
       // Otherwise, use default widget creation
-      if (xWidgetName.equals("XText"))
+      if (xWidgetName.equals("XText")) {
          xWidget = new XText(name);
-      else if (xWidgetName.equals("XInteger"))
+         if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
+            ((XText) xWidget).set(xWidgetLayoutData.getDefaultValue());
+         }
+      } else if (xWidgetName.equals("XInteger"))
          xWidget = new XInteger(name);
       else if (xWidgetName.equals("XTextDam"))
          xWidget = new XTextDam(name);

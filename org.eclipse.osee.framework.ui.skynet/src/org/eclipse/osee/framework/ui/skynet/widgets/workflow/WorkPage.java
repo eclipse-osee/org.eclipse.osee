@@ -57,12 +57,20 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       }
    }
 
+   public WorkPage(String name, String id, List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver) {
+      super();
+      this.name = name;
+      if (id != null && !id.equals("")) this.id = id;
+      dynamicXWidgetLayout = new DynamicXWidgetLayout(this, optionResolver);
+      dynamicXWidgetLayout.setLayoutDatas(datas);
+   }
+
    public WorkPage(String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
       this("", "", xWidgetsXml, optionResolver);
    }
 
    public WorkPage(IXWidgetOptionResolver optionResolver) {
-      this("", "", null, optionResolver);
+      this("", "", (String) null, optionResolver);
    }
 
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws Exception {

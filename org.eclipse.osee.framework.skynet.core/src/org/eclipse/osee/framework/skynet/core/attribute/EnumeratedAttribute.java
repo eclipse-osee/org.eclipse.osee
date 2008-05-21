@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -23,7 +25,6 @@ import org.w3c.dom.NodeList;
  * @author Ryan D. Brooks
  */
 public class EnumeratedAttribute extends StringAttribute {
-   private String[] choices;
    // When an enumerated attribute is required for an artifact, yet doesn't exist yet, it is created upon
    // init of the artifact and given the "Unspecified" value
    public static String UNSPECIFIED_VALUE = "Unspecified";
@@ -31,23 +32,27 @@ public class EnumeratedAttribute extends StringAttribute {
    public EnumeratedAttribute(AttributeType attributeType, Artifact artifact) {
       super(attributeType, artifact);
 
+   }
+
+   public static List<String> getChoices(AttributeType attributeType) {
+      List<String> choices = new ArrayList<String>();
       try {
          Document document = Jaxp.readXmlDocument(attributeType.getValidityXml());
          Element choicesElement = document.getDocumentElement();
          NodeList enumerations = choicesElement.getElementsByTagName("Enum");
 
-         choices = new String[enumerations.getLength()];
-         for (int i = 0; i < choices.length; i++) {
-            choices[i] = enumerations.item(i).getTextContent();
+         for (int i = 0; i < enumerations.getLength(); i++) {
+            choices.add(enumerations.item(i).getTextContent());
          }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-         choices = new String[] {ex.getLocalizedMessage()};
       }
+      return choices;
    }
 
    public String[] getChoices() {
-      return choices;
+      List<String> choices = EnumeratedAttribute.getChoices(getAttributeType());
+      return choices.toArray(new String[choices.size()]);
    }
 
    /* (non-Javadoc)

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.ArtifactVersionIncrementedEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -90,10 +91,12 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
    private int previewPageIndex;
    private int attributesPageIndex;
+   private int newAttributesPageIndex;
    private int relationsPageIndex;
    private BrowserComposite previewComposite;
    private RelationsComposite relationsComposite;
    private AttributesComposite attributeComposite;
+   private NewAttributesComposite newAttributeComposite;
    private ToolItem forward;
    private ToolItem back;
 
@@ -200,6 +203,11 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       attributesPageIndex = createAttributesPage();
       setPageText(attributesPageIndex, "Attributes");
 
+      if (OseeProperties.getInstance().isDeveloper()) {
+         newAttributesPageIndex = createNewAttributesPage();
+         setPageText(newAttributesPageIndex, "Attributes2");
+      }
+
       relationsPageIndex = createRelationsPage();
       setPageText(relationsPageIndex, "Relations");
       setPartName(getEditorInput().getName());
@@ -280,6 +288,15 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       Composite composite = createCommonPageComposite();
       attributeComposite =
             new AttributesComposite(this, composite, SWT.NONE, getEditorInput().getArtifact(), createToolBar(composite));
+
+      return addPage(composite);
+   }
+
+   private int createNewAttributesPage() {
+      Composite composite = createCommonPageComposite();
+      newAttributeComposite =
+            new NewAttributesComposite(this, composite, SWT.NONE, getEditorInput().getArtifact(),
+                  createToolBar(composite));
 
       return addPage(composite);
    }
@@ -490,7 +507,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             } catch (SQLException ex) {
                SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
-         }
+            }
 
          eventManager.unRegisterAll(this);
          super.dispose();

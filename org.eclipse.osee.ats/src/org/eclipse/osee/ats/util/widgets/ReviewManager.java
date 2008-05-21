@@ -119,6 +119,20 @@ public class ReviewManager {
    }
 
    /**
+    * Return Remain Hours for all reviews
+    * 
+    * @return
+    * @throws Exception
+    */
+   public double getRemainHours() throws Exception {
+      double hours = 0;
+      for (ReviewSMArtifact reviewArt : getReviews())
+         hours += reviewArt.getRemainHoursFromArtifact();
+      return hours;
+
+   }
+
+   /**
     * Return Estimated Review Hours of "Related to State" stateName
     * 
     * @param relatedToStateName state name of parent workflow's state

@@ -87,13 +87,14 @@ public class DynamicXWidgetLayout {
       attrComp.setLayout(layout);
       attrComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      if (toolkit != null) toolkit.paintBordersFor(attrComp);
+      if (toolkit != null) toolkit.adapt(attrComp);
 
       boolean inChildComposite = false;
       Composite childComp = null;
       // Create Attributes
       for (DynamicXWidgetLayoutData xWidgetLayoutData : getLayoutDatas()) {
          Composite useComp = attrComp;
+
          if (xWidgetLayoutData.getBeginComposite() > 0) {
             childComp = new Composite(attrComp, SWT.NONE);
             childComp.setLayout(ALayout.getZeroMarginLayout(xWidgetLayoutData.getBeginComposite(), false));
@@ -208,6 +209,14 @@ public class DynamicXWidgetLayout {
 
    public Set<DynamicXWidgetLayoutData> getLayoutDatas() {
       return datas;
+   }
+
+   public void setLayoutDatas(List<DynamicXWidgetLayoutData> datas) {
+      this.datas.clear();
+      for (DynamicXWidgetLayoutData data : datas) {
+         data.setDynamicXWidgetLayout(this);
+         this.datas.add(data);
+      }
    }
 
    public void addWorkLayoutDatas(List<DynamicXWidgetLayoutData> datas) {

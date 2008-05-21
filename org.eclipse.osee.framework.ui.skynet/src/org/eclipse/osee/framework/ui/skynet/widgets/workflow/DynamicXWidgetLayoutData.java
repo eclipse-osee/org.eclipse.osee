@@ -39,7 +39,7 @@ public class DynamicXWidgetLayoutData {
       None, Vertically, Horizontally
    };
    private Fill fill = Fill.None;
-   private final DynamicXWidgetLayout dynamicXWidgetLayout;
+   private DynamicXWidgetLayout dynamicXWidgetLayout;
    private String defaultValue;
    private String keyedBranchName;
 
@@ -258,5 +258,12 @@ public class DynamicXWidgetLayoutData {
     */
    public String getKeyedBranchName() {
       return keyedBranchName;
+   }
+
+   /**
+    * @param dynamicXWidgetLayout the dynamicXWidgetLayout to set
+    */
+   public void setDynamicXWidgetLayout(DynamicXWidgetLayout dynamicXWidgetLayout) {
+      this.dynamicXWidgetLayout = dynamicXWidgetLayout;
    }
 }
