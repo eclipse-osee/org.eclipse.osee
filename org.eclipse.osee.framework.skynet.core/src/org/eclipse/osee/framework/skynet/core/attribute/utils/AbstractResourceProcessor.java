@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -34,8 +35,7 @@ public abstract class AbstractResourceProcessor {
       try {
          URL url = getStorageURL(dataStore);
          inputStream = dataStore.getInputStream();
-         URI uri =
-               HttpProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
+         URI uri = HttpProcessor.save(url, inputStream, dataStore.getContentType(), dataStore.getEncoding());
          if (uri != null) {
             dataStore.setLocator(uri.toASCIIString());
          }
@@ -52,10 +52,11 @@ public abstract class AbstractResourceProcessor {
       int code = -1;
       try {
          URL url = getAcquireURL(dataStore);
-         AcquireResult result = HttpProcessor.acquire(url);
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         AcquireResult result = HttpProcessor.acquire(url, outputStream);
          code = result.getCode();
          if (code == HttpURLConnection.HTTP_OK) {
-            dataStore.setContent(result.getData(), "", result.getContentType(), result.getEncoding());
+            dataStore.setContent(outputStream.toByteArray(), "", result.getContentType(), result.getEncoding());
          }
       } catch (Exception ex) {
          throw new Exception(String.format("Error acquiring resource: [%s] - status code: [%s]",

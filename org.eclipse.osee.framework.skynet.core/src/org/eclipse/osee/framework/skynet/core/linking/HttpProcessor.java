@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.linking;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
@@ -23,7 +25,17 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class HttpProcessor {
 
+   private static final int CONNECTION_TIMEOUT = 1000 * 60 * 2;
+   private static final int CONNECTION_READ_TIMEOUT = 1000 * 10;
+
    private HttpProcessor() {
+   }
+
+   private static HttpURLConnection setupConnection(URL url) throws IOException {
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      connection.setConnectTimeout(CONNECTION_TIMEOUT);
+      connection.setReadTimeout(CONNECTION_READ_TIMEOUT);
+      return connection;
    }
 
    public static URI save(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
@@ -55,7 +67,7 @@ public class HttpProcessor {
       int code = -1;
       InputStream inputStream = null;
       try {
-         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+         HttpURLConnection connection = setupConnection(url);
          connection.setRequestMethod("POST");
          connection.connect();
          // Wait for response
@@ -74,12 +86,12 @@ public class HttpProcessor {
       return response;
    }
 
-   public static AcquireResult acquire(URL url) throws Exception {
+   public static AcquireResult acquire(URL url, OutputStream outputStream) throws Exception {
       AcquireResult result = new AcquireResult();
       int code = -1;
       InputStream inputStream = null;
       try {
-         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+         HttpURLConnection connection = setupConnection(url);
          connection.connect();
          // Wait for response
          code = connection.getResponseCode();
@@ -87,7 +99,7 @@ public class HttpProcessor {
             inputStream = (InputStream) connection.getContent();
             result.setContentType(connection.getContentType());
             result.setEncoding(connection.getContentEncoding());
-            result.setData(Lib.inputStreamToBytes(inputStream));
+            Lib.inputStreamToOutputStream(inputStream, outputStream);
          }
       } catch (Exception ex) {
          throw new Exception(String.format("Error acquiring resource: [%s] - status code: [%s]", url, code), ex);
@@ -105,7 +117,7 @@ public class HttpProcessor {
       int code = -1;
       InputStream inputStream = null;
       try {
-         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+         HttpURLConnection connection = setupConnection(url);
          connection.setRequestMethod("DELETE");
          connection.connect();
          // Wait for response
@@ -128,14 +140,16 @@ public class HttpProcessor {
       private int code;
       private String encoding;
       private String contentType;
-      private byte[] data;
 
       private AcquireResult() {
          super();
          this.code = -1;
          this.encoding = "";
          this.contentType = "";
-         this.data = null;
+      }
+
+      public boolean wasSuccessful() {
+         return code == HttpURLConnection.HTTP_OK;
       }
 
       public int getCode() {
@@ -160,14 +174,6 @@ public class HttpProcessor {
 
       private void setContentType(String contentType) {
          this.contentType = contentType;
-      }
-
-      public byte[] getData() {
-         return data;
-      }
-
-      private void setData(byte[] data) {
-         this.data = data;
       }
    }
 }

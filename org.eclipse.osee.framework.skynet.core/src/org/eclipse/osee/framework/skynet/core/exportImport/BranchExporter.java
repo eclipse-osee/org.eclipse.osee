@@ -56,8 +56,8 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
+import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
@@ -431,9 +431,12 @@ public class BranchExporter {
          Map<String, String> parameters = new HashMap<String, String>();
          parameters.put("uri", uriTarget);
          String url = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("resource", parameters);
-         AcquireResult acquireResult = HttpProcessor.acquire(new URL(url));
-         outputStream.write(acquireResult.getData());
-         toReturn = target.getName();
+         AcquireResult acquireResult = HttpProcessor.acquire(new URL(url), outputStream);
+         if (acquireResult.wasSuccessful()) {
+            toReturn = target.getName();
+         } else {
+            throw new Exception(String.format("Error acquiring data for [%s]", uriTarget));
+         }
       } finally {
          if (outputStream != null) {
             outputStream.close();

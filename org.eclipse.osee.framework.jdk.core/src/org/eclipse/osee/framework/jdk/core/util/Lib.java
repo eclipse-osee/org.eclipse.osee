@@ -290,6 +290,14 @@ public final class Lib {
       }
    }
 
+   public static void inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {
+      byte[] buf = new byte[2024];
+      int count = -1;
+      while ((count = inputStream.read(buf)) != -1) {
+         outputStream.write(buf, 0, count);
+      }
+   }
+
    public static String inputStreamToString(InputStream in) throws IOException {
       return inputStreamToStringBuffer(in).toString();
    }
