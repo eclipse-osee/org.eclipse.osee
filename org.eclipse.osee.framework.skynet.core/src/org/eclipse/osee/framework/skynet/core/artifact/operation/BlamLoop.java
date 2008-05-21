@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks
@@ -29,7 +29,7 @@ public abstract class BlamLoop extends Artifact {
     * @param branch
     * @throws SQLException
     */
-   public BlamLoop(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public BlamLoop(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws SQLException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

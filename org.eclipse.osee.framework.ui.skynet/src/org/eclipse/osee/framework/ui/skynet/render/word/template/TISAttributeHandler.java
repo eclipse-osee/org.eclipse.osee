@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -24,7 +24,7 @@ public class TISAttributeHandler implements ITemplateAttributeHandler {
     */
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute attribute) throws SQLException, IllegalStateException, IOException, MultipleAttributesExist, AttributeDoesNotExist {
-      for (Artifact requirement : artifact.getRelatedArtifacts(RelationSide.Verification__Requirement)) {
+      for (Artifact requirement : artifact.getRelatedArtifacts(CoreRelationEnumeration.Verification__Requirement)) {
          wordMl.addParagraph(requirement.getSoleAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
       }
    }

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSe
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationTypeCriteria;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Donald G. Dunne
@@ -62,7 +62,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
       }
 
       if (returnActions) {
-         criteria.add(new RelationTypeCriteria(RelationSide.ActionToWorkflow_Action));
+         criteria.add(new RelationTypeCriteria(CoreRelationEnumeration.ActionToWorkflow_Action));
       }
 
       return ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), criteria);

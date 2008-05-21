@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
 /**
@@ -85,8 +85,8 @@ public class BlamVariableMap {
       return new ArrayList<Artifact>(arts);
    }
 
-   public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(String parameterName) {
-      return getSingleCollectionValue(ArtifactSubtypeDescriptor.class, parameterName);
+   public ArtifactType getArtifactSubtypeDescriptor(String parameterName) {
+      return getSingleCollectionValue(ArtifactType.class, parameterName);
    }
 
    public AttributeType getAttributeDescriptor(String parameterName) {

@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -102,7 +102,7 @@ public class ReviewManager {
                   BranchPersistenceManager.getAtsBranch(), "Peer to Peer Review");
 
       if (teamParent != null) {
-         teamParent.addRelation(RelationSide.TeamWorkflowToReview_Review, peerToPeerRev, null);
+         teamParent.addRelation(CoreRelationEnumeration.TeamWorkflowToReview_Review, peerToPeerRev, null);
          if (againstState != null) peerToPeerRev.setSoleAttributeValue(
                ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
       }
@@ -166,7 +166,7 @@ public class ReviewManager {
    }
 
    public Collection<ReviewSMArtifact> getReviews() throws SQLException {
-      return smaMgr.getSma().getArtifacts(RelationSide.TeamWorkflowToReview_Review, ReviewSMArtifact.class);
+      return smaMgr.getSma().getArtifacts(CoreRelationEnumeration.TeamWorkflowToReview_Review, ReviewSMArtifact.class);
    }
 
    public Collection<ReviewSMArtifact> getReviewsFromCurrentState() throws SQLException, MultipleAttributesExist {
@@ -184,7 +184,7 @@ public class ReviewManager {
 
    public boolean hasReviews() {
       try {
-         return smaMgr.getSma().getRelatedArtifactsCount("TeamWorkflowToReview") > 0;
+         return smaMgr.getSma().getRelatedArtifactsCount(CoreRelationEnumeration.TeamWorkflowToReview_Review) > 0;
       } catch (OseeDataStoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return false;

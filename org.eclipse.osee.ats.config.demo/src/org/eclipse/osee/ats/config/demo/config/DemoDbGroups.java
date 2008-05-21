@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.config.demo.config.AtsConfigDemoDatabaseConfig.SawBu
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 /**
@@ -35,16 +35,16 @@ public class DemoDbGroups {
       for (DemoCodeTeamWorkflowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
 
          // Add Action to Universal Group
-         groupArt.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, codeArt.getParentActionArtifact(), true);
+         groupArt.relate(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, codeArt.getParentActionArtifact(), true);
 
          // Add All Team Workflows to Universal Group
          for (Artifact teamWorkflow : codeArt.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
-            groupArt.addRelation(RelationSide.UNIVERSAL_GROUPING__MEMBERS, teamWorkflow, null);
+            groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, teamWorkflow, null);
          }
          groupArt.persistRelations();
 
          // Relate codeArt to SAW_Bld_2
-         codeArt.addRelation(RelationSide.TeamWorkflowTargetedForVersion_Version,
+         codeArt.addRelation(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version,
                ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, SawBuilds.SAW_Bld_2.name(),
                      AtsPlugin.getAtsBranch()), null);
 
@@ -54,7 +54,7 @@ public class DemoDbGroups {
 
       // Add all Tasks to Group
       for (Artifact task : ArtifactQuery.getArtifactsFromType(TaskArtifact.ARTIFACT_NAME, AtsPlugin.getAtsBranch())) {
-         groupArt.addRelation(RelationSide.UNIVERSAL_GROUPING__MEMBERS, task, null);
+         groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, task, null);
       }
       groupArt.persistRelations();
 

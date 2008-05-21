@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 
 public class RelationLinkGroup {
 
@@ -104,18 +103,6 @@ public class RelationLinkGroup {
       return addArtifact(artifact, rationale, persist, 0, 0, true);
    }
 
-   /**
-    * Relate a supplied artifact to the artifact which owns this group. The type of the relation link for this operation
-    * will be the same as this group represents, and the supplied artifact will be placed on the corresponding side of
-    * the link for this group.<br/><br/> If the supplied artifact is already within the group then no operation will
-    * be performed.
-    * 
-    * @return <b>true</b> if a new link was created, <b>false</b> otherwise.
-    */
-   public boolean addArtifact(Artifact artifact, String rationale, boolean persist, int aOrder, int bOrder) throws SQLException {
-      return addArtifact(artifact, rationale, persist, aOrder, bOrder, false);
-   }
-
    private boolean addArtifact(Artifact artifact, String rationale, boolean persist, int aOrder, int bOrder, boolean putLast) throws SQLException {
       checkArtifact(artifact);
 
@@ -124,7 +111,7 @@ public class RelationLinkGroup {
          if (artifact == ((sideA) ? link.getArtifactA() : link.getArtifactB())) return false;
 
       // Check that both artifacts are valid for the type of relation
-      linkManager.ensureLinkValidity(descriptor, sideA, artifact);
+      // linkManager.ensureLinkValidity(descriptor, sideA, artifact);
 
       Artifact owningArtifact = linkManager.getOwningArtifact();
 
@@ -138,30 +125,6 @@ public class RelationLinkGroup {
       return true;
    }
 
-   /**
-    * Unrelate a supplied artifact from the artifact which owns this group. The type of relation link to be removed will
-    * be the same as this group represents, and where the supplied artifact is on the corresponding side of the link for
-    * this group. If the supplied artifact is not within the group then no operation will be performed.
-    * 
-    * @param artifact
-    * @return <b>true</b> if a link was removed, <b>false</b> otherwise.
-    * @throws SQLException
-    */
-   public boolean removeArtifact(Artifact artifact) throws SQLException {
-      // If a link exists for this artifact, then remove it
-      for (RelationLink link : groupSide) {
-         if (artifact == ((sideA) ? link.getArtifactA() : link.getArtifactB())) {
-            link.delete();
-            // TODO the link.delete() call is kicking this event also ...
-            eventManager.kick(new CacheRelationModifiedEvent(link, link.getRelationType().getTypeName(),
-                  link.getASideName(), ModType.Deleted.name(), this, link.getBranch()));
-            return true;
-         }
-      }
-
-      return false;
-   }
-
    public void removeAll() throws SQLException {
       // Must do this to keep from concurrent mod exception
       ArrayList<RelationLink> links = new ArrayList<RelationLink>();
@@ -171,41 +134,12 @@ public class RelationLinkGroup {
          link.delete();
    }
 
-   /**
-    * @return Returns the sideName.
-    */
-   public String getSideName() {
-      return descriptor.getSideName(sideA);
-   }
-
-   public String toString() {
-      return String.format("%s side of %s for %s", getSideName(), descriptor.getTypeName(),
-            linkManager.getOwningArtifact());
-   }
-
-   /**
-    * @return the name of the side opposite the one represented by this link group
-    */
-   public String getOtherSideName() {
-      return descriptor.getSideName(!sideA);
-   }
-
-   public String getOtherSideName(String sideName) {
-      if (sideName == null) throw new IllegalArgumentException("Sidename can not be null");
-
-      if (sideName.equals(descriptor.getSideAName()))
-         return descriptor.getSideBName();
-      else if (sideName.equals(descriptor.getSideBName())) return descriptor.getSideAName();
-
-      throw new IllegalArgumentException("Group does not contain side name");
-   }
-
    public Set<Artifact> getArtifacts() {
       return getArtifacts(Artifact.class);
    }
 
    @SuppressWarnings("unchecked")
-   public <A extends Artifact> Set<A> getArtifacts(Class<A> artifactClass) {
+   private <A extends Artifact> Set<A> getArtifacts(Class<A> artifactClass) {
       Set<A> artifacts = new LinkedHashSet<A>();
       Artifact artToAdd;
 
@@ -230,18 +164,15 @@ public class RelationLinkGroup {
       return descriptor;
    }
 
-   public String getRelationDescription() {
-      if (sideA)
-         return "<this> " + descriptor.getBToAPhrasing() + " <" + descriptor.getSideAName() + ">";
-      else
-         return "<this> " + descriptor.getAToBPhrasing() + " <" + descriptor.getSideBName() + ">";
-   }
-
    /**
     * @return Returns the sideA.
     */
    public boolean isSideA() {
       return sideA;
+   }
+
+   public RelationSide getSide() {
+      return sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;
    }
 
    /**

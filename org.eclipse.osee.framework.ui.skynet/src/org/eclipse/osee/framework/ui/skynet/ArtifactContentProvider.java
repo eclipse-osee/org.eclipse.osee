@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -137,7 +138,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
             if (artifact.isDeleted()) return false;
 
             try {
-               return artifact.getRelatedArtifactsCount("Default Hierarchical") > 0;
+               return artifact.getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD) > 0;
             } catch (OseeDataStoreException ex) {
                logger.log(Level.SEVERE, ex.toString(), ex);
                // Assume it has children if an error happens

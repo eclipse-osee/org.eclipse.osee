@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.autoRun.IAutoRunTask;
@@ -122,9 +122,9 @@ public class TeamWorkflowsHaveZeroOrOneVersion extends XNavigateItemAutoRunActio
          for (Artifact art : arts) {
             if (monitor != null) monitor.subTask(String.format("Processing %d/%d...", x++, arts.size()));
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
-            if (teamArt.getRelatedArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version).size() > 1) {
+            if (teamArt.getRelatedArtifacts(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version).size() > 1) {
                rd.logError("Team workflow " + teamArt.getHumanReadableId() + " has " + teamArt.getRelatedArtifacts(
-                     RelationSide.TeamWorkflowTargetedForVersion_Version).size() + " versions");
+                     CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version).size() + " versions");
             }
          }
          rd.log("Completed processing " + arts.size() + " artifacts.");

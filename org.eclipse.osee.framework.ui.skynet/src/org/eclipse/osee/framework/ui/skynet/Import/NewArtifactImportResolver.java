@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.PolymorphicArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks
@@ -33,7 +33,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
     * @see org.eclipse.osee.framework.ui.skynet.Import.IArtifactImportResolver#resolve(org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact)
     */
    public Artifact resolve(final RoughArtifact roughArtifact) throws SQLException, IllegalStateException, IOException, OseeCoreException {
-      ArtifactSubtypeDescriptor descriptor = roughArtifact.getDescriptorForGetReal();
+      ArtifactType descriptor = roughArtifact.getDescriptorForGetReal();
 
       Artifact realArtifact = null;
       ArtifactFactory factory = null;

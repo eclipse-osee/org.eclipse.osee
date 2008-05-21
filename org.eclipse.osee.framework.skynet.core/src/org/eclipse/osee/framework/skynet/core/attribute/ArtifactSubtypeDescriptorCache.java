@@ -25,19 +25,19 @@ import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 /**
  * Caches artifact subtype descriptors.
  * 
- * @see org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor
+ * @see org.eclipse.osee.framework.skynet.core.attribute.ArtifactType
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
 public class ArtifactSubtypeDescriptorCache {
    private static final String SELECT_ARTIFACT_TYPES = "SELECT * FROM osee_define_artifact_type";
 
-   private final HashMap<String, ArtifactSubtypeDescriptor> nameToTypeMap;
-   private final HashMap<Integer, ArtifactSubtypeDescriptor> idToTypeMap;
+   private final HashMap<String, ArtifactType> nameToTypeMap;
+   private final HashMap<Integer, ArtifactType> idToTypeMap;
 
    protected ArtifactSubtypeDescriptorCache() {
-      this.nameToTypeMap = new HashMap<String, ArtifactSubtypeDescriptor>();
-      this.idToTypeMap = new HashMap<Integer, ArtifactSubtypeDescriptor>();
+      this.nameToTypeMap = new HashMap<String, ArtifactType>();
+      this.idToTypeMap = new HashMap<Integer, ArtifactType>();
    }
 
    private synchronized void ensurePopulated() throws SQLException {
@@ -57,7 +57,7 @@ public class ArtifactSubtypeDescriptorCache {
          while (rSet.next()) {
             try {
                ArtifactFactory factory = configurationManager.getFactoryFromId(rSet.getInt("factory_id"));
-               new ArtifactSubtypeDescriptor(this, rSet.getInt("art_type_id"), rSet.getString("factory_key"), factory,
+               new ArtifactType(this, rSet.getInt("art_type_id"), rSet.getString("factory_key"), factory,
                      rSet.getString("namespace"), rSet.getString("name"), new InputStreamImageDescriptor(
                            rSet.getBinaryStream("image")));
             } catch (IllegalStateException ex) {
@@ -75,7 +75,7 @@ public class ArtifactSubtypeDescriptorCache {
     */
    @Deprecated
    // should use ArtifactTypeValidityCache
-   public Collection<ArtifactSubtypeDescriptor> getAllDescriptors() throws SQLException {
+   public Collection<ArtifactType> getAllDescriptors() throws SQLException {
       ensurePopulated();
       return idToTypeMap.values();
    }
@@ -89,9 +89,9 @@ public class ArtifactSubtypeDescriptorCache {
     * @return Returns the descriptor with a particular namespace and name
     * @throws SQLException
     */
-   public ArtifactSubtypeDescriptor getDescriptor(String namespace, String name) throws SQLException {
+   public ArtifactType getDescriptor(String namespace, String name) throws SQLException {
       ensurePopulated();
-      ArtifactSubtypeDescriptor artifactType = nameToTypeMap.get(namespace + name);
+      ArtifactType artifactType = nameToTypeMap.get(namespace + name);
 
       if (artifactType == null) {
          throw new IllegalArgumentException(
@@ -104,7 +104,7 @@ public class ArtifactSubtypeDescriptorCache {
     * @return Returns the descriptor with a particular name (uses null for namespace), null if it does not exist.
     * @throws SQLException
     */
-   public ArtifactSubtypeDescriptor getDescriptor(String name) throws SQLException {
+   public ArtifactType getDescriptor(String name) throws SQLException {
       return getDescriptor("", name);
    }
 
@@ -112,10 +112,10 @@ public class ArtifactSubtypeDescriptorCache {
     * @return Returns the descriptor with a particular name, null if it does not exist.
     * @throws SQLException
     */
-   public ArtifactSubtypeDescriptor getDescriptor(int artTypeId) throws SQLException {
+   public ArtifactType getDescriptor(int artTypeId) throws SQLException {
       ensurePopulated();
 
-      ArtifactSubtypeDescriptor artifactType = idToTypeMap.get(artTypeId);
+      ArtifactType artifactType = idToTypeMap.get(artTypeId);
 
       if (artifactType == null) {
          throw new IllegalArgumentException("Atrifact type: " + artTypeId + " is not available.");
@@ -129,7 +129,7 @@ public class ArtifactSubtypeDescriptorCache {
     * @param descriptor The descriptor to cache
     * @throws IllegalArgumentException if descriptor is null.
     */
-   public void cache(ArtifactSubtypeDescriptor descriptor) {
+   public void cache(ArtifactType descriptor) {
       nameToTypeMap.put(descriptor.getNamespace() + descriptor.getName(), descriptor);
       idToTypeMap.put(descriptor.getArtTypeId(), descriptor);
    }

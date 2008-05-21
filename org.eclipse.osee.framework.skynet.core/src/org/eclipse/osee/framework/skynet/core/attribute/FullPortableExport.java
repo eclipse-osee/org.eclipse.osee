@@ -124,7 +124,7 @@ public class FullPortableExport {
    }
 
    public void createArtifactSheets(Branch branch) throws Exception {
-      for (ArtifactSubtypeDescriptor artifactType : configurationManager.getValidArtifactTypes(branch)) {
+      for (ArtifactType artifactType : configurationManager.getValidArtifactTypes(branch)) {
          createArtifactSheet(artifactType, ArtifactQuery.getArtifactsFromType(artifactType, branch));
       }
    }
@@ -141,7 +141,7 @@ public class FullPortableExport {
       }
    }
 
-   private void createArtifactSheet(ArtifactSubtypeDescriptor descriptor, Collection<Artifact> artifacts) throws Exception {
+   private void createArtifactSheet(ArtifactType descriptor, Collection<Artifact> artifacts) throws Exception {
       if (artifacts.size() > 0) {
          Artifact sampleArtifact = artifacts.iterator().next();
          int columnNum = sampleArtifact.getAttributeTypes().size();
@@ -154,7 +154,7 @@ public class FullPortableExport {
       }
    }
 
-   private void writeArtifactHeader(ArtifactSubtypeDescriptor descriptor, Branch branch) throws Exception {
+   private void writeArtifactHeader(ArtifactType descriptor, Branch branch) throws Exception {
       Collection<AttributeType> allAttributeTypes =
             configurationManager.getAttributeTypesFromArtifactType(descriptor, branch);
 

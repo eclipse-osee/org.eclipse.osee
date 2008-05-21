@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 
 /**
@@ -118,7 +118,7 @@ public final class Artifacts {
     * @throws IllegalStateException if following the parent side link results in more than one artifact from a given
     *            point
     */
-   public static Collection<Artifact> getRoots(Collection<Artifact> artifacts, RelationSide parentSide) {
+   public static Collection<Artifact> getRoots(Collection<Artifact> artifacts, CoreRelationEnumeration parentSide) {
       if (artifacts == null) throw new IllegalArgumentException("artifacts can not be null");
       if (parentSide == null) throw new IllegalArgumentException("side can not be null");
 
@@ -227,7 +227,7 @@ public final class Artifacts {
     * @throws IllegalStateException if following the parent side link results in more than one artifact from a given
     *            point
     */
-   public static Collection<Artifact> getDescendants(Artifact parent, Collection<Artifact> candidates, RelationSide parentSide) {
+   public static Collection<Artifact> getDescendants(Artifact parent, Collection<Artifact> candidates, CoreRelationEnumeration parentSide) {
       if (parent == null) throw new IllegalArgumentException("parent can not be null");
       if (candidates == null) throw new IllegalArgumentException("candidates can not be null");
       if (parentSide == null) throw new IllegalArgumentException("side can not be null");
@@ -283,7 +283,7 @@ public final class Artifacts {
     * @throws IllegalStateException if following the parent side link results in more than one artifact from a given
     *            point
     */
-   public static List<Artifact> orderByRelation(Collection<Artifact> artifacts, RelationSide side) {
+   public static List<Artifact> orderByRelation(Collection<Artifact> artifacts, CoreRelationEnumeration side) {
       throw new UnsupportedOperationException("not implemented yet");
    }
 
@@ -299,7 +299,7 @@ public final class Artifacts {
     * @throws SQLException See
     *            {@link Artifact#getRelatedArtifacts(org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration)}
     */
-   public static Collection<Artifact> getDescendantsAtLevel(Artifact root, RelationSide childSide, int level) throws SQLException {
+   public static Collection<Artifact> getDescendantsAtLevel(Artifact root, CoreRelationEnumeration childSide, int level) throws SQLException {
       if (root == null) throw new IllegalArgumentException("root can not be null");
       if (childSide == null) throw new IllegalArgumentException("childSide can not be null");
       if (level < 0) throw new IllegalArgumentException("level can not be less than 0");
@@ -311,7 +311,7 @@ public final class Artifacts {
       return descendants;
    }
 
-   private static void addAtLevelZero(Collection<Artifact> levelArtifacts, Artifact ancestor, RelationSide childSide, int level) throws SQLException {
+   private static void addAtLevelZero(Collection<Artifact> levelArtifacts, Artifact ancestor, CoreRelationEnumeration childSide, int level) throws SQLException {
       if (level == 0) {
          levelArtifacts.add(ancestor);
       } else {

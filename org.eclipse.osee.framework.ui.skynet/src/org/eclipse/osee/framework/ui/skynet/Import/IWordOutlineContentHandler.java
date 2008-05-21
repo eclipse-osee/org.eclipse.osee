@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Robert A. Fisher
@@ -26,7 +26,7 @@ public interface IWordOutlineContentHandler extends IExecutableExtension {
     * @param headingDescriptor The descriptor to use for headings
     * @param mainDescriptor
     */
-   public void init(WordOutlineExtractor extractor, ArtifactSubtypeDescriptor headingDescriptor, ArtifactSubtypeDescriptor mainDescriptor);
+   public void init(WordOutlineExtractor extractor, ArtifactType headingDescriptor, ArtifactType mainDescriptor);
 
    /**
     * Opportunity to release resources. This method may be called many times on the same object.

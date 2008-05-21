@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -48,16 +48,16 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
     * @param branch
     * @throws SQLException
     */
-   public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(RelationSide.TeamWorkflowToReview_Team);
+      registerSMARelation(CoreRelationEnumeration.TeamWorkflowToReview_Team);
       defectManager = new DefectManager(this);
    }
 
    public TeamWorkFlowArtifact getParentTeamWorkflow() {
       try {
          Set<TeamWorkFlowArtifact> teams =
-               getArtifacts(RelationSide.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
+               getArtifacts(CoreRelationEnumeration.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
          if (teams.size() > 0) return teams.iterator().next();
          return null;
       } catch (SQLException ex) {

@@ -16,7 +16,7 @@ import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
  * @author Ryan D. Brooks
  */
 public class UrlRenderer extends Renderer {
-   private Collection<ArtifactSubtypeDescriptor> descriptors;
+   private Collection<ArtifactType> descriptors;
 
    /**
     * @param applicableArtifactTypes
@@ -48,7 +48,7 @@ public class UrlRenderer extends Renderer {
    }
 
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      for (ArtifactSubtypeDescriptor descriptor : descriptors) {
+      for (ArtifactType descriptor : descriptors) {
          if (descriptor.canProduceArtifact(artifact)) {
             return SUBTYPE_TYPE_MATCH;
          }

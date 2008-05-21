@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -35,7 +35,7 @@ public class AttributeMapRow {
       AttributeType attributeType = AttributeTypeManager.getType(attributeName);
 
       for (String artifactTypeName : importer.determineConcreateTypes(artifactSuperTypeName)) {
-         ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(artifactTypeName);
+         ArtifactType artifactType = configurationManager.getArtifactSubtypeDescriptor(artifactTypeName);
          configurationManager.persistAttributeValidity(artifactType, attributeType);
       }
    }

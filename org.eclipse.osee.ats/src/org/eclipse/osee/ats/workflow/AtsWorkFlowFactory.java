@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.ImportWorkflowAction;
 import org.eclipse.osee.ats.config.WorkflowDiagramFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -85,31 +85,31 @@ public class AtsWorkFlowFactory {
          NativeArtifact nativeArt = null;
          if (sma instanceof TaskArtifact) {
             nativeArt =
-                  getTeamDefinitionWorkflowDiagram(RelationSide.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram,
+                  getTeamDefinitionWorkflowDiagram(CoreRelationEnumeration.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram,
                         ((TeamWorkFlowArtifact) ((TaskArtifact) sma).getParentSMA()).getTeamDefinition());
          } else if (sma instanceof DecisionReviewArtifact) {
             nativeArt =
                   getTeamDefinitionWorkflowDiagram(
-                        RelationSide.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram,
+                        CoreRelationEnumeration.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram,
                         ((TeamWorkFlowArtifact) ((DecisionReviewArtifact) sma).getParentSMA()).getTeamDefinition());
          } else if (sma instanceof PeerToPeerReviewArtifact) {
             PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) sma;
             if (peerArt.getParentSMA() == null)
                nativeArt =
                      getTeamDefinitionWorkflowDiagram(
-                           RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
+                           CoreRelationEnumeration.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
                            TeamDefinitionArtifact.getHeadTeamDefinition());
             else
                nativeArt =
                      getTeamDefinitionWorkflowDiagram(
-                           RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
+                           CoreRelationEnumeration.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
                            ((TeamWorkFlowArtifact) ((PeerToPeerReviewArtifact) sma).getParentSMA()).getTeamDefinition());
          }
          // If TeamWorkflowArtifact, walk up team tree till find a workflow diagram or exception
          // if not found
          else if (sma instanceof TeamWorkFlowArtifact) {
             nativeArt =
-                  getTeamDefinitionWorkflowDiagram(RelationSide.TeamDefinitionToWorkflowDiagram_WorkflowDiagram,
+                  getTeamDefinitionWorkflowDiagram(CoreRelationEnumeration.TeamDefinitionToWorkflowDiagram_WorkflowDiagram,
                         ((TeamWorkFlowArtifact) sma).getTeamDefinition());
          }
          if (nativeArt != null)
@@ -119,7 +119,7 @@ public class AtsWorkFlowFactory {
       }
    }
 
-   private NativeArtifact getTeamDefinitionWorkflowDiagram(RelationSide side, TeamDefinitionArtifact teamDef) throws SQLException {
+   private NativeArtifact getTeamDefinitionWorkflowDiagram(CoreRelationEnumeration side, TeamDefinitionArtifact teamDef) throws SQLException {
       Collection<NativeArtifact> arts = teamDef.getArtifacts(side, NativeArtifact.class);
       if (arts.size() > 1) throw new IllegalArgumentException("Expected 1 Workflow diagram.  Retrieved " + arts.size());
       if (arts.size() == 1) return arts.iterator().next();

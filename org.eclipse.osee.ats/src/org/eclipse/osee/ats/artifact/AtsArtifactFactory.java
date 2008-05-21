@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks
@@ -37,7 +37,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
       if (factoryKey.equals(ActionArtifact.ARTIFACT_NAME)) return new ActionArtifact(this, guid, humandReadableId,
             branch, artifactType);
       if (factoryKey.equals(TaskArtifact.ARTIFACT_NAME)) return new TaskArtifact(this, guid, humandReadableId, branch,

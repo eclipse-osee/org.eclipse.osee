@@ -588,11 +588,7 @@ public class HyperView extends ViewPart implements IPartListener {
                            "Delete Link\n\n" + hvi.getLink().toString() + "\n\nAre you sure?")) {
                         Artifact artA = hvi.getLink().getArtifactA();
                         hvi.getLink().delete();
-                        try {
-                           artA.persistRelations();
-                        } catch (SQLException ex) {
-                           OSEELog.logException(AtsPlugin.class, ex, true);
-                        }
+                        artA.persistRelations();
                         connectPopupMenu.dispose();
                         connectPopupMenu = null;
                         display();

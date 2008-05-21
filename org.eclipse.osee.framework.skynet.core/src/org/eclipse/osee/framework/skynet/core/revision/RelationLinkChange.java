@@ -18,7 +18,7 @@ import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DEL
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
@@ -37,7 +37,7 @@ public class RelationLinkChange extends RevisionChange implements IRelationLinkC
    private int order;
    private String relTypeName;
    private String otherArtifactName;
-   private ArtifactSubtypeDescriptor otherArtifactDescriptor;
+   private ArtifactType otherArtifactDescriptor;
 
    /**
     * Constructor for deserialization.
@@ -57,7 +57,7 @@ public class RelationLinkChange extends RevisionChange implements IRelationLinkC
     * @param otherArtifactName
     * @param otherArtifactDescriptor
     */
-   public RelationLinkChange(ChangeType changeType, ModificationType modType, int relLinkId, long gammaId, String rationale, int order, String relTypeName, String otherArtifactName, ArtifactSubtypeDescriptor otherArtifactDescriptor) {
+   public RelationLinkChange(ChangeType changeType, ModificationType modType, int relLinkId, long gammaId, String rationale, int order, String relTypeName, String otherArtifactName, ArtifactType otherArtifactDescriptor) {
       super(changeType, modType, gammaId);
       this.relLinkId = relLinkId;
       this.rationale = rationale;
@@ -75,7 +75,7 @@ public class RelationLinkChange extends RevisionChange implements IRelationLinkC
     * @param otherArtifactName
     * @param otherArtifactDescriptor
     */
-   public RelationLinkChange(ChangeType changeType, int relLinkId, long gammaId, String relTypeName, String otherArtifactName, ArtifactSubtypeDescriptor otherArtifactDescriptor) {
+   public RelationLinkChange(ChangeType changeType, int relLinkId, long gammaId, String relTypeName, String otherArtifactName, ArtifactType otherArtifactDescriptor) {
       super(changeType, DELETED, gammaId);
       this.relLinkId = relLinkId;
       this.relTypeName = relTypeName;
@@ -140,7 +140,7 @@ public class RelationLinkChange extends RevisionChange implements IRelationLinkC
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange#getOtherArtifactDescriptor()
     */
-   public ArtifactSubtypeDescriptor getOtherArtifactDescriptor() {
+   public ArtifactType getOtherArtifactDescriptor() {
       return otherArtifactDescriptor;
    }
 

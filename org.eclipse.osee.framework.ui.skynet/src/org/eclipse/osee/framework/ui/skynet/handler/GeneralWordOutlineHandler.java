@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.handler;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact;
@@ -37,7 +37,7 @@ public class GeneralWordOutlineHandler extends WordOutlineContentHandler {
     * Subclasses may extend this method to allocate resources
     */
    @Override
-   public void init(WordOutlineExtractor extractor, ArtifactSubtypeDescriptor headingDescriptor, ArtifactSubtypeDescriptor mainDescriptor) {
+   public void init(WordOutlineExtractor extractor, ArtifactType headingDescriptor, ArtifactType mainDescriptor) {
       super.init(extractor, headingDescriptor, mainDescriptor);
 
       duplicateCatcher = new HashMap<String, RoughArtifact>();

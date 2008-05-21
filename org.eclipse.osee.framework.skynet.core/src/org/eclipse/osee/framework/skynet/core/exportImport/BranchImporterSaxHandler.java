@@ -50,7 +50,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
@@ -257,7 +257,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          }
          currentArtifactId = Query.getNextSeqVal(null, ART_ID_SEQ);
 
-         ArtifactSubtypeDescriptor artifactType = ArtifactTypeManager.getType(artifactTypeName);
+         ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
          int artTypeId = artifactType.getArtTypeId();
          artifactGuidCache.map(currentArtifactId, guid);
          ConnectionHandler.runPreparedUpdate(INSERT_NEW_ARTIFACT, SQL3DataType.INTEGER, currentArtifactId,

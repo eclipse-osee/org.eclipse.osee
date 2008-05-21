@@ -7,7 +7,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 
 /**
@@ -60,18 +60,18 @@ public class ArtifactTypeManager {
     * @return Return artifact reference
     * @throws SQLException
     * @throws OseeCoreException
-    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String, ArtifactProcessor)
+    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch, String guid, String humandReadableId) throws SQLException, OseeCoreException {
       return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName).makeNewArtifact(
             branch, guid, humandReadableId);
    }
 
-   public static ArtifactSubtypeDescriptor getType(int artifactTypeId) throws SQLException {
+   public static ArtifactType getType(int artifactTypeId) throws SQLException {
       return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeId);
    }
 
-   public static ArtifactSubtypeDescriptor getType(String artifactTypeName) throws SQLException {
+   public static ArtifactType getType(String artifactTypeName) throws SQLException {
       return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artifactTypeName);
    }
 }

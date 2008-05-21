@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -44,7 +44,7 @@ public class TaskManager {
    }
 
    public Collection<TaskArtifact> getTaskArtifacts() throws SQLException {
-      return smaMgr.getSma().getArtifacts(RelationSide.SmaToTask_Task, TaskArtifact.class);
+      return smaMgr.getSma().getArtifacts(CoreRelationEnumeration.SmaToTask_Task, TaskArtifact.class);
    }
 
    public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws SQLException, MultipleAttributesExist {
@@ -53,7 +53,8 @@ public class TaskManager {
 
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws SQLException, MultipleAttributesExist {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
-      for (TaskArtifact taskArt : smaMgr.getSma().getArtifacts(RelationSide.SmaToTask_Task, TaskArtifact.class)) {
+      for (TaskArtifact taskArt : smaMgr.getSma().getArtifacts(CoreRelationEnumeration.SmaToTask_Task,
+            TaskArtifact.class)) {
          if (taskArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
                stateName)) arts.add(taskArt);
       }
@@ -62,7 +63,7 @@ public class TaskManager {
 
    public boolean hasTaskArtifacts() {
       try {
-         return smaMgr.getSma().getRelatedArtifactsCount("SmaToTask") > 0;
+         return smaMgr.getSma().getRelatedArtifactsCount(CoreRelationEnumeration.SmaToTask_Task) > 0;
       } catch (OseeDataStoreException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
          return false;
@@ -92,7 +93,7 @@ public class TaskManager {
       taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
             smaMgr.getStateMgr().getCurrentStateName());
 
-      smaMgr.getSma().addRelation(RelationSide.SmaToTask_Task, taskArt, null);
+      smaMgr.getSma().addRelation(CoreRelationEnumeration.SmaToTask_Task, taskArt, null);
       if (persist) taskArt.persist(true);
 
       return taskArt;

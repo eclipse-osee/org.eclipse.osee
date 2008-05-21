@@ -54,7 +54,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEven
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
@@ -64,7 +64,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -567,10 +567,10 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       createMenuItem.setEnabled(true);
 
       try {
-         Collection<ArtifactSubtypeDescriptor> descriptors =
+         Collection<ArtifactType> descriptors =
                ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
                      BranchPersistenceManager.getInstance().getDefaultBranch());
-         for (ArtifactSubtypeDescriptor descriptor : descriptors) {
+         for (ArtifactType descriptor : descriptors) {
             if (!descriptor.getName().equals("Root Artifact")) {
                MenuItem item = new MenuItem(subMenu, SWT.PUSH);
                item.setText(descriptor.getName());
@@ -589,7 +589,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       public void widgetSelected(SelectionEvent ev) {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
          Iterator<?> itemsIter = selection.iterator();
-         ArtifactSubtypeDescriptor descriptor = (ArtifactSubtypeDescriptor) ((MenuItem) ev.getSource()).getData();
+         ArtifactType descriptor = (ArtifactType) ((MenuItem) ev.getSource()).getData();
 
          EntryDialog ed =
                new EntryDialog("New \"" + descriptor.getName() + "\" Artifact",
@@ -962,7 +962,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             if (result == 0) {
                HtmlReportJob job;
                try {
-                  job = new HtmlReportJob("Hierarchical Report", artifacts, RelationSide.DEFAULT_HIERARCHICAL__CHILD);
+                  job = new HtmlReportJob("Hierarchical Report", artifacts, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
                   job.setIncludeAttributes(ld.isShowAttributes());
                   job.setRecurseChildren(ld.isRecurseChildren());
                   Jobs.startJob(job);
@@ -1432,7 +1432,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                   protected void handleTxWork() throws Exception {
                      // Replace all of the parent relations
                      for (Artifact artifact : artifactsToBeRelated) {
-                        artifact.relateReplace(RelationSide.DEFAULT_HIERARCHICAL__PARENT, parentArtifact, true);
+                        artifact.relateReplace(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact, true);
                         artifact.persistAttributes();
                      }
                   }

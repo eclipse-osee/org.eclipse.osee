@@ -15,14 +15,14 @@ import java.io.FileFilter;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 public class WholeWordDocumentExtractor extends WordExtractor {
    private static final String description = "Extract all the content of each Word XML document as one artifact";
-   private final ArtifactSubtypeDescriptor primaryDescriptor;
+   private final ArtifactType primaryDescriptor;
 
-   public WholeWordDocumentExtractor(ArtifactSubtypeDescriptor primaryDescriptor, Branch branch) throws SQLException {
+   public WholeWordDocumentExtractor(ArtifactType primaryDescriptor, Branch branch) throws SQLException {
       super(branch);
       this.primaryDescriptor = primaryDescriptor;
    }

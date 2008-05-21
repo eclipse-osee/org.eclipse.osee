@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSear
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * Return all ATS Objects that a user is related to through logs, review roles, defects and etc.
@@ -69,10 +69,10 @@ public class AtsUserActivelyAssignedSearch extends UserSearchItem {
             ArtifactPersistenceManager.getInstance().getArtifacts(smaCriteria, true,
                   BranchPersistenceManager.getAtsBranch());
 
-      arts.addAll(user.getRelatedArtifacts(RelationSide.TeamLead_Team));
-      arts.addAll(user.getRelatedArtifacts(RelationSide.TeamMember_Team));
-      arts.addAll(user.getRelatedArtifacts(RelationSide.FavoriteUser_Artifact));
-      arts.addAll(user.getRelatedArtifacts(RelationSide.SubscribedUser_Artifact));
+      arts.addAll(user.getRelatedArtifacts(CoreRelationEnumeration.TeamLead_Team));
+      arts.addAll(user.getRelatedArtifacts(CoreRelationEnumeration.TeamMember_Team));
+      arts.addAll(user.getRelatedArtifacts(CoreRelationEnumeration.FavoriteUser_Artifact));
+      arts.addAll(user.getRelatedArtifacts(CoreRelationEnumeration.SubscribedUser_Artifact));
       if (isCancelled()) return EMPTY_SET;
       return arts;
    }

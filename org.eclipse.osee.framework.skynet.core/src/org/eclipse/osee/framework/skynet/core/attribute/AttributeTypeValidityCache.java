@@ -25,23 +25,23 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 /**
  * Caches the mapping of valid attribute types to artifact types for which they are valid
  * 
- * @see org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor
+ * @see org.eclipse.osee.framework.skynet.core.attribute.ArtifactType
  * @author Ryan D. Brooks
  */
 public class AttributeTypeValidityCache {
    private static final String attributeValiditySql =
          "SELECT art_type_id, attr_type_id FROM osee_define_valid_attributes";
-   private final HashCollection<ArtifactSubtypeDescriptor, AttributeType> artifactToAttributeMap;
-   private final HashCollection<AttributeType, ArtifactSubtypeDescriptor> attributeToartifactMap;
+   private final HashCollection<ArtifactType, AttributeType> artifactToAttributeMap;
+   private final HashCollection<AttributeType, ArtifactType> attributeToartifactMap;
 
    public AttributeTypeValidityCache() {
       artifactToAttributeMap =
-            new HashCollection<ArtifactSubtypeDescriptor, AttributeType>(false, TreeSet.class);
+            new HashCollection<ArtifactType, AttributeType>(false, TreeSet.class);
       attributeToartifactMap =
-            new HashCollection<AttributeType, ArtifactSubtypeDescriptor>(false, TreeSet.class);
+            new HashCollection<AttributeType, ArtifactType>(false, TreeSet.class);
    }
 
-   public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
+   public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws SQLException {
       ensurePopulated();
 
       Collection<AttributeType> attributeTypes = artifactToAttributeMap.getValues(artifactType);
@@ -85,7 +85,7 @@ public class AttributeTypeValidityCache {
 
          while (rSet.next()) {
             try {
-               ArtifactSubtypeDescriptor artifactType =
+               ArtifactType artifactType =
                      configurationManager.getArtifactSubtypeDescriptor(rSet.getInt("art_type_id"));
                AttributeType attributeType = AttributeTypeManager.getType(rSet.getInt("attr_type_id"));
 
@@ -100,10 +100,10 @@ public class AttributeTypeValidityCache {
       }
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getArtifactTypesFromAttributeType(AttributeType requestedAttributeType) throws SQLException {
+   public Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType requestedAttributeType) throws SQLException {
       ensurePopulated();
 
-      Collection<ArtifactSubtypeDescriptor> artifactTypes = attributeToartifactMap.getValues(requestedAttributeType);
+      Collection<ArtifactType> artifactTypes = attributeToartifactMap.getValues(requestedAttributeType);
       if (artifactTypes == null) {
          throw new IllegalArgumentException(
                "There are no valid artifact types available for the attribute type " + requestedAttributeType);
@@ -112,7 +112,7 @@ public class AttributeTypeValidityCache {
       return artifactTypes;
    }
 
-   public boolean isValid(ArtifactSubtypeDescriptor artifactType, AttributeType attributeType) throws Exception {
+   public boolean isValid(ArtifactType artifactType, AttributeType attributeType) throws Exception {
       ensurePopulated();
       Collection<AttributeType> attributeTypes = artifactToAttributeMap.getValues(artifactType);
       if (attributeTypes != null) {
@@ -130,7 +130,7 @@ public class AttributeTypeValidityCache {
     * @param artifactType
     * @throws Exception
     */
-   public void add(ArtifactSubtypeDescriptor artifactType, AttributeType attributeType) throws Exception {
+   public void add(ArtifactType artifactType, AttributeType attributeType) throws Exception {
       ensurePopulated();
       artifactToAttributeMap.put(artifactType, attributeType);
       attributeToartifactMap.put(attributeType, artifactType);

@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
@@ -229,7 +229,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Artifact navArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Navigation",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
-         art.addRelation(RelationSide.ALLOCATION__COMPONENT, navArt, null);
+         art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, navArt, null);
          art.persistAttributesAndRelations();
       }
 
@@ -242,7 +242,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Artifact robotArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
-         art.addRelation(RelationSide.ALLOCATION__COMPONENT, robotArt, null);
+         art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, robotArt, null);
          art.persistAttributesAndRelations();
       }
 
@@ -304,7 +304,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, "Robot API",
                      BranchPersistenceManager.getInstance().getDefaultBranch());
 
-         art.addRelation(RelationSide.ALLOCATION__COMPONENT, comArt, null);
+         art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt, null);
          art.persistAttributesAndRelations();
       }
 
@@ -373,7 +373,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   VersionArtifact verArt =
                         (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
                               versionStr, AtsPlugin.getAtsBranch());
-                  teamWf.addRelation(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt, null);
+                  teamWf.addRelation(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, verArt, null);
                   teamWf.persistAttributesAndRelations();
                }
             }

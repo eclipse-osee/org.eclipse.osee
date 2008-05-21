@@ -30,12 +30,13 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
@@ -52,7 +53,7 @@ public final class ArtifactLoader {
          return artifact;
       }
 
-      ArtifactSubtypeDescriptor artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
+      ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
       ArtifactFactory factory = artifactType.getFactory();
 
       return factory.loadExisitingArtifact(artifactId, rSet.getInt("gamma_id"), rSet.getString("guid"),
@@ -182,8 +183,8 @@ public final class ArtifactLoader {
                         new RelationLink(aArtifactId, bArtifactId, branch, branch, relationType, relationId, gammaId,
                               rationale, aOrderValue, bOrderValue);
 
-                  RelationManager.manageRelation(relation, true);
-                  RelationManager.manageRelation(relation, false);
+                  RelationManager.manageRelation(relation, RelationSide.SIDE_A);
+                  RelationManager.manageRelation(relation, RelationSide.SIDE_B);
                }
             }
          } finally {

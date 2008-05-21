@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.config.demo.artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * Provides the factory for the loading of the XYZ demo artifact types.
@@ -39,7 +39,7 @@ public class DemoArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
       if (factoryKey.equals(DemoCodeTeamWorkflowArtifact.ARTIFACT_NAME)) return new DemoCodeTeamWorkflowArtifact(this,
             guid, humandReadableId, branch, artifactType);
       if (factoryKey.equals(DemoTestTeamWorkflowArtifact.ARTIFACT_NAME)) return new DemoTestTeamWorkflowArtifact(this,

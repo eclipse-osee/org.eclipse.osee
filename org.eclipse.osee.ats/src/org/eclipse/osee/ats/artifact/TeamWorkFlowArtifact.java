@@ -34,8 +34,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
@@ -64,11 +64,11 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     * @param branch
     * @throws SQLException
     */
-   public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(RelationSide.SmaToTask_Task);
-      registerSMARelation(RelationSide.TeamWorkflowToReview_Review);
-      registerSMARelation(RelationSide.TeamWorkflowTargetedForVersion_Version);
+      registerSMARelation(CoreRelationEnumeration.SmaToTask_Task);
+      registerSMARelation(CoreRelationEnumeration.TeamWorkflowToReview_Review);
+      registerSMARelation(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version);
    }
 
    @Override
@@ -246,7 +246,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public ActionArtifact getParentActionArtifact() throws SQLException {
-      Set<ActionArtifact> arts = getArtifacts(RelationSide.ActionToWorkflow_Action, ActionArtifact.class);
+      Set<ActionArtifact> arts = getArtifacts(CoreRelationEnumeration.ActionToWorkflow_Action, ActionArtifact.class);
       if (arts.size() == 0) {
          throw new IllegalStateException("Team " + getHumanReadableId() + " has no parent Action");
       } else if (arts.size() > 1) {
@@ -264,7 +264,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
 
    public String getWorldViewVersion() throws Exception {
       Collection<VersionArtifact> verArts =
-            getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+            getArtifacts(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       if (verArts.size() == 0) return "";
       if (verArts.size() > 1) {
          String errStr =
@@ -283,7 +283,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public void setTargetedForVersion(VersionArtifact version, boolean persist) throws SQLException {
-      relateReplace(RelationSide.TeamWorkflowTargetedForVersion_Version, version, persist);
+      relateReplace(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, version, persist);
    }
 
    public VersionArtifact getTargetedForVersion() throws SQLException {
@@ -320,7 +320,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
                   Active.Both);
 
       try {
-         diag.setInput(getTeamDefinition().getArtifacts(RelationSide.TeamActionableItem_ActionableItem,
+         diag.setInput(getTeamDefinition().getArtifacts(CoreRelationEnumeration.TeamActionableItem_ActionableItem,
                ActionableItemArtifact.class));
          diag.setInitialSelections(actionableItemsDam.getActionableItems());
          if (diag.open() != 0) {
@@ -437,7 +437,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     */
    public Date getWorldViewEstimatedReleaseDate() throws Exception {
       Collection<VersionArtifact> vers =
-            getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+            getArtifacts(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       Date date = null;
       if (vers.size() > 0) {
          date = vers.iterator().next().getEstimatedReleaseDate();
@@ -455,7 +455,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
     */
    public Date getWorldViewReleaseDate() throws Exception {
       Collection<VersionArtifact> vers =
-            getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+            getArtifacts(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       Date date = null;
       if (vers.size() > 0) {
          date = vers.iterator().next().getReleaseDate();

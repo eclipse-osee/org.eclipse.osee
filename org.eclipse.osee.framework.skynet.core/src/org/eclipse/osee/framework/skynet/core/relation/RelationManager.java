@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -76,8 +77,8 @@ public class RelationManager {
     * @param relation
     * @param sideA
     */
-   public static void manageRelation(RelationLink relation, boolean sideA) {
-      Artifact artifact = ArtifactCache.get(relation.getArtifactId(sideA), relation.getBranch(sideA));
+   public static void manageRelation(RelationLink relation, RelationSide relationSide) {
+      Artifact artifact = ArtifactCache.get(relation.getArtifactId(relationSide), relation.getBranch(relationSide));
 
       if (artifact != null) {
          List<RelationLink> artifactsRelations = artifactToRelations.get(artifact);
@@ -93,7 +94,7 @@ public class RelationManager {
             relations.put(artifact, relation.getRelationType(), selectedRelations);
          }
          for (int i = 0; i < selectedRelations.size(); i++) {
-            if (selectedRelations.get(i).getOrder(sideA) > relation.getOrder(sideA)) {
+            if (selectedRelations.get(i).getOrder(relationSide) > relation.getOrder(relationSide)) {
                selectedRelations.add(i, relation);
                return;
             }
@@ -102,31 +103,24 @@ public class RelationManager {
       }
    }
 
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType) throws ArtifactDoesNotExist, SQLException {
+   private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
       List<RelationLink> selectedRelations = relations.get(artifact, relationType);
-      ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selectedRelations.size());
-
-      if (selectedRelations != null) {
-         for (RelationLink relation : selectedRelations) {
-            if (!relation.isDeleted()) {
-               boolean otherSide = !relation.isOnSideA(artifact);
-               artifacts.add(relation.getArtifact(otherSide));
-            }
-         }
+      if (selectedRelations == null) {
+         return Collections.emptyList();
       }
-      return artifacts;
-   }
-
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnumeration) throws ArtifactDoesNotExist, SQLException {
-      List<RelationLink> selectedRelations = relations.get(artifact, relationEnumeration.getRelationType());
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selectedRelations.size());
 
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (!relation.isDeleted()) {
-               if (relation.isOnSideA(artifact) == relationEnumeration.isSideA()) {
-                  boolean otherSide = !relation.isOnSideA(artifact);
-                  artifacts.add(relation.getArtifact(otherSide));
+               if (relationSide == null) {
+                  artifacts.add(relation.getArtifactOnOtherSide(artifact));
+               } else {
+                  // only select relations where the related artifact is on the side specified by relationEnum
+                  // (and thus on the side opposite of "artifact")
+                  if (relation.getSide(artifact) != relationSide) {
+                     artifacts.add(relation.getArtifact(relationSide));
+                  }
                }
             }
          }
@@ -134,71 +128,39 @@ public class RelationManager {
       return artifacts;
    }
 
-   public static boolean hasDirtyLinks(Artifact artifact) throws SQLException {
-      for (RelationLink relation : artifactToRelations.get(artifact)) {
-         if (relation.isDirty()) {
-            return true;
-         }
-      }
-      return false;
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType) throws ArtifactDoesNotExist, SQLException {
+      return getRelatedArtifacts(artifact, relationType, null);
    }
 
-   public static Artifact getRelatedArtifact(Artifact artifact, IRelationEnumeration relationEnum) throws ArtifactDoesNotExist, SQLException, MultipleArtifactsExist {
-      List<RelationLink> selectedRelations = relations.get(artifact, relationEnum.getRelationType());
-
-      if (selectedRelations == null) {
-         throw new ArtifactDoesNotExist(String.format("There is no artifact related to %s by a relation of type %s",
-               artifact, relationEnum));
-      }
-
-      List<RelationLink> trimmedRelations = new ArrayList<RelationLink>(selectedRelations.size());
-      for (RelationLink relation : selectedRelations) {
-         if (!relation.isDeleted()) {
-            if (relation.isOnSideA(artifact) == relationEnum.isSideA()) {
-               trimmedRelations.add(relation);
-            }
-         }
-      }
-      if (trimmedRelations.size() == 0) {
-         return null;//TODO look into not returning null
-      }
-
-      if (trimmedRelations.size() > 1) {
-         throw new MultipleArtifactsExist(String.format(
-               "There are %s artifacts related to %s by a relation of type %s instead of the expected 1.",
-               trimmedRelations.size(), artifact, relationEnum));
-      }
-      RelationLink relation = trimmedRelations.get(0);
-      boolean otherSide = !relation.isOnSideA(artifact);
-      return relation.getArtifact(otherSide);
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) throws ArtifactDoesNotExist, SQLException {
+      return getRelatedArtifacts(artifact, relationEnum.getRelationType(), relationEnum.getSide());
    }
 
-   public static Artifact getRelatedArtifact(Artifact artifact, RelationType relationType) throws ArtifactDoesNotExist, SQLException, MultipleArtifactsExist {
-      List<RelationLink> selectedRelations = relations.get(artifact, relationType);
+   private static Artifact getRelatedArtifact(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException, MultipleArtifactsExist {
+      List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationSide);
 
-      if (selectedRelations == null) {
+      if (artifacts.size() == 0) {
          throw new ArtifactDoesNotExist(String.format("There is no artifact related to %s by a relation of type %s",
                artifact, relationType));
       }
 
-      List<RelationLink> trimmedRelations = new ArrayList<RelationLink>(selectedRelations.size());
-      for (RelationLink relation : selectedRelations) {
-         if (!relation.isDeleted()) {
-            trimmedRelations.add(relation);
-         }
-      }
-
-      if (trimmedRelations.size() > 1) {
+      if (artifacts.size() > 1) {
          throw new MultipleArtifactsExist(String.format(
                "There are %s artifacts related to %s by a relation of type %s instead of the expected 1.",
-               trimmedRelations.size(), artifact, relationType));
+               artifacts.size(), artifact, relationType));
       }
-      RelationLink relation = trimmedRelations.get(0);
-      boolean otherSide = !relation.isOnSideA(artifact);
-      return relation.getArtifact(otherSide);
+      return artifacts.get(0);
    }
 
-   public static int getRelatedArtifactsCount(Artifact artifact, RelationType relationType) {
+   public static Artifact getRelatedArtifact(Artifact artifact, IRelationEnumeration relationEnum) throws ArtifactDoesNotExist, SQLException, MultipleArtifactsExist {
+      return getRelatedArtifact(artifact, relationEnum.getRelationType(), relationEnum.getSide());
+   }
+
+   public static Artifact getRelatedArtifact(Artifact artifact, RelationType relationType) throws ArtifactDoesNotExist, SQLException, MultipleArtifactsExist {
+      return getRelatedArtifact(artifact, relationType, null);
+   }
+
+   public static int getRelatedArtifactsCount(Artifact artifact, RelationType relationType, RelationSide relationSide) {
       List<RelationLink> selectedRelations = relations.get(artifact, relationType);
 
       int artifactCount = 0;
@@ -206,6 +168,16 @@ public class RelationManager {
          for (RelationLink relation : selectedRelations) {
             if (!relation.isDeleted()) {
                artifactCount++;
+
+               if (relationSide == null) {
+                  artifactCount++;
+               } else {
+                  // only select relations where the related artifact is on the side specified by relationEnum
+                  // (and thus on the side opposite of "artifact")
+                  if (relation.getSide(artifact) != relationSide) {
+                     artifactCount++;
+                  }
+               }
             }
          }
       }
@@ -218,6 +190,15 @@ public class RelationManager {
     */
    public static void revertRelationsFor(Artifact artifact) {
       throw new UnsupportedOperationException();
+   }
+
+   public static boolean hasDirtyLinks(Artifact artifact) throws SQLException {
+      for (RelationLink relation : artifactToRelations.get(artifact)) {
+         if (relation.isDirty()) {
+            return true;
+         }
+      }
+      return false;
    }
 
    public static void persistRelationsFor(Artifact artifact) throws SQLException {
@@ -236,8 +217,7 @@ public class RelationManager {
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (!relation.isDeleted()) {
-               boolean otherSide = !relation.isOnSideA(artifact);
-               relationInfo.add(new ObjectPair<Artifact, String>(relation.getArtifact(otherSide),
+               relationInfo.add(new ObjectPair<Artifact, String>(relation.getArtifactOnOtherSide(artifact),
                      relation.getRationale()));
             }
          }
@@ -250,20 +230,72 @@ public class RelationManager {
     * @param artifactA
     * @param artifactB
     * @param rationale
+    * @throws SQLException
     */
-   public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) {
+   public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws SQLException {
+      ensureRelationCanBeAdded(relationType, artifactA, artifactA);
+
       RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
 
       if (relation == null) {
          relation = new RelationLink(artifactA, artifactB, relationType, rationale);
 
          relation.setDirty();
-         RelationManager.manageRelation(relation, true);
-         RelationManager.manageRelation(relation, false);
+         RelationManager.manageRelation(relation, RelationSide.SIDE_A);
+         RelationManager.manageRelation(relation, RelationSide.SIDE_B);
+      }
+   }
+
+   public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws SQLException {
+      ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_B, artifactB.getArtifactType(), 1);
+      ensureSideWillSupport(artifactB, relationType, RelationSide.SIDE_A, artifactA.getArtifactType(), 1);
+   }
+
+   /**
+    * Check whether artifactCount number of additional artifacts of type artifactType can be related to the artifact on
+    * side relationSide for relations of type relationType
+    * 
+    * @param relationType
+    * @param relationSide
+    * @param artifact
+    * @param artifactCount
+    * @throws SQLException
+    */
+   public static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, ArtifactType artifactType, int artifactCount) throws SQLException {
+      int maxCount = RelationTypeManager.getRelationSideMax(relationType, artifactType, relationSide);
+      int usedCount = getRelatedArtifactsCount(artifact, relationType, relationSide);
+
+      if (maxCount == 0) {
+         throw new IllegalArgumentException(String.format(
+               "Artifact \"%s\" of type \"%s\" does not belong on side \"%s\" of relation \"%s\"",
+               artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
+               relationType.getTypeName()));
+      } else if (usedCount + artifactCount > maxCount) {
+         throw new IllegalArgumentException(
+               String.format(
+                     "Artifact \"%s\" of type \"%s\" can not be added to side \"%s\" of relation \"%s\" because doing so would exceed the side maximum of %d for this artifact type",
+                     artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationSide.toString(),
+                     relationType.getTypeName(), maxCount));
       }
    }
 
    public static void deleteRelation(RelationType relationType, Artifact artifactA, Artifact artifactB) {
+      getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType).delete();
+   }
 
+   public static void deleteRelations(RelationType relationType, Artifact artifact, RelationSide relationSide) {
+      List<RelationLink> selectedRelations = relations.get(artifact, relationType);
+      if (selectedRelations != null) {
+         for (RelationLink relation : selectedRelations) {
+            if (relationSide == null) {
+               relation.delete();
+            } else {
+               if (relation.getSide(artifact) != relationSide) {
+                  relation.delete();
+               }
+            }
+
+         }
+      }
    }
 }

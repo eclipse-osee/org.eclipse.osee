@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearc
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Donald G. Dunne
@@ -70,7 +70,7 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
       }
 
       List<ISearchPrimitive> teamCriteria = new LinkedList<ISearchPrimitive>();
-      teamCriteria.add(new InRelationSearch(allReviews, RelationSide.TeamWorkflowToReview_Team));
+      teamCriteria.add(new InRelationSearch(allReviews, CoreRelationEnumeration.TeamWorkflowToReview_Team));
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =

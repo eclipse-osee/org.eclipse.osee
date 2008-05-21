@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 
 /**
  * Builder class to handle how a group of arbitrary <code>Artifact</code>'s and <code>RelationLink</code>'s are
@@ -70,11 +71,11 @@ public class SkynetTransactionBuilder {
          addArtifact(artifact);
    }
 
-   public void addLink(RelationLink link) throws SQLException {
+   public void addLink(RelationLink link) throws SQLException, ArtifactDoesNotExist {
       relationManager.doSave(link, getTransaction(link.isVersionControlled()));
    }
 
-   public void addLinks(Collection<RelationLink> links) throws SQLException {
+   public void addLinks(Collection<RelationLink> links) throws SQLException, ArtifactDoesNotExist {
       for (RelationLink link : new ArrayList<RelationLink>(links))
          addLink(link);
    }

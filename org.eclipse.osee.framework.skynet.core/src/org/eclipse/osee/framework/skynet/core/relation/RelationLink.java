@@ -68,6 +68,17 @@ public class RelationLink {
       return artA;
    }
 
+   public RelationSide getSide(Artifact artifact) {
+      if (aArtifactId == artifact.getArtId()) {
+         return RelationSide.SIDE_A;
+      }
+      if (bArtifactId == artifact.getArtId()) {
+         return RelationSide.SIDE_B;
+      }
+      throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
+   }
+
+   @Deprecated
    public boolean isOnSideA(Artifact artifact) {
       if (aArtifactId == artifact.getArtId()) {
          return true;
@@ -92,8 +103,8 @@ public class RelationLink {
       return bArtifactId;
    }
 
-   public int getArtifactId(boolean sideA) {
-      return sideA ? aArtifactId : bArtifactId;
+   public int getArtifactId(RelationSide relationSide) {
+      return relationSide == RelationSide.SIDE_A ? aArtifactId : bArtifactId;
    }
 
    /**
@@ -131,29 +142,28 @@ public class RelationLink {
       }
    }
 
-   public void delete() throws SQLException {
+   public void delete() {
       deleted = true;
-      // There must be at least one link manager loaded to access delete
-      if (!artA.isLinksLoaded() && !artB.isLinksLoaded()) throw new IllegalStateException(
-            "Invalid state where neither link manager is loaded");
-      // Only one of these needs to be called in order to delete a link
-      if (artA.isLinksLoaded()) artA.getLinkManager().deleteLink(this);
-      if (artB.isLinksLoaded()) artB.getLinkManager().deleteLink(this);
 
       SkynetEventManager.getInstance().kick(
             new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
-                  ModType.Deleted.name(), this, getABranch()));
+                  ModType.Deleted.name(), this, getBranch()));
 
    }
 
-   public Artifact getArtifact(boolean sideA) throws ArtifactDoesNotExist, SQLException {
-      Artifact relatedArtifact = ArtifactCache.get(getArtifactId(sideA), getBranch(sideA));
+   public Artifact getArtifact(RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
+      Artifact relatedArtifact = ArtifactCache.get(getArtifactId(relationSide), getBranch(relationSide));
       if (relatedArtifact == null) {
-         return ArtifactQuery.getArtifactFromId(getArtifactId(sideA), getBranch(sideA));
+         return ArtifactQuery.getArtifactFromId(getArtifactId(relationSide), getBranch(relationSide));
       }
       return null; // by design this return should never happen
    }
 
+   public Artifact getArtifactOnOtherSide(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
+      return getArtifact(getSide(artifact).oppositeSide());
+   }
+
+   @Deprecated
    public Artifact getArtifactA() {
       if (artA == null) {
          try {
@@ -164,6 +174,7 @@ public class RelationLink {
       return artA;
    }
 
+   @Deprecated
    public Artifact getArtifactB() {
       if (artB == null) {
          try {
@@ -203,8 +214,8 @@ public class RelationLink {
       return bOrder;
    }
 
-   public int getOrder(boolean sideA) {
-      return sideA ? aOrder : bOrder;
+   public int getOrder(RelationSide relationSide) {
+      return relationSide == RelationSide.SIDE_A ? aOrder : bOrder;
    }
 
    /**
@@ -263,12 +274,13 @@ public class RelationLink {
     * @param rationale The rationale to set.
     */
    public void setRationale(String rationale, boolean notify) {
-      if (rationale == null) throw new IllegalArgumentException("Rationale can not be null");
+      if (rationale == null) {
+         rationale = "";
+      }
 
       if (this.rationale.equals(rationale)) return;
 
       this.rationale = rationale;
-
       dirty = true;
 
       if (notify) {
@@ -369,8 +381,8 @@ public class RelationLink {
       return true;
    }
 
-   public Branch getBranch(boolean sideA) {
-      return sideA ? aBranch : bBranch;
+   public Branch getBranch(RelationSide relationSide) {
+      return relationSide == RelationSide.SIDE_A ? aBranch : bBranch;
    }
 
    public void setDirty(boolean isDirty) {
@@ -405,6 +417,6 @@ public class RelationLink {
     * @return
     */
    public Branch getBranch() {
-      return getBranch(true);
+      return getBranch(RelationSide.SIDE_A);
    }
 }

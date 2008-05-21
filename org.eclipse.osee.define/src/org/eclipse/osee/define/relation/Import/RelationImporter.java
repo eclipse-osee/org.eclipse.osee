@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -92,7 +92,7 @@ public class RelationImporter implements RowProcessor {
                   if (rationale.equalsIgnoreCase("x")) {
                      rationale = "";
                   }
-                  columnArtifacts[i].addRelation(RelationSide.ALLOCATION__REQUIREMENT, rowArtifact, rationale);
+                  columnArtifacts[i].addRelation(CoreRelationEnumeration.ALLOCATION__REQUIREMENT, rowArtifact, rationale);
                   columnArtifacts[i].persistRelations();
                }
             }

@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
@@ -47,7 +47,7 @@ public class ActionableItemArtifact extends Artifact {
     * @param branch
     * @throws SQLException
     */
-   public ActionableItemArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public ActionableItemArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
@@ -65,7 +65,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public Collection<User> getLeads() throws SQLException {
-      return getArtifacts(RelationSide.TeamLead_Lead, User.class);
+      return getArtifacts(CoreRelationEnumeration.TeamLead_Lead, User.class);
    }
 
    public static ActionableItemArtifact getTopActionableItem() throws SQLException {

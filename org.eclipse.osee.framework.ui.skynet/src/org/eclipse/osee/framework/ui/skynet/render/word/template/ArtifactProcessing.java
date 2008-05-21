@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
@@ -22,7 +22,7 @@ public class ArtifactProcessing implements ITemplateTask {
    private List<ITemplateTask> innerTasks;
    private boolean outlining;
    private boolean recurseChildren;
-   private RelationSide outlineRelation;
+   private CoreRelationEnumeration outlineRelation;
    private String headingAttributeName;
    private String outlineNumber;
    private String cleanedText;
@@ -86,7 +86,7 @@ public class ArtifactProcessing implements ITemplateTask {
          internalOutlineElementsMatcher.reset(outlineElementsMatcher.group(4));
          outlining = true;
          recurseChildren = false;
-         outlineRelation = RelationSide.DEFAULT_HIERARCHICAL__CHILD;
+         outlineRelation = CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
 
          while (internalOutlineElementsMatcher.find()) {
             String elementType = internalOutlineElementsMatcher.group(3);
@@ -133,7 +133,7 @@ public class ArtifactProcessing implements ITemplateTask {
    /**
     * @return the outlineRelation
     */
-   public RelationSide getOutlineRelation() {
+   public CoreRelationEnumeration getOutlineRelation() {
       return outlineRelation;
    }
 

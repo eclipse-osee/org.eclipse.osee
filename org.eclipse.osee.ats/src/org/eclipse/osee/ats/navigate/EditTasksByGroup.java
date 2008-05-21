@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.TaskEditor;
 import org.eclipse.osee.ats.editor.TaskEditorInput;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -49,7 +49,7 @@ public class EditTasksByGroup extends XNavigateItemAction {
       if (dialog.open() == 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
          Artifact selectedGroup = (Artifact) dialog.getResult()[0];
-         for (Artifact art : selectedGroup.getRelatedArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS)) {
+         for (Artifact art : selectedGroup.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
             if (art instanceof TaskArtifact) {
                taskArts.add((TaskArtifact) art);
             }

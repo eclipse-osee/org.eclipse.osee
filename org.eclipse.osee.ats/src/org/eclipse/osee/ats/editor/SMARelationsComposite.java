@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -40,10 +40,10 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class SMARelationsComposite extends Composite {
 
    private final XFormToolkit toolkit;
-   private static RelationSide sides[] =
-         new RelationSide[] {RelationSide.TeamWorkflowToReview_Review, RelationSide.TeamWorkflowToReview_Team,
-               RelationSide.Supercedes_Superceded, RelationSide.Supercedes_Supercedes,
-               RelationSide.SupportingInfo_SupportedBy, RelationSide.SupportingInfo_SupportingInfo};
+   private static CoreRelationEnumeration sides[] =
+         new CoreRelationEnumeration[] {CoreRelationEnumeration.TeamWorkflowToReview_Review, CoreRelationEnumeration.TeamWorkflowToReview_Team,
+               CoreRelationEnumeration.Supercedes_Superceded, CoreRelationEnumeration.Supercedes_Supercedes,
+               CoreRelationEnumeration.SupportingInfo_SupportedBy, CoreRelationEnumeration.SupportingInfo_SupportingInfo};
    private SMAManager smaMgr;
    private Label actionableItemsLabel;
 
@@ -73,7 +73,7 @@ public class SMARelationsComposite extends Composite {
    }
 
    public static boolean relationExists(StateMachineArtifact smaArt) throws SQLException {
-      for (RelationSide side : sides) {
+      for (CoreRelationEnumeration side : sides) {
          if (smaArt.getRelatedArtifacts(side).size() > 0) return true;
          if (smaArt.getParentActionArtifact() != null && smaArt.getParentActionArtifact().getRelatedArtifacts(side).size() > 0) return true;
       }
@@ -82,7 +82,7 @@ public class SMARelationsComposite extends Composite {
    }
 
    private void processArtifact(String name, Artifact thisArt) throws SQLException {
-      for (RelationSide side : sides) {
+      for (CoreRelationEnumeration side : sides) {
          for (final Artifact art : thisArt.getRelatedArtifacts(side)) {
             RelationLink rel = thisArt.getRelations(art).iterator().next();
             toolkit.createLabel(

@@ -15,14 +15,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionBuilder;
-import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 
 /**
  * @author Jeff C. Phillips
@@ -118,75 +114,6 @@ public class LinkManager {
       group.getGroupSide().add(link);
    }
 
-   protected void deleteLink(RelationLink link) throws SQLException {
-      // This removes the link from the cache of each artifact's link manager (if loaded)
-      removeLink(link);
-      // This marks the link for deletion form the DB upon persist and end transaction
-      deletedLinks.add(link);
-   }
-
-   /**
-    * caller is responsible for invoking kickDeleteLinkEvent
-    * 
-    * @param link
-    * @throws SQLException
-    * @throws ArtifactDoesNotExist
-    */
-   protected void removeLink(RelationLink link) throws SQLException {
-      boolean useSideB = (link.getArtifactA().isLinksLoaded() && this == link.getArtifactA().getLinkManager());
-
-      if (unhashLink((useSideB) ? sideBLinks : sideALinks, link) && !((useSideB) ? sideALinks : sideBLinks).containsKey(link.getRelationType())) {
-
-         descriptors.remove(link.getRelationType());
-      }
-      links.remove(link);
-   }
-
-   public void removeDeleted(RelationLink link) {
-      deletedLinks.remove(link);
-   }
-
-   private boolean unhashLink(Map<RelationType, RelationLinkGroup> hash, RelationLink link) {
-      RelationLinkGroup group = hash.get(link.getRelationType());
-      if (group == null) {
-         return false;
-      }
-
-      if (!group.getGroupSide().remove(link)) throw new IllegalStateException("link does not exist on this artifact");
-
-      if (group.getGroupSide().isEmpty()) {
-         hash.remove(link.getRelationType());
-         return true;
-      }
-
-      return false;
-   }
-
-   public boolean isDirty() {
-      boolean dirty = !deletedLinks.isEmpty();
-
-      for (RelationLink link : links) {
-         dirty |= link.isDirty();
-
-         if (dirty) break;
-      }
-      return dirty;
-   }
-
-   public void persistLinks() throws SQLException {
-      for (RelationLink link : links) {
-         if (link.isDirty()) {
-            RelationPersistenceManager.makePersistent(link);
-         }
-      }
-      RelationPersistenceManager.getInstance().deleteRelationLinks(deletedLinks, artifact.getBranch());
-
-      for (RelationLink link : deletedLinks) {
-         link.getArtifactA().getLinkManager().deletedLinks.remove(link);
-         link.getArtifactB().getLinkManager().deletedLinks.remove(link);
-      }
-   }
-
    public void traceLinks(boolean recurse, SkynetTransactionBuilder builder) throws Exception {
       if (!inTrace) {
          inTrace = true;
@@ -196,29 +123,6 @@ public class LinkManager {
          builder.addLinks(deletedLinks);
          inTrace = false;
       }
-   }
-
-   public Artifact getSoleArtifact(RelationSide side) throws SQLException {
-      Collection<Artifact> artifacts = getArtifacts(side);
-      int size = artifacts.size();
-      if (size > 1) throw new IllegalStateException(
-            "More than one Artifact is relation through " + side.getTypeName() + " as " + side.getSideName(artifact.getBranch()));
-
-      if (size == 1)
-         return artifacts.iterator().next();
-      else
-         return null;
-   }
-
-   public String getSide(RelationLink currentLink) throws SQLException {
-      for (RelationLink link : links) {
-         if (currentLink == link) {
-            if (artifact == link.getArtifactA())
-               return link.getRelationType().getSideAName();
-            else if (artifact == link.getArtifactB()) return link.getRelationType().getSideBName();
-         }
-      }
-      return "empty";
    }
 
    public RelationLinkGroup getGroup(IRelationEnumeration side) throws SQLException {
@@ -273,36 +177,6 @@ public class LinkManager {
       return null;
    }
 
-   public Set<Artifact> getArtifacts(IRelationEnumeration side) throws SQLException {
-      if (side == null) throw new IllegalArgumentException("side can not be null");
-
-      RelationLinkGroup group = null;
-      if (side.isSideA()) {
-         group = sideALinks.get(side.getRelationType());
-      } else {
-         group = sideBLinks.get(side.getRelationType());
-      }
-
-      if (group == null) {
-         return Collections.emptySet();
-      }
-      return group.getArtifacts();
-   }
-
-   public int getRelationCount(IRelationEnumeration side) throws SQLException {
-      RelationLinkGroup group = null;
-      if (side.isSideA()) {
-         group = sideALinks.get(side.getRelationType());
-      } else {
-         group = sideBLinks.get(side.getRelationType());
-      }
-
-      if (group == null) {
-         return 0;
-      }
-      return group.getLinkCount();
-   }
-
    /**
     * Returns the descriptors used from all the stored links of this manager.
     * 
@@ -329,144 +203,13 @@ public class LinkManager {
          return getSideBGroup(descriptor);
    }
 
-   protected Artifact getOwningArtifact() {
+   public Artifact getOwningArtifact() {
       return artifact;
-   }
-
-   /**
-    * Populates the linkManager with all of an artifacts links. It will first check with the relationManager to see if
-    * they are cached before creating them from the database.
-    * 
-    * @throws SQLException
-    */
-   public synchronized void ensurePopulated() throws SQLException {
-      if (!artifact.isLinksLoaded() && artifact.isInDb()) {
-         ArtifactLoader.loadArtifactData(artifact, ArtifactLoad.FULL_FULL);
-      }
-   }
-
-   /**
-    * Releases the LinkManager from supporting its Artifact. The LinkManager will clean up any state data it contains,
-    * and will no longer be usable. All references to this LinkManager should be updated to the new supporting
-    * LinkManager for the Artifact.<br/><br/> This method call is only intended to be used from within the Skynet
-    * system, and should not be called from application code.
-    * 
-    * @throws SQLException
-    */
-   public void revert() throws SQLException {
-      links.clear();
-      deletedLinks.clear();
-      descriptors.clear();
-      sideALinks.clear();
-      sideBLinks.clear();
-      ArtifactLoader.loadArtifactData(artifact, ArtifactLoad.RELATION);
-   }
-
-   /**
-    * Remove the RelationLinkGroup
-    * 
-    * @param descriptor
-    * @throws SQLException
-    */
-   public void deleteGroups(RelationType descriptor) throws SQLException {
-      if (descriptor == null) return;
-
-      for (RelationLinkGroup group : getGroups(descriptor).toArray(dummyRelationLinkGroups)) {
-         deleteGroupSide(group);
-      }
-
-      // to remove descriptors when groups are empty
-      descriptors.remove(descriptor);
-   }
-
-   /**
-    * Removes all the links of one side of a group
-    * 
-    * @param group
-    * @throws SQLException
-    */
-   public void deleteGroupSide(RelationLinkGroup group) throws SQLException {
-      for (RelationLink link : group.getGroupSide().toArray(dummyRelationLinks)) {
-         link.delete();
-      }
-
-      // to remove a group when it is empty
-      if (group.isSideA())
-         sideALinks.remove(group.getDescriptor());
-      else
-         sideBLinks.remove(group.getDescriptor());
-
    }
 
    public void deleteAllLinks() throws SQLException {
       for (RelationLink link : links.toArray(dummyRelationLinks)) {
          link.delete();
       }
-   }
-
-   public void clearEmptyRelationGroups() {
-      cleanUpEmptyGroups(sideALinks);
-      cleanUpEmptyGroups(sideBLinks);
-   }
-
-   private void cleanUpEmptyGroups(Map<RelationType, RelationLinkGroup> side) {
-
-      Iterator<RelationLinkGroup> iterator = side.values().iterator();
-      RelationLinkGroup group;
-
-      while (iterator.hasNext()) {
-         group = iterator.next();
-
-         if (group.getGroupSide().isEmpty()) {
-            iterator.remove();
-
-            if (!side.containsKey(group.getDescriptor())) {
-               descriptors.remove(group.getDescriptor());
-            }
-         }
-      }
-   }
-
-   /**
-    * check validity of creating a link of type descriptor with otherArtifact on the specified side and the owning
-    * artifact for this link manager on the opposite side
-    * 
-    * @throws SQLException
-    */
-   public void ensureLinkValidity(RelationType relationType, boolean sideA, Artifact otherArtifact) throws SQLException {
-      if (getOwningArtifact() == otherArtifact) throw new IllegalArgumentException(
-            "An artifact can not be related to itself: " + otherArtifact.getDescriptiveName() + " - " + otherArtifact.getGuid());
-
-      // and validate adding argument artifact to this group
-
-      RelationTypeManager.ensureSideWillSupportArtifact(relationType, sideA, otherArtifact, 1);
-      RelationTypeManager.ensureSideWillSupportArtifact(relationType, !sideA, getOwningArtifact(), 1);
-   }
-
-   /**
-    * check validity of creating artifactCount number of links of type descriptor with the owning artifact for this link
-    * manager on on the specified side
-    * 
-    * @throws SQLException
-    */
-   public void ensureHalfLinksValidity(RelationType relationType, boolean sideA, int artifactCount) throws SQLException {
-      RelationTypeManager.ensureSideWillSupportArtifact(relationType, sideA, getOwningArtifact(), artifactCount);
-   }
-
-   /**
-    * Purges all links from runtime.
-    * 
-    * @throws SQLException
-    * @throws ArtifactDoesNotExist
-    */
-   public void purge() throws SQLException {
-      for (RelationLink link : getLinks()) {
-         Artifact otherSideArtifact = link.getOtherSideAritfactIfAvailable(artifact);
-
-         if (otherSideArtifact != null && otherSideArtifact.isLinksLoaded()) {
-            otherSideArtifact.getLinkManager().removeLink(link);
-         }
-      }
-      links.clear();
    }
 }

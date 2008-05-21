@@ -25,7 +25,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -77,7 +77,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
          artifactResolver = new RootAndAttributeBasedArtifactResolver(identifyingAttributes, false);
       }
 
-      ArtifactSubtypeDescriptor mainDescriptor = null;
+      ArtifactType mainDescriptor = null;
 
       if (mainPage.isGeneralDocumentExtractor() || mainPage.isWholeWordExtractor() || mainPage.isWordOutlineExtractor()) {
          mainDescriptor = mainPage.getSelectedType();
@@ -95,7 +95,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       return true;
    }
 
-   public ArtifactExtractor getNewArtifactExtractor(ArtifactSubtypeDescriptor primaryDescriptor, Branch branch, boolean reuseArtifacts) throws SQLException {
+   public ArtifactExtractor getNewArtifactExtractor(ArtifactType primaryDescriptor, Branch branch, boolean reuseArtifacts) throws SQLException {
       if (mainPage.isWordOutlineExtractor()) {
          return new WordOutlineExtractor(primaryDescriptor, branch, 0, handlerPage.getSelectedOutlineContentHandler());
       } else if (mainPage.isExcelExtractor()) {
@@ -145,8 +145,8 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       if (page == mainPage && mainPage.getReuseArtifactRoot() != null) {
          try {
             ConfigurationPersistenceManager manager = ConfigurationPersistenceManager.getInstance();
-            ArtifactSubtypeDescriptor rootDescriptor = mainPage.getReuseArtifactRoot().getArtifactType();
-            ArtifactSubtypeDescriptor importDescriptor = mainPage.getSelectedType();
+            ArtifactType rootDescriptor = mainPage.getReuseArtifactRoot().getArtifactType();
+            ArtifactType importDescriptor = mainPage.getSelectedType();
 
             HashSet<AttributeType> rootAttributes =
                   new HashSet<AttributeType>(manager.getAttributeTypesFromArtifactType(rootDescriptor,

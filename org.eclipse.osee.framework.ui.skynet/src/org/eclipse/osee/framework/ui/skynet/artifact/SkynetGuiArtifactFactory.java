@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.GlobalPreferences;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.XViewerCustomizationArtifact;
 
 /**
@@ -39,7 +39,7 @@ public class SkynetGuiArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
       if (factoryKey.equals(XViewerCustomizationArtifact.ARTIFACT_TYPE_NAME)) {
          return new XViewerCustomizationArtifact(this, guid, humandReadableId, branch, artifactType);
       }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;
@@ -43,7 +43,7 @@ public class RelationLinkSummary extends ChangeSummary<RelationLinkChange> imple
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange#getOtherArtifactDescriptor()
     */
-   public ArtifactSubtypeDescriptor getOtherArtifactDescriptor() {
+   public ArtifactType getOtherArtifactDescriptor() {
       return getNewestChange().getOtherArtifactDescriptor();
    }
 

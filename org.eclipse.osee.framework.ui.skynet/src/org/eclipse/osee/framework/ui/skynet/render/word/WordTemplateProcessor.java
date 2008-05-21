@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
@@ -108,7 +108,7 @@ public class WordTemplateProcessor {
    private boolean outlining;
    private boolean recurseChildren;
    private String outlineNumber;
-   private RelationSide outlineRelation;
+   private CoreRelationEnumeration outlineRelation;
    private String headingAttributeName;
    private List<AttributeElement> attributeElements;
    private boolean saveParagraphNumOnArtifact;
@@ -427,7 +427,7 @@ public class WordTemplateProcessor {
 
          // Default values for optional/unspecified parameters
          recurseChildren = false;
-         outlineRelation = RelationSide.DEFAULT_HIERARCHICAL__CHILD;
+         outlineRelation = CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
          //         outlineNumber = null;
 
          while (matcher.find()) {
@@ -519,7 +519,7 @@ public class WordTemplateProcessor {
       }
 
       if (attributeTypeName.equals("TIS Traceability")) {
-         for (Artifact requirement : artifact.getRelatedArtifacts(RelationSide.Verification__Requirement)) {
+         for (Artifact requirement : artifact.getRelatedArtifacts(CoreRelationEnumeration.Verification__Requirement)) {
             wordMl.addParagraph(requirement.getSoleAttributeValue("Imported Paragraph Number") + "\t" + requirement.getDescriptiveName());
          }
          return;

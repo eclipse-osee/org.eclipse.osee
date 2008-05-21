@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -42,7 +42,7 @@ public class ArtifactChange extends RevisionChange {
    private TransactionId fromTransactionId;
    private TransactionId toTransactionId;
    private TransactionId lastGoodTransactionId; // Only for deleted artifacts
-   private ArtifactSubtypeDescriptor descriptor;
+   private ArtifactType descriptor;
 
    transient private Artifact artifact;
    private int artId;
@@ -72,7 +72,7 @@ public class ArtifactChange extends RevisionChange {
     * @param modificationId
     * @param gammaId
     */
-   public ArtifactChange(ChangeType changeType, int artId, int modificationId, int gammaId, TransactionId toTransactionId, TransactionId fromTransactionId, ArtifactSubtypeDescriptor descriptor) {
+   public ArtifactChange(ChangeType changeType, int artId, int modificationId, int gammaId, TransactionId toTransactionId, TransactionId fromTransactionId, ArtifactType descriptor) {
       this(changeType, ModificationType.getMod(modificationId), null, descriptor, null, null, null, null,
             toTransactionId, fromTransactionId, artId, gammaId, null);
    }
@@ -83,7 +83,7 @@ public class ArtifactChange extends RevisionChange {
     * @param name The last name for the Artifact before it was deleted.
     * @param descriptor The descriptor for the Artifact.
     */
-   public ArtifactChange(ChangeType changeType, String name, ArtifactSubtypeDescriptor descriptor, int artId, int gammaId, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId lastGoodTransactionId, TransactionId deletedTransactionId) {
+   public ArtifactChange(ChangeType changeType, String name, ArtifactType descriptor, int artId, int gammaId, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId lastGoodTransactionId, TransactionId deletedTransactionId) {
       this(changeType, DELETED, name, descriptor, null, baseParentTransactionId, headParentTransactionId,
             lastGoodTransactionId, lastGoodTransactionId, lastGoodTransactionId, artId, gammaId, lastGoodTransactionId);
 
@@ -113,7 +113,7 @@ public class ArtifactChange extends RevisionChange {
     * @param artId
     * @param lastGoodTransactionId TODO
     */
-   public ArtifactChange(ChangeType changeType, ModificationType modtype, String name, ArtifactSubtypeDescriptor descriptor, Artifact artifact, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId baselineTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, int gammaId, TransactionId lastGoodTransactionId) {
+   public ArtifactChange(ChangeType changeType, ModificationType modtype, String name, ArtifactType descriptor, Artifact artifact, TransactionId baseParentTransactionId, TransactionId headParentTransactionId, TransactionId baselineTransactionId, TransactionId fromTransactionId, TransactionId toTransactionId, int artId, int gammaId, TransactionId lastGoodTransactionId) {
       super(changeType, modtype, gammaId);
 
       this.name = name;

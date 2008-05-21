@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -92,7 +92,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
 
          if (subsystemRequirement.isOfType("Subsystem Requirement")) {
             boolean loopNeverRan = true;
-            for (Artifact subsystemDesign : subsystemRequirement.getRelatedArtifacts(RelationSide.Design__Design)) {
+            for (Artifact subsystemDesign : subsystemRequirement.getRelatedArtifacts(CoreRelationEnumeration.Design__Design)) {
                if (subsystemDesign.isOfType("Subsystem Design")) {
                   loopNeverRan = false;
                   excelWriter.writeCell(subsystemDesign.getSoleAttributeValue("Imported Paragraph Number", ""), 2);

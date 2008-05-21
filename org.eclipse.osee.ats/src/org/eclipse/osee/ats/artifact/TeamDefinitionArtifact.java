@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -55,7 +55,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @param branch
     * @throws SQLException
     */
-   public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
@@ -67,12 +67,12 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       tda.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       tda.setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
-         tda.addRelation(RelationSide.TeamLead_Lead, user, null);
+         tda.addRelation(CoreRelationEnumeration.TeamLead_Lead, user, null);
          // All leads are members
-         tda.addRelation(RelationSide.TeamMember_Member, user, null);
+         tda.addRelation(CoreRelationEnumeration.TeamMember_Member, user, null);
       }
       for (User user : members) {
-         tda.addRelation(RelationSide.TeamMember_Member, user, null);
+         tda.addRelation(CoreRelationEnumeration.TeamMember_Member, user, null);
       }
 
       if (usesVersions) {
@@ -90,7 +90,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
       // Relate to actionable items
       for (ActionableItemArtifact aia : actionableItems) {
-         tda.addRelation(RelationSide.TeamActionableItem_ActionableItem, aia, null);
+         tda.addRelation(CoreRelationEnumeration.TeamActionableItem_ActionableItem, aia, null);
       }
 
       tda.persistAttributesAndRelations();
@@ -120,7 +120,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public VersionArtifact getNextReleaseVersion() throws SQLException, MultipleAttributesExist {
-      for (VersionArtifact verArt : getArtifacts(RelationSide.TeamDefinitionToVersion_Version, VersionArtifact.class)) {
+      for (VersionArtifact verArt : getArtifacts(CoreRelationEnumeration.TeamDefinitionToVersion_Version, VersionArtifact.class)) {
          if (verArt.getSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false)) {
             return verArt;
          }
@@ -175,8 +175,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public static Set<TeamDefinitionArtifact> getImpactedTeamDef(ActionableItemArtifact aia) throws SQLException {
-      if (aia.getRelatedArtifacts(RelationSide.TeamActionableItem_Team).size() > 0) {
-         return aia.getArtifacts(RelationSide.TeamActionableItem_Team, TeamDefinitionArtifact.class);
+      if (aia.getRelatedArtifacts(CoreRelationEnumeration.TeamActionableItem_Team).size() > 0) {
+         return aia.getArtifacts(CoreRelationEnumeration.TeamActionableItem_Team, TeamDefinitionArtifact.class);
       }
       Artifact parentArt = aia.getParent();
       if (parentArt instanceof ActionableItemArtifact) return getImpactedTeamDef((ActionableItemArtifact) parentArt);
@@ -190,8 +190,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public static void getTeamFromItemAndChildren(ActionableItemArtifact aia, Set<TeamDefinitionArtifact> aiaTeams) throws SQLException {
-      if (aia.getRelatedArtifacts(RelationSide.TeamActionableItem_Team).size() > 0) aiaTeams.addAll(aia.getArtifacts(
-            RelationSide.TeamActionableItem_Team, TeamDefinitionArtifact.class));
+      if (aia.getRelatedArtifacts(CoreRelationEnumeration.TeamActionableItem_Team).size() > 0) aiaTeams.addAll(aia.getArtifacts(
+            CoreRelationEnumeration.TeamActionableItem_Team, TeamDefinitionArtifact.class));
       for (Artifact childArt : aia.getChildren()) {
          if (childArt instanceof ActionableItemArtifact) getTeamFromItemAndChildren((ActionableItemArtifact) childArt,
                aiaTeams);
@@ -253,7 +253,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
     * @throws SQLException
     */
    public Collection<User> getLeads() throws SQLException {
-      return getArtifacts(RelationSide.TeamLead_Lead, User.class);
+      return getArtifacts(CoreRelationEnumeration.TeamLead_Lead, User.class);
    }
 
    /**
@@ -284,7 +284,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public Collection<User> getMembers() throws SQLException {
-      return getArtifacts(RelationSide.TeamMember_Member, User.class);
+      return getArtifacts(CoreRelationEnumeration.TeamMember_Member, User.class);
    }
 
    public VersionArtifact getVersionArtifact(String name, boolean create) throws SQLException {
@@ -301,7 +301,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), name);
          versionArt.persistAttributes();
-         relate(RelationSide.TeamDefinitionToVersion_Version, versionArt, true);
+         relate(CoreRelationEnumeration.TeamDefinitionToVersion_Version, versionArt, true);
          return versionArt;
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
@@ -310,7 +310,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public Collection<VersionArtifact> getVersionsArtifacts() throws SQLException {
-      return getArtifacts(RelationSide.TeamDefinitionToVersion_Version, VersionArtifact.class);
+      return getArtifacts(CoreRelationEnumeration.TeamDefinitionToVersion_Version, VersionArtifact.class);
    }
 
    public Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType) throws SQLException, MultipleAttributesExist {

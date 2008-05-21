@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.revision.IAttributeChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
@@ -40,7 +40,7 @@ public class RevisionHistoryLabelProvider implements ITableLabelProvider, ILabel
       } else if (element instanceof RevisionChange && columnIndex == 0) {
          return SkynetGuiPlugin.getInstance().getImage("transaction_detail.gif");
       } else if (element instanceof RelationLinkChange && columnIndex == 2) {
-         ArtifactSubtypeDescriptor descriptor = ((RelationLinkChange) element).getOtherArtifactDescriptor();
+         ArtifactType descriptor = ((RelationLinkChange) element).getOtherArtifactDescriptor();
          if (descriptor == null)
             return null;
          else

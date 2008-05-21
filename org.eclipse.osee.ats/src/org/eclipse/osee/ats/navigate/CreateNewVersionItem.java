@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -120,7 +120,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          VersionArtifact ver =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), newVersionName);
-         teamDefHoldingVersions.addRelation(RelationSide.TeamDefinitionToVersion_Version, ver, null);
+         teamDefHoldingVersions.addRelation(CoreRelationEnumeration.TeamDefinitionToVersion_Version, ver, null);
          ver.persistAttributesAndRelations();
          ArtifactEditor.editArtifact(ver);
       }

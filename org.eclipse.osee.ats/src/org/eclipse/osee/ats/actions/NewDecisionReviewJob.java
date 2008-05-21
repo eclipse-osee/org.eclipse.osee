@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 
@@ -70,7 +70,7 @@ public class NewDecisionReviewJob extends Job {
             (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(DecisionReviewArtifact.ARTIFACT_NAME,
                   AtsPlugin.getAtsBranch(), "Should we do this?  Yes will require followup, No will not");
 
-      if (teamParent != null) teamParent.addRelation(RelationSide.TeamWorkflowToReview_Review, decRev, null);
+      if (teamParent != null) teamParent.addRelation(CoreRelationEnumeration.TeamWorkflowToReview_Review, decRev, null);
       if (againstCurrentState) decRev.setSoleAttributeValue(
             ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
             teamParent.getSmaMgr().getStateMgr().getCurrentStateName());

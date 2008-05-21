@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -89,13 +89,13 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
          Set<String> emails = new HashSet<String>();
          for (Artifact artifact : dialog.getSelection()) {
             if (artifact.getArtifactTypeName().equals("Universal Group")) {
-               for (Artifact userArt : artifact.getRelatedArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS)) {
+               for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
                   if (userArt instanceof User) {
                      emails.add(((User) userArt).getEmail());
                   }
                }
             } else if (artifact.getArtifactTypeName().equals("User Group")) {
-               for (User user : artifact.getArtifacts(RelationSide.Users_User, User.class)) {
+               for (User user : artifact.getArtifacts(CoreRelationEnumeration.Users_User, User.class)) {
                   emails.add(user.getEmail());
                }
             }

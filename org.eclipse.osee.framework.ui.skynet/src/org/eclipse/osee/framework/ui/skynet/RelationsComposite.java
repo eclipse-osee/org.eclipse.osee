@@ -35,9 +35,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.artifact.RelationGroupDialog;
@@ -291,8 +293,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
             boolean isNewRelationCreated = false;
             RelationType selectedDescriptor = (RelationType) ((MenuItem) event.widget).getData();
 
-            boolean canBeOnSideA = canBeOnSide(selectedDescriptor, true);
-            boolean canBeOnSideB = canBeOnSide(selectedDescriptor, false);
+            boolean canBeOnSideA = canBeOnSide(selectedDescriptor, RelationSide.SIDE_A);
+            boolean canBeOnSideB = canBeOnSide(selectedDescriptor, RelationSide.SIDE_B);
 
             if (canBeOnSideA && canBeOnSideB) {
                RelationGroupDialog dialog =
@@ -320,11 +322,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
       }
    }
 
-   private boolean canBeOnSide(RelationType relationType, boolean sideA) throws SQLException {
-      int sideMax = RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), sideA);
-      RelationLinkGroup otherSideGroup = artifact.getLinkManager().getSideGroup(relationType, !sideA);
-
-      return sideMax > 0 && otherSideGroup == null;
+   private boolean canBeOnSide(RelationType relationType, RelationSide relationSide) throws SQLException {
+      return RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), relationSide) > 0;
    }
 
    private void createDeleteRelationMenuItem(final Menu parentMenu) {
@@ -428,8 +427,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
 
                for (MenuItem item : items) {
                   RelationType descriptor = (RelationType) item.getData();
-                  canBeOnSideA = canBeOnSide(descriptor, true);
-                  canBeOnSideB = canBeOnSide(descriptor, false);
+                  canBeOnSideA = canBeOnSide(descriptor, RelationSide.SIDE_A);
+                  canBeOnSideB = canBeOnSide(descriptor, RelationSide.SIDE_B);
 
                   String title = descriptor.getTypeName();
                   if (canBeOnSideA && canBeOnSideB)
@@ -641,22 +640,14 @@ public class RelationsComposite extends Composite implements IEventReceiver {
    private void performDeleteRelation(IStructuredSelection selection) {
       Object object = selection.getFirstElement();
 
-      try {
-         if (object instanceof RelationLink) {
-            ((RelationLink) object).delete();
-         }
-
-         else if (object instanceof RelationType) {
-            RelationType descriptor = (RelationType) object;
-            artifact.getLinkManager().deleteGroups(descriptor);
-         }
-
-         else if (object instanceof RelationLinkGroup) {
-            RelationLinkGroup group = (RelationLinkGroup) object;
-            artifact.getLinkManager().deleteGroupSide(group);
-         }
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      if (object instanceof RelationLink) {
+         ((RelationLink) object).delete();
+      } else if (object instanceof RelationType) {
+         RelationType relationType = (RelationType) object;
+         RelationManager.deleteRelations(relationType, artifact, null);
+      } else if (object instanceof RelationLinkGroup) {
+         RelationLinkGroup group = (RelationLinkGroup) object;
+         RelationManager.deleteRelations(group.getDescriptor(), artifact, group.getSide());
       }
 
       refresh();

@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -49,7 +49,7 @@ public class ArtifactQueryBuilder {
    private int artifactId;
    private boolean searchIsNeeded;
    private Collection<Integer> artifactIds;
-   private ArtifactSubtypeDescriptor artifactType;
+   private ArtifactType artifactType;
    private final boolean allowDeleted;
    private final ArtifactLoad loadLevel;
 
@@ -81,7 +81,7 @@ public class ArtifactQueryBuilder {
       this(null, 0, null, ensureValid(guidOrHrid), null, branch, allowDeleted, loadLevel);
    }
 
-   public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel) {
       this(null, 0, null, null, artifactType, branch, false, loadLevel);
    }
 
@@ -108,15 +108,15 @@ public class ArtifactQueryBuilder {
       this(null, 0, null, null, null, branch, false, loadLevel, toArray(criteria));
    }
 
-   public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
+   public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
       this(null, 0, null, null, artifactType, branch, false, loadLevel, criteria);
    }
 
-   public ArtifactQueryBuilder(ArtifactSubtypeDescriptor artifactType, Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
+   public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
       this(null, 0, null, null, artifactType, branch, false, loadLevel, toArray(criteria));
    }
 
-   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, ArtifactSubtypeDescriptor artifactType, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, ArtifactType artifactType, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
       this.artifactType = artifactType;
       this.branch = branch;
       this.criteria = criteria;

@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
@@ -60,8 +60,8 @@ public class WordOutlineExtractor extends WordExtractor {
    private int lastDepthNumber;
    private String headerNumber;
    private String listIdentifier;
-   private final ArtifactSubtypeDescriptor headingDescriptor;
-   private final ArtifactSubtypeDescriptor mainDescriptor;
+   private final ArtifactType headingDescriptor;
+   private final ArtifactType mainDescriptor;
    private final int maxExtractionDepth;
    private boolean forceBody;
    private boolean forcePrimaryType;
@@ -69,7 +69,7 @@ public class WordOutlineExtractor extends WordExtractor {
 
    private final IWordOutlineContentHandler handler;
 
-   public WordOutlineExtractor(ArtifactSubtypeDescriptor mainDescriptor, Branch branch, int maxExtractionDepth, IWordOutlineContentHandler handler) throws SQLException {
+   public WordOutlineExtractor(ArtifactType mainDescriptor, Branch branch, int maxExtractionDepth, IWordOutlineContentHandler handler) throws SQLException {
 
       super(branch);
 

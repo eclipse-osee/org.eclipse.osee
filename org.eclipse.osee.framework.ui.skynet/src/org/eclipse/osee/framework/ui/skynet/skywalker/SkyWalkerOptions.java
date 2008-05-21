@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -53,7 +53,7 @@ public class SkyWalkerOptions {
    private static Map<AbstractLayoutAlgorithm, String> layouts;
    private AbstractLayoutAlgorithm layout;
    protected AbstractLayoutAlgorithm defaultLayout;
-   private Map<ArtifactSubtypeDescriptor, Boolean> artTypes;
+   private Map<ArtifactType, Boolean> artTypes;
    private Map<AttributeType, Boolean> showAttributes;
    // RelationLinkDescriptor and RelationLinkDescriptorSide
    private Map<Object, Boolean> relTypes;
@@ -96,9 +96,9 @@ public class SkyWalkerOptions {
 
    private void loadArtTypes() {
       if (artTypes == null) {
-         artTypes = new HashMap<ArtifactSubtypeDescriptor, Boolean>();
+         artTypes = new HashMap<ArtifactType, Boolean>();
          try {
-            for (ArtifactSubtypeDescriptor descriptor : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
+            for (ArtifactType descriptor : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
                   artifact.getBranch())) {
                artTypes.put(descriptor, true);
             }
@@ -168,11 +168,11 @@ public class SkyWalkerOptions {
       }
       String artTypeStr = AXml.getTagData(xml, "artTypes");
       if (artTypeStr != null && !artTypeStr.equals("")) {
-         for (Entry<ArtifactSubtypeDescriptor, Boolean> desc : artTypes.entrySet()) {
+         for (Entry<ArtifactType, Boolean> desc : artTypes.entrySet()) {
             desc.setValue(false);
          }
          for (String name : artTypeStr.split(",")) {
-            for (Entry<ArtifactSubtypeDescriptor, Boolean> desc : artTypes.entrySet()) {
+            for (Entry<ArtifactType, Boolean> desc : artTypes.entrySet()) {
                if (desc.getKey().getName().equals(name)) {
                   desc.setValue(true);
                   break;
@@ -362,17 +362,17 @@ public class SkyWalkerOptions {
       notifyListeners(ModType.Show_Attribute);
    }
 
-   public void setSelectedArtTypes(Collection<ArtifactSubtypeDescriptor> selected) {
-      for (Entry<ArtifactSubtypeDescriptor, Boolean> entry : artTypes.entrySet()) {
+   public void setSelectedArtTypes(Collection<ArtifactType> selected) {
+      for (Entry<ArtifactType, Boolean> entry : artTypes.entrySet()) {
          entry.setValue(selected.contains(entry.getKey()));
       }
       notifyListeners(ModType.ArtType);
    }
 
-   public Set<ArtifactSubtypeDescriptor> getSelectedArtTypes() {
-      Set<ArtifactSubtypeDescriptor> selected = new HashSet<ArtifactSubtypeDescriptor>();
+   public Set<ArtifactType> getSelectedArtTypes() {
+      Set<ArtifactType> selected = new HashSet<ArtifactType>();
       if (artTypes == null) return selected;
-      for (ArtifactSubtypeDescriptor desc : artTypes.keySet())
+      for (ArtifactType desc : artTypes.keySet())
          if (artTypes.get(desc)) selected.add(desc);
       return selected;
    }
@@ -393,8 +393,8 @@ public class SkyWalkerOptions {
       return selected;
    }
 
-   public Set<ArtifactSubtypeDescriptor> getAllArtTypes() {
-      if (artTypes == null) return new HashSet<ArtifactSubtypeDescriptor>();
+   public Set<ArtifactType> getAllArtTypes() {
+      if (artTypes == null) return new HashSet<ArtifactType>();
       return artTypes.keySet();
    }
 

@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -42,13 +42,13 @@ public class RelationValidity {
    }
 
    private class ValidityConstraint {
-      private final ArtifactSubtypeDescriptor artifactType;
+      private final ArtifactType artifactType;
       private final RelationType linkDescriptor;
       private final int sideAmax;
       private final int sideBmax;
       private final Branch branch;
 
-      public ValidityConstraint(Branch branch, ArtifactSubtypeDescriptor artifactType, RelationType linkDescriptor, int sideAmax, int sideBmax) {
+      public ValidityConstraint(Branch branch, ArtifactType artifactType, RelationType linkDescriptor, int sideAmax, int sideBmax) {
          this.artifactType = artifactType;
          this.linkDescriptor = linkDescriptor;
          this.sideAmax = sideAmax;
@@ -88,7 +88,7 @@ public class RelationValidity {
    public void persist() throws SQLException {
       for (ValidityRow row : validityArray) {
          for (String artifactTypeName : importer.determineConcreateTypes(row.artifactSuperTypeName)) {
-            ArtifactSubtypeDescriptor artifactType =
+            ArtifactType artifactType =
                   configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName);
             RelationType linkDescriptor = RelationTypeManager.getType(row.relationTypeName);
 

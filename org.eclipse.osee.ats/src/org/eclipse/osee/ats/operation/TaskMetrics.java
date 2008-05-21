@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearc
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -66,12 +66,12 @@ public class TaskMetrics extends AbstractBlam {
       monitor.beginTask("TaskMetrics", 5);
       metrics.clear();
 
-      ArtifactSubtypeDescriptor descriptor = variableMap.getArtifactSubtypeDescriptor("Artifact Type");
+      ArtifactType descriptor = variableMap.getArtifactSubtypeDescriptor("Artifact Type");
 
       FromArtifactsSearch teamWorkflowSearch =
             new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(), Operator.EQUAL));
       LinkedList<ISearchPrimitive> relatedCriteria = new LinkedList<ISearchPrimitive>();
-      relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, RelationSide.SmaToTask_Task));
+      relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, CoreRelationEnumeration.SmaToTask_Task));
 
       Collection<Artifact> artifacts =
             ArtifactPersistenceManager.getInstance().getArtifacts(relatedCriteria, true, AtsPlugin.getAtsBranch());

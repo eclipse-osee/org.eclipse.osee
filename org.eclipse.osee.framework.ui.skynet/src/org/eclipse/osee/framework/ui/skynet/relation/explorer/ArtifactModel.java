@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 public class ArtifactModel {
 
@@ -19,10 +19,10 @@ public class ArtifactModel {
    private boolean artifactFound;
    private Artifact artifact;
    private String name;
-   private ArtifactSubtypeDescriptor descriptor;
+   private ArtifactType descriptor;
    private String rationale;
 
-   public ArtifactModel(String name, ArtifactSubtypeDescriptor descriptor) {
+   public ArtifactModel(String name, ArtifactType descriptor) {
       this(false, null, name, descriptor, "");
    }
 
@@ -30,7 +30,7 @@ public class ArtifactModel {
       this(true, artifact, artifact.getDescriptiveName(), artifact.getArtifactType(), "");
    }
 
-   private ArtifactModel(boolean artifactFound, Artifact artifact, String name, ArtifactSubtypeDescriptor descriptor, String rationale) {
+   private ArtifactModel(boolean artifactFound, Artifact artifact, String name, ArtifactType descriptor, String rationale) {
       this.add = true;
       this.artifactFound = artifactFound;
       this.artifact = artifact;
@@ -77,14 +77,14 @@ public class ArtifactModel {
    /**
     * @return Returns the descriptor.
     */
-   public ArtifactSubtypeDescriptor getDescriptor() {
+   public ArtifactType getDescriptor() {
       return descriptor;
    }
 
    /**
     * @param descriptor The descriptor to set.
     */
-   public void setDescriptor(ArtifactSubtypeDescriptor descriptor) {
+   public void setDescriptor(ArtifactType descriptor) {
       this.descriptor = descriptor;
    }
 

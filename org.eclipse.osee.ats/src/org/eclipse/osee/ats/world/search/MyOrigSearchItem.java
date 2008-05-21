@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearc
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Donald G. Dunne
@@ -73,7 +73,7 @@ public class MyOrigSearchItem extends UserSearchItem {
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =
             ArtifactPersistenceManager.getInstance().getArtifacts(
-                  new InRelationSearch(smaOrigSearch, RelationSide.ActionToWorkflow_Action),
+                  new InRelationSearch(smaOrigSearch, CoreRelationEnumeration.ActionToWorkflow_Action),
                   BranchPersistenceManager.getAtsBranch());
 
       if (isCancelled()) return EMPTY_SET;

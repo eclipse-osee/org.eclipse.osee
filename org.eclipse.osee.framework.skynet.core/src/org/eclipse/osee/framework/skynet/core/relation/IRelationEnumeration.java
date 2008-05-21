@@ -23,4 +23,6 @@ public interface IRelationEnumeration {
    public RelationType getRelationType() throws SQLException;
 
    public boolean isThisType(RelationLink link);
+
+   public RelationSide getSide();
 }

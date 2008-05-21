@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -98,9 +98,9 @@ public class CreateNewUser extends AbstractBlam {
          for (Artifact groupArt : groupArts) {
             if (groupNameListItem.getName().equals(groupArt.getDescriptiveName())) {
                if (groupArt.getArtifactTypeName().equals("Universal Group")) {
-                  groupArt.addRelation(RelationSide.UNIVERSAL_GROUPING__MEMBERS, user, null);
+                  groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, user, null);
                } else if (groupArt.getArtifactTypeName().equals("User Group")) {
-                  groupArt.addRelation(RelationSide.Users_User, user, null);
+                  groupArt.addRelation(CoreRelationEnumeration.Users_User, user, null);
                }
             }
          }

@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.ui.plugin.util.ObjectList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -43,9 +43,9 @@ public class ArtifactDescriptorDialog extends IconAndMessageDialog {
    private Image image = null;
    private Label errorLabel;
    private Composite composite;
-   private Collection<ArtifactSubtypeDescriptor> descriptors;
-   private ObjectList<ArtifactSubtypeDescriptor> descriptorsList;
-   private ArtifactSubtypeDescriptor entry = null;
+   private Collection<ArtifactType> descriptors;
+   private ObjectList<ArtifactType> descriptorsList;
+   private ArtifactType entry = null;
    String textField = "";
    String validationRegularExpression = null;
    String validationErrorString = "";
@@ -80,7 +80,7 @@ public class ArtifactDescriptorDialog extends IconAndMessageDialog {
     * @param dialogButtonLabels an array of labels for the buttons in the button bar
     * @param defaultIndex the index in the button label array of the default button
     */
-   public ArtifactDescriptorDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex, Collection<ArtifactSubtypeDescriptor> descriptors) {
+   public ArtifactDescriptorDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex, Collection<ArtifactType> descriptors) {
       super(parentShell);
       this.title = dialogTitle;
       this.titleImage = dialogTitleImage;
@@ -212,11 +212,11 @@ public class ArtifactDescriptorDialog extends IconAndMessageDialog {
 
       new Label(composite, SWT.NULL).setText("Select artifact descriptor:");
       descriptorsList =
-            new ObjectList<ArtifactSubtypeDescriptor>(composite, SWT.BORDER | SWT.READ_ONLY | SWT.SCROLL_PAGE);
+            new ObjectList<ArtifactType>(composite, SWT.BORDER | SWT.READ_ONLY | SWT.SCROLL_PAGE);
       descriptorsList.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, true));
 
       if (descriptors != null) {
-         for (ArtifactSubtypeDescriptor descriptor : descriptors) {
+         for (ArtifactType descriptor : descriptors) {
             descriptorsList.add(descriptor, descriptor.getName());
          }
          descriptorsList.select(0);
@@ -312,7 +312,7 @@ public class ArtifactDescriptorDialog extends IconAndMessageDialog {
       return dialog.open() == 0;
    }
 
-   public ArtifactSubtypeDescriptor getEntry() {
+   public ArtifactType getEntry() {
       return entry;
    }
 

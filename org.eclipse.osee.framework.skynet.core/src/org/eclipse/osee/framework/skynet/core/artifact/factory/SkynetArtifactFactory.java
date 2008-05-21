@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks
@@ -39,7 +39,7 @@ public class SkynetArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
       if (factoryKey.equals(User.ARTIFACT_NAME)) {
          return new User(this, guid, humandReadableId, branch, artifactType);
       }

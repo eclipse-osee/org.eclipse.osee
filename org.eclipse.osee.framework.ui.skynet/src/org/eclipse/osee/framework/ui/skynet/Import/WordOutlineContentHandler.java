@@ -12,15 +12,15 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Robert A. Fisher
  */
 public abstract class WordOutlineContentHandler implements IWordOutlineContentHandler {
    protected WordOutlineExtractor extractor;
-   protected ArtifactSubtypeDescriptor headingDescriptor;
-   protected ArtifactSubtypeDescriptor mainDescriptor;
+   protected ArtifactType headingDescriptor;
+   protected ArtifactType mainDescriptor;
    private String name;
 
    public WordOutlineContentHandler() {
@@ -63,7 +63,7 @@ public abstract class WordOutlineContentHandler implements IWordOutlineContentHa
    /**
     * Save off references. Subclasses should extend this method if anyother resources need to be setup.
     */
-   public void init(WordOutlineExtractor extractor, ArtifactSubtypeDescriptor headingDescriptor, ArtifactSubtypeDescriptor mainDescriptor) {
+   public void init(WordOutlineExtractor extractor, ArtifactType headingDescriptor, ArtifactType mainDescriptor) {
       this.extractor = extractor;
       this.headingDescriptor = headingDescriptor;
       this.mainDescriptor = mainDescriptor;

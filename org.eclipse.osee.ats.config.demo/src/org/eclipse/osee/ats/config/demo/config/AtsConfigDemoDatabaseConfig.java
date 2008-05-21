@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
@@ -130,7 +130,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
                true);
-         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(RelationSide.TeamDefinitionToVersion_Version, ver, null);
+         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(CoreRelationEnumeration.TeamDefinitionToVersion_Version, ver, null);
          ver.persistAttributesAndRelations();
       }
 
@@ -143,7 +143,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          if (verName.contains("1")) ver.setReleased(true);
          if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
                true);
-         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(RelationSide.TeamDefinitionToVersion_Version, ver, null);
+         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(CoreRelationEnumeration.TeamDefinitionToVersion_Version, ver, null);
          ver.persistAttributesAndRelations();
       }
    }

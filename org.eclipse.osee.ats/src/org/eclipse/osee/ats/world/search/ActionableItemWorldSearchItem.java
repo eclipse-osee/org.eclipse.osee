@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearc
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
 /**
@@ -153,7 +153,7 @@ public class ActionableItemWorldSearchItem extends WorldSearchItem {
       }
 
       List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
-      actionCriteria.add(new InRelationSearch(allTeamWorkflows, RelationSide.ActionToWorkflow_Action));
+      actionCriteria.add(new InRelationSearch(allTeamWorkflows, CoreRelationEnumeration.ActionToWorkflow_Action));
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =

@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * Caches names and descriptors to an artifact id. This cache assumes that the user is already taking care of how this
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescripto
  */
 public class ArtifactNameDescriptorCache extends ArtifactNameDescriptorResolver {
    private Map<Integer, String> nameMap;
-   private Map<Integer, ArtifactSubtypeDescriptor> descriptorMap;
+   private Map<Integer, ArtifactType> descriptorMap;
    private boolean backupAvailable;
 
    public ArtifactNameDescriptorCache() {
@@ -35,12 +35,12 @@ public class ArtifactNameDescriptorCache extends ArtifactNameDescriptorResolver 
       super(branch);
 
       this.nameMap = new HashMap<Integer, String>();
-      this.descriptorMap = new HashMap<Integer, ArtifactSubtypeDescriptor>();
+      this.descriptorMap = new HashMap<Integer, ArtifactType>();
       //      this.backupAvailable = branch != null;
       this.backupAvailable = false;
    }
 
-   public void cache(Integer artId, String name, ArtifactSubtypeDescriptor descriptor) {
+   public void cache(Integer artId, String name, ArtifactType descriptor) {
       if (artId == null) throw new IllegalArgumentException("artId must not be null");
 
       nameMap.put(artId, name);
@@ -48,11 +48,11 @@ public class ArtifactNameDescriptorCache extends ArtifactNameDescriptorResolver 
    }
 
    @Override
-   public Pair<String, ArtifactSubtypeDescriptor> get(Integer artId) {
+   public Pair<String, ArtifactType> get(Integer artId) {
       if (artId == null) throw new IllegalArgumentException("artId must not be null");
 
       if (nameMap.containsKey(artId) || !backupAvailable) {
-         return new Pair<String, ArtifactSubtypeDescriptor>(nameMap.get(artId), descriptorMap.get(artId));
+         return new Pair<String, ArtifactType>(nameMap.get(artId), descriptorMap.get(artId));
       } else {
          return super.get(artId);
       }

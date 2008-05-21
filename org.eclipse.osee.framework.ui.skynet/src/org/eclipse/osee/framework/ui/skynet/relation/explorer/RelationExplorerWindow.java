@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -64,7 +64,7 @@ public class RelationExplorerWindow {
 
    private Shell shell;
 
-   private ArtifactSubtypeDescriptor descriptor = null;
+   private ArtifactType descriptor = null;
 
    private StructuredViewer viewer;
    private OnCloseListener onCloseListener;
@@ -315,7 +315,7 @@ public class RelationExplorerWindow {
                try {
                   relationGroup.addArtifact(artifact);
                   if (persistOnOk) {
-                     relationGroup.getLinkManager().persistLinks();
+                     relationGroup.getLinkManager().getOwningArtifact().persistRelations();
                   }
                } catch (SQLException ex) {
                   AWorkbench.popup("ERROR", ex.getLocalizedMessage());

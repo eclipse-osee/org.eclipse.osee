@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.word.WordConverter;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class HtmlReportJob extends Job {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(HtmlReportJob.class);
-   private final RelationSide side;
+   private final CoreRelationEnumeration side;
    private boolean includeAttributes;
    private boolean recurseChildren;
    private final String title;
@@ -59,14 +59,14 @@ public class HtmlReportJob extends Job {
     * @throws IOException
     * @throws TransformerConfigurationException
     */
-   public HtmlReportJob(String title, Collection<Artifact> artifacts, RelationSide side) throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
+   public HtmlReportJob(String title, Collection<Artifact> artifacts, CoreRelationEnumeration side) throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
       super(title);
       this.title = title;
       this.artifacts = artifacts;
       this.side = side;
    }
 
-   public HtmlReportJob(String title, Artifact artifact, RelationSide side) throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
+   public HtmlReportJob(String title, Artifact artifact, CoreRelationEnumeration side) throws TransformerConfigurationException, IOException, TransformerFactoryConfigurationError {
       this(title, new ArrayList<Artifact>(), side);
       artifacts.add(artifact);
    }
@@ -116,7 +116,7 @@ public class HtmlReportJob extends Job {
       return AHTML.titledPage(title, sb.toString());
    }
 
-   public String processArtifact(Artifact art, String paraNum, RelationSide side, boolean recurseChildren, boolean includeAttributes, Collection<String> onlyAttributeNames) throws SQLException {
+   public String processArtifact(Artifact art, String paraNum, CoreRelationEnumeration side, boolean recurseChildren, boolean includeAttributes, Collection<String> onlyAttributeNames) throws SQLException {
       if (monitor.isCanceled()) {
          return "";
       }

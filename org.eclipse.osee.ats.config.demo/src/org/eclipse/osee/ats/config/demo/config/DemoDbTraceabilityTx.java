@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -55,26 +55,26 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
 
          // Relate System to SubSystem to Software Requirements
          for (Artifact systemArt : systemArts) {
-            relate(RelationSide.REQUIREMENT_TRACE__LOWER_LEVEL, systemArt, subSystemArts);
+            relate(CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL, systemArt, subSystemArts);
             systemArt.persistRelations();
 
             for (Artifact subSystemArt : subSystemArts) {
-               relate(RelationSide.REQUIREMENT_TRACE__LOWER_LEVEL, subSystemArt, softArts);
+               relate(CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL, subSystemArt, softArts);
                subSystemArt.persistRelations();
             }
          }
 
          // Relate System, SubSystem and Software Requirements to Componets
          for (Artifact art : systemArts) {
-            relate(RelationSide.ALLOCATION__COMPONENT, art, component);
+            relate(CoreRelationEnumeration.ALLOCATION__COMPONENT, art, component);
             art.persistRelations();
          }
          for (Artifact art : subSystemArts) {
-            relate(RelationSide.ALLOCATION__COMPONENT, art, component);
+            relate(CoreRelationEnumeration.ALLOCATION__COMPONENT, art, component);
             art.persistRelations();
          }
          for (Artifact art : softArts) {
-            relate(RelationSide.ALLOCATION__COMPONENT, art, component);
+            relate(CoreRelationEnumeration.ALLOCATION__COMPONENT, art, component);
             art.persistRelations();
          }
 
@@ -89,7 +89,7 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
                   ArtifactTypeManager.addArtifact(Requirements.TEST_SCRIPT, verificationHeader.getBranch(),
                         "Verification Test " + str);
             verificationTests.add(newArt);
-            verificationHeader.relate(RelationSide.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
+            verificationHeader.relate(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
             newArt.persist(true);
          }
          Artifact verificationTestsArray[] = verificationTests.toArray(new Artifact[verificationTests.size()]);
@@ -105,7 +105,7 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
                   ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, validationHeader.getBranch(),
                         "Validation Test " + str);
             validationTests.add(newArt);
-            validationHeader.relate(RelationSide.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
+            validationHeader.relate(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
             newArt.persist(true);
          }
          Artifact validationTestsArray[] = validationTests.toArray(new Artifact[validationTests.size()]);
@@ -121,22 +121,22 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
                   ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, integrationHeader.getBranch(),
                         "integration Test " + str);
             integrationTests.add(newArt);
-            integrationHeader.relate(RelationSide.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
+            integrationHeader.relate(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
             newArt.persist(true);
          }
          Artifact integrationTestsArray[] = integrationTests.toArray(new Artifact[integrationTests.size()]);
 
          // Relate Software Artifacts to Tests
          Artifact softReqsArray[] = softArts.toArray(new Artifact[softArts.size()]);
-         softReqsArray[0].relate(RelationSide.Validation__Validator, verificationTestsArray[0], true);
-         softReqsArray[0].relate(RelationSide.Validation__Validator, verificationTestsArray[1], true);
-         softReqsArray[1].relate(RelationSide.Validation__Validator, verificationTestsArray[0], true);
-         softReqsArray[1].relate(RelationSide.Validation__Validator, validationTestsArray[1], true);
-         softReqsArray[2].relate(RelationSide.Validation__Validator, validationTestsArray[0], true);
-         softReqsArray[2].relate(RelationSide.Validation__Validator, integrationTestsArray[1], true);
-         softReqsArray[3].relate(RelationSide.Validation__Validator, integrationTestsArray[0], true);
-         softReqsArray[4].relate(RelationSide.Validation__Validator, integrationTestsArray[2], true);
-         softReqsArray[5].relate(RelationSide.Validation__Validator, validationTestsArray[2], true);
+         softReqsArray[0].relate(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[0], true);
+         softReqsArray[0].relate(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[1], true);
+         softReqsArray[1].relate(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[0], true);
+         softReqsArray[1].relate(CoreRelationEnumeration.Validation__Validator, validationTestsArray[1], true);
+         softReqsArray[2].relate(CoreRelationEnumeration.Validation__Validator, validationTestsArray[0], true);
+         softReqsArray[2].relate(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[1], true);
+         softReqsArray[3].relate(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[0], true);
+         softReqsArray[4].relate(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[2], true);
+         softReqsArray[5].relate(CoreRelationEnumeration.Validation__Validator, validationTestsArray[2], true);
 
       } catch (Exception ex) {
          OSEELog.logException(OseeAtsConfigDemoPlugin.class, ex, false);

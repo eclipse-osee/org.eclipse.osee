@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -35,7 +35,7 @@ public class XArtifactTypeListViewer extends XTypeListViewer {
 
       if (defaultValue != null) {
          try {
-            ArtifactSubtypeDescriptor artifactType = configurationManager.getArtifactSubtypeDescriptor(defaultValue);
+            ArtifactType artifactType = configurationManager.getArtifactSubtypeDescriptor(defaultValue);
             setDefaultSelected(artifactType);
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);

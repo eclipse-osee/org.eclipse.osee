@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.skynet.core.relation.RelationSide.DEFAULT_HIERARCHICAL__CHILD;
+import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.Mod
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -51,12 +51,12 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribu
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
@@ -78,7 +78,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    protected boolean dirty = true;
    protected boolean inTransaction = false;
    private boolean deleted = false;
-   private ArtifactSubtypeDescriptor artifactType;
+   private ArtifactType artifactType;
    private String humanReadableId;
    private ArtifactFactory parentFactory;
    private int deletionTransactionId = -1;
@@ -90,7 +90,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private int gammaId;
    private boolean linksLoaded;
 
-   protected Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   protected Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
 
       if (guid == null) {
          this.guid = GUID.generateGuidStr();
@@ -178,32 +178,28 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * All the artifacts related to this artifact by relations of type relationType are returned in a list order based on
-    * the stored relation order
+    * All the artifacts related to this artifact by relations of type relationTypeName are returned in a list order
+    * based on the stored relation order
     * 
-    * @param relationType
+    * @param relationTypeName
     * @return
     * @throws ArtifactDoesNotExist
     * @throws OseeDataStoreException
     */
-   public List<Artifact> getRelatedArtifacts(String relationType) throws ArtifactDoesNotExist, OseeDataStoreException {
+   public List<Artifact> getRelatedArtifacts(String relationTypeName) throws ArtifactDoesNotExist, OseeDataStoreException {
       try {
-         return RelationManager.getRelatedArtifacts(this, RelationTypeManager.getType(relationType));
+         return RelationManager.getRelatedArtifacts(this, RelationTypeManager.getType(relationTypeName));
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
    }
 
    public Set<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws SQLException {
-      //      try {
       try {
          return new HashSet<Artifact>(RelationManager.getRelatedArtifacts(this, relationEnum));
       } catch (ArtifactDoesNotExist ex) {
          throw new SQLException(ex);
       }
-      //      } catch (SQLException ex) {
-      //         throw new OseeDataStoreException(ex);
-      //      }
    }
 
    /**
@@ -224,22 +220,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public int getRelatedArtifactsCount(String relationType) throws OseeDataStoreException {
+   public int getRelatedArtifactsCount(IRelationEnumeration relationEnum) throws OseeDataStoreException {
       try {
-         return RelationManager.getRelatedArtifactsCount(this, RelationTypeManager.getType(relationType));
+         return RelationManager.getRelatedArtifactsCount(this, relationEnum.getRelationType(), relationEnum.getSide());
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
    }
-
-   //   @Deprecated
-   //   public Set<Artifact> getRelatedArtifacts(IRelationEnumeration side) throws SQLException {
-   //      try {
-   //         return new HashSet<Artifact>(getRelatedArtifacts(side.getTypeName()));
-   //      } catch (OseeCoreException ex) {
-   //         throw new SQLException(ex);
-   //      }
-   //   }
 
    /**
     * @param <A>
@@ -249,12 +236,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public <A extends Artifact> Set<A> getArtifacts(IRelationEnumeration side, Class<A> clazz) throws SQLException {
       Set<A> artifacts = new HashSet<A>();
-      try {
-         for (Artifact artifact : getRelatedArtifacts(side.getTypeName())) {
-            artifacts.add((A) artifact);
-         }
-      } catch (OseeCoreException ex) {
-         throw new SQLException(ex);
+      for (Artifact artifact : getRelatedArtifacts(side)) {
+         artifacts.add((A) artifact);
       }
       return artifacts;
    }
@@ -337,7 +320,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    //TODO should not return null but currently application code expects it to
    public Artifact getParent() throws SQLException {
       try {
-         return RelationManager.getRelatedArtifact(this, RelationSide.DEFAULT_HIERARCHICAL__CHILD);
+         return RelationManager.getRelatedArtifact(this, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT);
       } catch (ArtifactDoesNotExist ex) {
          return null;
       } catch (MultipleArtifactsExist ex) {
@@ -406,7 +389,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     * @throws OseeCoreException
     */
-   public Artifact addNewChild(ArtifactSubtypeDescriptor descriptor, String name) throws SQLException, OseeCoreException {
+   public Artifact addNewChild(ArtifactType descriptor, String name) throws SQLException, OseeCoreException {
       Artifact child = descriptor.makeNewArtifact(branch);
       child.setDescriptiveName(name);
       addChild(child);
@@ -905,7 +888,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public void persistAttributesAndRelations() throws SQLException {
       persistAttributes();
-      RelationManager.persistRelationsFor(this);
+      persistRelations();
    }
 
    /**
@@ -1141,7 +1124,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    /**
     * @return Returns the descriptor.
     */
-   public ArtifactSubtypeDescriptor getArtifactType() {
+   public ArtifactType getArtifactType() {
       return artifactType;
    }
 
@@ -1306,7 +1289,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @param artifactType
     * @throws SQLException
     */
-   public void changeArtifactType(ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public void changeArtifactType(ArtifactType artifactType) throws SQLException {
       ArtifactPersistenceManager.changeArtifactSubStype(this, artifactType);
       this.artifactType = artifactType;
    }

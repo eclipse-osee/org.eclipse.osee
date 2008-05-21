@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearc
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
 /**
@@ -110,11 +110,11 @@ public class EditTasksByTeamVersionSearchItem extends WorldSearchItem {
       allProductCriteria.add(teamDefWorkflowSearch);
       allProductCriteria.add(teamWorkflowSearch);
       if (selectedVersion != null) allProductCriteria.add(new InRelationSearch(versionWorkflowSearch,
-            RelationSide.TeamWorkflowTargetedForVersion_Workflow));
+            CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow));
       FromArtifactsSearch allTeamWorkflows = new FromArtifactsSearch(allProductCriteria, true);
 
       List<ISearchPrimitive> taskCriteria = new LinkedList<ISearchPrimitive>();
-      taskCriteria.add(new InRelationSearch(allTeamWorkflows, RelationSide.SmaToTask_Task));
+      taskCriteria.add(new InRelationSearch(allTeamWorkflows, CoreRelationEnumeration.SmaToTask_Task));
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =

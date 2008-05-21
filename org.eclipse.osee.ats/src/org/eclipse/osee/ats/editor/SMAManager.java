@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
@@ -716,9 +716,9 @@ public class SMAManager {
       Result result =
             transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), persist, reason, false);
       if (result.isTrue()) {
-         for (VersionArtifact verArt : sma.getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Version,
+         for (VersionArtifact verArt : sma.getArtifacts(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version,
                VersionArtifact.class)) {
-            sma.deleteRelation(RelationSide.TeamWorkflowTargetedForVersion_Version, verArt);
+            sma.deleteRelation(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, verArt);
          }
          sma.persistRelations();
       }

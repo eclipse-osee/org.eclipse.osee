@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -156,7 +156,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       List<ISearchPrimitive> untargetedTeamsCriteria = new LinkedList<ISearchPrimitive>();
       untargetedTeamsCriteria.add(teamWorkflowSearch);
       untargetedTeamsCriteria.add(new NotSearch(new InRelationSearch(allTeamWorkflows,
-            RelationSide.TeamWorkflowTargetedForVersion_Workflow)));
+            CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow)));
       FromArtifactsSearch untargetedTeamsCriteriaArts = new FromArtifactsSearch(untargetedTeamsCriteria, true);
 
       // Get un-released version artifacts
@@ -168,7 +168,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
 
       List<ISearchPrimitive> unReleasedTeamsCriteria = new LinkedList<ISearchPrimitive>();
       unReleasedTeamsCriteria.add(new InRelationSearch(unReleasedVersionCriteriaArts,
-            RelationSide.TeamWorkflowTargetedForVersion_Workflow));
+            CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow));
       unReleasedTeamsCriteria.add(allTeamWorkflows);
       FromArtifactsSearch unReleasedTeamsCriteriaArts = new FromArtifactsSearch(unReleasedTeamsCriteria, true);
 
@@ -190,7 +190,7 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
 
       List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
       actionCriteria.add(new InRelationSearch(unReleasedAndUntargetedTeamsCriteriaArts,
-            RelationSide.ActionToWorkflow_Action));
+            CoreRelationEnumeration.ActionToWorkflow_Action));
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =

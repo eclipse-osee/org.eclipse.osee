@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Jeff C. Phillips
@@ -73,6 +73,6 @@ public class EveryoneGroup extends Group {
     * @throws SQLException
     */
    public static void addGroupMember(User user) throws SQLException {
-      instance.everyoneGroup.addRelation(RelationSide.Users_User, user, null);
+      instance.everyoneGroup.addRelation(CoreRelationEnumeration.Users_User, user, null);
    }
 }

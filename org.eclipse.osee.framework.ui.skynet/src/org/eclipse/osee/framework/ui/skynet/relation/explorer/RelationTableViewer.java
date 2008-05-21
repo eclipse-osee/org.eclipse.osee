@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -59,8 +59,8 @@ public class RelationTableViewer {
    public static final int INVALID_NAME_NUM = 0;
    public static final int INVALID_REASON_NUM = 1;
 
-   public ArrayList<ArtifactSubtypeDescriptor> fullDescriptorList;
-   private ArtifactSubtypeDescriptor defaultArtifactType;
+   public ArrayList<ArtifactType> fullDescriptorList;
+   private ArtifactType defaultArtifactType;
 
    /**
     * @param validTable -
@@ -69,7 +69,7 @@ public class RelationTableViewer {
    public RelationTableViewer(Table validTable, Table invalidTable) {
       try {
          fullDescriptorList =
-               new ArrayList<ArtifactSubtypeDescriptor>(
+               new ArrayList<ArtifactType>(
                      configurationManger.getValidArtifactTypes(BranchPersistenceManager.getInstance().getDefaultBranch()));
          defaultArtifactType = configurationManger.getArtifactSubtypeDescriptor(Requirements.TEST_SCRIPT);
       } catch (SQLException ex) {

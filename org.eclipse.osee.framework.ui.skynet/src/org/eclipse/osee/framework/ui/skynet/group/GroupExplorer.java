@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.InsertLocation;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -267,7 +267,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                   @Override
                   protected void handleTxWork() throws Exception {
                      for (GroupExplorerItem item : items) {
-                        item.getArtifact().deleteRelation(RelationSide.UNIVERSAL_GROUPING__GROUP,
+                        item.getArtifact().deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP,
                               item.getParentItem().getArtifact());
                         item.getArtifact().persistRelations();
                      }
@@ -333,7 +333,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
       if (selItem != null) {
          try {
             RelationPersistenceManager.getInstance().moveObjectB(selItem.getParentItem().getArtifact(),
-                  selItem.getArtifact(), RelationSide.UNIVERSAL_GROUPING__MEMBERS, dir);
+                  selItem.getArtifact(), CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, dir);
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
@@ -596,9 +596,9 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                                  protected void handleTxWork() throws Exception {
                                     for (Artifact artifact : insertArts) {
                                        // Remove item from old group
-                                       parentArtifact.deleteRelation(RelationSide.UNIVERSAL_GROUPING__MEMBERS, artifact);
+                                       parentArtifact.deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact);
                                        // Add items to new group
-                                       targetArtifact.addRelation(RelationSide.UNIVERSAL_GROUPING__MEMBERS, artifact,
+                                       targetArtifact.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact,
                                              null);
                                     }
                                     parentArtifact.persistAttributesAndRelations();
@@ -636,7 +636,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                         Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                         RelationPersistenceManager.getInstance().insertObjectsOnSideB(parentArtifact, targetArtifact,
-                              insertArts, RelationSide.UNIVERSAL_GROUPING__MEMBERS,
+                              insertArts, CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS,
                               isFeedbackAfter ? InsertLocation.AfterTarget : InsertLocation.BeforeTarget);
                      }
                      // Drag item came from outside Group Explorer
@@ -647,7 +647,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                         Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                         RelationPersistenceManager.getInstance().insertObjectsOnSideB(parentArtifact, targetArtifact,
-                              insertArts, RelationSide.UNIVERSAL_GROUPING__MEMBERS,
+                              insertArts, CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS,
                               isFeedbackAfter ? InsertLocation.AfterTarget : InsertLocation.BeforeTarget);
                      }
                   }
@@ -682,7 +682,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                   protected void handleTxWork() throws Exception {
                      for (Artifact art : artsToRelate) {
                         if (!dragOverExplorerItem.contains(art)) {
-                           dragOverExplorerItem.getArtifact().relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, art,
+                           dragOverExplorerItem.getArtifact().relate(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art,
                                  true);
                         }
                      }

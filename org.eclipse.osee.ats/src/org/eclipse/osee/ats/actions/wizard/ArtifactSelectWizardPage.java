@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -81,7 +81,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
          artTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-               ArtifactSubtypeDescriptor desc = (ArtifactSubtypeDescriptor) selection.getFirstElement();
+               ArtifactType desc = (ArtifactType) selection.getFirstElement();
                try {
                   artList.setInput(ArtifactQuery.getArtifactsFromType(desc, BranchPersistenceManager.getAtsBranch()));
                } catch (SQLException ex) {
@@ -93,8 +93,8 @@ public class ArtifactSelectWizardPage extends WizardPage {
             @SuppressWarnings("unchecked")
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
-               return getComparator().compare(((ArtifactSubtypeDescriptor) e1).getName(),
-                     ((ArtifactSubtypeDescriptor) e2).getName());
+               return getComparator().compare(((ArtifactType) e1).getName(),
+                     ((ArtifactType) e2).getName());
             }
          });
 
@@ -183,7 +183,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
       }
 
       public String getText(Object arg0) {
-         return ((ArtifactSubtypeDescriptor) arg0).getName();
+         return ((ArtifactType) arg0).getName();
       }
 
       public void addListener(ILabelProviderListener arg0) {

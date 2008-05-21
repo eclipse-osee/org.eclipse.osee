@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -37,7 +37,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
          "Extract each row as an artifact - header <section #, atrribute1, atrribute2 ...>";
    private ExcelSaxHandler excelHandler;
    private String[] headerRow;
-   private ArtifactSubtypeDescriptor primaryDescriptor;
+   private ArtifactType primaryDescriptor;
    private boolean importingRelations;
    private boolean reuseArtifacts;
    private AttributeImportType[] types;

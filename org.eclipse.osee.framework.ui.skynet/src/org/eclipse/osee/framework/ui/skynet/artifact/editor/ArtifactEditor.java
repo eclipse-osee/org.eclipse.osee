@@ -490,8 +490,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             } catch (SQLException ex) {
                SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
-         } else
-            artifact.getLinkManager().clearEmptyRelationGroups();
+         }
 
          eventManager.unRegisterAll(this);
          super.dispose();

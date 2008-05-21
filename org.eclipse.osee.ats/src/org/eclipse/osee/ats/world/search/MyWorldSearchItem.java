@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearc
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Donald G. Dunne
@@ -54,13 +54,13 @@ public class MyWorldSearchItem extends UserSearchItem {
       // Add all the Team Workflow's related to assigned Tasks
       List<ISearchPrimitive> teamAndTaskCriteria = new LinkedList<ISearchPrimitive>();
       teamAndTaskCriteria.add(currentStateSearch);
-      teamAndTaskCriteria.add(new InRelationSearch(currentStateSearch, RelationSide.SmaToTask_Sma));
-      teamAndTaskCriteria.add(new InRelationSearch(currentStateSearch, RelationSide.TeamWorkflowToReview_Team));
+      teamAndTaskCriteria.add(new InRelationSearch(currentStateSearch, CoreRelationEnumeration.SmaToTask_Sma));
+      teamAndTaskCriteria.add(new InRelationSearch(currentStateSearch, CoreRelationEnumeration.TeamWorkflowToReview_Team));
       FromArtifactsSearch teamAndTaskSearch = new FromArtifactsSearch(teamAndTaskCriteria, false);
 
       // Return teamworkflow items
       List<ISearchPrimitive> actionCriteria = new LinkedList<ISearchPrimitive>();
-      actionCriteria.add(new InRelationSearch(teamAndTaskSearch, RelationSide.ActionToWorkflow_Action));
+      actionCriteria.add(new InRelationSearch(teamAndTaskSearch, CoreRelationEnumeration.ActionToWorkflow_Action));
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =

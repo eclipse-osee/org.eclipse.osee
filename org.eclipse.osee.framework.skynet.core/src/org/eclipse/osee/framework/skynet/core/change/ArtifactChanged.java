@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
 public class ArtifactChanged extends Change {
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactChanged.class);
-   private ArtifactSubtypeDescriptor artifactSubtypeDescriptor;
+   private ArtifactType artifactSubtypeDescriptor;
 
    /**
     * @param artTypeId
@@ -42,7 +42,7 @@ public class ArtifactChanged extends Change {
    /**
     * @return the dynamicAttributeDescriptor
     */
-   private ArtifactSubtypeDescriptor getDynamicArtifactSubtypeDescriptor() throws SQLException {
+   private ArtifactType getDynamicArtifactSubtypeDescriptor() throws SQLException {
       if (artifactSubtypeDescriptor == null) {
          artifactSubtypeDescriptor =
                ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artTypeId);

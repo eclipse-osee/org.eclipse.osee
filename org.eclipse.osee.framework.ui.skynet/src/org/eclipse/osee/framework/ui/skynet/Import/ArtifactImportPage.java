@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -300,7 +300,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       try {
          String[] selection = typeList.getSelection();
          typeList.removeAll();
-         for (ArtifactSubtypeDescriptor descriptor : configurationManager.getValidArtifactTypes(branch)) {
+         for (ArtifactType descriptor : configurationManager.getValidArtifactTypes(branch)) {
             typeList.add(descriptor.getName());
             typeList.setData(descriptor.getName(), descriptor);
          }
@@ -381,9 +381,9 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       return radWordOutlineExtractor.getSelection();
    }
 
-   public ArtifactSubtypeDescriptor getSelectedType() {
+   public ArtifactType getSelectedType() {
       String itemName = typeList.getItem(typeList.getSelectionIndex());
-      return (ArtifactSubtypeDescriptor) typeList.getData(itemName);
+      return (ArtifactType) typeList.getData(itemName);
    }
 
    public Branch getSelectedBranch() {

@@ -61,7 +61,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch.BranchType;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
@@ -107,7 +107,6 @@ public class BranchPersistenceManager implements PersistenceManager {
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
-   private ArtifactPersistenceManager artifactManager;
    private BranchCreator branchCreator;
    private ConfigurationPersistenceManager configurationManager;
 
@@ -136,7 +135,6 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
     */
    public void onManagerWebInit() throws Exception {
-      artifactManager = ArtifactPersistenceManager.getInstance();
       branchCreator = BranchCreator.getInstance();
       configurationManager = ConfigurationPersistenceManager.getInstance();
    }
@@ -625,33 +623,19 @@ public class BranchPersistenceManager implements PersistenceManager {
    private SkynetRelationLinkEventBase createRemoteRelationEvent(int gammaId, int relId, int modType, int aArtId, int bArtId, int relTypeId, int aOrderValue, int bOrderValue, String rationale, Branch parentBranch, Branch childBranch, int newTransactionNumber) {
 
       SkynetRelationLinkEventBase remoteRelationEvent = null;
-      Artifact aArtifact = null;
-      Artifact bArtifact = null;
 
       try {
          if (modType == ModificationType.DELETED.getValue()) {
-            aArtifact = ArtifactQuery.getArtifactFromId(aArtId, parentBranch);
-            bArtifact = ArtifactQuery.getArtifactFromId(bArtId, parentBranch);
-
             remoteRelationEvent =
                   new NetworkRelationLinkDeletedEvent(relTypeId, gammaId, parentBranch.getBranchId(),
-                        newTransactionNumber, relId, aArtifact.getArtId(), aArtifact.getArtTypeId(),
-                        bArtifact.getArtId(), bArtifact.getArtTypeId(),
-                        aArtifact.getFactory().getClass().getCanonicalName(),
-                        bArtifact.getFactory().getClass().getCanonicalName(),
+                        newTransactionNumber, relId, aArtId, bArtId,
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
          } else if (modType == ModificationType.CHANGE.getValue()) {
-            aArtifact = ArtifactQuery.getArtifactFromId(aArtId, parentBranch);
-            bArtifact = ArtifactQuery.getArtifactFromId(bArtId, parentBranch);
-
             remoteRelationEvent =
                   new NetworkRelationLinkModifiedEvent(gammaId, parentBranch.getBranchId(), newTransactionNumber,
-                        relId, aArtifact.getArtId(), bArtifact.getArtId(), rationale, aOrderValue, bOrderValue,
+                        relId, aArtId, bArtId, rationale, aOrderValue, bOrderValue,
                         SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId(), relTypeId);
          } else if (modType == ModificationType.NEW.getValue()) {
-            aArtifact = ArtifactQuery.getArtifactFromId(aArtId, childBranch);
-            bArtifact = ArtifactQuery.getArtifactFromId(bArtId, childBranch);
-
             // remoteRelationEvent = new RemoteNewRelationLinkEvent(parentBranch.getBranchId(),
             // newTransactionNumber,
             // relId, aArtifact.getArtId(), aArtifact.getArtTypeId(), bArtifact.getArtId(),
@@ -825,7 +809,7 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    public Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws Exception {
-      Collection<ArtifactSubtypeDescriptor> compressArtTypes =
+      Collection<ArtifactType> compressArtTypes =
             configurationManager.getValidArtifactTypes(parentTransactionId.getBranch());
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
@@ -840,19 +824,19 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws SQLException
     */
    public Branch createTestBranch(TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws Exception {
-      Collection<ArtifactSubtypeDescriptor> preserveArtTypes =
+      Collection<ArtifactType> preserveArtTypes =
             configurationManager.getValidArtifactTypes(parentTransactionId.getBranch());
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, false, null, preserveArtTypes);
    }
 
-   private Set<ArtifactSubtypeDescriptor> getSubtypeDescriptors(String[] artTypeNames) throws SQLException {
-      Set<ArtifactSubtypeDescriptor> artifactTypes;
+   private Set<ArtifactType> getSubtypeDescriptors(String[] artTypeNames) throws SQLException {
+      Set<ArtifactType> artifactTypes;
       if (artTypeNames == null) {
-         artifactTypes = new HashSet<ArtifactSubtypeDescriptor>(0);
+         artifactTypes = new HashSet<ArtifactType>(0);
       } else {
-         artifactTypes = new HashSet<ArtifactSubtypeDescriptor>(artTypeNames.length);
+         artifactTypes = new HashSet<ArtifactType>(artTypeNames.length);
          for (String typeName : artTypeNames) {
             artifactTypes.add(configurationManager.getArtifactSubtypeDescriptor(typeName));
          }
@@ -866,8 +850,8 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @return The created Branch
     */
    public Branch createBranchWithFiltering(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact, String[] compressArtTypeNames, String[] preserveArtTypeNames) throws Exception {
-      Set<ArtifactSubtypeDescriptor> compressArtTypes = getSubtypeDescriptors(compressArtTypeNames);
-      Set<ArtifactSubtypeDescriptor> preserveArtTypes = getSubtypeDescriptors(preserveArtTypeNames);
+      Set<ArtifactType> compressArtTypes = getSubtypeDescriptors(compressArtTypeNames);
+      Set<ArtifactType> preserveArtTypes = getSubtypeDescriptors(preserveArtTypeNames);
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, true, compressArtTypes, preserveArtTypes);

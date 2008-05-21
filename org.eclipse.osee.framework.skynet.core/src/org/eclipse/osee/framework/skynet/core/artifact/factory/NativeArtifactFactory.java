@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.factory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks
@@ -37,7 +37,7 @@ public class NativeArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   NativeArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   NativeArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
       return new NativeArtifact(this, guid, humandReadableId, branch, artifactType);
    }
 }

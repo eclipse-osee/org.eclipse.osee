@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -210,7 +210,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
                            aData.version, AtsPlugin.getAtsBranch());
 
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts())
-                  verArt.relate(RelationSide.TeamWorkflowTargetedForVersion_Workflow, team, true);
+                  verArt.relate(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow, team, true);
             }
             if (aData.assigneeStrs.size() > 0) {
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {

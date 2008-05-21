@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -46,16 +47,9 @@ public class RoughRelation {
    }
 
    public void makeReal(Branch branch, IProgressMonitor monitor) throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
-      RelationType descriptor = RelationTypeManager.getType(relTypeName);
+      RelationType relationType = RelationTypeManager.getType(relTypeName);
       Artifact aArt = ArtifactQuery.getArtifactFromId(aGuid, branch);
       Artifact bArt = ArtifactQuery.getArtifactFromId(bGuid, branch);
-
-      if (aArt != null && bArt != null && aArt.getLinkManager().ensureRelationGroupExists(descriptor, false).getArtifacts().contains(
-            bArt)) {
-         logger.log(
-               Level.INFO,
-               "Relation Already Exists : " + aArt.getHumanReadableId() + " - " + aArt.toString() + " => " + descriptor.getTypeName() + " => " + bArt.getHumanReadableId() + " - " + bArt.toString());
-      }
 
       if (aArt == null || bArt == null) {
          logger.log(Level.WARNING, "The relation of type " + relTypeName + " could not be created.");
@@ -69,8 +63,8 @@ public class RoughRelation {
          try {
             monitor.subTask(aArt.getDescriptiveName() + " <--> " + bArt.getDescriptiveName());
             monitor.worked(1);
-            aArt.getLinkManager().ensureRelationGroupExists(descriptor, false).addArtifact(bArt, rationale, true,
-                  aOrderValue, bOrderValue);
+            RelationManager.addRelation(relationType, aArt, bArt, rationale);
+            aArt.persistRelations();
          } catch (IllegalArgumentException ex) {
             logger.log(Level.WARNING, ex.toString());
          }

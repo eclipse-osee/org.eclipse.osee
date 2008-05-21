@@ -54,7 +54,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -332,7 +332,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                      "The artifact with " + idString + " or does not exist for transaction \"" + transactionId + "\"");
             }
 
-            ArtifactSubtypeDescriptor artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
+            ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
             ArtifactFactory factory = artifactType.getFactory();
 
             artifact =
@@ -517,7 +517,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    public static Artifact loadArtifactMetaData(ResultSet rSet, Branch branch, boolean active) throws SQLException {
-      ArtifactSubtypeDescriptor artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
+      ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
       ArtifactFactory factory = artifactType.getFactory();
 
       return factory.loadExisitingArtifact(rSet.getInt("art_id"), rSet.getInt("gamma_id"), rSet.getString("guid"),
@@ -730,7 +730,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          purgeArtifact(child);
       }
 
-      artifact.getLinkManager().purge();
+      need to purge Links here
       SkynetEventManager.getInstance().kick(new TransactionArtifactModifiedEvent(artifact, ModType.Purged, instance));
    }
 
@@ -845,7 +845,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @param artifactType
     * @throws SQLException
     */
-   public static void changeArtifactSubStype(Artifact artifact, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   public static void changeArtifactSubStype(Artifact artifact, ArtifactType artifactType) throws SQLException {
       ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE, SQL3DataType.INTEGER, artifactType.getArtTypeId(),
             SQL3DataType.INTEGER, artifact.getArtId());
    }

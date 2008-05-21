@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -37,7 +37,7 @@ public class ArtifactTypeContentProvider implements ITreeContentProvider {
          ArrayList<Object> descriptors = new ArrayList<Object>();
 
          try {
-            for (ArtifactSubtypeDescriptor descriptor : configurationPersistenceManager.getValidArtifactTypes((Branch) parentElement)) {
+            for (ArtifactType descriptor : configurationPersistenceManager.getValidArtifactTypes((Branch) parentElement)) {
                descriptors.add((Object) descriptor);
             }
          } catch (SQLException ex) {

@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -564,7 +564,7 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       if (taskArt != null) {
          try {
             RelationPersistenceManager.getInstance().moveObjectB(iXTaskViewer.getParentSmaMgr().getSma(), taskArt,
-                  RelationSide.SmaToTask_Task, dir);
+                  CoreRelationEnumeration.SmaToTask_Task, dir);
             refresh();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
@@ -731,9 +731,9 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
                      if (art instanceof TaskArtifact) {
                         TaskArtifact taskArt = (TaskArtifact) art;
                         if (taskArt.getParentSMA() != null) {
-                           taskArt.deleteRelation(RelationSide.SmaToTask_Sma, taskArt.getParentSMA());
+                           taskArt.deleteRelation(CoreRelationEnumeration.SmaToTask_Sma, taskArt.getParentSMA());
                         }
-                        taskArt.addRelation(RelationSide.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma(), null);
+                        taskArt.addRelation(CoreRelationEnumeration.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma(), null);
                         taskArt.persistRelations();
                      }
                   }

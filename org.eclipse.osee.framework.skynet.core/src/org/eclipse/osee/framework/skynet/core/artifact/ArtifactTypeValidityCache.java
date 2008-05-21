@@ -15,17 +15,17 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 
 /**
  * @author Ryan D. Brooks
  */
 public class ArtifactTypeValidityCache {
-   private final HashCollection<Branch, ArtifactSubtypeDescriptor> branchToartifactTypeMap;
+   private final HashCollection<Branch, ArtifactType> branchToartifactTypeMap;
 
    public ArtifactTypeValidityCache() {
-      branchToartifactTypeMap = new HashCollection<Branch, ArtifactSubtypeDescriptor>(false, TreeSet.class);
+      branchToartifactTypeMap = new HashCollection<Branch, ArtifactType>(false, TreeSet.class);
    }
 
    private synchronized void ensurePopulated() throws SQLException {
@@ -35,7 +35,7 @@ public class ArtifactTypeValidityCache {
    }
 
    private void populateCache() throws SQLException {
-      Collection<ArtifactSubtypeDescriptor> artifactTypes =
+      Collection<ArtifactType> artifactTypes =
             ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors();
 
       for (Branch branch : BranchPersistenceManager.getInstance().getRootBranches()) {
@@ -43,10 +43,10 @@ public class ArtifactTypeValidityCache {
       }
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getValidArtifactTypes(Branch branch) throws SQLException {
+   public Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws SQLException {
       ensurePopulated();
       Branch rootBranch = branch.getRootBranch();
-      Collection<ArtifactSubtypeDescriptor> artifactTypes = branchToartifactTypeMap.getValues(rootBranch);
+      Collection<ArtifactType> artifactTypes = branchToartifactTypeMap.getValues(rootBranch);
       if (artifactTypes == null) {
          throw new IllegalArgumentException("There are no valid artifact types available for the branch " + rootBranch);
       }

@@ -12,7 +12,7 @@ package org.eclipse.osee.define.artifact;
 
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks
@@ -36,7 +36,7 @@ public class SpreadsheetArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Spreadsheet getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public Spreadsheet getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
       return new Spreadsheet(this, guid, humandReadableId, branch, artifactType);
    }
 }

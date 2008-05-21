@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
@@ -67,7 +67,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @param branch
     * @throws SQLException
     */
-   public ActionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public ActionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
@@ -216,7 +216,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlowArtifacts() throws SQLException {
-      return getArtifacts(RelationSide.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class);
+      return getArtifacts(CoreRelationEnumeration.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class);
    }
 
    public String getWorldViewType() throws Exception {
@@ -349,7 +349,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws SQLException {
       super.atsDelete(deleteArts, allRelated);
       // Delete all products
-      for (TeamWorkFlowArtifact art : getArtifacts(RelationSide.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class))
+      for (TeamWorkFlowArtifact art : getArtifacts(CoreRelationEnumeration.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class))
          art.atsDelete(deleteArts, allRelated);
    }
 
@@ -813,7 +813,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       teamArt.setTeamDefinition(teamDef);
 
       // Relate Action to WorkFlow
-      addRelation(RelationSide.ActionToWorkflow_WorkFlow, teamArt, null);
+      addRelation(CoreRelationEnumeration.ActionToWorkflow_WorkFlow, teamArt, null);
 
       teamArt.persistAttributesAndRelations();
 

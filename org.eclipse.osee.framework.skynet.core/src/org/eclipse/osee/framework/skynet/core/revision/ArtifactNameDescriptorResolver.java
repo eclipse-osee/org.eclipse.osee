@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Robert A. Fisher
@@ -36,15 +36,15 @@ public class ArtifactNameDescriptorResolver implements IArtifactNameDescriptorRe
       this.branch = branch;
    }
 
-   public Pair<String, ArtifactSubtypeDescriptor> get(Integer artId) {
+   public Pair<String, ArtifactType> get(Integer artId) {
       Artifact artifact = null;
       try {
          artifact = ArtifactQuery.getArtifactFromId(artId, branch);
       } catch (OseeCoreException ex) {
-         return new Pair<String, ArtifactSubtypeDescriptor>("", null);
+         return new Pair<String, ArtifactType>("", null);
       } catch (SQLException ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }
-      return new Pair<String, ArtifactSubtypeDescriptor>(artifact.getDescriptiveName(), artifact.getArtifactType());
+      return new Pair<String, ArtifactType>(artifact.getDescriptiveName(), artifact.getArtifactType());
    }
 }

@@ -97,11 +97,11 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
                artifactTypeName, SQL3DataType.VARCHAR, factoryKey, SQL3DataType.BLOB, new ByteArrayInputStream(
                      imageDescriptor.getData()));
 
-         new ArtifactSubtypeDescriptor(cacheArtifactSubtypeDescriptors, artTypeId, factoryKey, factory, namespace,
+         new ArtifactType(cacheArtifactSubtypeDescriptors, artTypeId, factoryKey, factory, namespace,
                artifactTypeName, imageDescriptor);
       } else {
          // Check if anything valuable is different
-         ArtifactSubtypeDescriptor artifactType =
+         ArtifactType artifactType =
                cacheArtifactSubtypeDescriptors.getDescriptor(namespace, artifactTypeName);
          if (!artifactType.getFactoryKey().equals(factoryKey) || !artifactType.getFactory().getClass().getCanonicalName().equals(
                factoryName)) {
@@ -162,7 +162,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return Platform.getBundle(location.getKey()).getEntry(location.getValue());
    }
 
-   public static void updateArtifactTypeImage(ArtifactSubtypeDescriptor descriptor, InputStreamImageDescriptor imageDescriptor) throws SQLException {
+   public static void updateArtifactTypeImage(ArtifactType descriptor, InputStreamImageDescriptor imageDescriptor) throws SQLException {
       // Update DB
       ConnectionHandler.runPreparedUpdate("UPDATE " + ARTIFACT_TYPE_TABLE + " SET image = ? where art_type_id = ?",
             SQL3DataType.BLOB, new ByteArrayInputStream(imageDescriptor.getData()), SQL3DataType.INTEGER,
@@ -179,7 +179,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
     * @param artifactType
     * @throws Exception
     */
-   public void persistAttributeValidity(ArtifactSubtypeDescriptor artifactType, AttributeType attributeType) throws Exception {
+   public void persistAttributeValidity(ArtifactType artifactType, AttributeType attributeType) throws Exception {
       if (!cacheAttributeTypeValidity.isValid(artifactType, attributeType)) {
          ConnectionHandler.runPreparedUpdate(INSERT_VALID_ATTRIBUTE, SQL3DataType.INTEGER, artifactType.getArtTypeId(),
                SQL3DataType.INTEGER, attributeType.getAttrTypeId());
@@ -188,7 +188,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       }
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getArtifactTypesFromAttributeType(AttributeType attributeType) throws SQLException {
+   public Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType attributeType) throws SQLException {
       return cacheAttributeTypeValidity.getArtifactTypesFromAttributeType(attributeType);
    }
 
@@ -197,15 +197,15 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
             getArtifactSubtypeDescriptor(artifactTypeName), branch);
    }
 
-   public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactSubtypeDescriptor descriptor, Branch branch) throws SQLException {
+   public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType descriptor, Branch branch) throws SQLException {
       return cacheAttributeTypeValidity.getAttributeTypesFromArtifactType(descriptor, branch);
    }
 
-   public Collection<ArtifactSubtypeDescriptor> getValidArtifactTypes(Branch branch) throws SQLException {
+   public Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws SQLException {
       return artifactTypeValidityCache.getValidArtifactTypes(branch);
    }
 
-   public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(String name) throws SQLException {
+   public ArtifactType getArtifactSubtypeDescriptor(String name) throws SQLException {
       return cacheArtifactSubtypeDescriptors.getDescriptor(name);
    }
 
@@ -214,7 +214,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
    }
 
    @Deprecated
-   public Collection<ArtifactSubtypeDescriptor> getArtifactSubtypeDescriptors() throws SQLException {
+   public Collection<ArtifactType> getArtifactSubtypeDescriptors() throws SQLException {
       return cacheArtifactSubtypeDescriptors.getAllDescriptors();
    }
 
@@ -232,7 +232,7 @@ public class ConfigurationPersistenceManager implements PersistenceManager {
       return names;
    }
 
-   public ArtifactSubtypeDescriptor getArtifactSubtypeDescriptor(int artTypeId) throws SQLException {
+   public ArtifactType getArtifactSubtypeDescriptor(int artTypeId) throws SQLException {
       return cacheArtifactSubtypeDescriptors.getDescriptor(artTypeId);
    }
 

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -170,7 +170,7 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(branch, FULL, new AttributeValueCriteria(attributeTypeName, attributeValue)).getArtifact();
    }
 
-   public static List<Artifact> getArtifactsFromType(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
+   public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, Branch branch) throws SQLException {
       return new ArtifactQueryBuilder(artifactType, branch, FULL).getArtifacts(null);
    }
 

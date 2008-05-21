@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.factory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks
@@ -43,7 +43,7 @@ public class PolymorphicArtifactFactory extends ArtifactFactory {
    }
 
    public @Override
-   BasicArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   BasicArtifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
       return new BasicArtifact(this, guid, humandReadableId, branch, artifactType);
    }
 
@@ -51,7 +51,7 @@ public class PolymorphicArtifactFactory extends ArtifactFactory {
     * @see org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactory#compatibleWith(org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor)
     */
    @Override
-   protected boolean compatibleWith(ArtifactSubtypeDescriptor descriptor) {
+   protected boolean compatibleWith(ArtifactType descriptor) {
       return true;
    }
 }

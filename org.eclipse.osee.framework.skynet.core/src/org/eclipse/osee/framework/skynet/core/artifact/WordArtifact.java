@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks
@@ -40,7 +40,7 @@ public class WordArtifact extends Artifact {
     * @param branch
     * @throws SQLException
     */
-   public WordArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public WordArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

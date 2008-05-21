@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks
@@ -37,7 +37,7 @@ public class BlamFactory extends ArtifactFactory {
    }
 
    public @Override
-   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   Artifact getArtifactInstance(String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType) {
       if (factoryKey.equals(BlamWorkflow.ARTIFACT_NAME)) {
          return new BlamWorkflow(this, guid, humandReadableId, branch, artifactType);
       }

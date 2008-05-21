@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IArtifactCheck;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -92,7 +92,7 @@ public class AtsArtifactChecks implements IArtifactCheck {
          if (art.getArtifactTypeName().equals("General Document")) {
             String ext = art.getSoleAttributeValue("Extension", "");
             if (ext != null && ext.equals("vue")) {
-               if (art.getRelatedArtifacts(RelationSide.TeamDefinitionToTaskWorkflowDiagram_TeamDefinition).size() > 0) return new Result(
+               if (art.getRelatedArtifacts(CoreRelationEnumeration.TeamDefinitionToTaskWorkflowDiagram_TeamDefinition).size() > 0) return new Result(
                      "Team Workflow selected to delete has related Team Definition(s); Team Definitions to new Team Workflows first.");
             }
          }

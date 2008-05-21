@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Robert A. Fisher
@@ -20,7 +20,7 @@ public interface IRelationLinkChange extends IRevisionChange {
    /**
     * @return Returns the otherArtifactDescriptor.
     */
-   public ArtifactSubtypeDescriptor getOtherArtifactDescriptor();
+   public ArtifactType getOtherArtifactDescriptor();
 
    /**
     * @return Returns the otherArtifactName.

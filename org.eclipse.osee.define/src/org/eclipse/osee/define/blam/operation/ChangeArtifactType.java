@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -58,7 +58,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param descriptor
     * @throws SQLException
     */
-   private void processChange(List<Artifact> artifacts, ArtifactSubtypeDescriptor descriptor) throws Exception {
+   private void processChange(List<Artifact> artifacts, ArtifactType descriptor) throws Exception {
       if (artifacts.isEmpty()) {
          throw new IllegalArgumentException("The artifact list can not be empty");
       }
@@ -83,7 +83,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param descriptor
     * @throws SQLException
     */
-   private void processAttributes(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws SQLException {
+   private void processAttributes(Artifact artifact, ArtifactType descriptor) throws SQLException {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
       Collection<AttributeType> attributeTypes =
@@ -104,13 +104,12 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param artifactType
     * @throws SQLException
     */
-   private void processRelations(Artifact artifact, ArtifactSubtypeDescriptor artifactType) throws SQLException {
+   private void processRelations(Artifact artifact, ArtifactType artifactType) throws SQLException {
       linksToPurge = new LinkedList<RelationLink>();
 
       for (RelationLink link : artifact.getLinkManager().getLinks()) {
          int sideMax =
-               RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getArtifactA().equals(
-                     artifact));
+               RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getSide(artifact));
 
          if (sideMax == 0) {
             linksToPurge.add(link);
@@ -124,7 +123,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @return true if the user acceptes the purging of the attributes and realtions that are not compatable for the new
     *         artifact type else false.
     */
-   private boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactSubtypeDescriptor descriptor) {
+   private boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactType descriptor) {
       if (!linksToPurge.isEmpty() || !attributesToPurge.isEmpty()) {
          ArtifactChangeMessageRunnable messageRunnable = new ArtifactChangeMessageRunnable(artifact, descriptor);
          Displays.ensureInDisplayThread(messageRunnable, true);
@@ -137,9 +136,9 @@ public class ChangeArtifactType extends AbstractBlam {
    private class ArtifactChangeMessageRunnable implements Runnable {
       private boolean accept = false;
       private Artifact artifact;
-      private ArtifactSubtypeDescriptor descriptor;
+      private ArtifactType descriptor;
 
-      public ArtifactChangeMessageRunnable(Artifact artifact, ArtifactSubtypeDescriptor descriptor) {
+      public ArtifactChangeMessageRunnable(Artifact artifact, ArtifactType descriptor) {
          this.artifact = artifact;
          this.descriptor = descriptor;
       }
@@ -169,7 +168,7 @@ public class ChangeArtifactType extends AbstractBlam {
     * @param descriptor
     * @throws SQLException
     */
-   private void changeArtifactType(Artifact artifact, ArtifactSubtypeDescriptor descriptor) throws Exception {
+   private void changeArtifactType(Artifact artifact, ArtifactType descriptor) throws Exception {
       for (Attribute<?> attribute : attributesToPurge) {
          attribute.purge();
       }

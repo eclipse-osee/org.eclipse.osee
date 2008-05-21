@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.workflow.AtsWorkFlowFactory;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 public class AtsDatabaseConfig extends DbInitializationTask {
 
@@ -39,19 +39,19 @@ public class AtsDatabaseConfig extends DbInitializationTask {
       Artifact taskWorkflow =
             ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.DEFAULT_TASK_WORKFLOW,
                   AtsPlugin.getAtsBranch());
-      teamDef.relate(RelationSide.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram, taskWorkflow, true);
+      teamDef.relate(CoreRelationEnumeration.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram, taskWorkflow, true);
 
       // Relate peer to Peer review
       Artifact peerWorkflow =
             ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.PEERTOPEER_REVIEW_WORKFLOW,
                   AtsPlugin.getAtsBranch());
-      teamDef.relate(RelationSide.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram, peerWorkflow, true);
+      teamDef.relate(CoreRelationEnumeration.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram, peerWorkflow, true);
 
       // Relate peer to Peer review
       Artifact decisionWorkflow =
             ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.DECISION_REVIEW_WORKFLOW,
                   AtsPlugin.getAtsBranch());
-      teamDef.relate(RelationSide.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram, decisionWorkflow, true);
+      teamDef.relate(CoreRelationEnumeration.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram, decisionWorkflow, true);
 
       teamDef.persistAttributesAndRelations();
    }

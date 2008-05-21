@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
@@ -42,7 +42,7 @@ public class RendererManager {
    private static final ConfigurationPersistenceManager configurationManager =
          ConfigurationPersistenceManager.getInstance();
    private final HashMap<String, IRenderer> renderers;
-   private HashCollection<ArtifactSubtypeDescriptor, IRenderer> applicableArtifactSubTypes;
+   private HashCollection<ArtifactType, IRenderer> applicableArtifactSubTypes;
 
    private RendererManager() {
       renderers = new HashMap<String, IRenderer>(40);
@@ -78,7 +78,7 @@ public class RendererManager {
 
                      String applicableArtifactSubType = element.getAttribute("ApplicableArtifactSubtype");
                      if (applicableArtifactSubType != null) {
-                        ArtifactSubtypeDescriptor artifactSubtype =
+                        ArtifactType artifactSubtype =
                               configurationManager.getArtifactSubtypeDescriptor(applicableArtifactSubType);
                         applicableArtifactSubTypes.put(artifactSubtype, renderer);
                      }

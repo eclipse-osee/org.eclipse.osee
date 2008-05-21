@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.user.UserEnum;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -53,9 +53,9 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
     * @param branch
     * @throws SQLException
     */
-   public TaskArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public TaskArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMARelation(RelationSide.SmaToTask_Sma);
+      registerSMARelation(CoreRelationEnumeration.SmaToTask_Sma);
    }
 
    /*
@@ -134,7 +134,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    @Override
    public StateMachineArtifact getParentSMA() throws SQLException {
-      Collection<StateMachineArtifact> smas = getArtifacts(RelationSide.SmaToTask_Sma, StateMachineArtifact.class);
+      Collection<StateMachineArtifact> smas = getArtifacts(CoreRelationEnumeration.SmaToTask_Sma, StateMachineArtifact.class);
       if (smas.size() > 0) return smas.iterator().next();
       return null;
    }

@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -61,7 +61,7 @@ public class GroupWorldSearchItem extends WorldSearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       getProduct();
       if (getSearchGroup() == null) return EMPTY_SET;
-      Collection<Artifact> arts = getSearchGroup().getRelatedArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS);
+      Collection<Artifact> arts = getSearchGroup().getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS);
       if (cancelled) return EMPTY_SET;
       return arts;
    }

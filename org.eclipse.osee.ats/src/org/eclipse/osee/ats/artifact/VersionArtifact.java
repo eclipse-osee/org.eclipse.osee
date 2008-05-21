@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 
@@ -34,12 +34,12 @@ public class VersionArtifact extends BasicArtifact {
       Released, UnReleased, Both
    };
 
-   public VersionArtifact(ArtifactFactory parentFactory, String guid, String humandReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public VersionArtifact(ArtifactFactory parentFactory, String guid, String humandReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humandReadableId, branch, artifactType);
    }
 
    public TeamDefinitionArtifact getParentTeamDefinition() throws SQLException {
-      return getArtifacts(RelationSide.TeamDefinitionToVersion_TeamDefinition, TeamDefinitionArtifact.class).iterator().next();
+      return getArtifacts(CoreRelationEnumeration.TeamDefinitionToVersion_TeamDefinition, TeamDefinitionArtifact.class).iterator().next();
    }
 
    public Boolean isReleased() throws IllegalStateException, SQLException, MultipleAttributesExist {
@@ -79,7 +79,7 @@ public class VersionArtifact extends BasicArtifact {
    }
 
    public Collection<TeamWorkFlowArtifact> getTargetedForTeamArtifacts() throws SQLException {
-      return getArtifacts(RelationSide.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class);
+      return getArtifacts(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class);
    }
 
    public String getFullDisplayName() throws SQLException, MultipleAttributesExist {

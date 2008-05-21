@@ -20,9 +20,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -56,24 +57,28 @@ public class ArtifactDragDropSupport {
    }
 
    private static void ensureLinkValidity(RelationLinkGroup group, Artifact artifact) throws SQLException {
-      boolean sideA = group.isSideA();
-      RelationType linkDescriptor = group.getDescriptor();
-      LinkManager linkManager = group.getLinkManager();
-      linkManager.ensureLinkValidity(linkDescriptor, sideA, artifact);
+      RelationType relationType = group.getDescriptor();
+      Artifact otherArtifact = group.getLinkManager().getOwningArtifact();
+
+      Artifact artifactA = group.getSide() == RelationSide.SIDE_A ? artifact : otherArtifact;
+      Artifact artifactB = group.getSide() == RelationSide.SIDE_A ? otherArtifact : artifact;
+      RelationManager.ensureRelationCanBeAdded(relationType, artifactA, artifactB);
    }
 
    private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) throws SQLException {
       RelationLinkGroup group = window.getRelationGroup();
-      boolean sideA = group.isSideA();
-      RelationType linkDescriptor = group.getDescriptor();
-      LinkManager linkManager = group.getLinkManager();
+      RelationSide relationSide = group.isSideA() ? RelationSide.SIDE_A : RelationSide.SIDE_B;
+      RelationType relationType = group.getDescriptor();
 
       try {
-         linkManager.ensureHalfLinksValidity(linkDescriptor, !sideA, artifacts.length);
+         RelationManager.ensureSideWillSupport(group.getLinkManager().getOwningArtifact(), relationType,
+               relationSide.oppositeSide(), artifacts[0].getArtifactType(), artifacts.length);
 
          for (Artifact artifact : artifacts) {
             try {
-               linkManager.ensureLinkValidity(linkDescriptor, sideA, artifact);
+               RelationManager.ensureSideWillSupport(artifact, relationType, relationSide,
+                     group.getLinkManager().getOwningArtifact().getArtifactType(), artifacts.length);
+
                window.addValid(artifact);
             } catch (IllegalArgumentException ex) {
                window.addInvalidArtifact(artifact, ex.getMessage());

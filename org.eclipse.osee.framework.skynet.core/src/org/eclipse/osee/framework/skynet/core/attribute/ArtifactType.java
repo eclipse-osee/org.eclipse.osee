@@ -46,7 +46,7 @@ import org.eclipse.swt.graphics.Image;
  * @see org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager
  * @author Robert A. Fisher
  */
-public class ArtifactSubtypeDescriptor implements Serializable, Comparable<ArtifactSubtypeDescriptor> {
+public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    private static final long serialVersionUID = 1L;
    private static final ImageDescriptor favorite = SkynetActivator.getInstance().getImageDescriptor("favorite.gif");
    private static final ImageDescriptor subscribed = SkynetActivator.getInstance().getImageDescriptor("subscribed.gif");
@@ -87,7 +87,7 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
    transient private ImageRegistry imageRegistry;
    transient private InputStreamImageDescriptor imageDescriptor;
 
-   protected ArtifactSubtypeDescriptor(ArtifactSubtypeDescriptorCache artifactTypeCache, int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, InputStreamImageDescriptor imageDescriptor) {
+   protected ArtifactType(ArtifactSubtypeDescriptorCache artifactTypeCache, int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, InputStreamImageDescriptor imageDescriptor) {
       this.artTypeId = artTypeId;
       this.factory = factory;
       this.name = name;
@@ -106,7 +106,7 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * @return Return artifact reference
     * @throws SQLException
     * @throws OseeCoreException
-    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor)
+    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
    public Artifact makeNewArtifact(Branch branch) throws SQLException, OseeCoreException {
@@ -122,7 +122,7 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
     * @return Return artifact reference
     * @throws SQLException
     * @throws OseeCoreException
-    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactSubtypeDescriptor, String, String, ArtifactProcessor)
+    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
    public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws SQLException, OseeCoreException {
@@ -348,7 +348,7 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
    /* (non-Javadoc)
     * @see java.lang.Comparable#compareTo(java.lang.Object)
     */
-   public int compareTo(ArtifactSubtypeDescriptor artifactType) {
+   public int compareTo(ArtifactType artifactType) {
       if (artifactType == null) {
          return -1;
       }
@@ -375,7 +375,7 @@ public class ArtifactSubtypeDescriptor implements Serializable, Comparable<Artif
       if (this == obj) return true;
       if (obj == null) return false;
       if (getClass() != obj.getClass()) return false;
-      final ArtifactSubtypeDescriptor other = (ArtifactSubtypeDescriptor) obj;
+      final ArtifactType other = (ArtifactType) obj;
       if (name == null) {
          if (other.name != null) return false;
       } else if (!name.equals(other.name)) return false;

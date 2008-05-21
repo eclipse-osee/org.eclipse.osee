@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.OrphanArtifactSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
@@ -43,7 +43,7 @@ public class OrphanSearchFilter extends SearchFilter {
       try {
          for (String typeName : searchTypeList.getList().getSelection()) {
 
-            ArtifactSubtypeDescriptor artifactType =
+            ArtifactType artifactType =
                   ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(typeName);
 
             ISearchPrimitive primitive = new OrphanArtifactSearch(artifactType);

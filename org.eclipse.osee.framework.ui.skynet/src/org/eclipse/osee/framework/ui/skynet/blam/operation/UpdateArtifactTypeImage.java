@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.io.File;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -48,7 +48,7 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
                   AWorkbench.popup("ERROR", "Invalid image filename.");
                   return;
                }
-               ArtifactSubtypeDescriptor artifactSubtypeDescriptor =
+               ArtifactType artifactSubtypeDescriptor =
                      variableMap.getArtifactSubtypeDescriptor("Select Artifact Type");
                if (!MessageDialog.openConfirm(
                      Display.getCurrent().getActiveShell(),

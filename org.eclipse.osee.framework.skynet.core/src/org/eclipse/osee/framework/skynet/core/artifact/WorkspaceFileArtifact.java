@@ -16,7 +16,7 @@ import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -35,20 +35,20 @@ public class WorkspaceFileArtifact extends Artifact {
     * @param branch
     * @throws SQLException
     */
-   public WorkspaceFileArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactSubtypeDescriptor artifactType) {
+   public WorkspaceFileArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws SQLException, OseeCoreException {
       Artifact artifact = null;
       int descriptorSelected = -1;
-      ArtifactSubtypeDescriptor descriptor = null;
+      ArtifactType descriptor = null;
       ArtifactDescriptorDialog dialog = null;
 
       try {
          artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, branchManager.getDefaultBranch());
       } catch (ArtifactDoesNotExist ex) {
-         Collection<ArtifactSubtypeDescriptor> descriptors =
+         Collection<ArtifactType> descriptors =
                ConfigurationPersistenceManager.getInstance().getArtifactTypesFromAttributeType(
                      AttributeTypeManager.getType("Content URL"));
          dialog =

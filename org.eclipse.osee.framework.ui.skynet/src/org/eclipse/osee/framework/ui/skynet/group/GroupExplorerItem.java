@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -114,7 +114,7 @@ public class GroupExplorerItem implements IEventReceiver {
          for (GroupExplorerItem item : getGroupItems()) {
             removeGroupItem(item);
          }
-         for (Artifact art : artifact.getRelatedArtifacts(RelationSide.UNIVERSAL_GROUPING__MEMBERS)) {
+         for (Artifact art : artifact.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
             addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
          }
       } catch (SQLException ex) {

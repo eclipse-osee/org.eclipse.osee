@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -61,7 +61,7 @@ public class UniversalGroup {
             throw new IllegalStateException("Could not create top universal group artifact.");
          }
       }
-      groupRoot.relate(RelationSide.UNIVERSAL_GROUPING__MEMBERS, groupArt, true);
+      groupRoot.relate(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, groupArt, true);
       return groupArt;
    }
 

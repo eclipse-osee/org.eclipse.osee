@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -35,7 +35,7 @@ public class ArtifactImportJob extends Job {
    private static final ConfigurationPersistenceManager configurationManager =
          ConfigurationPersistenceManager.getInstance();
    private final File file;
-   private final ArtifactSubtypeDescriptor folderDescriptor;
+   private final ArtifactType folderDescriptor;
    private final IArtifactImportResolver artifactResolver;
    private ArtifactExtractor extractor;
    private final ArrayList<RoughArtifact> roughArtifacts;

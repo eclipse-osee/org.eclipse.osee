@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Robert A. Fisher
@@ -37,8 +37,8 @@ public class RoughArtifact {
    private Collection<RoughArtifact> children;
    private String guid;
    private String humandReadableId;
-   private ArtifactSubtypeDescriptor headingDescriptor;
-   private ArtifactSubtypeDescriptor primaryDescriptor;
+   private ArtifactType headingDescriptor;
+   private ArtifactType primaryDescriptor;
    private boolean forcePrimaryType;
    private HashMap<String, File> fileAttributes;
    private final Branch branch;
@@ -211,7 +211,7 @@ public class RoughArtifact {
       return realArtifact;
    }
 
-   public ArtifactSubtypeDescriptor getDescriptorForGetReal() {
+   public ArtifactType getDescriptorForGetReal() {
       return children.isEmpty() || forcePrimaryType ? primaryDescriptor : headingDescriptor;
    }
 
@@ -251,14 +251,14 @@ public class RoughArtifact {
    /**
     * @param headingDescriptor The headingDescriptor to set.
     */
-   public void setHeadingDescriptor(ArtifactSubtypeDescriptor headingDescriptor) {
+   public void setHeadingDescriptor(ArtifactType headingDescriptor) {
       this.headingDescriptor = headingDescriptor;
    }
 
    /**
     * @param primaryDescriptor The leafDescriptor to set.
     */
-   public void setPrimaryDescriptor(ArtifactSubtypeDescriptor primaryDescriptor) {
+   public void setPrimaryDescriptor(ArtifactType primaryDescriptor) {
       this.primaryDescriptor = primaryDescriptor;
    }
 

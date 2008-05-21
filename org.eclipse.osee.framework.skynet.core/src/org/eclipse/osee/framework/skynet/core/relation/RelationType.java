@@ -60,8 +60,8 @@ public class RelationType implements Comparable<RelationType> {
       return typeName;
    }
 
-   public String getSideName(boolean sideA) {
-      return sideA ? sideAName : sideBName;
+   public String getSideName(RelationSide relationSide) {
+      return relationSide == RelationSide.SIDE_A ? sideAName : sideBName;
    }
 
    /**

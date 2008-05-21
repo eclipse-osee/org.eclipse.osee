@@ -13,7 +13,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
@@ -57,7 +57,7 @@ public class DemoDbImportReqsTx extends AbstractSkynetTxTemplate {
 
       File file = OseeAtsConfigDemoPlugin.getInstance().getPluginFile(filename);
       IArtifactImportResolver artifactResolver = new NewArtifactImportResolver();
-      ArtifactSubtypeDescriptor mainDescriptor =
+      ArtifactType mainDescriptor =
             ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(requirementArtifactName);
       ArtifactExtractor extractor =
             new WordOutlineExtractor(mainDescriptor, branch, 0, new GeneralWordOutlineHandler());

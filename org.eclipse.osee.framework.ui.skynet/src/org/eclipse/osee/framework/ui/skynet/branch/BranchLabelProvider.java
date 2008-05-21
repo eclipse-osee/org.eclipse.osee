@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
@@ -121,7 +121,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          return SkynetGuiPlugin.getInstance().getImage("transaction.gif");
 
       } else if (element instanceof RelationLinkChange && columnIndex == 2) {
-         ArtifactSubtypeDescriptor descriptor = ((RelationLinkChange) element).getOtherArtifactDescriptor();
+         ArtifactType descriptor = ((RelationLinkChange) element).getOtherArtifactDescriptor();
          if (descriptor == null)
             return null;
          else

@@ -22,10 +22,9 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactSubtypeDescriptor;
+import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks
@@ -39,17 +38,15 @@ public class RelationTypeManager {
    private static final String INSERT_VALID_RELATION =
          "INSERT INTO osee_define_valid_relations (art_type_id, rel_link_type_id, side_a_max, side_b_max, branch_id) VALUES (?, ?, ?, ?, ?)";
 
-   private final HashMap<String, RelationType> nameToTypeMap;
-   private final HashMap<Integer, RelationType> idToTypeMap;
-   private final CompositeKeyHashMap<Integer, Integer, Pair<Integer, Integer>> validityMap;
+   private final HashMap<String, RelationType> nameToTypeMap = new HashMap<String, RelationType>();
+   private final HashMap<Integer, RelationType> idToTypeMap = new HashMap<Integer, RelationType>();
+   private final CompositeKeyHashMap<Integer, Integer, ObjectPair<Integer, Integer>> validityMap =
+         new CompositeKeyHashMap<Integer, Integer, ObjectPair<Integer, Integer>>(300);
 
    private static final String SELECT_LINK_VALIDITY = "SELECT * FROM osee_define_valid_relations";
    private static final RelationTypeManager instance = new RelationTypeManager();
 
    private RelationTypeManager() {
-      this.nameToTypeMap = new HashMap<String, RelationType>();
-      this.idToTypeMap = new HashMap<Integer, RelationType>();
-      this.validityMap = new CompositeKeyHashMap<Integer, Integer, Pair<Integer, Integer>>();
    }
 
    /**
@@ -70,7 +67,7 @@ public class RelationTypeManager {
       return new ArrayList<RelationType>(idToTypeMap.values());
    }
 
-   public static List<RelationType> getValidTypes(ArtifactSubtypeDescriptor artifactType, Branch branch) throws SQLException {
+   public static List<RelationType> getValidTypes(ArtifactType artifactType, Branch branch) throws SQLException {
       return new ArrayList<RelationType>(instance.idToTypeMap.values());
    }
 
@@ -140,49 +137,13 @@ public class RelationTypeManager {
       loadLinkValidities();
    }
 
-   public static int getRelationSideMax(RelationType relationType, ArtifactSubtypeDescriptor artifactType, boolean sideA) {
-
-      int value = 0;
-
-      Pair<Integer, Integer> pair =
+   public static int getRelationSideMax(RelationType relationType, ArtifactType artifactType, RelationSide relationSide) {
+      ObjectPair<Integer, Integer> pair =
             instance.validityMap.get(relationType.getRelationTypeId(), artifactType.getArtTypeId());
-      if (pair != null) {
-         if (sideA) {
-            value = pair.getKey();
-         } else {
-            value = pair.getValue();
-         }
+      if (pair == null) {
+         return 0;
       }
-      return value;
-   }
-
-   /**
-    * ensure that the given artifact can be added to the specified side of a new link of this type
-    * 
-    * @throws SQLException
-    */
-   public static void ensureSideWillSupportArtifact(RelationType relationType, boolean sideA, Artifact artifact, int artifactCount) throws SQLException {
-      ensurePopulated();
-      int maxCount = getRelationSideMax(relationType, artifact.getArtifactType(), sideA);
-      RelationLinkGroup group = artifact.getLinkManager().getSideGroup(relationType, !sideA);
-
-      // if the artifact does not belong on that side at all
-      if (maxCount == 0) {
-         throw new IllegalArgumentException(String.format(
-               "Artifact \"%s\" of type \"%s\" does not belong on side \"%s\" of relation \"%s\"",
-               artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationType.getSideName(sideA),
-               relationType.getTypeName()));
-      } else if (group == null) {
-         // obviously the current link count is zero, so this side will support a new link
-      }
-      // the artifact is allowed and a group exists, so check if there is space for another link.
-      else if (group.getLinkCount() + 1 > maxCount) {
-         throw new IllegalArgumentException(
-               String.format(
-                     "Artifact \"%s\" of type \"%s\" can not be added to side \"%s\" of relation \"%s\" because doing so would exceed the side maximum of %d for this artifact type",
-                     artifact.getDescriptiveName(), artifact.getArtifactTypeName(), relationType.getSideName(sideA),
-                     relationType.getTypeName(), maxCount));
-      }
+      return relationSide == RelationSide.SIDE_A ? pair.object1 : pair.object2;
    }
 
    private void loadLinkValidities() throws SQLException {
@@ -194,8 +155,8 @@ public class RelationTypeManager {
 
          while (rset.next()) {
 
-            validityMap.put(rset.getInt("rel_link_type_id"), rset.getInt("art_type_id"), new Pair<Integer, Integer>(
-                  rset.getInt("side_a_max"), rset.getInt("side_b_max")));
+            validityMap.put(rset.getInt("rel_link_type_id"), rset.getInt("art_type_id"),
+                  new ObjectPair<Integer, Integer>(rset.getInt("side_a_max"), rset.getInt("side_b_max")));
 
             //            if (relationType == null || relationType.getRelationTypeId() != rset.getInt("rel_link_type_id")) {
             //               relationType = getType(rset.getInt("rel_link_type_id"));
@@ -260,7 +221,7 @@ public class RelationTypeManager {
     * @param sideBMax
     * @throws SQLException
     */
-   public static void createRelationLinkValidity(Branch branch, ArtifactSubtypeDescriptor artifactType, RelationType relationType, int sideAMax, int sideBMax) throws SQLException {
+   public static void createRelationLinkValidity(Branch branch, ArtifactType artifactType, RelationType relationType, int sideAMax, int sideBMax) throws SQLException {
       if (sideAMax < 0) throw new IllegalArgumentException("The sideAMax can no be negative");
       if (sideBMax < 0) throw new IllegalArgumentException("The sideBMax can no be negative");
 
@@ -271,7 +232,7 @@ public class RelationTypeManager {
          ConnectionHandler.runPreparedUpdate(INSERT_VALID_RELATION, SQL3DataType.INTEGER, artTypeId,
                SQL3DataType.INTEGER, relLinkTypeId, SQL3DataType.INTEGER, sideAMax, SQL3DataType.INTEGER, sideBMax,
                SQL3DataType.INTEGER, branch.getBranchId());
-         instance.validityMap.put(relLinkTypeId, artTypeId, new Pair<Integer, Integer>(sideAMax, sideBMax));
+         instance.validityMap.put(relLinkTypeId, artTypeId, new ObjectPair<Integer, Integer>(sideAMax, sideBMax));
       }
    }
 }

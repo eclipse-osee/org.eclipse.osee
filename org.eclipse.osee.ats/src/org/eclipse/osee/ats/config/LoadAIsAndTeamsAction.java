@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -227,7 +227,7 @@ public class LoadAIsAndTeamsAction extends Action {
 
             if (teamDefArt != null) {
                for (Artifact actionableItem : actionableItems) {
-                  teamDefArt.addRelation(RelationSide.TeamActionableItem_ActionableItem, actionableItem, null);
+                  teamDefArt.addRelation(CoreRelationEnumeration.TeamActionableItem_ActionableItem, actionableItem, null);
                }
                teamDefArt.persistRelations();
             }
@@ -245,7 +245,7 @@ public class LoadAIsAndTeamsAction extends Action {
             Artifact workflowArt =
                   ArtifactQuery.getArtifactFromTypeAndName(WorkflowDiagramFactory.GENERAL_DOCUMENT_ARTIFACT_NAME,
                         workflowId, AtsPlugin.getAtsBranch());
-            teamDefArt.addRelation(RelationSide.TeamDefinitionToWorkflowDiagram_WorkflowDiagram, workflowArt, null);
+            teamDefArt.addRelation(CoreRelationEnumeration.TeamDefinitionToWorkflowDiagram_WorkflowDiagram, workflowArt, null);
          }
 
          teamDefArt.persistAttributesAndRelations();
@@ -297,7 +297,7 @@ public class LoadAIsAndTeamsAction extends Action {
                aia.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, staticId);
             }
             for (User user : leads) {
-               aia.addRelation(RelationSide.TeamLead_Lead, user, null);
+               aia.addRelation(CoreRelationEnumeration.TeamLead_Lead, user, null);
             }
 
             aia.persistAttributes();

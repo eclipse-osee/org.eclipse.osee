@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.world.search;
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Donald G. Dunne
@@ -35,7 +35,7 @@ public class MyFavoritesSearchItem extends UserSearchItem {
 
    @Override
    protected Collection<Artifact> searchIt(User user) throws Exception {
-      return user.getRelatedArtifacts(RelationSide.FavoriteUser_Artifact);
+      return user.getRelatedArtifacts(CoreRelationEnumeration.FavoriteUser_Artifact);
    }
 
    @Override
