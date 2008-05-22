@@ -183,9 +183,9 @@ public final class ArtifactLoader {
                         new RelationLink(aArtifactId, bArtifactId, branch, branch, relationType, relationId, gammaId,
                               rationale, aOrderValue, bOrderValue);
 
-                  RelationManager.manageRelation(relation, RelationSide.SIDE_A);
-                  RelationManager.manageRelation(relation, RelationSide.SIDE_B);
                }
+               RelationManager.manageRelation(relation, RelationSide.SIDE_A);
+               RelationManager.manageRelation(relation, RelationSide.SIDE_B);
             }
          } finally {
             DbUtil.close(chStmt);
@@ -195,11 +195,6 @@ public final class ArtifactLoader {
       if (otherSideLoadLevel != SHALLOW) {
          // bulk load any artifacts needed for these links (this checks the cache first)
          new ArtifactQueryBuilder(artifactIdsToLoad, branch, false, otherSideLoadLevel).getArtifacts(null);
-      }
-
-      // must do this before calling relation.loadArtifacts so it will not skip over these artifacts
-      for (Artifact artifact : artifactsNeedingRelations) {
-         artifact.setLinksLoaded();
       }
    }
 

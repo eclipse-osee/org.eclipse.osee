@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
  * @author Ryan D. Brooks
  */
 public class RelationManager {
-   // the branch is accounted for because Artifact.equals 
+   // the branch is accounted for because Artifact.equals includes the branch in the comparison
    private static final CompositeKeyHashMap<Artifact, RelationType, List<RelationLink>> relations =
          new CompositeKeyHashMap<Artifact, RelationType, List<RelationLink>>(1024);
 
@@ -82,7 +82,7 @@ public class RelationManager {
    public static void manageRelation(RelationLink relation, RelationSide relationSide) {
       Artifact artifact = ArtifactCache.get(relation.getArtifactId(relationSide), relation.getBranch(relationSide));
 
-      if (artifact != null) {
+      if (artifact != null && !artifact.isLinksLoaded()) {
          List<RelationLink> artifactsRelations = artifactToRelations.get(artifact);
          if (artifactsRelations == null) {
             artifactsRelations = Collections.synchronizedList(new ArrayList<RelationLink>(4));
@@ -102,6 +102,8 @@ public class RelationManager {
             }
          }
          selectedRelations.add(relation);
+
+         artifact.setLinksLoaded();
       }
    }
 

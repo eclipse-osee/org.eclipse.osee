@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 
 /**
  * @author Jeff C. Phillips
+ * @author Ryan D. Brooks
  */
 public class RelationLink {
    private int relationId;
@@ -58,14 +59,6 @@ public class RelationLink {
    public RelationLink(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale) {
       this(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(), bArtifact.getBranch(), relationType, 0,
             0, rationale, 0, 0);
-   }
-
-   @Deprecated
-   public Artifact getOtherSideAritfactIfAvailable(Artifact artifact) {
-      if (artifact == artA) {
-         return artB;
-      }
-      return artA;
    }
 
    public RelationSide getSide(Artifact artifact) {

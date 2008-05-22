@@ -17,11 +17,10 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -66,13 +65,12 @@ public class RelationMatrixExportJob extends ReportJob {
    private void saveRelationsForColumn(Artifact columnArtifact, int columnIndex) throws SQLException, MultipleAttributesExist, ArtifactDoesNotExist {
       header[columnIndex] = columnArtifact.getDescriptiveName();
 
-      for (ObjectPair<Artifact, String> relation : RelationManager.getRelations(columnArtifact, relationType)) {
-         String[] row = getAssociatedRow(relation.object1);
-         String rationale = relation.object2;
-         if (rationale == null || rationale.trim().equals("")) {
+      for (RelationLink relation : columnArtifact.getRelations(relationType)) {
+         String[] row = getAssociatedRow(relation.getArtifactOnOtherSide(columnArtifact));
+         if (relation.getRationale().equals("")) {
             row[columnIndex] = "X";
          } else {
-            row[columnIndex] = rationale;
+            row[columnIndex] = relation.getRationale();
          }
       }
    }
