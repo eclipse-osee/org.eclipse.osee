@@ -26,8 +26,8 @@ import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
+import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor.AcquireResult;
 
 /**
@@ -43,10 +43,10 @@ class RemoteSnapshotManager {
       ArtifactSnapshot toReturn = null;
       ObjectInputStream objectInputStream = null;
       try {
-         AcquireResult result = HttpProcessor.acquire(getAcquireURL(key));
-         byte[] data = result.getData();
-         if (data != null) {
-            objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         AcquireResult result = HttpProcessor.acquire(getAcquireURL(key), outputStream);
+         if (result.wasSuccessful()) {
+            objectInputStream = new ObjectInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
             Object object = objectInputStream.readObject();
 
             toReturn = (ArtifactSnapshot) object;
