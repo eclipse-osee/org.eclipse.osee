@@ -14,8 +14,10 @@ import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DEL
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -47,7 +49,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
    private static final AccessControlManager accessControlManager = AccessControlManager.getInstance();
    private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
    private static final String DIFF_ARTIFACT = "DIFF_ARTIFACT";
-   private List<ArtifactChange> mySelectedArtifactChangeList;
+   private Map<Integer, ArtifactChange> artifactChangeMap = new HashMap<Integer, ArtifactChange>();
 
    public ViewWordChangeReportHandler() {
    }
@@ -59,20 +61,17 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
     */
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(mySelectedArtifactChangeList.size());
-      ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(mySelectedArtifactChangeList.size());
-      ArtifactChange selectedItem = null;
+      ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>(artifactChangeMap.size());
+      ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>(artifactChangeMap.size());
 
-      for (int i = 0; i < mySelectedArtifactChangeList.size(); i++) {
-         selectedItem = mySelectedArtifactChangeList.get(i);
-
+      for (ArtifactChange artifactChange : artifactChangeMap.values()) {
          try {
             Artifact baseArtifact =
-                  selectedItem.getModType() == NEW ? null : artifactManager.getArtifactFromId(
-                        selectedItem.getArtifact().getArtId(), selectedItem.getBaselineTransactionId());
+                  artifactChange.getModType() == NEW ? null : artifactManager.getArtifactFromId(
+                        artifactChange.getArtifact().getArtId(), artifactChange.getBaselineTransactionId());
             Artifact newerArtifact =
-                  selectedItem.getModType() == DELETED ? null : artifactManager.getArtifactFromId(
-                        selectedItem.getArtifact().getArtId(), selectedItem.getToTransactionId());
+                  artifactChange.getModType() == DELETED ? null : artifactManager.getArtifactFromId(
+                        artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId());
 
             baseArtifacts.add(baseArtifact);
             newerArtifacts.add(newerArtifact);
@@ -80,6 +79,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             OSEELog.logException(getClass(), e1, true);
          }
       }
+
       if (newerArtifacts.size() == 0 || (baseArtifacts.size() != newerArtifacts.size())) {
          throw new IllegalArgumentException(
                "base artifacts size: " + baseArtifacts.size() + " must match newer artifacts size: " + newerArtifacts.size() + ".");
@@ -97,8 +97,12 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
             WordRenderer renderer =
                   (WordRenderer) RendererManager.getInstance().getRendererById(WordRenderer.WORD_RENDERER_EXTENSION);
             try {
-               renderer.compareArtifacts(baseArtifacts, newerArtifacts, DIFF_ARTIFACT, null,
-                     selectedItem.getBaselineTransactionId().getBranch());
+               renderer.compareArtifacts(
+                     baseArtifacts,
+                     newerArtifacts,
+                     DIFF_ARTIFACT,
+                     null,
+                     baseArtifacts.get(0) == null ? newerArtifacts.get(0).getBranch() : baseArtifacts.get(0).getBranch());
             } catch (CoreException ex) {
                OSEELog.logException(getClass(), ex, true);
             } catch (Exception ex) {
@@ -124,10 +128,12 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-            mySelectedArtifactChangeList = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
+            List<ArtifactChange> artifactChanges =
+                  Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
 
-            for (ArtifactChange artifactChange : mySelectedArtifactChangeList) {
+            for (ArtifactChange artifactChange : artifactChanges) {
                artifacts.add(artifactChange.getArtifact());
+               artifactChangeMap.put(artifactChange.getArtifact().getArtId(), artifactChange);
             }
             isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
          }
