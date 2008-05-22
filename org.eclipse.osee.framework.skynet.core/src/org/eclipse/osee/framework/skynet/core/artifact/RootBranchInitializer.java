@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-
 /**
  * @author Roberto E. Escobar
  */
@@ -23,12 +22,12 @@ class RootBranchInitializer {
     */
    protected void initialize(Branch branch) throws Exception {
       // Create necessary default hierarchy root artifact
-      ArtifactPersistenceManager.getInstance().getDefaultHierarchyRootArtifact(branch, true);
+      ArtifactPersistenceManager.getDefaultHierarchyRootArtifact(branch, true);
 
       // Create necessary top universal group artifact
       UniversalGroup.createTopUniversalGroupArtifact(branch);
 
       // Add default Word templates needed
-//      TemplateInitializer.addFunctionality(branch);
+      //      TemplateInitializer.addFunctionality(branch);
    }
 }
