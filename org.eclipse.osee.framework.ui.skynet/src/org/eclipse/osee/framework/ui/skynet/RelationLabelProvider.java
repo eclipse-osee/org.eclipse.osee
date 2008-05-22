@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.text.NumberFormat;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -18,21 +17,17 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Ryan D. Brooks
  */
 public class RelationLabelProvider implements ITableLabelProvider, ILabelProvider {
-   private static NumberFormat numberFormat = NumberFormat.getNumberInstance();
    private static Image RELATION_IMAGE = SkynetGuiPlugin.getInstance().getImage("relate.gif");
    private Artifact artifact;
 
-   /**
-    * 
-    */
    public RelationLabelProvider(Artifact artifact) {
-      super();
       this.artifact = artifact;
    }
 
@@ -45,8 +40,12 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       if (element instanceof RelationType && columnIndex == 0) {
          return RELATION_IMAGE;
       } else if (element instanceof RelationLink && columnIndex == 0) {
-         RelationLink link = (RelationLink) element;
-         return (link.getArtifactA() == artifact) ? link.getArtifactB().getArtifactType().getImage() : link.getArtifactA().getArtifactType().getImage();
+         RelationLink relation = (RelationLink) element;
+         try {
+            return relation.getArtifactOnOtherSide(artifact).getArtifactType().getImage();
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         }
       }
       return null;
    }
@@ -57,7 +56,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
     */
    public String getColumnText(Object element, int columnIndex) {
-      if (element instanceof RelationLinkGroup) {
+      if (element instanceof RelationLinkGroup && columnIndex == 0) {
          if (columnIndex == 0) return ((RelationLinkGroup) element).toString();
       } else if (element instanceof RelationType) {
          if (columnIndex == 0) return ((RelationType) element).getTypeName();
@@ -65,11 +64,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          RelationLink link = (RelationLink) element;
          if (columnIndex == 0)
             return (link.getArtifactA() == artifact) ? link.getArtifactB().getDescriptiveName() : link.getArtifactA().getDescriptiveName();
-         else if (columnIndex == 1)
-            return link.getRationale();
-         else if (columnIndex == 2) return (link.getArtifactA() == artifact) ? numberFormat.format(link.getAOrder()) : numberFormat.format(link.getBOrder());
-      } else {
-         throw new IllegalArgumentException("wrong type: " + element.getClass().getName());
+         else if (columnIndex == 1) return link.getRationale();
       }
       return "";
    }
@@ -109,10 +104,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    }
 
    public Image getImage(Object element) {
-      if (element instanceof RelationType) {
-         return RELATION_IMAGE;
-      }
-      return null;
+      return getColumnImage(element, 0);
    }
 
    public String getText(Object element) {
