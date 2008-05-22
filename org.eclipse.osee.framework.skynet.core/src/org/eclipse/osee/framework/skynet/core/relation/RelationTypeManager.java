@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -68,7 +69,18 @@ public class RelationTypeManager {
    }
 
    public static List<RelationType> getValidTypes(ArtifactType artifactType, Branch branch) throws SQLException {
-      return new ArrayList<RelationType>(instance.idToTypeMap.values());
+      Collection<RelationType> relationTypes = instance.idToTypeMap.values();
+      List<RelationType> validRelationTypes = new ArrayList<RelationType>();
+      for (RelationType relationType : relationTypes) {
+         int sideAMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_A);
+         int sideBMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_B);
+         boolean onSideA = sideBMax > 0;
+         boolean onSideB = sideAMax > 0;
+         if (onSideA || onSideB) {
+            validRelationTypes.add(relationType);
+         }
+      }
+      return validRelationTypes;
    }
 
    public static RelationType getType(int relationTypeId) throws SQLException {

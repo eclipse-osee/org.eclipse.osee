@@ -11,12 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 public interface IRelationEnumeration {
    boolean isSideA();
 
-   String getSideName(Branch branch) throws SQLException;
+   String getSideName() throws SQLException;
 
    public String getTypeName();
 

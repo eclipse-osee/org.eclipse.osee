@@ -126,7 +126,14 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
       return sideA;
    }
 
+   /**
+    * @deprecated Use {@link #getSideName()} instead
+    */
    public String getSideName(Branch branch) throws SQLException {
+      return getSideName();
+   }
+
+   public String getSideName() throws SQLException {
       if (isSideA())
          return getRelationType().getSideAName();
       else

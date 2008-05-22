@@ -128,7 +128,7 @@ public class LinkManager {
       RelationType relationType = side.getRelationType();
       if (relationType == null) {
          throw new IllegalStateException(String.format("Relation Type was null for %s and %s on branch %s",
-               side.getTypeName(), side.getSideName(artifact.getBranch()), getOwningArtifact().getBranch()));
+               side.getTypeName(), side.getSideName(), getOwningArtifact().getBranch()));
       } else {
          return getSideGroup(relationType, side.isSideA());
       }
