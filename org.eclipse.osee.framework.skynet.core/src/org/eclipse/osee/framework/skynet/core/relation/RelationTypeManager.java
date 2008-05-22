@@ -151,18 +151,10 @@ public class RelationTypeManager {
       try {
          chStmt = ConnectionHandler.runPreparedQuery(2000, SELECT_LINK_VALIDITY);
          ResultSet rset = chStmt.getRset();
-         RelationType relationType = null;
 
          while (rset.next()) {
-
             validityMap.put(rset.getInt("rel_link_type_id"), rset.getInt("art_type_id"),
                   new ObjectPair<Integer, Integer>(rset.getInt("side_a_max"), rset.getInt("side_b_max")));
-
-            //            if (relationType == null || relationType.getRelationTypeId() != rset.getInt("rel_link_type_id")) {
-            //               relationType = getType(rset.getInt("rel_link_type_id"));
-            //            }
-            //            relationType.setLinkSideRestriction(rset.getInt("art_type_id"), new LinkSideRestriction(
-            //                  rset.getInt("side_a_max"), rset.getInt("side_b_max")));
          }
       } finally {
          DbUtil.close(chStmt);

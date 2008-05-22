@@ -241,10 +241,12 @@ public class RelationLink {
       }
    }
 
+   @Deprecated
    public void swapAOrder(RelationLink link) {
       swapOrder(link, true);
    }
 
+   @Deprecated
    public void swapBOrder(RelationLink link) {
       swapOrder(link, false);
    }
@@ -329,14 +331,17 @@ public class RelationLink {
       return sideName;
    }
 
+   @Deprecated
    public String getSidePhrasingFor(Artifact artifact) {
       return processArtifactSidePhrasing(artifact, false);
    }
 
+   @Deprecated
    public String getSidePhrasingForOtherArtifact(Artifact artifact) {
       return processArtifactSidePhrasing(artifact, true);
    }
 
+   @Deprecated
    private String processArtifactSidePhrasing(Artifact artifact, boolean otherArtifact) {
       String sideName = "";
 
@@ -358,10 +363,12 @@ public class RelationLink {
       return sideName;
    }
 
+   @Deprecated
    public String getASideName() {
       return relationType.getSideAName();
    }
 
+   @Deprecated
    public String getBSideName() {
       return relationType.getSideBName();
    }
@@ -413,7 +420,7 @@ public class RelationLink {
    }
 
    /**
-    * @param gammaId2
+    * @param gammaId
     */
    public void setGammaId(int gammaId) {
       this.gammaId = gammaId;

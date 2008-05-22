@@ -11,12 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -33,15 +34,11 @@ import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
  */
 public class RelationContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
-   protected TreeViewer viewer;
-   private SkynetEventManager eventManager;
+   private Artifact artifact;
    private final RelationsComposite relComp;
-
-   //   private static final int EXPAND_CHILDREN_LEVEL = 7;
 
    public RelationContentProvider(RelationsComposite relComp) {
       this.relComp = relComp;
-      this.eventManager = SkynetEventManager.getInstance();
    }
 
    /*
@@ -64,7 +61,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     * @see IContentProvider#inputChanged(Viewer, Object, Object)
     */
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      this.viewer = (TreeViewer) viewer;
+      this.artifact = (Artifact) newInput;
    }
 
    /**
@@ -76,15 +73,22 @@ public class RelationContentProvider implements ITreeContentProvider {
     */
    public Object[] getChildren(Object parentElement) {
       try {
-         if (parentElement instanceof RelationType) {
+         if (parentElement instanceof Artifact) {
+            Artifact artifact = (Artifact) parentElement;
+            Set<RelationType> relationTypes = new HashSet<RelationType>();
+            for (RelationLink relation : artifact.getRelationsAll()) {
+               relationTypes.add(relation.getRelationType());
+            }
+            return relationTypes.toArray();
+         } else if (parentElement instanceof RelationType) {
             RelationType relationType = (RelationType) parentElement;
-            Artifact parent = (Artifact) viewer.getInput();
-            List<RelationLink> relations = parent.getRelations(relationType);
+            List<RelationLink> relations = artifact.getRelations(relationType);
 
             for (RelationLink relationLink : relations) {
-               eventManager.register(RelationModifiedEvent.class, relationLink.getArtifactOnOtherSide(parent), relComp);
+               SkynetEventManager.getInstance().register(RelationModifiedEvent.class,
+                     relationLink.getArtifactOnOtherSide(artifact), relComp);
             }
-            eventManager.register(RelationModifiedEvent.class, parent, relComp);
+            SkynetEventManager.getInstance().register(RelationModifiedEvent.class, artifact, relComp);
             return relations.toArray();
          }
       } catch (SQLException ex) {
@@ -92,6 +96,7 @@ public class RelationContentProvider implements ITreeContentProvider {
       } catch (ArtifactDoesNotExist ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
+
       return EMPTY_ARRAY;
    }
 
@@ -110,11 +115,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     * @see ITreeContentProvider#hasChildren(Object)
     */
    public boolean hasChildren(Object element) {
-      // might be inefficient if getChildren is not a lightweight operation
-      int numberOfChildren = getChildren(element).length;
-      // expandTreeViewer(viewer, element, numberOfChildren);
-
-      return numberOfChildren > 0;
+      return getChildren(element).length > 0;
    }
 
    /**
@@ -128,16 +129,6 @@ public class RelationContentProvider implements ITreeContentProvider {
     * @see IStructuredContentProvider#getElements(Object)
     */
    public Object[] getElements(Object inputElement) {
-      try {
-         if (inputElement instanceof Artifact) {
-            Artifact artifact = (Artifact) inputElement;
-            return artifact.getRelationTypes().toArray();
-         }
-         throw new IllegalArgumentException("Unsupported input type:" + inputElement.getClass().getCanonicalName());
-      } catch (Exception ex) {
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-      return new Object[] {};
+      return getChildren(inputElement);
    }
-
 }

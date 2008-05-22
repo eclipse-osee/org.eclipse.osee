@@ -105,10 +105,7 @@ public class ChangeArtifactType extends AbstractBlam {
       relationsToDelete = new LinkedList<RelationLink>();
 
       for (RelationLink link : artifact.getLinkManager().getLinks()) {
-         int sideMax =
-               RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getSide(artifact));
-
-         if (sideMax == 0) {
+         if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getSide(artifact)) == 0) {
             relationsToDelete.add(link);
          }
       }

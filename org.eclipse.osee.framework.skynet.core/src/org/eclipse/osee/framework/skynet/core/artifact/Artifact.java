@@ -1467,21 +1467,20 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * Andy this just needs to return the relation tpyes that have links
-    * 
-    * @return
-    */
-   public List<RelationType> getRelationTypes() {
-      return null;
-   }
-
-   /**
-    * Andy this needs to return a list of relations from a specific relation type
+    * return a list of relations from a specific relation type
     * 
     * @param relationType
     * @return
     */
    public List<RelationLink> getRelations(RelationType relationType) {
-      return null;
+      return RelationManager.getRelations(this, relationType, null);
+   }
+
+   public List<RelationLink> getRelations(IRelationEnumeration relationEnum) throws SQLException {
+      return RelationManager.getRelations(this, relationEnum.getRelationType(), relationEnum.getSide());
+   }
+
+   public List<RelationLink> getRelationsAll() {
+      return RelationManager.getRelationsAll(this);
    }
 }

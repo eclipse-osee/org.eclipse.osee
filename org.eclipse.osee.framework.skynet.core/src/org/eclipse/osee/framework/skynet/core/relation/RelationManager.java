@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.ObjectPair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -113,17 +112,15 @@ public class RelationManager {
       }
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selectedRelations.size());
 
-      if (selectedRelations != null) {
-         for (RelationLink relation : selectedRelations) {
-            if (!relation.isDeleted()) {
-               if (relationSide == null) {
-                  artifacts.add(relation.getArtifactOnOtherSide(artifact));
-               } else {
-                  // only select relations where the related artifact is on the side specified by relationEnum
-                  // (and thus on the side opposite of "artifact")
-                  if (relation.getSide(artifact) != relationSide) {
-                     artifacts.add(relation.getArtifact(relationSide));
-                  }
+      for (RelationLink relation : selectedRelations) {
+         if (!relation.isDeleted()) {
+            if (relationSide == null) {
+               artifacts.add(relation.getArtifactOnOtherSide(artifact));
+            } else {
+               // only select relations where the related artifact is on the side specified by relationEnum
+               // (and thus on the side opposite of "artifact")
+               if (relation.getSide(artifact) != relationSide) {
+                  artifacts.add(relation.getArtifact(relationSide));
                }
             }
          }
@@ -193,8 +190,12 @@ public class RelationManager {
       throw new UnsupportedOperationException();
    }
 
-   public static boolean hasDirtyLinks(Artifact artifact) throws SQLException {
-      for (RelationLink relation : artifactToRelations.get(artifact)) {
+   public static boolean hasDirtyLinks(Artifact artifact) {
+      List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
+      if (selectedRelations == null) {
+         return false;
+      }
+      for (RelationLink relation : selectedRelations) {
          if (relation.isDirty()) {
             return true;
          }
@@ -203,27 +204,54 @@ public class RelationManager {
    }
 
    public static void persistRelationsFor(Artifact artifact) throws SQLException {
-      for (RelationLink relation : artifactToRelations.get(artifact)) {
-         if (relation.isDirty()) {
-            RelationPersistenceManager.makePersistent(relation);
+      List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
+      if (selectedRelations != null) {
+         for (RelationLink relation : selectedRelations) {
+            if (relation.isDirty()) {
+               RelationPersistenceManager.makePersistent(relation);
+            }
          }
       }
    }
 
-   public static List<ObjectPair<Artifact, String>> getRelations(Artifact artifact, RelationType relationType) throws ArtifactDoesNotExist, SQLException {
-      List<RelationLink> selectedRelations = relations.get(artifact, relationType);
-      List<ObjectPair<Artifact, String>> relationInfo =
-            new ArrayList<ObjectPair<Artifact, String>>(selectedRelations.size());
+   public static List<RelationLink> getRelationsAll(Artifact artifact) {
+      List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
 
-      if (selectedRelations != null) {
-         for (RelationLink relation : selectedRelations) {
-            if (!relation.isDeleted()) {
-               relationInfo.add(new ObjectPair<Artifact, String>(relation.getArtifactOnOtherSide(artifact),
-                     relation.getRationale()));
+      if (selectedRelations == null) {
+         return Collections.emptyList();
+      }
+
+      List<RelationLink> relations = new ArrayList<RelationLink>(selectedRelations.size());
+      for (RelationLink relation : selectedRelations) {
+         if (!relation.isDeleted()) {
+            relations.add(relation);
+         }
+      }
+      return relations;
+   }
+
+   public static List<RelationLink> getRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) {
+      List<RelationLink> selectedRelations = relations.get(artifact, relationType);
+      if (selectedRelations == null) {
+         return Collections.emptyList();
+      }
+
+      List<RelationLink> relations = new ArrayList<RelationLink>(selectedRelations.size());
+
+      for (RelationLink relation : selectedRelations) {
+         if (!relation.isDeleted()) {
+            if (relationSide == null) {
+               relations.add(relation);
+            } else {
+               // only select relations where the related artifact is on the side specified by relationEnum
+               // (and thus on the side opposite of "artifact")
+               if (relation.getSide(artifact) != relationSide) {
+                  relations.add(relation);
+               }
             }
          }
       }
-      return relationInfo;
+      return relations;
    }
 
    /**
