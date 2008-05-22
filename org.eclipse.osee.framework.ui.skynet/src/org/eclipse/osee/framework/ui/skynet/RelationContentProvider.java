@@ -11,9 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -23,7 +21,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 
 /**
@@ -75,14 +76,33 @@ public class RelationContentProvider implements ITreeContentProvider {
       try {
          if (parentElement instanceof Artifact) {
             Artifact artifact = (Artifact) parentElement;
-            Set<RelationType> relationTypes = new HashSet<RelationType>();
-            for (RelationLink relation : artifact.getRelationsAll()) {
-               relationTypes.add(relation.getRelationType());
-            }
+            List<RelationType> relationTypes =
+                  RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
+            //            Set<RelationType> relationTypes = new HashSet<RelationType>();
+            //            for (RelationLink relation : artifact.getRelationsAll()) {
+            //               relationTypes.add(relation.getRelationType());
+            //            }
             return relationTypes.toArray();
          } else if (parentElement instanceof RelationType) {
             RelationType relationType = (RelationType) parentElement;
-            List<RelationLink> relations = artifact.getRelations(relationType);
+            int sideAMax =
+                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_A);
+            int sideBMax =
+                  RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_B);
+            RelationTypeSide sideA = new RelationTypeSide(relationType, RelationSide.SIDE_A);
+            RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B);
+            boolean onSideA = sideBMax > 0;
+            boolean onSideB = sideAMax > 0;
+            if (onSideA && onSideB) {
+               return new Object[] {sideA, sideB};
+            } else if (onSideA) {
+               return new Object[] {sideA};
+            } else if (onSideB) {
+               return new Object[] {sideB};
+            }
+         } else if (parentElement instanceof RelationTypeSide) {
+            RelationTypeSide relationTypeSide = (RelationTypeSide) parentElement;
+            List<RelationLink> relations = artifact.getRelations(relationTypeSide);
 
             for (RelationLink relationLink : relations) {
                SkynetEventManager.getInstance().register(RelationModifiedEvent.class,

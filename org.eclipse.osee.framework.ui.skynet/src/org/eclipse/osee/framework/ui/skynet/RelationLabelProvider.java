@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.sql.SQLException;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.graphics.Image;
 
@@ -56,15 +57,25 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
     */
    public String getColumnText(Object element, int columnIndex) {
-      if (element instanceof RelationLinkGroup && columnIndex == 0) {
-         if (columnIndex == 0) return ((RelationLinkGroup) element).toString();
+      if (element instanceof RelationTypeSide && columnIndex == 0) {
+         try {
+            return ((RelationTypeSide) element).getSideName();
+         } catch (SQLException ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+         }
       } else if (element instanceof RelationType) {
          if (columnIndex == 0) return ((RelationType) element).getTypeName();
       } else if (element instanceof RelationLink) {
          RelationLink link = (RelationLink) element;
-         if (columnIndex == 0)
-            return (link.getArtifactA() == artifact) ? link.getArtifactB().getDescriptiveName() : link.getArtifactA().getDescriptiveName();
-         else if (columnIndex == 1) return link.getRationale();
+         if (columnIndex == 0) {
+            try {
+               return link.getArtifactOnOtherSide(artifact).getDescriptiveName();
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            }
+         } else if (columnIndex == 1) {
+            return link.getRationale();
+         }
       }
       return "";
    }

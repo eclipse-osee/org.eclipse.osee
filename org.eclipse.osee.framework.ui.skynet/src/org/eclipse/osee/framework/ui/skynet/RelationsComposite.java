@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.skynet.artifact.RelationGroupDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -305,7 +306,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
                if (response == 0) isNewRelationCreated = true;
 
             } else if (canBeOnSideA || canBeOnSideB) {
-               artifact.getLinkManager().ensureRelationGroupExists(selectedDescriptor, canBeOnSideB);
+               //               artifact.getLinkManager().ensureRelationGroupExists(selectedDescriptor, canBeOnSideB);
                isNewRelationCreated = true;
             }
 
@@ -794,7 +795,7 @@ public class RelationsComposite extends Composite implements IEventReceiver {
                group.moveLink(targetLink, dropLink, !isFeedbackAfter);
                treeViewer.refresh();
                editor.onDirtied();
-            } else {
+            } else if (object instanceof RelationTypeSide) {
                RelationLinkGroup group = (RelationLinkGroup) selected.getData();
                RelationExplorerWindow window = new RelationExplorerWindow(treeViewer, group);
 
