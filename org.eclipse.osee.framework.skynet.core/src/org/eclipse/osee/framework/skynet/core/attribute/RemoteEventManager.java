@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.db.connection.OseeDb;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
 import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
@@ -73,11 +72,9 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.SkynetServiceEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager.TransactionSwitch;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -96,7 +93,6 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
    private ISkynetEventListener myReference;
 
    private SkynetEventManager eventManager;
-   private static RelationPersistenceManager relationPersistenceManager;
    private static TransactionIdManager transactionIdManager;
    private static BranchPersistenceManager branchPersistenceManager;
    private static SkynetAuthentication skynetAuthentication;
@@ -132,7 +128,6 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
    }
 
    public void onManagerWebInit() throws Exception {
-      relationPersistenceManager = RelationPersistenceManager.getInstance();
       transactionIdManager = TransactionIdManager.getInstance();
       branchPersistenceManager = BranchPersistenceManager.getInstance();
       skynetAuthentication = SkynetAuthentication.getInstance();
@@ -234,7 +229,6 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
    private static class EventListener extends ASkynetEventListener {
       private static final long serialVersionUID = -3017349745450262540L;
       private TransactionId editableTransactionId;
-      private TransactionId priorEditableTransactionId;
       private SkynetEventManager eventManager = SkynetEventManager.getInstance();
       private static final ISchedulingRule mutexRule = new ISchedulingRule() {
 
@@ -292,42 +286,6 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
          final List<Event> localEvents = new LinkedList<Event>();
          Job job = new Job("Receive Event") {
 
-            private void checkTransactionIds(ISkynetEvent event) {
-               int newTransactionNumber = event.getTransactionId();
-               int branchId = -1;
-
-               if (priorEditableTransactionId == null && editableTransactionId == null || newTransactionNumber > editableTransactionId.getTransactionNumber()) {
-                  try {
-                     branchId = event.getBranchId();
-                     Branch branch = BranchPersistenceManager.getInstance().getBranch(branchId);
-
-                     if (branch == null) {
-                        throw new IllegalArgumentException(
-                              "No branch could be found associated with this branch id: " + branchId);
-                     }
-
-                     TransactionSwitch transactionSwitch = transactionIdManager.switchTransaction(branch);
-                     editableTransactionId = transactionSwitch.getEditableTransactionId();
-                     priorEditableTransactionId = transactionSwitch.getNonEditableTransactionId();
-                  } catch (SQLException e) {
-                     logger.log(Level.SEVERE, e.toString(), e);
-                  } catch (IllegalArgumentException e) {
-                     if (OseeProperties.getInstance().isDeveloper()) {
-                        throw e;
-                     } else {
-                        // The event will be set to null because it can not be processed with illegal arguments
-                        event = null;
-                        logger.log(Level.SEVERE, e.toString(), e + " Branch id: " + branchId);
-                     }
-                  }
-               }
-            }
-
-            private void clearTransactionIds() {
-               priorEditableTransactionId = null;
-               editableTransactionId = null;
-            }
-
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                Arrays.sort(events);
@@ -365,7 +323,6 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
                   }
                }
                eventManager.kick(new RemoteTransactionEvent(localEvents, this));
-               clearTransactionIds();
                return Status.OK_STATUS;
             }
          };
