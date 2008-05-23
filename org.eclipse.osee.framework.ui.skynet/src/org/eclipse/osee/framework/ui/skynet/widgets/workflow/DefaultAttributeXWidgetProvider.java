@@ -44,7 +44,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          if (max == 1) {
             defaultData.setXWidgetName("XTextDam");
          } else {
-            defaultData.setXWidgetName("XLabelDam");
+            defaultData.setXWidgetName("XMultiXWidgetDam(XText)");
             System.err.println("How handle multiple text instances?");
          }
       } else if (attributeType.getBaseAttributeClass().equals(BooleanAttribute.class)) {

@@ -174,6 +174,7 @@ public class XText extends XWidget {
       sText.setLayoutData(gd);
       sText.setMenu(getDefaultMenu());
       sText.addModifyListener(textListener);
+      if (text != null) sText.setText(text);
       spellPaintListener = new XTextSpellCheckPaintListener(this, OseeDictionary.getInstance());
       if (spellCheck) {
          sText.addPaintListener(spellPaintListener);
@@ -207,7 +208,8 @@ public class XText extends XWidget {
     * @param text
     */
    public void setText(String text) {
-      sText.setText(text);
+      this.text = text;
+      if (sText != null) sText.setText(text);
    }
 
    public Menu getDefaultMenu() {
