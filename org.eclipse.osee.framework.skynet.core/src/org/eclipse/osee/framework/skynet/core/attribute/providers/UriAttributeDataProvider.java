@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.io.ByteArrayInputStream;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,16 +59,16 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#setValue(byte[])
+    * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#setValue(ByteBuffer)
     */
    @Override
-   public void setValue(byte[] data) {
+   public void setValue(ByteBuffer data) {
       try {
-         if (!Arrays.equals(dataStore.getContent(), data)) {
+         if (!Arrays.equals(dataStore.getContent(), data != null ? data.array() : null)) {
             if (data != null) {
                byte[] compressed;
                try {
-                  compressed = Lib.compressFile(new ByteArrayInputStream(data), getInternalFileName());
+                  compressed = Lib.compressFile(Lib.byteBufferToInputStream(data), getInternalFileName());
                   dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
                } catch (Exception ex) {
                   logger.log(Level.WARNING, "Error compressing data", ex);
@@ -87,12 +88,12 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#getValueAsBytes()
     */
    @Override
-   public byte[] getValueAsBytes() {
-      byte[] decompressed = null;
+   public ByteBuffer getValueAsBytes() {
+      ByteBuffer decompressed = null;
       try {
          byte[] rawData = dataStore.getContent();
          if (rawData != null) {
-            decompressed = Lib.decompressBytes(new ByteArrayInputStream(rawData));
+            decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
          }
       } catch (Exception ex) {
          logger.log(Level.WARNING, "Error acquiring data. - ", ex);
@@ -105,8 +106,8 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     */
    @Override
    public String getValueAsString() {
-      byte[] data = getValueAsBytes();
-      return data != null ? new String(data) : "";
+      ByteBuffer data = getValueAsBytes();
+      return data != null ? new String(data.array()) : "";
    }
 
    /* (non-Javadoc)
@@ -114,9 +115,9 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     */
    @Override
    public void setValue(String value) {
-      byte[] toSet = null;
+      ByteBuffer toSet = null;
       if (value != null) {
-         toSet = value.getBytes();
+         toSet = ByteBuffer.wrap(value.getBytes());
       }
       setValue(toSet);
    }

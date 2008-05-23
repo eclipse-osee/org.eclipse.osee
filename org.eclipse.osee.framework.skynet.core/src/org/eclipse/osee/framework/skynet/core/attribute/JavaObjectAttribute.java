@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,17 +36,31 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
       return getObjectFromBytes(getAttributeDataProvider().getValueAsBytes());
    }
 
-   private Object getObjectFromBytes(byte[] bytes) {
+   private Object getObjectFromBytes(ByteBuffer buffer) {
       Object obj = null;
+      InputStream inputStream = null;
+      ObjectInputStream objectStream = null;
       try {
-         InputStream inputStream = new ByteArrayInputStream(bytes);
+         inputStream = Lib.byteBufferToInputStream(buffer);
          if (inputStream != null) {
-            ObjectInputStream objectStream = new ObjectInputStream(inputStream);
+            objectStream = new ObjectInputStream(inputStream);
             obj = objectStream.readObject();
-            objectStream.close();
          }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      } finally {
+         try {
+            if (inputStream != null) {
+               inputStream.reset();
+            }
+         } catch (IOException ex) {
+         }
+         try {
+            if (objectStream != null) {
+               objectStream.close();
+            }
+         } catch (IOException ex) {
+         }
       }
       return obj;
    }
@@ -60,7 +76,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
          objectStream.writeObject(value);
          objectStream.flush();
          objectStream.close();
-         getAttributeDataProvider().setValue(byteStream.toByteArray());
+         getAttributeDataProvider().setValue(ByteBuffer.wrap(byteStream.toByteArray()));
          getAttributeDataProvider().setDisplayableString(value != null ? value.getClass().getName() : "null");
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -75,6 +91,6 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
       if (value == null) {
          return null;
       }
-      return getObjectFromBytes(value.getBytes());
+      return getObjectFromBytes(ByteBuffer.wrap(value.getBytes()));
    }
 }

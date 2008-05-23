@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
+import java.nio.ByteBuffer;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface IBinaryAttributeDataProvider extends IAttributeDataProvider {
 
-   public byte[] getValueAsBytes();
+   public ByteBuffer getValueAsBytes();
 
-   public void setValue(byte[] data);
+   public void setValue(ByteBuffer data);
 
 }

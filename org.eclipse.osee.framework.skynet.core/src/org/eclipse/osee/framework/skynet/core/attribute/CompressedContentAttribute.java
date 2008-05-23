@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,7 +29,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
     */
    @Override
    public InputStream getValue() {
-      return new ByteArrayInputStream(getAttributeDataProvider().getValueAsBytes());
+      return Lib.byteBufferToInputStream(getAttributeDataProvider().getValueAsBytes());
    }
 
    /* (non-Javadoc)
@@ -50,7 +50,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
             getAttributeDataProvider().setValue(null);
          } else {
             byte[] data = Lib.inputStreamToBytes(value);
-            getAttributeDataProvider().setValue(data);
+            getAttributeDataProvider().setValue(ByteBuffer.wrap(data));
          }
       } catch (IOException ex) {
          throw new OseeCoreException(ex);

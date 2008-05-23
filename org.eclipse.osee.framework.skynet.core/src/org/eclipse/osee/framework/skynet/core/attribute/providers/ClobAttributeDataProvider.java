@@ -98,8 +98,7 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
 
    private void storeValue(String value) throws IOException {
       if (value != null && value.length() > MAX_VARCHAR_LENGTH) {
-         byte[] compressed;
-         compressed = Lib.compressFile(new ByteArrayInputStream(value.getBytes("UTF-8")), getInternalFileName());
+         byte[] compressed = Lib.compressFile(new ByteArrayInputStream(value.getBytes("UTF-8")), getInternalFileName());
          dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
       } else {
          this.rawStringValue = value;
