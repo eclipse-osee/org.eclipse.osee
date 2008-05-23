@@ -24,6 +24,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    private String typeName;
    private Operator operation;
    private static final String tables = ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE;
+   private final static String TOKEN = ";";
 
    /**
     * @param typeName
@@ -63,4 +64,17 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
    public String toString() {
       return "Artifact type: " + typeName;
    }
+
+   public String getStorageString() {
+      return typeName + TOKEN + operation.name();
+   }
+
+   public static ArtifactTypeSearch getPrimitive(String storageString) {
+      String[] values = storageString.split(TOKEN);
+      if (values.length != 2) throw new IllegalStateException(
+            "Value for " + ArtifactTypeSearch.class.getSimpleName() + " not parsable");
+
+      return new ArtifactTypeSearch(values[0], Operator.valueOf(values[1]));
+   }
+
 }

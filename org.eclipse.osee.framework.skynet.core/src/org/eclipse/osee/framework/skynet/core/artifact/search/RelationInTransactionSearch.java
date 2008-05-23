@@ -103,4 +103,8 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
             manager.getPossiblyEditableTransactionIfFromCache(Integer.parseInt(values[0])),
             manager.getPossiblyEditableTransactionIfFromCache(Integer.parseInt(values[1])));
    }
+
+   public String getStorageString() {
+      return fromTransactionNumber + TOKEN + toTransactionNumber;
+   }
 }

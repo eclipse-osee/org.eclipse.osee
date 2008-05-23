@@ -66,4 +66,8 @@ public class RelatedToAndOfIDSearch implements ISearchPrimitive {
    public String getTableSql(List<Object> dataList, Branch branch) {
       return null;
    }
+
+   public String getStorageString() {
+      return Integer.toString(artId) + "," + Integer.toString(relType);
+   }
 }

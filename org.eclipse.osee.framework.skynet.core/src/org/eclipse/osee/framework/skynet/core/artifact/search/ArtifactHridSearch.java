@@ -70,6 +70,10 @@ public class ArtifactHridSearch implements ISearchPrimitive {
       return "Artifact Human Readable Id: " + humanReadableId;
    }
 
+   public String getStorageString() {
+      return humanReadableId;
+   }
+
    public static ArtifactHridSearch getPrimitive(String storageString) {
       return new ArtifactHridSearch(storageString, EQUAL);
    }

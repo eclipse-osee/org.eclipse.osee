@@ -81,4 +81,8 @@ public class RelatedToSearch implements ISearchPrimitive {
 
       return new RelatedToSearch(Integer.parseInt(values[0]), Boolean.parseBoolean(values[1]));
    }
+
+   public String getStorageString() {
+      return Integer.toString(artId) + TOKEN + Boolean.toString(sideA);
+   }
 }

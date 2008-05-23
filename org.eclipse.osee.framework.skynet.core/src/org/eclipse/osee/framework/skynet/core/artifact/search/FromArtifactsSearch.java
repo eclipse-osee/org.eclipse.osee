@@ -14,8 +14,12 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.parsers.ParserConfigurationException;
+import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author Robert A. Fisher
@@ -73,5 +77,39 @@ public class FromArtifactsSearch implements ISearchPrimitive {
       sb.append(")");
 
       return sb.toString();
+   }
+
+   public String getStorageString() {
+      Document document;
+      try {
+         document = Jaxp.newDocument();
+      } catch (ParserConfigurationException ex) {
+         throw new IllegalStateException(ex);
+      }
+
+      Element root = document.createElement("FromArtifactAttribute");
+      root.appendChild(getStorageElements(document));
+
+      return Jaxp.getDocumentXml(document);
+   }
+
+   private Element getStorageElements(Document document) {
+      Element rootElement = document.createElement(FROM_ARTIFACT_ELEMENT);
+      rootElement.setAttribute("all", Boolean.toString(all));
+      document.appendChild(rootElement);
+
+      Element child;
+      for (ISearchPrimitive primitive : criteria) {
+         if (primitive instanceof FromArtifactsSearch) {
+            child = ((FromArtifactsSearch) primitive).getStorageElements(document);
+         } else {
+            child = document.createElement("Simple");
+            child.setAttribute("class", primitive.getClass().getCanonicalName());
+            child.setAttribute("value", primitive.getStorageString());
+         }
+         rootElement.appendChild(child);
+      }
+
+      return rootElement;
    }
 }

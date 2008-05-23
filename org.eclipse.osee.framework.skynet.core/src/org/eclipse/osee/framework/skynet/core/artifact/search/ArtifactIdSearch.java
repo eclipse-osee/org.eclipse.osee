@@ -69,4 +69,8 @@ public class ArtifactIdSearch implements ISearchPrimitive {
    public String toString() {
       return "Artifact Id: " + artId;
    }
+
+   public String getStorageString() {
+      return Integer.toString(artId);
+   }
 }

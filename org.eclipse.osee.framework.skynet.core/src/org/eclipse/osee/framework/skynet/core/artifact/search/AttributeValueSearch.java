@@ -32,6 +32,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
    private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_1 =
          new LocalAliasTable(ATTRIBUTE_TYPE_TABLE, "attr_type_1");
    private static final String tables = ATTRIBUTE_ALIAS_1 + "," + ATTRIBUTE_TYPE_ALIAS_1 + "," + TRANSACTIONS_TABLE;
+   private final static String TOKEN = ";";
 
    /**
     * @param attributeName
@@ -114,5 +115,17 @@ public class AttributeValueSearch implements ISearchPrimitive {
    @Override
    public String toString() {
       return "Attribute value: " + attributeName + operator + "\"" + attributeValue + "\"";
+   }
+
+   public String getStorageString() {
+      return attributeName + TOKEN + (attributeValue == null ? "" : attributeValue) + TOKEN + (operator == null ? "" : operator.name());
+   }
+
+   public static AttributeValueSearch getPrimitive(String storageString) {
+      String[] values = storageString.split(TOKEN);
+      if (values.length != 3) throw new IllegalStateException(
+            "Value for " + AttributeValueSearch.class.getSimpleName() + " not parsable");
+
+      return new AttributeValueSearch(values[0], values[1], Operator.valueOf(values[2]));
    }
 }

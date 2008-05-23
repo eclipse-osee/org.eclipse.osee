@@ -76,4 +76,6 @@ public abstract class SearchFilter {
       return filterName;
    }
 
+   public abstract void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled);
+
 }

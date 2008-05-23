@@ -110,4 +110,8 @@ public class TagSearch implements ISearchPrimitive {
       TagSearch search = new TagSearch(tag, isCaseSensitive, isPartial);
       return search;
    }
+
+   public String getStorageString() {
+      return tag + TOKEN + caseSensitive + TOKEN + partialMatch;
+   }
 }
