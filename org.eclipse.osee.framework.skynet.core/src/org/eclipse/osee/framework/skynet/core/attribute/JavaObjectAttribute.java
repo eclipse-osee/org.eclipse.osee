@@ -72,6 +72,9 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
     */
    @Override
    protected Object convertStringToValue(String value) throws OseeCoreException {
+      if (value == null) {
+         return null;
+      }
       return getObjectFromBytes(value.getBytes());
    }
 }
