@@ -324,9 +324,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(ProgramAttributes.Safety_Criticality.toString(), "D");
          newArt.setSoleAttributeValue(ProgramAttributes.Subsystem.name(), Subsystems.Communications.name());
-         newArt.persistAttributesAndRelations();
          parentArt.addChild(newArt);
-         parentArt.persist(true);
+
+         newArt.persistAttributesAndRelations();
       }
 
    }

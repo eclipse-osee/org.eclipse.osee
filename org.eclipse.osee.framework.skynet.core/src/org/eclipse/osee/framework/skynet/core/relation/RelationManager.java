@@ -312,7 +312,16 @@ public class RelationManager {
       getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType).delete();
    }
 
-   public static void deleteRelations(RelationType relationType, Artifact artifact, RelationSide relationSide) {
+   public static void deleteRelationsAll(Artifact artifact) {
+      List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
+      if (selectedRelations != null) {
+         for (RelationLink relation : selectedRelations) {
+            relation.delete();
+         }
+      }
+   }
+
+   public static void deleteRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) {
       List<RelationLink> selectedRelations = relations.get(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {

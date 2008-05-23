@@ -645,10 +645,10 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          ((RelationLink) object).delete();
       } else if (object instanceof RelationType) {
          RelationType relationType = (RelationType) object;
-         RelationManager.deleteRelations(relationType, artifact, null);
+         RelationManager.deleteRelations(artifact, relationType, null);
       } else if (object instanceof RelationLinkGroup) {
          RelationLinkGroup group = (RelationLinkGroup) object;
-         RelationManager.deleteRelations(group.getDescriptor(), artifact, group.getSide());
+         RelationManager.deleteRelations(artifact, group.getDescriptor(), group.getSide());
       }
 
       refresh();

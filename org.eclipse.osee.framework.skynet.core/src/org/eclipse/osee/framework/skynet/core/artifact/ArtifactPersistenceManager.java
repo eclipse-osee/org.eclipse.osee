@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
@@ -134,10 +133,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    private static final String UPDATE_ARTIFACT_TYPE = "UPDATE osee_define_artifact SET art_type_id = ? WHERE art_id =?";
 
    private TransactionIdManager transactionIdManager;
-   private ConfigurationPersistenceManager configurationManager;
-   private AccessControlManager accessControlManager;
    private TagManager tagManager;
-   private BranchPersistenceManager branchManager;
    private ExtensionDefinedObjects<IAttributeSaveListener> attributeSaveListeners;
 
    private IProgressMonitor monitor;
@@ -165,11 +161,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
     */
    public void onManagerWebInit() throws Exception {
-      configurationManager = ConfigurationPersistenceManager.getInstance();
       transactionIdManager = TransactionIdManager.getInstance();
-      accessControlManager = AccessControlManager.getInstance();
       tagManager = TagManager.getInstance();
-      branchManager = BranchPersistenceManager.getInstance();
    }
 
    /**
@@ -192,22 +185,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       }
    }
 
-   public static void makePersistent(final Artifact artifact, final boolean recurse) throws SQLException {
-      AbstractSkynetTxTemplate artifactPersistTx = new AbstractSkynetTxTemplate(artifact.getBranch()) {
-         @Override
-         protected void handleTxWork() throws Exception {
-            instance.saveTrace(artifact, recurse, getTxBuilder());
-         }
-      };
-      try {
-         artifactPersistTx.execute();
-      } catch (Exception ex) {
-         throw new SQLException(ex);
-      }
-   }
-
-   public void saveTrace(Artifact artifact, boolean recurse, SkynetTransactionBuilder builder) throws Exception {
-      if (!accessControlManager.checkObjectPermission(artifact.getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
+   public static void saveTrace(Artifact artifact, SkynetTransactionBuilder builder) throws Exception {
+      if (!AccessControlManager.getInstance().checkObjectPermission(artifact.getBranch(), PermissionEnum.WRITE)) throw new IllegalArgumentException(
             "No write permissions for the branch that this artifact belongs to:" + artifact.getBranch());
       if (artifact.isHistorical()) {
          throw new IllegalArgumentException(
@@ -216,10 +195,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       if (artifact.isDirty() && !artifact.isInTransaction()) {
          builder.addArtifact(artifact);
-      }
-
-      if (recurse) {
-         artifact.getLinkManager().traceLinks(recurse, builder);
       }
    }
 
@@ -670,8 +645,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact.getGuid(), artifact.getBranch(),
             ModType.Deleted, this));
 
-      linkManager.deleteAllLinks();
-      linkManager.traceLinks(false, builder);
+      RelationManager.deleteRelationsAll(artifact);
       tagManager.clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
    }
 

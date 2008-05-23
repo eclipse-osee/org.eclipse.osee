@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionBuilder;
 import org.eclipse.osee.framework.skynet.core.transaction.data.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteLinkEventFactory;
@@ -110,19 +109,6 @@ public class RelationPersistenceManager implements PersistenceManager {
          relationPersistTx.execute();
       } catch (Exception ex) {
          throw new SQLException(ex.getLocalizedMessage());
-      }
-   }
-
-   public static void trace(RelationLink relationLink, boolean recurse, SkynetTransactionBuilder builder) throws Exception {
-      if (relationLink.isDeleted()) {
-         builder.deleteLink(relationLink);
-      } else {
-         builder.addLink(relationLink);
-
-         if (recurse) {
-            ArtifactPersistenceManager.getInstance().saveTrace(relationLink.getArtifactA(), recurse, builder);
-            ArtifactPersistenceManager.getInstance().saveTrace(relationLink.getArtifactB(), recurse, builder);
-         }
       }
    }
 
@@ -279,7 +265,10 @@ public class RelationPersistenceManager implements PersistenceManager {
 
          // Move insertArtLink to insertLocation
          RelationLinkGroup group =
-               sideAArt.getLinkManager().getGroup(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS);
+               sideAArt.getLinkManager().getSideGroup(
+                     CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS.getRelationType(),
+                     CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS.isSideA());
+
          group.moveLink(targetLink, insertLink, insertLocation != InsertLocation.AfterTarget);
          sideAArt.persistAttributesAndRelations();
       }

@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.artifact;
 
 import org.eclipse.osee.ats.util.BranchManager;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -70,7 +69,7 @@ public class ATSBranchMetrics {
       rootElement.setAttribute("numNonRelModArts", String.valueOf(numNonRelationModifiedArtifacts));
       branchMgr.getSmaMgr().getSma().setSoleAttributeValue(ATSAttributes.BRANCH_METRICS_ATTRIBUTE.getStoreName(),
             Jaxp.getDocumentXml(doc));
-      ArtifactPersistenceManager.makePersistent(branchMgr.getSmaMgr().getSma(), false);
+      branchMgr.getSmaMgr().getSma().persistAttributes();
    }
 
    /**

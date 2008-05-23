@@ -75,7 +75,6 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
          }
          for (Artifact art : softArts) {
             relate(CoreRelationEnumeration.ALLOCATION__COMPONENT, art, component);
-            art.persistRelations();
          }
 
          // Create Test Script Artifacts
@@ -89,8 +88,8 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
                   ArtifactTypeManager.addArtifact(Requirements.TEST_SCRIPT, verificationHeader.getBranch(),
                         "Verification Test " + str);
             verificationTests.add(newArt);
-            verificationHeader.relate(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
-            newArt.persist(true);
+            verificationHeader.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt);
+            newArt.persistAttributesAndRelations();
          }
          Artifact verificationTestsArray[] = verificationTests.toArray(new Artifact[verificationTests.size()]);
 
@@ -105,8 +104,8 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
                   ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, validationHeader.getBranch(),
                         "Validation Test " + str);
             validationTests.add(newArt);
-            validationHeader.relate(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
-            newArt.persist(true);
+            validationHeader.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt);
+            newArt.persistAttributesAndRelations();
          }
          Artifact validationTestsArray[] = validationTests.toArray(new Artifact[validationTests.size()]);
 
@@ -121,26 +120,29 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
                   ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, integrationHeader.getBranch(),
                         "integration Test " + str);
             integrationTests.add(newArt);
-            integrationHeader.relate(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt, true);
-            newArt.persist(true);
+            integrationHeader.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt);
+            newArt.persistAttributesAndRelations();
          }
          Artifact integrationTestsArray[] = integrationTests.toArray(new Artifact[integrationTests.size()]);
 
          // Relate Software Artifacts to Tests
          Artifact softReqsArray[] = softArts.toArray(new Artifact[softArts.size()]);
-         softReqsArray[0].relate(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[0], true);
-         softReqsArray[0].relate(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[1], true);
-         softReqsArray[1].relate(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[0], true);
-         softReqsArray[1].relate(CoreRelationEnumeration.Validation__Validator, validationTestsArray[1], true);
-         softReqsArray[2].relate(CoreRelationEnumeration.Validation__Validator, validationTestsArray[0], true);
-         softReqsArray[2].relate(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[1], true);
-         softReqsArray[3].relate(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[0], true);
-         softReqsArray[4].relate(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[2], true);
-         softReqsArray[5].relate(CoreRelationEnumeration.Validation__Validator, validationTestsArray[2], true);
+         softReqsArray[0].addRelation(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[0]);
+         softReqsArray[0].addRelation(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[1]);
+         softReqsArray[1].addRelation(CoreRelationEnumeration.Validation__Validator, verificationTestsArray[0]);
+         softReqsArray[1].addRelation(CoreRelationEnumeration.Validation__Validator, validationTestsArray[1]);
+         softReqsArray[2].addRelation(CoreRelationEnumeration.Validation__Validator, validationTestsArray[0]);
+         softReqsArray[2].addRelation(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[1]);
+         softReqsArray[3].addRelation(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[0]);
+         softReqsArray[4].addRelation(CoreRelationEnumeration.Validation__Validator, integrationTestsArray[2]);
+         softReqsArray[5].addRelation(CoreRelationEnumeration.Validation__Validator, validationTestsArray[2]);
+
+         for (Artifact artifact : softArts) {
+            artifact.persistAttributesAndRelations();
+         }
 
       } catch (Exception ex) {
          OSEELog.logException(OseeAtsConfigDemoPlugin.class, ex, false);
       }
    }
-
 }

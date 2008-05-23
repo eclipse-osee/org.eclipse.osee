@@ -35,21 +35,18 @@ public class DemoDbGroups {
       for (DemoCodeTeamWorkflowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
 
          // Add Action to Universal Group
-         groupArt.relate(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, codeArt.getParentActionArtifact(), true);
+         groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, codeArt.getParentActionArtifact());
 
          // Add All Team Workflows to Universal Group
          for (Artifact teamWorkflow : codeArt.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
             groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, teamWorkflow);
          }
-         groupArt.persistRelations();
 
          // Relate codeArt to SAW_Bld_2
          codeArt.addRelation(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version,
                ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, SawBuilds.SAW_Bld_2.name(),
                      AtsPlugin.getAtsBranch()));
-
-         codeArt.persist(true);
-
+         codeArt.persistAttributesAndRelations();
       }
 
       // Add all Tasks to Group

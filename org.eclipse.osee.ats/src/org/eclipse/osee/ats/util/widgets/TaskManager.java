@@ -94,7 +94,9 @@ public class TaskManager {
             smaMgr.getStateMgr().getCurrentStateName());
 
       smaMgr.getSma().addRelation(CoreRelationEnumeration.SmaToTask_Task, taskArt);
-      if (persist) taskArt.persist(true);
+      if (persist) {
+         taskArt.persistAttributesAndRelations();
+      }
 
       return taskArt;
    }

@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -103,17 +103,61 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return getArtifactTypeNameSuppressException();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#persist(boolean, boolean)
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDate()
     */
    @Override
-   public void persist(boolean recurse) throws SQLException {
-      super.persist(recurse);
-      // Since multiple different ways exist to change the assignees,
-      // notitification is performed on
-      // the persist
+   public Date getWorldViewDeadlineDate() throws Exception {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDeadlineDateStr()
+    */
+   @Override
+   public String getWorldViewDeadlineDateStr() throws Exception {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewDescription()
+    */
+   @Override
+   public String getWorldViewDescription() throws Exception {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewImplementer()
+    */
+   @Override
+   public String getWorldViewImplementer() throws Exception {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewTeam()
+    */
+   @Override
+   public String getWorldViewTeam() throws Exception {
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.world.IWorldViewArtifact#getWorldViewWeeklyBenefit()
+    */
+   @Override
+   public double getWorldViewWeeklyBenefit() throws Exception {
+      return 0;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.skynet.core.artifact.Artifact#persistAttributes()
+    */
+   @Override
+   public void persistAttributes() throws SQLException {
+      super.persistAttributes();
+      // Since multiple ways exist to change the assignees, notification is performed on the persist
       notifyNewAssigneesAndReset();
       notifyOriginatorAndReset();
    }

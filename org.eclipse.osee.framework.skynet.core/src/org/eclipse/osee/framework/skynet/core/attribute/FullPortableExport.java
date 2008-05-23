@@ -76,7 +76,7 @@ public class FullPortableExport {
 
       HashSet<RelationLink> links = new HashSet<RelationLink>();
       for (Artifact artifact : artifacts) {
-         links.addAll(artifact.getLinkManager().getLinks());
+         links.addAll(artifact.getRelationsAll());
       }
 
       for (RelationLink link : links) {

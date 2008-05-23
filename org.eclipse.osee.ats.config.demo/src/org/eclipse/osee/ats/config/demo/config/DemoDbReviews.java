@@ -106,7 +106,7 @@ public class DemoDbReviews {
             firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview(
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName());
       reviewArt.setDescriptiveName("Peer Review first set of code changes");
-      reviewArt.persist(true);
+      reviewArt.persistAttributesAndRelations();
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
@@ -147,7 +147,7 @@ public class DemoDbReviews {
       result =
             DefaultPeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewArtifact.State.Completed,
                   roles, defects, SkynetAuthentication.getUser(), false);
-      reviewArt.persist(true);
+      reviewArt.persistAttributesAndRelations();
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
       }

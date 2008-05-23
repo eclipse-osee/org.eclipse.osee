@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -887,7 +888,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public void persistAttributes() throws SQLException {
-      ArtifactPersistenceManager.makePersistent(this, false);
+      AbstractSkynetTxTemplate artifactPersistTx = new AbstractSkynetTxTemplate(getBranch()) {
+         @Override
+         protected void handleTxWork() throws Exception {
+            ArtifactPersistenceManager.saveTrace(Artifact.this, getTxBuilder());
+         }
+      };
+      try {
+         artifactPersistTx.execute();
+      } catch (Exception ex) {
+         throw new SQLException(ex);
+      }
    }
 
    public void persistRelations() throws SQLException {
@@ -897,16 +908,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public void persistAttributesAndRelations() throws SQLException {
       persistAttributes();
       persistRelations();
-   }
-
-   /**
-    * make this method private
-    * 
-    * @param recurse
-    * @throws SQLException
-    */
-   public void persist(boolean recurse) throws SQLException {
-      ArtifactPersistenceManager.makePersistent(this, recurse);
    }
 
    /**
