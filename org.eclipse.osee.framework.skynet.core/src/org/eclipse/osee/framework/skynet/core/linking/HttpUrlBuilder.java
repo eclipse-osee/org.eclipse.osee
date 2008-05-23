@@ -111,7 +111,7 @@ public class HttpUrlBuilder {
       return getLocalServerPrefix(HttpServer.DEFAULT_SERVICE_NAME);
    }
 
-   public String getResourceServerPrefix() throws SQLException {
+   public String getApplicationServerPrefix() throws SQLException {
       String address = OseeApplicationServer.getOseeApplicationServer();
       if (address.endsWith("/") != true) {
          address += "/";
@@ -120,6 +120,6 @@ public class HttpUrlBuilder {
    }
 
    public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws SQLException, UnsupportedEncodingException {
-      return buildUrl(getResourceServerPrefix(), context, getParametersAsEncodedUrl(parameters));
+      return buildUrl(getApplicationServerPrefix(), context, getParametersAsEncodedUrl(parameters));
    }
 }

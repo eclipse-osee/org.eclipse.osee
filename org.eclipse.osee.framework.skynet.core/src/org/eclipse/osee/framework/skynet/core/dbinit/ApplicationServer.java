@@ -20,11 +20,11 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class ResourceServers {
+public class ApplicationServer {
 
    protected static void initialize() throws SQLException {
       DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
-      String resourceServer = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.resourceServer);
+      String resourceServer = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
       if (Strings.isValid(resourceServer) != true) {
          throw new SQLException(
                String.format(

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.database;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osee.framework.database.initialize.LaunchOseeDbConfigClient;
-import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 
 public class ConfigDatabase implements IApplication {
 
@@ -23,20 +22,7 @@ public class ConfigDatabase implements IApplication {
     * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
     */
    public Object start(IApplicationContext context) throws Exception {
-      if (!OseeApplicationServer.isApplicationServerAlive()) {
-         System.out.println(String.format("We cannot establish a connection to the Application server [%s]",
-               OseeApplicationServer.getOseeApplicationServer()));
-         return EXIT_OK;
-      }
       LaunchOseeDbConfigClient.main(null);
-      // keepAlive = new Object();
-      // synchronized (keepAlive) {
-      // try {
-      // keepAlive.wait();
-      // } catch (InterruptedException e) {
-      // e.printStackTrace();
-      // }
-      // }
       return EXIT_OK;
    }
 

@@ -14,6 +14,8 @@ import static org.eclipse.osee.framework.jdk.core.util.OseeProperties.OSEE_CONFI
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -28,9 +30,9 @@ import org.eclipse.osee.framework.database.core.DbClientThread;
 import org.eclipse.osee.framework.database.initialize.tasks.IDbInitializationTask;
 import org.eclipse.osee.framework.database.utility.GroupSelection;
 import org.eclipse.osee.framework.db.connection.OseeDb;
-import org.eclipse.osee.framework.db.connection.core.OseeApplicationServer;
 import org.eclipse.osee.framework.db.connection.info.DbInformation;
 import org.eclipse.osee.framework.db.connection.info.DbDetailData.ConfigField;
+import org.eclipse.osee.framework.db.connection.info.DbSetupData.ServerInfoFields;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.osgi.framework.Bundle;
@@ -126,7 +128,40 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       return line;
    }
 
+   private static boolean isApplicationServerAlive(String applicationServerUrl) {
+      boolean canConnection = false;
+      try {
+         URL url = new URL(applicationServerUrl);
+         URLConnection connection = url.openConnection();
+         connection.connect();
+         canConnection = true;
+      } catch (Exception ex) {
+
+      }
+      return canConnection;
+   }
+
+   private static boolean checkPreconditions() {
+      DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
+
+      if (DatabaseActivator.getInstance().isProductionDb()) {
+         System.err.println("You are not allowed to run config client against production servers.\nExiting.");
+         return false;
+      }
+      String serverUrl = dbInfo.getDatabaseSetupDetails().getServerInfoValue(ServerInfoFields.applicationServer);
+      boolean serverOk = isApplicationServerAlive(serverUrl);
+      System.out.println(String.format("OSEE Application Server Validation [%s]", serverOk ? "PASSED" : "FAILED"));
+      if (serverOk != true) {
+         System.err.println(String.format(
+               "Error connecting to application server [%s].\n" + "Please ensure server is running and try again.",
+               serverUrl));
+         return false;
+      }
+      return true;
+   }
+
    public static void main(String[] args) {
+      boolean isConfigured = false;
       System.setProperty(OSEE_CONFIG_FACTORY,
             "org.eclipse.osee.framework.plugin.core.config.HeadlessEclipseConfigurationFactory");
 
@@ -135,34 +170,26 @@ public class LaunchOseeDbConfigClient extends DbClientThread {
       Logger.getLogger("org.eclipse.osee.framework.jdk.core.sql.manager.OracleSqlManager").setLevel(Level.SEVERE);
       Logger.getLogger("org.eclipse.osee.framework.jdk.core.sql.manager.OracleSqlManager").setLevel(Level.SEVERE);
 
-      DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
-      String dbName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
-      String userName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.UserName);
-
-      if (DatabaseActivator.getInstance().isProductionDb()) {
-         System.err.println("You are not allowed to run config client against production servers.\nExiting.");
-         System.exit(0);
+      if (checkPreconditions()) {
+         DbInformation dbInfo = OseeDb.getDefaultDatabaseService();
+         String dbName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
+         String userName = dbInfo.getDatabaseDetails().getFieldValue(ConfigField.UserName);
+         System.out.println("\nAre you sure you want to configure: " + dbName + ":" + userName);
+         String line = waitForUserResponse();
+         if (line.equalsIgnoreCase("Y")) {
+            isConfigured = true;
+            System.out.println("Configuring Database...");
+            LaunchOseeDbConfigClient configClient = new LaunchOseeDbConfigClient(dbInfo);
+            configClient.start();
+            try {
+               configClient.join();
+            } catch (InterruptedException ex) {
+               ex.printStackTrace();
+            }
+         }
       }
 
-      System.out.println("\nAre you sure you want to configure: " + dbName + ":" + userName);
-      String line = waitForUserResponse();
-      if (line.equalsIgnoreCase("Y")) {
-
-         System.out.println("Validating OSEE Application Server...");
-         if (!OseeApplicationServer.isApplicationServerAlive()) {
-            System.err.println("No OSEE Application Server running.\nExiting.");
-            return;
-         }
-         System.out.println("Configuring Database...");
-
-         LaunchOseeDbConfigClient configClient = new LaunchOseeDbConfigClient(dbInfo);
-         configClient.start();
-         try {
-            configClient.join();
-         } catch (InterruptedException ex) {
-            ex.printStackTrace();
-         }
-      } else {
+      if (isConfigured != true) {
          System.out.println("Database will not be configured. ");
          Runtime.getRuntime().exit(0);
       }

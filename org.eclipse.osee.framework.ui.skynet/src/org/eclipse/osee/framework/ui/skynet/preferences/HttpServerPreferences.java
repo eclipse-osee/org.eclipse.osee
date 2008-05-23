@@ -71,9 +71,9 @@ public class HttpServerPreferences extends FieldEditorPreferencePage implements 
       Composite resourceComposite = new Composite(resourceGroup, SWT.NONE);
       resourceComposite.setLayout(new GridLayout(2, false));
       resourceComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      String defaultResourceServer = null;
+      String defaultApplicationServer = null;
       try {
-         defaultResourceServer = HttpUrlBuilder.getInstance().getResourceServerPrefix();
+         defaultApplicationServer = HttpUrlBuilder.getInstance().getApplicationServerPrefix();
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
@@ -82,7 +82,7 @@ public class HttpServerPreferences extends FieldEditorPreferencePage implements 
       label1.setText("Default: ");
 
       Label label2 = new Label(resourceComposite, SWT.NONE);
-      label2.setText(defaultResourceServer != null ? defaultResourceServer : "");
+      label2.setText(defaultApplicationServer != null ? defaultApplicationServer : "");
 
    }
 
