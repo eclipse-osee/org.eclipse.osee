@@ -74,7 +74,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public final int aaaSerialId = count++;
    private final Branch branch;
    private final String guid;
-   protected boolean dirty = true;
+   protected boolean dirty = false;
    protected boolean inTransaction = false;
    private boolean deleted = false;
    private ArtifactType artifactType;
