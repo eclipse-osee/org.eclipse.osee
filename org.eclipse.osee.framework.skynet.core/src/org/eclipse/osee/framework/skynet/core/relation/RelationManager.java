@@ -82,7 +82,7 @@ public class RelationManager {
    public static void manageRelation(RelationLink relation, RelationSide relationSide) {
       Artifact artifact = ArtifactCache.get(relation.getArtifactId(relationSide), relation.getBranch(relationSide));
 
-      if (artifact != null && !artifact.isLinksLoaded()) {
+      if (artifact != null && (!artifact.isLinksLoaded() || !relation.isInDb())) {
          List<RelationLink> artifactsRelations = artifactToRelations.get(artifact);
          if (artifactsRelations == null) {
             artifactsRelations = Collections.synchronizedList(new ArrayList<RelationLink>(4));
@@ -102,8 +102,6 @@ public class RelationManager {
             }
          }
          selectedRelations.add(relation);
-
-         artifact.setLinksLoaded();
       }
    }
 

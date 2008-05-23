@@ -192,6 +192,10 @@ public final class ArtifactLoader {
          }
       }
 
+      for (Artifact artifact : artifactsNeedingRelations) {
+         artifact.setLinksLoaded();
+      }
+
       if (otherSideLoadLevel != SHALLOW) {
          // bulk load any artifacts needed for these links (this checks the cache first)
          new ArtifactQueryBuilder(artifactIdsToLoad, branch, false, otherSideLoadLevel).getArtifacts(null);

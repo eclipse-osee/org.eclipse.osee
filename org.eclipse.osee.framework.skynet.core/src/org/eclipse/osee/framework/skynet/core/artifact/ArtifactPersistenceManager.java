@@ -807,7 +807,13 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    public static Artifact getDefaultHierarchyRootArtifact(Branch branch, boolean createIfNecessary) throws SQLException, MultipleArtifactsExist, ArtifactDoesNotExist {
       try {
-         return ArtifactQuery.getArtifactFromTypeAndName(ROOT_ARTIFACT_TYPE_NAME, DEFAULT_HIERARCHY_ROOT_NAME, branch);
+         Artifact root = ArtifactCache.getByTextId(DEFAULT_HIERARCHY_ROOT_NAME, branch);
+         if (root == null) {
+            root =
+                  ArtifactQuery.getArtifactFromTypeAndName(ROOT_ARTIFACT_TYPE_NAME, DEFAULT_HIERARCHY_ROOT_NAME, branch);
+            ArtifactCache.putByTextId(DEFAULT_HIERARCHY_ROOT_NAME, root);
+         }
+         return root;
       } catch (ArtifactDoesNotExist ex) {
          if (createIfNecessary) {
             logger.log(Level.INFO, "Created " + DEFAULT_HIERARCHY_ROOT_NAME + " becuase no root was found.");

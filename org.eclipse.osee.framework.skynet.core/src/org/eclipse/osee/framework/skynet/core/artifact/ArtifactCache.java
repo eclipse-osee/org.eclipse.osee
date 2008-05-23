@@ -11,23 +11,25 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 
 /**
  * @author Ryan D. Brooks
  */
 public class ArtifactCache {
    // The keys for this are <artId, transactionId>
-   private final DoubleKeyHashMap<Integer, Integer, Artifact> artifactIdCache =
-         new DoubleKeyHashMap<Integer, Integer, Artifact>();
-   private final DoubleKeyHashMap<String, Integer, Artifact> artifactGuidCache =
-         new DoubleKeyHashMap<String, Integer, Artifact>();
+   private final CompositeKeyHashMap<Integer, Integer, Artifact> historicalArtifactIdCache =
+         new CompositeKeyHashMap<Integer, Integer, Artifact>();
+   private final CompositeKeyHashMap<String, Integer, Artifact> historicalArtifactGuidCache =
+         new CompositeKeyHashMap<String, Integer, Artifact>();
 
-   private final CompositeKeyHashMap<Integer, Branch, Artifact> artifactIdBranchCache =
+   private final CompositeKeyHashMap<Integer, Branch, Artifact> artifactIdCache =
          new CompositeKeyHashMap<Integer, Branch, Artifact>(2000);
 
-   private final CompositeKeyHashMap<String, Branch, Artifact> guidBranchCache =
+   private final CompositeKeyHashMap<String, Branch, Artifact> guidCache =
          new CompositeKeyHashMap<String, Branch, Artifact>(2000);
+
+   private final CompositeKeyHashMap<String, Branch, Artifact> keyedArtifactCache =
+         new CompositeKeyHashMap<String, Branch, Artifact>(10);
 
    private static final ArtifactCache instance = new ArtifactCache();
 
@@ -41,27 +43,27 @@ public class ArtifactCache {
     */
    static void cache(Artifact artifact) {
       if (artifact.isLive()) {
-         instance.artifactIdBranchCache.put(artifact.getArtId(), artifact.getBranch(), artifact);
-         instance.guidBranchCache.put(artifact.getGuid(), artifact.getBranch(), artifact);
+         instance.artifactIdCache.put(artifact.getArtId(), artifact.getBranch(), artifact);
+         instance.guidCache.put(artifact.getGuid(), artifact.getBranch(), artifact);
       } else {
-         instance.artifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
-         instance.artifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
+         instance.historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
+         instance.historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
       }
    }
 
    static void deCache(Artifact artifact) {
-      instance.artifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
-      instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
-      instance.artifactIdBranchCache.remove(artifact.getArtId(), artifact.getBranch());
-      instance.guidBranchCache.remove(artifact.getGuid(), artifact.getBranch());
+      instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
+      instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
+      instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch());
+      instance.guidCache.remove(artifact.getGuid(), artifact.getBranch());
    }
 
    public static Artifact get(Integer artId, Integer transactionNumber) {
-      return instance.artifactIdCache.get(artId, transactionNumber);
+      return instance.historicalArtifactIdCache.get(artId, transactionNumber);
    }
 
    public static Artifact get(String guid, Integer transactionNumber) {
-      return instance.artifactGuidCache.get(guid, transactionNumber);
+      return instance.historicalArtifactGuidCache.get(guid, transactionNumber);
    }
 
    /**
@@ -73,7 +75,7 @@ public class ArtifactCache {
     * @return
     */
    public static Artifact get(Integer artId, Branch branch) {
-      return instance.artifactIdBranchCache.get(artId, branch);
+      return instance.artifactIdCache.get(artId, branch);
    }
 
    /**
@@ -84,6 +86,28 @@ public class ArtifactCache {
     * @return
     */
    public static Artifact get(String guid, Branch branch) {
-      return instance.guidBranchCache.get(guid, branch);
+      return instance.guidCache.get(guid, branch);
+   }
+
+   /**
+    * returns the active artifact based on the previously provided text key and branch
+    * 
+    * @param key
+    * @param branch
+    * @return
+    */
+   public static Artifact getByTextId(String key, Branch branch) {
+      return instance.keyedArtifactCache.get(key, branch);
+   }
+
+   /**
+    * used to cache an artifact based on a text identifier and its branch
+    * 
+    * @param key
+    * @param branch
+    * @param artifact
+    */
+   public static void putByTextId(String key, Artifact artifact) {
+      instance.keyedArtifactCache.put(key, artifact.getBranch(), artifact);
    }
 }
