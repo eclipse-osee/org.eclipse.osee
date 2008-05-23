@@ -186,17 +186,19 @@ public class WordUtil {
    }
 
    public final static String removeWordMarkupSmartTags(String wordMarkup) {
-      String wordMarkup3 = wordMarkup;
-      String[] splitsOnSmartTagStart = wordMarkup.split("<[/]{0,1}st\\d{1,22}");// <st1:place>|</st1:place>
-      if (splitsOnSmartTagStart.length > 1) {
-         StringBuilder myStringBuilder = new StringBuilder(splitsOnSmartTagStart[0]);
-         for (int i = 1; i < splitsOnSmartTagStart.length; i++) {
-            int smartTagEndingIndex = splitsOnSmartTagStart[i].indexOf(">");
-            myStringBuilder.append(splitsOnSmartTagStart[i].substring(smartTagEndingIndex + 1));
+      if (wordMarkup != null) {
+         String[] splitsOnSmartTagStart = wordMarkup.split("<[/]{0,1}st\\d{1,22}");// example smart (cough, cough) tags <st1:place>|</st1:place>
+         if (splitsOnSmartTagStart.length > 1) {
+            StringBuilder myStringBuilder = new StringBuilder(splitsOnSmartTagStart[0]);
+            for (int i = 1; i < splitsOnSmartTagStart.length; i++) {
+               int smartTagEndingIndex = splitsOnSmartTagStart[i].indexOf(">");
+               myStringBuilder.append(splitsOnSmartTagStart[i].substring(smartTagEndingIndex + 1));
+            }
+            wordMarkup = myStringBuilder.toString();
          }
-         wordMarkup3 = myStringBuilder.toString();
       }
-      return wordMarkup3;
+
+      return wordMarkup;
    }
 
    public final static String addGUIDToDocument(String myGuid, String wholeDocumentWordMarkup) {
