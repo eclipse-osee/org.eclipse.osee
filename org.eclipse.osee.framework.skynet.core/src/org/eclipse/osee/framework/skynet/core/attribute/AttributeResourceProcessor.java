@@ -11,13 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
+import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 
 public class AttributeResourceProcessor extends AbstractResourceProcessor {
 
@@ -27,33 +23,15 @@ public class AttributeResourceProcessor extends AbstractResourceProcessor {
       this.attribute = attribute;
    }
 
-   private URL generatePathURL(DataStore dataToStore) throws Exception {
-      Map<String, String> parameterMap = new HashMap<String, String>();
-      parameterMap.put("uri", dataToStore.getLocator());
-      String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("resource", parameterMap);
-      return new URL(urlString);
-   }
-
    protected URL getAcquireURL(DataStore dataToStore) throws Exception {
-      return generatePathURL(dataToStore);
+      return AttributeURL.getAcquireURL(dataToStore.getLocator());
    }
 
    protected URL getDeleteURL(DataStore dataToStore) throws Exception {
-      return generatePathURL(dataToStore);
+      return AttributeURL.getDeleteURL(dataToStore.getLocator());
    }
 
    protected URL getStorageURL(DataStore dataToStore) throws Exception {
-      Artifact artifact = attribute.getArtifact();
-
-      Map<String, String> parameterMap = new HashMap<String, String>();
-      parameterMap.put("protocol", "attr");
-      parameterMap.put("seed", Integer.toString(attribute.getGammaId()));
-      parameterMap.put("name", artifact.getHumanReadableId());
-      String extension = dataToStore.getExtension();
-      if (Strings.isValid(extension) != false) {
-         parameterMap.put("extension", dataToStore.getExtension());
-      }
-      String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("resource", parameterMap);
-      return new URL(urlString);
+      return AttributeURL.getStorageURL(attribute, dataToStore.getExtension());
    }
 }
