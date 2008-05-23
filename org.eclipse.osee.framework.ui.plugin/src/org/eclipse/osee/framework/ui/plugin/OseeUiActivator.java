@@ -298,10 +298,10 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       if (!ConnectionHandler.isConnected()) {
          message.append("DB Connection Unavailable");
       }
-      if (message.length() > 0) {
-         message.append("\n");
-      }
       if (!OseeApplicationServer.isApplicationServerAlive()) {
+         if (message.length() > 0) {
+            message.append("\n");
+         }
          message.append("OSEE Application Server Unavailable");
       }
 
