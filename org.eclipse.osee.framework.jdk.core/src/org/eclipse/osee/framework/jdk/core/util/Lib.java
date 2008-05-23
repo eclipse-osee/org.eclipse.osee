@@ -34,6 +34,7 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
@@ -348,6 +349,48 @@ public final class Lib {
       java.io.InputStream in = null;
       in = new java.io.ByteArrayInputStream(value.getBytes("UTF-8"));
       return in;
+   }
+
+   public static InputStream byteBufferToInputStream(final ByteBuffer byteBuffer) {
+      return new InputStream() {
+         public synchronized int read() throws IOException {
+            if (!byteBuffer.hasRemaining()) {
+               return -1;
+            }
+            return byteBuffer.get();
+         }
+
+         public synchronized int read(byte[] bytes, int off, int len) throws IOException {
+            len = Math.min(len, byteBuffer.remaining());
+            if (off != len) {
+               byteBuffer.get(bytes, off, len);
+            } else {
+               len = -1;
+            }
+            return len;
+         }
+
+         /* (non-Javadoc)
+          * @see java.io.InputStream#reset()
+          */
+         @Override
+         public synchronized void reset() throws IOException {
+            byteBuffer.rewind();
+         }
+
+      };
+   }
+
+   public static OutputStream byteBufferToOutputStream(final ByteBuffer byteBuffer) {
+      return new OutputStream() {
+         public synchronized void write(int b) throws IOException {
+            byteBuffer.put((byte) b);
+         }
+
+         public synchronized void write(byte[] bytes, int off, int len) throws IOException {
+            byteBuffer.put(bytes, off, len);
+         }
+      };
    }
 
    public static final Pattern numberListPattern = Pattern.compile("\\d+");
