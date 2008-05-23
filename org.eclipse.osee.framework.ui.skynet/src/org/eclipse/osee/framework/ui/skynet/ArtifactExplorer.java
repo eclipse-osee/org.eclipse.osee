@@ -1284,7 +1284,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
 
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(null)) return;
+      if (SkynetGuiPlugin.areOSEEServicesAvailable().isFalse()) return;
 
       try {
          if (memento != null && memento.getString(ROOT_GUID) != null) {
@@ -1328,7 +1328,9 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
    public void dispose() {
       super.dispose();
       SkynetEventManager.getInstance().unRegisterAll(this);
-      trees.remove(treeViewer.getTree());
+      if (treeViewer != null) {
+         trees.remove(treeViewer.getTree());
+      }
    }
 
    public String getActionDescription() {

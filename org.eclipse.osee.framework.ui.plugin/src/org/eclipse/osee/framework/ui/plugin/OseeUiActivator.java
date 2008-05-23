@@ -294,13 +294,18 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     * @return Result.isFalse if not connected with getText() of problem
     */
    public static Result areOSEEServicesAvailable() {
+      StringBuilder message = new StringBuilder();
       if (!ConnectionHandler.isConnected()) {
-         return new Result("DB Connection Unavailable");
+         message.append("DB Connection Unavailable");
+      }
+      if (message.length() > 0) {
+         message.append("\n");
       }
       if (!OseeApplicationServer.isApplicationServerAlive()) {
-         return new Result("OSEE Application Server Unavailable");
+         message.append("OSEE Application Server Unavailable");
       }
-      return Result.TrueResult;
+
+      return message.length() > 0 ? new Result(message.toString()) : Result.TrueResult;
    }
 
 }

@@ -102,16 +102,18 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
 
    @Override
    public void saveState(IMemento memento) {
-      memento.putString(PRIOR_SEARCH_TEXT, txtSearch.getText());
-      memento.putString(PRIOR_CASE_SENSITIVE, Boolean.toString(chkCaseSensitive.getSelection()));
-      memento.putString(PRIOR_PARTIAL_MATCH, Boolean.toString(chkPartialSearch.getSelection()));
+      if (txtSearch != null && chkCaseSensitive != null && chkPartialSearch != null && grpSearchType != null) {
+         memento.putString(PRIOR_SEARCH_TEXT, txtSearch.getText());
+         memento.putString(PRIOR_CASE_SENSITIVE, Boolean.toString(chkCaseSensitive.getSelection()));
+         memento.putString(PRIOR_PARTIAL_MATCH, Boolean.toString(chkPartialSearch.getSelection()));
 
-      for (Control control : grpSearchType.getChildren()) {
-         if (control instanceof Button) {
-            Button button = (Button) control;
-            if (button.getSelection()) {
-               memento.putString(PRIOR_SEARCH_TYPE, button.getText());
-               break;
+         for (Control control : grpSearchType.getChildren()) {
+            if (control instanceof Button) {
+               Button button = (Button) control;
+               if (button.getSelection()) {
+                  memento.putString(PRIOR_SEARCH_TYPE, button.getText());
+                  break;
+               }
             }
          }
       }

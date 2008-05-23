@@ -1099,10 +1099,12 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    @Override
    public void saveState(IMemento memento) {
       // Ask to save the user in case any changes to favorite branches have been made
-      try {
-         SkynetAuthentication.getInstance().getAuthenticatedUser().persistAttributes();
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      if (SkynetGuiPlugin.areOSEEServicesAvailable().isTrue()) {
+         try {
+            SkynetAuthentication.getInstance().getAuthenticatedUser().persistAttributes();
+         } catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
       }
    }
 
