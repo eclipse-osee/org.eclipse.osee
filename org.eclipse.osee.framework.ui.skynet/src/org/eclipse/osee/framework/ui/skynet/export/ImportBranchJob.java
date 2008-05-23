@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.export;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,13 +55,14 @@ public class ImportBranchJob extends Job {
    }
 
    public IStatus run(final IProgressMonitor monitor) {
+      ZipFile zipFile = null;
       try {
          String baseName = Lib.removeExtension(importFile.getName());
-         ZipFile zipFile = new ZipFile(importFile);
+         zipFile = new ZipFile(importFile);
          ZipEntry entry = zipFile.getEntry(baseName + ".xml");
          InputStream imputStream = zipFile.getInputStream(entry);
          XMLReader reader = XMLReaderFactory.createXMLReader();
-         reader.setContentHandler(new BranchImporterSaxHandler(importFile, branch, includeMainLevelBranch,
+         reader.setContentHandler(new BranchImporterSaxHandler(zipFile, branch, includeMainLevelBranch,
                includeDescendantBranches, monitor));
          reader.parse(new InputSource(imputStream));
 
@@ -88,6 +90,13 @@ public class ImportBranchJob extends Job {
          return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.toString(), ex);
       } finally {
          monitor.done();
+         if (zipFile != null) {
+            try {
+               zipFile.close();
+            } catch (IOException ex) {
+               logger.log(Level.SEVERE, ex.toString(), ex);
+            }
+         }
       }
    }
 }

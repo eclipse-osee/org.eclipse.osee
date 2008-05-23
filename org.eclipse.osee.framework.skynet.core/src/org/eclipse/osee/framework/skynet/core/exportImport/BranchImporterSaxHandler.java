@@ -25,8 +25,6 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_ID_SEQ;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -37,6 +35,8 @@ import java.sql.Timestamp;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -93,7 +93,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
    private final GuidCache artifactGuidCache;
    private final GuidCache attributeGuidCache;
    private final GuidCache linkGuidCache;
-   private final File binaryDataSource;
+   private final ZipFile binaryDataSource;
 
    private Integer currentTransactionId;
    private Integer currentArtifactId;
@@ -105,7 +105,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
    private Stack<Object> transactionKeys;
 
-   public BranchImporterSaxHandler(File binaryDataSource, Branch supportingBranch, boolean includeMainLevelBranch, boolean includeDescendantBranches, IProgressMonitor monitor) throws SQLException, IOException {
+   public BranchImporterSaxHandler(ZipFile binaryDataSource, Branch supportingBranch, boolean includeMainLevelBranch, boolean includeDescendantBranches, IProgressMonitor monitor) throws SQLException, IOException {
 
       this.currentTransactionId = null;
       this.currentArtifactId = null;
@@ -301,8 +301,9 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       if (Strings.isValid(uriValue)) {
          InputStream inputStream = null;
          try {
-            File source = new File(getBinaryDataSource(), uriValue);
-            inputStream = new FileInputStream(source);
+            ZipFile zipFile = getBinaryDataSource();
+            ZipEntry entry = zipFile.getEntry(uriValue);
+            inputStream = zipFile.getInputStream(entry);
             URL url = AttributeURL.getStorageURL(gammaId, artifactHrid, Lib.getExtension(uriValue));
             URI result =
                   HttpProcessor.save(url, inputStream, HttpURLConnection.guessContentTypeFromName(uriValue),
@@ -376,7 +377,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
       return deleted ? ModificationType.DELETED : (modified ? ModificationType.CHANGE : ModificationType.NEW);
    }
 
-   private File getBinaryDataSource() {
+   private ZipFile getBinaryDataSource() {
       return binaryDataSource;
    }
 }
