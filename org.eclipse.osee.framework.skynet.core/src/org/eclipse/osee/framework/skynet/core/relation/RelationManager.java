@@ -145,9 +145,10 @@ public class RelationManager {
       }
 
       if (artifacts.size() > 1) {
-         throw new MultipleArtifactsExist(String.format(
-               "There are %s artifacts related to %s by a relation of type %s instead of the expected 1.",
-               artifacts.size(), artifact, relationType));
+         throw new MultipleArtifactsExist(
+               String.format(
+                     "There are %s artifacts related to \"%s\" by a relation of type \"%s\" on side %s instead of the expected 1.",
+                     artifacts.size(), artifact, relationType, relationSide.toString()));
       }
       return artifacts.get(0);
    }
