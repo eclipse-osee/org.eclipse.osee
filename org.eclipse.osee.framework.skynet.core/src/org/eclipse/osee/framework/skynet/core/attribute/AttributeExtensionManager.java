@@ -104,7 +104,7 @@ public class AttributeExtensionManager {
          List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(extensionPointId, elementName);
          for (IConfigurationElement element : elements) {
             IExtension extension = ((IExtension) element.getParent());
-            String name = extension.getUniqueIdentifier();
+            String name = resolveName(extension.getUniqueIdentifier());
             String className = element.getAttribute(classNameAttribute);
             String bundleName = element.getContributor().getName();
 
