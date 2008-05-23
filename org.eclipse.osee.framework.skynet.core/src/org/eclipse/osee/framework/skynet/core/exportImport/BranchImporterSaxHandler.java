@@ -34,8 +34,6 @@ import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,9 +50,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
-import org.eclipse.osee.framework.skynet.core.linking.HttpUrlBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -305,15 +303,10 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
          try {
             File source = new File(getBinaryDataSource(), uriValue);
             inputStream = new FileInputStream(source);
-            Map<String, String> parameterMap = new HashMap<String, String>();
-            parameterMap.put("protocol", "attr");
-            parameterMap.put("seed", Integer.toString(gammaId));
-            parameterMap.put("name", artifactHrid);
-            parameterMap.put("extension", Lib.getExtension(uriValue));
-            String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("resource", parameterMap);
+            URL url = AttributeURL.getStorageURL(gammaId, artifactHrid, Lib.getExtension(uriValue));
             URI result =
-                  HttpProcessor.save(new URL(urlString), inputStream,
-                        HttpURLConnection.guessContentTypeFromName(uriValue), "ISO-8859-1");
+                  HttpProcessor.save(url, inputStream, HttpURLConnection.guessContentTypeFromName(uriValue),
+                        "ISO-8859-1");
             uriToStore = result.toASCIIString();
          } finally {
             if (inputStream != null) {
