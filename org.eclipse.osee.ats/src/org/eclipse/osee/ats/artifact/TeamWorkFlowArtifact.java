@@ -283,7 +283,10 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public void setTargetedForVersion(VersionArtifact version, boolean persist) throws SQLException {
-      relateReplace(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, version, persist);
+      relateReplace(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, version);
+      if (persist) {
+         persistRelations();
+      }
    }
 
    public VersionArtifact getTargetedForVersion() throws SQLException {

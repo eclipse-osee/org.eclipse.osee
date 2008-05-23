@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -55,7 +54,6 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -379,7 +377,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     */
    public void addChild(Artifact artifact) throws SQLException {
-      addRelation(DEFAULT_HIERARCHICAL__CHILD, artifact, null);
+      addRelation(DEFAULT_HIERARCHICAL__CHILD, artifact);
    }
 
    /**
@@ -961,15 +959,21 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * Return relations that exist between artifacts
     * 
     * @throws SQLException
+    * @throws ArtifactDoesNotExist
     */
    @Deprecated
    public ArrayList<RelationLink> getRelations(Artifact artifact) throws SQLException {
-      if (true) throw new UnsupportedOperationException();
-      ArrayList<RelationLink> links = new ArrayList<RelationLink>();
-      for (RelationLink link : getLinkManager().getLinks()) {
-         if (getLinkManager().getOtherSideAritfact(link).equals(artifact)) links.add(link);
+      ArrayList<RelationLink> relations = new ArrayList<RelationLink>();
+      for (RelationLink relation : getRelationsAll()) {
+         try {
+            if (relation.getArtifactOnOtherSide(this).equals(artifact)) {
+               relations.add(relation);
+            }
+         } catch (ArtifactDoesNotExist ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
       }
-      return links;
+      return relations;
    }
 
    /**
@@ -979,12 +983,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    @Deprecated
    public ArrayList<RelationLink> getRelations(IRelationEnumeration side, Artifact artifact) throws SQLException {
-      if (true) throw new UnsupportedOperationException();
-      ArrayList<RelationLink> links = new ArrayList<RelationLink>();
-      for (RelationLink link : getLinkManager().getLinks()) {
-         if (getLinkManager().getOtherSideAritfact(link).equals(artifact)) if (side.isThisType(link)) links.add(link);
+      ArrayList<RelationLink> relations = new ArrayList<RelationLink>();
+      for (RelationLink relation : getRelations(side)) {
+         try {
+            if (relation.getArtifactOnOtherSide(this).equals(artifact)) {
+               relations.add(relation);
+            }
+         } catch (ArtifactDoesNotExist ex) {
+            SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         }
       }
-      return links;
+      return relations;
    }
 
    /**
@@ -1059,6 +1068,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       RelationManager.addRelation(relationSide.getRelationType(), artifactA, artifactB, rationale);
    }
 
+   public void addRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
+      addRelation(relationSide, artifact, null);
+   }
+
    /**
     * Use addRelation instead
     * 
@@ -1069,7 +1082,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    @Deprecated
    public void relate(IRelationEnumeration relationSide, Artifact artifact, boolean persist) throws SQLException {
-      addRelation(relationSide, artifact, null);
+      addRelation(relationSide, artifact);
       persistRelations();
    }
 
@@ -1080,18 +1093,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       RelationManager.deleteRelation(relationSide.getRelationType(), artifactA, artifactB);
    }
 
-   public void relateReplace(IRelationEnumeration relationSide, Artifact artifact, boolean persist) throws SQLException {
-      relateReplace(relationSide, Arrays.asList(new Artifact[] {artifact}), persist);
-   }
-
-   public void relateReplace(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, boolean persist) throws SQLException {
-      if (true) throw new UnsupportedOperationException();
-      RelationLinkGroup group = getLinkManager().ensureRelationGroupExists(relationSide);
-      group.removeAll();
-      for (Artifact art : artifacts) {
-         group.addArtifact(art);
+   public void relateReplace(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
+      for (RelationLink relation : getRelations(relationSide)) {
+         relation.delete();
       }
-      if (persist) persistRelations();
+      addRelation(relationSide, artifact);
    }
 
    public final boolean isLinksLoaded() {

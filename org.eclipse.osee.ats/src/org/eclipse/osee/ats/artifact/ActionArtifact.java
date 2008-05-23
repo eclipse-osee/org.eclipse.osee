@@ -349,7 +349,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws SQLException {
       super.atsDelete(deleteArts, allRelated);
       // Delete all products
-      for (TeamWorkFlowArtifact art : getArtifacts(CoreRelationEnumeration.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class))
+      for (TeamWorkFlowArtifact art : getArtifacts(CoreRelationEnumeration.ActionToWorkflow_WorkFlow,
+            TeamWorkFlowArtifact.class))
          art.atsDelete(deleteArts, allRelated);
    }
 
@@ -813,7 +814,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       teamArt.setTeamDefinition(teamDef);
 
       // Relate Action to WorkFlow
-      addRelation(CoreRelationEnumeration.ActionToWorkflow_WorkFlow, teamArt, null);
+      addRelation(CoreRelationEnumeration.ActionToWorkflow_WorkFlow, teamArt);
 
       teamArt.persistAttributesAndRelations();
 

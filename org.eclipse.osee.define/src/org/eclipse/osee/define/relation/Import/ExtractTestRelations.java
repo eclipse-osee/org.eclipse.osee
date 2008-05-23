@@ -105,7 +105,7 @@ public class ExtractTestRelations {
       }
 
       // TODO replace the null here with the Test_TestSide relationSide enumeration
-      reqArtifact.addRelation(null, getTestArtifact(testArtifactFile, reqArtifact.getBranch()), null);
+      reqArtifact.addRelation(null, getTestArtifact(testArtifactFile, reqArtifact.getBranch()));
       // Get a new test relation with the same tag as the requirement artifact
       //      UserRelation testRelation = relationManager.getUserRelationDescriptor("Test").makeNewUserRelation(reqArtifact.getTag());
       //      RelationLink link = relationManager.getRelationLinkDescriptor("Test").makeNewLink();

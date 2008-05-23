@@ -104,7 +104,7 @@ public class ChangeArtifactType extends AbstractBlam {
    private void processRelations(Artifact artifact, ArtifactType artifactType) throws SQLException {
       relationsToDelete = new LinkedList<RelationLink>();
 
-      for (RelationLink link : artifact.getLinkManager().getLinks()) {
+      for (RelationLink link : artifact.getRelationsAll()) {
          if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getSide(artifact)) == 0) {
             relationsToDelete.add(link);
          }
@@ -114,7 +114,7 @@ public class ChangeArtifactType extends AbstractBlam {
    /**
     * @param artifact
     * @param descriptor
-    * @return true if the user acceptes the purging of the attributes and realtions that are not compatable for the new
+    * @return true if the user accepts the purging of the attributes and relations that are not compatible for the new
     *         artifact type else false.
     */
    private boolean doesUserAcceptArtifactChange(final Artifact artifact, final ArtifactType descriptor) {

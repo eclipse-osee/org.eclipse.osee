@@ -37,8 +37,8 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.InsertLocation;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -596,10 +596,11 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                                  protected void handleTxWork() throws Exception {
                                     for (Artifact artifact : insertArts) {
                                        // Remove item from old group
-                                       parentArtifact.deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact);
+                                       parentArtifact.deleteRelation(
+                                             CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact);
                                        // Add items to new group
-                                       targetArtifact.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact,
-                                             null);
+                                       targetArtifact.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS,
+                                             artifact);
                                     }
                                     parentArtifact.persistAttributesAndRelations();
                                     targetArtifact.persistAttributesAndRelations();
@@ -682,8 +683,8 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                   protected void handleTxWork() throws Exception {
                      for (Artifact art : artsToRelate) {
                         if (!dragOverExplorerItem.contains(art)) {
-                           dragOverExplorerItem.getArtifact().relate(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art,
-                                 true);
+                           dragOverExplorerItem.getArtifact().relate(
+                                 CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art, true);
                         }
                      }
                   }

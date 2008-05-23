@@ -15,8 +15,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -32,7 +32,7 @@ public class DemoDbTraceabilityTx extends AbstractSkynetTxTemplate {
 
    private void relate(IRelationEnumeration relationSide, Artifact artifact, Collection<Artifact> artifacts) throws SQLException {
       for (Artifact otherArtifact : artifacts) {
-         artifact.addRelation(relationSide, otherArtifact, null);
+         artifact.addRelation(relationSide, otherArtifact);
       }
    }
 

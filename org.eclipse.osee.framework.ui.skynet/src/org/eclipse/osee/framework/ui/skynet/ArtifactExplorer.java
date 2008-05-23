@@ -63,8 +63,8 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -962,7 +962,9 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             if (result == 0) {
                HtmlReportJob job;
                try {
-                  job = new HtmlReportJob("Hierarchical Report", artifacts, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
+                  job =
+                        new HtmlReportJob("Hierarchical Report", artifacts,
+                              CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
                   job.setIncludeAttributes(ld.isShowAttributes());
                   job.setRecurseChildren(ld.isRecurseChildren());
                   Jobs.startJob(job);
@@ -1432,11 +1434,10 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                   protected void handleTxWork() throws Exception {
                      // Replace all of the parent relations
                      for (Artifact artifact : artifactsToBeRelated) {
-                        artifact.relateReplace(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact, true);
-                        artifact.persistAttributes();
+                        artifact.relateReplace(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
+                        artifact.persistAttributesAndRelations();
                      }
                   }
-
                };
 
                try {

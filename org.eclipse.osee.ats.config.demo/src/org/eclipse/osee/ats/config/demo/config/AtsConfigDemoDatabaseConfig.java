@@ -128,9 +128,9 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
-         if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
-               true);
-         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(CoreRelationEnumeration.TeamDefinitionToVersion_Version, ver, null);
+         if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
+         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(
+               CoreRelationEnumeration.TeamDefinitionToVersion_Version, ver);
          ver.persistAttributesAndRelations();
       }
 
@@ -141,9 +141,9 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), verName);
          if (verName.contains("1")) ver.setReleased(true);
-         if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(),
-               true);
-         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(CoreRelationEnumeration.TeamDefinitionToVersion_Version, ver, null);
+         if (verName.contains("2")) ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
+         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(
+               CoreRelationEnumeration.TeamDefinitionToVersion_Version, ver);
          ver.persistAttributesAndRelations();
       }
    }

@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
@@ -733,7 +733,8 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
                         if (taskArt.getParentSMA() != null) {
                            taskArt.deleteRelation(CoreRelationEnumeration.SmaToTask_Sma, taskArt.getParentSMA());
                         }
-                        taskArt.addRelation(CoreRelationEnumeration.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma(), null);
+                        taskArt.addRelation(CoreRelationEnumeration.SmaToTask_Sma,
+                              iXTaskViewer.getParentSmaMgr().getSma());
                         taskArt.persistRelations();
                      }
                   }

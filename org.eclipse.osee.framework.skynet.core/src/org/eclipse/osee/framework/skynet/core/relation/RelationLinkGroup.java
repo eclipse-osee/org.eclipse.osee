@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -125,22 +124,8 @@ public class RelationLinkGroup {
       return true;
    }
 
-   public void removeAll() throws SQLException {
-      // Must do this to keep from concurrent mod exception
-      ArrayList<RelationLink> links = new ArrayList<RelationLink>();
-      for (RelationLink link : groupSide)
-         links.add(link);
-      for (RelationLink link : links)
-         link.delete();
-   }
-
    public Set<Artifact> getArtifacts() {
-      return getArtifacts(Artifact.class);
-   }
-
-   @SuppressWarnings("unchecked")
-   private <A extends Artifact> Set<A> getArtifacts(Class<A> artifactClass) {
-      Set<A> artifacts = new LinkedHashSet<A>();
+      Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
       Artifact artToAdd;
 
       for (RelationLink link : groupSide) {
@@ -150,11 +135,7 @@ public class RelationLinkGroup {
          } else {
             artToAdd = (link.getArtifactB().isDeleted() ? null : link.getArtifactB());
          }
-
-         // if (!artifactClass.isInstance(artToAdd))
-         // throw new IllegalArgumentException("Not all artifacts are of type " + artifactClass);
-
-         if (artToAdd != null) artifacts.add((A) artToAdd);
+         if (artToAdd != null) artifacts.add(artToAdd);
       }
 
       return artifacts;
@@ -180,13 +161,6 @@ public class RelationLinkGroup {
     */
    public LinkManager getLinkManager() {
       return linkManager;
-   }
-
-   /**
-    * @return Returns the number of links for this group.
-    */
-   public int getLinkCount() {
-      return groupSide.size();
    }
 
    private int getLastOrderValue() {

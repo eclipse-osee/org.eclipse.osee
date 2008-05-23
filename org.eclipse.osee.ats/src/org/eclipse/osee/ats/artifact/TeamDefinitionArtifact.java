@@ -67,12 +67,12 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       tda.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       tda.setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
-         tda.addRelation(CoreRelationEnumeration.TeamLead_Lead, user, null);
+         tda.addRelation(CoreRelationEnumeration.TeamLead_Lead, user);
          // All leads are members
-         tda.addRelation(CoreRelationEnumeration.TeamMember_Member, user, null);
+         tda.addRelation(CoreRelationEnumeration.TeamMember_Member, user);
       }
       for (User user : members) {
-         tda.addRelation(CoreRelationEnumeration.TeamMember_Member, user, null);
+         tda.addRelation(CoreRelationEnumeration.TeamMember_Member, user);
       }
 
       if (usesVersions) {
@@ -90,7 +90,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
       // Relate to actionable items
       for (ActionableItemArtifact aia : actionableItems) {
-         tda.addRelation(CoreRelationEnumeration.TeamActionableItem_ActionableItem, aia, null);
+         tda.addRelation(CoreRelationEnumeration.TeamActionableItem_ActionableItem, aia);
       }
 
       tda.persistAttributesAndRelations();
@@ -120,7 +120,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
    }
 
    public VersionArtifact getNextReleaseVersion() throws SQLException, MultipleAttributesExist {
-      for (VersionArtifact verArt : getArtifacts(CoreRelationEnumeration.TeamDefinitionToVersion_Version, VersionArtifact.class)) {
+      for (VersionArtifact verArt : getArtifacts(CoreRelationEnumeration.TeamDefinitionToVersion_Version,
+            VersionArtifact.class)) {
          if (verArt.getSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false)) {
             return verArt;
          }

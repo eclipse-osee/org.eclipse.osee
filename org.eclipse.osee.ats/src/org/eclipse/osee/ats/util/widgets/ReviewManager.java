@@ -102,7 +102,7 @@ public class ReviewManager {
                   BranchPersistenceManager.getAtsBranch(), "Peer to Peer Review");
 
       if (teamParent != null) {
-         teamParent.addRelation(CoreRelationEnumeration.TeamWorkflowToReview_Review, peerToPeerRev, null);
+         teamParent.addRelation(CoreRelationEnumeration.TeamWorkflowToReview_Review, peerToPeerRev);
          if (againstState != null) peerToPeerRev.setSoleAttributeValue(
                ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
       }
