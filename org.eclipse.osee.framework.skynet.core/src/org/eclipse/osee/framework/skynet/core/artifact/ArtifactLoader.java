@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -140,7 +139,7 @@ public final class ArtifactLoader {
       List<Artifact> artifactsNeedingRelations = new ArrayList<Artifact>(artifacts.size());
       Set<Integer> artifactIdsToLoad = null;
       if (otherSideLoadLevel != SHALLOW) {
-         artifactIdsToLoad = new HashSet<Integer>(artifacts.size() * 4);
+         artifactIdsToLoad = new HashSet<Integer>(artifacts.size() * 6);
       }
 
       for (Artifact artifact : artifacts) {
@@ -149,13 +148,17 @@ public final class ArtifactLoader {
          }
       }
 
-      Iterator<Artifact> artIdsIter = artifactsNeedingRelations.iterator();
-      while (artIdsIter.hasNext()) {
+      int startIndex;
+      int stopIndex = 0;
+
+      while (stopIndex < artifactsNeedingRelations.size()) {
+         startIndex = stopIndex;
+         stopIndex = Math.min(startIndex + 1000, artifactsNeedingRelations.size());
 
          ConnectionHandlerStatement chStmt = null;
          try {
             List<Object> relationDataList = new ArrayList<Object>(6);
-            String sql = getRelationSQL(artIdsIter, branch, relationDataList);
+            String sql = getRelationSQL(artifactsNeedingRelations, startIndex, stopIndex, branch, relationDataList);
             chStmt = ConnectionHandler.runPreparedQuery(sql, relationDataList.toArray());
 
             ResultSet rSet = chStmt.getRset();
@@ -187,13 +190,13 @@ public final class ArtifactLoader {
                RelationManager.manageRelation(relation, RelationSide.SIDE_A);
                RelationManager.manageRelation(relation, RelationSide.SIDE_B);
             }
+
+            for (int index = startIndex; index < stopIndex; index++) {
+               artifactsNeedingRelations.get(index).setLinksLoaded();
+            }
          } finally {
             DbUtil.close(chStmt);
          }
-      }
-
-      for (Artifact artifact : artifactsNeedingRelations) {
-         artifact.setLinksLoaded();
       }
 
       if (otherSideLoadLevel != SHALLOW) {
@@ -210,13 +213,17 @@ public final class ArtifactLoader {
          }
       }
 
-      Iterator<Artifact> artIdsIter = artifactsNeedingAttributes.iterator();
-      while (artIdsIter.hasNext()) {
+      int startIndex;
+      int stopIndex = 0;
+
+      while (stopIndex < artifactsNeedingAttributes.size()) {
+         startIndex = stopIndex;
+         stopIndex = Math.min(startIndex + 1000, artifactsNeedingAttributes.size());
 
          ConnectionHandlerStatement chStmt = null;
          try {
             List<Object> attributeDataList = new ArrayList<Object>(4);
-            String sql = getAttributeSQL(artIdsIter, branch, attributeDataList);
+            String sql = getAttributeSQL(artifactsNeedingAttributes, startIndex, stopIndex, branch, attributeDataList);
             chStmt = ConnectionHandler.runPreparedQuery(sql, attributeDataList.toArray());
 
             ResultSet rSet = chStmt.getRset();
@@ -239,14 +246,16 @@ public final class ArtifactLoader {
       }
    }
 
-   private static String getAttributeSQL(Iterator<Artifact> artifacts, Branch branch, List<Object> attributeDataList) {
+   private static String getAttributeSQL(List<Artifact> artifacts, int startIndex, int stopIndex, Branch branch, List<Object> attributeDataList) {
       StringBuilder sql = new StringBuilder(10000);
       sql.append("SELECT att1.* from osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.art_id");
 
-      int artifactId = makeArtifactIdList(artifacts, sql);
-      if (artifactId > 0) {
+      if (stopIndex - startIndex == 1) {
+         sql.append("=?");
          attributeDataList.add(SQL3DataType.INTEGER);
-         attributeDataList.add(artifactId);
+         attributeDataList.add(artifacts.get(startIndex).getArtId());
+      } else {
+         makeArtifactIdList(artifacts, startIndex, stopIndex, sql);
       }
 
       sql.append(" AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=");
@@ -259,21 +268,23 @@ public final class ArtifactLoader {
       return sql.toString();
    }
 
-   private static String getRelationSQL(Iterator<Artifact> artifacts, Branch branch, List<Object> relationDataList) {
+   private static String getRelationSQL(List<Artifact> artifacts, int startIndex, int stopIndex, Branch branch, List<Object> relationDataList) {
       StringBuilder sql = new StringBuilder(10000);
       sql.append("SELECT rel1.*, txs1.* FROM osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE (rel1.a_art_id");
 
-      StringBuilder artifactIdSql = new StringBuilder(8000);
-      int artifactId = makeArtifactIdList(artifacts, artifactIdSql);
-      if (artifactId > 0) {
+      if (stopIndex - startIndex == 1) {
+         sql.append("=? OR rel1.b_art_id =?");
          relationDataList.add(SQL3DataType.INTEGER);
-         relationDataList.add(artifactId);
+         relationDataList.add(artifacts.get(startIndex).getArtId());
          relationDataList.add(SQL3DataType.INTEGER);
-         relationDataList.add(artifactId);
+         relationDataList.add(artifacts.get(startIndex).getArtId());
+      } else {
+         StringBuilder artifactIdSql = new StringBuilder(8 * (stopIndex - startIndex));
+         makeArtifactIdList(artifacts, startIndex, stopIndex, artifactIdSql);
+         sql.append(artifactIdSql);
+         sql.append(" OR rel1.b_art_id");
+         sql.append(artifactIdSql);
       }
-      sql.append(artifactIdSql);
-      sql.append(" OR rel1.b_art_id");
-      sql.append(artifactIdSql);
 
       sql.append(") AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=");
       sql.append(TxChange.CURRENT.ordinal());
@@ -289,27 +300,18 @@ public final class ArtifactLoader {
     * The in clause is limited to 1000 values at a time
     * 
     * @param artifacts
+    * @param startIndex
+    * @param stopIndex
     * @param sql
-    * @param localDataList
     */
-   private static int makeArtifactIdList(Iterator<Artifact> artifacts, StringBuilder sql) {
-      StringBuilder list = new StringBuilder(8000);
-      int count = 0;
-      int artifactId = 0;
-      while (artifacts.hasNext() && count++ < 1000) {
-         artifactId = artifacts.next().getArtId();
-         list.append(artifactId);
-         list.append(',');
+   private static void makeArtifactIdList(List<Artifact> artifacts, int startIndex, int stopIndex, StringBuilder sql) {
+      sql.append(" IN (");
+      for (int index = startIndex; index < stopIndex; index++) {
+         sql.append(artifacts.get(index).getArtId());
+         sql.append(',');
       }
 
-      if (count == 1) {
-         sql.append("=?");
-         return artifactId;
-      } else {
-         sql.append(" IN (");
-         sql.append(list, 0, list.length() - 1);
-         sql.append(')');
-         return 0;
-      }
+      sql.deleteCharAt(sql.length() - 1);
+      sql.append(')');
    }
 }

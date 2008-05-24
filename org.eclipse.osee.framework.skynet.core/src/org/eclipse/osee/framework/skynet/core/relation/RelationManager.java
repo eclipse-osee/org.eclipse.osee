@@ -74,10 +74,10 @@ public class RelationManager {
    }
 
    /**
-    * Store the newly instantiated relation from the perspective of sideA in its appropriate order
+    * Store the newly instantiated relation from the perspective of relationSide in its appropriate order
     * 
     * @param relation
-    * @param sideA
+    * @param relationSide
     */
    public static void manageRelation(RelationLink relation, RelationSide relationSide) {
       Artifact artifact = ArtifactCache.get(relation.getArtifactId(relationSide), relation.getBranch(relationSide));

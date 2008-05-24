@@ -67,7 +67,9 @@ public class XBranchSelectWidget extends XWidget implements Listener {
          labelWidget.setText(label + ":");
       }
       selectComposite = BranchSelectComposite.createBranchSelectComposite(composite, SWT.NONE);
-      selectComposite.restoreWidgetValues(null, Integer.toString(defaultBranch));
+      if (defaultBranch != -1) {
+         selectComposite.restoreWidgetValues(null, Integer.toString(defaultBranch));
+      }
       selectComposite.addListener(this);
    }
 
