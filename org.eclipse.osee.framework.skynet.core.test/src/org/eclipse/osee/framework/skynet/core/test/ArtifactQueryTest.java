@@ -32,6 +32,7 @@ public class ArtifactQueryTest extends TestCase {
          assertTrue(artifacts.size() > 0);
          for (Artifact artifact : artifacts) {
             assertTrue(artifact.getDescriptiveName().length() > 0);
+            artifact.getParent();
          }
       } catch (Exception ex) {
          fail(ex.getLocalizedMessage());

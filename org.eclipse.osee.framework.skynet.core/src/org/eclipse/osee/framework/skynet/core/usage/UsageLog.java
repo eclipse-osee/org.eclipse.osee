@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
  */
 public class UsageLog {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UsageLog.class);
-   private static UsageLog reference = null;
+   private static UsageLog instance = null;
    private static SkynetAuthentication skynetAuth = null;
    private static String INSERT_TO_LOG = null;
 
@@ -46,16 +46,16 @@ public class UsageLog {
    }
 
    public static boolean isInstantiated() {
-      return reference != null;
+      return instance != null;
    }
 
    public static UsageLog getInstance() {
-      if (reference == null) {
-         reference = new UsageLog();
+      if (instance == null) {
+         instance = new UsageLog();
          skynetAuth = SkynetAuthentication.getInstance();
          INSERT_TO_LOG = "INSERT INTO " + USAGE_TABLE + " (user_id, time, event_id, details) VALUES (?,?,?,?)";
       }
-      return reference;
+      return instance;
    }
 
    public void addEntry(UsageEntry entry) {

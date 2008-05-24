@@ -50,7 +50,7 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
       }
       items.add(blamOperationItems);
 
-      if (OseeProperties.getInstance().isDeveloper()) {
+      if (OseeProperties.isDeveloper()) {
          XNavigateItem adminItems = new XNavigateItem(null, "Admin");
          new BranchCommitRegressionTest(adminItems);
          items.add(adminItems);

@@ -297,7 +297,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
                return false;
             }
             boolean isEnabled =
-                  OseeProperties.getInstance().isDeveloper() && accessControlManager.checkObjectListPermission(
+                  OseeProperties.isDeveloper() && accessControlManager.checkObjectListPermission(
                         getSelectedArtifacts(viewer), PermissionEnum.WRITE);
             return isEnabled;
          }
@@ -835,7 +835,7 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
          @Override
          public boolean isEnabled() {
-            return OseeProperties.getInstance().isDeveloper() && accessControlManager.checkObjectListPermission(
+            return OseeProperties.isDeveloper() && accessControlManager.checkObjectListPermission(
                   getSelectedArtifacts(viewer), PermissionEnum.WRITE);
          }
       });

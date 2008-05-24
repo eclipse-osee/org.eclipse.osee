@@ -79,7 +79,7 @@ public final class ArtifactLoader {
       int artifactsCount = artifacts.size();
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(sql, queryParameters);
+         chStmt = ConnectionHandler.runPreparedQuery(10000, sql, queryParameters);
          ResultSet rSet = chStmt.getRset();
 
          while (rSet.next()) {
@@ -159,7 +159,7 @@ public final class ArtifactLoader {
          try {
             List<Object> relationDataList = new ArrayList<Object>(6);
             String sql = getRelationSQL(artifactsNeedingRelations, startIndex, stopIndex, branch, relationDataList);
-            chStmt = ConnectionHandler.runPreparedQuery(sql, relationDataList.toArray());
+            chStmt = ConnectionHandler.runPreparedQuery(6000, sql, relationDataList.toArray());
 
             ResultSet rSet = chStmt.getRset();
             while (rSet.next()) {
@@ -224,7 +224,7 @@ public final class ArtifactLoader {
          try {
             List<Object> attributeDataList = new ArrayList<Object>(4);
             String sql = getAttributeSQL(artifactsNeedingAttributes, startIndex, stopIndex, branch, attributeDataList);
-            chStmt = ConnectionHandler.runPreparedQuery(sql, attributeDataList.toArray());
+            chStmt = ConnectionHandler.runPreparedQuery(6000, sql, attributeDataList.toArray());
 
             ResultSet rSet = chStmt.getRset();
             while (rSet.next()) {

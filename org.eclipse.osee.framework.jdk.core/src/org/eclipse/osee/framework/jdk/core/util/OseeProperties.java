@@ -72,7 +72,7 @@ public class OseeProperties {
       OseeProperties.developer = developer;
    }
 
-   public boolean isDeveloper() {
+   public static boolean isDeveloper() {
       return System.getProperty(OSEE_DEVELOPER) != null || developer;
    }
 

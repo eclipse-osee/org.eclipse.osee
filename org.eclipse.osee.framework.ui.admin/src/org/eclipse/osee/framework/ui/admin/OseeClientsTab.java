@@ -167,7 +167,7 @@ public class OseeClientsTab {
    }
 
    private boolean isUserAllowedToOperate(User user) {
-      return OseeProperties.getInstance().isDeveloper();
+      return OseeProperties.isDeveloper();
    }
 
    @SuppressWarnings("unchecked")

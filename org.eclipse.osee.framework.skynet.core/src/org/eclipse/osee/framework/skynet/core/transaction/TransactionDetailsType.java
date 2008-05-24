@@ -9,7 +9,7 @@ package org.eclipse.osee.framework.skynet.core.transaction;
  * @author Jeff C. Phillips
  */
 public enum TransactionDetailsType {
-   Baselined(1), NonBaselined(0);
+   NonBaselined(0), Baselined(1);
 
    private int id;
 

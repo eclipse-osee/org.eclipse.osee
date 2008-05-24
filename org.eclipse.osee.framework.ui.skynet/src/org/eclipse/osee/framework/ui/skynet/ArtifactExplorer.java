@@ -281,7 +281,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       createAttributesAction();
       createNewArtifactExplorerAction();
 
-      if (OseeProperties.getInstance().isDeveloper()) createDebugStubActions();
+      if (OseeProperties.isDeveloper()) createDebugStubActions();
 
       getSite().setSelectionProvider(treeViewer);
       addExploreSelection();
@@ -291,7 +291,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       new ArtifactExplorerDragAndDrop(tree, VIEW_ID);
       parent.layout();
 
-      if (OseeProperties.getInstance().isDeveloper()) {
+      if (OseeProperties.isDeveloper()) {
          createShowArtIdsAction();
       }
       createSetDefaultBranchAction();

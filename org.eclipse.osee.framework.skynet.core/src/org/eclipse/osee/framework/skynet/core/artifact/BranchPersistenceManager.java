@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_ID_SEQ;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
@@ -81,7 +80,7 @@ public class BranchPersistenceManager implements PersistenceManager {
    static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
 
    private static final String READ_BRANCH_TABLE =
-         "SELECT * FROM " + BRANCH_TABLE + " t1, " + TRANSACTION_DETAIL_TABLE + " t2 WHERE t1.branch_id = t2.branch_id and t2.transaction_id = (SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id") + " FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "= t1.branch_id)";
+         "SELECT * FROM osee_define_branch br1, osee_define_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type=" + TransactionDetailsType.Baselined.ordinal();
    private static final String READ_MERGE_BRANCHES =
          "select * from osee_define_branch b1, osee_define_merge m2, osee_define_tx_details t2 where b1.branch_id = m2.merge_branch_id and t2.branch_id = b1.branch_id and t2.tx_type = 1";
    private static final String CHANGED_RELATIONS =
@@ -98,14 +97,12 @@ public class BranchPersistenceManager implements PersistenceManager {
    private static final String SELECT_BRANCH_FOR_TRANSACTION =
          "SELECT branch_id FROM osee_define_tx_details WHERE transaction_id = ?";
    public static final String NEW_BRANCH_COMMENT = "New Branch from ";
-   private static final String ARCHIVE_BRANCH = "UPDATE " + BRANCH_TABLE + " set archived = 1 WHERE branch_id = ?";
+   private static final String ARCHIVE_BRANCH = "UPDATE osee_define_branch set archived = 1 WHERE branch_id = ?";
    private static final String UPDATE_ASSOCIATED_ART_BRANCH =
-         "UPDATE " + BRANCH_TABLE + " set associated_art_id = ? WHERE branch_id = ?";
+         "UPDATE  osee_define_branch set associated_art_id = ? WHERE branch_id = ?";
 
    private final static String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
    private static final IPreferenceStore preferenceStore = SkynetActivator.getInstance().getPreferenceStore();
-
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
 
    private BranchCreator branchCreator;
    private ConfigurationPersistenceManager configurationManager;
@@ -204,7 +201,7 @@ public class BranchPersistenceManager implements PersistenceManager {
 
                Branch branch = branchCache.get(branchId);
 
-               if ((isArchived) || (!OseeProperties.getInstance().isDeveloper() && rSet.getInt("branch_type") == BranchType.MERGE.getValue())) {
+               if (isArchived || (!OseeProperties.isDeveloper() && rSet.getInt("branch_type") == BranchType.MERGE.getValue())) {
                   if (branch != null) {
                      branchCache.remove(branch.getBranchId());
                   }
@@ -928,7 +925,7 @@ public class BranchPersistenceManager implements PersistenceManager {
       if (branch != defaultBranch.get()) {
          defaultBranch.set(branch);
          preferenceStore.setValue(LAST_DEFAULT_BRANCH, getDefaultBranch().getBranchId());
-         eventManager.kick(new DefaultBranchChangedEvent(this));
+         SkynetEventManager.getInstance().kick(new DefaultBranchChangedEvent(this));
       }
    }
 

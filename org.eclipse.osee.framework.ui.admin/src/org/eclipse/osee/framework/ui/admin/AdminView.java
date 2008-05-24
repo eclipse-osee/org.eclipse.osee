@@ -113,7 +113,7 @@ public class AdminView extends ViewPart implements IActionable {
       };
 
       broadcastMessage.setToolTipText("Broadcast Message");
-      broadcastMessage.setEnabled(OseeProperties.getInstance().isDeveloper());
+      broadcastMessage.setEnabled(OseeProperties.isDeveloper());
 
       OseeAts.addBugToViewToolbar(this, this, AdminPlugin.getInstance(), VIEW_ID, "Admin");
 

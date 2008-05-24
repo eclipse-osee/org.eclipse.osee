@@ -163,7 +163,7 @@ public class AutoRunTab {
    }
 
    private boolean isUserAllowedToOperate(User user) {
-      return OseeProperties.getInstance().isDeveloper();
+      return OseeProperties.isDeveloper();
    }
 
    /**
