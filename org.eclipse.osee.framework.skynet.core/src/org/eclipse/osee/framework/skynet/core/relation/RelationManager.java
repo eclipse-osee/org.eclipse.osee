@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -22,7 +23,9 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -36,6 +39,10 @@ public class RelationManager {
 
    private static final HashMap<Artifact, List<RelationLink>> artifactToRelations =
          new HashMap<Artifact, List<RelationLink>>(1024);
+
+   private static HashSet<List<RelationLink>> sortedLists = new HashSet<List<RelationLink>>();
+
+   private static final int LINKED_LIST_KEY = -1;
 
    private static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType) {
       List<RelationLink> selectedRelations = relations.get(artifact, relationType);
@@ -105,8 +112,52 @@ public class RelationManager {
       }
    }
 
-   private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
+   /**
+    * @param selectedRelations
+    */
+   private static void linkedListSort(List<RelationLink> selectedRelations, Artifact artifact) {
+      for (RelationSide side : RelationSide.values()) {
+         boolean sortList = false;
+         for (RelationLink relation : selectedRelations) {
+            if (relation.getOrder(side) == LINKED_LIST_KEY) {
+               sortList = true;
+               break;
+            }
+         }
+         if (sortList) {
+            int artId = LINKED_LIST_KEY;
+            for (int i = 0; i < selectedRelations.size(); i++) {
+               if (selectedRelations.get(i).getSide(artifact) == side.oppositeSide()) {
+                  for (int j = i; j < selectedRelations.size(); j++) {
+                     int newId = selectedRelations.get(j).getOrder(side);
+                     if (newId == artId) {
+                        artId = selectedRelations.get(j).getArtifactId(side);
+                        selectedRelations.add(i, selectedRelations.remove(j));
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   private static List<RelationLink> getRelationsSorted(Artifact artifact, RelationType relationType) {
       List<RelationLink> selectedRelations = relations.get(artifact, relationType);
+      if (selectedRelations != null && !sortedLists.contains(selectedRelations)) {
+         linkedListSort(selectedRelations, artifact);
+         sortedLists.add(selectedRelations);
+      }
+      return selectedRelations;
+   }
+
+   private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
+      List<RelationLink> selectedRelations = null;
+      if (relationType == null) {
+         selectedRelations = artifactToRelations.get(artifact);
+      } else {
+         selectedRelations = getRelationsSorted(artifact, relationType);
+      }
       if (selectedRelations == null) {
          return Collections.emptyList();
       }
@@ -126,6 +177,10 @@ public class RelationManager {
          }
       }
       return artifacts;
+   }
+
+   public static List<Artifact> getRelatedArtifactsAll(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
+      return getRelatedArtifacts(artifact, null, null);
    }
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType) throws ArtifactDoesNotExist, SQLException {
@@ -232,7 +287,7 @@ public class RelationManager {
    }
 
    public static List<RelationLink> getRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) {
-      List<RelationLink> selectedRelations = relations.get(artifact, relationType);
+      List<RelationLink> selectedRelations = getRelationsSorted(artifact, relationType);
       if (selectedRelations == null) {
          return Collections.emptyList();
       }
@@ -352,6 +407,80 @@ public class RelationManager {
             link.markAsPurged();
          }
          ConnectionHandler.runPreparedUpdateBatch(PURGE_RELATION, batchArgs);
+      }
+   }
+
+   /**
+    * @param targetLink
+    * @param dropLink
+    * @throws SQLException
+    */
+   private static void addRelationAndModifyOrder(Artifact sourceArtifact, Artifact movedArtifact, RelationLink targetLink, boolean infront) throws SQLException {
+
+      RelationSide side = targetLink.getSide(sourceArtifact);
+      Artifact artA = null;
+      Artifact artB = null;
+      if (RelationSide.SIDE_A == side) {
+         artA = sourceArtifact;
+         artB = movedArtifact;
+      } else {
+         artA = movedArtifact;
+         artB = sourceArtifact;
+      }
+
+      //      RelationManager.addRelation(targetLink.getRelationType(), artA, artB, "");
+      RelationLink relationToModify =
+            getLoadedRelation(targetLink.getRelationType(), artA.getArtId(), artB.getArtId(), artA.getBranch(),
+                  artB.getBranch());
+      if (relationToModify == null) {
+         RelationManager.addRelation(targetLink.getRelationType(), artA, artB, "");
+         relationToModify =
+               getLoadedRelation(targetLink.getRelationType(), artA.getArtId(), artB.getArtId(), artA.getBranch(),
+                     artB.getBranch());
+      }
+      if (relationToModify == targetLink) {
+         return;
+      }
+      List<RelationLink> selectedRelations = relations.get(sourceArtifact, targetLink.getRelationType());
+      selectedRelations.remove(relationToModify);
+      selectedRelations.add(
+            infront ? selectedRelations.indexOf(targetLink) : selectedRelations.indexOf(targetLink) + 1,
+            relationToModify);
+
+      int lastArtId = LINKED_LIST_KEY;
+      for (RelationLink link : selectedRelations) {
+         if (!link.isDeleted() && link.getSide(sourceArtifact) == side) {
+            if (link.getOrder(side.oppositeSide()) != lastArtId) {
+               link.setOrder(side.oppositeSide(), lastArtId);
+            }
+            lastArtId = link.getArtifactId(side.oppositeSide());
+         }
+      }
+      SkynetEventManager.getInstance().kick(
+            new CacheArtifactModifiedEvent(sourceArtifact,
+                  org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType.Changed, null));
+   }
+
+   /**
+    * @param targetLink
+    * @param dropLink
+    * @throws SQLException
+    */
+   public static void addRelationAndModifyOrder(Artifact parentArtifact, Artifact targetArtifact, Artifact[] movedArts, RelationType type, boolean infront) throws SQLException {
+      RelationLink targetRelation =
+            getLoadedRelation(parentArtifact, parentArtifact.getArtId(), targetArtifact.getArtId(), type);
+      if (targetRelation == null) {
+         targetRelation = getLoadedRelation(parentArtifact, targetArtifact.getArtId(), parentArtifact.getArtId(), type);
+         if (targetRelation == null) {
+            throw new IllegalArgumentException(
+                  String.format(
+                        "Unable to locate a valid relation using that has [%s] on one side and [%s] on the other of type [%s]",
+                        parentArtifact.toString(), targetArtifact.toString(), type.toString()));
+         }
+      }
+
+      for (int i = movedArts.length - 1; i >= 0; i--) {
+         addRelationAndModifyOrder(parentArtifact, movedArts[i], targetRelation, infront);
       }
    }
 }

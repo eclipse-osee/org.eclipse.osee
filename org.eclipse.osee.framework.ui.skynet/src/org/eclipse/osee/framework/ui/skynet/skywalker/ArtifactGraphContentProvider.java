@@ -22,8 +22,10 @@ import java.util.logging.Logger;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
@@ -53,22 +55,27 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
 
       // Don't want to create any links to artifacts that are NOT in displayArtifacts
       try {
-         LinkManager linkManager = ((Artifact) entity).getLinkManager();
-         for (RelationLinkGroup linkGroup : linkManager.getGroups()) {
-            if (!options.isFilterEnabled()) {
-               for (Artifact art : linkGroup.getArtifacts()) {
-                  if (displayArtifacts.contains(art)) otherItems.add(art);
+         Artifact artifact = (Artifact) entity;
+         List<RelationType> validTypes =
+               RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
+         for (RelationType relationType : validTypes) {
+            if (options.isValidRelationType(relationType)) {
+               for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
+                  if (options.isValidArtifactType(art.getArtifactType()) && displayArtifacts.contains(art)) {
+                     otherItems.add(art);
+                  }
                }
-            } else if (options.isValidRelationLinkGroup(linkGroup)) for (Artifact art : linkGroup.getArtifacts())
-               if (options.isValidArtifactType(art) && displayArtifacts.contains(art)) otherItems.add(art);
+            }
          }
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (ArtifactDoesNotExist ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (OseeDataStoreException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
       }
       return otherItems.toArray();
-
    }
-
    private Set<Artifact> displayArtifacts = new HashSet<Artifact>();
 
    /*
@@ -93,16 +100,12 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
          return;
       } else {
          try {
-            LinkManager linkManager = artifact.getLinkManager();
-            for (RelationLinkGroup linkGroup : linkManager.getGroups()) {
-               if (!options.isFilterEnabled()) {
-                  for (Artifact art : linkGroup.getArtifacts()) {
-                     displayArtifacts.add(art);
-                     getDescendants(displayArtifacts, art, level - 1);
-                  }
-               } else if (options.isValidRelationLinkGroup(linkGroup)) {
-                  for (Artifact art : linkGroup.getArtifacts()) {
-                     if (options.isValidArtifactType(art)) {
+            List<RelationType> validTypes =
+                  RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
+            for (RelationType relationType : validTypes) {
+               if (options.isValidRelationType(relationType)) {
+                  for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
+                     if (options.isValidArtifactType(art.getArtifactType())) {
                         displayArtifacts.add(art);
                         getDescendants(displayArtifacts, art, level - 1);
                      }
@@ -111,6 +114,10 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
             }
          } catch (SQLException ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         } catch (ArtifactDoesNotExist ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
+         } catch (OseeDataStoreException ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
          }
       }
    }

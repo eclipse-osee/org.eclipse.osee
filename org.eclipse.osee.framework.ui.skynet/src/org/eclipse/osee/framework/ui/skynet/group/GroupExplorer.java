@@ -38,9 +38,9 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.InsertLocation;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -620,6 +620,8 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
 
                   if (event.data instanceof ArtifactData) {
 
+                     GroupExplorerItem parentUnivGroupItem = null;
+                     Artifact[] artifactsToInsert = null;
                      // Drag item came from inside Group Explorer
                      if (((ArtifactData) event.data).getSource().equals(VIEW_ID)) {
                         IStructuredSelection selectedItem = (IStructuredSelection) treeViewer.getSelection();
@@ -631,26 +633,20 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                               insertArts.add(((GroupExplorerItem) obj).getArtifact());
                            }
                         }
-                        GroupExplorerItem parentUnivGroupItem =
-                              ((GroupExplorerItem) selectedItem.getFirstElement()).getParentItem();
-                        Artifact parentArtifact = parentUnivGroupItem.getArtifact();
-                        Artifact targetArtifact = dragOverExplorerItem.getArtifact();
-
-                        RelationPersistenceManager.getInstance().insertObjectsOnSideB(parentArtifact, targetArtifact,
-                              insertArts, CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS,
-                              isFeedbackAfter ? InsertLocation.AfterTarget : InsertLocation.BeforeTarget);
+                        parentUnivGroupItem = ((GroupExplorerItem) selectedItem.getFirstElement()).getParentItem();
+                        artifactsToInsert = insertArts.toArray(new Artifact[insertArts.size()]);
                      }
                      // Drag item came from outside Group Explorer
                      else {
                         List<Artifact> insertArts = Arrays.asList(((ArtifactData) event.data).getArtifacts());
-                        GroupExplorerItem parentUnivGroupItem = dragOverExplorerItem.getParentItem();
-                        Artifact parentArtifact = parentUnivGroupItem.getArtifact();
-                        Artifact targetArtifact = dragOverExplorerItem.getArtifact();
-
-                        RelationPersistenceManager.getInstance().insertObjectsOnSideB(parentArtifact, targetArtifact,
-                              insertArts, CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS,
-                              isFeedbackAfter ? InsertLocation.AfterTarget : InsertLocation.BeforeTarget);
+                        parentUnivGroupItem = dragOverExplorerItem.getParentItem();
+                        artifactsToInsert = insertArts.toArray(new Artifact[insertArts.size()]);
                      }
+                     Artifact parentArtifact = parentUnivGroupItem.getArtifact();
+                     Artifact targetArtifact = dragOverExplorerItem.getArtifact();
+
+                     RelationManager.addRelationAndModifyOrder(parentArtifact, targetArtifact, artifactsToInsert,
+                           CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS.getRelationType(), !isFeedbackAfter);
                   }
                }
                treeViewer.refresh(dragOverExplorerItem);

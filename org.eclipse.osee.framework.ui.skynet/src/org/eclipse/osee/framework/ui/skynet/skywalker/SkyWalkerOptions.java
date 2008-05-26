@@ -29,11 +29,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
-import org.eclipse.osee.framework.ui.skynet.skywalker.RelTypeContentProvider.RelationLinkDescriptorSide;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.AbstractLayoutAlgorithm;
@@ -294,15 +292,14 @@ public class SkyWalkerOptions {
       notifyListeners(ModType.Artifact);
    }
 
-   public boolean isValidArtifactType(Artifact artifact) {
+   public boolean isValidArtifactType(ArtifactType type) {
       if (!isFilterEnabled()) return true;
-      return getSelectedArtTypes().contains(artifact.getArtifactType());
+      return getSelectedArtTypes().contains(type);
    }
 
-   public boolean isValidRelationLinkGroup(RelationLinkGroup linkGroup) {
+   public boolean isValidRelationType(RelationType type) {
       if (!isFilterEnabled()) return true;
-      return getSelectedRelTypes().contains(linkGroup.getDescriptor()) || getSelectedRelTypes().contains(
-            new RelationLinkDescriptorSide(linkGroup.getDescriptor(), linkGroup.isSideA()));
+      return getSelectedRelTypes().contains(type);
    }
 
    /**

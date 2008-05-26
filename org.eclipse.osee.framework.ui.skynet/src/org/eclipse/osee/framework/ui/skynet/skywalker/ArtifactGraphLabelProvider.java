@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerOptions.LinkName;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -100,6 +101,8 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          return ex.getLocalizedMessage();
+      } catch (ArtifactDoesNotExist ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
       return null;
    }

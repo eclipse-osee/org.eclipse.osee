@@ -11,7 +11,7 @@
 package org.eclipse.osee.define.blam.operation;
 
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -34,7 +34,7 @@ public class PublishRequirements extends AbstractBlam {
          if (monitor.isCanceled()) {
             return;
          }
-         Set<Artifact> children = artifact.getChildren();
+         List<Artifact> children = artifact.getChildren();
          IRenderer renderer = rendererManager.getRendererById("org.eclipse.osee.framework.ui.skynet.word");
          renderer.preview(new ArrayList<Artifact>(children), "Publish Pids", monitor);
       }

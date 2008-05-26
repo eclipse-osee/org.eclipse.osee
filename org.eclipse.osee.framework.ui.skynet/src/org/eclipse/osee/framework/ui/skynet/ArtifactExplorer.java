@@ -1183,13 +1183,11 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
                if (aArt != null && !aArt.isDeleted() && !aArt.isReadOnly()) {
                   // make sure his linkmanager is loaded
-                  aArt.getLinkManager();
                   treeViewer.refresh(aArt, false);
                }
 
                if (bArt != null && !bArt.isDeleted() && !bArt.isReadOnly()) {
                   // make sure his linkmanager is loaded
-                  bArt.getLinkManager();
                   treeViewer.refresh(bArt, false);
                }
             } else if (event instanceof ArtifactVersionIncrementedEvent) {

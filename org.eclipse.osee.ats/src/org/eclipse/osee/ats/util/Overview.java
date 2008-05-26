@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.util;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog;
@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AHTML.CellItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -220,7 +220,7 @@ public class Overview {
 
    public void addRelationTable(String name, CoreRelationEnumeration side, Artifact parent) {
       try {
-         Set<Artifact> arts = parent.getRelatedArtifacts(side);
+         List<Artifact> arts = parent.getRelatedArtifacts(side);
          if (arts.size() == 0) return;
          startBorderTable(false, name);
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Name", "Rationale"}));

@@ -20,10 +20,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceFileArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -56,9 +56,9 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void ensureLinkValidity(RelationLinkGroup group, Artifact artifact) throws SQLException {
-      RelationType relationType = group.getDescriptor();
-      Artifact otherArtifact = group.getLinkManager().getOwningArtifact();
+   private static void ensureLinkValidity(RelationTypeSide group, Artifact artifact) throws SQLException {
+      RelationType relationType = group.getRelationType();
+      Artifact otherArtifact = group.getArtifact();
 
       Artifact artifactA = group.getSide() == RelationSide.SIDE_A ? artifact : otherArtifact;
       Artifact artifactB = group.getSide() == RelationSide.SIDE_A ? otherArtifact : artifact;
@@ -66,18 +66,23 @@ public class ArtifactDragDropSupport {
    }
 
    private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) throws SQLException {
-      RelationLinkGroup group = window.getRelationGroup();
-      RelationSide relationSide = group.isSideA() ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-      RelationType relationType = group.getDescriptor();
+      RelationTypeSide group = window.getRelationGroup();
+      RelationSide relationSide = group.getSide();
+      RelationType relationType = group.getRelationType();
 
       try {
-         RelationManager.ensureSideWillSupport(group.getLinkManager().getOwningArtifact(), relationType,
-               relationSide.oppositeSide(), artifacts[0].getArtifactType(), artifacts.length);
-
          for (Artifact artifact : artifacts) {
             try {
-               RelationManager.ensureSideWillSupport(artifact, relationType, relationSide,
-                     group.getLinkManager().getOwningArtifact().getArtifactType(), artifacts.length);
+               Artifact artA = null;
+               Artifact artB = null;
+               if (relationSide == RelationSide.SIDE_A) {
+                  artA = artifact;
+                  artB = group.getArtifact();
+               } else {
+                  artA = group.getArtifact();
+                  artB = artifact;
+               }
+               RelationManager.ensureRelationCanBeAdded(relationType, artA, artB);
 
                window.addValid(artifact);
             } catch (IllegalArgumentException ex) {
@@ -90,7 +95,7 @@ public class ArtifactDragDropSupport {
    }
 
    private static void addFiles(String[] fileNames, RelationExplorerWindow window, Shell shell) throws SQLException {
-      RelationLinkGroup group = window.getRelationGroup();
+      RelationTypeSide group = window.getRelationGroup();
       IFile iFile;
       Artifact artifact;
 
@@ -131,7 +136,7 @@ public class ArtifactDragDropSupport {
    }
 
    private static void addURL(String url, RelationExplorerWindow window, Shell shell) throws SQLException {
-      RelationLinkGroup group = window.getRelationGroup();
+      RelationTypeSide group = window.getRelationGroup();
       Artifact artifact;
       String location;
 

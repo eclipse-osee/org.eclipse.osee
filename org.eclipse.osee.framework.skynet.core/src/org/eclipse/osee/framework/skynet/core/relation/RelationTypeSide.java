@@ -6,6 +6,7 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author b1528444
@@ -14,10 +15,12 @@ public class RelationTypeSide implements IRelationEnumeration {
 
    private RelationType type;
    private RelationSide side;
+   private Artifact artifact;
 
-   public RelationTypeSide(RelationType type, RelationSide side) {
+   public RelationTypeSide(RelationType type, RelationSide side, Artifact artifact) {
       this.type = type;
       this.side = side;
+      this.artifact = artifact;
    }
 
    /* (non-Javadoc)
@@ -66,5 +69,12 @@ public class RelationTypeSide implements IRelationEnumeration {
    @Override
    public boolean isThisType(RelationLink link) {
       return link.getRelationType() == type;
+   }
+
+   /**
+    * @return the artifact
+    */
+   public Artifact getArtifact() {
+      return artifact;
    }
 }

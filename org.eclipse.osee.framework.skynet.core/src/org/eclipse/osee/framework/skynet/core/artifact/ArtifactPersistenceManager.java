@@ -59,7 +59,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor;
 import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
@@ -633,8 +632,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
     */
    public synchronized void doDelete(Artifact artifact, SkynetTransaction transaction, SkynetTransactionBuilder builder) throws Exception {
       if (!artifact.isInDb()) return;
-
-      LinkManager linkManager = artifact.getLinkManager();
 
       processTransactionForArtifact(artifact, ModificationType.DELETED, transaction, SkynetDatabase.getNextGammaId());
 

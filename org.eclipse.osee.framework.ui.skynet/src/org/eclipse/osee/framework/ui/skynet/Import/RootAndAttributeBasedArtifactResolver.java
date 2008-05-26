@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Set;
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -93,7 +93,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
    }
 
    public Artifact resolve(RoughArtifact roughArtifact) throws SQLException, IllegalStateException, IOException, OseeCoreException {
-      Set<Artifact> siblings = roughArtifact.getRoughParent().getAssociatedArtifact().getChildren();
+      List<Artifact> siblings = roughArtifact.getRoughParent().getAssociatedArtifact().getChildren();
       Collection<Artifact> candidates = new LinkedList<Artifact>();
 
       for (Artifact artifact : siblings) {

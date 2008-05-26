@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -239,44 +238,8 @@ public class RelationPersistenceManager implements PersistenceManager {
       ConnectionHandler.runPreparedUpdateBatch(UPDATE_RELATION_ORDERS, data);
    }
 
-   public void insertObjectsOnSideB(Artifact sideAArt, Artifact targetArt, Collection<Artifact> insertArtifacts, CoreRelationEnumeration relSide, InsertLocation insertLocation) throws SQLException {
-      // Ensure all insertArts exist first; if not, add them
-      Set<Artifact> bSideArts = sideAArt.getRelatedArtifacts(relSide);
-      for (Artifact insertArtifact : insertArtifacts) {
-         if (!bSideArts.contains(insertArtifact)) sideAArt.relate(relSide, insertArtifact, true);
-      }
-
-      // For each insertArt
-      for (Artifact insertArt : insertArtifacts) {
-
-         // Find targetLink; re-do this every time in case it moves/changes
-         RelationLink targetLink = null;
-         if (sideAArt.getRelations(relSide, targetArt).size() == 1)
-            targetLink = sideAArt.getRelations(relSide, targetArt).iterator().next();
-         else
-            logger.log(Level.SEVERE, "More than one link exists for sideBArt");
-
-         // Find insertArtLink
-         RelationLink insertLink = null;
-         if (sideAArt.getRelations(relSide, insertArt).size() == 1)
-            insertLink = sideAArt.getRelations(relSide, insertArt).iterator().next();
-         else
-            logger.log(Level.SEVERE, "More than one link exists for sideBArt");
-
-         // Move insertArtLink to insertLocation
-         RelationLinkGroup group =
-               sideAArt.getLinkManager().getSideGroup(
-                     CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS.getRelationType(),
-                     CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS.isSideA());
-
-         group.moveLink(targetLink, insertLink, insertLocation != InsertLocation.AfterTarget);
-         sideAArt.persistAttributesAndRelations();
-      }
-
-   }
-
    public void moveObjectB(Artifact sideAArt, Artifact sideBArt, CoreRelationEnumeration relSide, Direction dir) throws SQLException {
-      Set<Artifact> arts = sideAArt.getRelatedArtifacts(relSide);
+      List<Artifact> arts = sideAArt.getRelatedArtifacts(relSide);
       Artifact prevArt = null;
       Artifact nextArt = null;
       Object objs[] = arts.toArray();
@@ -307,18 +270,18 @@ public class RelationPersistenceManager implements PersistenceManager {
       }
 
       if (dir == Direction.Back && thisLink != null && prevLink != null) {
-         prevLink.getArtifactA().getLinkManager();
-         prevLink.getArtifactB().getLinkManager();
-         thisLink.getArtifactA().getLinkManager();
-         thisLink.getArtifactB().getLinkManager();
+         //         prevLink.getArtifactA().getLinkManager();
+         //         prevLink.getArtifactB().getLinkManager();
+         //         thisLink.getArtifactA().getLinkManager();
+         //         thisLink.getArtifactB().getLinkManager();
          prevLink.swapAOrder(thisLink);
          prevLink.persist();
          thisLink.persist();
       } else if (dir == Direction.Forward && thisLink != null && nextLink != null) {
-         nextLink.getArtifactA().getLinkManager();
-         nextLink.getArtifactB().getLinkManager();
-         thisLink.getArtifactA().getLinkManager();
-         thisLink.getArtifactB().getLinkManager();
+         //         nextLink.getArtifactA().getLinkManager();
+         //         nextLink.getArtifactB().getLinkManager();
+         //         thisLink.getArtifactA().getLinkManager();
+         //         thisLink.getArtifactB().getLinkManager();
          nextLink.swapAOrder(thisLink);
          nextLink.persist();
          thisLink.persist();
@@ -326,53 +289,4 @@ public class RelationPersistenceManager implements PersistenceManager {
 
    }
 
-   public void moveObjectA(Artifact sideAArt, Artifact sideBArt, CoreRelationEnumeration relSide, Direction dir) throws SQLException, ArtifactDoesNotExist {
-      Set<Artifact> arts = sideBArt.getRelatedArtifacts(relSide);
-      Artifact prevArt = null;
-      Artifact nextArt = null;
-      Object objs[] = arts.toArray();
-      for (int x = 0; x < arts.size(); x++) {
-         if (objs[x].equals(sideAArt)) {
-            if (x >= 1) prevArt = (Artifact) objs[x - 1];
-            if (x < objs.length - 1) nextArt = (Artifact) objs[x + 1];
-         }
-      }
-      RelationLink thisLink = null;
-      if (sideBArt.getRelations(relSide, sideAArt).size() == 1)
-         thisLink = sideBArt.getRelations(relSide, sideAArt).iterator().next();
-      else
-         logger.log(Level.SEVERE, "More than one link exists for sideBArt");
-      RelationLink prevLink = null;
-      if (prevArt != null) {
-         if (sideBArt.getRelations(relSide, prevArt).size() == 1)
-            prevLink = sideBArt.getRelations(relSide, prevArt).iterator().next();
-         else
-            logger.log(Level.SEVERE, "More than one link exists for prevArt");
-      }
-      RelationLink nextLink = null;
-      if (nextArt != null) {
-         if (sideBArt.getRelations(relSide, nextArt).size() == 1)
-            nextLink = sideBArt.getRelations(relSide, nextArt).iterator().next();
-         else
-            logger.log(Level.SEVERE, "More than one link exists for nextArt");
-      }
-
-      if (dir == Direction.Back && thisLink != null && prevLink != null) {
-         prevLink.getArtifactA().getLinkManager();
-         prevLink.getArtifactB().getLinkManager();
-         thisLink.getArtifactA().getLinkManager();
-         thisLink.getArtifactB().getLinkManager();
-         prevLink.swapBOrder(thisLink);
-         prevLink.persist();
-         thisLink.persist();
-      } else if (dir == Direction.Forward && thisLink != null && nextLink != null) {
-         nextLink.getArtifactA().getLinkManager();
-         nextLink.getArtifactB().getLinkManager();
-         thisLink.getArtifactA().getLinkManager();
-         thisLink.getArtifactB().getLinkManager();
-         nextLink.swapBOrder(thisLink);
-         nextLink.persist();
-         thisLink.persist();
-      }
-   }
 }

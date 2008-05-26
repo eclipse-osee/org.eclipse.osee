@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -121,52 +121,50 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
          topAHI = new ArtifactHyperItem(currentArtifact);
          // System.out.println("Artifact "+currentArtifact.getArtifactTypeNameShort());
          int x = 0;
-         for (RelationLinkGroup grp : currentArtifact.getLinkManager().getGroups()) {
-            debug.report("relation " + grp.getDescriptor().getTypeName());
+         for (RelationLink link : currentArtifact.getRelationsAll()) {
+            debug.report("relation " + link.getRelationType().getTypeName());
 
-            for (RelationLink link : grp.getGroupSide()) {
-               // Don't process link if onlyShowRel is populated and doesn't contain link name
-               if (onlyShowRelations.size() > 0) {
-                  if (!onlyShowRelations.contains(link.getRelationType().getTypeName())) continue;
-                  x++;
-                  if (x == 4) x = 0;
-               }
+            // Don't process link if onlyShowRel is populated and doesn't contain link name
+            if (onlyShowRelations.size() > 0) {
+               if (!onlyShowRelations.contains(link.getRelationType().getTypeName())) continue;
+               x++;
+               if (x == 4) x = 0;
+            }
 
-               Artifact otherArt = link.getArtifactB();
-               int otherOrder = link.getBOrder();
-               int thisOrder = link.getAOrder();
-               if (otherArt.equals(currentArtifact)) {
-                  otherArt = link.getArtifactA();
-                  otherOrder = link.getAOrder();
-                  thisOrder = link.getBOrder();
-               }
-               if (!otherArt.isDeleted()) {
-                  ArtifactHyperItem ahi = new ArtifactHyperItem(otherArt);
-                  String tip = grp.getDescriptor().getTypeName();
-                  if (!link.getRationale().equals("")) tip += "(" + link.getRationale() + ")";
-                  ahi.setRelationToolTip(tip);
-                  String label =
-                        (isShowOrder() ? "(" + thisOrder + ") " : "") + grp.getDescriptor().getShortName() + (isShowOrder() ? "(" + otherOrder + ") " : "");
-                  if (!link.getRationale().equals("")) label += "(" + link.getRationale() + ")";
-                  ahi.setRelationLabel(label);
-                  ahi.setLink(link);
-                  ahi.setRelationDirty(link.isDirty());
-                  switch (x) {
-                     case 0:
-                        topAHI.addBottom(ahi);
-                        break;
-                     case 1:
-                        topAHI.addLeft(ahi);
-                        break;
-                     case 2:
-                        topAHI.addTop(ahi);
-                        break;
-                     case 3:
-                        topAHI.addRight(ahi);
-                        break;
-                     default:
-                        break;
-                  }
+            Artifact otherArt = link.getArtifactB();
+            int otherOrder = link.getBOrder();
+            int thisOrder = link.getAOrder();
+            if (otherArt.equals(currentArtifact)) {
+               otherArt = link.getArtifactA();
+               otherOrder = link.getAOrder();
+               thisOrder = link.getBOrder();
+            }
+            if (!otherArt.isDeleted()) {
+               ArtifactHyperItem ahi = new ArtifactHyperItem(otherArt);
+               String tip = link.getRelationType().getTypeName();
+               if (!link.getRationale().equals("")) tip += "(" + link.getRationale() + ")";
+               ahi.setRelationToolTip(tip);
+               String label =
+                     (isShowOrder() ? "(" + thisOrder + ") " : "") + link.getRelationType().getShortName() + (isShowOrder() ? "(" + otherOrder + ") " : "");
+               if (!link.getRationale().equals("")) label += "(" + link.getRationale() + ")";
+               ahi.setRelationLabel(label);
+               ahi.setLink(link);
+               ahi.setRelationDirty(link.isDirty());
+               switch (x) {
+                  case 0:
+                     topAHI.addBottom(ahi);
+                     break;
+                  case 1:
+                     topAHI.addLeft(ahi);
+                     break;
+                  case 2:
+                     topAHI.addTop(ahi);
+                     break;
+                  case 3:
+                     topAHI.addRight(ahi);
+                     break;
+                  default:
+                     break;
                }
             }
             x++;
@@ -175,6 +173,8 @@ public class ArtifactHyperView extends HyperView implements IEventReceiver, IPar
          create(topAHI);
          center();
       } catch (SQLException ex) {
+         clear();
+      } catch (ArtifactDoesNotExist ex) {
          clear();
       }
    }

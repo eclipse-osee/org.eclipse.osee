@@ -12,7 +12,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -77,7 +77,7 @@ public class NextVersionSearchItem extends WorldSearchItem {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition(searchType) + "\"");
          return EMPTY_SET;
       }
-      Set<Artifact> arts =
+      List<Artifact> arts =
             getTeamDefinition(searchType).getNextReleaseVersion().getRelatedArtifacts(
                   CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Workflow);
       if (isCancelled()) return EMPTY_SET;

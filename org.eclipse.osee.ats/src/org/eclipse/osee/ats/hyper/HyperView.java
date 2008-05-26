@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -594,6 +595,8 @@ public class HyperView extends ViewPart implements IPartListener {
                         display();
                      }
                   } catch (SQLException ex) {
+                     OSEELog.logException(AtsPlugin.class, ex, true);
+                  } catch (ArtifactDoesNotExist ex) {
                      OSEELog.logException(AtsPlugin.class, ex, true);
                   }
                }

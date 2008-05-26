@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 
 public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IATSArtifact {
 
@@ -52,11 +53,15 @@ public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IA
     */
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws SQLException {
       deleteArts.add(this);
-      getRelated(allRelated);
+      try {
+         getRelated(allRelated);
+      } catch (ArtifactDoesNotExist ex) {
+         throw new SQLException(ex);
+      }
    }
 
-   public void getRelated(Map<Artifact, Object> allRelated) throws SQLException {
-      for (Artifact artifact : getLinkManager().getOtherSideArtifacts()) {
+   public void getRelated(Map<Artifact, Object> allRelated) throws SQLException, ArtifactDoesNotExist {
+      for (Artifact artifact : getRelatedArtifactsAll()) {
          allRelated.put(artifact, this);
       }
    }

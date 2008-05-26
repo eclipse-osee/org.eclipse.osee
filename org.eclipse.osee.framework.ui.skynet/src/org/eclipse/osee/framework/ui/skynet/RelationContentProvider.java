@@ -89,8 +89,8 @@ public class RelationContentProvider implements ITreeContentProvider {
                   RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_A);
             int sideBMax =
                   RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifactType(), RelationSide.SIDE_B);
-            RelationTypeSide sideA = new RelationTypeSide(relationType, RelationSide.SIDE_A);
-            RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B);
+            RelationTypeSide sideA = new RelationTypeSide(relationType, RelationSide.SIDE_A, artifact);
+            RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B, artifact);
             boolean onSideA = sideBMax > 0;
             boolean onSideB = sideAMax > 0;
             if (onSideA && onSideB) {

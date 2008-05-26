@@ -18,8 +18,7 @@ import java.util.logging.Logger;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
@@ -59,9 +58,11 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
    public Object[] getConnectedTo(Object entity) {
       if (entity == input) {
          try {
-            return input.getLinkManager().getOtherSideArtifacts().toArray();
+            return input.getRelatedArtifactsAll().toArray();
+         } catch (ArtifactDoesNotExist ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
          } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            logger.log(Level.SEVERE, ex.toString(), ex);
          }
       }
       return new Object[] {input};
@@ -86,12 +87,14 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
          return;
       } else {
          try {
-            for (Artifact child : artifact.getLinkManager().getOtherSideArtifacts()) {
+            for (Artifact child : artifact.getRelatedArtifactsAll()) {
                artifacts.add(child);
                getDescendants(artifacts, artifact, level - 1);
             }
          } catch (SQLException ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+         } catch (ArtifactDoesNotExist ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
          }
       }
    }

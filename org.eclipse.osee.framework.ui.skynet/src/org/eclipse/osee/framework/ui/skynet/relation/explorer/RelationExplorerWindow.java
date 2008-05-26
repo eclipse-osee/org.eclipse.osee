@@ -13,15 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLinkGroup;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -46,7 +44,7 @@ import org.eclipse.swt.widgets.Table;
 public class RelationExplorerWindow {
 
    private RelationTableViewer relationTableViewer;
-   private RelationLinkGroup relationGroup;
+   private RelationTypeSide relationGroup;
    private boolean persistOnOk;
    private boolean cancelled = false;
 
@@ -77,7 +75,7 @@ public class RelationExplorerWindow {
    public static final int NAME_NUM = 0;
    public static final int REASON_NUM = 1;
 
-   public RelationExplorerWindow(StructuredViewer viewer, RelationLinkGroup group, boolean persistOnOk) {
+   public RelationExplorerWindow(StructuredViewer viewer, RelationTypeSide group, boolean persistOnOk) {
       this.validArtifacts = new ArrayList<Artifact>();
       this.invalidArtifacts = new ArrayList<Artifact>();
 
@@ -94,7 +92,7 @@ public class RelationExplorerWindow {
 
    }
 
-   public RelationExplorerWindow(StructuredViewer viewer, RelationLinkGroup group) {
+   public RelationExplorerWindow(StructuredViewer viewer, RelationTypeSide group) {
       this(viewer, group, false);
    }
 
@@ -313,15 +311,18 @@ public class RelationExplorerWindow {
 
             if (artifact != null) {
                try {
-                  relationGroup.addArtifact(artifact);
-                  if (persistOnOk) {
-                     relationGroup.getLinkManager().getOwningArtifact().persistRelations();
-                  }
+                  relationGroup.getArtifact().addRelation(relationGroup, artifact);
                } catch (SQLException ex) {
-                  AWorkbench.popup("ERROR", ex.getLocalizedMessage());
-                  SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                  OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                }
             }
+         }
+      }
+      if (persistOnOk) {
+         try {
+            relationGroup.getArtifact().persistRelations();
+         } catch (SQLException ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       }
       shell.dispose();
@@ -345,7 +346,7 @@ public class RelationExplorerWindow {
    /**
     * @return Returns the relationGroup.
     */
-   public RelationLinkGroup getRelationGroup() {
+   public RelationTypeSide getRelationGroup() {
       return relationGroup;
    }
 

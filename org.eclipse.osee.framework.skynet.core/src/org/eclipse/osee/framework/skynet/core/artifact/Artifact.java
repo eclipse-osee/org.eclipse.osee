@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.LinkManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -194,9 +193,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public Set<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws SQLException {
+   public List<Artifact> getRelatedArtifacts(RelationType relationType) throws ArtifactDoesNotExist, OseeDataStoreException {
       try {
-         return new HashSet<Artifact>(RelationManager.getRelatedArtifacts(this, relationEnum));
+         return RelationManager.getRelatedArtifacts(this, relationType);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   public List<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws SQLException {
+      try {
+         return RelationManager.getRelatedArtifacts(this, relationEnum);
       } catch (ArtifactDoesNotExist ex) {
          throw new SQLException(ex);
       }
@@ -352,7 +359,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @return set of the direct children of this artifact
     * @throws SQLException
     */
-   public Set<Artifact> getChildren() throws SQLException {
+   public List<Artifact> getChildren() throws SQLException {
       return getRelatedArtifacts(DEFAULT_HIERARCHICAL__CHILD);
    }
 
@@ -1048,16 +1055,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       dirty = true;
    }
 
-   /**
-    * Ensures the linkManager has been created and populated with links and then returns it
-    * 
-    * @return Returns the linkManager.
-    * @throws SQLException
-    */
-   public LinkManager getLinkManager() throws SQLException {
-      return null;
-   }
-
    public void setLinksLoaded() {
       linksLoaded = true;
    }
@@ -1489,5 +1486,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
    public List<RelationLink> getRelationsAll() {
       return RelationManager.getRelationsAll(this);
+   }
+
+   /**
+    * Returns all artifacts related to this artifact.
+    * 
+    * @return
+    * @throws SQLException
+    * @throws ArtifactDoesNotExist
+    */
+   public List<Artifact> getRelatedArtifactsAll() throws ArtifactDoesNotExist, SQLException {
+      return RelationManager.getRelatedArtifactsAll(this);
    }
 }

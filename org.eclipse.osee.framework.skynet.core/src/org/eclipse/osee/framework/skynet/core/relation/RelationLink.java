@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -28,8 +26,8 @@ import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 public class RelationLink {
    private int relationId;
    private int gammaId;
-   private Artifact artA;
-   private Artifact artB;
+   //   private Artifact artA;
+   //   private Artifact artB;
    private boolean deleted;
    private int aOrder;
    private int bOrder;
@@ -163,25 +161,13 @@ public class RelationLink {
    }
 
    @Deprecated
-   public Artifact getArtifactA() {
-      if (artA == null) {
-         try {
-            artA = ArtifactQuery.getArtifactFromId(aArtifactId, artB.getBranch());
-         } catch (Exception ex) {
-         }
-      }
-      return artA;
+   public Artifact getArtifactA() throws ArtifactDoesNotExist, SQLException {
+      return getArtifact(RelationSide.SIDE_A);
    }
 
    @Deprecated
-   public Artifact getArtifactB() {
-      if (artB == null) {
-         try {
-            artB = ArtifactQuery.getArtifactFromId(bArtifactId, artA.getBranch());
-         } catch (Exception ex) {
-         }
-      }
-      return artB;
+   public Artifact getArtifactB() throws ArtifactDoesNotExist, SQLException {
+      return getArtifact(RelationSide.SIDE_B);
    }
 
    /**
@@ -195,15 +181,8 @@ public class RelationLink {
     * @param order The order to set.
     */
    public void setAOrder(int order) {
-      try {
-         this.aOrder = order;
-         dirty = true;
-
-         if (artA.isLinksLoaded()) artA.getLinkManager().fixOrderingOf(this, true);
-         if (artB.isLinksLoaded()) artB.getLinkManager().fixOrderingOf(this, false);
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
+      this.aOrder = order;
+      dirty = true;
    }
 
    /**
@@ -221,17 +200,8 @@ public class RelationLink {
     * @param order The order to set.
     */
    public void setBOrder(int order) {
-      try {
-         this.bOrder = order;
-         dirty = true;
-
-         if (isInDb()) {
-            if (artA.isLinksLoaded()) artA.getLinkManager().fixOrderingOf(this, true);
-            if (artB.isLinksLoaded()) artB.getLinkManager().fixOrderingOf(this, false);
-         }
-      } catch (SQLException ex) {
-         SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
+      this.bOrder = order;
+      dirty = true;
    }
 
    @Deprecated
@@ -304,47 +274,52 @@ public class RelationLink {
    }
 
    private String processArtifactSideName(Artifact artifact, boolean otherArtifact) {
-      String sideName = "";
+      for (RelationSide side : RelationSide.values()) {
+         try {
+            Artifact linkArt = getArtifact(side);
+            if (linkArt == artifact) {
+               if (otherArtifact) {
+                  return relationType.getSideName(side.oppositeSide());
+               } else {
+                  return relationType.getSideName(side);
+               }
+            }
+         } catch (ArtifactDoesNotExist ex) {
 
-      if (artifact == artA) {
+         } catch (SQLException ex) {
 
-         if (otherArtifact)
-            sideName = relationType.getSideBName();
-         else
-            sideName = relationType.getSideAName();
-      } else if (artifact == artB) {
-
-         if (otherArtifact)
-            sideName = relationType.getSideAName();
-         else
-            sideName = relationType.getSideBName();
-      } else
-         throw new IllegalArgumentException("Link does not contain the artifact.");
-
-      return sideName;
+         }
+      }
+      throw new IllegalArgumentException("Link does not contain the artifact.");
    }
 
    @Deprecated
    public String getSidePhrasingFor(Artifact artifact) {
-      return processArtifactSidePhrasing(artifact, false);
+      try {
+         return processArtifactSidePhrasing(artifact, false);
+      } catch (ArtifactDoesNotExist ex) {
+         return "Unknown - " + ex.getMessage();
+      } catch (SQLException ex) {
+         return "Unknown - " + ex.getMessage();
+      }
    }
 
    @Deprecated
-   public String getSidePhrasingForOtherArtifact(Artifact artifact) {
+   public String getSidePhrasingForOtherArtifact(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
       return processArtifactSidePhrasing(artifact, true);
    }
 
    @Deprecated
-   private String processArtifactSidePhrasing(Artifact artifact, boolean otherArtifact) {
+   private String processArtifactSidePhrasing(Artifact artifact, boolean otherArtifact) throws ArtifactDoesNotExist, SQLException {
       String sideName = "";
 
-      if (artifact == artA) {
+      if (artifact == getArtifact(RelationSide.SIDE_A)) {
 
          if (otherArtifact)
             sideName = relationType.getBToAPhrasing();
          else
             sideName = relationType.getAToBPhrasing();
-      } else if (artifact == artB) {
+      } else if (artifact == getArtifact(RelationSide.SIDE_B)) {
 
          if (otherArtifact)
             sideName = relationType.getAToBPhrasing();
@@ -367,8 +342,24 @@ public class RelationLink {
    }
 
    public String toString() {
-      return String.format("%s: %s(%s)<-->%s(%s)", relationType.getTypeName(), artA.getDescriptiveName(),
-            Float.toString(aOrder), artB.getDescriptiveName(), Float.toString(bOrder));
+      String artA = "";
+      String artB = "";
+      try {
+         artA = getArtifact(RelationSide.SIDE_A).getDescriptiveName();
+      } catch (ArtifactDoesNotExist ex) {
+         artA = ex.getMessage();
+      } catch (SQLException ex) {
+         artA = ex.getMessage();
+      }
+      try {
+         artB = getArtifact(RelationSide.SIDE_B).getDescriptiveName();
+      } catch (ArtifactDoesNotExist ex) {
+         artB = ex.getMessage();
+      } catch (SQLException ex) {
+         artB = ex.getMessage();
+      }
+      return String.format("%s: %s(%s)<-->%s(%s)", relationType.getTypeName(), artA, Float.toString(aOrder), artB,
+            Float.toString(bOrder));
    }
 
    public boolean isExplorable() {
@@ -425,4 +416,17 @@ public class RelationLink {
    public Branch getBranch() {
       return getBranch(RelationSide.SIDE_A);
    }
+
+   /**
+    * @param side
+    * @param i
+    */
+   public void setOrder(RelationSide side, int order) {
+      if (RelationSide.SIDE_A == side) {
+         setAOrder(order);
+      } else if (RelationSide.SIDE_B == side) {
+         setBOrder(order);
+      }
+   }
+
 }

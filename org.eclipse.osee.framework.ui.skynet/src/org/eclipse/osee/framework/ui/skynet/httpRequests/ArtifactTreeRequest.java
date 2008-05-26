@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.httpRequests;
 
 import java.sql.SQLException;
-import java.util.Set;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -100,7 +100,7 @@ public class ArtifactTreeRequest implements IHttpServerRequest {
 
    private void buildArtifactTree(Document doc, Element element, Artifact artifact, final int level) {
       if (level > 0) {
-         Set<Artifact> children;
+         List<Artifact> children;
          try {
             children = artifact.getChildren();
 
