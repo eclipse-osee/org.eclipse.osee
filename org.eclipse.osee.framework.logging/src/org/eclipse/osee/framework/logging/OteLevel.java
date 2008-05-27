@@ -1,30 +1,35 @@
-/*
- * Created on Feb 25, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.osee.framework.logging;
 
 import java.util.logging.Level;
 
 /**
  * @author osee
- *
  */
 public class OteLevel extends Level {
 
-	private static final long serialVersionUID = -1545385440588581634L;
-	
-	public static final Level TEST_EVENT = new OteLevel("TEST_EVENT",SEVERE.intValue());
-	public static final Level TEST_SEVERE = new OteLevel("TEST_SEVERE",SEVERE.intValue()+100);
-	public static final Level ENV_SEVERE = new OteLevel("ENV_SEVERE",SEVERE.intValue()+200);
-	
-	/**
-	 * @param name
-	 * @param value
-	 */
-	protected OteLevel(String name, int value) {
-		super(name, value);
-	}
+   private static final long serialVersionUID = -1545385440588581634L;
+
+   public static final Level TEST_EVENT = new OteLevel("TEST_EVENT", SEVERE.intValue());
+   public static final Level TEST_SEVERE = new OteLevel("TEST_SEVERE", SEVERE.intValue() + 100);
+   public static final Level ENV_SEVERE = new OteLevel("ENV_SEVERE", SEVERE.intValue() + 200);
+
+   /**
+    * @param name
+    * @param value
+    */
+   protected OteLevel(String name, int value) {
+      super(name, value);
+   }
 
 }

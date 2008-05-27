@@ -1,8 +1,14 @@
-/*
- * Created on Mar 6, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.sql.SQLException;
@@ -38,7 +44,7 @@ public class ArtifactProcessing implements ITemplateTask {
    /**
     * @param innerTasks
     * @param artifactSection
-    * @param elementType 
+    * @param elementType
     */
    public ArtifactProcessing(List<ITemplateTask> innerTasks, String artifactSection, String elementType) {
       this.innerTasks = innerTasks;
@@ -61,10 +67,8 @@ public class ArtifactProcessing implements ITemplateTask {
 
    }
    private static final Matcher setNameMatcher =
-      Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   
- 
-   
+         Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+
    /**
     * @return
     */
@@ -73,11 +77,10 @@ public class ArtifactProcessing implements ITemplateTask {
    }
 
    private void extractInformation(String artifactElement, String type) {
-      if(type.equals("Artifact")){
+      if (type.equals("Artifact")) {
          setNameMatcher.reset(artifactElement);
          setNameMatcher.find();
-         artifactSetName = WordUtil.textOnly(setNameMatcher
-               .group(2));
+         artifactSetName = WordUtil.textOnly(setNameMatcher.group(2));
          artifactElement = setNameMatcher.replaceAll("");
       }
       outlineElementsMatcher.reset(artifactElement);
@@ -151,8 +154,8 @@ public class ArtifactProcessing implements ITemplateTask {
       return outlineNumber;
    }
 
-   public String getText(){
+   public String getText() {
       return this.cleanedText;
    }
-   
+
 }

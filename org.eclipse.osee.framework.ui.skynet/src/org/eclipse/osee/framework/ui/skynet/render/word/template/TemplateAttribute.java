@@ -1,8 +1,14 @@
-/*
- * Created on Mar 5, 2008
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.sql.SQLException;
@@ -29,14 +35,14 @@ public class TemplateAttribute implements ITemplateTask {
    public TemplateAttribute() {
 
    }
-   
-   public TemplateAttribute(TemplateAttribute copyMe, String name){
+
+   public TemplateAttribute(TemplateAttribute copyMe, String name) {
       this.editable = copyMe.editable;
       this.format = copyMe.format;
       this.label = copyMe.label;
       this.outline = copyMe.outline;
       this.name = name;
-      this.paragraphWrap = copyMe.paragraphWrap; 
+      this.paragraphWrap = copyMe.paragraphWrap;
    }
 
    /**
@@ -143,10 +149,9 @@ public class TemplateAttribute implements ITemplateTask {
       String value = trimTags.replaceAll("");
       this.paragraphWrap = Boolean.parseBoolean(value);
    }
-   
-   public boolean isParagrapthWrap(){
+
+   public boolean isParagrapthWrap() {
       return this.paragraphWrap;
    }
-   
 
 }
