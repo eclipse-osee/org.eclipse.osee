@@ -10,7 +10,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Thoron Virgin
+ * @author Theron Virgin
  */
 public class ConflictTestSuite {
    public static void oneTimeSetUp() throws Exception {
@@ -18,7 +18,7 @@ public class ConflictTestSuite {
    }
 
    public static void oneTimeTearDown() throws Exception {
-//      ConflictTestManager.cleanUpConflictTest();
+      //      ConflictTestManager.cleanUpConflictTest();
    }
 
    public static Test suite() {
