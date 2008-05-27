@@ -14,10 +14,6 @@ import java.io.IOException;
  */
 public class ConfigIniGeneration {
    public static void main(String[] args) {
-      try {
-         Thread.sleep(1000 * 60);//waiting for export to complete
-      } catch (InterruptedException ex1) {
-      }
       StringBuilder builder = new StringBuilder();
       builder.append("osgi.bundles= \\\n");
       builder.append("org.eclipse.equinox.ds_1.0.0.v20080310.jar@start, \\\n");

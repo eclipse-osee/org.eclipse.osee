@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="main" name="build">
+<project default="RUN_FIRST" name="build">
 	
 	
 	
@@ -8,7 +8,7 @@
 	</target>
 	
 	<target name="generateconfigIni">
-		<java classname="ConfigIniGeneration" failonerror="true">
+		<java classname="ConfigIniGeneration" failonerror="true" fork="true">
 			<arg value="${basedir}/"/>
 			<classpath>
 				<pathelement location="buildsupport.jar"/>
@@ -26,9 +26,13 @@
 				  </delete>
 	</target>
 	
-	<target name="main">
+	<target name="RUN_FIRST">
 		<antcall target="clean"/>
 		<antcall target="plugin_export"/>
+	</target>
+	
+	<target name="RUN_SECOND">
 		<antcall target="generateconfigIni"/>
 	</target>
+	
 </project>
