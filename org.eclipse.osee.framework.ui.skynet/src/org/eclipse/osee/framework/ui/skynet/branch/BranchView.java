@@ -1100,10 +1100,10 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
    public void saveState(IMemento memento) {
       // Ask to save the user in case any changes to favorite branches have been made
       if (SkynetGuiPlugin.areOSEEServicesAvailable().isTrue()) {
-         try {
-            SkynetAuthentication.getInstance().getAuthenticatedUser().persistAttributes();
-         } catch (SQLException ex) {
-            logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+      try {
+         SkynetAuthentication.getInstance().getAuthenticatedUser().persistAttributes();
+      } catch (SQLException ex) {
+         logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
       }
    }
@@ -1787,9 +1787,10 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          BranchContentProvider provider = (BranchContentProvider) branchTable.getContentProvider();
 
          // No effect if going to the same state
-         if (provider.isShowChildBranchesAtMainLevel() != flat || provider.isShowChildBranchesUnderParents() != !flat) {
+         if (provider.isShowChildBranchesAtMainLevel() != flat || provider.isShowChildBranchesUnderParents() != !flat || provider.isShowMergeBranches() != flat) {
             nameFilter.setFlat(flat);
             provider.setShowChildBranchesAtMainLevel(flat);
+            provider.setShowMergeBranches(flat);
             provider.setShowChildBranchesUnderParents(!flat);
 
             provider.refresh();
