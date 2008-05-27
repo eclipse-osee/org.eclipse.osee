@@ -149,6 +149,10 @@ public class AttributeTransactionData implements ITransactionData {
       return artId;
    }
 
+   public String getUri() {
+      return uri;
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData#getPreviousTxNotCurrentData()
     */

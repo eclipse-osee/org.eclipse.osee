@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -45,11 +46,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.linking.HttpProcessor;
 import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransactionData;
+import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.data.ITransactionData;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 
@@ -178,6 +182,7 @@ public class SkynetTransaction {
          }
       } catch (SQLException ex) {
          deleteTransactionDetail = true;
+         transactionCleanUp();
          ConnectionHandler.requestRollback();
          logger.log(Level.SEVERE, "Rollback occured for transaction: " + getTransactionId().getTransactionNumber(), ex);
          throw ex;
@@ -190,6 +195,22 @@ public class SkynetTransaction {
             transactionId.setLastSavedTransactionNumber(transactionNumber);
          }
       }
+   }
+
+   private void transactionCleanUp() {
+      for (ITransactionData transactionData : transactionItems.keySet()) {
+         if (transactionData instanceof AttributeTransactionData) {
+            String uri = ((AttributeTransactionData) transactionData).getUri();
+            if (Strings.isValid(uri)) {
+               try {
+                  HttpProcessor.delete(AttributeURL.getDeleteURL(uri));
+               } catch (Exception ex) {
+                  logger.log(Level.SEVERE, ex.toString(), ex);
+               }
+            }
+         }
+      }
+
    }
 
    public boolean executeTransactionDataItems() throws SQLException {
