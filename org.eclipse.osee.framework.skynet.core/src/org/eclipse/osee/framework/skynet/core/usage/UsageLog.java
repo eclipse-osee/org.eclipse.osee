@@ -29,9 +29,9 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
  */
 public class UsageLog {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UsageLog.class);
+   private static final String INSERT_TO_LOG =
+         "INSERT INTO " + USAGE_TABLE + " (user_id, time, event_id, details) VALUES (?,?,?,?)";
    private static UsageLog instance = null;
-   private static SkynetAuthentication skynetAuth = null;
-   private static String INSERT_TO_LOG = null;
 
    private final boolean usageLoggingEnabled;
    private Collection<UsageEntry> log;
@@ -52,8 +52,6 @@ public class UsageLog {
    public static UsageLog getInstance() {
       if (instance == null) {
          instance = new UsageLog();
-         skynetAuth = SkynetAuthentication.getInstance();
-         INSERT_TO_LOG = "INSERT INTO " + USAGE_TABLE + " (user_id, time, event_id, details) VALUES (?,?,?,?)";
       }
       return instance;
    }
@@ -78,7 +76,7 @@ public class UsageLog {
       List<Object[]> data = new ArrayList<Object[]>(log.size());
       int userId = -1;
       try {
-         userId = skynetAuth.getAuthenticatedUser().getArtId();
+         userId = SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId();
       } catch (Exception ex) {
          log.add(new ExceptionEntry(ex));
       }

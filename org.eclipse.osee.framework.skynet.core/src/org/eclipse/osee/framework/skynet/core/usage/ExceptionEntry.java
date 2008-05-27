@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public final class ExceptionEntry extends UsageEntry {
 
    public ExceptionEntry(Exception exception) {
-      super(getExceptionDetails(exception));
+      super(Lib.exceptionToString(exception));
    }
 
    @Override
@@ -29,9 +29,5 @@ public final class ExceptionEntry extends UsageEntry {
    @Override
    protected int getEventOrdinal() {
       return 3;
-   }
-
-   private static String getExceptionDetails(Exception exception) {
-      return Lib.exceptionToString(exception);
    }
 }
