@@ -113,7 +113,7 @@ public class PurgeArtifactHandler extends AbstractHandler {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
          isEnabled =
-               OseeProperties.getInstance().isDeveloper() && accessControlManager.checkObjectListPermission(artifacts,
+               OseeProperties.isDeveloper() && accessControlManager.checkObjectListPermission(artifacts,
                      PermissionEnum.WRITE);
       }
       return isEnabled;

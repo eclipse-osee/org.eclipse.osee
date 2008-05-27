@@ -640,7 +640,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             return SkynetSelections.oneBranchSelected(selection) && (AccessControlManager.getInstance().checkObjectPermission(
-                  SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.FULLACCESS) || OseeProperties.getInstance().isDeveloper());
+                  SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.FULLACCESS) || OseeProperties.isDeveloper());
          }
       });
    }
@@ -675,7 +675,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return SkynetSelections.oneTransactionSelected(selection) && OseeProperties.getInstance().isDeveloper();
+            return SkynetSelections.oneTransactionSelected(selection) && OseeProperties.isDeveloper();
          }
       });
    }
@@ -752,7 +752,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       @Override
       public boolean isEnabled() {
          IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-         return OseeProperties.getInstance().isDeveloper() && SkynetSelections.transactionsSelected(selection);
+         return OseeProperties.isDeveloper() && SkynetSelections.transactionsSelected(selection);
       }
    };
 
@@ -813,7 +813,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return OseeProperties.getInstance().isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getInstance().getDefaultBranch();
+            return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getInstance().getDefaultBranch();
          }
       });
    }
@@ -884,7 +884,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          @Override
          public boolean isEnabled() {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
-            return OseeProperties.getInstance().isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getInstance().getDefaultBranch();
+            return OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection) && SkynetSelections.boilDownObject(selection.getFirstElement()) != BranchPersistenceManager.getInstance().getDefaultBranch();
          }
       });
    }
@@ -992,7 +992,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
          @Override
          public boolean isEnabled() {
-            if (!OseeProperties.getInstance().isDeveloper()) return false;
+            if (!OseeProperties.isDeveloper()) return false;
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             return SkynetSelections.oneBranchSelected(selection);
          }
@@ -1325,7 +1325,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
             validBranchSelected &=
                   !((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())).isChangeManaged();
          }
-         return (validBranchSelected) || (!useParentBranch && OseeProperties.getInstance().isDeveloper() && SkynetSelections.oneBranchSelected(selection));
+         return (validBranchSelected) || (!useParentBranch && OseeProperties.isDeveloper() && SkynetSelections.oneBranchSelected(selection));
       }
    }
 

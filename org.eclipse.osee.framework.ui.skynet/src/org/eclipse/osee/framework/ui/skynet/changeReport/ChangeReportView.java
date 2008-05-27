@@ -1036,7 +1036,7 @@ public class ChangeReportView extends ViewPart implements IActionable, IEventRec
                }
 
                revertMenuItem.setEnabled(artifactSelected && writePermission);
-               compressWordAttributes.setEnabled(artifactSelected && writePermission && OseeProperties.getInstance().isDeveloper());
+               compressWordAttributes.setEnabled(artifactSelected && writePermission && OseeProperties.isDeveloper());
 
                diffOnParentBranchMenuItem.setEnabled(validDiffParent && modifiedWordArtifactSelected && readPermission);
 

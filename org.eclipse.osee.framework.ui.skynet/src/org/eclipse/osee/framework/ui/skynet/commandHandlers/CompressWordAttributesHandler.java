@@ -108,7 +108,7 @@ public class CompressWordAttributesHandler extends AbstractHandler {
 							.checkObjectPermission(artifacts.get(0),
 									PermissionEnum.WRITE);
 					enabled = writePermission
-							&& OseeProperties.getInstance().isDeveloper();
+							&& OseeProperties.isDeveloper();
 				}
 			}
 		} catch (Exception ex) {

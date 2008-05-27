@@ -99,7 +99,7 @@ public class GlobalMenu {
          GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
 
          if (deleteMenuItem != null) deleteMenuItem.setEnabled(permiss.isFullAccess());
-         if (purgeMenuItem != null) purgeMenuItem.setEnabled(permiss.isHasArtifacts() && OseeProperties.getInstance().isDeveloper());
+         if (purgeMenuItem != null) purgeMenuItem.setEnabled(permiss.isHasArtifacts() && OseeProperties.isDeveloper());
          if (tagMenuItem != null) tagMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isFullAccess());
       }
    }

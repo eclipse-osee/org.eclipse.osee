@@ -131,7 +131,7 @@ public class BranchCreationHandler extends AbstractSelectionEnabledHandler {
       IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
 
       try {
-         return (!selective || OseeProperties.getInstance().isDeveloper()) && ((SkynetSelections.oneBranchSelected(selection) && accessManager.checkObjectPermission(
+         return (!selective || OseeProperties.isDeveloper()) && ((SkynetSelections.oneBranchSelected(selection) && accessManager.checkObjectPermission(
                SkynetSelections.boilDownObject(selection.getFirstElement()), PermissionEnum.READ)) || (SkynetSelections.oneTransactionSelected(selection) && accessManager.checkObjectPermission(
                ((TransactionData) SkynetSelections.boilDownObject(selection.getFirstElement())).getTransactionId().getBranch(),
                PermissionEnum.READ)));
