@@ -6,6 +6,8 @@
 package org.eclipse.osee.framework.skynet.core.UnitTests;
 
 import junit.framework.TestCase;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.util.ConflictDetectionException;
 
 /**
  * @author Theron Virgin
@@ -33,4 +35,23 @@ public class ConflictedBranchCommitingTest extends TestCase {
       super.tearDown();
    }
 
+   protected void CheckCommitWithResolutionErrors() {
+      try {
+         BranchPersistenceManager.getInstance().commitBranch(ConflictTestManager.getSourceBranch(),
+               ConflictTestManager.getDestBranch(), true);
+      } catch (ConflictDetectionException ex) {
+         return;
+      } catch (Exception ex) {
+         fail("Only the ConflictDetectionException should be thrown not a " + ex.getLocalizedMessage() + "Exception");
+      }
+   }
+
+   protected void CheckCommitWithoutResolutionErrors() {
+      try {
+         BranchPersistenceManager.getInstance().commitBranch(ConflictTestManager.getSourceBranch(),
+               ConflictTestManager.getDestBranch(), true);
+      } catch (Exception ex) {
+         fail("No Exceptions should have been thrown. Not even the " + ex.getLocalizedMessage() + "Exception");
+      }
+   }
 }

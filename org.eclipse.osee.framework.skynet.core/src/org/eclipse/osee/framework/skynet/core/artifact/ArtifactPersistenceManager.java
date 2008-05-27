@@ -28,9 +28,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -45,7 +42,6 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -73,7 +69,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransacti
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
-import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -106,11 +101,11 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + ARTIFACT_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and T3.art_id = ?)";
 
    private static final String GET_ATTRIBUTE_GAMMAS_REVERT =
-         "SELECT T3.gamma_id FROM " + TRANSACTION_DETAIL_TABLE + " T1, " + TRANSACTIONS_TABLE + "  T2, " + ATTRIBUTE_VERSION_TABLE + " T3 where  T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " and T1.branch_id = ? and T3.art_id = ?";
+         "SELECT T3.gamma_id, T1.tx_type FROM " + TRANSACTION_DETAIL_TABLE + " T1, " + TRANSACTIONS_TABLE + "  T2, " + ATTRIBUTE_VERSION_TABLE + " T3 where  T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.branch_id = ? and T3.art_id = ?";
    private static final String GET_RELATION_GAMMAS_REVERT =
-         "SELECT T3.gamma_id FROM " + TRANSACTION_DETAIL_TABLE + " T1, " + TRANSACTIONS_TABLE + "  T2, " + RELATION_LINK_VERSION_TABLE + " T3 where  T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " and T1.branch_id = ? and (T3.a_art_id = ?  or  T3.b_art_id = ?)";
+         "SELECT T3.gamma_id, T1.tx_type  FROM " + TRANSACTION_DETAIL_TABLE + " T1, " + TRANSACTIONS_TABLE + "  T2, " + RELATION_LINK_VERSION_TABLE + " T3 where  T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.branch_id = ? and (T3.a_art_id = ?  or  T3.b_art_id = ?)";
    private static final String GET_ARTIFACT_GAMMAS_REVERT =
-         "SELECT T3.gamma_id FROM " + TRANSACTION_DETAIL_TABLE + " T1, " + TRANSACTIONS_TABLE + "  T2, " + ARTIFACT_VERSION_TABLE + " T3 where  T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " and T1.branch_id = ? and T3.art_id = ?";
+         "SELECT T3.gamma_id, T1.tx_type  FROM " + TRANSACTION_DETAIL_TABLE + " T1, " + TRANSACTIONS_TABLE + "  T2, " + ARTIFACT_VERSION_TABLE + " T3 where  T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.branch_id = ? and T3.art_id = ?";
 
    private static final String DELETE_ATTRIBUTE_GAMMAS_REVERT =
          "DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE gamma_id in ";
@@ -121,6 +116,9 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    private static final String DELETE_TXS_GAMMAS_REVERT =
          "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from  " + TRANSACTION_DETAIL_TABLE + " T1 where T1.transaction_id = T2.transaction_id and T1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " and T2.gamma_id in ";
+
+   private static final String SET_TX_CURRENT_REVERT =
+         "UPDATE " + TRANSACTIONS_TABLE + " tran SET tx_current = 1 WHERE EXISTS (SELECT 'x' from  " + TRANSACTION_DETAIL_TABLE + " det WHERE det.transaction_id = tran.transaction_id and det.tx_type = " + TransactionDetailsType.Baselined.getId() + " and det.branch_id = ? and tran.gamma_id in ";
 
    private static final String PURGE_ATTRIBUTE = "DELETE FROM " + ATTRIBUTE_VERSION_TABLE + " WHERE attr_id = ?";
    private static final String PURGE_ATTRIBUTE_GAMMAS =
@@ -569,41 +567,17 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             deleteTrace(artifact, SkynetTransactionManager.getInstance().getTransactionBuilder(branch));
          }
       } else {
-         String listDescription = (artifacts.length == 1) ? artifacts[0].getDescriptiveName() : "Artifacts";
-         Job job = new Job("Delete " + listDescription + " and Children") {
-
+         AbstractSkynetTxTemplate deleteTx = new AbstractSkynetTxTemplate(branch) {
             @Override
-            protected IStatus run(final IProgressMonitor monitor) {
-               IStatus toReturn = Status.CANCEL_STATUS;
-               monitor.beginTask("Delete artifacts", artifacts.length);
-
-               AbstractSkynetTxTemplate deleteTx = new AbstractSkynetTxTemplate(branch) {
-                  @Override
-                  protected void handleTxWork() throws Exception {
-                     for (Artifact artifact : artifacts) {
-                        if (!artifact.isDeleted()) {
-                           monitor.setTaskName("delete " + artifact.getDescriptiveName());
-                           deleteTrace(artifact, getTxBuilder());
-                           monitor.worked(1);
-                        }
-                     }
+            protected void handleTxWork() throws Exception {
+               for (Artifact artifact : artifacts) {
+                  if (!artifact.isDeleted()) {
+                     deleteTrace(artifact, getTxBuilder());
                   }
-               };
-
-               try {
-                  deleteTx.execute();
-                  toReturn = Status.OK_STATUS;
-               } catch (Exception ex) {
-                  logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-                  toReturn = new Status(Status.ERROR, SkynetActivator.PLUGIN_ID, -1, ex.getMessage(), ex);
-               } finally {
-                  monitor.done();
                }
-
-               return toReturn;
             }
          };
-         Jobs.startJob(job);
+         deleteTx.execute();
       }
    }
 
@@ -643,6 +617,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             ModType.Deleted, this));
 
       RelationManager.deleteRelationsAll(artifact);
+      artifact.persistRelations();
       tagManager.clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
    }
 
@@ -727,7 +702,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       @Override
       protected void handleTxWork() throws Exception {
 
-         Collection<Integer> gammaIds = new HashSet<Integer>();
+         Collection<Integer> gammaIdsModifications = new HashSet<Integer>();
+         Collection<Integer> gammaIdsBaseline = new HashSet<Integer>();
 
          //Get attribute Gammas
          ConnectionHandlerStatement connectionHandlerStatement =
@@ -735,7 +711,11 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                      SQL3DataType.INTEGER, artId);
          ResultSet resultSet = connectionHandlerStatement.getRset();
          while (resultSet.next()) {
-            gammaIds.add(new Integer(resultSet.getInt("gamma_id")));
+            if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
+               gammaIdsModifications.add(new Integer(resultSet.getInt("gamma_id")));
+            } else {
+               gammaIdsBaseline.add(new Integer(resultSet.getInt("gamma_id")));
+            }
          }
          //Get relation Gammas
          connectionHandlerStatement =
@@ -743,7 +723,11 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                      SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, artId);
          resultSet = connectionHandlerStatement.getRset();
          while (resultSet.next()) {
-            gammaIds.add(new Integer(resultSet.getInt("gamma_id")));
+            if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
+               gammaIdsModifications.add(new Integer(resultSet.getInt("gamma_id")));
+            } else {
+               gammaIdsBaseline.add(new Integer(resultSet.getInt("gamma_id")));
+            }
          }
          //Get artifact Gammas
          connectionHandlerStatement =
@@ -751,22 +735,33 @@ public class ArtifactPersistenceManager implements PersistenceManager {
                      SQL3DataType.INTEGER, artId);
          resultSet = connectionHandlerStatement.getRset();
          while (resultSet.next()) {
-            gammaIds.add(new Integer(resultSet.getInt("gamma_id")));
+            if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
+               gammaIdsModifications.add(new Integer(resultSet.getInt("gamma_id")));
+            } else {
+               gammaIdsBaseline.add(new Integer(resultSet.getInt("gamma_id")));
+            }
          }
 
-         if (!gammaIds.isEmpty()) {
-            ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_GAMMAS_REVERT + Collections.toString(gammaIds, "(",
-                  ",", ")"));
-            ConnectionHandler.runPreparedUpdate(DELETE_RELATION_GAMMAS_REVERT + Collections.toString(gammaIds, "(",
-                  ",", ")"));
-            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_GAMMAS_REVERT + Collections.toString(gammaIds, "(",
-                  ",", ")"));
+         if (!gammaIdsModifications.isEmpty()) {
+            ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_GAMMAS_REVERT + Collections.toString(
+                  gammaIdsModifications, "(", ",", ")"));
+            ConnectionHandler.runPreparedUpdate(DELETE_RELATION_GAMMAS_REVERT + Collections.toString(
+                  gammaIdsModifications, "(", ",", ")"));
+            ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_GAMMAS_REVERT + Collections.toString(
+                  gammaIdsModifications, "(", ",", ")"));
 
-            ConnectionHandler.runPreparedQuery(DELETE_ARTIFACT_GAMMAS_REVERT + Collections.toString(gammaIds, "(", ",",
-                  ")"));
+            ConnectionHandler.runPreparedQuery(DELETE_TXS_GAMMAS_REVERT + Collections.toString(gammaIdsModifications,
+                  "(", ",", ")") + " )");
+
+         }
+
+         if (!gammaIdsBaseline.isEmpty()) {
+            ConnectionHandler.runPreparedUpdate(SET_TX_CURRENT_REVERT + Collections.toString(gammaIdsBaseline, "(",
+                  ",", ")") + " )", SQL3DataType.INTEGER, branchId);
          }
 
          ConnectionHandler.runPreparedUpdate(REMOVE_EMPTY_TRANSACTION_DETAILS, SQL3DataType.INTEGER, branchId);
+
       }
 
       @Override
