@@ -257,7 +257,6 @@ public final class ConnectionHandler {
 
    public static ConnectionHandlerStatement runPreparedUpdateReturnStmt(boolean overrideTransaction, String query, Object... data) throws SQLException {
       QueryRecord record = new QueryRecord(query, data);
-      System.out.println(query);
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
