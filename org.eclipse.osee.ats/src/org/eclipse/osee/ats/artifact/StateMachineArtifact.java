@@ -319,7 +319,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public AtsWorkFlow getWorkFlow() {
       try {
-         return AtsWorkFlowFactory.getInstance().getWorkflow(this);
+         return AtsWorkFlowFactory.getWorkflow(this);
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }
