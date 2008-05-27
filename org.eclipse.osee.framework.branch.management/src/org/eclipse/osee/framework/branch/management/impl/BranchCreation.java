@@ -177,7 +177,7 @@ public class BranchCreation implements IBranchCreation {
          int updates =
                ConnectionHandler.runPreparedUpdate(connection, COPY_BRANCH_ADDRESSING, SQL3DataType.INTEGER,
                      newTransactionNumber, SQL3DataType.INTEGER, parentBranchId);
-         System.out.println(updates);
+         System.out.println(String.format("Create child branch - updated [%d] records", updates));
       }
    }
 }
