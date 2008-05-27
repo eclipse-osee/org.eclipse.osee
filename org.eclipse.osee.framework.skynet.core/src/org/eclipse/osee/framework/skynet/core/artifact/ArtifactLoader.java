@@ -248,7 +248,7 @@ public final class ArtifactLoader {
 
    private static String getAttributeSQL(List<Artifact> artifacts, int startIndex, int stopIndex, Branch branch, List<Object> attributeDataList) {
       StringBuilder sql = new StringBuilder(10000);
-      sql.append("SELECT att1.* from osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.art_id");
+      sql.append("SELECT att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri from osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.art_id");
 
       if (stopIndex - startIndex == 1) {
          sql.append("=?");
