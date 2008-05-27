@@ -132,6 +132,13 @@ public class DynamicXWidgetLayout {
          xWidget.setEditable(isEditable);
          if (dynamicWidgetLayoutListener != null) dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit,
                artifact, this, xModListener, isEditable);
+         if (artifact != null && (xWidget instanceof IArtifactWidget)) {
+            try {
+               ((IArtifactWidget) xWidget).setArtifact(artifact, xWidgetLayoutData.getLayoutName());
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
+         }
          if (toolkit != null)
             xWidget.createWidgets(toolkit, useComp, 2);
          else
@@ -140,13 +147,6 @@ public class DynamicXWidgetLayout {
             GridData gd = new GridData(GridData.FILL_BOTH);
             gd.minimumHeight = 60;
             ((XText) xWidget).getStyledText().setLayoutData(gd);
-         }
-         if (artifact != null && (xWidget instanceof IArtifactWidget)) {
-            try {
-               ((IArtifactWidget) xWidget).setArtifact(artifact, xWidgetLayoutData.getLayoutName());
-            } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-            }
          }
          if (artifact != null && (xWidget instanceof XLabelDam)) ((XLabelDam) xWidget).setArtifact(artifact,
                xWidgetLayoutData.getLayoutName());

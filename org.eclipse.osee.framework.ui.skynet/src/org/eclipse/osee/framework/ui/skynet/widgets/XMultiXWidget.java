@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -25,7 +27,9 @@ import org.eclipse.swt.widgets.Listener;
 public class XMultiXWidget extends XWidget {
 
    protected List<XWidget> xWidgets = new ArrayList<XWidget>();
-   private XMultiXWidgetFactory xMultiXWidgetFactory;
+   protected XMultiXWidgetFactory xMultiXWidgetFactory;
+   protected Group group;
+   protected int horizontalSpan;
 
    /**
     * @param label
@@ -40,56 +44,118 @@ public class XMultiXWidget extends XWidget {
     */
    @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
-      final Group group = new Group(parent, SWT.BORDER);
-      group.setLayout(new GridLayout(1, true));
-      GridData gridData = new GridData();
+      this.horizontalSpan = horizontalSpan;
+      //      parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+      group = new Group(parent, SWT.NONE);
+      if (toolkit != null) toolkit.adapt(group);
+      //      group.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_YELLOW));
+      group.setLayout(new GridLayout(2, false));
+      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
       gridData.horizontalSpan = horizontalSpan;
       group.setLayoutData(gridData);
-      if (isDisplayLabel()) group.setText(getLabel());
+      if (isDisplayLabel()) group.setText(getLabel() + "(s): ");
+
+      // Create add label / icon
       Label addLabel = new Label(group, SWT.NONE);
+      if (toolkit != null) toolkit.adapt(addLabel, true, true);
       Image image = SkynetGuiPlugin.getInstance() != null ? SkynetGuiPlugin.getInstance().getImage("add.gif") : null;
       if (image != null)
          addLabel.setImage(image);
       else
          addLabel.setText("add");
+      addLabel.setToolTipText("Add New \"" + getLabel() + "\"");
       addLabel.addListener(SWT.MouseUp, new Listener() {
          public void handleEvent(org.eclipse.swt.widgets.Event event) {
-            System.out.println("Add widget ");
-            XWidget xWidget = xMultiXWidgetFactory.addXWidget();
-            createWidgetControlComposite(xWidget, group);
-            xWidgets.add(xWidget);
-            group.layout();
-            group.getParent().layout();
+            handleAddXWidget();
          };
       });
 
+      // Create undo label / icon
+      Label undoLabel = new Label(group, SWT.NONE);
+      if (toolkit != null) toolkit.adapt(undoLabel, true, true);
+      image = null;
+      try {
+         image = SkynetGuiPlugin.getInstance() != null ? SkynetGuiPlugin.getInstance().getImage("undo.gif") : null;
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+      }
+      if (image != null)
+         undoLabel.setImage(image);
+      else
+         undoLabel.setText("undo");
+      undoLabel.setToolTipText("Undo Changes to \"" + getLabel() + "\"");
+      undoLabel.addListener(SWT.MouseUp, new Listener() {
+         public void handleEvent(org.eclipse.swt.widgets.Event event) {
+            try {
+               handleUndo();
+            } catch (Exception ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+            }
+         };
+      });
+
+      // Create xWidget lines
       for (final XWidget xWidget : xWidgets) {
-         createWidgetControlComposite(xWidget, group);
+         createWidgetControlComposite(xWidget, group, 2);
       }
    }
 
-   public void createWidgetControlComposite(final XWidget xWidget, final Composite parent) {
+   protected void handleUndo() throws Exception {
+      System.out.println("handle undo");
+   }
+
+   protected void handleAddXWidget() {
+      System.out.println("Add widget ");
+      XWidget xWidget = xMultiXWidgetFactory.addXWidget();
+      createWidgetControlComposite(xWidget, group, 2);
+      if (!xWidgets.contains(xWidget)) xWidgets.add(xWidget);
+      xWidget.addXModifiedListener(xModifiedListener);
+      group.layout();
+      group.getParent().layout();
+      notifyXModifiedListeners();
+   }
+
+   XModifiedListener xModifiedListener = new XModifiedListener() {
+      public void widgetModified(XWidget widget) {
+         System.out.println("notify listeners");
+         notifyXModifiedListeners();
+      };
+   };
+
+   private void createWidgetControlComposite(final XWidget xWidget, final Composite parent, int horizontalSpan) {
       final Composite controlComp = new Composite(parent, SWT.NONE);
-      controlComp.setLayout(new GridLayout(3, false));
-      controlComp.setLayoutData(new GridData());
+      controlComp.setLayout(ALayout.getZeroMarginLayout(4, false));
+      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+      gridData.horizontalSpan = 2;
+      controlComp.setLayoutData(gridData);
+      if (toolkit != null) toolkit.adapt(controlComp);
 
-      xWidget.createWidgets(controlComp, 1);
-
+      // Add delete label / icon
       Label deleteLabel = new Label(controlComp, SWT.NONE);
+      if (toolkit != null) toolkit.adapt(deleteLabel, true, true);
       Image image = SkynetGuiPlugin.getInstance() != null ? SkynetGuiPlugin.getInstance().getImage("delete.gif") : null;
       if (image != null)
          deleteLabel.setImage(image);
       else
          deleteLabel.setText("delete");
+      deleteLabel.setToolTipText("Delete \"" + getLabel() + "\"");
       deleteLabel.addListener(SWT.MouseUp, new Listener() {
          public void handleEvent(org.eclipse.swt.widgets.Event event) {
             System.out.println("Delete widget " + xWidget);
-            xWidget.dispose();
             xWidgets.remove(xWidget);
+            xWidget.dispose();
             controlComp.dispose();
             parent.layout();
+            group.layout();
+            group.getParent().layout();
+            notifyXModifiedListeners();
          };
       });
+
+      // Add Widget
+      xWidget.setFillHorizontally(true);
+      xWidget.createWidgets(controlComp, 1);
+
    }
 
    public void addXWidget(XWidget xWidget) {
@@ -185,7 +251,7 @@ public class XMultiXWidget extends XWidget {
    /**
     * @return the xWidgets
     */
-   public List<XWidget> getXWidgets() {
+   public List<XWidget> getXWidgets() throws Exception {
       return xWidgets;
    }
 

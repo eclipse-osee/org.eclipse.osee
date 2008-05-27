@@ -245,7 +245,7 @@ public class XText extends XWidget {
 
    @Override
    public void dispose() {
-      labelWidget.dispose();
+      if (labelWidget != null) labelWidget.dispose();
       if (sText != null) {
          if (spellPaintListener != null && !sText.isDisposed()) sText.removePaintListener(spellPaintListener);
          sText.dispose();

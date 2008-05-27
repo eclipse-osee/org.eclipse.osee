@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
@@ -172,10 +173,18 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       if (artifact.isDeleted()) return false;
 
       try {
-         return !artifact.isReadOnly() && artifact.isDirty(true);
-      } catch (SQLException ex) {
+         boolean dirty = !artifact.isReadOnly() && artifact.isDirty(true);
+         if (dirty) return true;
+
+         Result result = newAttributeComposite.isDirty();
+         System.out.println("New Attribute Composite - isDirt => " + result);
+         if (result.isTrue()) {
+            return true;
+         }
+      } catch (Exception ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
+
       return false;
    }
 
@@ -197,16 +206,16 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    protected void createPages() {
       SkynetContributionItem.addTo(this, true);
 
+      if (OseeProperties.getInstance().isDeveloper()) {
+         newAttributesPageIndex = createNewAttributesPage();
+         setPageText(newAttributesPageIndex, "Attributes2");
+      }
+
       previewPageIndex = createPreviewPage();
       setPageText(previewPageIndex, "Preview");
 
       attributesPageIndex = createAttributesPage();
       setPageText(attributesPageIndex, "Attributes");
-
-      if (OseeProperties.isDeveloper()) {
-         newAttributesPageIndex = createNewAttributesPage();
-         setPageText(newAttributesPageIndex, "Attributes2");
-      }
 
       relationsPageIndex = createRelationsPage();
       setPageText(relationsPageIndex, "Relations");
@@ -507,7 +516,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             } catch (SQLException ex) {
                SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
-            }
+         }
 
          eventManager.unRegisterAll(this);
          super.dispose();

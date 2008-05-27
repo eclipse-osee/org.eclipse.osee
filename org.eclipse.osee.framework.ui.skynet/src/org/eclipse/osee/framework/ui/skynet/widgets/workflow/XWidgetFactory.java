@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRelationTypeListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
@@ -80,7 +81,9 @@ public class XWidgetFactory {
          if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
             ((XText) xWidget).set(xWidgetLayoutData.getDefaultValue());
          }
-      } else if (xWidgetName.equals("XInteger"))
+      } else if (xWidgetName.equals("XMultiXWidgetTextDam"))
+         xWidget = new XMultiXWidgetTextDam(name);
+      else if (xWidgetName.equals("XInteger"))
          xWidget = new XInteger(name);
       else if (xWidgetName.equals("XTextDam"))
          xWidget = new XTextDam(name);

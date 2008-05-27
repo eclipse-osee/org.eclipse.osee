@@ -14,8 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.AttributeXWidgetFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -36,12 +40,16 @@ public class NewAttributesComposite extends Composite {
    private ToolBar toolBar;
    private FormToolkit toolkit;
    private ScrolledForm scrolledForm;
+   private Composite mainComp;
+   private WorkPage workPage;
 
    public static final int NAME_COLUMN_INDEX = 0;
    public static final int VALUE_COLUMN_INDEX = 1;
+   private final IDirtiableEditor iDirtiableEditor;
 
-   public NewAttributesComposite(IDirtiableEditor editor, Composite parent, int style, Artifact artifact, ToolBar toolBar) {
+   public NewAttributesComposite(IDirtiableEditor iDirtiableEditor, Composite parent, int style, Artifact artifact, ToolBar toolBar) {
       super(parent, style);
+      this.iDirtiableEditor = iDirtiableEditor;
       this.artifact = artifact;
       this.toolBar = toolBar;
       setLayout(ALayout.getZeroMarginLayout(1, true));
@@ -52,7 +60,7 @@ public class NewAttributesComposite extends Composite {
       scrolledForm.setLayout(new GridLayout(1, false));
       scrolledForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      Composite mainComp = scrolledForm.getBody();
+      mainComp = scrolledForm.getBody();
       mainComp.setLayout(new GridLayout(1, false));
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       //      mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
@@ -65,11 +73,32 @@ public class NewAttributesComposite extends Composite {
                   attrType));
          }
 
-         WorkPage page = new WorkPage("Attributes", "attributes", widgets, new DefaultXWidgetOptionResolver());
-         page.createBody(toolkit, mainComp, artifact, null, true);
+         workPage = new WorkPage("Attributes", "attributes", widgets, new DefaultXWidgetOptionResolver());
+         workPage.createBody(toolkit, mainComp, artifact, xModifiedListener, true);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }
+   }
+
+   XModifiedListener xModifiedListener = new XModifiedListener() {
+      public void widgetModified(XWidget widget) {
+         System.out.println("new attr comp - modified listener");
+         mainComp.layout();
+         iDirtiableEditor.onDirtied();
+      };
+   };
+
+   public Result isDirty() throws Exception {
+      if (workPage == null) return Result.FalseResult;
+      for (DynamicXWidgetLayoutData xLayoutData : workPage.getlayoutDatas()) {
+         for (XWidget widget : xLayoutData.getDynamicXWidgetLayout().getXWidgets()) {
+            if (widget instanceof IArtifactWidget) {
+               Result result = ((IArtifactWidget) widget).isDirty();
+               if (result.isTrue()) return result;
+            }
+         }
+      }
+      return Result.FalseResult;
    }
 
    private List<AttributeType> getOrderedArtifactTypes() throws Exception {

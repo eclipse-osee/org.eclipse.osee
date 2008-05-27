@@ -15,17 +15,18 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.swt.widgets.Composite;
 
-public class XMultiXWidgetDam extends XMultiXWidget implements IArtifactWidget {
+public abstract class XMultiXWidgetDam extends XMultiXWidget implements IArtifactWidget {
 
-   private Artifact artifact;
-   private String attributeTypeName;
-   private final XMultiXWidgetDamFactory xMultiXWidgetDamFactory;
+   protected Artifact artifact;
+   protected String attributeTypeName;
 
-   public XMultiXWidgetDam(String label, XMultiXWidgetDamFactory xMultiXWidgetDamFactory) {
+   public XMultiXWidgetDam(String label) {
       super(label, null);
       super.setXMultiXWidgetFactory(xMultiXWidgetFactory);
-      this.xMultiXWidgetDamFactory = xMultiXWidgetDamFactory;
    }
 
    XMultiXWidgetFactory xMultiXWidgetFactory = new XMultiXWidgetFactory() {
@@ -34,32 +35,50 @@ public class XMultiXWidgetDam extends XMultiXWidget implements IArtifactWidget {
         */
       @Override
       public XWidget addXWidget() {
-         return xMultiXWidgetDamFactory.addXWidgetDam();
+         return addXWidgetDam();
       }
    };
 
    public void setArtifact(Artifact artifact, String attributeTypeName) throws SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       this.artifact = artifact;
       this.attributeTypeName = attributeTypeName;
-
-      xWidgets = xMultiXWidgetDamFactory.createXWidgets();
    }
 
-   @Override
-   public void saveToArtifact() throws SQLException, MultipleAttributesExist {
-      xMultiXWidgetDamFactory.saveToArtifact(xWidgets);
-   }
+   public abstract void saveToArtifact() throws Exception;
 
-   @Override
-   public Result isDirty() throws Exception {
-      return xMultiXWidgetDamFactory.isDirty(xWidgets);
-   }
+   public abstract Result isDirty() throws Exception;
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget#revert()
-    */
    @Override
    public void revert() throws Exception {
       setArtifact(artifact, attributeTypeName);
    }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidget#createWidgets(org.eclipse.swt.widgets.Composite, int)
+    */
+   @Override
+   public void createWidgets(Composite parent, int horizontalSpan) {
+      try {
+         createXWidgets();
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+      }
+      super.createWidgets(parent, horizontalSpan);
+   }
+
+   /**
+    * Creates the xWidgets widgets off artifact's set attributes that will be used in createWidgets
+    */
+   public abstract void createXWidgets() throws Exception;
+
+   /**
+    * Create new XWidget with default value in response to new attribute request
+    * 
+    * @param artifact
+    * @return
+    */
+   public abstract XWidget addXWidgetDam();
+
+   public abstract void handleUndo() throws Exception;
+
 }
