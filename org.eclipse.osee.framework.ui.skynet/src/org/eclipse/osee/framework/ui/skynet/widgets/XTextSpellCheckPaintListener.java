@@ -55,6 +55,7 @@ public class XTextSpellCheckPaintListener implements PaintListener {
    }
 
    public void addXTextSpellModifyDictionary(XTextSpellModifyDictionary modDict) {
+      if (xText == null || xText.getStyledText() == null || xText.getStyledText().isDisposed()) return;
       this.modDict = modDict;
       xText.getStyledText().addMouseListener(mouseListener);
       xText.getStyledText().addDisposeListener(new DisposeListener() {
