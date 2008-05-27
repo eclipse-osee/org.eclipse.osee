@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -106,8 +107,18 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     */
    @Override
    public String getValueAsString() {
+      String toReturn = null;
       ByteBuffer data = getValueAsBytes();
-      return data != null ? new String(data.array()) : "";
+      if (data != null) {
+         try {
+            toReturn = new String(data.array(), "UTF-8");
+         } catch (UnsupportedEncodingException ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
+         }
+      } else {
+         toReturn = "";
+      }
+      return toReturn;
    }
 
    /* (non-Javadoc)
@@ -117,7 +128,11 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    public void setValue(String value) {
       ByteBuffer toSet = null;
       if (value != null) {
-         toSet = ByteBuffer.wrap(value.getBytes());
+         try {
+            toSet = ByteBuffer.wrap(value.getBytes("UTF-8"));
+         } catch (UnsupportedEncodingException ex) {
+            logger.log(Level.SEVERE, ex.toString(), ex);
+         }
       }
       setValue(toSet);
    }
