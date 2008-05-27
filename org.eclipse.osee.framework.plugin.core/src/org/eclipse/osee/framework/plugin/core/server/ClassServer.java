@@ -70,7 +70,7 @@ public class ClassServer extends Thread {
 
       String msg = "ClassServer started [";
 
-      msg += "\n\tport ";
+      msg += "port ";
       msg += Integer.toString(getPort());
       msg += "]";
 
