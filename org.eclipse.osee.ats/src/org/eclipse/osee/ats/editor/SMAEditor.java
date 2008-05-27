@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.AtsLocalStateTransitionedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEvent;
@@ -40,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
+import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -91,9 +93,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
                "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeNameSuppressException() + ":" + smaMgr.getSma());
       } else {
          try {
-            // Save widget data to artifact
-            workFlowTab.saveXWidgetToArtifact();
-            smaMgr.getSma().saveSMA();
+            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
+               @Override
+               protected void handleTxWork() throws Exception {
+                  // Save widget data to artifact
+                  workFlowTab.saveXWidgetToArtifact();
+                  smaMgr.getSma().saveSMA();
+               }
+            };
+            txWrapper.execute();
             workFlowTab.refresh();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);

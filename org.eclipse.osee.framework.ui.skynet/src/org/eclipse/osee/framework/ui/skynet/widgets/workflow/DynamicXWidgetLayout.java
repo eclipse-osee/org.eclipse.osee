@@ -181,7 +181,8 @@ public class DynamicXWidgetLayout {
          for (String aName : orReq) {
             DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
             Label label = layoutData.getXWidget().getLabelWidget();
-            label.setForeground(isComplete ? null : Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            if (label != null && !label.isDisposed()) label.setForeground(isComplete ? null : Display.getCurrent().getSystemColor(
+                  SWT.COLOR_RED));
          }
       }
       // Handle xorRequired
@@ -191,7 +192,8 @@ public class DynamicXWidgetLayout {
          for (String aName : xorReq) {
             DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
             Label label = layoutData.getXWidget().getLabelWidget();
-            label.setForeground(isComplete ? null : Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            if (label != null && !label.isDisposed()) label.setForeground(isComplete ? null : Display.getCurrent().getSystemColor(
+                  SWT.COLOR_RED));
          }
       }
    }

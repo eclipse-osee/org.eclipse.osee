@@ -443,19 +443,13 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       ed.setFillVertically(true);
       if (ed.open() == 0) {
          try {
-            AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
-               @Override
-               protected void handleTxWork() throws Exception {
-                  for (String str : ed.getEntry().split("\n")) {
-                     str = str.replaceAll("\r", "");
-                     if (!str.equals("")) {
-                        TaskArtifact taskArt = iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(str, true);
-                        taskArt.persistAttributesAndRelations();
-                     }
-                  }
+            for (String str : ed.getEntry().split("\n")) {
+               str = str.replaceAll("\r", "");
+               if (!str.equals("")) {
+                  iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(str, false);
                }
-            };
-            txWrapper.execute();
+            }
+            loadTable();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }

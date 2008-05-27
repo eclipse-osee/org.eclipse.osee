@@ -134,7 +134,7 @@ public class XCheckBox extends XWidget {
    }
 
    private void updateCheckWidget() {
-      if (checkButton != null) checkButton.setSelection(selected);
+      if (checkButton != null && !checkButton.isDisposed()) checkButton.setSelection(selected);
       setLabelError();
    }
 

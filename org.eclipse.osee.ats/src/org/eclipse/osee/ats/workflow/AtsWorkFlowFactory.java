@@ -79,13 +79,12 @@ public class AtsWorkFlowFactory {
          System.err.println("Workflow Id: " + workflowId);
          return WorkflowDiagramFactory.getInstance().getWorkFlowFromFileContents(workflowId, workflowXml);
       } else {
-         // If TaskArtifact, walk up team definition tree till find a workflow diagram or
-         // exception
-         // if not found
+         // If TaskArtifact, walk up team definition tree till find a workflow diagram or exception if not found
          NativeArtifact nativeArt = null;
          if (sma instanceof TaskArtifact) {
             nativeArt =
-                  getTeamDefinitionWorkflowDiagram(CoreRelationEnumeration.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram,
+                  getTeamDefinitionWorkflowDiagram(
+                        CoreRelationEnumeration.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram,
                         ((TeamWorkFlowArtifact) ((TaskArtifact) sma).getParentSMA()).getTeamDefinition());
          } else if (sma instanceof DecisionReviewArtifact) {
             nativeArt =
@@ -105,11 +104,11 @@ public class AtsWorkFlowFactory {
                            CoreRelationEnumeration.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
                            ((TeamWorkFlowArtifact) ((PeerToPeerReviewArtifact) sma).getParentSMA()).getTeamDefinition());
          }
-         // If TeamWorkflowArtifact, walk up team tree till find a workflow diagram or exception
-         // if not found
+         // If TeamWorkflowArtifact, walk up team tree till find a workflow diagram or exception if not found
          else if (sma instanceof TeamWorkFlowArtifact) {
             nativeArt =
-                  getTeamDefinitionWorkflowDiagram(CoreRelationEnumeration.TeamDefinitionToWorkflowDiagram_WorkflowDiagram,
+                  getTeamDefinitionWorkflowDiagram(
+                        CoreRelationEnumeration.TeamDefinitionToWorkflowDiagram_WorkflowDiagram,
                         ((TeamWorkFlowArtifact) sma).getTeamDefinition());
          }
          if (nativeArt != null)

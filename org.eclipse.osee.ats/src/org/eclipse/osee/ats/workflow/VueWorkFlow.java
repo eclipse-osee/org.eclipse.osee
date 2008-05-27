@@ -124,6 +124,7 @@ public class VueWorkFlow {
    }
 
    private void processXml(String xml) {
+      System.out.println("processXml...");
       Matcher m = childPattern.matcher(xml);
       while (m.find()) {
          String childParms = m.group(1);

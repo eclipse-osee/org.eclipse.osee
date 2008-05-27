@@ -414,13 +414,12 @@ public class XText extends XWidget {
    }
 
    protected void updateTextWidget() {
-      if (sText != null) {
-         if (text.equals(sText.getText())) return;
-         // Disable Listeners so not to fill Undo List
-         sText.setText(text);
-         // Reenable Listeners
-         setLabelError();
-      }
+      if (sText == null || sText.isDisposed()) return;
+      if (text.equals(sText.getText())) return;
+      // Disable Listeners so not to fill Undo List
+      sText.setText(text);
+      // Reenable Listeners
+      setLabelError();
    }
 
    public void set(String text) {
