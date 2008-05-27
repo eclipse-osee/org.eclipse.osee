@@ -206,16 +206,16 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
    protected void createPages() {
       SkynetContributionItem.addTo(this, true);
 
-      if (OseeProperties.getInstance().isDeveloper()) {
-         newAttributesPageIndex = createNewAttributesPage();
-         setPageText(newAttributesPageIndex, "Attributes2");
-      }
-
       previewPageIndex = createPreviewPage();
       setPageText(previewPageIndex, "Preview");
 
       attributesPageIndex = createAttributesPage();
       setPageText(attributesPageIndex, "Attributes");
+
+      if (OseeProperties.getInstance().isDeveloper()) {
+         newAttributesPageIndex = createNewAttributesPage();
+         setPageText(newAttributesPageIndex, "Attributes2");
+      }
 
       relationsPageIndex = createRelationsPage();
       setPageText(relationsPageIndex, "Relations");
