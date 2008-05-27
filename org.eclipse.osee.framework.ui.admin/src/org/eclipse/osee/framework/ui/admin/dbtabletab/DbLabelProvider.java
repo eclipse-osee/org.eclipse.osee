@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
+import java.sql.Timestamp;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -54,6 +55,10 @@ public class DbLabelProvider extends LabelProvider implements ITableLabelProvide
          return (String) obj;
       else if (obj instanceof Long)
          return ((Long) obj).toString();
+      else if (obj instanceof Integer)
+         return ((Integer) obj).toString();
+      else if (obj instanceof Timestamp)
+         return ((Timestamp) obj).toString();
       else
          return "Unknown column type";
    }

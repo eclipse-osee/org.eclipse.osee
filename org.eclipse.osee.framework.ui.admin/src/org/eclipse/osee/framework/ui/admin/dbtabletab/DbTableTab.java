@@ -48,6 +48,7 @@ public class DbTableTab {
       super();
 
       dbItems = new ArrayList<DbItem>();
+      dbItems.add(new SkynetUsageDbItem());
       dbItems.add(new SiteGssflRpcr());
       dbItems.add(new OseeInfoDbItem());
       handCursor = new Cursor(null, SWT.CURSOR_HAND);

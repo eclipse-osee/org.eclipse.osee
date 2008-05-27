@@ -179,7 +179,7 @@ public class AdminView extends ViewPart implements IActionable {
     */
    public void save() {
       // database tab
-      if (tabFolder.getSelectionIndex() == 0) {
+      if (tabFolder.getSelectionIndex() == 2) {
          DbTableTab.dbTableViewer.save();
          setSaveNeeded(false);
       }

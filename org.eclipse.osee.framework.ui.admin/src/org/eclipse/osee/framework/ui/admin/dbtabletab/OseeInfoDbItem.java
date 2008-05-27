@@ -48,7 +48,7 @@ public class OseeInfoDbItem extends DbItem {
       boolean toReturn = false;
       ConnectionHandlerStatement chStmt = null;
       try {
-         String query = "SELECT * FROM " + getTableName() + " WHERE KEY = " + returnTic(key);
+         String query = "SELECT * FROM " + getTableName() + " WHERE OSEE_KEY = " + returnTic(key);
          chStmt = ConnectionHandler.runPreparedQuery(query);
          toReturn = chStmt.next();
       } catch (SQLException ex) {
@@ -66,11 +66,11 @@ public class OseeInfoDbItem extends DbItem {
          String value = (String) model.getColumn(1);
          String query;
          if (exists(key)) {
-            query = "UPDATE " + getTableName() + " SET KEY = ?, VALUE = ? WHERE KEY = ?";
+            query = "UPDATE " + getTableName() + " SET OSEE_KEY = ?, OSEE_VALUE = ? WHERE OSEE_KEY = ?";
             ConnectionHandler.runPreparedUpdate(query, SQL3DataType.VARCHAR, key, SQL3DataType.VARCHAR, value,
                   SQL3DataType.VARCHAR, key);
          } else {
-            query = "INSERT INTO " + getTableName() + " (key,value) VALUES (?, ?)";
+            query = "INSERT INTO " + getTableName() + " (OSEE_KEY, OSEE_VALUE) VALUES (?, ?)";
             ConnectionHandler.runPreparedUpdate(query, SQL3DataType.VARCHAR, key, SQL3DataType.VARCHAR, value);
          }
       } catch (SQLException ex) {

@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
-import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 
 public class DbDescribe {
 
@@ -26,77 +26,65 @@ public class DbDescribe {
       this.dbItem = dbItem;
    }
 
-   public void open() throws SQLException {
-   }
-
-   public void close() throws SQLException {
-
-   }
-
    public ArrayList<Describe> getDescription() throws SQLException {
       ArrayList<Describe> desc = new ArrayList<Describe>();
-      //      open();
-      //      String sql =
-      //            "SELECT  column_name, nullable, " + " concat(concat(concat(data_type,'('),data_length),')') \"type\"" + " FROM " + " user_tab_columns" + " WHERE " + " table_name='" + dbItem.getTableName() + "'";
-      //      System.out.println("sql *" + sql + "*");
-      //      Query.acquireCollection(desc, sql, new RsetProcessor<Describe>() {
-      //
-      //         public Describe process(ResultSet rset) throws SQLException {
-      //            return processDescribeRsetLine(rset);
-      //         }
-      //
-      //         public boolean validate(Describe d) {
-      //            return d.name != null;
-      //         }
-      //
-      //      });
-      //      close();
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         String sql = "SELECT * FROM " + dbItem.getTableName();
+         chStmt = ConnectionHandler.runPreparedQuery(sql);
+         ResultSetMetaData meta = chStmt.getRset().getMetaData();
+         int numberOfColumns = meta.getColumnCount() + 1;
+         for (int columnIndex = 1; columnIndex < numberOfColumns; columnIndex++) {
+            Describe describe = new Describe();
+
+            describe.name = meta.getColumnName(columnIndex).toUpperCase();
+            describe.nullable = meta.isNullable(columnIndex) == ResultSetMetaData.columnNullable;
+            describe.type = meta.getColumnTypeName(columnIndex);
+            desc.add(describe);
+         }
+      } finally {
+         chStmt.close();
+      }
       return desc;
    }
 
    public DbTaskList getDbTaskList(ArrayList<Describe> describeList) throws SQLException {
       DbTaskList taskList = new DbTaskList();
-      ConnectionHandlerStatement chStmt;
-      open();
-      String sql = "SELECT * FROM " + dbItem.getTableName();
-      System.out.println("sql *" + sql + "*");
-      chStmt = ConnectionHandler.runPreparedQuery(sql);
-      while (chStmt.next()) {
-         DbModel dbModel = new DbModel();
-         int x = 0;
-         for (Describe d : describeList) {
-            if (d.type.contains("NUMBER")) {
-               Long l = chStmt.getRset().getLong(d.name);
-               dbModel.addColumn(x++, l);
-            } else if (d.type.contains("VARCHAR")) {
-               String value = chStmt.getRset().getString(d.name);
-               dbModel.addColumn(x++, value);
-            } else {
-               dbModel.addColumn(x++, new String("Unknown object type"));
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         String sql = "SELECT * FROM " + dbItem.getTableName();
+         //         System.out.println("sql *" + sql + "*");
+         chStmt = ConnectionHandler.runPreparedQuery(sql);
+         while (chStmt.next()) {
+            DbModel dbModel = new DbModel();
+            int x = 0;
+            for (Describe d : describeList) {
+               if (d.type.equalsIgnoreCase("NUMBER")) {
+                  Long l = chStmt.getRset().getLong(d.name);
+                  dbModel.addColumn(x++, l);
+               } else if (d.type.equalsIgnoreCase("VARCHAR")) {
+                  String value = chStmt.getRset().getString(d.name);
+                  dbModel.addColumn(x++, value);
+               } else if (d.type.equalsIgnoreCase("INTEGER") || d.type.contains("int")) {
+                  Integer value = chStmt.getRset().getInt(d.name);
+                  dbModel.addColumn(x++, value);
+               } else if (d.type.equalsIgnoreCase("TIMESTAMP")) {
+                  Timestamp value = chStmt.getRset().getTimestamp(d.name);
+                  dbModel.addColumn(x++, value);
+               } else {
+                  dbModel.addColumn(x++, new String("Unknown object type"));
+               }
             }
+            taskList.addTask(dbModel);
          }
-         taskList.addTask(dbModel);
+      } finally {
+         chStmt.close();
       }
-      DbUtil.close(chStmt);
-      close();
       return taskList;
    }
-
    public class Describe {
       public String name = "Unknown";
       public boolean nullable = false;
       public String type = "Unknown";
-
    }
-
-   private Describe processDescribeRsetLine(ResultSet rset) throws SQLException {
-      Describe describe = new Describe();
-      if (rset == null) return null;
-      describe.name = rset.getString(1);
-      String nullable = rset.getString(2);
-      if (nullable != null) describe.nullable = nullable.equals("Y");
-      describe.type = rset.getString(3);
-      return describe;
-   }
-
 }

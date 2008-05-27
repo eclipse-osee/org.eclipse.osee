@@ -73,7 +73,7 @@ public class DbCellModifier implements ICellModifier {
          enumeratedValue.setChocies(SkynetAuthentication.getInstance().getUserNames());
          User u = null;
          try {
-            u = SkynetAuthentication.getInstance().getUserByIdWithError((String) obj);
+            u = SkynetAuthentication.getUserByIdWithError((String) obj);
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
          }

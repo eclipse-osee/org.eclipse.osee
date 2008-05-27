@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -30,12 +32,19 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 public class DbTableViewer {
 
@@ -247,6 +256,26 @@ public class DbTableViewer {
 
       // Set the default sorter for the viewer
       tableViewer.setSorter(new DbTableSorter(0));
+
+      table.addListener(SWT.MouseDoubleClick, new Listener() {
+         public void handleEvent(Event event) {
+            TableItem[] items = table.getSelection();
+            if (items != null && items.length > 0) {
+               TableItem item = items[0];
+               for (int index = 0; index < table.getColumnCount(); index++) {
+                  if (item.getBounds(index).contains(event.x, event.y)) {
+                     Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+                     CellTextDialog dialog =
+                           new CellTextDialog(shell, getAdminView().getSelectedDbItem().getTableName(),
+                                 table.getColumn(index).getText(), item.getText(index));
+                     dialog.open();
+                     break;
+                  }
+               }
+
+            }
+         }
+      });
    }
 
    /*
@@ -328,5 +357,38 @@ public class DbTableViewer {
 
    public DbTableTab getAdminView() {
       return dbTab;
+   }
+
+   private final class CellTextDialog extends MessageDialog {
+
+      private String dialogMessage;
+
+      public CellTextDialog(Shell parentShell, String dialogTitle, String dialogMessage, String dialogText) {
+         super(parentShell, dialogTitle, PlatformUI.getWorkbench().getSharedImages().getImage(
+               ISharedImages.IMG_OBJS_INFO_TSK), dialogMessage, MessageDialog.INFORMATION,
+               new String[] {IDialogConstants.OK_LABEL}, 0);
+         this.dialogMessage = dialogText;
+         this.setShellStyle(this.getShellStyle() | SWT.RESIZE);
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.jface.dialogs.MessageDialog#createCustomArea(org.eclipse.swt.widgets.Composite)
+       */
+      @Override
+      protected Control createCustomArea(Composite parent) {
+         Composite composite = new Composite(parent, SWT.NONE);
+         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         composite.setLayout(new GridLayout());
+         composite.setFont(parent.getFont());
+
+         Text text = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL);
+         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+         text.setLayoutData(data);
+         text.setEditable(false);
+         text.setText(dialogMessage);
+         text.setBackground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+         text.setFont(parent.getFont());
+         return composite;
+      }
    }
 }
