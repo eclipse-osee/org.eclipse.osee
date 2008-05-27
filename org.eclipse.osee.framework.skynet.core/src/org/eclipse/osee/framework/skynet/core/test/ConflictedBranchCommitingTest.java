@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.skynet.core.UnitTests;
+package org.eclipse.osee.framework.skynet.core.test;
 
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
