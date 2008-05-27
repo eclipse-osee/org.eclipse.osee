@@ -105,6 +105,7 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
          programRoot.addChild(ArtifactTypeManager.addArtifact("Folder", programBranch, name));
       }
 
+      sawProduct.persistAttributesAndRelations();
       programRoot.persistAttributesAndRelations();
 
    }

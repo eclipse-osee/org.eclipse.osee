@@ -303,7 +303,7 @@ public class LoadAIsAndTeamsAction extends Action {
             aia.persistAttributes();
             idToActionItem.put(page.getId(), aia);
             parent.addChild(aia);
-            parent.persistAttributes();
+            parent.persistAttributesAndRelations();
          }
       }
       for (WorkPage childPage : page.getToPages()) {
