@@ -69,6 +69,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    private Collection<User> preSaveStateAssignees;
    private User preSaveOriginator;
    public static double MAN_DAY_HOURS = 8;
+   private AtsWorkFlow atsWorkFlow;
 
    /**
     * @param parentFactory
@@ -317,13 +318,23 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       return null;
    }
 
+   /**
+    * Since workflow currently contains data and ui components, cache on a per artifact basis.<br>
+    * <br>
+    * TODO Separate WorkPage, WorkFlow and XWidget definitions from their UI display. Then, cache workflows at the
+    * AtsWorkflowFactory level.
+    * 
+    * @return
+    */
    public AtsWorkFlow getWorkFlow() {
-      try {
-         return AtsWorkFlowFactory.getWorkflow(this);
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
+      if (atsWorkFlow == null) {
+         try {
+            atsWorkFlow = AtsWorkFlowFactory.getWorkflow(this);
+         } catch (Exception ex) {
+            OSEELog.logException(AtsPlugin.class, ex, true);
+         }
       }
-      return null;
+      return atsWorkFlow;
    }
 
    public void addSubscribed(User user) throws SQLException {
