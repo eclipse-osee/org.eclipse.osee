@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.TxChange;
 
 /**
  * @author Jeff C. Phillips
@@ -26,7 +27,7 @@ public class ArtifactTransactionData implements ITransactionData {
          "INSERT INTO " + ARTIFACT_VERSION_TABLE + "(art_id, gamma_id, modification_id) VALUES (?,?,?)";
 
    private static final String SET_PREVIOUS_TX_NOT_CURRENT =
-         "UPDATE osee_Define_txs tx2 set tx_current = 0 WHERE (tx2.transaction_id, tx2.gamma_id) = (SELECT tx1.transaction_id, tx1.gamma_id from osee_define_tx_details td2, osee_Define_artifact_version av3, osee_define_txs tx1 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = av3.gamma_id AND av3.art_id = ? AND tx1.tx_current = 1)";
+         "UPDATE osee_Define_txs txs1 set tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) = (SELECT txs2.transaction_id, txs2.gamma_id from osee_define_tx_details txd1, osee_Define_artifact_version av3, osee_define_txs txs2 WHERE txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs2.gamma_id = av3.gamma_id AND av3.art_id = ? AND txs2.tx_current = " + TxChange.CURRENT.ordinal() + ")";
 
    private static final int PRIME_NUMBER = 3;
 
