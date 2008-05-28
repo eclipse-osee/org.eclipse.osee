@@ -60,11 +60,11 @@ public class SiteGssflRpcr extends DbItem {
    }
 
    @Override
-   public void save(DbModel model) {
+   public void save(DbDescribe describe, DbModel model) {
       try {
-         String program = (String) model.getColumn(0);
-         String dir = (String) model.getColumn(1);
-         String programId = (String) model.getColumn(2);
+         String program = (String) model.getColumn(describe.indexOfColumn("PROGRAM"));
+         String dir = (String) model.getColumn(describe.indexOfColumn("DIRECTORY"));
+         String programId = (String) model.getColumn(describe.indexOfColumn("PROGRAM_ID"));
          String query;
          if (exists(program)) {
             query = "UPDATE " + getTableName() + " SET directory = ?, program_id = ? WHERE PROGRAM = ?";

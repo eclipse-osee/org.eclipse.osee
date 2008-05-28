@@ -73,7 +73,7 @@ public class SkynetUsageDbItem extends DbItem {
     * @see org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem#save(org.eclipse.osee.framework.ui.admin.dbtabletab.DbModel)
     */
    @Override
-   public void save(DbModel model) {
+   public void save(DbDescribe describe, DbModel model) {
    }
 
 }

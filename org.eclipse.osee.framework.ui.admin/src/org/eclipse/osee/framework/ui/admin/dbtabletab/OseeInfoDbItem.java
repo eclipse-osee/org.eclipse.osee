@@ -60,10 +60,10 @@ public class OseeInfoDbItem extends DbItem {
    }
 
    @Override
-   public void save(DbModel model) {
+   public void save(DbDescribe describe, DbModel model) {
       try {
-         String key = (String) model.getColumn(0);
-         String value = (String) model.getColumn(1);
+         String key = (String) model.getColumn(describe.indexOfColumn("OSEE_KEY"));
+         String value = (String) model.getColumn(describe.indexOfColumn("OSEE_VALUE"));
          String query;
          if (exists(key)) {
             query = "UPDATE " + getTableName() + " SET OSEE_KEY = ?, OSEE_VALUE = ? WHERE OSEE_KEY = ?";

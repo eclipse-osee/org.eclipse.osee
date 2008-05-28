@@ -14,46 +14,62 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 
 public class DbDescribe {
 
    private final DbItem dbItem;
+   private ArrayList<Describe> dbColumns;
 
    public DbDescribe(DbItem dbItem) {
       super();
       this.dbItem = dbItem;
+      this.dbColumns = null;
    }
 
-   public ArrayList<Describe> getDescription() throws SQLException {
-      ArrayList<Describe> desc = new ArrayList<Describe>();
-      ConnectionHandlerStatement chStmt = null;
-      try {
-         String sql = "SELECT * FROM " + dbItem.getTableName();
-         chStmt = ConnectionHandler.runPreparedQuery(sql);
-         ResultSetMetaData meta = chStmt.getRset().getMetaData();
-         int numberOfColumns = meta.getColumnCount() + 1;
-         for (int columnIndex = 1; columnIndex < numberOfColumns; columnIndex++) {
-            Describe describe = new Describe();
-
-            describe.name = meta.getColumnName(columnIndex).toUpperCase();
-            describe.nullable = meta.isNullable(columnIndex) == ResultSetMetaData.columnNullable;
-            describe.type = meta.getColumnTypeName(columnIndex);
-            desc.add(describe);
+   public int indexOfColumn(String name) throws SQLException {
+      int toReturn = -1;
+      List<Describe> items = getDescription();
+      for (int index = 0; index < items.size(); index++) {
+         if (items.get(index).name.equals(name)) {
+            toReturn = index;
+            break;
          }
-      } finally {
-         chStmt.close();
       }
-      return desc;
+      return toReturn;
    }
 
-   public DbTaskList getDbTaskList(ArrayList<Describe> describeList) throws SQLException {
+   public List<Describe> getDescription() throws SQLException {
+      if (dbColumns == null) {
+         dbColumns = new ArrayList<Describe>();
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            String sql = "SELECT * FROM " + dbItem.getTableName();
+            chStmt = ConnectionHandler.runPreparedQuery(sql);
+            ResultSetMetaData meta = chStmt.getRset().getMetaData();
+            int numberOfColumns = meta.getColumnCount() + 1;
+            for (int columnIndex = 1; columnIndex < numberOfColumns; columnIndex++) {
+               Describe describe = new Describe();
+
+               describe.name = meta.getColumnName(columnIndex).toUpperCase();
+               describe.nullable = meta.isNullable(columnIndex) == ResultSetMetaData.columnNullable;
+               describe.type = meta.getColumnTypeName(columnIndex);
+               dbColumns.add(describe);
+            }
+         } finally {
+            chStmt.close();
+         }
+      }
+      return dbColumns;
+   }
+
+   public DbTaskList getDbTaskList(List<Describe> describeList) throws SQLException {
       DbTaskList taskList = new DbTaskList();
       ConnectionHandlerStatement chStmt = null;
       try {
          String sql = "SELECT * FROM " + dbItem.getTableName();
-         //         System.out.println("sql *" + sql + "*");
          chStmt = ConnectionHandler.runPreparedQuery(sql);
          while (chStmt.next()) {
             DbModel dbModel = new DbModel();

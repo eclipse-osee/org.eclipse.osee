@@ -53,7 +53,7 @@ public abstract class DbItem {
 
    public abstract int getColumnWidth(String columnName);
 
-   public abstract void save(DbModel model);
+   public abstract void save(DbDescribe descibre, DbModel model);
 
    public abstract DbModel createNewRow(DbModel example);
 

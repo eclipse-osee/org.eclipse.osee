@@ -54,7 +54,7 @@ public class DbTableViewer {
    private Table table;
    private TableViewer tableViewer;
 
-   private ArrayList<Describe> describeList;
+   private List<Describe> describeList;
    private DbTaskList dbTaskList;
    private DbDescribe dbDescribe;
    private final DbItem dbItem;
@@ -71,7 +71,7 @@ public class DbTableViewer {
 
    public void save() {
       for (DbModel dbModel : getTasks()) {
-         if (dbModel.isNeedSave()) dbItem.save(dbModel);
+         if (dbModel.isNeedSave()) dbItem.save(dbDescribe, dbModel);
          dbModel.setNeedSave(false);
          dbModel.setColumnChanged(null);
       }
