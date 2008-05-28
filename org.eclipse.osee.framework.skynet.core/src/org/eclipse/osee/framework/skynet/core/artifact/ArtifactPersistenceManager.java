@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.tagging.SystemTagDescriptor;
 import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
@@ -526,7 +527,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       }
       try {
          AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
-      } catch (OseeCoreException ex) {
+      } catch (OseeDataStoreException ex) {
          throw new SQLException(ex);
       }
    }

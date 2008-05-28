@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifi
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.data.AttributeTransactionData;
 
@@ -146,7 +146,7 @@ public class AttributeToTransactionOperation {
       transaction.addLocalEvent(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
    }
 
-   public static void meetMinimumAttributeCounts(Artifact artifact) throws OseeCoreException {
+   public static void meetMinimumAttributeCounts(Artifact artifact) throws OseeDataStoreException {
       try {
          for (AttributeType attributeType : artifact.getAttributeTypes()) {
             int missingCount = attributeType.getMinOccurrences() - artifact.getAttributeCount(attributeType.getName());
@@ -155,7 +155,7 @@ public class AttributeToTransactionOperation {
             }
          }
       } catch (SQLException ex) {
-         throw new OseeCoreException(ex.getMessage(), ex);
+         throw new OseeDataStoreException(ex.getMessage(), ex);
       }
    }
 

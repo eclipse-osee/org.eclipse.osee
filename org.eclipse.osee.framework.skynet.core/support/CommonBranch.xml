@@ -334,7 +334,7 @@
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s35"/>
     <Cell ss:StyleID="s35"/>
-    <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s35"/>
     <Cell ss:StyleID="s35"/>
@@ -346,7 +346,7 @@
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s35"/>
     <Cell ss:StyleID="s35"/>
-    <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s35"/>
     <Cell ss:StyleID="s35"/>
@@ -394,7 +394,7 @@
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s35"/>
     <Cell ss:StyleID="s35"/>
-    <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s35"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s35"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s35"/>
     <Cell ss:StyleID="s35"/>
@@ -746,8 +746,8 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>12</ActiveRow>
-     <ActiveCol>1</ActiveCol>
+     <ActiveRow>11</ActiveRow>
+     <ActiveCol>2</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

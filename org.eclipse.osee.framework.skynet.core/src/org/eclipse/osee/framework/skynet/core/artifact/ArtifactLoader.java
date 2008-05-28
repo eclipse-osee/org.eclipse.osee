@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
@@ -239,7 +239,7 @@ public final class ArtifactLoader {
       for (Artifact artifact : artifactsNeedingAttributes) {
          try {
             AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
-         } catch (OseeCoreException ex) {
+         } catch (OseeDataStoreException ex) {
             throw new SQLException(ex);
          }
       }
