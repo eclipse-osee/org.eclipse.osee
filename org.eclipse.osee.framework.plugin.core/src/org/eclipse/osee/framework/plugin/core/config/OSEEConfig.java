@@ -46,7 +46,6 @@ public class OSEEConfig {
    private String[][] bookmarks;
    private String authenticationProvider;
    private String remoteHttpServer;
-   //      private DbInformation databaseService;
 
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OSEEConfig.class);
 
@@ -73,8 +72,6 @@ public class OSEEConfig {
          parseDisableRemoteEvents(rootElement);
          parseMode(rootElement);
          parseLogger(rootElement);
-         //                  ServerConfigUtil.getInstance().parseDatabaseConfigFile(rootElement);
-         //                  getDefaultDatabaseService();
          parseWebServers(rootElement);
          parseAuthenticationScheme(rootElement);
          parseHttpServer(rootElement);
@@ -274,35 +271,6 @@ public class OSEEConfig {
       return runMode;
    }
 
-   /*
-   public SupportedDatabase getDBType() {
-      if (databaseService != null && databaseService.getDatabaseDetails() != null) {
-         return databaseService.getDatabaseDetails().getDbType();
-      } else {
-         return SupportedDatabase.oracle;
-      }
-
-   }
-
-   public String getServiceID() {
-      return databaseService.getDatabaseDetails().getFieldValue(ConfigField.DatabaseName);
-   }
-
-   public String getUser() {
-      return databaseService.getDatabaseDetails().getFieldValue(ConfigField.UserName);
-   }
-
-   public DbInformation getDatabaseService(String servicesId) {
-      return ServerConfigUtil.getInstance().getService(servicesId);
-   }
-
-   public DbInformation getDefaultDatabaseService() {
-      if (databaseService == null) {
-         databaseService = ServerConfigUtil.getInstance().getDefaultService();
-      }
-      return databaseService;
-   }
-   */
    public boolean isDisableRemoteEvents() {
       return disableRemoteEvents;
    }
