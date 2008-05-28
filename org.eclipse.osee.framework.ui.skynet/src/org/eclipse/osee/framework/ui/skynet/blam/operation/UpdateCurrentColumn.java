@@ -28,11 +28,11 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 public class UpdateCurrentColumn extends AbstractBlam {
 
    private static final String SELECT_ATTRIBUTES_TO_UPDATE =
-         "SELECT branch_id, maxt, txs2.gamma_id, atid FROM osee_define_attribute att2,  osee_define_txs txs2, (SELECT MAX(txs1.transaction_id) AS  maxt, att1.attr_id AS atid, txd1.branch_id FROM osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.gamma_id = txs1.gamma_id and txs1.transaction_id > ? and tx_type = 0 AND txs1.transaction_id = txd1.transaction_id GROUP BY att1.attr_id, txd1.branch_id) new_stuff WHERE atid = att2.attr_id AND att2.modification_id <> 3 AND att2.gamma_id = txs2.gamma_id and txs2.transaction_id > ? AND txs2.transaction_id = maxt";
+         "SELECT branch_id, maxt, txs2.gamma_id, atid FROM osee_define_attribute att2,  osee_define_txs txs2, (SELECT MAX(txs1.transaction_id) AS  maxt, att1.attr_id AS atid, txd1.branch_id FROM osee_define_attribute att1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE att1.gamma_id = txs1.gamma_id and txs1.transaction_id > ? and txd1.tx_type = 0 AND txs1.transaction_id = txd1.transaction_id GROUP BY att1.attr_id, txd1.branch_id) new_stuff WHERE atid = att2.attr_id AND att2.modification_id <> 3 AND att2.gamma_id = txs2.gamma_id and txs2.transaction_id > ? AND txs2.transaction_id = maxt";
    private static final String SELECT_ARTIFACTS_TO_UPDATE =
-         "SELECT branch_id, maxt, txs1.gamma_id, art_id FROM osee_define_artifact_version arv2,  osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, arv1.art_id AS art, txd1.branch_id FROM osee_define_artifact_version arv1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE arv1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY arv1.art_id, txd1.branch_id) new_stuff WHERE art = arv2.art_id AND arv2.modification_id <> 3 AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
+         "SELECT branch_id, maxt, txs1.gamma_id, art_id FROM osee_define_artifact_version arv2,  osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, arv1.art_id AS art, txd1.branch_id FROM osee_define_artifact_version arv1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE arv1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY arv1.art_id, txd1.branch_id) new_stuff WHERE art = arv2.art_id AND arv2.modification_id <> 3 AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
    private static final String SELECT_RELATIONS_TO_UPDATE =
-         "SELECT branch_id, maxt, txs1.gamma_id, rel_id FROM osee_define_rel_link rel2, osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, rel1.rel_link_id AS rel_id, txd1.branch_id FROM osee_define_rel_link rel1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE rel1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY rel1.rel_link_id, txd1.branch_id) new_stuff WHERE rel_id = rel2.rel_link_id AND rel2.modification_id <> 3 AND rel2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
+         "SELECT branch_id, maxt, txs1.gamma_id, rel_id FROM osee_define_rel_link rel2, osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, rel1.rel_link_id AS rel_id, txd1.branch_id FROM osee_define_rel_link rel1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE rel1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY rel1.rel_link_id, txd1.branch_id) new_stuff WHERE rel_id = rel2.rel_link_id AND rel2.modification_id <> 3 AND rel2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
    private static final String UPDATE_ATTRIBUTE_CURRENT_TO_0 = //TODO PULL APART THESE THREE QUERY BECAUSE I NEED BOTH GAMMA_ID AND TRANSACTION TO FIND THE UNIQUE TXS 
          "update osee_define_txs set tx_current = 0 where transaction_id = (SELECT txs1.transaction_id from osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute attr1 where txd1.branch_id = ? and attr1.attr_id = ? and txs1.tx_current = 1 and txd1.tx_type = 0 and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = attr1.gamma_id) and gamma_id = (SELECT txs1.gamma_id from osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute attr1 where txd1.branch_id = ? and attr1.attr_id = ? and txs1.tx_current = 1 and txd1.tx_type = 0 and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = attr1.gamma_id)";
    private static final String UPDATE_ARTIFACT_CURRENT_TO_0 =
@@ -70,7 +70,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
          return;
       }
       appendResultLine(String.format(
-            "Updating attributes, artifacts, and relations current_tx column from transaction id [%d].", txNumber));
+            "Updating attributes, artifacts, and relations current_tx column from transaction id [%d].\n", txNumber));
       Connection connection = null;
       try {
          int rowsUpdated;
@@ -82,15 +82,15 @@ public class UpdateCurrentColumn extends AbstractBlam {
          getUpdates(connection, updates, 2, SELECT_ARTIFACTS_TO_UPDATE, txNumber);
          getUpdates(connection, updates, 3, SELECT_RELATIONS_TO_UPDATE, txNumber);
          long time = System.currentTimeMillis();
-         appendResultLine(String.format("Update [%d] transactions to baseline transactions.", txTypeNumber));
-         appendResultLine(String.format("Going to update [%d] items to a 0 tx_current value.", updates.size()));
+         appendResultLine(String.format("Update [%d] transactions to baseline transactions.\n", txTypeNumber));
+         appendResultLine(String.format("Going to update [%d] items to a 0 tx_current value.\n", updates.size()));
          rowsUpdated = updateTxCurrentToZero(connection, updates);
-         appendResultLine(String.format("Took [%d]ms to update [%d] rows.", (System.currentTimeMillis() - time),
+         appendResultLine(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
                rowsUpdated));
          time = System.currentTimeMillis();
-         appendResultLine(String.format("Going to update [%d] items to a 1 tx_current value.", updates.size()));
+         appendResultLine(String.format("Going to update [%d] items to a 1 tx_current value.\n", updates.size()));
          rowsUpdated = updateTxCurrentToOne(connection, updates);
-         appendResultLine(String.format("Took [%d]ms to update [%d] rows.", (System.currentTimeMillis() - time),
+         appendResultLine(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
                rowsUpdated));
       } finally {
          if (connection != null) {
@@ -127,9 +127,9 @@ public class UpdateCurrentColumn extends AbstractBlam {
                   stmt.getRset().getInt(2)});
          }
          DbUtil.close(stmt);
-         appendResultLine(String.format("Updating %d baselined txs.", batchArgs.size()));
+         appendResultLine(String.format("Updating %d baselined txs.\n", batchArgs.size()));
          int count = ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_CURRENT_TO_1, batchArgs);
-         appendResultLine(String.format("Updated %d rows.", count));
+         appendResultLine(String.format("Updated %d rows.\n", count));
       } finally {
          DbUtil.close(stmt);
       }
@@ -196,7 +196,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
       } finally {
          DbUtil.close(stmt);
       }
-      appendResultLine(String.format("%d updates for [%s]", count, query));
+      appendResultLine(String.format("%d updates for [%s]\n", count, query));
    }
 
    /* (non-Javadoc)
