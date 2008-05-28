@@ -431,13 +431,13 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws SQLException
     * @throws IllegalArgumentException
     */
-   public void commitBranch(final Branch childBranch, final boolean archiveChildBranch) throws SQLException, IllegalArgumentException, ConflictDetectionException, Exception {
+   public Job commitBranch(final Branch childBranch, final boolean archiveChildBranch) throws SQLException, IllegalArgumentException, ConflictDetectionException, Exception {
       Branch parentBranch = childBranch.getParentBranch();
 
       if (parentBranch == null) {
          throw new IllegalArgumentException("This branch does not have a parent branch.");
       }
-      commitBranch(childBranch, parentBranch, archiveChildBranch);
+      return commitBranch(childBranch, parentBranch, archiveChildBranch);
    }
 
    /**
@@ -449,9 +449,10 @@ public class BranchPersistenceManager implements PersistenceManager {
     * @throws CommitConflictException
     * @throws IllegalArgumentException
     */
-   public void commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch) throws ConflictDetectionException, Exception {
+   public Job commitBranch(final Branch fromBranch, final Branch toBranch, boolean archiveFromBranch) throws ConflictDetectionException, Exception {
       CommitJob commitJob = new CommitJob(toBranch, fromBranch, archiveFromBranch);
       Jobs.startJob(commitJob);
+      return commitJob;
    }
 
    /**

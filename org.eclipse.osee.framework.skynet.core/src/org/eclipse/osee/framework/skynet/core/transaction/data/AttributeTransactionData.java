@@ -25,7 +25,7 @@ public class AttributeTransactionData implements ITransactionData {
          "INSERT INTO " + ATTRIBUTE_VERSION_TABLE + " (art_id, attr_id, attr_type_id, value, gamma_id, uri, modification_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private static final String SET_PREVIOUS_TX_NOT_CURRENT =
-         "UPDATE osee_Define_txs tx1 set tx_current = 0 WHERE EXISTS (SELECT 'x' from osee_define_tx_details td2, osee_Define_attribute at3 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = at3.gamma_id AND at3.attr_id = ? AND tx1.tx_current = 1)";
+         "UPDATE osee_Define_txs tx2 set tx_current = 0 WHERE (tx2.transaction_id, tx2.gamma_id) = (SELECT tx1.transaction_id, tx1.gamma_id from osee_define_tx_details td2, osee_Define_attribute at3, osee_define_txs tx1 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = at3.gamma_id AND at3.attr_id = ? AND tx1.tx_current = 1)";
 
    private static final int PRIME_NUMBER = 5;
 

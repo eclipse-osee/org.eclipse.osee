@@ -26,7 +26,7 @@ public class ArtifactTransactionData implements ITransactionData {
          "INSERT INTO " + ARTIFACT_VERSION_TABLE + "(art_id, gamma_id, modification_id) VALUES (?,?,?)";
 
    private static final String SET_PREVIOUS_TX_NOT_CURRENT =
-         "UPDATE osee_Define_txs tx1 set tx_current = 0 WHERE EXISTS (SELECT 'x' from osee_define_tx_details td2, osee_Define_artifact_version av3 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = av3.gamma_id AND av3.art_id = ? AND tx1.tx_current = 1)";
+         "UPDATE osee_Define_txs tx2 set tx_current = 0 WHERE (tx2.transaction_id, tx2.gamma_id) = (SELECT tx1.transaction_id, tx1.gamma_id from osee_define_tx_details td2, osee_Define_artifact_version av3, osee_define_txs tx1 WHERE tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND tx1.gamma_id = av3.gamma_id AND av3.art_id = ? AND tx1.tx_current = 1)";
 
    private static final int PRIME_NUMBER = 3;
 
