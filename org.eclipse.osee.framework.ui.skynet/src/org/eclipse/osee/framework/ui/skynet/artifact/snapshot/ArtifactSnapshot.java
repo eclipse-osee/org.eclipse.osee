@@ -93,7 +93,7 @@ final class ArtifactSnapshot implements Serializable {
    public boolean isStaleComparedTo(Artifact artifact) {
       boolean snapshotGammaLessThanArts = this.getGamma() < getGamma(artifact);
       boolean snapshotCreationAfterArtifacts = this.getCreatedOn().before(getCreationDate(artifact));
-      return snapshotGammaLessThanArts && snapshotCreationAfterArtifacts;
+      return snapshotGammaLessThanArts || snapshotCreationAfterArtifacts;
    }
 
    /**
