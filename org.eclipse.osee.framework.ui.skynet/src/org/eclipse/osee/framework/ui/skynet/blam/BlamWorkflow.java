@@ -69,9 +69,11 @@ public class BlamWorkflow extends Artifact {
       this.layoutDatas = new LinkedList<DynamicXWidgetLayoutData>();
    }
 
-   public static BlamWorkflow createBlamWorkflow(BlamOperation soleOperation) throws SQLException, OseeCoreException {
+   public static BlamWorkflow getOrCreateBlamWorkflow(BlamOperation soleOperation) throws SQLException, OseeCoreException {
       BlamWorkflow blamWorkflow =
             (BlamWorkflow) ArtifactTypeManager.addArtifact(ARTIFACT_NAME, BranchPersistenceManager.getCommonBranch());
+      blamWorkflow.setDescriptiveName(soleOperation.getName());
+      blamWorkflow.setSoleOperation(soleOperation);
       return blamWorkflow;
    }
 

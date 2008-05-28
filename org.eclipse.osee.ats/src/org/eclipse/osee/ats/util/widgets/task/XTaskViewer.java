@@ -20,15 +20,16 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.operation.ImportTasksFromSimpleList;
+import org.eclipse.osee.ats.operation.ImportTasksFromSpreadsheet;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.SMAMetrics;
-import org.eclipse.osee.ats.util.Import.TaskImportWizard;
 import org.eclipse.osee.ats.world.WorldArtifactItem;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -37,22 +38,18 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
-import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
+import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -91,14 +88,13 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class XTaskViewer extends XWidget implements IEventReceiver, IActionable {
+public class XTaskViewer extends XWidget implements IActionable {
 
    private TaskXViewer xViewer;
    private ToolItem upItem, downItem, currentStateFilterItem;
    private MenuItem currentStateFilterMenuItem, filterCompletedMenuItem, selectionMetricsMenuItem;
    private TaskArtifact selected;
    private IXTaskViewer iXTaskViewer;
-   private SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private TaskCurrentStateFilter currentStateFilter = null;
    private Label extraInfoLabel;
    private WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
@@ -110,8 +106,6 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
    public XTaskViewer(IXTaskViewer iXTaskViewer) throws Exception {
       super(iXTaskViewer.getTabName());
       this.iXTaskViewer = iXTaskViewer;
-      eventManager.register(RemoteTransactionEvent.class, this);
-      eventManager.register(LocalTransactionEvent.class, this);
    }
 
    /*
@@ -415,7 +409,11 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
             item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
             item.addSelectionListener(new SelectionAdapter() {
                public void widgetSelected(SelectionEvent e) {
-                  handleImportTasksViaList();
+                  try {
+                     handleImportTasksViaList();
+                  } catch (Exception ex) {
+                     OSEELog.logException(AtsPlugin.class, ex, true);
+                  }
                }
             });
          }
@@ -435,34 +433,18 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
       xViewer.refresh();
    }
 
-   public void handleImportTasksViaList() {
-      final EntryDialog ed =
-            new EntryDialog(Display.getCurrent().getActiveShell(), "Create Tasks", null,
-                  "Enter task titles, one per line.\nNOTE: For more complex import use import via spreadsheet.",
-                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
-      ed.setFillVertically(true);
-      if (ed.open() == 0) {
-         try {
-            for (String str : ed.getEntry().split("\n")) {
-               str = str.replaceAll("\r", "");
-               if (!str.equals("")) {
-                  iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(str, false);
-               }
-            }
-            loadTable();
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
-         }
-      }
+   public void handleImportTasksViaList() throws Exception {
+      BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSimpleList");
+      ((ImportTasksFromSimpleList) blamOperation).setDefaultTeamWorkflowArtifact((TeamWorkFlowArtifact) iXTaskViewer.getParentSmaMgr().getSma());
+      WorkflowEditor.edit(blamOperation);
+      loadTable();
    }
 
    public void handleImportTasksViaSpreadsheet() throws Exception {
-      TaskImportWizard actionWizard = new TaskImportWizard();
-      actionWizard.setHrid(iXTaskViewer.getParentSmaMgr().getSma().getHumanReadableId());
-      WizardDialog dialog =
-            new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), actionWizard);
-      dialog.create();
-      dialog.open();
+      BlamOperation blamOperation = BlamOperations.getBlamOperation("ImportTasksFromSpreadsheet");
+      ((ImportTasksFromSpreadsheet) blamOperation).setDefaultTeamWorkflowArtifact((TeamWorkFlowArtifact) iXTaskViewer.getParentSmaMgr().getSma());
+      WorkflowEditor.edit(blamOperation);
+      loadTable();
    }
 
    public void handleDeleteTask() {
@@ -472,12 +454,17 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
          return;
       }
       StringBuilder builder = new StringBuilder();
-      for (TaskArtifactItem taskItem : items) {
-         builder.append("\"" + taskItem.getTaskArtifact().getDescriptiveName() + "\"\n");
+      if (items.size() > 15) {
+         builder.append("Are You Sure You Wish to Delete " + items.size() + " Tasks");
+      } else {
+         builder.append("Are You Sure You Wish to Delete the Task(s):\n\n");
+         for (TaskArtifactItem taskItem : items) {
+            builder.append("\"" + taskItem.getTaskArtifact().getDescriptiveName() + "\"\n");
+         }
       }
       boolean delete =
             MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Task",
-                  "Are You Sure You Wish to Delete the Task(s):\n\n" + builder.toString());
+                  builder.toString());
       if (delete) {
          try {
             AbstractSkynetTxTemplate txWrapper = new AbstractSkynetTxTemplate(BranchPersistenceManager.getAtsBranch()) {
@@ -491,11 +478,11 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
                      TaskArtifact taskArt = taskItem.getTaskArtifact();
                      taskArt.delete();
                   }
-                  xViewer.removeItems(delItems);
-                  xViewer.refresh();
                }
             };
             txWrapper.execute();
+            xViewer.removeItems(items);
+            xViewer.refresh();
          } catch (Exception ex) {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }
@@ -573,7 +560,6 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
 
    @Override
    public void dispose() {
-      eventManager.unRegisterAll(this);
       xViewer.dispose();
    }
 
@@ -636,33 +622,6 @@ public class XTaskViewer extends XWidget implements IEventReceiver, IActionable 
     */
    public TaskXViewer getXViewer() {
       return xViewer;
-   }
-
-   public void onEvent(final Event event) {
-      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
-
-      try {
-         if (event instanceof TransactionEvent) {
-            if (iXTaskViewer.getParentSmaMgr() != null) {
-               EventData ed = ((TransactionEvent) event).getEventData(iXTaskViewer.getParentSmaMgr().getSma());
-               if (ed.isHasEvent() && ed.isRelChange())
-                  loadTable();
-               else
-                  refresh();
-            }
-         }
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, false);
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.jdk.core.event.IEventReceiver#runOnEventInDisplayThread()
-    */
-   public boolean runOnEventInDisplayThread() {
-      return true;
    }
 
    /*

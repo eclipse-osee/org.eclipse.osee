@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <LastAuthor>Donald G. Dunne</LastAuthor>
+  <Created>1996-10-14T23:33:28Z</Created>
+  <LastSaved>2008-05-27T21:06:21Z</LastSaved>
+  <Version>11.9999</Version>
+ </DocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <DoNotRelyOnCSS/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>9300</WindowHeight>
+  <WindowWidth>15135</WindowWidth>
+  <WindowTopX>120</WindowTopX>
+  <WindowTopY>120</WindowTopY>
+  <AcceptLabelsInFormulas/>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Sheet1">
+  <Table ss:ExpandedColumnCount="9" ss:ExpandedRowCount="4" x:FullColumns="1"
+   x:FullRows="1">
+   <Column ss:Width="78"/>
+   <Column ss:Width="102"/>
+   <Column ss:AutoFitWidth="0" ss:Width="161.25"/>
+   <Column ss:AutoFitWidth="0" ss:Width="83.25" ss:Span="1"/>
+   <Row>
+    <Cell><Data ss:Type="String">Title</Data></Cell>
+    <Cell><Data ss:Type="String">Originator</Data></Cell>
+    <Cell><Data ss:Type="String">Assignees</Data></Cell>
+    <Cell><Data ss:Type="String">Resolution</Data></Cell>
+    <Cell><Data ss:Type="String">Related to State</Data></Cell>
+    <Cell><Data ss:Type="String">Hours Spent</Data></Cell>
+    <Cell><Data ss:Type="String">Estimated Hours</Data></Cell>
+    <Cell><Data ss:Type="String">Percent Complete</Data></Cell>
+    <Cell><Data ss:Type="String">Notes</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">1st Task</Data></Cell>
+    <Cell><Data ss:Type="String">Brooks, Ryan D</Data></Cell>
+    <Cell><Data ss:Type="String">Dunne, Donald G</Data></Cell>
+    <Cell><Data ss:Type="String">Working</Data></Cell>
+    <Cell><Data ss:Type="String">Implement</Data></Cell>
+    <Cell><Data ss:Type="Number">3</Data></Cell>
+    <Cell><Data ss:Type="Number">34</Data></Cell>
+    <Cell><Data ss:Type="Number">23</Data></Cell>
+    <Cell><Data ss:Type="String">Note 1</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">2nd Task</Data></Cell>
+    <Cell><Data ss:Type="String">Dunne, Donald G</Data></Cell>
+    <Cell><Data ss:Type="String">UnAssigned</Data></Cell>
+    <Cell><Data ss:Type="String">Waiting</Data></Cell>
+    <Cell><Data ss:Type="String">Implement</Data></Cell>
+    <Cell><Data ss:Type="Number">1</Data></Cell>
+    <Cell><Data ss:Type="Number">3</Data></Cell>
+    <Cell><Data ss:Type="Number">45</Data></Cell>
+    <Cell><Data ss:Type="String">Note 2</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">3rd Task</Data></Cell>
+    <Cell><Data ss:Type="String">Dunne, Donald G</Data></Cell>
+    <Cell><Data ss:Type="String">Dunne, Donald G; Brooks, Ryan D</Data></Cell>
+    <Cell><Data ss:Type="String">Waiting</Data></Cell>
+    <Cell><Data ss:Type="String">Implement</Data></Cell>
+    <Cell><Data ss:Type="Number">1</Data></Cell>
+    <Cell><Data ss:Type="Number">0</Data></Cell>
+    <Cell><Data ss:Type="Number">45</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>3</ActiveRow>
+     <ActiveCol>8</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="Sheet2">
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="Sheet3">
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>

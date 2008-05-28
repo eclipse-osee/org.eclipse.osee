@@ -41,6 +41,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRelationTypeListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -89,6 +91,10 @@ public class XWidgetFactory {
          xWidget = new XTextDam(name);
       else if (xWidgetName.equals("XLabelDam"))
          xWidget = new XLabelDam(name);
+      else if (xWidgetName.equals("XMembersList"))
+         xWidget = new XMembersList(name);
+      else if (xWidgetName.equals("XMembersCombo"))
+         xWidget = new XMembersCombo(name);
       else if (xWidgetName.equals("XDate"))
          xWidget = new XDate(name);
       else if (xWidgetName.equals("XFileSelectionDialog"))

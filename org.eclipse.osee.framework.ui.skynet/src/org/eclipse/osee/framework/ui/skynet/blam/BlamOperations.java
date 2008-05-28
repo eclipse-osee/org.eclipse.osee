@@ -30,11 +30,16 @@ import org.osgi.framework.Bundle;
  */
 public class BlamOperations {
    private static List<BlamOperation> blamsSortedByName;
+   private static Map<String, BlamOperation> blamMap;
+
+   public static BlamOperation getBlamOperation(String operationId) {
+      return blamMap.get(operationId);
+   }
 
    public static Collection<BlamOperation> getBlamOperationsNameSort() {
       if (blamsSortedByName == null) {
          blamsSortedByName = new ArrayList<BlamOperation>();
-         Map<String, BlamOperation> blamMap = new HashMap<String, BlamOperation>();
+         blamMap = new HashMap<String, BlamOperation>();
          for (BlamOperation blam : getBlamOperations()) {
             blamMap.put(blam.getClass().getSimpleName(), blam);
          }

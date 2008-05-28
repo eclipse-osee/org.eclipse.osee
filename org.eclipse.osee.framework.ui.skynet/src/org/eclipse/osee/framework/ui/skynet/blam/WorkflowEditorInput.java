@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -20,10 +21,18 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class WorkflowEditorInput implements IEditorInput {
 
-   protected Artifact artifact;
+   private Artifact artifact;
 
    public WorkflowEditorInput(Artifact artifact) {
       this.artifact = artifact;
+   }
+
+   public WorkflowEditorInput(String workflowId) throws Exception {
+      this.artifact = BlamWorkflow.getOrCreateBlamWorkflow(BlamOperations.getBlamOperation(workflowId));
+   }
+
+   public WorkflowEditorInput(BlamOperation blamOperation) throws Exception {
+      this.artifact = BlamWorkflow.getOrCreateBlamWorkflow(blamOperation);
    }
 
    public boolean equals(Object obj) {
@@ -104,4 +113,5 @@ public class WorkflowEditorInput implements IEditorInput {
    public void setArtifact(Artifact artifact) {
       this.artifact = artifact;
    }
+
 }

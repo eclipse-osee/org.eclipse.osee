@@ -59,7 +59,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
-   public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, boolean usesVersions, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef) throws SQLException, MultipleAttributesExist {
+   public static TeamDefinitionArtifact createNewTeamDefinition(String name, String fullname, String description, Collection<User> leads, Collection<User> members, boolean usesVersions, Collection<ActionableItemArtifact> actionableItems, Artifact parentTeamDef) throws Exception {
       TeamDefinitionArtifact tda = null;
       tda =
             (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
@@ -97,7 +97,7 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       return tda;
    }
 
-   public static TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact() throws SQLException {
+   public static TeamDefinitionArtifact getOrCreateTeamsDefinitionArtifact() throws Exception {
       return AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact();
    }
 

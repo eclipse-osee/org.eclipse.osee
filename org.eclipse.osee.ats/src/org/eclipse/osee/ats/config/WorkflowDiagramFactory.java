@@ -53,7 +53,7 @@ public class WorkflowDiagramFactory {
     * @return NativeArtifact created
     * @throws MultipleAttributesExist
     */
-   public NativeArtifact importWorkflowDiagramToSkynet(InputStream inputStream, String name) throws SQLException, IOException, MultipleAttributesExist {
+   public NativeArtifact importWorkflowDiagramToSkynet(InputStream inputStream, String name) throws Exception {
       NativeArtifact art = null;
       // System.out.println("Importing diagram " + name);
       art =

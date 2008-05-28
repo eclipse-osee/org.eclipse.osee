@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.config;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.workflow.AtsWorkFlowFactory;
@@ -45,18 +44,20 @@ public class AtsDatabaseConfig extends DbInitializationTask {
       Artifact peerWorkflow =
             ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.PEERTOPEER_REVIEW_WORKFLOW,
                   AtsPlugin.getAtsBranch());
-      teamDef.relate(CoreRelationEnumeration.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram, peerWorkflow, true);
+      teamDef.relate(CoreRelationEnumeration.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
+            peerWorkflow, true);
 
       // Relate peer to Peer review
       Artifact decisionWorkflow =
             ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.DECISION_REVIEW_WORKFLOW,
                   AtsPlugin.getAtsBranch());
-      teamDef.relate(CoreRelationEnumeration.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram, decisionWorkflow, true);
+      teamDef.relate(CoreRelationEnumeration.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram,
+            decisionWorkflow, true);
 
       teamDef.persistAttributesAndRelations();
    }
 
-   private void createAtsTopLevelConfigObjects() throws SQLException {
+   private void createAtsTopLevelConfigObjects() throws Exception {
       AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
       AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact();
       AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact();

@@ -79,7 +79,7 @@ public class RemainingHoursStat extends WorkPageService {
          if (label != null && !label.isDisposed()) {
             Result result = smaMgr.getSma().isWorldViewRemainHoursValid();
             if (result.isFalse())
-               label.setText("Remaining Hours: " + result.getText());
+               label.setText("Remaining Hours: Error\n" + result.getText());
             else
                label.setText("Remaining Hours: " + AtsLib.doubleToStrString(smaMgr.getSma().getWorldViewRemainHours()));
          }

@@ -79,6 +79,10 @@ public class UpdateArtifactTypeImage extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"" + SELECT_IMAGE + "\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"" + ARTIFACT_TYPE_NAME + "\" /></xWidgets>";
+      StringBuffer buffer = new StringBuffer("<xWidgets>");
+      buffer.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"" + SELECT_IMAGE + "\" />");
+      buffer.append("<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"" + ARTIFACT_TYPE_NAME + "\" />");
+      buffer.append("</xWidgets>");
+      return buffer.toString();
    }
 }

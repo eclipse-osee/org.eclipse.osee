@@ -55,6 +55,10 @@ public class ATSLog {
       this.artifact = artifact;
    }
 
+   public String toString() {
+      return getLogItems().toString();
+   }
+
    public String getHtml() {
       return getHtml(true);
    }

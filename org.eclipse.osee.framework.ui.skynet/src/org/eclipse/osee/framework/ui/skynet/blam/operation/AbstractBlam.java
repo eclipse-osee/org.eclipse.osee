@@ -50,6 +50,10 @@ public abstract class AbstractBlam implements BlamOperation, IDynamicWidgetLayou
       return "Select parameters below and click the play button at the top right.";
    }
 
+   public String getName() {
+      return getClassSimpleName();
+   }
+
    public String getClassSimpleName() {
       return getClass().getSimpleName();
    }

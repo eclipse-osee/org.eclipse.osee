@@ -31,23 +31,31 @@ import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTempla
 public class TaskImportJob extends Job {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(TaskImportJob.class);
    private final File file;
-   private ExcelAtsTaskArtifactExtractor extractor;
-   private final Branch branch;
+   private ExcelAtsTaskArtifactExtractor atsTaskExtractor;
+   private final boolean persist;
 
-   public TaskImportJob(File file, String hrid, ExcelAtsTaskArtifactExtractor extractor, Branch branch) throws IllegalArgumentException, CoreException, SQLException {
+   public TaskImportJob(File file, ExcelAtsTaskArtifactExtractor atsTaskExtractor, Branch branch, boolean persist) throws IllegalArgumentException, CoreException, SQLException {
       super("Importing Tasks");
       this.file = file;
-      this.extractor = extractor;
-      this.branch = branch;
+      this.atsTaskExtractor = atsTaskExtractor;
+      this.persist = persist;
    }
 
    public IStatus run(final IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;
       try {
-         extractor.setMonitor(monitor);
+         atsTaskExtractor.setMonitor(monitor);
          monitor.beginTask("Importing Tasks", 0);
-         AbstractSkynetTxTemplate txWrapper = new ExtractArtifactTx(branch, file, monitor);
-         txWrapper.execute();
+         if (persist) {
+            AbstractSkynetTxTemplate txWrapper = new ExtractArtifactTx(atsTaskExtractor.getBranch(), file, monitor);
+            txWrapper.execute();
+         } else {
+            if (file != null && file.isFile()) {
+               atsTaskExtractor.discoverArtifactAndRelationData(file);
+            } else {
+               throw new IllegalStateException("All files passed must be a file");
+            }
+         }
          toReturn = Status.OK_STATUS;
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
@@ -76,7 +84,7 @@ public class TaskImportJob extends Job {
       @Override
       protected void handleTxWork() throws Exception {
          if (file != null && file.isFile()) {
-            extractor.discoverArtifactAndRelationData(file);
+            atsTaskExtractor.discoverArtifactAndRelationData(file);
          } else {
             throw new IllegalStateException("All files passed must be a file");
          }

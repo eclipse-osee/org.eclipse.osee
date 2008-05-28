@@ -51,12 +51,10 @@ public class ATSAttributes {
    public static final ATSAttributes LOCATION_ATTRIBUTE = new ATSAttributes("Location");
    public static final ATSAttributes REVIEW_DEFECT_ATTRIBUTE = new ATSAttributes("Review Defect");
    public static final ATSAttributes STATE_NOTES_ATTRIBUTE = new ATSAttributes("State Notes");
-   public static final ATSAttributes HOURS_SPENT_ATTRIBUTE = new ATSAttributes("Hours Spent");
    public static final ATSAttributes ESTIMATED_HOURS_ATTRIBUTE =
          new ATSAttributes("Estimated Hours", "Estimated time to complete workflow.");
    public static final ATSAttributes WEEKLY_BENEFIT_ATTRIBUTE =
          new ATSAttributes("Weekly Benefit", "Estimated hours saved by changes made.");
-   public static final ATSAttributes PERCENT_COMPLETE_ATTRIBUTE = new ATSAttributes("Percent Complete");
    public static final ATSAttributes PERCENT_REWORK_ATTRIBUTE = new ATSAttributes("Percent Rework");
    public static final ATSAttributes TASK_USES_RESOLUTION_OPTIONS_ATTRIBUTE =
          new ATSAttributes("Task Uses Resolution Options",

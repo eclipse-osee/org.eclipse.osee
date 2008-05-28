@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.util.List;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.ui.IEditorInput;
@@ -63,22 +63,28 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IBlamEvent
       return (BlamWorkflow) ((WorkflowEditorInput) getEditorInput()).getArtifact();
    }
 
-   /**
-    * artifact must be of type Workflow. The paramter type is artifact to allow this method to have the same signature
-    * as the corresponding method in ArtifactExloper in the hope on day this will use a common interface
-    * 
-    * @param artifact
-    */
-   public static void editArtifact(final Artifact artifact) {
+   public static void edit(BlamWorkflow blamWorkflow) {
+      WorkflowEditor.edit(new WorkflowEditorInput(blamWorkflow));
+   }
+
+   public static void edit(final WorkflowEditorInput workflowEditorInput) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
-               AWorkbench.getActivePage().openEditor(new WorkflowEditorInput(artifact), EDITOR_ID);
+               AWorkbench.getActivePage().openEditor(workflowEditorInput, EDITOR_ID);
             } catch (PartInitException ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
          }
       });
+   }
+
+   public static void edit(String workflowId) throws Exception {
+      WorkflowEditor.edit(new WorkflowEditorInput(workflowId));
+   }
+
+   public static void edit(BlamOperation blamOperation) throws Exception {
+      WorkflowEditor.edit(new WorkflowEditorInput(blamOperation));
    }
 
    /**

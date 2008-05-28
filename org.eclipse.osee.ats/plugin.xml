@@ -312,4 +312,20 @@
             classname="org.eclipse.osee.ats.util.AtsArtifactChecks">
       </ArtifactCheck>
    </extension>
+   <extension
+         id="ImportTasksFromSpreadsheet"
+         name="ImportTasksFromSpreadsheet"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.operation.ImportTasksFromSpreadsheet">
+      </Operation>
+   </extension>
+   <extension
+         id="ImportTasksFromSimpleList"
+         name="ImportTasksFromSimpleList"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.operation.ImportTasksFromSimpleList">
+      </Operation>
+   </extension>
 </plugin>

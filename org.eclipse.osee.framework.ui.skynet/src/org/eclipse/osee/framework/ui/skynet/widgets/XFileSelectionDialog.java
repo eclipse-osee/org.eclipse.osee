@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.io.File;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -46,8 +45,8 @@ public class XFileSelectionDialog extends XText {
    public void createWidgets(final Composite parent, int horizontalSpan, boolean fillText) {
       super.createWidgets(parent, horizontalSpan, fillText);
 
-      Button fileDialog = new Button(parent, SWT.NONE);
-      fileDialog.setImage(SkynetGuiPlugin.getInstance().getImage("file.gif"));
+      Button fileDialog = new Button(getStyledText().getParent(), SWT.NONE);
+      fileDialog.setText("Select File");
       fileDialog.addSelectionListener(new SelectionListener() {
 
          public void widgetDefaultSelected(SelectionEvent e) {

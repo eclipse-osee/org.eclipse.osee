@@ -16,21 +16,21 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.NotifyUsersJob;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.ui.skynet.Import.AbstractArtifactExtractor;
@@ -53,16 +53,16 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
    private final boolean emailPOCs;
    private static SkynetAuthentication skyAuth = SkynetAuthentication.getInstance();
    private SMAManager smaMgr;
+   private final boolean persist;
 
    public static String getDescription() {
       return description;
    }
 
-   public ExcelAtsTaskArtifactExtractor(String hrid, Branch branch, boolean emailPOCs) throws SQLException, IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      super(branch);
+   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, boolean persist) throws SQLException, IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      super(artifact.getBranch());
       this.emailPOCs = emailPOCs;
-
-      Artifact artifact = ArtifactQuery.getArtifactFromId(hrid, branch);
+      this.persist = persist;
 
       if (!(artifact instanceof StateMachineArtifact)) {
          throw new IllegalArgumentException("Artifact must be StateMachineArtifact");
@@ -116,24 +116,39 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                else
                   u = skyAuth.getUserByName(userName, false);
                if (u == null) OSEELog.logSevere(AtsPlugin.class, String.format(
-                     "Invalid originator \"%s\" for row %d\nSetting to current user.", userName, rowNum), false);
-               sma.getLog().setOriginator(u);
-            } else if (headerRow[i].equalsIgnoreCase("Assignee")) {
-               String userName = row[i];
-               User u = null;
-               if (userName == null || userName.equals(""))
-                  u = skynetAuth.getAuthenticatedUser();
-               else
-                  u = skyAuth.getUserByName(userName, false);
-               if (u == null) throw new IllegalArgumentException(String.format("Invalid Assignee \"%s\" for row %d",
-                     userName, rowNum));
-               taskArt.getSmaMgr().getStateMgr().setAssignee(u);
-            } else if (headerRow[i].equalsIgnoreCase(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName())) {
+                     "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum), false);
+               taskArt.getLog().setOriginator(u);
+            } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
+               Set<User> assignees = new HashSet<User>();
+               for (String userName : row[i].split(";")) {
+                  userName = userName.replaceAll("^\\s+", "");
+                  userName = userName.replaceAll("\\+$", "");
+                  User user = null;
+                  if (userName == null || userName.equals(""))
+                     user = skynetAuth.getAuthenticatedUser();
+                  else
+                     user = skyAuth.getUserByName(userName, false);
+                  if (user == null) throw new IllegalArgumentException(String.format(
+                        "Invalid Assignee \"%s\" for row %d", userName, rowNum));
+                  assignees.add(user);
+               }
+               taskArt.getSmaMgr().getStateMgr().setAssignees(assignees);
+            } else if (headerRow[i].equalsIgnoreCase("Resolution")) {
                String str = row[i];
                if (str != null && !str.equals("")) {
                   taskArt.setSoleAttributeValue(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), str);
                }
-            } else if (headerRow[i].equalsIgnoreCase(ATSAttributes.TITLE_ATTRIBUTE.getStoreName())) {
+            } else if (headerRow[i].equalsIgnoreCase("Related to State")) {
+               String str = row[i];
+               if (str != null && !str.equals("")) {
+                  taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), str);
+               }
+            } else if (headerRow[i].equalsIgnoreCase("Notes")) {
+               String str = row[i];
+               if (str != null && !str.equals("")) {
+                  taskArt.setSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), str);
+               }
+            } else if (headerRow[i].equalsIgnoreCase("Title")) {
                String str = row[i];
                if (str != null && !str.equals("")) {
                   if (monitor != null) {
@@ -141,13 +156,13 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   }
                   taskArt.setDescriptiveName(str);
                }
-            } else if (headerRow[i].equalsIgnoreCase(ATSAttributes.PERCENT_COMPLETE_ATTRIBUTE.getStoreName())) {
+            } else if (headerRow[i].equalsIgnoreCase("Percent Complete")) {
                String str = row[i];
                Double percent;
                if (str != null && !str.equals("")) {
                   try {
                      percent = new Double(str);
-                     percent = percent * 100;
+                     if (percent < 1) percent = percent * 100;
                   } catch (Exception ex) {
                      throw new IllegalArgumentException(String.format("Invalid Percent Complete \"%s\" for row %d",
                            str, rowNum));
@@ -155,7 +170,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   int percentInt = percent.intValue();
                   taskArt.getSmaMgr().getStateMgr().setPercentComplete(percentInt);
                }
-            } else if (headerRow[i].equalsIgnoreCase(ATSAttributes.HOURS_SPENT_ATTRIBUTE.getStoreName())) {
+            } else if (headerRow[i].equalsIgnoreCase("Hours Spent")) {
                String str = row[i];
                double hours = 0;
                if (str != null && !str.equals("")) {
@@ -167,8 +182,18 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   }
                   taskArt.getSmaMgr().getStateMgr().setHoursSpent(hours);
                }
-            } else if (headerRow[i].equalsIgnoreCase("group")) {
-               System.out.println("groups not handled yet");
+            } else if (headerRow[i].equalsIgnoreCase("Estimated Hours")) {
+               String str = row[i];
+               double hours = 0;
+               if (str != null && !str.equals("")) {
+                  try {
+                     hours = new Double(str);
+                  } catch (Exception ex) {
+                     throw new IllegalArgumentException(String.format("Invalid Estimated Hours \"%s\" for row %d", str,
+                           rowNum));
+                  }
+                  taskArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName(), hours);
+               }
             } else {
                OSEELog.logSevere(AtsPlugin.class, "Unhandled column => " + headerRow[i], false);
             }
@@ -176,7 +201,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
          AtsPlugin.setEmailEnabled(true);
 
          if (taskArt.isCompleted()) taskArt.transitionToCompleted(false);
-         taskArt.persistAttributesAndRelations();
+         if (persist) taskArt.persistAttributesAndRelations();
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
             NotifyUsersJob job = new NotifyUsersJob(sma, NotifyUsersJob.NotifyType.Assignee);
             job.setPriority(Job.SHORT);

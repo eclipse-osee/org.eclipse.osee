@@ -29,6 +29,8 @@ public interface BlamOperation {
 
    public abstract String getDescriptionUsage();
 
+   public abstract String getName();
+
    public abstract Branch wrapOperationForBranch(BlamVariableMap variableMap);
 
    public abstract void setWorkflowEditor(WorkflowEditor workflow);

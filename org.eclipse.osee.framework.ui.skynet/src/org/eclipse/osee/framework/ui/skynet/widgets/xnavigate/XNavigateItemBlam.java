@@ -11,9 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
-import java.sql.SQLException;
-import org.eclipse.osee.framework.skynet.core.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamWorkflow;
 import org.eclipse.osee.framework.ui.skynet.blam.WorkflowEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -34,20 +31,7 @@ public class XNavigateItemBlam extends XNavigateItem {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws SQLException, OseeCoreException {
-      BlamWorkflow workflow;
-      /*
-      try {
-         workflow =
-               (BlamWorkflow) ArtifactQuery.getArtifactFromTypeAndName(BlamWorkflow.ARTIFACT_NAME, getName(),
-                     BranchPersistenceManager.getCommonBranch());
-      } catch (Exception ex) {*/
-      workflow = BlamWorkflow.createBlamWorkflow(blamOperation);
-      workflow.setDescriptiveName(getName());
-      /* workflow.persistAttributesAndRelations();
-      }*/
-      workflow.setSoleOperation(blamOperation);
-
-      WorkflowEditor.editArtifact(workflow);
+   public void run(TableLoadOption... tableLoadOptions) throws Exception {
+      WorkflowEditor.edit(blamOperation);
    }
 }
