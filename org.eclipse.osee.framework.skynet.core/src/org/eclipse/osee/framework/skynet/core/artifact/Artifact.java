@@ -1262,8 +1262,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       }
    }
 
-   public void setIds(int gammaId, int transactionId) {
+   /**
+    * @param gammaId
+    */
+   public void setGammaId(int gammaId) {
       this.gammaId = gammaId;
+   }
+
+   /**
+    * @param transactionId
+    */
+   public void setTransactionId(int transactionId) {
       this.transactionId = transactionId;
    }
 

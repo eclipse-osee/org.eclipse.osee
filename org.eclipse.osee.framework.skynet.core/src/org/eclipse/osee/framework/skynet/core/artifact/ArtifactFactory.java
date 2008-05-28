@@ -77,7 +77,8 @@ public abstract class ArtifactFactory {
       }
 
       artifact.setArtId(artId);
-      artifact.setIds(gammaId, active ? 0 : transactionId);
+      artifact.setGammaId(gammaId);
+      artifact.setTransactionId(active ? 0 : transactionId);
 
       ArtifactCache.cache(artifact);
       return artifact;

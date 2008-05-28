@@ -222,6 +222,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
          addArtifactData(artifact, transaction, artGamma);
       }
 
+      artifact.setGammaId(artGamma);
       processTransactionForArtifact(artifact, modType, transaction, artGamma);
 
       if (persistAttributes) {
@@ -249,7 +250,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       transaction.addToBatch(INSERT_ARTIFACT, SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
             artifact.getArtTypeId(), SQL3DataType.VARCHAR, artifact.getGuid(), SQL3DataType.VARCHAR,
             artifact.getHumanReadableId());
-      artifact.setIds(gammaId, 0);
+      artifact.setGammaId(gammaId);
+      artifact.setTransactionId(0);
    }
 
    private static final String SELECT_ARTIFACT_START =
