@@ -257,7 +257,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public TreeSet<String> getEnumerationAttributeValues() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {
-      return new TreeSet<String>(ConfigurationPersistenceManager.getInstance().getValidEnumerationAttributeValues(
+      return new TreeSet<String>(ConfigurationPersistenceManager.getValidEnumerationAttributeValues(
             getDynamicAttributeDescriptor().getName(), getArtifact().getBranch()));
    }
 

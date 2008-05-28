@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.swt.graphics.Image;

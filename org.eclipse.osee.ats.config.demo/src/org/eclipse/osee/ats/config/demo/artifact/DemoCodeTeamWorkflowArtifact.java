@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.config.demo.artifact;
 import java.sql.SQLException;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Donald G. Dunne

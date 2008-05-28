@@ -23,9 +23,9 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
@@ -76,7 +76,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
          gd.heightHint = 300;
          gd.widthHint = 200;
          artTypeList.getControl().setLayoutData(gd);
-         artTypeList.setInput(ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
+         artTypeList.setInput(ConfigurationPersistenceManager.getValidArtifactTypes(
                BranchPersistenceManager.getAtsBranch()));
          artTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {

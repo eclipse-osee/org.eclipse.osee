@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.handler;
 
 import java.util.HashMap;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.Import.RoughArtifact;

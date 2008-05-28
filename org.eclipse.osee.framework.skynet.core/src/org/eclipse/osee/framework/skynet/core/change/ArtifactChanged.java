@@ -15,9 +15,9 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -50,8 +50,7 @@ public class ArtifactChanged extends Change {
     */
    private ArtifactType getDynamicArtifactSubtypeDescriptor() throws SQLException {
       if (artifactSubtypeDescriptor == null) {
-         artifactSubtypeDescriptor =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artTypeId);
+         artifactSubtypeDescriptor = ArtifactTypeManager.getType(artTypeId);
       }
       return artifactSubtypeDescriptor;
    }
@@ -111,8 +110,7 @@ public class ArtifactChanged extends Change {
     */
    @Override
    public Image getItemKindImage() throws IllegalArgumentException, SQLException {
-      return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artTypeId).getImage(
-            getChangeType(), getModificationType());
+      return ArtifactTypeManager.getType(artTypeId).getImage(getChangeType(), getModificationType());
    }
 
    /* (non-Javadoc)

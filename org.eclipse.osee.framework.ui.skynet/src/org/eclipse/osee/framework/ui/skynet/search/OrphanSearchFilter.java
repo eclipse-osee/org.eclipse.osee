@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.sql.SQLException;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.OrphanArtifactSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -43,8 +43,7 @@ public class OrphanSearchFilter extends SearchFilter {
       try {
          for (String typeName : searchTypeList.getList().getSelection()) {
 
-            ArtifactType artifactType =
-                  ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(typeName);
+            ArtifactType artifactType = ArtifactTypeManager.getType(typeName);
 
             ISearchPrimitive primitive = new OrphanArtifactSearch(artifactType);
             if (not) {

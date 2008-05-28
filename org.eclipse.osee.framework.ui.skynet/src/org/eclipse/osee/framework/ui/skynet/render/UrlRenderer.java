@@ -15,8 +15,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -33,8 +33,7 @@ public class UrlRenderer extends Renderer {
     */
    public UrlRenderer() throws SQLException {
       descriptors =
-            ConfigurationPersistenceManager.getInstance().getArtifactTypesFromAttributeType(
-                  AttributeTypeManager.getType("Content URL"));
+            ConfigurationPersistenceManager.getArtifactTypesFromAttributeType(AttributeTypeManager.getType("Content URL"));
    }
 
    @Override

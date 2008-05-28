@@ -79,8 +79,8 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       try {
          if (obj instanceof Artifact) {
             options =
-                  new TreeSet<String>(ConfigurationPersistenceManager.getInstance().getValidEnumerationAttributeValues(
-                        attributeName, ((Artifact) obj).getBranch()));
+                  new TreeSet<String>(ConfigurationPersistenceManager.getValidEnumerationAttributeValues(attributeName,
+                        ((Artifact) obj).getBranch()));
          }
          if (obj instanceof AttributeConflict) {
             options = ((AttributeConflict) obj).getEnumerationAttributeValues();

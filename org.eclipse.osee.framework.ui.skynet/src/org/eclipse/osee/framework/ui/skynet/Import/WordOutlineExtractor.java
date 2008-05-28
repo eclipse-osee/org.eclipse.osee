@@ -22,8 +22,9 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
@@ -86,7 +87,7 @@ public class WordOutlineExtractor extends WordExtractor {
 
       this.currentListStack = new Stack<String>();
       this.clonedCurrentListStack = new Stack<String>();
-      this.headingDescriptor = configurationPersistenceManager.getArtifactSubtypeDescriptor("Heading");
+      this.headingDescriptor = ArtifactTypeManager.getType("Heading");
       this.mainDescriptor = mainDescriptor;
       this.maxExtractionDepth = maxExtractionDepth;
    }

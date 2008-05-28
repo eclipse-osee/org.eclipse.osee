@@ -24,8 +24,8 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -144,21 +144,20 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
    public IWizardPage getNextPage(IWizardPage page) {
       if (page == mainPage && mainPage.getReuseArtifactRoot() != null) {
          try {
-            ConfigurationPersistenceManager manager = ConfigurationPersistenceManager.getInstance();
             ArtifactType rootDescriptor = mainPage.getReuseArtifactRoot().getArtifactType();
             ArtifactType importDescriptor = mainPage.getSelectedType();
 
             HashSet<AttributeType> rootAttributes =
-                  new HashSet<AttributeType>(manager.getAttributeTypesFromArtifactType(rootDescriptor,
-                        mainPage.getSelectedBranch()));
+                  new HashSet<AttributeType>(ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(
+                        rootDescriptor, mainPage.getSelectedBranch()));
 
             if (rootDescriptor == importDescriptor) {
                attributeTypePage.setDescription("Identifying attributes for " + rootDescriptor.getName() + " artifacts");
                attributeTypePage.setDescriptors(rootAttributes);
             } else {
                HashSet<AttributeType> importAttributes =
-                     new HashSet<AttributeType>(manager.getAttributeTypesFromArtifactType(importDescriptor,
-                           mainPage.getSelectedBranch()));
+                     new HashSet<AttributeType>(ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(
+                           importDescriptor, mainPage.getSelectedBranch()));
 
                attributeTypePage.setDescription("Identifying attributes common to " + rootDescriptor.getName() + " and " + importDescriptor.getName() + " artifacts");
 

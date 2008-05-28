@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -48,7 +48,7 @@ public class RelationManager {
       List<RelationLink> selectedRelations = relations.get(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
-            if (relation.getAArtifactId() == aArtifactId && relation.getBArtifactId() == bArtifactId) {
+            if (!relation.isDeleted() && relation.getAArtifactId() == aArtifactId && relation.getBArtifactId() == bArtifactId) {
                return relation;
             }
          }
@@ -95,6 +95,12 @@ public class RelationManager {
             artifactsRelations = Collections.synchronizedList(new ArrayList<RelationLink>(4));
             artifactToRelations.put(artifact, artifactsRelations);
          }
+         if (artifactsRelations.contains(relation)) {
+            System.out.printf("%s  Rel: %d, artA: %d, artB: %d, \n", relation.getRelationType().getTypeName(),
+                  relation.getRelationId(), relation.getAArtifactId(), relation.getBArtifactId());
+            return;
+         }
+
          artifactsRelations.add(relation);
 
          List<RelationLink> selectedRelations = relations.get(artifact, relation.getRelationType());

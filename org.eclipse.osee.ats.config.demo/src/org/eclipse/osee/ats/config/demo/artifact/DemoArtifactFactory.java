@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.config.demo.artifact;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * Provides the factory for the loading of the XYZ demo artifact types.

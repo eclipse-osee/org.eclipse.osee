@@ -22,8 +22,9 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -208,7 +209,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor implements
             importingRelations = true;
             return;
          }
-         primaryDescriptor = configurationPersistenceManager.getArtifactSubtypeDescriptor(sheetName);
+         primaryDescriptor = ArtifactTypeManager.getType(sheetName);
          if (primaryDescriptor == null) {
             throw new IllegalArgumentException("The sheet name: " + sheetName + " is not a valid artifact type name.");
          }

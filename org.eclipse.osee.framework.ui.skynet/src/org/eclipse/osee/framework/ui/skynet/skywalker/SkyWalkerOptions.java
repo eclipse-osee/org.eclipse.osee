@@ -21,10 +21,10 @@ import java.util.Set;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -96,7 +96,7 @@ public class SkyWalkerOptions {
       if (artTypes == null) {
          artTypes = new HashMap<ArtifactType, Boolean>();
          try {
-            for (ArtifactType descriptor : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
+            for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes(
                   artifact.getBranch())) {
                artTypes.put(descriptor, true);
             }

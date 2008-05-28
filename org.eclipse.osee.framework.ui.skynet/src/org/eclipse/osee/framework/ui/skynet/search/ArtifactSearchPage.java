@@ -26,9 +26,9 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -184,7 +184,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       artifactTypeList.setSorter(new SearchSorter());
 
       try {
-         for (ArtifactType descriptor : ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
+         for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes(
                getSelectedBranch())) {
             artifactTypeList.add(descriptor.getName());
             artifactTypeList.setData(descriptor.getName(), descriptor);

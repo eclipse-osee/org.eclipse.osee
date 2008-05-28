@@ -15,10 +15,10 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -135,9 +135,8 @@ public class AttributeChanged extends Change {
       if (artifactChange == null) {
          artifactChange =
                new ArtifactChange(getChangeType(), getModificationType(), getArtifactName(),
-                     ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(getArtTypeId()),
-                     getArtifact(), null, null, getFromTransactionId(), getFromTransactionId(), getToTransactionId(),
-                     getArtId(), getGamma(), null);
+                     ArtifactTypeManager.getType(getArtTypeId()), getArtifact(), null, null, getFromTransactionId(),
+                     getFromTransactionId(), getToTransactionId(), getArtId(), getGamma(), null);
       }
       return artifactChange;
    }
@@ -174,7 +173,6 @@ public class AttributeChanged extends Change {
     */
    @Override
    public Image getItemKindImage() throws IllegalArgumentException, SQLException {
-      return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(artTypeId).getImage(
-            getChangeType(), getModificationType());
+      return ArtifactTypeManager.getType(artTypeId).getImage(getChangeType(), getModificationType());
    }
 }

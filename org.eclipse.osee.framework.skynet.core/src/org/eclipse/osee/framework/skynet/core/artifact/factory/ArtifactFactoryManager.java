@@ -26,66 +26,56 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.PersistenceManager;
-import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.osgi.framework.Bundle;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ArtifactFactoryCache implements PersistenceManager {
+public class ArtifactFactoryManager {
    private static final String SELECT_FROM_FACTORY = "SELECT * FROM osee_define_factory";
-   private final HashMap<String, String> factoryBundleMap;
-   private final HashMap<String, ArtifactFactory> factoryNameMap;
-   private final HashMap<Integer, ArtifactFactory> factoryIdMap;
-   private static final ArtifactFactoryCache instance = new ArtifactFactoryCache();
+   private final HashMap<String, String> factoryBundleMap = new HashMap<String, String>();
+   private final HashMap<String, ArtifactFactory> factoryNameMap = new HashMap<String, ArtifactFactory>();
+   private final HashMap<Integer, ArtifactFactory> factoryIdMap = new HashMap<Integer, ArtifactFactory>();
+   private static final ArtifactFactoryManager instance = new ArtifactFactoryManager();
 
-   private ArtifactFactoryCache() {
-      this.factoryNameMap = new HashMap<String, ArtifactFactory>();
-      this.factoryIdMap = new HashMap<Integer, ArtifactFactory>();
-      this.factoryBundleMap = new HashMap<String, String>();
+   private ArtifactFactoryManager() {
    }
 
-   public static ArtifactFactoryCache getInstance() {
-      PersistenceManagerInit.initManagerWeb(instance);
-      return instance;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#onManagerWebInit()
-    */
-   public void onManagerWebInit() throws Exception {
-      loadFactories();
-   }
-
-   public ArtifactFactory getFactoryFromId(int factoryId) {
-      return factoryIdMap.get(factoryId);
-   }
-
-   public void reInitialize() throws SQLException {
-      factoryNameMap.clear();
-      factoryIdMap.clear();
-      factoryBundleMap.clear();
-
-      loadFactories();
-   }
-
-   private void loadFactories() throws SQLException {
-      loadFactoryBundleMap();
-      createFactoriesFromDB();
-      registerNewFactories();
-   }
-
-   public ArtifactFactory getFactoryFromName(String factoryName) throws IllegalStateException {
-      ArtifactFactory factory = factoryNameMap.get(factoryName);
+   public static ArtifactFactory getFactoryFromName(String factoryName) throws IllegalStateException, OseeDataStoreException {
+      ensurePopulated();
+      ArtifactFactory factory = instance.factoryNameMap.get(factoryName);
       if (factory == null) {
          throw new IllegalStateException("Failed to retrieve factory: " + factoryName + " from artifact factory cache");
       }
       return factory;
+   }
+
+   public static ArtifactFactory getFactoryFromId(int factoryId) throws OseeDataStoreException {
+      ensurePopulated();
+      return instance.factoryIdMap.get(factoryId);
+   }
+
+   public static void refreshCache() throws OseeDataStoreException {
+      instance.factoryNameMap.clear();
+      instance.factoryIdMap.clear();
+      instance.factoryBundleMap.clear();
+
+      instance.populateCache();
+   }
+
+   private static synchronized void ensurePopulated() throws OseeDataStoreException {
+      if (instance.factoryIdMap.size() == 0) {
+         instance.populateCache();
+      }
+   }
+
+   private void populateCache() throws OseeDataStoreException {
+      loadFactoryBundleMap();
+      createFactoriesFromDB();
+      registerNewFactories();
    }
 
    /**
@@ -114,8 +104,10 @@ public class ArtifactFactoryCache implements PersistenceManager {
 
    /**
     * calls getInstance for all the factories that are already registered with the DB
+    * 
+    * @throws OseeDataStoreException
     */
-   private void createFactoriesFromDB() throws SQLException {
+   private void createFactoriesFromDB() throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = null;
 
       try {
@@ -127,6 +119,8 @@ public class ArtifactFactoryCache implements PersistenceManager {
             int factoryId = rset.getInt("factory_id");
             createFactory(factoryClassName, factoryId);
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       } finally {
          DbUtil.close(chStmt);
       }
@@ -136,20 +130,25 @@ public class ArtifactFactoryCache implements PersistenceManager {
     * must be called after createFactoriesFromDB so we can determine if any of the factories extension points refer to a
     * factory that was not loaded from the DB
     * 
+    * @throws OseeDataStoreException
     * @throws SQLException
     */
-   private void registerNewFactories() throws SQLException {
-      for (String factoryClassName : factoryBundleMap.keySet()) {
-         if (!factoryNameMap.containsKey(factoryClassName)) {
+   private void registerNewFactories() throws OseeDataStoreException {
+      try {
+         for (String factoryClassName : factoryBundleMap.keySet()) {
+            if (!factoryNameMap.containsKey(factoryClassName)) {
 
-            int factoryId = Query.getNextSeqVal(null, FACTORY_ID_SEQ);
+               int factoryId = Query.getNextSeqVal(null, FACTORY_ID_SEQ);
 
-            ConnectionHandler.runPreparedUpdate(
-                  "INSERT INTO " + FACTORY_TABLE + " (factory_id, factory_class) VALUES (?, ?)", SQL3DataType.INTEGER,
-                  factoryId, SQL3DataType.VARCHAR, factoryClassName);
+               ConnectionHandler.runPreparedUpdate(
+                     "INSERT INTO " + FACTORY_TABLE + " (factory_id, factory_class) VALUES (?, ?)",
+                     SQL3DataType.INTEGER, factoryId, SQL3DataType.VARCHAR, factoryClassName);
 
-            createFactory(factoryClassName, factoryId);
+               createFactory(factoryClassName, factoryId);
+            }
          }
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       }
    }
 

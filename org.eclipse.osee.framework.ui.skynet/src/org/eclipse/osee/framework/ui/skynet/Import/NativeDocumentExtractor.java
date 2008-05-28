@@ -14,9 +14,10 @@ import java.io.File;
 import java.io.FileFilter;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 public class NativeDocumentExtractor extends AbstractArtifactExtractor {
    private final static String description = "Extract the content of each native document as one artifact";
@@ -25,7 +26,7 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
 
    public NativeDocumentExtractor(ArtifactType primaryDescriptor, Branch branch) throws SQLException {
       super(branch);
-      folderDescriptor = configurationPersistenceManager.getArtifactSubtypeDescriptor("Folder");
+      folderDescriptor = ArtifactTypeManager.getType("Folder");
       this.primaryDescriptor = primaryDescriptor;
    }
 

@@ -25,11 +25,9 @@ import org.eclipse.osee.framework.jdk.core.text.FindResults;
 import org.eclipse.osee.framework.jdk.core.text.tool.Find;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
@@ -38,11 +36,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
 public class ExtractTestRelations {
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
-   //   private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-
    private String scriptsDir;
    private String fileNamePattern;
    private Branch branch;

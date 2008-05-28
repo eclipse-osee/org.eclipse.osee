@@ -18,9 +18,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
@@ -38,8 +38,6 @@ import org.eclipse.swt.widgets.Display;
  * @author Jeff C. Phillips
  */
 public class ChangeArtifactType extends AbstractBlam {
-   private static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
    private List<Attribute<?>> attributesToPurge;
    private List<RelationLink> relationsToDelete;
 
@@ -84,7 +82,7 @@ public class ChangeArtifactType extends AbstractBlam {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
       Collection<AttributeType> attributeTypes =
-            configurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor, artifact.getBranch());
+            ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor, artifact.getBranch());
 
       for (AttributeType attributeType : artifact.getAttributeTypes()) {
          if (!attributeTypes.contains(attributeType)) {

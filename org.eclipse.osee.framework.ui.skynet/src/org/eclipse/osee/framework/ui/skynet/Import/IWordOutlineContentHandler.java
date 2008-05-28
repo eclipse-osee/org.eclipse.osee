@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import org.eclipse.core.runtime.IExecutableExtension;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 
 /**
  * @author Robert A. Fisher

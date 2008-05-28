@@ -14,14 +14,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 
 /**
  * @author Ryan D. Brooks
  */
 public abstract class AbstractArtifactExtractor implements ArtifactExtractor {
-   protected static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
    private final ArrayList<RoughArtifact> roughArtifacts;
    private final ArrayList<RoughRelation> roughRelations;
    private final Branch branch;

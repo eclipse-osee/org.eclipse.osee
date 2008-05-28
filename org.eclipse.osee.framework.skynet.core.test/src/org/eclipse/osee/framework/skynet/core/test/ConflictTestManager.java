@@ -15,11 +15,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeObjectConverter;
@@ -104,8 +104,7 @@ public class ConflictTestManager {
       }
       // Add artifacts onto the destination Branch
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
-         ArtifactType artType =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(conflictDefs[i].artifactType);
+         ArtifactType artType = ArtifactTypeManager.getType(conflictDefs[i].artifactType);
          destArtifacts[i] = rootArtifact.addNewChild(artType, "Test Artifact Number " + i);
          for (AttributeValue value : conflictDefs[i].newAttributes) {
             destArtifacts[i].addAttribute(value.attributeName, AttributeObjectConverter.stringToObject(value.clas,

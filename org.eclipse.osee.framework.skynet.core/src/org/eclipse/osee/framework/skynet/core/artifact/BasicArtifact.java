@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.sql.SQLException;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * @author Ryan D. Brooks

@@ -10,11 +10,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.config.AtsConfigDemoDatabaseConfig.SawBuilds;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactExtractor;
@@ -57,8 +57,7 @@ public class DemoDbImportReqsTx extends AbstractSkynetTxTemplate {
 
       File file = OseeAtsConfigDemoPlugin.getInstance().getPluginFile(filename);
       IArtifactImportResolver artifactResolver = new NewArtifactImportResolver();
-      ArtifactType mainDescriptor =
-            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(requirementArtifactName);
+      ArtifactType mainDescriptor = ArtifactTypeManager.getType(requirementArtifactName);
       ArtifactExtractor extractor =
             new WordOutlineExtractor(mainDescriptor, branch, 0, new GeneralWordOutlineHandler());
       Job job = new ArtifactImportJob(file, systemReq, extractor, branch, artifactResolver);

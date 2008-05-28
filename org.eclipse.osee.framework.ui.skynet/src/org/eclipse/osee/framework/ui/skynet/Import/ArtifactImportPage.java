@@ -21,9 +21,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -52,8 +52,6 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    public static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactImportPage.class);
-   private static final ConfigurationPersistenceManager configurationManager =
-         ConfigurationPersistenceManager.getInstance();
    private final Artifact destinationArtifact;
    private List typeList;
    private List branchList;
@@ -300,7 +298,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       try {
          String[] selection = typeList.getSelection();
          typeList.removeAll();
-         for (ArtifactType descriptor : configurationManager.getValidArtifactTypes(branch)) {
+         for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes(branch)) {
             typeList.add(descriptor.getName());
             typeList.setData(descriptor.getName(), descriptor);
          }

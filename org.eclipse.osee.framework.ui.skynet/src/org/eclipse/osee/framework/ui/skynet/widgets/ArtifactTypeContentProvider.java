@@ -14,8 +14,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -24,10 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Jeff C. Phillips
  */
 public class ArtifactTypeContentProvider implements ITreeContentProvider {
-
-   private static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
-
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
    }
@@ -37,7 +33,7 @@ public class ArtifactTypeContentProvider implements ITreeContentProvider {
          ArrayList<Object> descriptors = new ArrayList<Object>();
 
          try {
-            for (ArtifactType descriptor : configurationPersistenceManager.getValidArtifactTypes((Branch) parentElement)) {
+            for (ArtifactType descriptor : ConfigurationPersistenceManager.getValidArtifactTypes((Branch) parentElement)) {
                descriptors.add((Object) descriptor);
             }
          } catch (SQLException ex) {

@@ -18,7 +18,7 @@ import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DEL
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;

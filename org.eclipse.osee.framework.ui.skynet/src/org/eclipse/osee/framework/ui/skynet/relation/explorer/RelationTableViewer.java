@@ -22,8 +22,9 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -36,9 +37,6 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 public class RelationTableViewer {
-   private static final ConfigurationPersistenceManager configurationManger =
-         ConfigurationPersistenceManager.getInstance();
-
    private Table validTable;
    private TableViewer tableViewer;
 
@@ -70,8 +68,8 @@ public class RelationTableViewer {
       try {
          fullDescriptorList =
                new ArrayList<ArtifactType>(
-                     configurationManger.getValidArtifactTypes(BranchPersistenceManager.getInstance().getDefaultBranch()));
-         defaultArtifactType = configurationManger.getArtifactSubtypeDescriptor(Requirements.TEST_SCRIPT);
+                     ConfigurationPersistenceManager.getValidArtifactTypes(BranchPersistenceManager.getInstance().getDefaultBranch()));
+         defaultArtifactType = ArtifactTypeManager.getType(Requirements.TEST_SCRIPT);
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

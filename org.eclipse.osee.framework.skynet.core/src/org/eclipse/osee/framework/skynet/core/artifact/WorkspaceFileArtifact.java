@@ -16,7 +16,6 @@ import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
@@ -49,8 +48,7 @@ public class WorkspaceFileArtifact extends Artifact {
          artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, branchManager.getDefaultBranch());
       } catch (ArtifactDoesNotExist ex) {
          Collection<ArtifactType> descriptors =
-               ConfigurationPersistenceManager.getInstance().getArtifactTypesFromAttributeType(
-                     AttributeTypeManager.getType("Content URL"));
+               ConfigurationPersistenceManager.getArtifactTypesFromAttributeType(AttributeTypeManager.getType("Content URL"));
          dialog =
                new ArtifactDescriptorDialog(
                      shell,

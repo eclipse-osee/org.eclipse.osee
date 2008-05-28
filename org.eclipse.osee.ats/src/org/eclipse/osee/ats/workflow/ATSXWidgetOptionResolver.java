@@ -47,8 +47,8 @@ public class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
          Set<String> options;
          try {
             options =
-                  ConfigurationPersistenceManager.getInstance().getValidEnumerationAttributeValues(
-                        xWidgetData.getLayoutName(), BranchPersistenceManager.getAtsBranch());
+                  ConfigurationPersistenceManager.getValidEnumerationAttributeValues(xWidgetData.getLayoutName(),
+                        BranchPersistenceManager.getAtsBranch());
          } catch (SQLException ex) {
             options = new HashSet<String>();
             options.add(ex.getLocalizedMessage());

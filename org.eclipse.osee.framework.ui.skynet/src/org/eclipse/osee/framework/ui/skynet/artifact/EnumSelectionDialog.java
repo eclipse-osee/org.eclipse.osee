@@ -53,7 +53,7 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
       Set<String> options;
       try {
          options =
-               ConfigurationPersistenceManager.getInstance().getValidEnumerationAttributeValues(attributeName,
+               ConfigurationPersistenceManager.getValidEnumerationAttributeValues(attributeName,
                      artifacts.iterator().next().getBranch());
       } catch (Exception ex) {
          options = new HashSet<String>();

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 
 /**
  * @author Robert A. Fisher

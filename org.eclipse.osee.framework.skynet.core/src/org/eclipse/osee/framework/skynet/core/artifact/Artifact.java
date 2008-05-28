@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.Mod
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -465,8 +464,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public boolean isAttributeTypeValid(String attributeName) throws SQLException {
       Collection<AttributeType> attributeTypes =
-            ConfigurationPersistenceManager.getInstance().getAttributeTypesFromArtifactType(getArtifactTypeName(),
-                  branch);
+            ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(getArtifactTypeName(), branch);
       for (AttributeType attributeType : attributeTypes) {
          if (attributeType.getName().equals(attributeName)) {
             return true;
@@ -514,8 +512,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public Collection<AttributeType> getAttributeTypes() throws SQLException {
-      return ConfigurationPersistenceManager.getInstance().getAttributeTypesFromArtifactType(getArtifactTypeName(),
-            branch);
+      return ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(getArtifactTypeName(), branch);
    }
 
    public AttributeType getAttributeType(String attributeTypeName) throws SQLException {

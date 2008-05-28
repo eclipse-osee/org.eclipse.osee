@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -20,8 +20,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Jeff C. Phillips
  */
 public class XArtifactTypeListViewer extends XTypeListViewer {
-   private static final ConfigurationPersistenceManager configurationManager =
-         ConfigurationPersistenceManager.getInstance();
    private static final String NAME = "XArtifactTypeListViewer";
 
    public XArtifactTypeListViewer(String keyedBranchName, String defaultValue) {
@@ -35,7 +33,7 @@ public class XArtifactTypeListViewer extends XTypeListViewer {
 
       if (defaultValue != null) {
          try {
-            ArtifactType artifactType = configurationManager.getArtifactSubtypeDescriptor(defaultValue);
+            ArtifactType artifactType = ArtifactTypeManager.getType(defaultValue);
             setDefaultSelected(artifactType);
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);

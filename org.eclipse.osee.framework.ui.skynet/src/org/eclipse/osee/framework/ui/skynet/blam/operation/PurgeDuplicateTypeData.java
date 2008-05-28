@@ -18,10 +18,10 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
@@ -41,13 +41,11 @@ public class PurgeDuplicateTypeData extends AbstractBlam {
 
       purgeRelationValidityAndGammas();
 
-      for (ArtifactType artifactType : new HashSet<ArtifactType>(
-            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors())) {
+      for (ArtifactType artifactType : new HashSet<ArtifactType>(ArtifactTypeManager.getAllTypes())) {
          purgeArtifactTypeAndGammas(artifactType.getName());
       }
 
-      for (AttributeType attributeType : new HashSet<AttributeType>(
-            AttributeTypeManager.getTypes(null))) {
+      for (AttributeType attributeType : new HashSet<AttributeType>(AttributeTypeManager.getTypes(null))) {
          purgeAttributeTypeAndGammas(attributeType.getName());
       }
    }

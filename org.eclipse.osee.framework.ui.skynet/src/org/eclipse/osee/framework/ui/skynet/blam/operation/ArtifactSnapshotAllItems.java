@@ -13,10 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.snapshot.ArtifactSnapshotManager;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
@@ -31,12 +30,10 @@ public class ArtifactSnapshotAllItems extends AbstractBlam {
          Branch branch = variableMap.getBranch("Branch");
 
          monitor.setTaskName("Loading Artifact Type Descriptors");
-         Collection<ArtifactType> descriptors =
-               ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(branch);
+         Collection<ArtifactType> descriptors = ConfigurationPersistenceManager.getValidArtifactTypes(branch);
 
          monitor.beginTask("Regenerating Artifact Preview Snapshots", descriptors.size());
 
-         ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
          ArtifactSnapshotManager artifactSnapshotManager = ArtifactSnapshotManager.getInstance();
          for (ArtifactType artifactType : descriptors) {
             monitor.subTask(String.format("Loading artifacts of type [%s]", artifactType.getName()));

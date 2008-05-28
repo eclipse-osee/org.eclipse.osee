@@ -14,9 +14,9 @@ import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
@@ -75,8 +75,7 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
       }
       OrphanArtifactSearch search = null;
       try {
-         ArtifactType artifactType =
-               ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(storageString);
+         ArtifactType artifactType = ArtifactTypeManager.getType(storageString);
          search = new OrphanArtifactSearch(artifactType);
       } catch (SQLException ex) {
          new IllegalStateException("Value for " + OrphanArtifactSearch.class.getSimpleName() + " not parsable");

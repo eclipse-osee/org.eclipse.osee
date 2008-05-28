@@ -34,9 +34,12 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -45,8 +48,6 @@ import org.eclipse.osee.framework.ui.plugin.util.OseeData;
  * @author Ryan D. Brooks
  */
 public class FullPortableExport {
-   private static final ConfigurationPersistenceManager configurationManager =
-         ConfigurationPersistenceManager.getInstance();
    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
    private static final String LATEST_REL_LINK =
          "(SELECT rl.rel_link_id, txd.branch_id, Max(rl.gamma_id) AS last_gamma_id" + " FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " rl, " + SkynetDatabase.TRANSACTIONS_TABLE + " tx, " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " txd" + " WHERE tx.transaction_id = txd.transaction_id AND tx.gamma_id = rl.gamma_id" + " GROUP BY rl.rel_link_id, txd.branch_id) rel_table";
@@ -81,8 +82,8 @@ public class FullPortableExport {
 
       for (RelationLink link : links) {
          row[0] = link.getRelationType().getTypeName();
-         row[2] = link.getArtifactB().getGuid();
-         row[1] = link.getArtifactA().getGuid();
+         row[2] = link.getArtifact(RelationSide.SIDE_B).getGuid();
+         row[1] = link.getArtifact(RelationSide.SIDE_A).getGuid();
          row[3] = String.valueOf(link.getAOrder());
          row[4] = String.valueOf(link.getBOrder());
          String rationale = link.getRationale();
@@ -124,7 +125,7 @@ public class FullPortableExport {
    }
 
    public void createArtifactSheets(Branch branch) throws Exception {
-      for (ArtifactType artifactType : configurationManager.getValidArtifactTypes(branch)) {
+      for (ArtifactType artifactType : ConfigurationPersistenceManager.getValidArtifactTypes(branch)) {
          createArtifactSheet(artifactType, ArtifactQuery.getArtifactsFromType(artifactType, branch));
       }
    }
@@ -137,7 +138,7 @@ public class FullPortableExport {
 
       for (String artifactTypeName : hash.keySet()) {
          Collection<Artifact> groupedArtifacts = hash.getValues(artifactTypeName);
-         createArtifactSheet(configurationManager.getArtifactSubtypeDescriptor(artifactTypeName), groupedArtifacts);
+         createArtifactSheet(ArtifactTypeManager.getType(artifactTypeName), groupedArtifacts);
       }
    }
 
@@ -156,7 +157,7 @@ public class FullPortableExport {
 
    private void writeArtifactHeader(ArtifactType descriptor, Branch branch) throws Exception {
       Collection<AttributeType> allAttributeTypes =
-            configurationManager.getAttributeTypesFromArtifactType(descriptor, branch);
+            ConfigurationPersistenceManager.getAttributeTypesFromArtifactType(descriptor, branch);
 
       int columnIndex = 0;
       row = new String[2 + allAttributeTypes.size()];

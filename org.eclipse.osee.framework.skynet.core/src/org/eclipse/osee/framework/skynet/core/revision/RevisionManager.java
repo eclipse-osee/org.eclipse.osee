@@ -51,6 +51,8 @@ import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactIdSearch;
@@ -59,8 +61,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationInTransactionSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChanged;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -141,11 +141,9 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RevisionManager.class);
    private ArtifactPersistenceManager artifactManager;
-   private ConfigurationPersistenceManager configurationManager;
    private BranchPersistenceManager branchManager;
    private TransactionIdManager transactionIdManager;
-   private static final Pair<String, ArtifactType> UNKNOWN_DATA =
-         new Pair<String, ArtifactType>(null, null);
+   private static final Pair<String, ArtifactType> UNKNOWN_DATA = new Pair<String, ArtifactType>(null, null);
 
    private Map<Integer, Set<Integer>> commitArtifactIdToTransactionId;
 
@@ -170,7 +168,6 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     */
    public void onManagerWebInit() throws Exception {
       artifactManager = ArtifactPersistenceManager.getInstance();
-      configurationManager = ConfigurationPersistenceManager.getInstance();
       branchManager = BranchPersistenceManager.getInstance();
       transactionIdManager = TransactionIdManager.getInstance();
    }
@@ -873,7 +870,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
          while (chStmt.next()) {
             changes.add(new ArtifactChange(changeType, artId, chStmt.getRset().getInt("modification_id"),
                   chStmt.getRset().getInt("gamma_id"), toTransactionId, fromTransactionId,
-                  configurationManager.getArtifactSubtypeDescriptor(chStmt.getRset().getInt("art_type_id"))));
+                  ArtifactTypeManager.getType(chStmt.getRset().getInt("art_type_id"))));
          }
       } finally {
          DbUtil.close(chStmt);
@@ -1080,8 +1077,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             if (!set.wasNull()) lastGoodTransactionId =
                   TransactionIdManager.getInstance().getPossiblyEditableTransactionIfFromCache(
                         lastGoodTransactionNumber);
-            ArtifactType descriptor =
-                  configurationManager.getArtifactSubtypeDescriptor(set.getString("type_name"));
+            ArtifactType descriptor = ArtifactTypeManager.getType(set.getString("type_name"));
             String name = set.getString("name");
 
             if (artifactNameDescriptorCache != null) artifactNameDescriptorCache.cache(set.getInt("art_id"), name,

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.attribute;
+package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.CONFLICTING;
 import static org.eclipse.osee.framework.skynet.core.change.ChangeType.INCOMING;
@@ -26,12 +26,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
+import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictionType;
@@ -87,7 +83,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    transient private ImageRegistry imageRegistry;
    transient private InputStreamImageDescriptor imageDescriptor;
 
-   protected ArtifactType(ArtifactSubtypeDescriptorCache artifactTypeCache, int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, InputStreamImageDescriptor imageDescriptor) {
+   ArtifactType(int artTypeId, String factoryKey, ArtifactFactory factory, String namespace, String name, InputStreamImageDescriptor imageDescriptor) {
       this.artTypeId = artTypeId;
       this.factory = factory;
       this.name = name;
@@ -95,7 +91,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       this.namespace = namespace == null ? "" : namespace;
       this.imageDescriptor = imageDescriptor;
       this.imageRegistry = null;
-      artifactTypeCache.cache(this);
+      ArtifactTypeManager.cache(this);
    }
 
    /**
@@ -323,7 +319,7 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
     */
    private Object readResolve() throws ObjectStreamException {
       try {
-         return ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptor(name);
+         return ArtifactTypeManager.getType(name);
       } catch (SQLException e) {
          throw new RuntimeException("Error while resolving descriptor", e);
       }

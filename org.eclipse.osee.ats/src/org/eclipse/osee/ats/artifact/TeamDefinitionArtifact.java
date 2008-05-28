@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.util.AtsLib;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BasicArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ActiveArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactStaticIdSearch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
@@ -301,8 +301,8 @@ public class TeamDefinitionArtifact extends BasicArtifact {
          VersionArtifact versionArt =
                (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
                      BranchPersistenceManager.getAtsBranch(), name);
-         versionArt.persistAttributes();
-         relate(CoreRelationEnumeration.TeamDefinitionToVersion_Version, versionArt, true);
+         versionArt.addRelation(CoreRelationEnumeration.TeamDefinitionToVersion_Version, versionArt);
+         versionArt.persistAttributesAndRelations();
          return versionArt;
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

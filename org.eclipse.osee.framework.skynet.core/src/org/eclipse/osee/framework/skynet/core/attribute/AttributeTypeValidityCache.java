@@ -20,12 +20,14 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * Caches the mapping of valid attribute types to artifact types for which they are valid
  * 
- * @see org.eclipse.osee.framework.skynet.core.attribute.ArtifactType
+ * @see org.eclipse.osee.framework.skynet.core.artifact.ArtifactType
  * @author Ryan D. Brooks
  */
 public class AttributeTypeValidityCache {
@@ -35,10 +37,8 @@ public class AttributeTypeValidityCache {
    private final HashCollection<AttributeType, ArtifactType> attributeToartifactMap;
 
    public AttributeTypeValidityCache() {
-      artifactToAttributeMap =
-            new HashCollection<ArtifactType, AttributeType>(false, TreeSet.class);
-      attributeToartifactMap =
-            new HashCollection<AttributeType, ArtifactType>(false, TreeSet.class);
+      artifactToAttributeMap = new HashCollection<ArtifactType, AttributeType>(false, TreeSet.class);
+      attributeToartifactMap = new HashCollection<AttributeType, ArtifactType>(false, TreeSet.class);
    }
 
    public Collection<AttributeType> getAttributeTypesFromArtifactType(ArtifactType artifactType, Branch branch) throws SQLException {
@@ -78,15 +78,12 @@ public class AttributeTypeValidityCache {
    private void populateCache() throws SQLException {
       ConnectionHandlerStatement chStmt = null;
       try {
-         ConfigurationPersistenceManager configurationManager = ConfigurationPersistenceManager.getInstance();
-
          chStmt = ConnectionHandler.runPreparedQuery(attributeValiditySql);
          ResultSet rSet = chStmt.getRset();
 
          while (rSet.next()) {
             try {
-               ArtifactType artifactType =
-                     configurationManager.getArtifactSubtypeDescriptor(rSet.getInt("art_type_id"));
+               ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
                AttributeType attributeType = AttributeTypeManager.getType(rSet.getInt("attr_type_id"));
 
                artifactToAttributeMap.put(artifactType, attributeType);

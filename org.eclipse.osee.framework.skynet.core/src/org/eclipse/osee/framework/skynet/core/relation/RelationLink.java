@@ -26,8 +26,6 @@ import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 public class RelationLink {
    private int relationId;
    private int gammaId;
-   //   private Artifact artA;
-   //   private Artifact artB;
    private boolean deleted;
    private int aOrder;
    private int bOrder;
@@ -342,24 +340,8 @@ public class RelationLink {
    }
 
    public String toString() {
-      String artA = "";
-      String artB = "";
-      try {
-         artA = getArtifact(RelationSide.SIDE_A).getDescriptiveName();
-      } catch (ArtifactDoesNotExist ex) {
-         artA = ex.getMessage();
-      } catch (SQLException ex) {
-         artA = ex.getMessage();
-      }
-      try {
-         artB = getArtifact(RelationSide.SIDE_B).getDescriptiveName();
-      } catch (ArtifactDoesNotExist ex) {
-         artB = ex.getMessage();
-      } catch (SQLException ex) {
-         artB = ex.getMessage();
-      }
-      return String.format("%s: %s(%s)<-->%s(%s)", relationType.getTypeName(), artA, Float.toString(aOrder), artB,
-            Float.toString(bOrder));
+      return String.format("%s: A [%d](%d) <--> B [%s](%d)", relationType.getTypeName(), aArtifactId, aOrder,
+            bArtifactId, bOrder);
    }
 
    public boolean isExplorable() {

@@ -13,11 +13,9 @@ package org.eclipse.osee.framework.skynet.core.importing;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.logging.Logger;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
@@ -25,9 +23,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
  * @author Ryan D. Brooks
  */
 public class RelationValidity {
-   private static final ConfigurationPersistenceManager configurationPersistenceManager =
-         ConfigurationPersistenceManager.getInstance();
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RelationValidity.class);
    private final HashSet<ValidityConstraint> validitySet;
    private final ArrayList<ValidityRow> validityArray;
    private final SkynetTypesImporter importer;
@@ -88,8 +83,7 @@ public class RelationValidity {
    public void persist() throws SQLException {
       for (ValidityRow row : validityArray) {
          for (String artifactTypeName : importer.determineConcreateTypes(row.artifactSuperTypeName)) {
-            ArtifactType artifactType =
-                  configurationPersistenceManager.getArtifactSubtypeDescriptor(artifactTypeName);
+            ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeName);
             RelationType linkDescriptor = RelationTypeManager.getType(row.relationTypeName);
 
             RelationTypeManager.createRelationLinkValidity(branch, artifactType, linkDescriptor, row.sideAmax,

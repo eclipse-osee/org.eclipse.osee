@@ -48,13 +48,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
@@ -568,7 +568,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
       try {
          Collection<ArtifactType> descriptors =
-               ConfigurationPersistenceManager.getInstance().getValidArtifactTypes(
+               ConfigurationPersistenceManager.getValidArtifactTypes(
                      BranchPersistenceManager.getInstance().getDefaultBranch());
          for (ArtifactType descriptor : descriptors) {
             if (!descriptor.getName().equals("Root Artifact")) {

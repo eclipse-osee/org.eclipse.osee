@@ -58,19 +58,18 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch.BranchType;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
+import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.dbinit.MasterSkynetTypesImport;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.util.ConflictDetectionException;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.utility.RemoteArtifactEventFactory;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -105,7 +104,6 @@ public class BranchPersistenceManager implements PersistenceManager {
    private static final IPreferenceStore preferenceStore = SkynetActivator.getInstance().getPreferenceStore();
 
    private BranchCreator branchCreator;
-   private ConfigurationPersistenceManager configurationManager;
 
    // This hash is keyed on the branchId
    private TreeMap<Integer, Branch> branchCache;
@@ -133,7 +131,6 @@ public class BranchPersistenceManager implements PersistenceManager {
     */
    public void onManagerWebInit() throws Exception {
       branchCreator = BranchCreator.getInstance();
-      configurationManager = ConfigurationPersistenceManager.getInstance();
    }
 
    public Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact) throws SQLException {
@@ -807,7 +804,7 @@ public class BranchPersistenceManager implements PersistenceManager {
     */
    public Branch createWorkingBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws Exception {
       Collection<ArtifactType> compressArtTypes =
-            configurationManager.getValidArtifactTypes(parentTransactionId.getBranch());
+            ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch());
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, false, compressArtTypes, null);
@@ -822,7 +819,7 @@ public class BranchPersistenceManager implements PersistenceManager {
     */
    public Branch createTestBranch(TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact) throws Exception {
       Collection<ArtifactType> preserveArtTypes =
-            configurationManager.getValidArtifactTypes(parentTransactionId.getBranch());
+            ConfigurationPersistenceManager.getValidArtifactTypes(parentTransactionId.getBranch());
 
       return branchCreator.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
             associatedArtifact, false, null, preserveArtTypes);
@@ -835,7 +832,7 @@ public class BranchPersistenceManager implements PersistenceManager {
       } else {
          artifactTypes = new HashSet<ArtifactType>(artTypeNames.length);
          for (String typeName : artTypeNames) {
-            artifactTypes.add(configurationManager.getArtifactSubtypeDescriptor(typeName));
+            artifactTypes.add(ArtifactTypeManager.getType(typeName));
          }
       }
       return artifactTypes;
@@ -878,7 +875,7 @@ public class BranchPersistenceManager implements PersistenceManager {
          KeyedBranchCache.getInstance().createKeyedBranch(staticBranchName, branch);
       }
       // Re-init factory cache
-      ArtifactFactoryCache.getInstance().reInitialize();
+      ArtifactFactoryManager.refreshCache();
       // Import skynet types if specified
       if (skynetTypesImportExtensionsIds != null && skynetTypesImportExtensionsIds.size() > 0) {
          MasterSkynetTypesImport.getInstance().importSkynetDbTypes(ConnectionHandler.getConnection(),

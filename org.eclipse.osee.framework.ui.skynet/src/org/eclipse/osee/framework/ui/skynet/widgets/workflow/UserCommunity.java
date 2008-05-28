@@ -35,7 +35,7 @@ public class UserCommunity {
       Set<String> communities;
       try {
          communities =
-               ConfigurationPersistenceManager.getInstance().getValidEnumerationAttributeValues("ats.User Community",
+               ConfigurationPersistenceManager.getValidEnumerationAttributeValues("ats.User Community",
                      branchManager.getCommonBranch());
       } catch (SQLException ex) {
          communities = new HashSet<String>();

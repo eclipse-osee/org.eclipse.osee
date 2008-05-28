@@ -24,8 +24,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -39,8 +39,6 @@ import org.osgi.framework.Bundle;
 public class RendererManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RendererManager.class);
    private static final RendererManager instance = new RendererManager();
-   private static final ConfigurationPersistenceManager configurationManager =
-         ConfigurationPersistenceManager.getInstance();
    private final HashMap<String, IRenderer> renderers;
    private HashCollection<ArtifactType, IRenderer> applicableArtifactSubTypes;
 
@@ -78,8 +76,7 @@ public class RendererManager {
 
                      String applicableArtifactSubType = element.getAttribute("ApplicableArtifactSubtype");
                      if (applicableArtifactSubType != null) {
-                        ArtifactType artifactSubtype =
-                              configurationManager.getArtifactSubtypeDescriptor(applicableArtifactSubType);
+                        ArtifactType artifactSubtype = ArtifactTypeManager.getType(applicableArtifactSubType);
                         applicableArtifactSubTypes.put(artifactSubtype, renderer);
                      }
                   } catch (Exception ex) {

@@ -14,8 +14,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 
 public class WholeWordDocumentExtractor extends WordExtractor {

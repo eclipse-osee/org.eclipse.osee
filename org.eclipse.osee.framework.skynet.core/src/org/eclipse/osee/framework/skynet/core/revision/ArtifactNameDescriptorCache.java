@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core.revision;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
 
 /**
  * Caches names and descriptors to an artifact id. This cache assumes that the user is already taking care of how this

@@ -28,9 +28,10 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.OseeData;
@@ -63,8 +64,6 @@ public class SkynetTypesImporter implements RowProcessor {
    private final boolean debugRows = false;
    private final XMLReader xmlReader;
 
-   private static final ConfigurationPersistenceManager configurationManager =
-         ConfigurationPersistenceManager.getInstance();
    private SkynetTransaction transaction;
 
    /**
@@ -163,10 +162,6 @@ public class SkynetTypesImporter implements RowProcessor {
             case RELATION_SIDE_TABLE:
                relationValidity.addValidityConstraints(row);
          }
-      } catch (SQLException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
-      } catch (ClassNotFoundException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }
@@ -264,15 +259,17 @@ public class SkynetTypesImporter implements RowProcessor {
 
    /**
     * @param row
+    * @throws OseeDataStoreException
+    * @throws IllegalStateException
     */
-   private void addArtifactType(String[] row) throws SQLException, ClassNotFoundException {
+   private void addArtifactType(String[] row) throws SQLException, ClassNotFoundException, IllegalStateException, OseeDataStoreException {
       if (debugRows) System.out.println("  addArtifactType => " + row[0] + "," + row[1]);
       String factoryClassName = row[0];
       String artifactTypeName = row[1];
       String superTypeName = row[2];
 
       associateWithSuperType(artifactTypeName, superTypeName);
-      configurationManager.makeSubtypePersistent(factoryClassName, "", artifactTypeName, artifactTypeName);
+      ArtifactTypeManager.createType(factoryClassName, "", artifactTypeName, artifactTypeName);
    }
 
    /*

@@ -20,10 +20,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -31,9 +30,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Robert A. Fisher
  */
 public class ArtifactImportJob extends Job {
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final ConfigurationPersistenceManager configurationManager =
-         ConfigurationPersistenceManager.getInstance();
    private final File file;
    private final ArtifactType folderDescriptor;
    private final IArtifactImportResolver artifactResolver;
@@ -48,7 +44,7 @@ public class ArtifactImportJob extends Job {
 
       this.file = file;
       this.extractor = extractor;
-      this.folderDescriptor = configurationManager.getArtifactSubtypeDescriptor("Folder");
+      this.folderDescriptor = ArtifactTypeManager.getType("Folder");
       this.artifactResolver = artifactResolver;
       this.roughArtifacts = new ArrayList<RoughArtifact>();
       this.roughRelations = new ArrayList<RoughRelation>();
@@ -81,9 +77,7 @@ public class ArtifactImportJob extends Job {
                   roughRelation.makeReal(branch, monitor);
                }
 
-               artifactManager.setProgressMonitor(monitor);
                importRoot.persistAttributesAndRelations();
-               artifactManager.setProgressMonitor(null);
 
                monitor.setTaskName("Committing Transaction");
                monitor.subTask(""); // blank out leftover relation subtask

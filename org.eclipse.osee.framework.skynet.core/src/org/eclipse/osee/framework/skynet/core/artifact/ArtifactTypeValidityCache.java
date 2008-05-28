@@ -15,8 +15,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.skynet.core.attribute.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 
 /**
  * @author Ryan D. Brooks
@@ -35,8 +33,7 @@ public class ArtifactTypeValidityCache {
    }
 
    private void populateCache() throws SQLException {
-      Collection<ArtifactType> artifactTypes =
-            ConfigurationPersistenceManager.getInstance().getArtifactSubtypeDescriptors();
+      Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
 
       for (Branch branch : BranchPersistenceManager.getInstance().getRootBranches()) {
          branchToartifactTypeMap.put(branch, artifactTypes);

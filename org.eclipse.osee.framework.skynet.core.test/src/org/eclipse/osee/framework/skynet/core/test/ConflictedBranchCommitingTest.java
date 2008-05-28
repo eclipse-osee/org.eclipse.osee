@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.test;
 
 import junit.framework.TestCase;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.util.ConflictDetectionException;
+import org.eclipse.osee.framework.skynet.core.exception.ConflictDetectionException;
 
 /**
  * @author Theron Virgin

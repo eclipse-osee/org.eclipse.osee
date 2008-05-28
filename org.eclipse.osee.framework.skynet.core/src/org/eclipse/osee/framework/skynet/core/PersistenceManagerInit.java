@@ -19,8 +19,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchCreator;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryCache;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -55,9 +53,8 @@ public final class PersistenceManagerInit {
          LoginEntry logEntry = new LoginEntry(); // do very early to get a time closer to the actual login time
          inInit = true;
          isFirstRun = false;
-         for (PersistenceManager manager : new PersistenceManager[] {ArtifactFactoryCache.getInstance(),
-               SkynetAuthentication.getInstance(), AccessControlManager.getInstance(),
-               ConfigurationPersistenceManager.getInstance(), RelationPersistenceManager.getInstance(),
+         for (PersistenceManager manager : new PersistenceManager[] {SkynetAuthentication.getInstance(),
+               AccessControlManager.getInstance(), RelationPersistenceManager.getInstance(),
                ArtifactPersistenceManager.getInstance(), RemoteEventManager.getInstance(),
                BranchPersistenceManager.getInstance(), TagManager.getInstance(), BranchCreator.getInstance(),
                RevisionManager.getInstance()}) {
