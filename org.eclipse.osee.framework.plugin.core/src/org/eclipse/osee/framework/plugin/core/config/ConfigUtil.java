@@ -16,6 +16,9 @@ import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 public class ConfigUtil {
    private static IOseeConfigurationFactory config = null;
 
+   private ConfigUtil() {
+   }
+
    public static IOseeConfigurationFactory getConfigFactory() {
       if (config == null) {
          String classname = System.getProperty(OSEE_CONFIG_FACTORY);
