@@ -15,6 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -371,18 +372,14 @@ public final class ConnectionHandler {
             needExecute = true;
             if (count > 2000) {
                int[] updates = preparedStatement.executeBatch();
-               for (int update : updates) {
-                  returnCount += update;
-               }
+               returnCount += processBatchUpdateResults(updates);
                count = 0;
                needExecute = false;
             }
          }
          if (needExecute) {
             int[] updates = preparedStatement.executeBatch();
-            for (int update : updates) {
-               returnCount += update;
-            }
+            returnCount += processBatchUpdateResults(updates);
          }
 
          record.markEnd();
@@ -422,6 +419,18 @@ public final class ConnectionHandler {
          throw ex;
       } finally {
          preparedStatement.close();
+      }
+      return returnCount;
+   }
+
+   private static int processBatchUpdateResults(int[] updates) {
+      int returnCount = 0;
+      for (int update : updates) {
+         if (update >= 0) {
+            returnCount += update;
+         } else if (Statement.EXECUTE_FAILED == update) {
+            OseeLog.log(Activator.class.getName(), Level.SEVERE, "sql execute failes.");
+         }
       }
       return returnCount;
    }
