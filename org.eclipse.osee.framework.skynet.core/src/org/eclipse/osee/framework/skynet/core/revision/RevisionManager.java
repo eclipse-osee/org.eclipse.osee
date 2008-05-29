@@ -1273,7 +1273,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                new ConflictingArtifactSearch(destBranch, destBase, destHead, sourceBranch.getBranchId(), sourceBase,
                      sourceHead);
 
-         //         hasConflicts = artifactManager.getArtifactCount(conflict, sourceBranch) > 0;
+         hasConflicts = artifactManager.getArtifactCount(conflict, sourceBranch) > 0;
       } catch (Exception e) {
          logger.log(Level.SEVERE, e.toString(), e);
       }
