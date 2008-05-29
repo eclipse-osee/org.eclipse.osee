@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.URLEncoder;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -81,6 +82,9 @@ public class ArtifactRequest implements IHttpServerRequest {
          int txNumber = artifact.getTransactionNumber();
          keyValues.put(TRANSACTION_NUMBER_KEY, Integer.toString(txNumber));
       }
+      // This was added to fix browser refresh problem
+      // parameter is guaranteed to be different every time ensuring browser will request the page.
+      keyValues.put("date", Long.toString(new Date().getTime()));
       return keyValues;
    }
 

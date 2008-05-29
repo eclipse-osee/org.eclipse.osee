@@ -17,8 +17,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.Platform;
@@ -44,14 +42,12 @@ public class ArtifactSnapshotManager {
    private RemoteSnapshotManager remoteSnapshotManager;
    private KeyGenerator keyGenerator;
    private Map<String, ArtifactSnapshot> snapshotLocalCache;
-   private ExecutorService executorService;
 
    private ArtifactSnapshotManager() {
       this.snapshotLocalCache = Collections.synchronizedMap(new HashMap<String, ArtifactSnapshot>());
       this.snapshotFactory = new ArtifactSnapshotFactory();
       this.remoteSnapshotManager = new RemoteSnapshotManager();
       this.keyGenerator = snapshotFactory.getKeyGenerator();
-      this.executorService = Executors.newSingleThreadExecutor();
    }
 
    public static ArtifactSnapshotManager getInstance() {
@@ -137,7 +133,7 @@ public class ArtifactSnapshotManager {
       if (isSavingAllowed() != false) {
          snapshot = snapshotFactory.createSnapshot(artifact);
          if (snapshot.isDataValid() != false) {
-            executorService.execute(new ArtifactSnapshotPersistOperation(remoteSnapshotManager, snapshot));
+            new ArtifactSnapshotPersistOperation(remoteSnapshotManager, snapshot).run();
          }
       }
       return snapshot;
