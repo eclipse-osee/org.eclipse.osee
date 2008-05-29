@@ -39,6 +39,32 @@ public class EclipseJiniClassloader extends ClassLoader {
       return singleton;
    }
 
+   public EclipseJiniClassloader(ClassLoader parent) {
+      super(parent);
+      classesloaded = new HashMap<String, Class<?>>();
+      bundleList = new ArrayList<String>();
+      bundleList.add("net.jini");
+
+      IExtensionPoint point =
+            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.jini.JiniInterface");
+      IExtension[] extensions = point.getExtensions();
+      for (IExtension extension : extensions) {
+         IConfigurationElement[] elements = extension.getConfigurationElements();
+         registrationMap = new HashMap<String, String>();
+         for (IConfigurationElement el : elements) {
+            if (el.getName().equals("Interface")) {
+               String classname = el.getAttribute("classname");
+               String bundleName = el.getContributor().getName();
+               if (classname != null && bundleName != null) {
+                  registrationMap.put(classname, bundleName);
+               }
+            } else if (el.getName().equals("RegisterBundle")) {
+               bundleList.add(el.getContributor().getName());
+            }
+         }
+      }
+   }
+
    public EclipseJiniClassloader() {
       classesloaded = new HashMap<String, Class<?>>();
       bundleList = new ArrayList<String>();

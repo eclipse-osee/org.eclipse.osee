@@ -18,48 +18,77 @@ import java.security.Permission;
  */
 public class RelaxedSecurity extends SecurityManager {
 
-	/**
-	 * 
-	 */
-	public RelaxedSecurity() {
-		super();
-	}
+   /**
+    * 
+    */
+   public RelaxedSecurity() {
+      super();
+   }
 
-	public void checkPermission(Permission perm) {
-		return;
-	}
+   public void checkPermission(Permission perm) {
+      return;
+   }
 
-	public void checkPermission(Permission perm, Object context) {
-		return;
-	}
+   public void checkPermission(Permission perm, Object context) {
+      return;
+   }
 
-	@Override
-	public void checkAccept(String host, int port) {
-		return;
-	}
+   @Override
+   public void checkAccept(String host, int port) {
+      return;
+   }
 
-	@Override
-	public void checkConnect(String host, int port, Object context) {
-	}
+   @Override
+   public void checkConnect(String host, int port, Object context) {
+   }
 
-	@Override
-	public void checkMulticast(InetAddress maddr, byte ttl) {
-	}
+   @Override
+   public void checkMulticast(InetAddress maddr, byte ttl) {
+   }
 
-	@Override
-	public void checkMulticast(InetAddress maddr) {
-	}
+   @Override
+   public void checkMulticast(InetAddress maddr) {
+   }
 
-	@Override
-	public void checkConnect(String host, int port) {
-	}
+   @Override
+   public void checkConnect(String host, int port) {
+   }
 
-	@Override
-	public void checkPackageAccess(String pkg) {
+   @Override
+   public void checkPackageAccess(String pkg) {
 
-	}
+   }
 
-	
+   /* (non-Javadoc)
+    * @see java.lang.SecurityManager#checkAccess(java.lang.Thread)
+    */
+   @Override
+   public void checkAccess(Thread arg0) {
 
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.SecurityManager#checkAccess(java.lang.ThreadGroup)
+    */
+   @Override
+   public void checkAccess(ThreadGroup arg0) {
+
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.SecurityManager#checkCreateClassLoader()
+    */
+   @Override
+   public void checkCreateClassLoader() {
+
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.SecurityManager#checkExec(java.lang.String)
+    */
+   @Override
+   public void checkExec(String arg0) {
+
+   }
 
 }

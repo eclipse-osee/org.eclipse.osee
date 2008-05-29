@@ -25,6 +25,11 @@ public class OseeJiniConfiguration implements Configuration {
 
    }
 
+   public OseeJiniConfiguration(ClassLoader loader) throws ConfigurationException {
+      config = ConfigurationProvider.getInstance(null, loader);
+
+   }
+
    /*
     * (non-Javadoc)
     * 
