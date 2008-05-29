@@ -47,6 +47,30 @@ public class AXml {
          return str;
    }
 
+   /**
+    * Parse <xmlRoot name="this.is.name" value="this.is.value"> and return name, value
+    * 
+    * @param xmlRoot xml tag name
+    * @param xmlStr string containing xml
+    * @return String[]{name, value}
+    */
+   public static String[] getNameValue(String xmlRoot, String xmlStr) {
+      String[] strs = new String[] {"", ""};
+      Matcher m;
+      m =
+            Pattern.compile("<" + xmlRoot + " name=\"(.*?)\" value=\"(.*?)\" />", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+                  xmlStr);
+      if (m.find()) {
+         strs[0] = m.group(1);
+         strs[1] = m.group(2);
+      }
+      return strs;
+   }
+
+   public static String getNameValueXml(String xmlRoot, String name, String value) {
+      return String.format("<%s name=\"%s\" value=\"%s\"/>", xmlRoot, name, value);
+   }
+
    public static String[] getTagDataArray(String xmlStr, String xmlRoot) {
       Vector<String> v = new Vector<String>();
       Matcher m;

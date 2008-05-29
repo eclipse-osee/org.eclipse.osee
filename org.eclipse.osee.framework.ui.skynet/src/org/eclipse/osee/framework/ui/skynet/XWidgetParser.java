@@ -33,18 +33,14 @@ import org.xml.sax.SAXException;
  */
 public class XWidgetParser {
 
-   public XWidgetParser() {
-      super();
-   }
-
-   public List<DynamicXWidgetLayoutData> extractWorkAttributes(DynamicXWidgetLayout dynamicXWidgetLayout, String xml) throws ParserConfigurationException, SAXException, IOException {
+   public static List<DynamicXWidgetLayoutData> extractWorkAttributes(DynamicXWidgetLayout dynamicXWidgetLayout, String xml) throws ParserConfigurationException, SAXException, IOException {
       Document document = Jaxp.readXmlDocument(xml);
       Element rootElement = document.getDocumentElement();
 
       return extractlayoutDatas(dynamicXWidgetLayout, rootElement);
    }
 
-   public List<DynamicXWidgetLayoutData> extractlayoutDatas(DynamicXWidgetLayout dynamicXWidgetLayout, Element xWidgets) throws ParserConfigurationException, SAXException, IOException {
+   public static List<DynamicXWidgetLayoutData> extractlayoutDatas(DynamicXWidgetLayout dynamicXWidgetLayout, Element xWidgets) throws ParserConfigurationException, SAXException, IOException {
       NodeList widgets = xWidgets.getElementsByTagName(DynamicXWidgetLayout.XWIDGET);
       List<DynamicXWidgetLayoutData> layoutDatas = new ArrayList<DynamicXWidgetLayoutData>(widgets.getLength());
 
@@ -54,7 +50,7 @@ public class XWidgetParser {
       return layoutDatas;
    }
 
-   private DynamicXWidgetLayoutData extractWorkAttribute(DynamicXWidgetLayout dynamicXWidgetLayout, Element widget) {
+   private static DynamicXWidgetLayoutData extractWorkAttribute(DynamicXWidgetLayout dynamicXWidgetLayout, Element widget) {
       DynamicXWidgetLayoutData dynamicXWidgetLayoutData = new DynamicXWidgetLayoutData(dynamicXWidgetLayout);
 
       // Loop through attributes to ensure all are valid and processed

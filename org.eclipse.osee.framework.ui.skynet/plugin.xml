@@ -15,6 +15,7 @@
 	<extension-point id="TemplateProvider" name="TemplateProvider" schema="schema/TemplateProvider.exsd"/>
  <extension-point id="SimpleTemplateProviderTemplate" name="SimpleTemplateProviderTemplate" schema="schema/SimpleTemplateProviderTemplate.exsd"/>
  <extension-point id="AttributeXWidgetProvider" name="AttributeXWidgetProvider" schema="schema/AttributeXWidgetProvider.exsd"/>
+ <extension-point id="WorkDefinitionProvider" name="WorkDefinitionProvider" schema="schema/WorkDefinitionProvider.exsd"/>
  <extension
        point="org.eclipse.ui.commands">
     <command

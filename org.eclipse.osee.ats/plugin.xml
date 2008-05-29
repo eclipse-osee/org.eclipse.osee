@@ -328,4 +328,12 @@
             className="org.eclipse.osee.ats.operation.ImportTasksFromSimpleList">
       </Operation>
    </extension>
+   <extension
+         id="AtsWorkDefinitions"
+         name="AtsWorkDefinitions"
+         point="org.eclipse.osee.framework.ui.skynet.WorkDefinitionProvider">
+      <WorkDefinitionProvider
+            classname="org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions">
+      </WorkDefinitionProvider>
+   </extension>
 </plugin>
