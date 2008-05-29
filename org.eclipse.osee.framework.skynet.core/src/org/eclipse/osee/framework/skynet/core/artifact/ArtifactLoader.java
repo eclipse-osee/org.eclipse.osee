@@ -78,7 +78,7 @@ public final class ArtifactLoader {
       int artifactsCount = artifacts.size();
 
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(10000, sql, queryParameters);
+         chStmt = ConnectionHandler.runPreparedQuery(1000, sql, queryParameters);
          ResultSet rSet = chStmt.getRset();
 
          while (rSet.next()) {
@@ -269,7 +269,7 @@ public final class ArtifactLoader {
 
    private static String getRelationSQL(List<Artifact> artifacts, int startIndex, int stopIndex, Branch branch, List<Object> relationDataList) {
       StringBuilder sql = new StringBuilder(10000);
-      sql.append("SELECT rel1.*, txs1.* FROM osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE (rel1.a_art_id");
+      sql.append("SELECT rel1.* FROM osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE (rel1.a_art_id");
 
       if (stopIndex - startIndex == 1) {
          sql.append("=? OR rel1.b_art_id =?");

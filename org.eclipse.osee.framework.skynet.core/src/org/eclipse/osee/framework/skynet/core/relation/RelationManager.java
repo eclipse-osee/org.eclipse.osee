@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -34,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
  */
 public class RelationManager {
    // the branch is accounted for because Artifact.equals includes the branch in the comparison
-   private static final CompositeKeyHashMap<Artifact, RelationType, List<RelationLink>> relations =
+   private static final CompositeKeyHashMap<Artifact, RelationType, List<RelationLink>> relationsByType =
          new CompositeKeyHashMap<Artifact, RelationType, List<RelationLink>>(1024);
 
    private static final HashMap<Artifact, List<RelationLink>> artifactToRelations =
@@ -45,7 +47,7 @@ public class RelationManager {
    private static final int LINKED_LIST_KEY = -1;
 
    private static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType) {
-      List<RelationLink> selectedRelations = relations.get(artifact, relationType);
+      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (!relation.isDeleted() && relation.getAArtifactId() == aArtifactId && relation.getBArtifactId() == bArtifactId) {
@@ -103,10 +105,10 @@ public class RelationManager {
 
          artifactsRelations.add(relation);
 
-         List<RelationLink> selectedRelations = relations.get(artifact, relation.getRelationType());
+         List<RelationLink> selectedRelations = relationsByType.get(artifact, relation.getRelationType());
          if (selectedRelations == null) {
             selectedRelations = Collections.synchronizedList(new ArrayList<RelationLink>(4));
-            relations.put(artifact, relation.getRelationType(), selectedRelations);
+            relationsByType.put(artifact, relation.getRelationType(), selectedRelations);
          }
          for (int i = 0; i < selectedRelations.size(); i++) {
             if (selectedRelations.get(i).getOrder(relationSide) > relation.getOrder(relationSide)) {
@@ -149,12 +151,47 @@ public class RelationManager {
    }
 
    private static List<RelationLink> getRelationsSorted(Artifact artifact, RelationType relationType) {
-      List<RelationLink> selectedRelations = relations.get(artifact, relationType);
+      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
       if (selectedRelations != null && !sortedLists.contains(selectedRelations)) {
          linkedListSort(selectedRelations, artifact);
          sortedLists.add(selectedRelations);
       }
       return selectedRelations;
+   }
+
+   private static void ensureArtifactsLoaded(List<RelationLink> relations, RelationSide relationSide, Artifact artifact) throws SQLException {
+      HashMap<Branch, List<Integer>> branchToArtifactIds = new HashMap<Branch, List<Integer>>();
+
+      for (RelationLink relation : relations) {
+         if (!relation.isDeleted()) {
+            if (relationSide == null) {
+               RelationSide tempSide = relation.getSide(artifact).oppositeSide();
+               ensureArtifactLoaded(branchToArtifactIds, relation, tempSide, artifact);
+            } else {
+               // only select relations where the related artifact is on relationSide
+               // (and thus on the side opposite of "artifact")
+               if (relation.getSide(artifact) != relationSide) {
+                  ensureArtifactLoaded(branchToArtifactIds, relation, relationSide, artifact);
+               }
+            }
+         }
+      }
+      for (Entry<Branch, List<Integer>> entry : branchToArtifactIds.entrySet()) {
+         ArtifactQuery.getArtifactsFromIds(entry.getValue(), entry.getKey(), false);
+      }
+   }
+
+   private static void ensureArtifactLoaded(HashMap<Branch, List<Integer>> branchToArtifactIds, RelationLink relation, RelationSide relationSide, Artifact artifact) {
+      Branch branch = relation.getBranch(relationSide);
+      Artifact tempArtifact = ArtifactCache.get(relation.getArtifactId(relationSide), branch);
+      if (tempArtifact == null) {
+         List<Integer> artifactIds = branchToArtifactIds.get(branch);
+         if (artifactIds == null) {
+            artifactIds = new ArrayList<Integer>();
+            branchToArtifactIds.put(branch, artifactIds);
+         }
+         artifactIds.add(relation.getArtifactId(relationSide));
+      }
    }
 
    private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
@@ -169,12 +206,14 @@ public class RelationManager {
       }
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selectedRelations.size());
 
+      ensureArtifactsLoaded(selectedRelations, relationSide, artifact);
+
       for (RelationLink relation : selectedRelations) {
          if (!relation.isDeleted()) {
             if (relationSide == null) {
                artifacts.add(relation.getArtifactOnOtherSide(artifact));
             } else {
-               // only select relations where the related artifact is on the side specified by relationEnum
+               // only select relations where the related artifact is on relationSide
                // (and thus on the side opposite of "artifact")
                if (relation.getSide(artifact) != relationSide) {
                   artifacts.add(relation.getArtifact(relationSide));
@@ -223,7 +262,7 @@ public class RelationManager {
    }
 
    public static int getRelatedArtifactsCount(Artifact artifact, RelationType relationType, RelationSide relationSide) {
-      List<RelationLink> selectedRelations = relations.get(artifact, relationType);
+      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
 
       int artifactCount = 0;
       if (selectedRelations != null) {
@@ -384,7 +423,7 @@ public class RelationManager {
    }
 
    public static void deleteRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) {
-      List<RelationLink> selectedRelations = relations.get(artifact, relationType);
+      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relationSide == null) {
@@ -447,7 +486,7 @@ public class RelationManager {
       if (relationToModify == targetLink) {
          return;
       }
-      List<RelationLink> selectedRelations = relations.get(sourceArtifact, targetLink.getRelationType());
+      List<RelationLink> selectedRelations = relationsByType.get(sourceArtifact, targetLink.getRelationType());
       selectedRelations.remove(relationToModify);
       selectedRelations.add(
             infront ? selectedRelations.indexOf(targetLink) : selectedRelations.indexOf(targetLink) + 1,
