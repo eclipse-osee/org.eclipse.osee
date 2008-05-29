@@ -55,7 +55,7 @@ public class DbDescribe {
 
                describe.name = meta.getColumnName(columnIndex).toUpperCase();
                describe.nullable = meta.isNullable(columnIndex) == ResultSetMetaData.columnNullable;
-               describe.type = meta.getColumnTypeName(columnIndex);
+               describe.type = meta.getColumnTypeName(columnIndex).toUpperCase();
                dbColumns.add(describe);
             }
          } finally {
@@ -81,7 +81,7 @@ public class DbDescribe {
                } else if (d.type.contains("VARCHAR")) {
                   String value = chStmt.getRset().getString(d.name);
                   dbModel.addColumn(x++, value);
-               } else if (d.type.contains("INTEGER") || d.type.contains("int")) {
+               } else if (d.type.contains("INT")) {
                   Integer value = chStmt.getRset().getInt(d.name);
                   dbModel.addColumn(x++, value);
                } else if (d.type.contains("TIMESTAMP")) {
