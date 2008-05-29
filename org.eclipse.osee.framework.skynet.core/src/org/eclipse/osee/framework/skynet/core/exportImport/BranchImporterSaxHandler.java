@@ -267,7 +267,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
 
       ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_VERSION, SQL3DataType.INTEGER, currentArtifactId,
             SQL3DataType.VARCHAR, gammaId, SQL3DataType.INTEGER, modificationType.getValue());
-      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.ordinal());
+      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
    }
 
    @Override
@@ -321,7 +321,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             SQL3DataType.INTEGER, attrId, SQL3DataType.INTEGER, attrTypeId, SQL3DataType.VARCHAR, stringValue,
             SQL3DataType.INTEGER, gammaId, SQL3DataType.VARCHAR, uriToStore, SQL3DataType.INTEGER,
             modificationType.getValue());
-      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.ordinal());
+      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
    }
 
    @Override
@@ -365,7 +365,7 @@ public class BranchImporterSaxHandler extends BranchSaxHandler {
             relLinkTypeId, SQL3DataType.INTEGER, aArtId, SQL3DataType.INTEGER, bArtId, SQL3DataType.INTEGER, aOrder,
             SQL3DataType.INTEGER, bOrder, SQL3DataType.VARCHAR, rationale, SQL3DataType.INTEGER, gammaId,
             SQL3DataType.INTEGER, modificationType.getValue());
-      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.ordinal());
+      insertTxAddress(gammaId, modificationType.getValue(), TxChange.CURRENT.getValue());
    }
 
    private void insertTxAddress(int gammaId, int modType, int txCurrent) throws SQLException {

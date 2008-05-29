@@ -258,7 +258,7 @@ public final class ArtifactLoader {
       }
 
       sql.append(" AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current=");
-      sql.append(TxChange.CURRENT.ordinal());
+      sql.append(TxChange.CURRENT.getValue());
       sql.append(" AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=?");
 
       attributeDataList.add(SQL3DataType.INTEGER);
@@ -286,7 +286,7 @@ public final class ArtifactLoader {
       }
 
       sql.append(") AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=");
-      sql.append(TxChange.CURRENT.ordinal());
+      sql.append(TxChange.CURRENT.getValue());
       sql.append(" AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ?");
 
       relationDataList.add(SQL3DataType.INTEGER);

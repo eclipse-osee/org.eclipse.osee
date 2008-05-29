@@ -26,7 +26,7 @@ public class AttributeTransactionData implements ITransactionData {
          "INSERT INTO " + ATTRIBUTE_VERSION_TABLE + " (art_id, attr_id, attr_type_id, value, gamma_id, uri, modification_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private static final String SET_PREVIOUS_TX_NOT_CURRENT =
-         "UPDATE osee_Define_txs txs1 set tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) = (SELECT txs2.transaction_id, txs2.gamma_id from osee_define_tx_details txd1, osee_define_attribute at3, osee_define_txs txs2 WHERE txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs2.gamma_id = at3.gamma_id AND at3.attr_id = ? AND txs2.tx_current = " + TxChange.CURRENT.ordinal() + ")";
+         "UPDATE osee_Define_txs txs1 set tx_current = 0 WHERE (txs1.transaction_id, txs1.gamma_id) = (SELECT txs2.transaction_id, txs2.gamma_id from osee_define_tx_details txd1, osee_define_attribute at3, osee_define_txs txs2 WHERE txs2.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs2.gamma_id = at3.gamma_id AND at3.attr_id = ? AND txs2.tx_current = " + TxChange.CURRENT.getValue() + ")";
 
    private static final int PRIME_NUMBER = 5;
 

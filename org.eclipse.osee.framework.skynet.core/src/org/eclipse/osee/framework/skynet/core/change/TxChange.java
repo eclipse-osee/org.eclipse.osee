@@ -15,5 +15,22 @@ package org.eclipse.osee.framework.skynet.core.change;
  * @author Ryan D. Brooks
  */
 public enum TxChange {
-   NOT_CURRENT, CURRENT;
+   NOT_CURRENT(0), CURRENT(1), DELETED(2);
+
+   private int value;
+
+   private TxChange(int value) {
+      this.value = value;
+   }
+
+   public int getValue() {
+      return value;
+   }
+
+   public static TxChange getChangeType(int value) {
+      for (TxChange change : values())
+         if (change.getValue() == value) return change;
+      return null;
+   }
+
 }

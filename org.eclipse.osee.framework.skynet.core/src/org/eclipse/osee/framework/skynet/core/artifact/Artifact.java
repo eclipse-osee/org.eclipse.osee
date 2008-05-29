@@ -879,7 +879,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws SQLException
     * @throws IllegalStateException if the artifact is deleted
     */
-   public void revert() throws SQLException {
+   public void reloadArtifact() throws SQLException {
       if (!isInDb()) return;
 
       attributes.clear();
@@ -1234,7 +1234,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       // Loop through all artifacts and persist/revert as necessary
       for (Artifact artifact : artifactToManipulate) {
          if (revert) {
-            artifact.revert();
+            artifact.reloadArtifact();
          } else {
             artifact.persistAttributes();
          }

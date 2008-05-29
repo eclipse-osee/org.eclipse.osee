@@ -209,7 +209,7 @@ public class ArtifactConflict extends Conflict {
 
    public void revertSourceArtifact() throws Exception {
       ArtifactPersistenceManager.getInstance().revertArtifact(getSourceArtifact());
-      getSourceArtifact().revert();
+      getSourceArtifact().reloadArtifact();
    }
 
    public int getMergeGammaId() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException, Exception {

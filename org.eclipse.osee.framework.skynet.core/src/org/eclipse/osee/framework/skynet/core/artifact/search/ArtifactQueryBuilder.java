@@ -282,7 +282,7 @@ public class ArtifactQueryBuilder {
          sql.append("(");
       }
       sql.append("txs1.tx_current=");
-      sql.append(TxChange.CURRENT.ordinal());
+      sql.append(TxChange.CURRENT.getValue());
 
       if (allowDeleted) {
          sql.append(" OR txs1.mod_type=");

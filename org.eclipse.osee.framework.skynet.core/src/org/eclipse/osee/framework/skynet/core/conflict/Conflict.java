@@ -40,24 +40,14 @@ public abstract class Conflict implements IAdaptable {
          return value;
       }
 
-      public static Status getStatus(int val) {
-         switch (val) {
-            case 1:
-               return UNTOUCHED;
-            case 2:
-               return EDITED;
-            case 3:
-               return RESOLVED;
-            case 4:
-               return OUT_OF_DATE;
-            case 5:
-               return NOT_RESOLVABLE;
-            default:
-               return UNTOUCHED;
-
+      public static Status getStatus(int value) {
+         for (Status status : values()) {
+            if (status.value == value) return status;
          }
+         return null;
       }
    };
+
    public static enum ConflictType {
       ATTRIBUTE(1), RELATION(2), ARTIFACT(3);
       private final int value;

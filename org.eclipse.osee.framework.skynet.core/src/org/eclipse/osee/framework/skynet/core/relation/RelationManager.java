@@ -102,7 +102,6 @@ public class RelationManager {
                   relation.getRelationId(), relation.getAArtifactId(), relation.getBArtifactId());
             return;
          }
-
          artifactsRelations.add(relation);
 
          List<RelationLink> selectedRelations = relationsByType.get(artifact, relation.getRelationType());
@@ -286,9 +285,12 @@ public class RelationManager {
 
    /**
     * @param artifact
+    * @deprecated
     */
    public static void revertRelationsFor(Artifact artifact) {
-      throw new UnsupportedOperationException();
+      //TODO This is inappropriate to use as references held to links by other applications will be invalid.
+      artifactToRelations.remove(artifact);
+      relationsByType.remove(artifact);
    }
 
    public static boolean hasDirtyLinks(Artifact artifact) {

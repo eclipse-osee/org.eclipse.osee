@@ -512,7 +512,7 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
          if (!artifact.isDeleted() && (artifact.isDirty(true))) {
             try {
-               artifact.revert();
+               artifact.reloadArtifact();
             } catch (SQLException ex) {
                SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }

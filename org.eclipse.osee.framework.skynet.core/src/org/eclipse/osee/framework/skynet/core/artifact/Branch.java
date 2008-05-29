@@ -49,21 +49,13 @@ public class Branch implements Comparable<Branch>, IAdaptable {
          return value;
       }
 
-      public static BranchType getBranchType(Integer val) {
-         switch (val) {
-            case 0:
-               return STANDARD;
-            case 1:
-               return ROOT;
-            case 2:
-               return BASELINE;
-            case 3:
-               return MERGE;
-            default:
-               return STANDARD;
-         }
+      public static BranchType getBranchType(int value) {
+         for (BranchType type : values())
+            if (type.getValue() == value) return type;
+         return null;
       }
    };
+
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final String UPDATE_BRANCH_SHORT_NAME =
          "UPDATE " + BRANCH_TABLE + " SET short_name = ? WHERE branch_id = ?";
