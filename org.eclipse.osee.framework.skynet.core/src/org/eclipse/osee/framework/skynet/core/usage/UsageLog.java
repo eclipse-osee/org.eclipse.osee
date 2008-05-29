@@ -36,11 +36,19 @@ public class UsageLog {
    private final boolean usageLoggingEnabled;
    private Collection<UsageEntry> log;
    private int exceptionCount;
+   private int userId;
 
    private UsageLog() {
       this.usageLoggingEnabled = OseeProperties.getInstance().isUsageLoggingEnabled();
       this.log = new LinkedList<UsageEntry>();
       this.exceptionCount = 0;
+
+      userId = -1;
+      try {
+         userId = SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId();
+      } catch (Exception ex) {
+         log.add(new ExceptionEntry(ex));
+      }
 
       new Kicker(this).start();
    }
@@ -74,12 +82,6 @@ public class UsageLog {
       }
 
       List<Object[]> data = new ArrayList<Object[]>(log.size());
-      int userId = -1;
-      try {
-         userId = SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId();
-      } catch (Exception ex) {
-         log.add(new ExceptionEntry(ex));
-      }
       for (UsageEntry entry : log) {
          data.add(new Object[] {SQL3DataType.INTEGER, userId, SQL3DataType.TIMESTAMP, entry.getEventTime(),
                SQL3DataType.INTEGER, entry.getEventOrdinal(), SQL3DataType.VARCHAR, entry.getDetails()});
