@@ -176,10 +176,13 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          boolean dirty = !artifact.isReadOnly() && artifact.isDirty(true);
          if (dirty) return true;
 
-         Result result = newAttributeComposite.isDirty();
-         System.out.println("New Attribute Composite - isDirt => " + result);
-         if (result.isTrue()) {
-            return true;
+         //TODO The new attribute composite dirty logic is always returning true ....
+         if (false) {
+            Result result = newAttributeComposite.isDirty();
+            System.out.println("New Attribute Composite - isDirt => " + result);
+            if (result.isTrue()) {
+               return true;
+            }
          }
       } catch (Exception ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
