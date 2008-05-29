@@ -16,6 +16,7 @@ public class ConfigIniGeneration {
    public static void main(String[] args) {
       StringBuilder builder = new StringBuilder();
       builder.append("osgi.bundles= \\\n");
+      builder.append("org.eclipse.equinox.log_1.1.0.v20080303.jar@start, \\\n");
       builder.append("org.eclipse.equinox.ds_1.0.0.v20080310.jar@start, \\\n");
       builder.append("org.mortbay.jetty_5.1.11.v200803061811.jar@start, \\\n");
       builder.append("org.eclipse.osgi.services_3.1.200.v20071203.jar@start, \\\n");
