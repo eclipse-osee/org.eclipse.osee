@@ -75,16 +75,16 @@ public class DbDescribe {
             DbModel dbModel = new DbModel();
             int x = 0;
             for (Describe d : describeList) {
-               if (d.type.equalsIgnoreCase("NUMBER")) {
+               if (d.type.contains("NUMBER")) {
                   Long l = chStmt.getRset().getLong(d.name);
                   dbModel.addColumn(x++, l);
-               } else if (d.type.equalsIgnoreCase("VARCHAR")) {
+               } else if (d.type.contains("VARCHAR")) {
                   String value = chStmt.getRset().getString(d.name);
                   dbModel.addColumn(x++, value);
-               } else if (d.type.equalsIgnoreCase("INTEGER") || d.type.contains("int")) {
+               } else if (d.type.contains("INTEGER") || d.type.contains("int")) {
                   Integer value = chStmt.getRset().getInt(d.name);
                   dbModel.addColumn(x++, value);
-               } else if (d.type.equalsIgnoreCase("TIMESTAMP")) {
+               } else if (d.type.contains("TIMESTAMP")) {
                   Timestamp value = chStmt.getRset().getTimestamp(d.name);
                   dbModel.addColumn(x++, value);
                } else {
