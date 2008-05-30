@@ -9,13 +9,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.common.io.Streams;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -36,7 +35,7 @@ public class ArtifactFileServlet extends HttpServlet {
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       InputStream inputStream = null;
-
+      boolean wasProcessed = false;
       try {
          HttpArtifactFileInfo artifactFileInfo = new HttpArtifactFileInfo(request);
          String uri = null;
@@ -45,29 +44,34 @@ public class ArtifactFileServlet extends HttpServlet {
          } else {
             uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchId());
          }
-         IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
-         Options options = new Options();
-         options.put(StandardOptions.DecompressOnAquire.name(), true);
-         IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
+         if (Strings.isValid(uri)) {
+            IResourceLocator locator = Activator.getInstance().getResourceLocatorManager().getResourceLocator(uri);
+            Options options = new Options();
+            options.put(StandardOptions.DecompressOnAquire.name(), true);
+            IResource resource = Activator.getInstance().getResourceManager().acquire(locator, options);
 
-         if (resource != null) {
-            inputStream = resource.getContent();
+            if (resource != null) {
+               wasProcessed = true;
+               inputStream = resource.getContent();
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentLength(inputStream.available());
-            response.setCharacterEncoding("ISO-8859-1");
-            String mimeType = HttpURLConnection.guessContentTypeFromStream(inputStream);
-            if (mimeType == null) {
-               mimeType = HttpURLConnection.guessContentTypeFromName(resource.getLocation().toString());
+               response.setStatus(HttpServletResponse.SC_OK);
+               response.setContentLength(inputStream.available());
+               response.setCharacterEncoding("ISO-8859-1");
+               String mimeType = HttpURLConnection.guessContentTypeFromStream(inputStream);
                if (mimeType == null) {
-                  mimeType = "application/*";
+                  mimeType = HttpURLConnection.guessContentTypeFromName(resource.getLocation().toString());
+                  if (mimeType == null) {
+                     mimeType = "application/*";
+                  }
                }
-            }
-            response.setContentType(mimeType);
-            response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
+               response.setContentType(mimeType);
+               response.setHeader("Content-Disposition", "attachment; filename=" + resource.getName());
 
-            Streams.inputStreamToOutputStream(inputStream, response.getOutputStream());
-         } else {
+               Streams.inputStreamToOutputStream(inputStream, response.getOutputStream());
+            }
+         }
+
+         if (!wasProcessed) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             response.getWriter().write(String.format("Unable to find resource: [%s]", request.getQueryString()));
          }
