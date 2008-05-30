@@ -106,6 +106,8 @@ public class DataConversion {
          try {
             connection = ConnectionHandler.getConnection();
             Map<Long, String> nativeExtension = Util.getArtIdMap(connection, "Extension");
+            Map<Long, String> nameMap = Util.getArtIdMap(connection, "Name");
+
             rs = connection.createStatement().executeQuery(sql);
 
             List<Object[]> batchParams = new ArrayList<Object[]>();
@@ -118,13 +120,18 @@ public class DataConversion {
                String uri = rs.getString(4);
                String typeName = rs.getString(6);
                long artId = rs.getLong(5);
-               String guid = rs.getString(7);
+               //String guid = rs.getString(7);
 
                String fileExtension = "";
                if (typeToExtension.containsKey(typeName)) {
                   fileExtension = typeToExtension.get(typeName);
                } else if (nativeExtension.containsKey(artId)) {
                   fileExtension = nativeExtension.get(artId);
+               }
+
+               String descriptiveName = nameMap.get(artId);
+               if (descriptiveName == null || descriptiveName.length() <= 0) {
+                  descriptiveName = typeName;
                }
 
                boolean resourceExists = false;
@@ -135,7 +142,7 @@ public class DataConversion {
 
                if (!resourceExists) {
                   IResourceLocator locator = locatorManager.generateResourceLocator("attr", gamma, hrId);
-                  IResource resource = new DbResource(rs.getBinaryStream(2), typeName, guid, fileExtension);
+                  IResource resource = new DbResource(rs.getBinaryStream(2), descriptiveName, hrId, fileExtension);
 
                   Options options = new Options();
                   options.put(StandardOptions.CompressOnSave.name(), true);

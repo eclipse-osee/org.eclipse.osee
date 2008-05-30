@@ -49,7 +49,7 @@ public class Util {
    }
 
    public static Map<Long, String> getArtIdMap(Connection connection, String attrTypeName) throws SQLException {
-      Map<Long, String> toReturn = new HashMap<Long, String>();
+      Map<Long, String> toReturn = new HashMap<Long, String>(250);
 
       ResultSet rs = null;
       PreparedStatement prepared = null;

@@ -22,16 +22,16 @@ public class DbResource implements IResource {
    private InputStream inputStream;
    private boolean isCompressed = false;
    private URI uri;
-   private String guid;
-   private String typeName;
+   private String hrid;
+   private String artName;
    private String fileTypeExtension;
 
    /**
     * @param binaryStream
     */
-   public DbResource(InputStream inputStream, String typeName, String guid, String fileTypeExtension) {
-      this.guid = guid;
-      this.typeName = typeName;
+   public DbResource(InputStream inputStream, String artName, String hrid, String fileTypeExtension) {
+      this.hrid = hrid;
+      this.artName = artName;
       this.fileTypeExtension = fileTypeExtension;
       this.inputStream = inputStream;
       try {
@@ -81,7 +81,7 @@ public class DbResource implements IResource {
     */
    @Override
    public String getName() {
-      return generateFileName(typeName, guid, fileTypeExtension);
+      return generateFileName(artName, hrid, fileTypeExtension);
    }
 
    /* (non-Javadoc)
@@ -92,15 +92,15 @@ public class DbResource implements IResource {
       return isCompressed;
    }
 
-   private String generateFileName(String attributeTypeName, String guid, String fileTypeExtension) {
+   private String generateFileName(String artName, String hrid, String fileTypeExtension) {
       StringBuilder builder = new StringBuilder();
       try {
-         builder.append(attributeTypeName);
+         builder.append(artName);
          builder.append(".");
       } catch (Exception ex) {
          // Do Nothing - this is not important
       }
-      builder.append(guid);
+      builder.append(hrid);
 
       if (fileTypeExtension != null && fileTypeExtension.length() > 0) {
          builder.append(".");
