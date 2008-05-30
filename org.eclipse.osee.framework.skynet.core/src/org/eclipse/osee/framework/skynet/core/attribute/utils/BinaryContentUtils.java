@@ -21,8 +21,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
  */
 public class BinaryContentUtils {
 
-   private BinaryContentUtils() {
+   private final static int MAX_NAME_SIZE = 60;
 
+   private BinaryContentUtils() {
    }
 
    public static String getContentType(String extension) {
@@ -36,21 +37,39 @@ public class BinaryContentUtils {
    }
 
    public static String generateFileName(Attribute<?> attribute) {
-      AttributeType attributeType = attribute.getAttributeType();
       StringBuilder builder = new StringBuilder();
       try {
-         builder.append(URLEncoder.encode(attributeType.getName(), "UTF-8"));
+         String name = attribute.getArtifact().getDescriptiveName();
+         if (name.length() > MAX_NAME_SIZE) {
+            name = name.substring(0, MAX_NAME_SIZE);
+         }
+         builder.append(URLEncoder.encode(name, "UTF-8"));
          builder.append(".");
       } catch (Exception ex) {
          // Do Nothing - this is not important
       }
-      builder.append(attribute.getArtifact().getGuid());
+      builder.append(attribute.getArtifact().getHumanReadableId());
 
-      String fileTypeExtension = attributeType.getFileTypeExtension();
+      String fileTypeExtension = getExtension(attribute);
       if (Strings.isValid(fileTypeExtension)) {
          builder.append(".");
          builder.append(fileTypeExtension);
       }
       return builder.toString();
+   }
+
+   private static String getExtension(Attribute<?> attribute) {
+      AttributeType attributeType = attribute.getAttributeType();
+      String fileTypeExtension = null;
+      if (attributeType.getName().equalsIgnoreCase("Native Content")) {
+         try {
+            fileTypeExtension = attribute.getArtifact().getSoleAttributeValue("Extension");
+         } catch (Exception ex) {
+            // Do Nothing - not important
+         }
+      } else {
+         fileTypeExtension = attributeType.getFileTypeExtension();
+      }
+      return fileTypeExtension;
    }
 }
