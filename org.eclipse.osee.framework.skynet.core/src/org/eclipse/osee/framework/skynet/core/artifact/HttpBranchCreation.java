@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.NetworkNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;

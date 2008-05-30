@@ -102,7 +102,7 @@ public class VersionArtifact extends BasicArtifact {
 
    public TeamDefinitionArtifact getTeamDefinitionArtifact() throws SQLException {
       try {
-         return (TeamDefinitionArtifact) getRelatedArtifact("TeamDefinitionToVersion");
+         return (TeamDefinitionArtifact) getRelatedArtifact(CoreRelationEnumeration.TeamDefinitionToVersion_TeamDefinition);
       } catch (ArtifactDoesNotExist ex) {
          return null;
       } catch (Exception ex) {

@@ -13,24 +13,38 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
  * @author Ryan D. Brooks
  */
-public class RelationTypeCriteria extends AbstractArtifactSearchCriteria {
-   private IRelationEnumeration relationSide;
+public class RelationCriteria extends AbstractArtifactSearchCriteria {
+   private final RelationType relationType;
+   private final RelationSide relationSide;
    private String txsAlias;
    private String txdAlias;
    private String relAlias;
+   private int artifactId;
 
    /**
     * Constructor for search criteria that follows the relation link ending on the given side
     * 
-    * @param relationSide the side to start following the link from
+    * @param relationEnum the side to start following the link from
     * @param value
+    * @throws SQLException
     */
-   public RelationTypeCriteria(IRelationEnumeration relationSide) {
-      super();
+   public RelationCriteria(IRelationEnumeration relationEnum) throws SQLException {
+      this(relationEnum.getRelationType(), relationEnum.getSide());
+   }
+
+   public RelationCriteria(RelationType relationType, RelationSide relationSide) {
+      this(0, relationType, relationSide);
+   }
+
+   public RelationCriteria(int artifactId, RelationType relationType, RelationSide relationSide) {
+      this.artifactId = artifactId;
+      this.relationType = relationType;
       this.relationSide = relationSide;
    }
 
@@ -49,9 +63,17 @@ public class RelationTypeCriteria extends AbstractArtifactSearchCriteria {
     */
    @Override
    public void addToWhereSql(ArtifactQueryBuilder builder) throws SQLException {
-      builder.append(relAlias);
-      builder.append(".rel_link_type_id=? AND ");
-      builder.addParameter(SQL3DataType.INTEGER, relationSide.getRelationType().getRelationTypeId());
+      if (artifactId > 0) {
+         builder.append(relAlias);
+         builder.append(relationSide.isSideA() ? ".b_art_id" : ".a_art_id");
+         builder.append("=? AND ");
+         builder.addParameter(SQL3DataType.INTEGER, artifactId);
+      }
+      if (relationType != null) {
+         builder.append(relAlias);
+         builder.append(".rel_link_type_id=? AND ");
+         builder.addParameter(SQL3DataType.INTEGER, relationType.getRelationTypeId());
+      }
 
       builder.append(relAlias);
       builder.append(".gamma_id=");
@@ -66,7 +88,7 @@ public class RelationTypeCriteria extends AbstractArtifactSearchCriteria {
     */
    @Override
    public void addJoinArtId(ArtifactQueryBuilder builder, boolean left) {
-      boolean useArtA = relationSide.isSideA() ^ left;
+      boolean useArtA = (relationSide == RelationSide.SIDE_A) ^ left;
       builder.append(relAlias);
       builder.append(useArtA ? ".a_art_id" : ".b_art_id");
    }

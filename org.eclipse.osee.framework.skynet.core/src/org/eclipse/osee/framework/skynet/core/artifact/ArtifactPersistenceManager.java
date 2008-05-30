@@ -40,8 +40,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkArtifactDe
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.PersistenceManager;
-import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -53,6 +51,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
+import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -64,7 +63,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionBuild
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransactionManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.transaction.data.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -75,7 +73,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * @author Ryan D. Brooks
  * @author Robert A. Fisher
  */
-public class ArtifactPersistenceManager implements PersistenceManager {
+public class ArtifactPersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactPersistenceManager.class);
 
    private static final String INSERT_ARTIFACT =
@@ -84,8 +82,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    private static final String REMOVE_EMPTY_TRANSACTION_DETAILS =
          "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE " + TRANSACTION_DETAIL_TABLE.column("branch_id") + " = ?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " NOT IN " + "(SELECT " + TRANSACTIONS_TABLE.column("transaction_id") + " FROM " + TRANSACTIONS_TABLE + ")";
 
-   private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_1 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t1");
-   private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_2 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t2");
    private static final LocalAliasTable ATTRIBUTE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "t1");
    private static final LocalAliasTable ATTRIBUTE_ALIAS_2 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "t2");
 
@@ -129,8 +125,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
    private static final String UPDATE_ARTIFACT_TYPE = "UPDATE osee_define_artifact SET art_type_id = ? WHERE art_id =?";
 
-   private TransactionIdManager transactionIdManager;
-   private TagManager tagManager;
    private ExtensionDefinedObjects<IAttributeSaveListener> attributeSaveListeners;
 
    private IProgressMonitor monitor;
@@ -148,18 +142,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    public static ArtifactPersistenceManager getInstance() {
-      PersistenceManagerInit.initManagerWeb(instance);
       return instance;
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
-    */
-   public void onManagerWebInit() throws Exception {
-      transactionIdManager = TransactionIdManager.getInstance();
-      tagManager = TagManager.getInstance();
    }
 
    /**
@@ -283,11 +266,11 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       Object data;
       String idString;
       if (useGuid) {
-         artifact = ArtifactCache.get(guid, transactionId.getTransactionNumber());
+         artifact = ArtifactCache.getHistorical(guid, transactionId.getTransactionNumber());
          data = guid;
          idString = "guid \"" + guid + "\"";
       } else {
-         artifact = ArtifactCache.get(artId, transactionId.getTransactionNumber());
+         artifact = ArtifactCache.getHistorical(artId, transactionId.getTransactionNumber());
          data = artId;
          idString = "id \"" + artId + "\"";
       }
@@ -328,7 +311,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    private static final String ARTIFACT_SELECT =
-         "SELECT " + ARTIFACT_TABLE.column("*") + ", " + TRANSACTIONS_TABLE.column("*") + " FROM " + ARTIFACT_TABLE + "," + ARTIFACT_VERSION_ALIAS_1 + ", " + TRANSACTIONS_TABLE + " WHERE " + ARTIFACT_TABLE.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + TRANSACTIONS_TABLE.column("gamma_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id") + " FROM " + ARTIFACT_VERSION_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_ALIAS_2.column("art_id") + "=" + ARTIFACT_VERSION_ALIAS_1.column("art_id") + " AND " + ARTIFACT_VERSION_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ?)" + " AND " + ARTIFACT_VERSION_ALIAS_1.column("modification_id") + "<>" + ModificationType.DELETED + " AND ";
+         "INSERT INTO osee_artifact_loader (query_id, art_id, gamma_id, transaction_id, branch_id) SELECT ?, osee_define_artifact.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
 
    private static final String ARTIFACT_ID_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
@@ -399,15 +382,6 @@ public class ArtifactPersistenceManager implements PersistenceManager {
       return sql.toString();
    }
 
-   private String getSql(List<ISearchPrimitive> searchCriteria, boolean all, List<Object> dataList, TransactionId transactionId) throws SQLException {
-      dataList.add(SQL3DataType.INTEGER);
-      dataList.add(transactionId.getBranch().getBranchId());
-      dataList.add(SQL3DataType.INTEGER);
-      dataList.add(transactionId.getTransactionNumber());
-
-      return getSql(searchCriteria, all, ARTIFACT_SELECT, dataList, transactionId.getBranch());
-   }
-
    private static String getSql(List<ISearchPrimitive> searchCriteria, boolean all, String header, List<Object> dataList, Branch branch) throws SQLException {
       StringBuilder sql = new StringBuilder(header);
 
@@ -446,20 +420,27 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    @Deprecated
-   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, TransactionId transactionId) throws SQLException {
+   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
       LinkedList<Object> dataList = new LinkedList<Object>();
+      int queryId = ArtifactLoader.getNewQueryId();
       dataList.add(SQL3DataType.INTEGER);
-      dataList.add(transactionId.getBranch().getBranchId());
+      dataList.add(queryId);
       dataList.add(SQL3DataType.INTEGER);
-      dataList.add(transactionId.getTransactionNumber());
+      dataList.add(branch.getBranchId());
 
-      return getArtifacts(getSql(searchCriteria, ARTIFACT_SELECT, dataList, transactionId.getBranch()), dataList,
-            transactionId, null);
+      return getArtifacts(queryId, getSql(searchCriteria, ARTIFACT_SELECT, dataList, branch), dataList, branch, null);
    }
 
    @Deprecated
-   public Collection<Artifact> getArtifacts(ISearchPrimitive searchCriteria, Branch branch) throws SQLException {
-      return getArtifacts(searchCriteria, transactionIdManager.getEditableTransactionId(branch));
+   public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws SQLException {
+      LinkedList<Object> dataList = new LinkedList<Object>();
+      int queryId = ArtifactLoader.getNewQueryId();
+      dataList.add(SQL3DataType.INTEGER);
+      dataList.add(queryId);
+      dataList.add(SQL3DataType.INTEGER);
+      dataList.add(branch.getBranchId());
+      return getArtifacts(queryId, getSql(searchCriteria, all, ARTIFACT_SELECT, dataList, branch), dataList, branch,
+            confirmer);
    }
 
    @Deprecated
@@ -468,27 +449,8 @@ public class ArtifactPersistenceManager implements PersistenceManager {
    }
 
    @Deprecated
-   public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws SQLException {
-      LinkedList<Object> dataList = new LinkedList<Object>();
-      TransactionId transactionId = transactionIdManager.getEditableTransactionId(branch);
-      return getArtifacts(getSql(searchCriteria, all, dataList, transactionId), dataList, transactionId, confirmer);
-   }
-
-   @Deprecated
-   public Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, TransactionId transactionId) throws SQLException {
-      LinkedList<Object> dataList = new LinkedList<Object>();
-      return getArtifacts(getSql(searchCriteria, all, dataList, transactionId), dataList, transactionId, null);
-   }
-
-   @Deprecated
-   public Collection<Artifact> getArtifacts(String sql, List<Object> dataList, TransactionId transactionId, ISearchConfirmer confirmer) throws SQLException {
-      Collection<Artifact> artifacts = new ArrayList<Artifact>(50);
-      if (!ArtifactLoader.loadArtifacts(artifacts, transactionId.getBranch(), ArtifactLoad.FULL, confirmer, sql,
-            dataList.toArray())) {
-         artifacts.clear();
-      }
-
-      return artifacts;
+   private Collection<Artifact> getArtifacts(int queryId, String sql, List<Object> dataList, Branch branch, ISearchConfirmer confirmer) throws SQLException {
+      return ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, confirmer, sql, dataList.toArray());
    }
 
    public static Artifact loadArtifactMetaData(ResultSet rSet, Branch branch, boolean active) throws SQLException {
@@ -620,7 +582,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
 
       RelationManager.deleteRelationsAll(artifact);
       artifact.persistRelations();
-      tagManager.clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
+      TagManager.getInstance().clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
    }
 
    public void purgeArtifactFromBranch(Artifact artifact) throws Exception {
@@ -788,6 +750,7 @@ public class ArtifactPersistenceManager implements PersistenceManager {
             Artifact root =
                   ArtifactTypeManager.addArtifact(ROOT_ARTIFACT_TYPE_NAME, branch, DEFAULT_HIERARCHY_ROOT_NAME);
             root.persistAttributes();
+            ArtifactCache.putByTextId(DEFAULT_HIERARCHY_ROOT_NAME, root);
             return root;
          }
          throw ex;

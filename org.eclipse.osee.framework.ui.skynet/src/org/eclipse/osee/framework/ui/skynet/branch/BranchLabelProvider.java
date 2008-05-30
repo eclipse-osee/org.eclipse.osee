@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.IAttributeChange;
-import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.IRevisionChange;
 import org.eclipse.osee.framework.skynet.core.revision.RelationLinkChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;

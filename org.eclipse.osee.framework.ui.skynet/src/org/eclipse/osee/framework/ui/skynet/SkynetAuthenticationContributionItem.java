@@ -73,7 +73,6 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
       });
 
       eventManager.register(AuthenticationEvent.class, this);
-      notifyListeners();
    }
 
    private void notifyListeners() {

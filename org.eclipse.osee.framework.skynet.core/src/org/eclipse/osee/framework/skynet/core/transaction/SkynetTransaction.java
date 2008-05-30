@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;

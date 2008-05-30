@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.ISkynetEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkBroadcastEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
 import org.eclipse.osee.framework.ui.admin.autoRun.AutoRunTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbTableTab;

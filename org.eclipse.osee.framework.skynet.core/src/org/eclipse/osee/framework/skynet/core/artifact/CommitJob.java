@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
-import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;

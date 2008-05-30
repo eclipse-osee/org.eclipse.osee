@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch.BranchType;
-import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;

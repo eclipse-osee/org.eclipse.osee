@@ -54,15 +54,11 @@ public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IA
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws SQLException {
       deleteArts.add(this);
       try {
-         getRelated(allRelated);
+         for (Artifact artifact : getRelatedArtifactsAll()) {
+            allRelated.put(artifact, this);
+         }
       } catch (ArtifactDoesNotExist ex) {
          throw new SQLException(ex);
-      }
-   }
-
-   public void getRelated(Map<Artifact, Object> allRelated) throws SQLException, ArtifactDoesNotExist {
-      for (Artifact artifact : getRelatedArtifactsAll()) {
-         allRelated.put(artifact, this);
       }
    }
 }

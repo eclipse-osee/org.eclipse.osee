@@ -174,58 +174,6 @@ public final class ConnectionHandler {
       }
    }
 
-   // TODO: Not USED! REMOVE!
-   //   /**
-   //    * @param query - String query
-   //    * @param size - int size of statement fetch size
-   //    * @return ConnectionHandlerStatement contains a Resultset and a Statement
-   //    * @throws SQLException
-   //    */
-   //   @Deprecated
-   //   public static ConnectionHandlerStatement runQuery(String query, int size) throws SQLException {
-   //      QueryRecord record = new QueryRecord(query);
-   //      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-   //      Statement statement = null;
-   //      ResultSet rset = null;
-   //
-   //      // curentTime = System.currentTimeMillis();
-   //
-   //      try {
-   //         statement = getConnection().createStatement();
-   //
-   //         if (size > 0) statement.setFetchSize(size);
-   //
-   //         record.markStart();
-   //         rset = statement.executeQuery(query);
-   //         record.markEnd();
-   //         chStmt.setRset(rset);
-   //         chStmt.setStatement(statement);
-   //      } catch (SQLException ex) {
-   //         record.setSqlException(ex);
-   //         OseeLog.log(Activator.class.getName(), Level.SEVERE, "Query: *" + query + "*", ex);
-   //
-   //         reGetConnection(false);
-   //
-   //         statement = getConnection().createStatement();
-   //         if (size > 0) statement.setFetchSize(size);
-   //
-   //         rset = statement.executeQuery(query);
-   //         chStmt.setRset(rset);
-   //         chStmt.setStatement(statement);
-   //      }
-   //      return chStmt;
-   //   }
-   //
-   //   /**
-   //    * @param query - String query
-   //    * @return ConnectionHandlerStatement that contains a Resultset and a Statement
-   //    * @throws SQLException
-   //    */
-   //   @Deprecated
-   //   public static ConnectionHandlerStatement runQuery(String query) throws SQLException {
-   //      return runQuery(query, 0);
-   //   }
-
    public static void runPreparedUpdate(boolean overrideTransaction, String query, Object... data) throws SQLException {
       ConnectionHandlerStatement chStmt = null;
       try {
@@ -251,10 +199,6 @@ public final class ConnectionHandler {
 
       return updateCount;
    }
-
-   //   public static ConnectionHandlerStatement runPreparedUpdateReturnStmt(String query, Object... data) throws SQLException {
-   //      return runPreparedUpdateReturnStmt(false, query, data);
-   //   }
 
    public static ConnectionHandlerStatement runPreparedUpdateReturnStmt(boolean overrideTransaction, String query, Object... data) throws SQLException {
       QueryRecord record = new QueryRecord(query, data);

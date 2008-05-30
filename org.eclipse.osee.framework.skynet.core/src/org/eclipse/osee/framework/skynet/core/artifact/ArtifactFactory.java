@@ -73,7 +73,7 @@ public abstract class ArtifactFactory {
       Artifact artifact = getArtifactInstance(guid, humandReadableId, factoryKey, branch, artifactType);
 
       if (modType == ModificationType.DELETED) {
-         artifact.setDeleted(transactionId);
+         artifact.setDeleted();
       }
 
       artifact.setArtId(artId);

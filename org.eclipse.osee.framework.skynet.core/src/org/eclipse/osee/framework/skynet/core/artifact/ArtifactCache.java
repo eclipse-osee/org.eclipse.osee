@@ -22,11 +22,8 @@ public class ArtifactCache {
    private final CompositeKeyHashMap<String, Integer, Artifact> historicalArtifactGuidCache =
          new CompositeKeyHashMap<String, Integer, Artifact>();
 
-   private final CompositeKeyHashMap<Integer, Branch, Artifact> artifactIdCache =
-         new CompositeKeyHashMap<Integer, Branch, Artifact>(2000);
-
-   private final CompositeKeyHashMap<String, Branch, Artifact> guidCache =
-         new CompositeKeyHashMap<String, Branch, Artifact>(2000);
+   private final CompositeKeyHashMap<Integer, Integer, Artifact> artifactIdCache =
+         new CompositeKeyHashMap<Integer, Integer, Artifact>(2000);
 
    private final CompositeKeyHashMap<String, Branch, Artifact> keyedArtifactCache =
          new CompositeKeyHashMap<String, Branch, Artifact>(10);
@@ -43,8 +40,7 @@ public class ArtifactCache {
     */
    static void cache(Artifact artifact) {
       if (artifact.isLive()) {
-         instance.artifactIdCache.put(artifact.getArtId(), artifact.getBranch(), artifact);
-         instance.guidCache.put(artifact.getGuid(), artifact.getBranch(), artifact);
+         instance.artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), artifact);
       } else {
          instance.historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
          instance.historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
@@ -54,15 +50,14 @@ public class ArtifactCache {
    static void deCache(Artifact artifact) {
       instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
       instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
-      instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch());
-      instance.guidCache.remove(artifact.getGuid(), artifact.getBranch());
+      instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
    }
 
-   public static Artifact get(Integer artId, Integer transactionNumber) {
+   public static Artifact getHistorical(Integer artId, Integer transactionNumber) {
       return instance.historicalArtifactIdCache.get(artId, transactionNumber);
    }
 
-   public static Artifact get(String guid, Integer transactionNumber) {
+   public static Artifact getHistorical(String guid, Integer transactionNumber) {
       return instance.historicalArtifactGuidCache.get(guid, transactionNumber);
    }
 
@@ -74,19 +69,20 @@ public class ArtifactCache {
     * @param branch
     * @return
     */
-   public static Artifact get(Integer artId, Branch branch) {
-      return instance.artifactIdCache.get(artId, branch);
+   public static Artifact getActive(Integer artId, Branch branch) {
+      return getActive(artId, branch.getBranchId());
    }
 
    /**
-    * returns the active artifact with the given guid from the given branch if it is in the cache and null
+    * returns the active artifact with the given artifact id from the given branch if it is in the cache and null
+    * otherwise
     * 
-    * @param guid
-    * @param branch
+    * @param artId
+    * @param branchId
     * @return
     */
-   public static Artifact get(String guid, Branch branch) {
-      return instance.guidCache.get(guid, branch);
+   public static Artifact getActive(Integer artId, Integer branchId) {
+      return instance.artifactIdCache.get(artId, branchId);
    }
 
    /**

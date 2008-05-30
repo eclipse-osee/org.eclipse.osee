@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.attribute;
+package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.rmi.RemoteException;
 import java.rmi.server.ExportException;
@@ -58,12 +58,8 @@ import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
+import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.RemoteCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteNewBranchEvent;
@@ -74,7 +70,6 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetServiceEvent;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -93,7 +88,6 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
    private ISkynetEventListener myReference;
 
    private SkynetEventManager eventManager;
-   private static TransactionIdManager transactionIdManager;
    private static BranchPersistenceManager branchPersistenceManager;
    private static SkynetAuthentication skynetAuthentication;
 
@@ -128,7 +122,6 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
    }
 
    public void onManagerWebInit() throws Exception {
-      transactionIdManager = TransactionIdManager.getInstance();
       branchPersistenceManager = BranchPersistenceManager.getInstance();
       skynetAuthentication = SkynetAuthentication.getInstance();
    }
@@ -344,9 +337,8 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
       try {
          int artId = event.getArtId();
          int branchId = event.getBranchId();
-         int transactionNumber = event.getTransactionId();
          List<String> dirtyAttributeName = new LinkedList<String>();
-         Artifact artifact = ArtifactCache.get(artId, BranchPersistenceManager.getInstance().getBranch(branchId));
+         Artifact artifact = ArtifactCache.getActive(artId, branchId);
 
          if (artifact != null && artifact.isLive()) {
             ModType modType = null;
@@ -364,7 +356,7 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
                }
                modType = ModType.Changed;
             } else if (event instanceof NetworkArtifactDeletedEvent) {
-               artifact.setDeleted(transactionNumber);
+               artifact.setDeleted();
                modType = ModType.Deleted;
             }
             localEvents.add(new TransactionArtifactModifiedEvent(artifact, modType, RemoteEventManager.instance));

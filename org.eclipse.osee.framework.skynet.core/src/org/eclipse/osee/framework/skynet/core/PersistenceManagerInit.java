@@ -16,10 +16,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchCreator;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.skynet.core.tagging.TagManager;
@@ -55,9 +54,8 @@ public final class PersistenceManagerInit {
          isFirstRun = false;
          for (PersistenceManager manager : new PersistenceManager[] {SkynetAuthentication.getInstance(),
                AccessControlManager.getInstance(), RelationPersistenceManager.getInstance(),
-               ArtifactPersistenceManager.getInstance(), RemoteEventManager.getInstance(),
-               BranchPersistenceManager.getInstance(), TagManager.getInstance(), BranchCreator.getInstance(),
-               RevisionManager.getInstance()}) {
+               RemoteEventManager.getInstance(), BranchPersistenceManager.getInstance(), TagManager.getInstance(),
+               BranchCreator.getInstance(), RevisionManager.getInstance()}) {
             initializedManagers.add(manager);
          }
 

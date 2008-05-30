@@ -20,6 +20,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -53,7 +55,7 @@ public class ArtifactQuery {
     */
    public static Artifact getArtifactFromId(int artId, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist {
       try {
-      return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getArtifact();
+         return new ArtifactQueryBuilder(artId, branch, allowDeleted, FULL).getArtifact();
       } catch (MultipleArtifactsExist ex) {
          // it is not possible to have two artifacts with the same artifact id
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
@@ -217,6 +219,20 @@ public class ArtifactQuery {
     */
    public static List<Artifact> getArtifactsFromCriteria(Branch branch, AbstractArtifactSearchCriteria... criteria) throws SQLException {
       return new ArtifactQueryBuilder(branch, FULL, criteria).getArtifacts(null);
+   }
+
+   /**
+    * search for artifacts related
+    * 
+    * @param artifactId
+    * @param branch
+    * @param criteria
+    * @return
+    * @throws SQLException
+    */
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws SQLException {
+      return new ArtifactQueryBuilder(artifact.getBranch(), FULL, new RelationCriteria(artifact.getArtId(),
+            relationType, relationSide)).getArtifacts(null);
    }
 
    /**

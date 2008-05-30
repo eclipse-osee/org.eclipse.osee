@@ -147,15 +147,23 @@ public class RelationLink {
    }
 
    public Artifact getArtifact(RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
-      Artifact relatedArtifact = ArtifactCache.get(getArtifactId(relationSide), getBranch(relationSide));
+      Artifact relatedArtifact = getArtifactIfLoaded(relationSide);
       if (relatedArtifact == null) {
          return ArtifactQuery.getArtifactFromId(getArtifactId(relationSide), getBranch(relationSide));
       }
       return relatedArtifact;
    }
 
+   public Artifact getArtifactIfLoaded(RelationSide relationSide) {
+      return ArtifactCache.getActive(getArtifactId(relationSide), getBranch(relationSide));
+   }
+
    public Artifact getArtifactOnOtherSide(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
       return getArtifact(getSide(artifact).oppositeSide());
+   }
+
+   public Artifact getArtifactOnOtherSideIfLoaded(Artifact artifact) throws ArtifactDoesNotExist, SQLException {
+      return getArtifactIfLoaded(getSide(artifact).oppositeSide());
    }
 
    @Deprecated
@@ -271,6 +279,7 @@ public class RelationLink {
       return processArtifactSideName(artifact, true);
    }
 
+   @Deprecated
    private String processArtifactSideName(Artifact artifact, boolean otherArtifact) {
       for (RelationSide side : RelationSide.values()) {
          try {

@@ -291,7 +291,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
 
    public VersionArtifact getTargetedForVersion() throws SQLException {
       try {
-         return (VersionArtifact) getRelatedArtifact("TeamWorkflowTargetedForVersion");
+         return (VersionArtifact) getRelatedArtifact(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version);
       } catch (ArtifactDoesNotExist ex) {
          return null;
       } catch (Exception ex) {

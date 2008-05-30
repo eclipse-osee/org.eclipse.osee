@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
-import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.event.LocalDeletedBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 

@@ -79,7 +79,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    private ArtifactType artifactType;
    private String humanReadableId;
    private ArtifactFactory parentFactory;
-   private int deletionTransactionId = -1;
    private HashCollection<String, Attribute<?>> attributes =
          new HashCollection<String, Attribute<?>>(false, LinkedList.class, 4);
    private AttributeAnnotationManager annotationMgr;
@@ -218,9 +217,9 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * @throws OseeDataStoreException
     * @throws MultipleArtifactsExist
     */
-   public Artifact getRelatedArtifact(String relationType) throws ArtifactDoesNotExist, OseeDataStoreException, MultipleArtifactsExist {
+   public Artifact getRelatedArtifact(IRelationEnumeration relationEnum) throws ArtifactDoesNotExist, OseeDataStoreException, MultipleArtifactsExist {
       try {
-         return RelationManager.getRelatedArtifact(this, RelationTypeManager.getType(relationType));
+         return RelationManager.getRelatedArtifact(this, relationEnum);
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
@@ -1035,17 +1034,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return deleted;
    }
 
-   public void setDeleted(int deletionTransactionId) {
-      this.deletionTransactionId = deletionTransactionId;
+   void setDeleted() {
       this.deleted = true;
-   }
-
-   /**
-    * use setDeleted(int deletionTransactionId) instead
-    */
-   @Deprecated
-   protected void setDeleted() {
-      setDeleted(-1);
    }
 
    public void setDirty() {
@@ -1395,10 +1385,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
          annotationMgr = new AttributeAnnotationManager(this);
       }
       return annotationMgr;
-   }
-
-   public int getDeletionTransactionId() throws SQLException {
-      return deletionTransactionId;
    }
 
    /* (non-Javadoc)

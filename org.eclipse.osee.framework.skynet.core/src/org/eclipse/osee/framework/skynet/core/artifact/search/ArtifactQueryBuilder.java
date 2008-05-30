@@ -15,14 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -37,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
  * @author Ryan D. Brooks
  */
 public class ArtifactQueryBuilder {
-   private final List<Artifact> artifacts = new LinkedList<Artifact>();
    private final HashMap<String, NextAlias> nextAliases = new HashMap<String, NextAlias>();
    private final StringBuilder sql = new StringBuilder(1000);
    private final List<Object> dataList = new ArrayList<Object>();
@@ -47,7 +43,6 @@ public class ArtifactQueryBuilder {
    private AbstractArtifactSearchCriteria[] criteria;
    private final Branch branch;
    private int artifactId;
-   private boolean searchIsNeeded;
    private Collection<Integer> artifactIds;
    private ArtifactType artifactType;
    private final boolean allowDeleted;
@@ -124,48 +119,9 @@ public class ArtifactQueryBuilder {
       this.allowDeleted = allowDeleted;
       this.guidOrHrid = guidOrHrid;
       this.artifactId = artifactId;
-      this.searchIsNeeded = true;
 
       if (artifactIds != null && !artifactIds.isEmpty()) {
-         // remove from search list any that are already in the cache
-         Iterator<Integer> iterator = artifactIds.iterator();
-         while (iterator.hasNext()) {
-            Artifact artifact = ArtifactCache.get(iterator.next(), branch);
-            if (artifact != null) {
-               artifacts.add(artifact);
-               iterator.remove();
-            }
-         }
-         if (artifactIds.size() == 0) {
-            searchIsNeeded = false;
-         } else if (artifactIds.size() == 1) {
-            this.artifactId = artifactIds.iterator().next();
-         } else {
-            this.artifactIds = artifactIds;
-         }
-      }
-
-      if (this.artifactId != 0) {
-         Artifact artifact = ArtifactCache.get(this.artifactId, branch);
-         if (artifact != null) {
-            artifacts.add(artifact);
-            searchIsNeeded = false;
-         }
-      }
-
-      if (artifactIds != null && !artifactIds.isEmpty()) {
-         // remove from search list any that are already in the cache
-         Iterator<Integer> iterator = artifactIds.iterator();
-         while (iterator.hasNext()) {
-            Artifact artifact = ArtifactCache.get(iterator.next(), branch);
-            if (artifact != null) {
-               artifacts.add(artifact);
-               iterator.remove();
-            }
-         }
-         if (artifactIds.size() == 0) {
-            searchIsNeeded = false;
-         } else if (artifactIds.size() == 1) {
+         if (artifactIds.size() == 1) {
             this.artifactId = artifactIds.iterator().next();
          } else {
             this.artifactIds = artifactIds;
@@ -173,18 +129,7 @@ public class ArtifactQueryBuilder {
       }
 
       if (guidOrHrids != null && !guidOrHrids.isEmpty()) {
-         // remove from search list any that are already in the cache
-         Iterator<String> iterator = guidOrHrids.iterator();
-         while (iterator.hasNext()) {
-            Artifact artifact = ArtifactCache.get(iterator.next(), branch);
-            if (artifact != null) {
-               artifacts.add(artifact);
-               iterator.remove();
-            }
-         }
-         if (guidOrHrids.size() == 0) {
-            searchIsNeeded = false;
-         } else if (guidOrHrids.size() == 1) {
+         if (guidOrHrids.size() == 1) {
             this.guidOrHrid = guidOrHrids.get(0);
          } else {
             for (String id : guidOrHrids) {
@@ -199,26 +144,18 @@ public class ArtifactQueryBuilder {
          }
       }
 
-      if (this.guidOrHrid != null) {
-         Artifact artifact = ArtifactCache.get(this.guidOrHrid, branch);
-         if (artifact != null) {
-            artifacts.add(artifact);
-            searchIsNeeded = false;
-         }
-      }
-
-      if (searchIsNeeded) {
-         nextAliases.put("osee_define_txs", new NextAlias("txs"));
-         nextAliases.put("osee_define_tx_details", new NextAlias("txd"));
-         nextAliases.put("osee_define_artifact", new NextAlias("art"));
-         nextAliases.put("osee_define_artifact_version", new NextAlias("arv"));
-         nextAliases.put("osee_define_attribute", new NextAlias("att"));
-         nextAliases.put("osee_define_rel_link", new NextAlias("rel"));
-      }
+      nextAliases.put("osee_define_txs", new NextAlias("txs"));
+      nextAliases.put("osee_define_tx_details", new NextAlias("txd"));
+      nextAliases.put("osee_define_artifact", new NextAlias("art"));
+      nextAliases.put("osee_define_artifact_version", new NextAlias("arv"));
+      nextAliases.put("osee_define_attribute", new NextAlias("att"));
+      nextAliases.put("osee_define_rel_link", new NextAlias("rel"));
    }
 
-   private String getArtifactsSql() throws SQLException {
-      sql.append("SELECT art1.*, txs1.* FROM ");
+   private String getArtifactInsertSql(int queryId) throws SQLException {
+      addParameter(SQL3DataType.INTEGER, queryId);
+
+      sql.append("INSERT INTO osee_artifact_loader (query_id, art_id, gamma_id, transaction_id, branch_id) SELECT ?, art1.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id FROM ");
       appendAliasedTable("osee_define_artifact", false);
       appendAliasedTables("osee_define_artifact_version", "osee_define_txs", "osee_define_tx_details");
       sql.append("\n");
@@ -358,16 +295,9 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Artifact> getArtifacts(ISearchConfirmer confirmer) throws SQLException {
-      if (searchIsNeeded) {
-         if (!ArtifactLoader.loadArtifacts(artifacts, branch, loadLevel, confirmer, getArtifactsSql(),
-               dataList.toArray())) {
-            artifacts.clear();
-         }
-      } else {
-         ArtifactLoader.loadArtifactsData(artifacts, branch, loadLevel);
-      }
-
-      return artifacts;
+      int queryId = ArtifactLoader.getNewQueryId();
+      return ArtifactLoader.loadArtifacts(queryId, loadLevel, confirmer, getArtifactInsertSql(queryId),
+            dataList.toArray());
    }
 
    public Artifact getArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {

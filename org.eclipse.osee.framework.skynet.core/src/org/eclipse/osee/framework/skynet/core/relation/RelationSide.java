@@ -19,4 +19,8 @@ public enum RelationSide {
    public RelationSide oppositeSide() {
       return this == SIDE_A ? SIDE_B : SIDE_A;
    }
+
+   public boolean isSideA() {
+      return this == RelationSide.SIDE_A;
+   }
 }

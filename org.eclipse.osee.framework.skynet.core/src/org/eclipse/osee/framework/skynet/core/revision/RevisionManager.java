@@ -463,7 +463,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
             //We do not want to display artifacts that were new and then deleted
             if (!artifactChanges.containsKey(artId)) {
-               artIds.add(artId);
+            artIds.add(artId);
                changes.add(artifactChanged);
                artifactChanges.put(artId, artifactChanged);
             } else {
@@ -561,14 +561,14 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
             //New artifacts are displayed as artifact changes not attribute changes
             if (!artIds.contains(artId)) {
-               attributeChanged =
-                     new AttributeChanged(sourceBranch, artTypeId, sourceGamma, artId, sourceEndTransactionId,
+            attributeChanged =
+                  new AttributeChanged(sourceBranch, artTypeId, sourceGamma, artId, sourceEndTransactionId,
                            sourceHeadTransactionId,
                            hasBranch ? ModificationType.NEW : ModificationType.getMod(modType), ChangeType.OUTGOING,
                            isValue, "", attrId, attrTypeId);
 
-               changes.add(attributeChanged);
-               mightNeedWasValue.put(attrId, attributeChanged);
+            changes.add(attributeChanged);
+            mightNeedWasValue.put(attrId, attributeChanged);
                attributeArtIds.add(artId);
             }
          }
@@ -938,13 +938,13 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       if (includeRelationOnlyChanges) {
          criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
       }
-      return artifactManager.getArtifacts(criteria, false, toTransaction);
+      return artifactManager.getArtifacts(criteria, false, toTransaction.getBranch());
    }
 
    public Collection<Artifact> getRelationChangedArtifacts(TransactionId baseTransaction, TransactionId toTransaction) throws SQLException {
       List<ISearchPrimitive> criteria = new ArrayList<ISearchPrimitive>(2);
       criteria.add(new RelationInTransactionSearch(baseTransaction, toTransaction));
-      return artifactManager.getArtifacts(criteria, false, toTransaction);
+      return artifactManager.getArtifacts(criteria, false, toTransaction.getBranch());
    }
 
    /**

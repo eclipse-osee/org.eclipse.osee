@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.messaging.event.skynet.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.event.LocalRenameBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
@@ -55,7 +54,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
          return null;
       }
    };
-
    private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final String UPDATE_BRANCH_SHORT_NAME =
          "UPDATE " + BRANCH_TABLE + " SET short_name = ? WHERE branch_id = ?";

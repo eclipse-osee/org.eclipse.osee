@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.sql.SQLException;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
@@ -54,10 +53,8 @@ public class ArtifactLabelProvider extends LabelProvider {
 
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
-         if (artifact.isDeleted()) throw new IllegalArgumentException("Can not display a deleted artifact");
 
          String name = artifact.getDescriptiveName();
-         if (name == null) name = "";
          if (artifactExplorer != null) {
             if (artifactExplorer.showArtIds()) {
                name += " (" + artifact.getArtId() + ") ";
@@ -76,15 +73,6 @@ public class ArtifactLabelProvider extends LabelProvider {
          if (showBranch) {
             name += " <" + artifact.getBranch().getBranchShortName() + "> ";
          }
-         try {
-            int deletionTransactionId = artifact.getDeletionTransactionId();
-            if (deletionTransactionId != -1) {
-               name += " <deleted in tx " + deletionTransactionId + "> ";
-            }
-         } catch (SQLException ex) {
-            OSEELog.logException(getClass(), ex, false);
-         }
-
          return name;
       } else {
          return element.toString();

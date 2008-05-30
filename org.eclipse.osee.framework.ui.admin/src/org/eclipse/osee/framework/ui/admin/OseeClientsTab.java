@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetDisconnectClientsEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.attribute.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
-import org.eclipse.osee.framework.skynet.core.artifact.search.RelationTypeCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.RelationCriteria;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
@@ -62,7 +62,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
       }
 
       if (returnActions) {
-         criteria.add(new RelationTypeCriteria(CoreRelationEnumeration.ActionToWorkflow_Action));
+         criteria.add(new RelationCriteria(CoreRelationEnumeration.ActionToWorkflow_Action));
       }
 
       return ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), criteria);
