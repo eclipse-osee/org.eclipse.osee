@@ -153,22 +153,37 @@ public class OseeConsole {
          time += ":" + minute + " => ";
       }
       try {
-         if (type == CONSOLE_ERROR && streamErr != null) {
-            streamErr.write(time + str);
-            streamErr.write("\n");
-         }
-         if (type == CONSOLE_PROMPT && streamPrompt != null) {
-            streamPrompt.write(time + str);
-            streamPrompt.write("\n");
-         }
-         if (type == CONSOLE_OUT && streamOut != null) {
-            streamOut.write(time + str);
-            streamOut.write("\n");
+         sendToStreams(type, time);
+         if (str.length() > 100000) {
+            int i = 0;
+
+            while (i < str.length()) {
+               int endIndex = i + 100000;
+               endIndex = endIndex > str.length() ? str.length() : endIndex;
+               String chunk = str.substring(i, endIndex);
+               sendToStreams(type, chunk);
+               i = endIndex;
+            }
+         } else {
+            sendToStreams(type, str);
          }
 
+         sendToStreams(type, "\n");
          if (popup) popup();
       } catch (IOException ex) {
          ex.printStackTrace();
+      }
+   }
+
+   private void sendToStreams(int type, String str) throws IOException {
+      if (type == CONSOLE_ERROR && streamErr != null) {
+         streamErr.write(str);
+      }
+      if (type == CONSOLE_PROMPT && streamPrompt != null) {
+         streamPrompt.write(str);
+      }
+      if (type == CONSOLE_OUT && streamOut != null) {
+         streamOut.write(str);
       }
    }
 
