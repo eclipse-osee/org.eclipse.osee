@@ -38,6 +38,10 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
  * @author Ryan D. Brooks
  */
 public final class ArtifactLoader {
+
+   private static final String LOADER_INSERT =
+         "INSERT INTO osee_artifact_loader (query_id, art_id, gamma_id, transaction_id, branch_id) ";
+
    private static final String SELECT_RELATIONS =
          "SELECT rel_link_id, a_art_id, b_art_id, rel_link_type_id, a_order_value, b_order_value, rel1.gamma_id, rationale, al1.branch_id FROM osee_artifact_loader al1, osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
 
@@ -69,9 +73,11 @@ public final class ArtifactLoader {
             rSet.getInt("transaction_id"), ModificationType.getMod(rSet.getInt("mod_type")), true);
    }
 
-   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, String sql, Object[] queryParameters) throws SQLException {
-      int artifactCount = ConnectionHandler.runPreparedUpdateReturnCount(sql, queryParameters);
+   public static int selectArtifacts(int queryId, String sql, Object[] queryParameters) throws SQLException {
+      return ConnectionHandler.runPreparedUpdateReturnCount(LOADER_INSERT + sql, queryParameters);
+   }
 
+   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int artifactCount, boolean reload) throws SQLException {
       if (artifactCount > 0) {
          List<Artifact> artifacts = new ArrayList<Artifact>(artifactCount);
          ConnectionHandlerStatement chStmt = null;
@@ -106,6 +112,10 @@ public final class ArtifactLoader {
       loadArtifactsData(queryId, artifacts, loadLevel);
    }
 
+   public static void clearQuery(int queryId) throws SQLException {
+      ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_LOADER, SQL3DataType.INTEGER, queryId);
+   }
+
    private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel) throws SQLException {
       if (loadLevel == SHALLOW) {
          return;
@@ -121,8 +131,6 @@ public final class ArtifactLoader {
       for (Artifact artifact : artifacts) {
          artifact.onInitializationComplete();
       }
-
-      ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_LOADER, SQL3DataType.INTEGER, queryId);
    }
 
    private static void loadRelationData(int queryId, Collection<Artifact> artifacts) throws SQLException {

@@ -311,7 +311,7 @@ public class ArtifactPersistenceManager {
    }
 
    private static final String ARTIFACT_SELECT =
-         "INSERT INTO osee_artifact_loader (query_id, art_id, gamma_id, transaction_id, branch_id) SELECT ?, osee_define_artifact.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
+         "SELECT ?, osee_define_artifact.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
 
    private static final String ARTIFACT_ID_SELECT =
          "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
@@ -450,7 +450,11 @@ public class ArtifactPersistenceManager {
 
    @Deprecated
    private Collection<Artifact> getArtifacts(int queryId, String sql, List<Object> dataList, Branch branch, ISearchConfirmer confirmer) throws SQLException {
-      return ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, confirmer, sql, dataList.toArray());
+      int artifactCount = ArtifactLoader.selectArtifacts(queryId, sql, dataList.toArray());
+      List<Artifact> artifacts =
+            ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, confirmer, artifactCount, false);
+      ArtifactLoader.clearQuery(queryId);
+      return artifacts;
    }
 
    public static Artifact loadArtifactMetaData(ResultSet rSet, Branch branch, boolean active) throws SQLException {
@@ -575,8 +579,7 @@ public class ArtifactPersistenceManager {
 
       transaction.addRemoteEvent(new NetworkArtifactDeletedEvent(artifact.getBranch().getBranchId(),
             transaction.getTransactionNumber(), artifact.getArtId(), artifact.getArtTypeId(),
-            artifact.getFactory().getClass().getCanonicalName(),
-            SkynetAuthentication.getUser().getArtId()));
+            artifact.getFactory().getClass().getCanonicalName(), SkynetAuthentication.getUser().getArtId()));
       transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact.getGuid(), artifact.getBranch(),
             ModType.Deleted, this));
 

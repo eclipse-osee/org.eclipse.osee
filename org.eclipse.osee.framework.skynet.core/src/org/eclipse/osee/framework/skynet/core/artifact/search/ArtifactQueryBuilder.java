@@ -155,7 +155,7 @@ public class ArtifactQueryBuilder {
    private String getArtifactInsertSql(int queryId) throws SQLException {
       addParameter(SQL3DataType.INTEGER, queryId);
 
-      sql.append("INSERT INTO osee_artifact_loader (query_id, art_id, gamma_id, transaction_id, branch_id) SELECT ?, art1.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id FROM ");
+      sql.append("SELECT ?, art1.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id FROM ");
       appendAliasedTable("osee_define_artifact", false);
       appendAliasedTables("osee_define_artifact_version", "osee_define_txs", "osee_define_tx_details");
       sql.append("\n");
@@ -296,8 +296,17 @@ public class ArtifactQueryBuilder {
 
    public List<Artifact> getArtifacts(ISearchConfirmer confirmer) throws SQLException {
       int queryId = ArtifactLoader.getNewQueryId();
-      return ArtifactLoader.loadArtifacts(queryId, loadLevel, confirmer, getArtifactInsertSql(queryId),
-            dataList.toArray());
+      int artifactCount = ArtifactLoader.selectArtifacts(queryId, getArtifactInsertSql(queryId), dataList.toArray());
+      List<Artifact> artifacts = ArtifactLoader.loadArtifacts(queryId, loadLevel, confirmer, artifactCount, false);
+      ArtifactLoader.clearQuery(queryId);
+      return artifacts;
+   }
+
+   public int countArtifacts() throws SQLException {
+      int queryId = ArtifactLoader.getNewQueryId();
+      int artifactCount = ArtifactLoader.selectArtifacts(queryId, getArtifactInsertSql(queryId), dataList.toArray());
+      ArtifactLoader.clearQuery(queryId);
+      return artifactCount;
    }
 
    public Artifact getArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
