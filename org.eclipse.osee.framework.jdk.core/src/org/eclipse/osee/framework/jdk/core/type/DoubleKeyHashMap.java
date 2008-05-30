@@ -70,7 +70,7 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
       if (o != null) {
          value = o.remove(k2);
          if (o.size() == 0) {
-            k1ToHashMap.remove(o);
+            k1ToHashMap.remove(k1);
          }
       }
       return value;
