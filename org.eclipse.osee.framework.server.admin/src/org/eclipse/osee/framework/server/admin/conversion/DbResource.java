@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -95,7 +96,7 @@ public class DbResource implements IResource {
    private String generateFileName(String artName, String hrid, String fileTypeExtension) {
       StringBuilder builder = new StringBuilder();
       try {
-         builder.append(artName);
+         builder.append(URLEncoder.encode(artName, "UTF-8"));
          builder.append(".");
       } catch (Exception ex) {
          // Do Nothing - this is not important
