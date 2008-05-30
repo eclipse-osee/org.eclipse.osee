@@ -171,7 +171,7 @@ public class RelationManager {
       return artifacts;
    }
 
-     private static boolean needsBulkLoad(List<RelationLink> selectedRelations, Artifact artifact, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
+   private static boolean needsBulkLoad(List<RelationLink> selectedRelations, Artifact artifact, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
       for (RelationLink relation : selectedRelations) {
          if (!relation.isDeleted()) {
             if (relationSide == null) {
@@ -264,7 +264,7 @@ public class RelationManager {
          return false;
       }
       for (RelationLink relation : selectedRelations) {
-         if (relation.isDirty()) {
+         if (relation.isDirty() && !relation.isDeleted()) {
             return true;
          }
       }
