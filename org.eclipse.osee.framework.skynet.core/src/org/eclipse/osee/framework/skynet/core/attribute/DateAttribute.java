@@ -77,9 +77,9 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * @param value value or null to clear
     */
    @Override
-   public void subClassSetValue(Date value) {
+   public boolean subClassSetValue(Date value) {
       String toSet = value != null ? Long.toString(value.getTime()) : "";
-      getAttributeDataProvider().setValue(toSet);
+      return getAttributeDataProvider().setValue(toSet);
    }
 
    /* (non-Javadoc)

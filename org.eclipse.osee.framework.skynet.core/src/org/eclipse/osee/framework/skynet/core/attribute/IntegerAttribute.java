@@ -36,8 +36,8 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
     */
    @Override
-   public void subClassSetValue(Integer value) {
-      getAttributeDataProvider().setValue(Integer.toString(value));
+   public boolean subClassSetValue(Integer value) {
+      return getAttributeDataProvider().setValue(Integer.toString(value));
    }
 
    /* (non-Javadoc)

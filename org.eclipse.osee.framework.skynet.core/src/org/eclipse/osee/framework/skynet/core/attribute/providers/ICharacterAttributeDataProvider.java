@@ -17,6 +17,6 @@ public interface ICharacterAttributeDataProvider extends IAttributeDataProvider 
 
    public String getValueAsString();
 
-   public void setValue(String value);
+   public boolean setValue(String value);
 
 }

@@ -69,7 +69,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
     */
    @Override
-   public void subClassSetValue(Object value) {
+   public boolean subClassSetValue(Object value) {
       try {
          ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
          ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
@@ -81,6 +81,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
+      return true;
    }
 
    /* (non-Javadoc)

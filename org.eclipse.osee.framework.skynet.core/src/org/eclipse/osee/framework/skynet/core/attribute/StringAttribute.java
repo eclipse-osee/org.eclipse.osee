@@ -34,8 +34,8 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
     */
    @Override
-   public void subClassSetValue(String value) {
-      getAttributeDataProvider().setValue(value);
+   public boolean subClassSetValue(String value) {
+      return getAttributeDataProvider().setValue(value);
    }
 
    /* (non-Javadoc)

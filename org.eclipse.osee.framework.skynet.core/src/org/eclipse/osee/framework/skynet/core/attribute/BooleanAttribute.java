@@ -28,8 +28,8 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    }
 
    @Override
-   public void subClassSetValue(Boolean value) {
-      getAttributeDataProvider().setValue(value ? booleanChoices[0] : booleanChoices[1]);
+   public boolean subClassSetValue(Boolean value) {
+      return getAttributeDataProvider().setValue(value ? booleanChoices[0] : booleanChoices[1]);
    }
 
    /* (non-Javadoc)

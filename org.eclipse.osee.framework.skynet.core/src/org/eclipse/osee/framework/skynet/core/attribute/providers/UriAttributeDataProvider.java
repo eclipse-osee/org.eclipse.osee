@@ -125,7 +125,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.data.IStringAttributeDataProvider#setValue(java.lang.String)
     */
    @Override
-   public void setValue(String value) {
+   public boolean setValue(String value) {
       ByteBuffer toSet = null;
       if (value != null) {
          try {
@@ -135,6 +135,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          }
       }
       setValue(toSet);
+      return true;
    }
 
    /* (non-Javadoc)

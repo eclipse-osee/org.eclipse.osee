@@ -55,14 +55,16 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
     * @see org.eclipse.osee.framework.skynet.core.attribute.AbstractAttributeDataProvider#setValue(java.lang.String)
     */
    @Override
-   public void setValue(String value) {
-      if (this.value == value) {
-         return;
+   public boolean setValue(String value) {
+      boolean response = false;
+
+      if (this.value == value || (this.value != null && this.value.equals(value))) {
+         response = false;
+      } else {
+         this.value = value;
+         response = true;
       }
-      if (this.value != null && this.value.equals(value)) {
-         return;
-      }
-      this.value = value;
+      return response;
    }
 
    /* (non-Javadoc)

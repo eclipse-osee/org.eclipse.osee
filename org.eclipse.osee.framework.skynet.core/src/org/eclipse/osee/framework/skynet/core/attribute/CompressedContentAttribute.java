@@ -36,15 +36,15 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
     */
    @Override
-   public void subClassSetValue(InputStream value) throws OseeCoreException {
-      setValueFromInputStream(value);
+   public boolean subClassSetValue(InputStream value) throws OseeCoreException {
+      return setValueFromInputStream(value);
    }
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.framework.skynet.core.attribute.IStreamableAttribute#setValueFromInputStream(java.io.InputStream)
     */
    @Override
-   public void setValueFromInputStream(InputStream value) throws OseeCoreException {
+   public boolean setValueFromInputStream(InputStream value) throws OseeCoreException {
       try {
          if (value == null) {
             getAttributeDataProvider().setValue(null);
@@ -52,6 +52,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
             byte[] data = Lib.inputStreamToBytes(value);
             getAttributeDataProvider().setValue(ByteBuffer.wrap(data));
          }
+         return true;
       } catch (IOException ex) {
          throw new OseeCoreException(ex);
       }

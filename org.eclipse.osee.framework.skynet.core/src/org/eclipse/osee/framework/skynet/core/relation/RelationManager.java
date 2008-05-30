@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 
@@ -376,6 +377,9 @@ public class RelationManager {
          RelationManager.manageRelation(relation, RelationSide.SIDE_A);
          RelationManager.manageRelation(relation, RelationSide.SIDE_B);
       }
+      SkynetEventManager.getInstance().kick(
+            new CacheRelationModifiedEvent(relation, relation.getABranch(), relation.getRelationType().getTypeName(),
+                  relation.getASideName(), ModType.Added, RelationManager.class));
    }
 
    public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws SQLException {

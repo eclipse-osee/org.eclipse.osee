@@ -39,13 +39,18 @@ public abstract class Attribute<T> {
    }
 
    public void setValue(T value) throws OseeCoreException {
-      subClassSetValue(value);
-      setDirty();
+      if (subClassSetValue(value)) {
+         setDirty();
+      }
    }
 
-   public void setFromString(String value) throws OseeCoreException {
-      subClassSetValue(convertStringToValue(value));
-      setDirty();
+   public boolean setFromString(String value) throws OseeCoreException {
+      boolean response = subClassSetValue(convertStringToValue(value));
+
+      if (response) {
+         setDirty();
+      }
+      return response;
    }
 
    protected abstract T convertStringToValue(String value) throws OseeCoreException;
@@ -55,9 +60,9 @@ public abstract class Attribute<T> {
       dirty = true;
    }
 
-   public void setValueFromInputStream(InputStream value) throws OseeCoreException {
+   public boolean setValueFromInputStream(InputStream value) throws OseeCoreException {
       try {
-         setFromString(Lib.inputStreamToString(value));
+         return setFromString(Lib.inputStreamToString(value));
       } catch (IOException ex) {
          throw new OseeCoreException(ex);
       }
@@ -70,7 +75,7 @@ public abstract class Attribute<T> {
     * @param value
     * @throws OseeCoreException
     */
-   protected abstract void subClassSetValue(T value) throws OseeCoreException;
+   protected abstract boolean subClassSetValue(T value) throws OseeCoreException;
 
    public abstract T getValue();
 
@@ -106,7 +111,7 @@ public abstract class Attribute<T> {
       return dirty;
    }
 
-   public void setDirty() {
+   private void setDirty() {
       dirty = true;
       artifact.setInTransaction(false);
       SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));

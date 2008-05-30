@@ -35,8 +35,8 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#subClassSetValue(java.lang.Object)
     */
    @Override
-   public void subClassSetValue(Double value) {
-      getAttributeDataProvider().setValue(String.valueOf(value));
+   public boolean subClassSetValue(Double value) {
+      return getAttributeDataProvider().setValue(String.valueOf(value));
    }
 
    /* (non-Javadoc)

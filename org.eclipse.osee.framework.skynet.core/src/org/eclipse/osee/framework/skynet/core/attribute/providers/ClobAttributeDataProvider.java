@@ -77,19 +77,20 @@ public class ClobAttributeDataProvider extends AbstractAttributeDataProvider imp
     * @see org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider#setValue(java.lang.String)
     */
    @Override
-   public void setValue(String value) {
-      if (this.rawStringValue == value) {
-         return;
-      }
-      if (this.rawStringValue != null && this.rawStringValue.equals(value)) {
-         return;
-      }
-      try {
-         storeValue(value);
+   public boolean setValue(String value) {
+      boolean response = false;
 
+      try {
+         if (this.rawStringValue == value || (this.rawStringValue != null && this.rawStringValue.equals(value))) {
+            response = false;
+         } else {
+            storeValue(value);
+            response = true;
+         }
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.toString(), ex);
       }
+      return response;
    }
 
    public String getInternalFileName() {

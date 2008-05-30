@@ -34,8 +34,8 @@ public abstract class WordAttribute extends StringAttribute {
     * @see org.eclipse.osee.framework.skynet.core.attribute.Attribute#setValue(java.lang.Object)
     */
    @Override
-   public void subClassSetValue(String value) {
+   public boolean subClassSetValue(String value) {
       value = WordUtil.removeWordMarkupSmartTags(value);
-      super.subClassSetValue(value);
+      return super.subClassSetValue(value);
    }
 }
