@@ -14,10 +14,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.util.IConsoleInputListener;
@@ -48,7 +47,9 @@ public class OseeConsole {
    IOConsoleOutputStream streamPrompt = null;
 
    IOConsole console = null;
-   private HandleInput inputHandler;
+
+   private final HandleInput inputHandler;
+
    private boolean time;
 
    public OseeConsole(String title) {
@@ -181,16 +182,14 @@ public class OseeConsole {
 
    private class HandleInput implements Runnable {
 
-      private List<IConsoleInputListener> listeners;
+      private final CopyOnWriteArrayList<IConsoleInputListener> listeners;
 
       public HandleInput() {
-         listeners = new ArrayList<IConsoleInputListener>();
+         listeners = new CopyOnWriteArrayList<IConsoleInputListener>();
       }
 
       public void addListener(IConsoleInputListener listener) {
-         synchronized (listeners) {
-            listeners.add(listener);
-         }
+         listeners.add(listener);
       }
 
       public void run() {
@@ -198,10 +197,8 @@ public class OseeConsole {
          try {
             String line = null;
             while ((line = input.readLine()) != null) {
-               synchronized (listeners) {
-                  for (IConsoleInputListener listener : listeners) {
-                     listener.lineRead(line);
-                  }
+               for (IConsoleInputListener listener : listeners) {
+                  listener.lineRead(line);
                }
             }
          } catch (IOException e) {
