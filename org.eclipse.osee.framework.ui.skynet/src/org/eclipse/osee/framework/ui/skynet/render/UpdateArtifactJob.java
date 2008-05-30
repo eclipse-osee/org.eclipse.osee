@@ -221,8 +221,9 @@ public class UpdateArtifactJob extends UpdateJob {
                   content = stringBuffer.toString();
                }
                //Only update if editing a single artifact or if in multi-edit mode only update if
-               //the artifact has pure text changes.
-               if (!WordUtil.textOnly(artifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME).toString()).equals(
+               //the artifact has at least on textual change.
+               if (singleArtifact || !WordUtil.textOnly(
+                     artifact.getSoleAttributeValue(WordAttribute.CONTENT_NAME).toString()).equals(
                      WordUtil.textOnly(content))) {
                   artifact.setSoleAttributeValue(WordAttribute.CONTENT_NAME, content);
                }
