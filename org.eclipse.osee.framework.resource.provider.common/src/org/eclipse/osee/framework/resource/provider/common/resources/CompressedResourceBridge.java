@@ -19,7 +19,7 @@ public class CompressedResourceBridge implements IResource {
    private boolean isCompressed;
    private URI uri;
 
-   protected CompressedResourceBridge(byte[] backing, URI uri, boolean isCompressed) {
+   public CompressedResourceBridge(byte[] backing, URI uri, boolean isCompressed) {
       this.backing = backing;
       this.isCompressed = isCompressed;
       this.uri = uri;

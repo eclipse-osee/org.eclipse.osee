@@ -7,10 +7,8 @@ package org.eclipse.osee.framework.server.admin.conversion;
 
 import java.net.URI;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,12 +42,9 @@ public class DataConversion {
       return instance;
    }
 
-   private static final String sqlExtensionTypeId =
-         "Select attrt1.ATTR_TYPE_ID from osee_define_attribute_type attrt1 where name = 'Extension'";
-   private static final String sqlExtensionTypes =
-         "SELECT attr1.art_id,  attr1.value FROM osee_define_attribute attr1 WHERE attr1.ATTR_TYPE_ID = ?";
    private static final String sql =
          "SELECT attr1.gamma_id,  attr1.content,  art1.human_readable_id,  attr1.uri,  art1.art_id,  attrt1.name, art1.guid " + "FROM osee_define_attribute attr1,  osee_define_artifact art1,  osee_define_attribute_type attrt1 WHERE attr1.content IS NOT NULL AND attr1.art_id = art1.art_id and attr1.ATTR_TYPE_ID = attrt1.ATTR_TYPE_ID";
+
    private static final String updateUri = "update osee_define_attribute set uri = ? where gamma_id = ?";
 
    private volatile boolean runConversion;
@@ -110,7 +105,7 @@ public class DataConversion {
          ResultSet rs = null;
          try {
             connection = ConnectionHandler.getConnection();
-            Map<Long, String> nativeExtension = buildNativeExtensionMap(connection);
+            Map<Long, String> nativeExtension = Util.getArtIdMap(connection, "Extension");
             rs = connection.createStatement().executeQuery(sql);
 
             List<Object[]> batchParams = new ArrayList<Object[]>();
@@ -208,40 +203,5 @@ public class DataConversion {
             batchParams.clear();
          }
       }
-
-      private Map<Long, String> buildNativeExtensionMap(Connection connection) throws SQLException {
-         Map<Long, String> toReturn = new HashMap<Long, String>();
-
-         Statement stmt = null;
-         ResultSet rs = null;
-         PreparedStatement prepared = null;
-         try {
-            stmt = connection.createStatement();
-            rs = stmt.executeQuery(sqlExtensionTypeId);
-            int typeId = -1;
-            while (rs.next()) {
-               typeId = rs.getInt(1);
-            }
-            rs.close();
-            stmt.close();
-
-            prepared = connection.prepareStatement(sqlExtensionTypes);
-            prepared.setInt(1, typeId);
-            rs = prepared.executeQuery();
-
-            while (rs.next()) {
-               toReturn.put(rs.getLong(1), rs.getString(2));
-            }
-            rs.close();
-            prepared.close();
-         } finally {
-            if (rs != null) rs.close();
-            if (stmt != null) stmt.close();
-            if (prepared != null) prepared.close();
-         }
-         return toReturn;
-      }
-
    }
-
 }
