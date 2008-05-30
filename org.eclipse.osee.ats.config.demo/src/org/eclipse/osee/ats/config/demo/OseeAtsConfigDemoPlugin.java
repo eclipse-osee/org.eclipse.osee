@@ -11,11 +11,9 @@
 package org.eclipse.osee.ats.config.demo;
 
 import java.util.logging.Logger;
-import org.eclipse.osee.framework.db.connection.IDbConnectionInformationContributer;
 import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -25,7 +23,6 @@ public class OseeAtsConfigDemoPlugin extends OseeActivator {
    private static OseeAtsConfigDemoPlugin plugin;
    private static Logger logger = ConfigUtil.getConfigFactory().getLogger(OseeAtsConfigDemoPlugin.class);
    public static final String PLUGIN_ID = "org.eclipse.osee.ats.config.demo";
-   private ServiceRegistration registration;
 
    /**
     * The constructor.
@@ -49,8 +46,6 @@ public class OseeAtsConfigDemoPlugin extends OseeActivator {
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
-      registration =
-            context.registerService(IDbConnectionInformationContributer.class.getName(), new DemoConnectionInfo(), null);
    }
 
    /* (non-Javadoc)
@@ -59,7 +54,6 @@ public class OseeAtsConfigDemoPlugin extends OseeActivator {
    @Override
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
-      registration.unregister();
    }
 
 }
