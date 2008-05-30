@@ -219,6 +219,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          }
       });
 
+      treeViewer.expandToLevel(2);
+
       new RelationSkynetDragAndDrop(tree, VIEW_ID);
    }
 

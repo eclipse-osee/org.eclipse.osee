@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -41,8 +40,6 @@ public class RelationManager {
 
    private static final HashMap<Artifact, List<RelationLink>> artifactToRelations =
          new HashMap<Artifact, List<RelationLink>>(1024);
-
-   private static HashSet<List<RelationLink>> sortedLists = new HashSet<List<RelationLink>>();
 
    private static final int LINKED_LIST_KEY = -1;
 
@@ -111,53 +108,30 @@ public class RelationManager {
             selectedRelations = Collections.synchronizedList(new ArrayList<RelationLink>(4));
             relationsByType.put(artifact, relation.getRelationType(), selectedRelations);
          }
-         for (int i = 0; i < selectedRelations.size(); i++) {
-            if (selectedRelations.get(i).getOrder(relationSide) > relation.getOrder(relationSide)) {
-               selectedRelations.add(i, relation);
-               return;
-            }
-         }
+         RelationSide sideToSort = relation.getSide(artifact).oppositeSide();
          selectedRelations.add(relation);
-      }
-   }
 
-   /**
-    * @param selectedRelations
-    */
-   private static void linkedListSort(List<RelationLink> selectedRelations, Artifact artifact) {
-      for (RelationSide side : RelationSide.values()) {
-         boolean sortList = false;
-         for (RelationLink relation : selectedRelations) {
-            if (relation.getOrder(side) == LINKED_LIST_KEY) {
-               sortList = true;
-               break;
-            }
-         }
-         if (sortList) {
-            int artId = LINKED_LIST_KEY;
-            for (int i = 0; i < selectedRelations.size(); i++) {
-               if (selectedRelations.get(i).getSide(artifact) == side.oppositeSide()) {
-                  for (int j = i; j < selectedRelations.size(); j++) {
-                     int newId = selectedRelations.get(j).getOrder(side);
+         //sort the relations
+         int artId = LINKED_LIST_KEY;
+         int lastArtId = LINKED_LIST_KEY;
+         for (int i = 0; i < selectedRelations.size(); i++) {
+            if (selectedRelations.get(i).getSide(artifact).oppositeSide() == sideToSort) {
+               for (int j = i; j < selectedRelations.size(); j++) {
+                  if (selectedRelations.get(j).getSide(artifact).oppositeSide() == sideToSort) {
+                     lastArtId = selectedRelations.get(j).getArtifactId(sideToSort);
+                     int newId = selectedRelations.get(j).getOrder(sideToSort);
                      if (newId == artId) {
-                        artId = selectedRelations.get(j).getArtifactId(side);
-                        selectedRelations.add(i, selectedRelations.remove(j));
+                        if (i != j) {
+                           selectedRelations.add(i, selectedRelations.remove(j));
+                        }
                         break;
                      }
                   }
                }
+               artId = lastArtId;
             }
          }
       }
-   }
-
-   private static List<RelationLink> getRelationsSorted(Artifact artifact, RelationType relationType) {
-      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
-      if (selectedRelations != null && !sortedLists.contains(selectedRelations)) {
-         linkedListSort(selectedRelations, artifact);
-         sortedLists.add(selectedRelations);
-      }
-      return selectedRelations;
    }
 
    private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
@@ -165,12 +139,11 @@ public class RelationManager {
       if (relationType == null) {
          selectedRelations = artifactToRelations.get(artifact);
       } else {
-         selectedRelations = getRelationsSorted(artifact, relationType);
+         selectedRelations = relationsByType.get(artifact, relationType);
       }
       if (selectedRelations == null) {
          return Collections.emptyList();
       }
-
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>(selectedRelations.size());
 
       if (needsBulkLoad(selectedRelations, artifact, relationSide)) {
@@ -198,7 +171,7 @@ public class RelationManager {
       return artifacts;
    }
 
-   private static boolean needsBulkLoad(List<RelationLink> selectedRelations, Artifact artifact, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
+     private static boolean needsBulkLoad(List<RelationLink> selectedRelations, Artifact artifact, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
       for (RelationLink relation : selectedRelations) {
          if (!relation.isDeleted()) {
             if (relationSide == null) {
@@ -326,7 +299,7 @@ public class RelationManager {
    }
 
    public static List<RelationLink> getRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) {
-      List<RelationLink> selectedRelations = getRelationsSorted(artifact, relationType);
+      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
       if (selectedRelations == null) {
          return Collections.emptyList();
       }
