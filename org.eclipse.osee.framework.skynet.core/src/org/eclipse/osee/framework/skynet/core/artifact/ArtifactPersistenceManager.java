@@ -202,7 +202,7 @@ public class ArtifactPersistenceManager {
       int artGamma = SkynetDatabase.getNextGammaId();
 
       if (!artifact.isInDb()) {
-         addArtifactData(artifact, transaction, artGamma);
+         addArtifactData(artifact, transaction);
       }
 
       artifact.setGammaId(artGamma);
@@ -229,12 +229,10 @@ public class ArtifactPersistenceManager {
             transaction.getTransactionNumber(), modType, transaction.getBranch()));
    }
 
-   private void addArtifactData(Artifact artifact, SkynetTransaction transaction, int gammaId) throws SQLException {
+   private void addArtifactData(Artifact artifact, SkynetTransaction transaction) throws SQLException {
       transaction.addToBatch(INSERT_ARTIFACT, SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
             artifact.getArtTypeId(), SQL3DataType.VARCHAR, artifact.getGuid(), SQL3DataType.VARCHAR,
             artifact.getHumanReadableId());
-      artifact.setGammaId(gammaId);
-      artifact.setTransactionId(0);
    }
 
    private static final String SELECT_ARTIFACT_START =

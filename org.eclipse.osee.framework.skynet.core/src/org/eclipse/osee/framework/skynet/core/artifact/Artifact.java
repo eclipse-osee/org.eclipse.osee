@@ -1267,13 +1267,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    /**
-    * @param transactionId
-    */
-   public void setTransactionId(int transactionId) {
-      this.transactionId = transactionId;
-   }
-
-   /**
     * @return the transaction number for this artifact if it is historical, otherwise 0
     */
    public int getTransactionNumber() {
@@ -1499,11 +1492,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    void initPersistenceData(int gammaId, int transactionId, ModificationType modType, boolean active) {
-      if (modType == ModificationType.DELETED) {
-         setDeleted();
-      }
-
-      setGammaId(gammaId);
-      setTransactionId(active ? 0 : transactionId);
+      this.deleted = modType == ModificationType.DELETED;
+      this.gammaId = gammaId;
+      this.transactionId = active ? 0 : transactionId;
    }
 }
