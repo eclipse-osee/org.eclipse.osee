@@ -295,9 +295,17 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Artifact> getArtifacts(ISearchConfirmer confirmer) throws SQLException {
+      return loadArtifacts(confirmer, false);
+   }
+
+   public List<Artifact> reloadArtifacts() throws SQLException {
+      return loadArtifacts(null, true);
+   }
+
+   private List<Artifact> loadArtifacts(ISearchConfirmer confirmer, boolean reload) throws SQLException {
       int queryId = ArtifactLoader.getNewQueryId();
       int artifactCount = ArtifactLoader.selectArtifacts(queryId, getArtifactInsertSql(queryId), dataList.toArray());
-      List<Artifact> artifacts = ArtifactLoader.loadArtifacts(queryId, loadLevel, confirmer, artifactCount, false);
+      List<Artifact> artifacts = ArtifactLoader.loadArtifacts(queryId, loadLevel, confirmer, artifactCount, reload);
       ArtifactLoader.clearQuery(queryId);
       return artifacts;
    }

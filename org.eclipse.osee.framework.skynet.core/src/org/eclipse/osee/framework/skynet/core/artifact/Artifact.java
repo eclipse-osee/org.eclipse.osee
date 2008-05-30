@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad.FULL;
 import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.Mod
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryBuilder;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -47,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistence
 import org.eclipse.osee.framework.skynet.core.attribute.WordTemplateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -881,13 +884,17 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public void reloadArtifact() throws SQLException {
       if (!isInDb()) return;
 
+      prepareForReload();
+
+      new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifacts();
+      SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ModType.Reverted, this));
+   }
+
+   void prepareForReload() {
       attributes.clear();
       dirty = false;
       linksLoaded = false;
       RelationManager.revertRelationsFor(this);
-
-      ArtifactLoader.loadArtifactData(this, ArtifactLoad.FULL);
-      SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ModType.Reverted, this));
    }
 
    public void persistAttributes() throws SQLException {
@@ -1489,5 +1496,14 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     */
    public List<Artifact> getRelatedArtifactsAll() throws ArtifactDoesNotExist, SQLException {
       return RelationManager.getRelatedArtifactsAll(this);
+   }
+
+   void initPersistenceData(int gammaId, int transactionId, ModificationType modType, boolean active) {
+      if (modType == ModificationType.DELETED) {
+         setDeleted();
+      }
+
+      setGammaId(gammaId);
+      setTransactionId(active ? 0 : transactionId);
    }
 }

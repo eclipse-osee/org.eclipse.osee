@@ -56,21 +56,24 @@ public final class ArtifactLoader {
 
    private static final String DELETE_FROM_LOADER = "DELETE FROM osee_artifact_loader WHERE query_id = ?";
 
-   private static Artifact retrieveShallowArtifact(ResultSet rSet) throws SQLException {
+   private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload) throws SQLException {
       int artifactId = rSet.getInt("art_id");
       Branch branch = BranchPersistenceManager.getInstance().getBranch(rSet.getInt("branch_id"));
 
       Artifact artifact = ArtifactCache.getActive(artifactId, branch);
-      if (artifact != null) {
-         return artifact;
+      if (artifact == null) {
+         ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
+         ArtifactFactory factory = artifactType.getFactory();
+
+         artifact =
+               factory.loadExisitingArtifact(artifactId, rSet.getInt("gamma_id"), rSet.getString("guid"),
+                     rSet.getString("human_readable_id"), artifactType.getFactoryKey(), branch, artifactType,
+                     rSet.getInt("transaction_id"), ModificationType.getMod(rSet.getInt("mod_type")), true);
+      } else if (reload) {
+         artifact.initPersistenceData(rSet.getInt("gamma_id"), rSet.getInt("transaction_id"),
+               ModificationType.getMod(rSet.getInt("mod_type")), true);
       }
-
-      ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
-      ArtifactFactory factory = artifactType.getFactory();
-
-      return factory.loadExisitingArtifact(artifactId, rSet.getInt("gamma_id"), rSet.getString("guid"),
-            rSet.getString("human_readable_id"), artifactType.getFactoryKey(), branch, artifactType,
-            rSet.getInt("transaction_id"), ModificationType.getMod(rSet.getInt("mod_type")), true);
+      return artifact;
    }
 
    public static int selectArtifacts(int queryId, String sql, Object[] queryParameters) throws SQLException {
@@ -87,21 +90,21 @@ public final class ArtifactLoader {
             ResultSet rSet = chStmt.getRset();
 
             while (rSet.next()) {
-               artifacts.add(retrieveShallowArtifact(rSet));
+               artifacts.add(retrieveShallowArtifact(rSet, reload));
             }
          } finally {
             DbUtil.close(chStmt);
          }
 
          if (confirmer == null || confirmer.canProceed(artifactCount)) {
-            loadArtifactsData(queryId, artifacts, loadLevel);
+            loadArtifactsData(queryId, artifacts, loadLevel, reload);
          }
          return artifacts;
       }
       return Collections.emptyList();
    }
 
-   public static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws SQLException {
+   static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws SQLException {
       int queryId = getNewQueryId();
       ConnectionHandler.runPreparedUpdateReturnCount(INSERT_INTO_LOADER, SQL3DataType.INTEGER, queryId,
             SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER, artifact.getGammaId(),
@@ -109,14 +112,20 @@ public final class ArtifactLoader {
             artifact.getBranch().getBranchId());
       List<Artifact> artifacts = new ArrayList<Artifact>(1);
       artifacts.add(artifact);
-      loadArtifactsData(queryId, artifacts, loadLevel);
+      loadArtifactsData(queryId, artifacts, loadLevel, false);
    }
 
    public static void clearQuery(int queryId) throws SQLException {
       ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_LOADER, SQL3DataType.INTEGER, queryId);
    }
 
-   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel) throws SQLException {
+   private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload) throws SQLException {
+      if (reload) {
+         for (Artifact artifact : artifacts) {
+            artifact.prepareForReload();
+         }
+      }
+
       if (loadLevel == SHALLOW) {
          return;
       } else if (loadLevel == ATTRIBUTE) {

@@ -457,15 +457,6 @@ public class ArtifactPersistenceManager {
       return artifacts;
    }
 
-   public static Artifact loadArtifactMetaData(ResultSet rSet, Branch branch, boolean active) throws SQLException {
-      ArtifactType artifactType = ArtifactTypeManager.getType(rSet.getInt("art_type_id"));
-      ArtifactFactory factory = artifactType.getFactory();
-
-      return factory.loadExisitingArtifact(rSet.getInt("art_id"), rSet.getInt("gamma_id"), rSet.getString("guid"),
-            rSet.getString("human_readable_id"), artifactType.getFactoryKey(), branch, artifactType,
-            rSet.getInt("transaction_id"), ModificationType.getMod(rSet.getInt("mod_type")), active);
-   }
-
    /**
     * Acquires the user defined attributes for an artifact. If none are in the table, then it returns the 'default set'
     * of attributes for the artifact.

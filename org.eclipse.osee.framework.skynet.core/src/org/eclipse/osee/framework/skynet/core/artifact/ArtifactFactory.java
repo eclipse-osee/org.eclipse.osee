@@ -72,13 +72,8 @@ public abstract class ArtifactFactory {
    public synchronized Artifact loadExisitingArtifact(int artId, int gammaId, String guid, String humandReadableId, String factoryKey, Branch branch, ArtifactType artifactType, int transactionId, ModificationType modType, boolean active) {
       Artifact artifact = getArtifactInstance(guid, humandReadableId, factoryKey, branch, artifactType);
 
-      if (modType == ModificationType.DELETED) {
-         artifact.setDeleted();
-      }
-
       artifact.setArtId(artId);
-      artifact.setGammaId(gammaId);
-      artifact.setTransactionId(active ? 0 : transactionId);
+      artifact.initPersistenceData(gammaId, transactionId, modType, active);
 
       ArtifactCache.cache(artifact);
       return artifact;
