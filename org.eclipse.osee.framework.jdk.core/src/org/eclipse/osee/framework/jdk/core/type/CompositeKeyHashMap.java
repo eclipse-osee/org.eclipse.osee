@@ -65,7 +65,10 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Composite
 
       @Override
       public int hashCode() {
-         return key1.hashCode() ^ key2.hashCode();
+         int hashCode = 11;
+         hashCode = hashCode * 31 + key1.hashCode();
+         hashCode = hashCode * 31 + key2.hashCode();
+         return hashCode;
       }
 
    }
