@@ -74,7 +74,7 @@ public class AddNoteOperation extends WorkPageService {
             if (!selected.startsWith(smaMgr.getSma().getDescriptiveName() + " - ")) state = selected;
             smaMgr.getSma().getNotes().addNote(
                   NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName()), state,
-                  noteWizard.mainPage.noteText.get(), SkynetAuthentication.getInstance().getAuthenticatedUser());
+                  noteWizard.mainPage.noteText.get(), SkynetAuthentication.getUser());
             smaMgr.getEditor().onDirtied();
          }
       } catch (Exception ex) {

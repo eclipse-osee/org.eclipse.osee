@@ -58,7 +58,7 @@ public class OseeClientsTab {
       super();
       this.users = new ArrayList<User>();
       this.users = SkynetAuthentication.getInstance().getUsers();
-      this.whoAmI = SkynetAuthentication.getInstance().getAuthenticatedUser();
+      this.whoAmI = SkynetAuthentication.getUser();
       users.remove(whoAmI);
       this.mainComposite = null;
       createControl(tabFolder);
@@ -150,7 +150,7 @@ public class OseeClientsTab {
                      "Are you sure you want to shutdown the selected OSEE clients?");
          if (false != result) {
             remoteEventManager.kick(new SkynetDisconnectClientsEvent(selectedUsers, 0, 0, reason,
-                  SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
+                  SkynetAuthentication.getUser().getArtId()));
             AWorkbench.popup("Success", "Shutdown request sent.");
          }
       } else {

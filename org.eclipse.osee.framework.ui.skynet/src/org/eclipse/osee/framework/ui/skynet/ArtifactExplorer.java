@@ -853,10 +853,10 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                Artifact object = (Artifact) iterator.next();
                if ((new GlobalMenuPermissions(object)).isLocked()) {
                   AccessControlManager.getInstance().unLockObject(object,
-                        SkynetAuthentication.getInstance().getAuthenticatedUser());
+                        SkynetAuthentication.getUser());
                } else {
                   AccessControlManager.getInstance().lockObject(object,
-                        SkynetAuthentication.getInstance().getAuthenticatedUser());
+                        SkynetAuthentication.getUser());
                }
             }
          }

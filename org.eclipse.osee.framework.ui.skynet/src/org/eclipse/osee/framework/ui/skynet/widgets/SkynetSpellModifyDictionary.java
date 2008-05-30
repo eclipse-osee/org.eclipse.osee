@@ -52,7 +52,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
     * @see org.eclipse.osee.framework.ui.skynet.widgets.XTextSpellModifyDictionary#addToLocalDictionary(java.lang.String)
     */
    public boolean addToLocalDictionary(String word) {
-      return updateArtifact("Local", word, SkynetAuthentication.getInstance().getAuthenticatedUser());
+      return updateArtifact("Local", word, SkynetAuthentication.getUser());
    }
 
    private boolean updateArtifact(String type, String word, Artifact art) {
@@ -91,7 +91,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       if (!force && dictionary != null) return;
       try {
          dictionary = new HashSet<String>();
-         User user = SkynetAuthentication.getInstance().getAuthenticatedUser();
+         User user = SkynetAuthentication.getUser();
          if (user != null) {
             String value = user.getSoleAttributeValue(ATTRIBUTE_NAME, "");
             if (value != null) {

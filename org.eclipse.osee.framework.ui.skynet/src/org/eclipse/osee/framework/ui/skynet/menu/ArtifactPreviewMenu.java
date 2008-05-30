@@ -45,7 +45,6 @@ public class ArtifactPreviewMenu {
 
    private static final AccessControlManager accessManager = AccessControlManager.getInstance();
    private static final RendererManager rendererManager = RendererManager.getInstance();
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
 
    private static final String PREVIEW_WITH_RECURSE = "PREVIEW_WITH_RECURSE";
@@ -111,7 +110,7 @@ public class ArtifactPreviewMenu {
 
                   if (artifact != null) {
                      permitted &=
-                           accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), artifact,
+                           accessManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact,
                                  PermissionEnum.READ);
                   }
 

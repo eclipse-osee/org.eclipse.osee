@@ -46,7 +46,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
    public void logMetrics() throws Exception {
       if (sma instanceof TaskArtifact) logMetrics(sma, sma.getPercentCompleteSMATotal() + "",
             AtsLib.doubleToStrString(sma.getHoursSpentSMATotal()),
-            SkynetAuthentication.getInstance().getAuthenticatedUser(), new Date());
+            SkynetAuthentication.getUser(), new Date());
    }
 
    public static void logMetrics(StateMachineArtifact sma, String percent, String hours, User user, Date date) throws SQLException, MultipleAttributesExist {

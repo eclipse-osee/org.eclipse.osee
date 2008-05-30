@@ -35,7 +35,7 @@ public class DefectItem {
    private String description = "";
    private String location = "";
    private String resolution = "";
-   private User user = SkynetAuthentication.getInstance().getAuthenticatedUser();
+   private User user = SkynetAuthentication.getUser();
    private String guid = GUID.generateGuidStr();
    private Severity severity = Severity.None;
    private Disposition disposition = Disposition.None;

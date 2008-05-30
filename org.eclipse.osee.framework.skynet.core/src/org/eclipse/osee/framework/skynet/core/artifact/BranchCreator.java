@@ -148,7 +148,7 @@ public class BranchCreator implements PersistenceManager {
    }
 
    private Pair<Branch, Integer> createBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType) throws SQLException, MultipleAttributesExist, UserNotInDatabase, IllegalArgumentException, IllegalStateException, MultipleArtifactsExist {
-      User userToBlame = skynetAuth.getAuthenticatedUser();
+      User userToBlame = SkynetAuthentication.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
       int userId = (userToBlame == null) ? skynetAuth.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
       String comment =
@@ -503,7 +503,7 @@ public class BranchCreator implements PersistenceManager {
          if (success) {
             eventManager.kick(new LocalNewBranchEvent(this, childBranch.getBranchId()));
             remoteEventManager.kick(new NetworkNewBranchEvent(childBranch.getBranchId(),
-                  SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
+                  SkynetAuthentication.getUser().getArtId()));
          }
       }
 
@@ -568,7 +568,7 @@ public class BranchCreator implements PersistenceManager {
          Pair<Branch, Integer> branchWithTransactionNumber;
          if (createBranch) {
             branchWithTransactionNumber =
-                  createBranchWithBaselineTransactionNumber(SkynetAuthentication.getInstance().getAuthenticatedUser(),
+                  createBranchWithBaselineTransactionNumber(SkynetAuthentication.getUser(),
                         TransactionIdManager.getInstance().getStartEndPoint(sourceBranch).getKey(),
                         "Merge " + sourceBranch.getDisplayName(), "Merge " + sourceBranch.getDisplayName(),
                         BranchType.MERGE);

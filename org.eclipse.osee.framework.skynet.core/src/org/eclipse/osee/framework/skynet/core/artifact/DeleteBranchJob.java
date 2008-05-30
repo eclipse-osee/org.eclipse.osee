@@ -156,7 +156,7 @@ class DeleteBranchJob extends Job {
          if (getResult().equals(Status.OK_STATUS)) {
             eventManager.kick(new LocalDeletedBranchEvent(this, branch.getBranchId()));
             remoteEventManager.kick(new NetworkDeletedBranchEvent(branch.getBranchId(),
-                  SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
+                  SkynetAuthentication.getUser().getArtId()));
          }
       }
 

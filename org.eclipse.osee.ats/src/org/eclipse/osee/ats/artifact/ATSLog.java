@@ -36,7 +36,6 @@ public class ATSLog {
 
    private final Artifact artifact;
    private boolean enabled = true;
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static String ATS_LOG_TAG = "AtsLog";
    private static String LOG_ITEM_TAG = "Item";
    public static enum LogType {
@@ -191,7 +190,7 @@ public class ATSLog {
    }
 
    public void addLog(LogType type, String state, String msg) throws IllegalStateException, SQLException, MultipleAttributesExist {
-      addLog(type, state, msg, new Date(), skynetAuth.getAuthenticatedUser());
+      addLog(type, state, msg, new Date(), SkynetAuthentication.getUser());
    }
 
    public void addLog(LogType type, String state, String msg, User user) throws SQLException, MultipleAttributesExist {
@@ -231,7 +230,7 @@ public class ATSLog {
          builder.append("<TD>" + item.getType() + "</TD>");
          builder.append("<TD>" + (item.getState().equals("") ? "." : item.getState()) + "</TD>");
          builder.append("<TD>" + (item.getMsg().equals("") ? "." : item.getMsg()) + "</TD>");
-         if (user.equals(skynetAuth.getAuthenticatedUser()))
+         if (user.equals(SkynetAuthentication.getUser()))
             builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
          else
             builder.append("<TD>" + name + "</TD>");

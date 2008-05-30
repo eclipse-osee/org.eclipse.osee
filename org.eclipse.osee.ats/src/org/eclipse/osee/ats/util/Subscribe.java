@@ -45,7 +45,7 @@ public class Subscribe {
                         "Un-Subscribe",
                         "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
             if (result) {
-               ((ISubscribableArtifact) sma).removeSubscribed(SkynetAuthentication.getInstance().getAuthenticatedUser());
+               ((ISubscribableArtifact) sma).removeSubscribed(SkynetAuthentication.getUser());
             }
          } else {
             boolean result = true;
@@ -54,7 +54,7 @@ public class Subscribe {
                         "Subscribe",
                         "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
             if (result) {
-               ((ISubscribableArtifact) sma).addSubscribed(SkynetAuthentication.getInstance().getAuthenticatedUser());
+               ((ISubscribableArtifact) sma).addSubscribed(SkynetAuthentication.getUser());
             }
 
          }

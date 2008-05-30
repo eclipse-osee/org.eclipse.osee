@@ -45,7 +45,7 @@ public class AutoRunTab {
 
    public AutoRunTab(TabFolder tabFolder) {
       super();
-      this.whoAmI = SkynetAuthentication.getInstance().getAuthenticatedUser();
+      this.whoAmI = SkynetAuthentication.getUser();
       this.mainComposite = null;
       createControl(tabFolder);
       mainComposite.setEnabled(isUserAllowedToOperate(whoAmI));
@@ -103,7 +103,7 @@ public class AutoRunTab {
       emailResultsText = new XText("");
       emailResultsText.createWidgets(emailResultsComp, 1);
       try {
-         emailResultsText.setText(SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail());
+         emailResultsText.setText(SkynetAuthentication.getUser().getEmail());
       } catch (Exception ex) {
          OSEELog.logException(AdminPlugin.class, ex, false);
       }

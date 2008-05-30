@@ -99,7 +99,7 @@ public class HttpBranchCreation {
       }
       eventManager.kick(new LocalNewBranchEvent(new Object(), branch.getBranchId()));
       remoteEventManager.kick(new NetworkNewBranchEvent(branch.getBranchId(),
-            SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
+            SkynetAuthentication.getUser().getArtId()));
       return branch;
    }
 

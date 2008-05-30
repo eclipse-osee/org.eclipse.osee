@@ -133,7 +133,7 @@ public class CreateNewUser extends AbstractBlam {
       try {
          groupArts =
                EmailGroupsAndUserGroups.getEmailGroupsAndUserGroups(
-                     SkynetAuthentication.getInstance().getAuthenticatedUser(), GroupType.Both);
+                     SkynetAuthentication.getUser(), GroupType.Both);
          String groupStr = "";
          for (Artifact art : groupArts) {
             groupStr += art.getDescriptiveName() + ",";

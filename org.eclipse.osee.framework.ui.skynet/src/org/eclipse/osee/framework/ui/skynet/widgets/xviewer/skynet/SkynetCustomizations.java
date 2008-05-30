@@ -83,14 +83,14 @@ public class SkynetCustomizations implements IXViewerCustomizations {
 
    public void saveCustomization(CustomizeData custData) throws SQLException, OseeCoreException {
       if (custData.isPersonal())
-         saveCustomization(custData, SkynetAuthentication.getInstance().getAuthenticatedUser());
+         saveCustomization(custData, SkynetAuthentication.getUser());
       else
          saveCustomization(custData, globalCustomizationsArtifact);
    }
 
    public void loadCustomizationData() {
       custDatas.clear();
-      User user = SkynetAuthentication.getInstance().getAuthenticatedUser();
+      User user = SkynetAuthentication.getUser();
       if (user != null) custDatas.addAll(getArtifactCustomizations(user));
       for (CustomizeData custData : custDatas)
          custData.setPersonal(true);
@@ -118,7 +118,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    public void deleteCustomization(CustomizeData custData) throws SQLException {
       Artifact deleteArt = null;
       if (custData.isPersonal())
-         deleteArt = SkynetAuthentication.getInstance().getAuthenticatedUser();
+         deleteArt = SkynetAuthentication.getUser();
       else
          deleteArt = getGlobalCustomizationsArtifact();
       deleteCustomization(custData, deleteArt);

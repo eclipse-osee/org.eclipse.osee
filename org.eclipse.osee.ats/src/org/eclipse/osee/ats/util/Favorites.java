@@ -42,13 +42,13 @@ public class Favorites {
             if (prompt) result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
-            if (result) ((IFavoriteableArtifact) sma).removeFavorite(SkynetAuthentication.getInstance().getAuthenticatedUser());
+            if (result) ((IFavoriteableArtifact) sma).removeFavorite(SkynetAuthentication.getUser());
          } else {
             boolean result = true;
             if (prompt) result =
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Favorite", "Are you sure you wish add this as a Favorite?");
-            if (result) ((IFavoriteableArtifact) sma).addFavorite(SkynetAuthentication.getInstance().getAuthenticatedUser());
+            if (result) ((IFavoriteableArtifact) sma).addFavorite(SkynetAuthentication.getUser());
          }
       } catch (SQLException ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);

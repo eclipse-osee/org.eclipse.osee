@@ -243,7 +243,7 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
             // Prevent shutting down users without a valid message
             if (event instanceof SkynetDisconnectClientsEvent) {
                String[] userIds = ((SkynetDisconnectClientsEvent) event).getUserIds();
-               User user = skynetAuthentication.getAuthenticatedUser();
+               User user = SkynetAuthentication.getUser();
                try {
                   String userId = user != null ? user.getUserId() : "";
                   for (String temp : userIds) {

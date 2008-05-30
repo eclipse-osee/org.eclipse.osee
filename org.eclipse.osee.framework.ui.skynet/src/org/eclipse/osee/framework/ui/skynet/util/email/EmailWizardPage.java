@@ -202,7 +202,7 @@ public class EmailWizardPage extends WizardPage {
       bccList.getList().setLayoutData(gd);
       bccList.getList().setMenu(getDeletePopup(bccList));
       try {
-         bccList.setInput(new Object[] {SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail()});
+         bccList.setInput(new Object[] {SkynetAuthentication.getUser().getEmail()});
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

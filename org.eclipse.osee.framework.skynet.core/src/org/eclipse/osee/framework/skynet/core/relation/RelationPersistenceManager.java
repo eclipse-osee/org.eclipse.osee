@@ -137,7 +137,7 @@ public class RelationPersistenceManager implements PersistenceManager {
          transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(relation.getGammaId(),
                relation.getBranch().getBranchId(), transaction.getTransactionNumber(), relation.getRelationId(),
                relation.getAArtifactId(), relation.getBArtifactId(), relation.getRationale(), relation.getAOrder(),
-               relation.getBOrder(), SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId(),
+               relation.getBOrder(), SkynetAuthentication.getUser().getArtId(),
                relation.getRelationType().getRelationTypeId()));
 
          modType = ModType.Changed;
@@ -187,7 +187,7 @@ public class RelationPersistenceManager implements PersistenceManager {
             relationLink.getRelationType().getRelationTypeId(), relationLink.getGammaId(),
             relationLink.getBranch().getBranchId(), transaction.getTransactionNumber(), relationLink.getRelationId(),
             relationLink.getArtifactId(RelationSide.SIDE_A), relationLink.getArtifactId(RelationSide.SIDE_B),
-            SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
+            SkynetAuthentication.getUser().getArtId()));
 
       transaction.addLocalEvent(new TransactionRelationModifiedEvent(relationLink, relationLink.getBranch(),
             relationLink.getRelationType().getTypeName(), relationLink.getASideName(), ModType.Deleted, this));
@@ -214,7 +214,7 @@ public class RelationPersistenceManager implements PersistenceManager {
                link.getBranch().getBranchId(), transaction.getTransactionNumber(), link.getRelationId(),
                link.getArtifactId(RelationSide.SIDE_A), link.getArtifactId(RelationSide.SIDE_B), rationale,
                link.getOrder(RelationSide.SIDE_A), link.getOrder(RelationSide.SIDE_B),
-               SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId(),
+               SkynetAuthentication.getUser().getArtId(),
                link.getRelationType().getRelationTypeId()));
 
          transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, link.getBranch(),

@@ -88,7 +88,7 @@ public class ReviewManager {
    }
 
    public PeerToPeerReviewArtifact createNewPeerToPeerReview(String againstState) throws Exception {
-      return createNewPeerToPeerReview(againstState, SkynetAuthentication.getInstance().getAuthenticatedUser(),
+      return createNewPeerToPeerReview(againstState, SkynetAuthentication.getUser(),
             new Date());
    }
 
@@ -176,7 +176,7 @@ public class ReviewManager {
       if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) return ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
 
       // Else, return current user; should never hit this
-      return Arrays.asList(new User[] {SkynetAuthentication.getInstance().getAuthenticatedUser()});
+      return Arrays.asList(new User[] {SkynetAuthentication.getUser()});
    }
 
    public Collection<ReviewSMArtifact> getReviews() throws SQLException {

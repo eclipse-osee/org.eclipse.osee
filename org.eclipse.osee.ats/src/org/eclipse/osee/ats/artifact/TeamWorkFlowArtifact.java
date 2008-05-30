@@ -144,9 +144,9 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
          // Add scenario where user is originator AND user is member of team that workflow is
          // written
          // against
-         if (!users.contains(SkynetAuthentication.getInstance().getAuthenticatedUser())) {
-            if (smaMgr.getOriginator().equals(SkynetAuthentication.getInstance().getAuthenticatedUser())) {
-               if (tda.getMembers().contains(SkynetAuthentication.getInstance().getAuthenticatedUser())) users.add(SkynetAuthentication.getInstance().getAuthenticatedUser());
+         if (!users.contains(SkynetAuthentication.getUser())) {
+            if (smaMgr.getOriginator().equals(SkynetAuthentication.getUser())) {
+               if (tda.getMembers().contains(SkynetAuthentication.getUser())) users.add(SkynetAuthentication.getUser());
             }
          }
       } catch (SQLException ex) {

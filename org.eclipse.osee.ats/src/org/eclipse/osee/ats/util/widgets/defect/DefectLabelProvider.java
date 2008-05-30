@@ -120,7 +120,7 @@ public class DefectLabelProvider implements ITableLabelProvider {
          return defectItem.isClosed() ? SkynetGuiPlugin.getInstance().getImage("chkbox_enabled.gif") : SkynetGuiPlugin.getInstance().getImage(
                "chkbox_disabled.gif");
       } else if (dCol == DefectColumn.User_Col) {
-         if (defectItem.getUser().equals(SkynetAuthentication.getInstance().getAuthenticatedUser()))
+         if (defectItem.getUser().equals(SkynetAuthentication.getUser()))
             return SkynetGuiPlugin.getInstance().getImage("red_user_sm.gif");
          else
             return SkynetGuiPlugin.getInstance().getImage("user_sm.gif");

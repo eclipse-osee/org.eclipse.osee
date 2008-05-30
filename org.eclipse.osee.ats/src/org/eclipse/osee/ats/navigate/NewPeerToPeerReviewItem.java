@@ -57,7 +57,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
                protected void handleTxWork() throws Exception {
                   PeerToPeerReviewArtifact peerArt =
                         ReviewManager.createNewPeerToPeerReview(null, null,
-                              SkynetAuthentication.getInstance().getAuthenticatedUser(), new Date());
+                              SkynetAuthentication.getUser(), new Date());
                   peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
                         peerArt.persistAttributesAndRelations();
                   AtsLib.openAtsAction(peerArt, AtsOpenOption.OpenAll);

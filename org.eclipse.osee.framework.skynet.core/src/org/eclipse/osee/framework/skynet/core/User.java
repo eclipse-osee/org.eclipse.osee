@@ -75,7 +75,7 @@ public class User extends Artifact implements Serializable {
 
    public boolean isMe() throws SQLException, MultipleAttributesExist {
       try {
-         return (getUserId().equals(SkynetAuthentication.getInstance().getAuthenticatedUser().getUserId()));
+         return (getUserId().equals(SkynetAuthentication.getUser().getUserId()));
       } catch (Exception ex) {
          return false;
       }

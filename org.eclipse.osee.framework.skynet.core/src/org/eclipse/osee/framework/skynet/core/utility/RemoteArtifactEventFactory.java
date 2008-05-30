@@ -40,7 +40,7 @@ public class RemoteArtifactEventFactory {
                      artifact.getArtTypeId(),
                      artifact.getFactory().getClass().getCanonicalName(),
                      artifact.getDirtySkynetAttributeChanges(),
-                     SkynetAuthentication.getInstance().getAuthenticatedUser().isInDb() ? SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId() : -1);
+                     SkynetAuthentication.getUser().isInDb() ? SkynetAuthentication.getUser().getArtId() : -1);
       } catch (Exception ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
       }

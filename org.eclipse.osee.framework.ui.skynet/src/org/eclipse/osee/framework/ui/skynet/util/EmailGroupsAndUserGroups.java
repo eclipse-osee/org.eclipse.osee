@@ -81,7 +81,7 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       Set<Artifact> groupOptions =
-            getEmailGroupsAndUserGroups(SkynetAuthentication.getInstance().getAuthenticatedUser(), groupType);
+            getEmailGroupsAndUserGroups(SkynetAuthentication.getUser(), groupType);
       UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(groupOptions);
       dialog.setTitle("Select Groups to Email");
       if (dialog.open() == 0) {

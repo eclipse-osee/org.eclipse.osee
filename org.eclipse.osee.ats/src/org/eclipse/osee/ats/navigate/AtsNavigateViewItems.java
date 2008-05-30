@@ -67,6 +67,7 @@ import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
@@ -86,7 +87,6 @@ import org.osgi.framework.Bundle;
  */
 public class AtsNavigateViewItems extends XNavigateViewItems {
    private static AtsNavigateViewItems navigateItems = new AtsNavigateViewItems();
-   private SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
 
    public AtsNavigateViewItems() {
       super();
@@ -97,7 +97,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
    }
 
    public WorldSearchItem getMyWorldSearchItem() {
-      return new MyWorldSearchItem("My World", skynetAuth.getAuthenticatedUser());
+      return new MyWorldSearchItem("My World", SkynetAuthentication.getUser());
    }
 
    public List<XNavigateItem> getSearchNavigateItems() {
@@ -106,31 +106,25 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       if (!ConnectionHandler.isConnected()) return items;
 
       items.add(new XNavigateItemAction(null, new NewAction()));
+      User user = SkynetAuthentication.getUser();
 
       LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
       criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, Operator.EQUAL));
-      items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", skynetAuth.getAuthenticatedUser())));
-      items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites",
-            skynetAuth.getAuthenticatedUser())));
-      items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", skynetAuth.getAuthenticatedUser(),
-            ReviewState.InWork)));
+      items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
+      items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
+      items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
 
       items.add(new VisitedItems(null));
 
       XNavigateItem otherItems = new XNavigateItem(null, "Other My Searches");
-      new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("My Team Workflows", skynetAuth.getAuthenticatedUser()));
-      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Tasks (WorldView)",
-            skynetAuth.getAuthenticatedUser(), LoadView.WorldView));
-      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Tasks (Editor)", skynetAuth.getAuthenticatedUser(),
-            LoadView.TaskEditor));
-      new SearchNavigateItem(otherItems, new MySubscribedSearchItem("My Subscribed", skynetAuth.getAuthenticatedUser()));
-      new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - InWork",
-            skynetAuth.getAuthenticatedUser(), true));
-      new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - All", skynetAuth.getAuthenticatedUser(),
-            false));
-      new SearchNavigateItem(otherItems, new MyCompletedSearchItem("My Completed", skynetAuth.getAuthenticatedUser()));
-      new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("My Reviews - All",
-            skynetAuth.getAuthenticatedUser(), ReviewState.All));
+      new SearchNavigateItem(otherItems, new MyTeamWFSearchItem("My Team Workflows", user));
+      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Tasks (WorldView)", user, LoadView.WorldView));
+      new SearchNavigateItem(otherItems, new MyTaskSearchItem("My Tasks (Editor)", user, LoadView.TaskEditor));
+      new SearchNavigateItem(otherItems, new MySubscribedSearchItem("My Subscribed", user));
+      new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - InWork", user, true));
+      new SearchNavigateItem(otherItems, new MyOrigSearchItem("My Originator - All", user, false));
+      new SearchNavigateItem(otherItems, new MyCompletedSearchItem("My Completed", user));
+      new SearchNavigateItem(otherItems, new MyReviewWorkflowItem("My Reviews - All", user, ReviewState.All));
       items.add(otherItems);
 
       otherItems = new XNavigateItem(null, "Other User Searches");

@@ -62,7 +62,6 @@ import org.eclipse.osee.framework.ui.plugin.event.Event;
  */
 public class SkynetTransaction {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetTransaction.class);
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final ArtifactPersistenceManager artifactPersistenceManager =
@@ -97,11 +96,11 @@ public class SkynetTransaction {
    private Integer transactionNumber;
 
    public SkynetTransaction(Branch branch) throws SQLException {
-      this(branch, skynetAuth.getAuthenticatedUser());
+      this(branch, SkynetAuthentication.getUser());
    }
 
    public SkynetTransaction(Branch branch, String comment) throws SQLException {
-      this(branch, skynetAuth.getAuthenticatedUser(), comment);
+      this(branch, SkynetAuthentication.getUser(), comment);
    }
 
    /**
@@ -133,7 +132,7 @@ public class SkynetTransaction {
       int blameArtId = -1;
       if (userToBlame == null || !userToBlame.isInDb()) {
          if (!SkynetDbInit.isDbInit()) {
-            blameArtId = skynetAuth.getNoOneArtifactId();
+            blameArtId = SkynetAuthentication.getNoOneArtifactId();
          }
       } else {
          blameArtId = userToBlame.getArtId();

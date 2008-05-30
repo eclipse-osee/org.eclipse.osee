@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Item;
  * @author Ryan D. Brooks
  */
 public class RelationCellModifier implements ICellModifier {
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private TreeViewer treeViewer;
 
    private PermissionList pList;
@@ -43,7 +42,7 @@ public class RelationCellModifier implements ICellModifier {
     */
    public boolean canModify(Object element, String property) {
       try {
-         SkynetGuiPlugin.securityManager.checkPermission(skynetAuth.getAuthenticatedUser(), pList);
+         SkynetGuiPlugin.securityManager.checkPermission(SkynetAuthentication.getUser(), pList);
       } catch (SecurityException ex) {
          ex.printStackTrace();
          return false;

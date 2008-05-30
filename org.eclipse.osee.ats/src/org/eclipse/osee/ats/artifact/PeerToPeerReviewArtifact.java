@@ -100,7 +100,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
          users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
       else {
          if (AtsPlugin.isAtsAdmin()) {
-            users.add(SkynetAuthentication.getInstance().getAuthenticatedUser());
+            users.add(SkynetAuthentication.getUser());
          }
       }
       return users;

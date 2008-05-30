@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.ui.skynet.util.AEmail;
  * @author Donald G. Dunne
  */
 public class EmailWizard extends Wizard {
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private EmailWizardPage wizardPage;
    private String htmlMessage = null;
    private String subject = null;
@@ -54,8 +53,8 @@ public class EmailWizard extends Wizard {
    public boolean performFinish() {
       try {
          AEmail emailMessage =
-               new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
-                     skynetAuth.getAuthenticatedUser().getEmail(), subject);
+               new AEmail(null, SkynetAuthentication.getUser().getEmail(), SkynetAuthentication.getUser().getEmail(),
+                     subject);
          emailMessage.setRecipients(Message.RecipientType.TO, wizardPage.getToAddresses());
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());

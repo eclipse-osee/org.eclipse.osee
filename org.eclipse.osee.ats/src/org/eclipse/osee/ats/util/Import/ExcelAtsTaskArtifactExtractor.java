@@ -43,7 +43,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Donald G. Dunne
  */
 public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor implements RowProcessor {
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final String description = "Extract each row as a task";
    private ExcelSaxHandler excelHandler;
    private String[] headerRow;
@@ -112,7 +111,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                String userName = row[i];
                User u = null;
                if (userName == null || userName.equals(""))
-                  u = skynetAuth.getAuthenticatedUser();
+                  u = SkynetAuthentication.getUser();
                else
                   u = skyAuth.getUserByName(userName, false);
                if (u == null) OSEELog.logSevere(AtsPlugin.class, String.format(
@@ -125,7 +124,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   userName = userName.replaceAll("\\+$", "");
                   User user = null;
                   if (userName == null || userName.equals(""))
-                     user = skynetAuth.getAuthenticatedUser();
+                     user = SkynetAuthentication.getUser();
                   else
                      user = skyAuth.getUserByName(userName, false);
                   if (user == null) throw new IllegalArgumentException(String.format(

@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Ryan D. Brooks
  */
 public class ArtifactContentProvider implements ITreeContentProvider, ArtifactChangeListener {
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactContentProvider.class);
    private static Object[] EMPTY_ARRAY = new Object[0];
    protected TreeViewer viewer;
@@ -85,7 +84,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
          Artifact parentItem = (Artifact) parentElement;
 
          try {
-            if (accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), parentItem, PermissionEnum.READ)) {
+            if (accessManager.checkObjectPermission(SkynetAuthentication.getUser(), parentItem, PermissionEnum.READ)) {
                Collection<Artifact> children = parentItem.getChildren();
                if (children != null) {
                   for (Artifact art : children) {
@@ -134,7 +133,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
       if (element instanceof Artifact) {
          Artifact artifact = (Artifact) element;
 
-         if (accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), artifact, PermissionEnum.READ)) {
+         if (accessManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
             if (artifact.isDeleted()) return false;
 
             try {

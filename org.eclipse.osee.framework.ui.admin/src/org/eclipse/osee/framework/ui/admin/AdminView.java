@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Administrates admin access for OSEE enviornment
+ * Allows administration of access for OSEE environment
  * <li> Database tables
  * <li> OSEE user permissions
  * 
@@ -52,7 +52,6 @@ import org.eclipse.ui.part.ViewPart;
 
 public class AdminView extends ViewPart implements IActionable {
    public static final OseeUiActivator plugin = AdminPlugin.getInstance();
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.admin.AdminView";
    public static OseeSecurityManager sm;
    private static Action saveAction;
@@ -68,7 +67,7 @@ public class AdminView extends ViewPart implements IActionable {
    public AdminView() {
       sm = OseeSecurityManager.getInstance();
 
-      person = skynetAuth.getAuthenticatedUser();
+      person = SkynetAuthentication.getUser();
 
       dbItems = new ArrayList<DbItem>();
       dbItems.add(new SiteGssflRpcr());
@@ -133,8 +132,7 @@ public class AdminView extends ViewPart implements IActionable {
             if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Broadcast Message",
                   "Broadcast message\n\n\"" + message + "\"\n\nAre you sure?")) {
                List<ISkynetEvent> remoteEvents = new LinkedList<ISkynetEvent>();
-               remoteEvents.add(new NetworkBroadcastEvent(0, 0, message,
-                     SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
+               remoteEvents.add(new NetworkBroadcastEvent(0, 0, message, SkynetAuthentication.getUser().getArtId()));
                rem.kick(remoteEvents.toArray(ISkynetEvent.EMPTY_ARRAY));
                AWorkbench.popup("Success", "Message sent.");
             }

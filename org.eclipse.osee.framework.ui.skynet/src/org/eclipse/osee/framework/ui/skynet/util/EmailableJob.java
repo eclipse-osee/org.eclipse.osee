@@ -50,8 +50,8 @@ public class EmailableJob extends Job {
             emails.addAll(emailAddresses);
             AEmail emailMessage =
                   new AEmail(emails.toArray(new String[emails.size()]),
-                        SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(),
-                        SkynetAuthentication.getInstance().getAuthenticatedUser().getEmail(), subject);
+                        SkynetAuthentication.getUser().getEmail(),
+                        SkynetAuthentication.getUser().getEmail(), subject);
             emailMessage.setSubject(subject);
             emailMessage.addHTMLBody(htmlBody);
             emailMessage.send();

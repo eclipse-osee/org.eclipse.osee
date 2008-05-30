@@ -168,7 +168,7 @@ class CommitJob extends Job {
       protected void handleTxWork() throws Exception {
          monitor.beginTask("Acquire from branch transactions", 100);
 
-         User userToBlame = SkynetAuthentication.getInstance().getAuthenticatedUser();
+         User userToBlame = SkynetAuthentication.getUser();
 
          if (fromBranch != null) {
             newTransactionNumber = branchManager.addCommitTransactionToDatabase(toBranch, fromBranch, userToBlame);
@@ -248,7 +248,7 @@ class CommitJob extends Job {
             eventManager.kick(new LocalCommitBranchEvent(this, fromBranchId));
             RemoteEventManager.getInstance().kick(
                   new NetworkCommitBranchEvent(fromBranchId,
-                        SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
+                        SkynetAuthentication.getUser().getArtId()));
          }
       }
 

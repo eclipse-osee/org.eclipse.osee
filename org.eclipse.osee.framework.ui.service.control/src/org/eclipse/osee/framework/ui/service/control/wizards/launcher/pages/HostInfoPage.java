@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 public class HostInfoPage extends DynamicWizardPage {
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private Combo hostName;
    private Text userName;
    private ServiceLaunchingInformation serviceInfo;
@@ -121,7 +120,7 @@ public class HostInfoPage extends DynamicWizardPage {
       userName.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       String name;
       try {
-         name = skynetAuth.getAuthenticatedUser().getName();
+         name = SkynetAuthentication.getUser().getName();
       } catch (Exception ex) {
          name = System.getProperty("user.name");
       }

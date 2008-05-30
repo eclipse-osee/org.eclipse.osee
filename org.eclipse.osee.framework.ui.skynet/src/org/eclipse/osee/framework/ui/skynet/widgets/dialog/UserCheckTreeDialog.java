@@ -68,10 +68,10 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
          public int compare(Viewer viewer, Object e1, Object e2) {
             User user1 = ((User) e1);
             User user2 = ((User) e2);
-            if (SkynetAuthentication.getInstance().getAuthenticatedUser().equals(user1)) {
+            if (SkynetAuthentication.getUser().equals(user1)) {
                return -1;
             }
-            if (SkynetAuthentication.getInstance().getAuthenticatedUser().equals(user2)) {
+            if (SkynetAuthentication.getUser().equals(user2)) {
                return 1;
             }
             if (initialSel != null) {

@@ -624,12 +624,12 @@ public class BranchPersistenceManager implements PersistenceManager {
             remoteRelationEvent =
                   new NetworkRelationLinkDeletedEvent(relTypeId, gammaId, parentBranch.getBranchId(),
                         newTransactionNumber, relId, aArtId, bArtId,
-                        SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
+                        SkynetAuthentication.getUser().getArtId());
          } else if (modType == ModificationType.CHANGE.getValue()) {
             remoteRelationEvent =
                   new NetworkRelationLinkModifiedEvent(gammaId, parentBranch.getBranchId(), newTransactionNumber,
                         relId, aArtId, bArtId, rationale, aOrderValue, bOrderValue,
-                        SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId(), relTypeId);
+                        SkynetAuthentication.getUser().getArtId(), relTypeId);
          } else if (modType == ModificationType.NEW.getValue()) {
             // remoteRelationEvent = new RemoteNewRelationLinkEvent(parentBranch.getBranchId(),
             // newTransactionNumber,
@@ -723,7 +723,7 @@ public class BranchPersistenceManager implements PersistenceManager {
                      new NetworkArtifactDeletedEvent(parentBranch.getBranchId(), newTransactionNumber,
                            artifact.getArtId(), artifact.getArtTypeId(),
                            artifact.getFactory().getClass().getCanonicalName(),
-                           SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId());
+                           SkynetAuthentication.getUser().getArtId());
             } else {
                try {
                   remoteEvent = RemoteArtifactEventFactory.makeEvent(artifact, newTransactionNumber);

@@ -164,7 +164,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       try {
          if (smaMgr.getStateMgr().getAssignees().size() == 1 && smaMgr.getStateMgr().getAssignees().contains(
                SkynetAuthentication.getInstance().getUser(UserEnum.UnAssigned))) {
-            smaMgr.getStateMgr().setAssignee(SkynetAuthentication.getInstance().getAuthenticatedUser());
+            smaMgr.getStateMgr().setAssignee(SkynetAuthentication.getUser());
          }
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
@@ -192,7 +192,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (smaMgr.getStateMgr().getPercentComplete() == 100 && !isCompleted())
          transitionToCompleted(false);
       else if (smaMgr.getStateMgr().getPercentComplete() != 100 && isCompleted()) {
-         transitionToInWork(SkynetAuthentication.getInstance().getAuthenticatedUser(), true);
+         transitionToInWork(SkynetAuthentication.getUser(), true);
       }
    }
 
@@ -200,7 +200,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (toPage.isCancelledPage() && isInWork())
          transitionToCancelled("Parent Cancelled", persist);
       else if (fromPage.isCancelledPage() && isCancelled()) transitionToInWork(
-            SkynetAuthentication.getInstance().getAuthenticatedUser(), persist);
+            SkynetAuthentication.getUser(), persist);
    }
 
    /*

@@ -90,7 +90,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       atsNote = new ATSNote(this);
       preSaveStateAssignees = smaMgr.getStateMgr().getAssignees();
       if (smaMgr.getOriginator() == null)
-         preSaveOriginator = SkynetAuthentication.getInstance().getAuthenticatedUser();
+         preSaveOriginator = SkynetAuthentication.getUser();
       else
          preSaveOriginator = smaMgr.getOriginator();
       SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
@@ -253,8 +253,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       boolean subscribed = false;
       boolean favorite = false;
       try {
-         subscribed = isSubscribed(SkynetAuthentication.getInstance().getAuthenticatedUser());
-         favorite = isFavorite(SkynetAuthentication.getInstance().getAuthenticatedUser());
+         subscribed = isSubscribed(SkynetAuthentication.getUser());
+         favorite = isFavorite(SkynetAuthentication.getUser());
       } catch (SQLException ex) {
          // Do nothing
       }
@@ -379,7 +379,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public boolean amISubscribed() {
       try {
-         return isSubscribed(SkynetAuthentication.getInstance().getAuthenticatedUser());
+         return isSubscribed(SkynetAuthentication.getUser());
       } catch (SQLException ex) {
          return false;
       }
@@ -387,7 +387,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
 
    public boolean amIFavorite() {
       try {
-         return isFavorite(SkynetAuthentication.getInstance().getAuthenticatedUser());
+         return isFavorite(SkynetAuthentication.getUser());
       } catch (SQLException ex) {
          return false;
       }

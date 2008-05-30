@@ -75,12 +75,12 @@ public class PrivilegedEditService extends WorkPageService {
                      }
                   } else {
                      Set<User> users = smaMgr.getPrivilegedUsers();
-                     if (AtsPlugin.isAtsAdmin()) users.add(SkynetAuthentication.getInstance().getAuthenticatedUser());
+                     if (AtsPlugin.isAtsAdmin()) users.add(SkynetAuthentication.getUser());
                      StringBuffer sb = new StringBuffer();
                      for (User user : users)
                         sb.append(user.getName() + "\n");
                      String buttons[];
-                     boolean iAmPrivileged = users.contains(SkynetAuthentication.getInstance().getAuthenticatedUser());
+                     boolean iAmPrivileged = users.contains(SkynetAuthentication.getUser());
                      if (iAmPrivileged)
                         buttons = new String[] {"Override and Edit", "Cancel"};
                      else

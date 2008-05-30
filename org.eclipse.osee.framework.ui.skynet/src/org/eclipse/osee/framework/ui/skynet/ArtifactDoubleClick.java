@@ -29,7 +29,6 @@ import org.eclipse.search.ui.text.Match;
  * @author Ryan D. Brooks
  */
 public class ArtifactDoubleClick implements IDoubleClickListener {
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final AccessControlManager accessManager = AccessControlManager.getInstance();
 
    /*
@@ -58,14 +57,14 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
       if (artifact == null) {
          OSEELog.logSevere(SkynetGuiPlugin.class, "The artifact associated with the double-click was null", false);
       } else {
-         if (accessManager.checkObjectPermission(skynetAuth.getAuthenticatedUser(), artifact, PermissionEnum.READ)) {
+         if (accessManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
             if (artifact instanceof IATSArtifact)
                OseeAts.openATSArtifact(artifact);
             else
                ArtifactEditor.editArtifact(artifact);
          } else {
             OSEELog.logInfo(SkynetGuiPlugin.class,
-                  "The user " + skynetAuth.getAuthenticatedUser() + " does not have read access to " + artifact, true);
+                  "The user " + SkynetAuthentication.getUser() + " does not have read access to " + artifact, true);
          }
       }
 

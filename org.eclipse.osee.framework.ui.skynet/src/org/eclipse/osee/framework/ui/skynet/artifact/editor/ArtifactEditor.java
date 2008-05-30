@@ -119,10 +119,10 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
             try {
                for (Artifact artifact : artifacts) {
                   if (!AccessControlManager.getInstance().checkObjectPermission(
-                        SkynetAuthentication.getInstance().getAuthenticatedUser(), artifact, PermissionEnum.READ)) {
+                        SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
                      OSEELog.logInfo(
                            SkynetGuiPlugin.class,
-                           "The user " + SkynetAuthentication.getInstance().getAuthenticatedUser() + " does not have read access to " + artifact,
+                           "The user " + SkynetAuthentication.getUser() + " does not have read access to " + artifact,
                            true);
                   } else
                      AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);
@@ -151,10 +151,10 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          public void run() {
             try {
                if (!AccessControlManager.getInstance().checkObjectPermission(
-                     SkynetAuthentication.getInstance().getAuthenticatedUser(), artifact, PermissionEnum.READ)) {
+                     SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
                   OSEELog.logInfo(
                         SkynetGuiPlugin.class,
-                        "The user " + SkynetAuthentication.getInstance().getAuthenticatedUser() + " does not have read access to " + artifact,
+                        "The user " + SkynetAuthentication.getUser() + " does not have read access to " + artifact,
                         true);
                } else if (artifact != null) {
                   AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), EDITOR_ID);

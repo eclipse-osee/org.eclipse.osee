@@ -46,7 +46,7 @@ public class UserRole {
    };
 
    public UserRole() {
-      this(Role.Reviewer, SkynetAuthentication.getInstance().getAuthenticatedUser(), null, null);
+      this(Role.Reviewer, SkynetAuthentication.getUser(), null, null);
    }
 
    public UserRole(Role role, User user) {

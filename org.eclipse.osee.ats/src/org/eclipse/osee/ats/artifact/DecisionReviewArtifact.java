@@ -96,7 +96,7 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
          users.addAll(getParentTeamWorkflow().getPrivilegedUsers());
       else {
          if (AtsPlugin.isAtsAdmin()) {
-            users.add(SkynetAuthentication.getInstance().getAuthenticatedUser());
+            users.add(SkynetAuthentication.getUser());
          }
       }
       return users;

@@ -42,7 +42,6 @@ import com.sun.org.apache.xerces.internal.impl.xpath.regex.REUtil;
  * @author Donald G. Dunne
  */
 public class NotifyUsersJob extends Job {
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private final StateMachineArtifact sma;
    private final SMAManager smaMgr;
    private final Set<NotifyType> types = new HashSet<NotifyType>();
@@ -67,7 +66,7 @@ public class NotifyUsersJob extends Job {
       this.sma = sma;
       if (notifyUsers != null) this.notifyUsers.addAll(notifyUsers);
       // Never email current user
-      this.notifyUsers.remove(skynetAuth.getAuthenticatedUser());
+      this.notifyUsers.remove(SkynetAuthentication.getUser());
       this.types.add(type);
       if (types != null) for (NotifyType nt : types)
          this.types.add(nt);
@@ -117,7 +116,7 @@ public class NotifyUsersJob extends Job {
          AtsPlugin.getLogger().log(Level.INFO, "NotifyCompletion: Always Email Me Enabled");
          // For debug purposes, show who would have emailed if email is enabled
          if (AtsPlugin.isEmailEnabled()) debug.report("AtsAlwaysEmailMe but would have notifyCompletion => " + emails);
-         emails = skynetAuth.getAuthenticatedUser().getEmail();
+         emails = SkynetAuthentication.getUser().getEmail();
       }
       if (emails.equals("")) {
          if (testing) System.out.println("notifyCompletion = not sending; no emails to send to");
@@ -135,8 +134,8 @@ public class NotifyUsersJob extends Job {
                      cancelledItem.getState(), cancelledItem.getDate(XDate.MMDDYYHHMM), cancelledItem.getMsg());
 
          AEmail emailMessage =
-               new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
-                     skynetAuth.getAuthenticatedUser().getEmail(), "ATS " + stateName + " Alert: " + subjectStr);
+               new AEmail(null, SkynetAuthentication.getUser().getEmail(), SkynetAuthentication.getUser().getEmail(),
+                     "ATS " + stateName + " Alert: " + subjectStr);
 
          emailMessage.setRecipients(Message.RecipientType.TO, emails);
          // Remove hyperlinks cause they won't work in email.
@@ -161,10 +160,10 @@ public class NotifyUsersJob extends Job {
          AtsPlugin.getLogger().log(Level.INFO, "Notifys: Always Email Me Enabled");
          // For debug purposes, show who would have emailed if email is enabled
          if (AtsPlugin.isEmailEnabled()) debug.report("AtsAlwaysEmailMe but would have notifyOriginator => " + emails);
-         emails = skynetAuth.getAuthenticatedUser().getEmail();
+         emails = SkynetAuthentication.getUser().getEmail();
       }
       // Don't send if originator is this user
-      if (!AtsPlugin.isAtsAlwaysEmailMe() && emails.equals(skynetAuth.getAuthenticatedUser().getEmail())) {
+      if (!AtsPlugin.isAtsAlwaysEmailMe() && emails.equals(SkynetAuthentication.getUser().getEmail())) {
          if (testing) System.out.println("notifyOriginator = not sending; originator is me");
          return;
       }
@@ -177,8 +176,7 @@ public class NotifyUsersJob extends Job {
       try {
          String headerStr = "You have been set as the originator of this " + sma.getArtifactTypeName() + ".<br><br>";
          AEmail emailMessage =
-               new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
-                     skynetAuth.getAuthenticatedUser().getEmail(),
+               new AEmail(null, SkynetAuthentication.getUser().getEmail(), SkynetAuthentication.getUser().getEmail(),
                      "ATS Originator Alert: " + sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"\n");
 
          emailMessage.setRecipients(Message.RecipientType.TO, emails);
@@ -200,7 +198,7 @@ public class NotifyUsersJob extends Job {
       try {
 
          if (notifyUsers != null) {
-            notifyUsers.remove(skynetAuth.getAuthenticatedUser());
+            notifyUsers.remove(SkynetAuthentication.getUser());
             if (notifyUsers.size() == 0) return;
             emails = getEmails(notifyUsers);
          } else
@@ -209,10 +207,10 @@ public class NotifyUsersJob extends Job {
             AtsPlugin.getLogger().log(Level.INFO, "Notifys: Always Email Me Enabled");
             // For debug purposes, show who would have emailed if email is enabled
             if (AtsPlugin.isEmailEnabled()) debug.report("AtsAlwaysEmailMe but would have notifyAssignees => " + emails);
-            emails = skynetAuth.getAuthenticatedUser().getEmail();
+            emails = SkynetAuthentication.getUser().getEmail();
          }
          // Don't send if transition is to this user
-         if (!AtsPlugin.isAtsAlwaysEmailMe() && emails.equals(skynetAuth.getAuthenticatedUser().getEmail())) {
+         if (!AtsPlugin.isAtsAlwaysEmailMe() && emails.equals(SkynetAuthentication.getUser().getEmail())) {
             if (testing) System.out.println("notifyAssignees = not sending; assignee is me");
             return;
          }
@@ -225,8 +223,7 @@ public class NotifyUsersJob extends Job {
          String headerStr =
                "You have been identified as an assignee for this " + sma.getArtifactTypeName() + ".<br><br>";
          AEmail emailMessage =
-               new AEmail(null, skynetAuth.getAuthenticatedUser().getEmail(),
-                     skynetAuth.getAuthenticatedUser().getEmail(),
+               new AEmail(null, SkynetAuthentication.getUser().getEmail(), SkynetAuthentication.getUser().getEmail(),
                      "ATS Assignee Alert: " + sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"\n");
 
          emailMessage.setRecipients(Message.RecipientType.TO, emails);
@@ -245,7 +242,7 @@ public class NotifyUsersJob extends Job {
    private String getActiveEmails() throws SQLException, MultipleAttributesExist {
       Collection<User> emails = smaMgr.getStateMgr().getAssignees();
       // Never email current user
-      emails.remove(skynetAuth.getAuthenticatedUser());
+      emails.remove(SkynetAuthentication.getUser());
       return getEmails(emails);
    }
 
@@ -273,7 +270,7 @@ public class NotifyUsersJob extends Job {
             AtsPlugin.getLogger().log(Level.INFO, "NotifySubscribers: Always Email Me Enabled");
             // For debug purposes, show who would have emailed if email is enabled
             if (AtsPlugin.isEmailEnabled()) debug.report("AtsAlwaysEmailMe but would have notifySubscribers => " + emails);
-            emails = skynetAuth.getAuthenticatedUser().getEmail();
+            emails = SkynetAuthentication.getUser().getEmail();
          }
          if (emails.equals("")) {
             if (testing) System.out.println("notifySubscribers = not sending; emails to send");
@@ -282,8 +279,8 @@ public class NotifyUsersJob extends Job {
          AEmail emailMessage =
                new AEmail(
                      null,
-                     skynetAuth.getAuthenticatedUser().getEmail(),
-                     skynetAuth.getAuthenticatedUser().getEmail(),
+                     SkynetAuthentication.getUser().getEmail(),
+                     SkynetAuthentication.getUser().getEmail(),
                      "ATS Subscription Alert: " + sma.getArtifactTypeName() + " - \"" + sma.getDescriptiveName() + "\"\n");
          String notifyStr =
                sma.getArtifactTypeName() + " Transitioned to \"" + sma.getSmaMgr().getStateMgr().getCurrentStateName() + "\"<br><br>";

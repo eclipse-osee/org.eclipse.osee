@@ -38,14 +38,14 @@ public class ArtifactImportPageTest extends TestCase {
          // Pass
       }
       try {
-         new ArtifactImportPage(null, SkynetAuthentication.getInstance().getAuthenticatedUser());
+         new ArtifactImportPage(null, SkynetAuthentication.getUser());
          fail("Expect AssertionFailedException");
       } catch (Exception ex) {
          // Pass
       }
 
       // This should not generate an exception
-      new ArtifactImportPage(new File("somefile.txt"), SkynetAuthentication.getInstance().getAuthenticatedUser());
+      new ArtifactImportPage(new File("somefile.txt"), SkynetAuthentication.getUser());
    }
 
    /**

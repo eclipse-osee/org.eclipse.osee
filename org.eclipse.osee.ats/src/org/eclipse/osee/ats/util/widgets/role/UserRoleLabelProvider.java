@@ -111,7 +111,7 @@ public class UserRoleLabelProvider implements ITableLabelProvider {
       UserRoleColumn dCol = UserRoleColumn.getAtsXColumn(xCol);
       if (!xCol.isShow()) return null; // Since not shown, don't display
       if (dCol == UserRoleColumn.User_Col) {
-         if (roleItem.getUser().equals(SkynetAuthentication.getInstance().getAuthenticatedUser()))
+         if (roleItem.getUser().equals(SkynetAuthentication.getUser()))
             return SkynetGuiPlugin.getInstance().getImage("red_user_sm.gif");
          else
             return SkynetGuiPlugin.getInstance().getImage("user_sm.gif");

@@ -93,7 +93,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          try {
             checkImages();
             Branch branch = (Branch) element;
-            boolean favorite = authentication.getAuthenticatedUser().isFavoriteBranch(branch);
+            boolean favorite = SkynetAuthentication.getUser().isFavoriteBranch(branch);
             boolean action = branch.isChangeManaged();
             boolean isDefault = element.equals(BranchPersistenceManager.getInstance().getDefaultBranch());
 

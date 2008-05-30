@@ -259,7 +259,7 @@ public class AccessControlManager implements PersistenceManager {
     * @return true if the subject has permission.
     */
    public boolean checkSubjectPermission(PermissionEnum permission) {
-      return checkObjectPermission(skynetAuth.getAuthenticatedUser(), permission);
+      return checkObjectPermission(SkynetAuthentication.getUser(), permission);
    }
 
    /**
@@ -303,12 +303,12 @@ public class AccessControlManager implements PersistenceManager {
     * @return true if the subject has permission for an object else false.
     */
    public boolean checkObjectPermission(Object object, PermissionEnum permission) {
-      return skynetAuth.duringUserCreation() || checkObjectPermission(skynetAuth.getAuthenticatedUser(), object,
+      return skynetAuth.duringUserCreation() || checkObjectPermission(SkynetAuthentication.getUser(), object,
             permission);
    }
 
    public boolean checkCurrentUserObjectPermission(Object object, PermissionEnum permission) {
-      return checkObjectPermission(SkynetAuthentication.getInstance().getAuthenticatedUser(), object, permission);
+      return checkObjectPermission(SkynetAuthentication.getUser(), object, permission);
    }
 
    public PermissionEnum getObjectPermission(Artifact subject, Object object) {

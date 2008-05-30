@@ -30,7 +30,6 @@ import org.w3c.dom.NodeList;
  * @author Donald G. Dunne
  */
 public class ATSNote {
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private final Artifact artifact;
    private boolean enabled = true;
    private static String ATS_NOTE_TAG = "AtsNote";
@@ -91,8 +90,7 @@ public class ATSNote {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         artifact.setSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(),
-               Jaxp.getDocumentXml(doc));
+         artifact.setSoleAttributeValue(ATSAttributes.STATE_NOTES_ATTRIBUTE.getStoreName(), Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, "Can't create ats note document", ex, true);
       }
@@ -136,7 +134,7 @@ public class ATSNote {
          builder.append("<TD>" + note.getType() + "</TD>");
          builder.append("<TD>" + (note.getState().equals("") ? "," : note.getState()) + "</TD>");
          builder.append("<TD>" + (note.getMsg().equals("") ? "," : note.getMsg()) + "</TD>");
-         if (user.equals(skynetAuth.getAuthenticatedUser()))
+         if (user.equals(SkynetAuthentication.getUser()))
             builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
          else
             builder.append("<TD>" + name + "</TD>");

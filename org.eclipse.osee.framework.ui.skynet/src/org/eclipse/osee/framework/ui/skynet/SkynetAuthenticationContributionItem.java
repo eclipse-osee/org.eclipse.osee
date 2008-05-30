@@ -35,7 +35,6 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
-   private static final SkynetAuthentication skynetAuthentication = SkynetAuthentication.getInstance();
 
    private static final Image ENABLED_IMAGE = SkynetGuiPlugin.getInstance().getImage("user.gif");
    private static final Image DISABLED_IMAGE =
@@ -89,7 +88,7 @@ public class SkynetAuthenticationContributionItem extends SkynetContributionItem
       if (event instanceof AuthenticationEvent) {
 
          if (oseeAuthentication.isAuthenticated()) {
-            User skynetName = skynetAuthentication.getAuthenticatedUser();
+            User skynetName = SkynetAuthentication.getUser();
 
             this.setEnabledToolTip(String.format(ENABLED_TOOLTIP + "%s (%s)\nDouble-Click to Log Off.",
                   (skynetName != null ? skynetName.getName() : skynetName),

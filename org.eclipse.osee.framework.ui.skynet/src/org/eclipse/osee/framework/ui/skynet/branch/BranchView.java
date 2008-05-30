@@ -1022,7 +1022,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                   return null;
                }
                if (AccessControlManager.getInstance().checkObjectPermission(
-                     SkynetAuthentication.getInstance().getAuthenticatedUser(), selectedBranch.getAssociatedArtifact(),
+                     SkynetAuthentication.getUser(), selectedBranch.getAssociatedArtifact(),
                      PermissionEnum.READ)) {
                   if (selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)
                      OseeAts.openATSArtifact(selectedBranch.getAssociatedArtifact());
@@ -1031,7 +1031,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
                } else {
                   OSEELog.logInfo(
                         SkynetGuiPlugin.class,
-                        "The user " + SkynetAuthentication.getInstance().getAuthenticatedUser() + " does not have read access to " + selectedBranch.getAssociatedArtifact(),
+                        "The user " + SkynetAuthentication.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifact(),
                         true);
                }
             } catch (Exception ex) {
@@ -1101,7 +1101,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
       // Ask to save the user in case any changes to favorite branches have been made
       if (SkynetGuiPlugin.areOSEEServicesAvailable().isTrue()) {
       try {
-         SkynetAuthentication.getInstance().getAuthenticatedUser().persistAttributes();
+         SkynetAuthentication.getUser().persistAttributes();
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
@@ -1205,7 +1205,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             if (SkynetSelections.oneBranchSelected(selection)) {
-               if ((SkynetAuthentication.getInstance().getAuthenticatedUser().isFavoriteBranch((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())))) {
+               if ((SkynetAuthentication.getUser().isFavoriteBranch((Branch) SkynetSelections.boilDownObject(selection.getFirstElement())))) {
                   markState = "Unmark";
                }
             }
@@ -1224,7 +1224,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          public Object execute(ExecutionEvent event) throws ExecutionException {
             IStructuredSelection selection = (IStructuredSelection) branchTable.getSelection();
             Branch branch = (Branch) ((JobbedNode) selection.getFirstElement()).getBackingData();
-            User user = SkynetAuthentication.getInstance().getAuthenticatedUser();
+            User user = SkynetAuthentication.getUser();
 
             user.toggleFavoriteBranch(branch);
 
@@ -1244,7 +1244,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
 
             boolean oneBranchSelected = SkynetSelections.oneBranchSelected(selection);
 
-            if (oneBranchSelected && SkynetAuthentication.getInstance().getAuthenticatedUser().isFavoriteBranch(
+            if (oneBranchSelected && SkynetAuthentication.getUser().isFavoriteBranch(
                   (Branch) SkynetSelections.boilDownObject(selection.getFirstElement()))) {
                // make the text correct somehow somewhere so it says Mark/Unmark in context
             }
@@ -1693,7 +1693,7 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          Object backing2 = ((JobbedNode) o2).getBackingData();
 
          if (favoritesFirst && backing1 instanceof Branch && backing2 instanceof Branch) {
-            User user = SkynetAuthentication.getInstance().getAuthenticatedUser();
+            User user = SkynetAuthentication.getUser();
             boolean fav1 = user.isFavoriteBranch((Branch) backing1);
             boolean fav2 = user.isFavoriteBranch((Branch) backing2);
 

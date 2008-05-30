@@ -68,7 +68,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
             // Validate team lead status
             if (!AtsPlugin.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(
-                  SkynetAuthentication.getInstance().getAuthenticatedUser())) {
+                  SkynetAuthentication.getUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }

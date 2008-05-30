@@ -39,7 +39,7 @@ public class RemoteLinkEventFactory {
             link.getBOrder(),
             link.getRelationType().getRelationTypeId(),
             link.getRelationType().getTypeName(),
-            SkynetAuthentication.getInstance().getAuthenticatedUser().isInDb() ? SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId() : -1);
+            SkynetAuthentication.getUser().isInDb() ? SkynetAuthentication.getUser().getArtId() : -1);
 
    }
 }

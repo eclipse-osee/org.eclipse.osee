@@ -121,7 +121,7 @@ public class UserRoleManager {
             for (UserRole role : getUserRoles(Role.Moderator))
                assignees.add(role.getUser());
          else
-            assignees.add(SkynetAuthentication.getInstance().getAuthenticatedUser());
+            assignees.add(SkynetAuthentication.getUser());
       }
       // Set assigness based on roles
       artifact.getSmaMgr().getStateMgr().setAssignees(assignees);

@@ -117,7 +117,7 @@ public class SkynetAuthentication implements PersistenceManager {
       return instance.getAuthenticatedUser();
    }
 
-   public synchronized User getAuthenticatedUser() {
+   private synchronized User getAuthenticatedUser() {
       try {
          if (SkynetDbInit.isPreArtifactCreation()) {
             return BootStrapUser.getInstance();
@@ -333,15 +333,15 @@ public class SkynetAuthentication implements PersistenceManager {
       return duringUserCreation;
    }
 
-   public int getNoOneArtifactId() {
-      if (noOneArtifactId == 0) {
+   public static int getNoOneArtifactId() {
+      if (instance.noOneArtifactId == 0) {
          try {
-            noOneArtifactId = getUser(UserEnum.NoOne).getArtId();
+            instance.noOneArtifactId = getUser(UserEnum.NoOne).getArtId();
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
-            noOneArtifactId = -1;
+            instance.noOneArtifactId = -1;
          }
       }
-      return noOneArtifactId;
+      return instance.noOneArtifactId;
    }
 }

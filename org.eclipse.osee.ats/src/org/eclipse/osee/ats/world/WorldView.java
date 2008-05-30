@@ -332,7 +332,7 @@ public class WorldView extends ViewPart implements IEventReceiver, IPartListener
 
    private String getWhoAmI() {
       return OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(ConfigField.DatabaseName) + ", " + OseeDb.getDefaultDatabaseService().getDatabaseDetails().getFieldValue(
-            ConfigField.UserName) + " - " + SkynetAuthentication.getInstance().getAuthenticatedUser().getName();
+            ConfigField.UserName) + " - " + SkynetAuthentication.getUser().getName();
    }
 
    public class FilterLabelProvider implements ILabelProvider {

@@ -576,7 +576,7 @@ public class ArtifactPersistenceManager {
       transaction.addRemoteEvent(new NetworkArtifactDeletedEvent(artifact.getBranch().getBranchId(),
             transaction.getTransactionNumber(), artifact.getArtId(), artifact.getArtTypeId(),
             artifact.getFactory().getClass().getCanonicalName(),
-            SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId()));
+            SkynetAuthentication.getUser().getArtId()));
       transaction.addLocalEvent(new TransactionArtifactModifiedEvent(artifact.getGuid(), artifact.getBranch(),
             ModType.Deleted, this));
 

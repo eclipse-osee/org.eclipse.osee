@@ -42,7 +42,7 @@ public class AtsAdmin {
             if (atsAdminArtifact != null) {
                atsAdmin =
                      AccessControlManager.getInstance().checkObjectPermission(
-                           SkynetAuthentication.getInstance().getAuthenticatedUser(), atsAdminArtifact,
+                           SkynetAuthentication.getUser(), atsAdminArtifact,
                            PermissionEnum.FULLACCESS);
             }
          }

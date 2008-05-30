@@ -33,7 +33,6 @@ public class DefectManager {
 
    private final Artifact artifact;
    private boolean enabled = true;
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static String ATS_DEFECT_TAG = "AtsDefect";
    private static String DEFECT_ITEM_TAG = "Item";
    private static String REVIEW_DEFECT_ATTRIBUTE_NAME = "ats.Review Defect";
@@ -143,7 +142,7 @@ public class DefectManager {
          builder.append("<TD>" + item.getSeverity() + "</TD>");
          builder.append("<TD>" + item.getDisposition() + "</TD>");
          builder.append("<TD>" + item.getInjectionActivity() + "</TD>");
-         if (user.equals(skynetAuth.getAuthenticatedUser()))
+         if (user.equals(SkynetAuthentication.getUser()))
             builder.append("<TD bgcolor=\"#CCCCCC\">" + name + "</TD>");
          else
             builder.append("<TD>" + name + "</TD>");

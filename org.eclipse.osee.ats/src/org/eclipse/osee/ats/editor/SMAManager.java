@@ -165,7 +165,7 @@ public class SMAManager {
 
    public void setOriginator(User user) throws IllegalStateException, SQLException, MultipleAttributesExist {
       sma.getLog().addLog(LogType.Originated, "",
-            "Changed by " + SkynetAuthentication.getInstance().getAuthenticatedUser().getName(), user);
+            "Changed by " + SkynetAuthentication.getUser().getName(), user);
    }
 
    /**
@@ -656,7 +656,7 @@ public class SMAManager {
    }
 
    public boolean isAssigneeMe() {
-      return stateMgr.getAssignees().contains(SkynetAuthentication.getInstance().getAuthenticatedUser());
+      return stateMgr.getAssignees().contains(SkynetAuthentication.getUser());
    }
 
    public Set<User> getTransitionAssignees() {

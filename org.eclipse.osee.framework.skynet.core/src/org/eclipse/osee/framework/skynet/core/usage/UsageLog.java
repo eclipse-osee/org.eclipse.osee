@@ -45,7 +45,7 @@ public class UsageLog {
 
       userId = -1;
       try {
-         userId = SkynetAuthentication.getInstance().getAuthenticatedUser().getArtId();
+         userId = SkynetAuthentication.getUser().getArtId();
       } catch (Exception ex) {
          log.add(new ExceptionEntry(ex));
       }

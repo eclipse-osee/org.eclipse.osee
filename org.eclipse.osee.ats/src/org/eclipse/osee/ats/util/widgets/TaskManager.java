@@ -34,8 +34,6 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
  * @author Donald G. Dunne
  */
 public class TaskManager {
-
-   private static SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private final SMAManager smaMgr;
 
    public TaskManager(SMAManager smaMgr) {
@@ -71,7 +69,7 @@ public class TaskManager {
    }
 
    public TaskArtifact createNewTask(String title, boolean persist) throws Exception {
-      return createNewTask(Arrays.asList(new User[] {skynetAuth.getAuthenticatedUser()}), title, persist);
+      return createNewTask(Arrays.asList(new User[] {SkynetAuthentication.getUser()}), title, persist);
    }
 
    public TaskArtifact createNewTask(User assignee, String title, boolean persist) throws Exception {
