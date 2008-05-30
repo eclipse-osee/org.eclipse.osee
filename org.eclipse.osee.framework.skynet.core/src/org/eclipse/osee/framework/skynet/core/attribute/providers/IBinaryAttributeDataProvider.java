@@ -19,6 +19,6 @@ public interface IBinaryAttributeDataProvider extends IAttributeDataProvider {
 
    public ByteBuffer getValueAsBytes();
 
-   public void setValue(ByteBuffer data);
+   public boolean setValue(ByteBuffer data);
 
 }

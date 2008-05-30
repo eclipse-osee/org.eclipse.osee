@@ -63,7 +63,8 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
     * @see org.eclipse.osee.framework.skynet.core.attribute.IAttributeDataProvider#setValue(ByteBuffer)
     */
    @Override
-   public void setValue(ByteBuffer data) {
+   public boolean setValue(ByteBuffer data) {
+      boolean response = false;
       try {
          if (!Arrays.equals(dataStore.getContent(), data != null ? data.array() : null)) {
             if (data != null) {
@@ -71,6 +72,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
                try {
                   compressed = Lib.compressFile(Lib.byteBufferToInputStream(data), getInternalFileName());
                   dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
+                  response = true;
                } catch (Exception ex) {
                   logger.log(Level.WARNING, "Error compressing data", ex);
                }
@@ -83,6 +85,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       } catch (Exception ex1) {
          logger.log(Level.SEVERE, ex1.toString(), ex1);
       }
+      return response;
    }
 
    /* (non-Javadoc)
