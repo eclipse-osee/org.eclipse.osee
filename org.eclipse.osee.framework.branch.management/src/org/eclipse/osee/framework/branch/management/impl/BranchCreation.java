@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
-import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTemplate;
+import org.eclipse.osee.framework.db.connection.core.transaction.DbTransaction;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
@@ -54,7 +54,7 @@ public class BranchCreation implements IBranchCreation {
       return createChildBranchTx.getNewBranchId();
    }
 
-   private abstract class CreateBranchTx extends AbstractDbTxTemplate {
+   private abstract class CreateBranchTx extends DbTransaction {
       protected String childBranchShortName;
       protected String childBranchName;
       protected int parentBranchId;
@@ -77,24 +77,19 @@ public class BranchCreation implements IBranchCreation {
          return branchId;
       }
 
-      protected void handleTxWork() throws Exception {
-         Connection connection = null;
-         try {
-            Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-            connection = OseeDbConnection.getConnection();
-            branchId =
-                  initializeBranch(connection, childBranchShortName, childBranchName, parentBranchId, authorId,
-                        timestamp, creationComment, associatedArtifactId);
-            int newTransactionNumber = Query.getNextSeqVal(null, SkynetDatabase.TRANSACTION_ID_SEQ);
-            ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, SQL3DataType.INTEGER, branchId,
-                  SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, creationComment,
-                  SQL3DataType.TIMESTAMP, timestamp, SQL3DataType.INTEGER, authorId, SQL3DataType.INTEGER, 1);
+      protected void handleTxWork(Connection connection) throws Exception {
+         Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
+         branchId =
+               initializeBranch(connection, childBranchShortName, childBranchName, parentBranchId, authorId, timestamp,
+                     creationComment, associatedArtifactId);
+         int newTransactionNumber = Query.getNextSeqVal(null, SkynetDatabase.TRANSACTION_ID_SEQ);
+         ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, SQL3DataType.INTEGER, branchId,
+               SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.VARCHAR, creationComment,
+               SQL3DataType.TIMESTAMP, timestamp, SQL3DataType.INTEGER, authorId, SQL3DataType.INTEGER, 1);
 
-            specializedBranchOperations(branchId, newTransactionNumber, connection);
-            success = true;
-         } finally {
-            connection.close();
-         }
+         specializedBranchOperations(branchId, newTransactionNumber, connection);
+         success = true;
+
       }
 
       private int initializeBranch(Connection connection, String branchShortName, String branchName, int parentBranchId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId) throws SQLException {
