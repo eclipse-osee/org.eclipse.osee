@@ -73,6 +73,4 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
       }
       return aResult;
    }
-
-   public abstract boolean showBranch();
 }

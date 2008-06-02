@@ -39,12 +39,4 @@ public class HistoricalArtifactSearchQuery extends AbstractArtifactSearchQuery {
    public String getCriteriaLabel() {
       return attributePattern;
    }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#showBranch()
-    */
-   @Override
-   public boolean showBranch() {
-      return true;
-   }
 }

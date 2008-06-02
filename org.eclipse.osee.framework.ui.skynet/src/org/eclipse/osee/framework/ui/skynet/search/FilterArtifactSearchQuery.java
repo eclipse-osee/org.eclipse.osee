@@ -69,12 +69,4 @@ public class FilterArtifactSearchQuery extends AbstractArtifactSearchQuery {
    public String getCriteriaLabel() {
       return criteriaLabel;
    }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchQuery#showBranch()
-    */
-   @Override
-   public boolean showBranch() {
-      return false;
-   }
 }

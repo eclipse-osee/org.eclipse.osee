@@ -72,12 +72,10 @@ import org.eclipse.osee.framework.ui.skynet.history.RevisionHistoryView;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.AbstractArtifactSearchViewPage;
 import org.eclipse.osee.framework.ui.skynet.search.ArtifactExportJob;
-import org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchResult;
 import org.eclipse.osee.framework.ui.skynet.search.report.RelationMatrixExportJob;
 import org.eclipse.osee.framework.ui.skynet.search.report.ReportJob;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
-import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -150,14 +148,6 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
       SkynetContributionItem.addTo(this, false);
       getSite().getActionBars().updateActionBars();
-   }
-
-   @Override
-   public void setInput(ISearchResult search, Object viewState) {
-      if (search != null) {
-         artifactLabelProvider.showBranch(((ArtifactSearchResult) search).getQuery().showBranch());
-      }
-      super.setInput(search, viewState);
    }
 
    private void createContextMenu(Control menuOnwer) {

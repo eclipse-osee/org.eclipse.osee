@@ -20,7 +20,6 @@ import org.eclipse.swt.graphics.Image;
 public class ArtifactLabelProvider extends LabelProvider {
    private static final OseeUiActivator plugin = SkynetGuiPlugin.getInstance();
    private final ArtifactExplorer artifactExplorer;
-   private boolean showBranch;
 
    public ArtifactLabelProvider(ArtifactExplorer artifactExplorer) {
       super();
@@ -70,16 +69,9 @@ public class ArtifactLabelProvider extends LabelProvider {
                name += ex.getLocalizedMessage();
             }
          }
-         if (showBranch) {
-            name += " <" + artifact.getBranch().getBranchShortName() + "> ";
-         }
          return name;
       } else {
          return element.toString();
       }
-   }
-
-   public void showBranch(boolean showBranch) {
-      this.showBranch = showBranch;
    }
 }

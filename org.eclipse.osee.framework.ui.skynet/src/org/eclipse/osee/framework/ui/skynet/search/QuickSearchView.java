@@ -210,7 +210,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       radIndexSearch.addListener(SWT.Selection, this);
 
       historicalSearch = new Button(grpSearchType, SWT.RADIO);
-      historicalSearch.setText("Multi-branch Historical");
+      historicalSearch.setText("Historical");
       historicalSearch.addListener(SWT.Selection, this);
 
       chkCaseSensitive = new Button(grpSearchType, SWT.CHECK);
@@ -276,12 +276,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener, 
       chkCaseSensitive.setEnabled(radIndexSearch.getSelection());
       chkPartialSearch.setEnabled(radIndexSearch.getSelection());
       btnSearch.setEnabled(!txtSearch.getText().trim().equals(""));
-
-      if (historicalSearch.getSelection()) {
-         branchLabel.setText("Searching on all branches");
-      } else {
-         branchLabel.setText("Searching on current default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch() + "\"");
-      }
+      branchLabel.setText("Searching on current default branch \"" + BranchPersistenceManager.getInstance().getDefaultBranch() + "\"");
    }
 
    public void handleEvent(Event event) {

@@ -27,7 +27,7 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
    private String txsAlias;
    private String txdAlias;
    private String attrAlias;
-   private final boolean multiBranchHistorical;
+   private final boolean historical;
 
    /**
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
@@ -72,14 +72,14 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param attributeTypeName
     * @param value to search; supports % wildcard
-    * @param multiBranchHistorical if true will search on any branch and any attribute revision
+    * @param historical if true will search on any branch and any attribute revision
     * @throws SQLException
     */
-   public AttributeValueCriteria(String attributeTypeName, String value, boolean multiBranchHistorical) throws SQLException {
-      this(attributeTypeName, value, null, multiBranchHistorical);
+   public AttributeValueCriteria(String attributeTypeName, String value, boolean historical) throws SQLException {
+      this(attributeTypeName, value, null, historical);
    }
 
-   private AttributeValueCriteria(String attributeTypeName, String value, Collection<String> values, boolean multiBranchHistorical) throws SQLException {
+   private AttributeValueCriteria(String attributeTypeName, String value, Collection<String> values, boolean historical) throws SQLException {
       if (attributeTypeName != null) {
          this.attributeType = AttributeTypeManager.getType(attributeTypeName);
       }
@@ -94,7 +94,7 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
          }
       }
 
-      this.multiBranchHistorical = multiBranchHistorical;
+      this.historical = historical;
    }
 
    /* (non-Javadoc)
@@ -103,10 +103,8 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
    @Override
    public void addToTableSql(ArtifactQueryBuilder builder) {
       attrAlias = builder.appendAliasedTable("osee_define_attribute");
-      if (!multiBranchHistorical) {
-         txsAlias = builder.appendAliasedTable("osee_define_txs");
-         txdAlias = builder.appendAliasedTable("osee_define_tx_details");
-      }
+      txsAlias = builder.appendAliasedTable("osee_define_txs");
+      txdAlias = builder.appendAliasedTable("osee_define_tx_details");
    }
 
    /* (non-Javadoc)
@@ -136,12 +134,14 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
          builder.append(".value IN ('" + Collections.toString("','", values) + "') AND ");
       }
 
-      if (!multiBranchHistorical) {
-         builder.append(attrAlias);
-         builder.append(".gamma_id=");
-         builder.append(txsAlias);
-         builder.append(".gamma_id AND ");
+      builder.append(attrAlias);
+      builder.append(".gamma_id=");
+      builder.append(txsAlias);
+      builder.append(".gamma_id AND ");
 
+      if (historical) {
+         builder.addBranchTxSql(txsAlias, txdAlias);
+      } else {
          builder.addCurrentTxSql(txsAlias, txdAlias);
       }
    }

@@ -95,8 +95,8 @@ public class ArtifactQueryBuilder {
       return criteria.toArray(new AbstractArtifactSearchCriteria[criteria.size()]);
    }
 
-   public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
-      this(null, 0, null, null, null, branch, false, loadLevel, criteria);
+   public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted, AbstractArtifactSearchCriteria... criteria) {
+      this(null, 0, null, null, null, branch, allowDeleted, loadLevel, criteria);
    }
 
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
@@ -244,12 +244,18 @@ public class ArtifactQueryBuilder {
    }
 
    public void addCurrentTxSql(String txsAlias, String txdAlias) {
-      addCurrentTxSql(txsAlias, txdAlias, branch);
+      addTxSql(txsAlias, txdAlias, branch, true);
    }
 
-   public void addCurrentTxSql(String txsAlias, String txdAlias, Branch branch) {
-      sql.append(txsAlias);
-      sql.append(".tx_current=1 AND ");
+   public void addBranchTxSql(String txsAlias, String txdAlias) {
+      addTxSql(txsAlias, txdAlias, branch, false);
+   }
+
+   private void addTxSql(String txsAlias, String txdAlias, Branch branch, boolean current) {
+      if (current) {
+         sql.append(txsAlias);
+         sql.append(".tx_current=1 AND ");
+      }
       sql.append(txsAlias);
       sql.append(".transaction_id=");
       sql.append(txdAlias);
