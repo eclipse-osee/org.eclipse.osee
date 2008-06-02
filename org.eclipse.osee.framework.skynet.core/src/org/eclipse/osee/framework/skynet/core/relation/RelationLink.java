@@ -133,7 +133,7 @@ public class RelationLink {
 
    public void delete() {
       if (!deleted) {
-         deleted = true;
+         markAsDeleted();
          dirty = true;
          SkynetEventManager.getInstance().kick(
                new CacheRelationModifiedEvent(this, getRelationType().getTypeName(), getASideName(),
@@ -146,7 +146,7 @@ public class RelationLink {
    }
 
    void markAsPurged() {
-      deleted = true;
+      markAsDeleted();
       dirty = false;
    }
 
