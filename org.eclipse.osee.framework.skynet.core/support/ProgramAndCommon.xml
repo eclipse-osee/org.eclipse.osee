@@ -373,7 +373,7 @@
     <Cell ss:StyleID="s27"/>
     <Cell ss:StyleID="s37"><Data ss:Type="String">Portrait</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="String">&lt;Page_Type&gt;&lt;Enum&gt;Portrait&lt;/Enum&gt;&lt;Enum&gt;Landscape&lt;/Enum&gt;&lt;/Page_Type&gt;</Data></Cell>
-    <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:StyleID="s37"><Data ss:Type="Number">0</Data></Cell>
     <Cell ss:StyleID="s37"><Data ss:Type="Number">1</Data></Cell>
     <Cell ss:StyleID="s38"><Data ss:Type="String">Page Type: Landscape/Portrait</Data></Cell>
     <Cell ss:StyleID="s38"/>
@@ -656,8 +656,8 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>26</ActiveRow>
-     <ActiveCol>9</ActiveCol>
+     <ActiveRow>19</ActiveRow>
+     <ActiveCol>2</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>
