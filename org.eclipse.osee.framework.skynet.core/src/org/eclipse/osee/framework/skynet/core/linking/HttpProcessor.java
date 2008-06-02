@@ -75,6 +75,8 @@ public class HttpProcessor {
          if (code == HttpURLConnection.HTTP_ACCEPTED) {
             inputStream = (InputStream) connection.getContent();
             response = Lib.inputStreamToString(inputStream);
+         } else {
+            throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, code));
          }
       } catch (Exception ex) {
          throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, code), ex);

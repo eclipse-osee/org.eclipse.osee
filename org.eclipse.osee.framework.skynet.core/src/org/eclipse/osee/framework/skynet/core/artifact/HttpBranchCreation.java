@@ -94,12 +94,13 @@ public class HttpBranchCreation {
                HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl("branch", parameters)));
          int branchId = Integer.parseInt(response);
          branch = BranchPersistenceManager.getInstance().getBranch(branchId);
-      } catch (Exception ex) {
+      } catch (NumberFormatException ex) {
          throw new OseeCoreException(response);
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
       }
       eventManager.kick(new LocalNewBranchEvent(new Object(), branch.getBranchId()));
-      remoteEventManager.kick(new NetworkNewBranchEvent(branch.getBranchId(),
-            SkynetAuthentication.getUser().getArtId()));
+      remoteEventManager.kick(new NetworkNewBranchEvent(branch.getBranchId(), SkynetAuthentication.getUser().getArtId()));
       return branch;
    }
 
