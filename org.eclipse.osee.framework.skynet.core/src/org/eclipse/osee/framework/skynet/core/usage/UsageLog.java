@@ -43,13 +43,6 @@ public class UsageLog {
       this.log = new LinkedList<UsageEntry>();
       this.exceptionCount = 0;
 
-      userId = -1;
-      try {
-         userId = SkynetAuthentication.getUser().getArtId();
-      } catch (Exception ex) {
-         log.add(new ExceptionEntry(ex));
-      }
-
       new Kicker(this).start();
    }
 
@@ -60,6 +53,12 @@ public class UsageLog {
    public static UsageLog getInstance() {
       if (instance == null) {
          instance = new UsageLog();
+         instance.userId = -1;
+         try {
+            instance.userId = SkynetAuthentication.getUser().getArtId();
+         } catch (Exception ex) {
+            instance.log.add(new ExceptionEntry(ex));
+         }
       }
       return instance;
    }

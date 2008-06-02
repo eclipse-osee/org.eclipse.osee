@@ -551,7 +551,7 @@
 		<Column id="MAPPED_BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="STATIC_BRANCH_NAME"  defaultValue="not null" type="VARCHAR" limits="128" />
 		<Constraint schema="OSEE" id="BRANCH_DEFINITIONS_SBN_PK" type="PRIMARY KEY" appliesTo="STATIC_BRANCH_NAME" />
-		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__OBD_FK" type="FOREIGN KEY" appliesTo="MAPPED_BRANCH_ID">
+		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__OBD_FK" type="FOREIGN KEY" appliesTo="MAPPED_BRANCH_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_DEFINE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
 		</Constraint>
 	</Table>
