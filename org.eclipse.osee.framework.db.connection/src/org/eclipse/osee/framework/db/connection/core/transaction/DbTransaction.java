@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.db.connection.core.transaction;
 import java.sql.Connection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.Activator;
+import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -51,7 +52,9 @@ public abstract class DbTransaction {
       Connection connection = OseeDbConnection.getConnection();
       try {
          OseeLog.log(Activator.class.getName(), Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
+         connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
          connection.setAutoCommit(false);
+         DbUtil.deferConstraintChecking(connection);
          handleTxWork(connection);
          connection.commit();
          OseeLog.log(Activator.class.getName(), Level.FINEST, String.format("End Transaction: [%s]", getTxName()));
