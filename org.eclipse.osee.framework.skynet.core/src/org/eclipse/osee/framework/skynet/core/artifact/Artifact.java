@@ -503,6 +503,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       return attributes.getValues();
    }
 
+   void deleteAttributes() {
+      for (Attribute<?> attribute : attributes.getValues()) {
+         attribute.delete();
+      }
+   }
+
    private void ensureAttributesLoaded() throws SQLException {
       if (!isAttributesLoaded() && isInDb()) {
          ArtifactLoader.loadArtifactData(this, ArtifactLoad.ATTRIBUTE);

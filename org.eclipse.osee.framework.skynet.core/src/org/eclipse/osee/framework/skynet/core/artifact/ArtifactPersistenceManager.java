@@ -573,6 +573,7 @@ public class ArtifactPersistenceManager {
             ModType.Deleted, this));
 
       RelationManager.deleteRelationsAll(artifact);
+      artifact.deleteAttributes();
       artifact.persistRelations();
       TagManager.getInstance().clearTags(artifact, SystemTagDescriptor.AUTO_INDEXED.getDescriptor());
    }
