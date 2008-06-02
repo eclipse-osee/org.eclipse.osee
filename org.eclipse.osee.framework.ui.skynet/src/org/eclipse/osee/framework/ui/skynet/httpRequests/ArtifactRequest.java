@@ -197,7 +197,7 @@ public class ArtifactRequest implements IHttpServerRequest {
       } else {
          branch = branchManager.getBranch(branchName);
       }
-      return ArtifactQuery.getArtifactFromId(guid, branch);
+      return ArtifactQuery.getArtifactFromId(guid, branch, true);
    }
 
    private Artifact getArtifactBasedOnTransactionNumber(String guid, int transactioNumber) throws Exception {
