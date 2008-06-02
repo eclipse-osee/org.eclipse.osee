@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -71,13 +70,8 @@ public class SkynetTransactionBuilder {
          addArtifact(artifact);
    }
 
-   public void addLink(RelationLink link) throws SQLException, ArtifactDoesNotExist {
-      relationManager.doSave(link, getTransaction(link.isVersionControlled()));
-   }
-
-   public void addLinks(Collection<RelationLink> links) throws SQLException, ArtifactDoesNotExist {
-      for (RelationLink link : new ArrayList<RelationLink>(links))
-         addLink(link);
+   public void addLinkToPersist(RelationLink link) throws SQLException, ArtifactDoesNotExist {
+      relationManager.persist(link, getTransaction(link.isVersionControlled()));
    }
 
    public void deleteArtifact(Artifact artifact) throws Exception {
@@ -86,10 +80,6 @@ public class SkynetTransactionBuilder {
       // work
       monitor.subTask("Deleting " + artifact.getDescriptiveName());
       artifactManager.doDelete(artifact, getTransaction(artifact.isVersionControlled()), this);
-   }
-
-   public void deleteLink(RelationLink link) throws SQLException {
-      relationManager.doDelete(link, getTransaction(link.isVersionControlled()));
    }
 
    /**

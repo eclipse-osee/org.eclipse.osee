@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,6 +22,7 @@ import org.eclipse.osee.framework.db.connection.core.query.Query;
 import org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkModifiedEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -31,14 +31,12 @@ import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.data.RelationTransactionData;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.utility.RemoteLinkEventFactory;
 
 /**
  * Controls all aspects of saving and recovering relations. The data-store happens to be a database, but that should be
@@ -97,11 +95,7 @@ public class RelationPersistenceManager implements PersistenceManager {
 
          @Override
          protected void handleTxWork() throws Exception {
-            if (relationLink.isDeleted()) {
-               getTxBuilder().deleteLink(relationLink);
-            } else {
-               getTxBuilder().addLink(relationLink);
-            }
+            getTxBuilder().addLinkToPersist(relationLink);
          }
       };
       try {
@@ -111,115 +105,63 @@ public class RelationPersistenceManager implements PersistenceManager {
       }
    }
 
-   private void insertRelationLinkTable(RelationLink relation, SkynetTransaction transaction) throws SQLException, ArtifactDoesNotExist {
+   public void persist(RelationLink link, SkynetTransaction transaction) throws SQLException, ArtifactDoesNotExist {
+      // The relation will be clean by the end of this, so mark it early so that this relation won't be
+      // persisted by its other artifact
+      link.setNotDirty();
+
       int gammaId = SkynetDatabase.getNextGammaId();
       ModType modType;
       ModificationType modId;
 
-      if (!relation.isInDb()) {
-         Artifact aArtifact = relation.getArtifact(RelationSide.SIDE_A);
+      if (link.isInDb()) {
+         if (link.isDeleted()) {
+            modType = ModType.Deleted;
+            modId = ModificationType.DELETED;
+
+            transaction.addRemoteEvent(new NetworkRelationLinkDeletedEvent(link.getRelationType().getRelationTypeId(),
+                  link.getGammaId(), link.getBranch().getBranchId(), transaction.getTransactionNumber(),
+                  link.getRelationId(), link.getArtifactId(RelationSide.SIDE_A),
+                  link.getArtifactId(RelationSide.SIDE_B), SkynetAuthentication.getUser().getArtId()));
+         } else {
+            link.setGammaId(gammaId);
+            modType = ModType.Changed;
+            modId = ModificationType.CHANGE;
+
+            transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(link.getGammaId(),
+                  link.getBranch().getBranchId(), transaction.getTransactionNumber(), link.getRelationId(),
+                  link.getAArtifactId(), link.getBArtifactId(), link.getRationale(), link.getAOrder(),
+                  link.getBOrder(), SkynetAuthentication.getUser().getArtId(),
+                  link.getRelationType().getRelationTypeId()));
+         }
+      } else {
+         if (link.isDeleted()) return;
+
+         Artifact aArtifact = link.getArtifact(RelationSide.SIDE_A);
          if (!aArtifact.isInDb()) {
             aArtifact.persistAttributes();
          }
-         Artifact bArtifact = relation.getArtifact(RelationSide.SIDE_B);
+         Artifact bArtifact = link.getArtifact(RelationSide.SIDE_B);
          if (!bArtifact.isInDb()) {
             bArtifact.persistAttributes();
          }
 
          int relationId = Query.getNextSeqVal(null, SkynetDatabase.REL_LINK_ID_SEQ);
-         relation.setPersistenceIds(relationId, gammaId);
-         transaction.addRemoteEvent(RemoteLinkEventFactory.makeEvent(relation, transaction.getTransactionNumber()));
+         link.setPersistenceIds(relationId, gammaId);
          modType = ModType.Added;
          modId = ModificationType.NEW;
-      } else {
-         relation.setGammaId(gammaId);
 
-         transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(relation.getGammaId(),
-               relation.getBranch().getBranchId(), transaction.getTransactionNumber(), relation.getRelationId(),
-               relation.getAArtifactId(), relation.getBArtifactId(), relation.getRationale(), relation.getAOrder(),
-               relation.getBOrder(), SkynetAuthentication.getUser().getArtId(),
-               relation.getRelationType().getRelationTypeId()));
-
-         modType = ModType.Changed;
-         modId = ModificationType.CHANGE;
+         transaction.addRemoteEvent(new NetworkNewRelationLinkEvent(link.getGammaId(), link.getBranch().getBranchId(),
+               transaction.getTransactionNumber(), link.getRelationId(), link.getAArtifactId(), link.getBArtifactId(),
+               link.getRationale(), link.getAOrder(), link.getBOrder(), link.getRelationType().getRelationTypeId(),
+               link.getRelationType().getTypeName(), SkynetAuthentication.getUser().getArtId()));
       }
 
-      transaction.addTransactionDataItem(new RelationTransactionData(relation, gammaId,
-            transaction.getTransactionNumber(), modId, transaction.getBranch()));
+      transaction.addTransactionDataItem(new RelationTransactionData(link, gammaId, transaction.getTransactionNumber(),
+            modId, transaction.getBranch()));
 
-      transaction.addLocalEvent(new TransactionRelationModifiedEvent(relation, relation.getBranch(),
-            relation.getRelationType().getTypeName(), relation.getASideName(), modType, this));
-   }
-
-   /**
-    * Remove all relations stored in the list awaiting to be deleted.
-    */
-   static void deleteRelationLinks(final Collection<RelationLink> links, Branch branch) throws SQLException {
-
-      if (!links.isEmpty()) {
-         AbstractSkynetTxTemplate deleteRelationsTx = new AbstractSkynetTxTemplate(branch) {
-
-            @Override
-            protected void handleTxWork() throws SQLException {
-               for (RelationLink link : links) {
-                  getTxBuilder().deleteLink(link);
-               }
-            }
-         };
-
-         try {
-            deleteRelationsTx.execute();
-         } catch (Exception ex) {
-            throw new SQLException(ex.getLocalizedMessage());
-         }
-      }
-   }
-
-   public void doDelete(RelationLink relationLink, SkynetTransaction transaction) throws SQLException {
-      if (!relationLink.isInDb()) return;
-
-      int gammaId = SkynetDatabase.getNextGammaId();
-
-      transaction.addTransactionDataItem(new RelationTransactionData(relationLink, gammaId,
-            transaction.getTransactionNumber(), ModificationType.DELETED, transaction.getBranch()));
-
-      transaction.addRemoteEvent(new NetworkRelationLinkDeletedEvent(
-            relationLink.getRelationType().getRelationTypeId(), relationLink.getGammaId(),
-            relationLink.getBranch().getBranchId(), transaction.getTransactionNumber(), relationLink.getRelationId(),
-            relationLink.getArtifactId(RelationSide.SIDE_A), relationLink.getArtifactId(RelationSide.SIDE_B),
-            SkynetAuthentication.getUser().getArtId()));
-
-      transaction.addLocalEvent(new TransactionRelationModifiedEvent(relationLink, relationLink.getBranch(),
-            relationLink.getRelationType().getTypeName(), relationLink.getASideName(), ModType.Deleted, this));
-   }
-
-   public void doSave(RelationLink link, SkynetTransaction transaction) throws SQLException, ArtifactDoesNotExist {
-      // The relation will be clean by the end of this, so mark it early so that this relation won't be
-      // persisted by its other artifact
-      link.setNotDirty();
-
-      if (!link.isInDb() || link.isVersionControlled()) {
-         insertRelationLinkTable(link, transaction);
-      } else {
-         String rationale = link.getRationale();
-
-         ConnectionHandler.runPreparedUpdate(
-               "UPDATE " + RELATION_LINK_VERSION_TABLE + " SET a_art_id=?, b_art_id=?, a_order_value=?, b_order_value=?, rationale=? WHERE rel_link_id=?",
-               SQL3DataType.INTEGER, link.getArtifactId(RelationSide.SIDE_A), SQL3DataType.INTEGER,
-               link.getArtifactId(RelationSide.SIDE_B), SQL3DataType.INTEGER, link.getOrder(RelationSide.SIDE_A),
-               SQL3DataType.INTEGER, link.getOrder(RelationSide.SIDE_B), SQL3DataType.VARCHAR, rationale,
-               SQL3DataType.INTEGER, link.getRelationId());
-
-         transaction.addRemoteEvent(new NetworkRelationLinkModifiedEvent(link.getGammaId(),
-               link.getBranch().getBranchId(), transaction.getTransactionNumber(), link.getRelationId(),
-               link.getArtifactId(RelationSide.SIDE_A), link.getArtifactId(RelationSide.SIDE_B), rationale,
-               link.getOrder(RelationSide.SIDE_A), link.getOrder(RelationSide.SIDE_B),
-               SkynetAuthentication.getUser().getArtId(),
-               link.getRelationType().getRelationTypeId()));
-
-         transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, link.getBranch(),
-               link.getRelationType().getTypeName(), link.getASideName(), ModType.Changed, this));
-      }
+      transaction.addLocalEvent(new TransactionRelationModifiedEvent(link, link.getBranch(),
+            link.getRelationType().getTypeName(), link.getASideName(), modType, this));
    }
 
    /**
