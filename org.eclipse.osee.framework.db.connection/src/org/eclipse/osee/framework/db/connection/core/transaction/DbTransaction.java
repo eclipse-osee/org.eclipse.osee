@@ -52,7 +52,6 @@ public abstract class DbTransaction {
       Connection connection = OseeDbConnection.getConnection();
       try {
          OseeLog.log(Activator.class.getName(), Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
-         connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
          connection.setAutoCommit(false);
          DbUtil.deferConstraintChecking(connection);
          handleTxWork(connection);
