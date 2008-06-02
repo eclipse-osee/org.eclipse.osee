@@ -47,6 +47,20 @@ public class UpdateCurrentColumn extends AbstractBlam {
          "UPDATE osee_Define_tx_details SET tx_type = 0 WHERE tx_type <> 1";
    private static final String UPDATE_TX_DETAILS_BASELINE_TRANSACTIONS_TO_1 =
          "UPDATE osee_Define_tx_details SET tx_type = 1 WHERE osee_comment LIKE '%New Branch%'";
+   private static final String SELECT_ARTIFACT_MOD_TYPE =
+         "select artv1.modification_id, txd1.transaction_id, txs1.gamma_id from osee_define_tx_details txd1, osee_define_txs txs1, osee_define_artifact_version artv1 where txd1.transaction_id > ? and txd1.TRANSACTION_ID = txs1.transaction_id and txs1.gamma_id = artv1.gamma_id";
+   private static final String UPDATE_TXS_MOD_TYPE =
+         "update osee_define_txs set mod_type = ? where transaction_id = ? AND gamma_id = ?";
+   private static final String SELECT_ATTRIBUTE_MOD_TYPE =
+         "select attr1.modification_id, txd1.transaction_id, txs1.gamma_id from osee_define_tx_details txd1, osee_define_txs txs1, osee_define_attribute attr1 where txd1.transaction_id > ? and txd1.TRANSACTION_ID = txs1.transaction_id and txs1.gamma_id = attr1.gamma_id";
+   private static final String SELECT_RELATION_MOD_TYPE =
+         "select rel1.modification_id, txd1.transaction_id, txs1.gamma_id from osee_define_tx_details txd1, osee_define_txs txs1, osee_define_rel_link rel1 where txd1.transaction_id > ? and txd1.TRANSACTION_ID = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id";
+   private static final String UPDATE_B_ORDER = "update osee_define_rel_link set b_order where gamma_id = ?";
+   private static final String SELECT_B_RELATION_ORDER =
+         "select rel1.rel_link_type_id,  rel1.a_art_id, txd1.branch_id, rel1.b_order, txs1.gamma_id, rel1.b_art_id, rel1.a_order_value from osee_define_tx_details txd1, osee_define_rel_link rel1, osee_define_txs txs1 where txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.a_order_value";
+   private static final String SELECT_A_RELATION_ORDER =
+         "select rel1.rel_link_type_id,  rel1.b_art_id, txd1.branch_id, rel1.a_order, txs1.gamma_id, rel1.a_art_id, rel1.b_order_value    from osee_define_tx_details txd1, osee_define_rel_link rel1, osee_define_txs txs1 where txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.b_art_id, rel1.b_order_value";
+   private static final String UPDATE_A_ORDER = "update osee_define_rel_link set a_order where gamma_id = ?";
 
    private class UpdateHelper {
       int type;
@@ -76,6 +90,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
          int rowsUpdated;
          List<UpdateHelper> updates = new ArrayList<UpdateHelper>();
          connection = OseeDbConnection.getConnection();
+
+         //*
          updateBaselineTransactions(connection, txTypeNumber);
          updateBaselinedTransactionsToCurrent(connection, txNumber);
          getUpdates(connection, updates, 1, SELECT_ATTRIBUTES_TO_UPDATE, txNumber);
@@ -92,12 +108,124 @@ public class UpdateCurrentColumn extends AbstractBlam {
          rowsUpdated = updateTxCurrentToOne(connection, updates);
          appendResultLine(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
                rowsUpdated));
+         //*/
+
+         updateArtifactModType(connection, txNumber);
+         updateAttributeModType(connection, txNumber);
+         updateRelationModType(connection, txNumber);
+
+         updateRelationsSortOrder(connection, SELECT_A_RELATION_ORDER, UPDATE_A_ORDER);
+         updateRelationsSortOrder(connection, SELECT_B_RELATION_ORDER, UPDATE_B_ORDER);
+
       } finally {
          if (connection != null) {
             connection.close();
          }
       }
 
+   }
+
+   private void updateArtifactModType(Connection connection, int txNumber) throws SQLException {
+      List<Object[]> batchArgs = new ArrayList<Object[]>();
+      ConnectionHandlerStatement stmt = null;
+      try {
+         stmt =
+               ConnectionHandler.runPreparedQuery(connection, 0, SELECT_ARTIFACT_MOD_TYPE, new Object[] {
+                     SQL3DataType.INTEGER, txNumber});
+         while (stmt.getRset().next()) {
+            batchArgs.add(new Object[] {SQL3DataType.INTEGER, stmt.getRset().getInt(1), SQL3DataType.INTEGER,
+                  stmt.getRset().getInt(3), SQL3DataType.BIGINT, stmt.getRset().getLong(3)});
+         }
+         DbUtil.close(stmt);
+         appendResultLine(String.format("Updating %d artifact mod types.\n", batchArgs.size()));
+         int count = ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_MOD_TYPE, batchArgs);
+         appendResultLine(String.format("Updated %d rows.\n", count));
+      } finally {
+         DbUtil.close(stmt);
+      }
+   }
+
+   private void updateAttributeModType(Connection connection, int txNumber) throws SQLException {
+      List<Object[]> batchArgs = new ArrayList<Object[]>();
+      ConnectionHandlerStatement stmt = null;
+      try {
+         stmt =
+               ConnectionHandler.runPreparedQuery(connection, 0, SELECT_ATTRIBUTE_MOD_TYPE, new Object[] {
+                     SQL3DataType.INTEGER, txNumber});
+         while (stmt.getRset().next()) {
+            batchArgs.add(new Object[] {SQL3DataType.INTEGER, stmt.getRset().getInt(1), SQL3DataType.INTEGER,
+                  stmt.getRset().getInt(3), SQL3DataType.BIGINT, stmt.getRset().getLong(3)});
+         }
+         DbUtil.close(stmt);
+         appendResultLine(String.format("Updating %d attribute mode types.\n", batchArgs.size()));
+         int count = ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_MOD_TYPE, batchArgs);
+         appendResultLine(String.format("Updated %d rows.\n", count));
+      } finally {
+         DbUtil.close(stmt);
+      }
+   }
+
+   private void updateRelationModType(Connection connection, int txNumber) throws SQLException {
+      List<Object[]> batchArgs = new ArrayList<Object[]>();
+      ConnectionHandlerStatement stmt = null;
+      try {
+         stmt =
+               ConnectionHandler.runPreparedQuery(connection, 0, SELECT_RELATION_MOD_TYPE, new Object[] {
+                     SQL3DataType.INTEGER, txNumber});
+         while (stmt.getRset().next()) {
+            batchArgs.add(new Object[] {SQL3DataType.INTEGER, stmt.getRset().getInt(1), SQL3DataType.INTEGER,
+                  stmt.getRset().getInt(3), SQL3DataType.BIGINT, stmt.getRset().getLong(3)});
+         }
+         DbUtil.close(stmt);
+         appendResultLine(String.format("Updating %d relation mode types.\n", batchArgs.size()));
+         int count = ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_MOD_TYPE, batchArgs);
+         appendResultLine(String.format("Updated %d rows.\n", count));
+      } finally {
+         DbUtil.close(stmt);
+      }
+   }
+
+   private void updateRelationsSortOrder(Connection connection, String select, String update) throws SQLException {
+      int rel_link_type, art_id, branch_id, order;
+      int rel_link_type_old = 0, art_id_old = 0, branch_id_old = 0;
+      int new_order;
+      int other_side_art_id = 0;
+      List<Object[]> batchArgs = new ArrayList<Object[]>();
+
+      ConnectionHandlerStatement stmt = null;
+      try {
+         stmt = ConnectionHandler.runPreparedQuery(connection, 5000, select);
+         while (stmt.getRset().next()) {
+
+            rel_link_type = stmt.getRset().getInt(1);
+            art_id = stmt.getRset().getInt(2);
+            branch_id = stmt.getRset().getInt(3);
+            order = stmt.getRset().getInt(4);
+
+            if (!(rel_link_type != rel_link_type_old || art_id != art_id_old || branch_id != branch_id_old)) {//then it's a new start of ordering
+               new_order = -1;
+            } else {
+               new_order = other_side_art_id;
+            }
+
+            if (new_order != order) {
+               batchArgs.add(new Object[] {SQL3DataType.INTEGER, new_order, SQL3DataType.BIGINT,
+                     stmt.getRset().getLong(5)});
+            }
+
+            rel_link_type_old = rel_link_type;
+            art_id_old = art_id;
+            branch_id_old = branch_id;
+
+            other_side_art_id = stmt.getRset().getInt(6);
+         }
+         DbUtil.close(stmt);
+         appendResultLine(String.format("Updating %d relation orders.\n", batchArgs.size()));
+         int count = ConnectionHandler.runPreparedUpdate(connection, update, batchArgs);
+         appendResultLine(String.format("Updated %d rows.\n", count));
+      } finally {
+         DbUtil.close(stmt);
+      }
    }
 
    /**
