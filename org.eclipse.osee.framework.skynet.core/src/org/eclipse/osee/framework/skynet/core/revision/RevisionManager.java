@@ -420,7 +420,6 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       ArrayList<Change> changes = new ArrayList<Change>();
       Set<Integer> artIds = new HashSet<Integer>();
 
-      //Artifact changes must be ran before attribute changes so new artifacts can be displayed as artifact changes not attribute changes.
       loadNewOrDeletedArtifactChanges(sourceBranch, transactionIdNumber, artIds, changes);
       loadAttributeChanges(sourceBranch, transactionIdNumber, artIds, changes);
       loadRelationChanges(sourceBranch, transactionIdNumber, artIds, changes);
@@ -463,7 +462,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
             //We do not want to display artifacts that were new and then deleted
             if (!artifactChanges.containsKey(artId)) {
-            artIds.add(artId);
+               artIds.add(artId);
                changes.add(artifactChanged);
                artifactChanges.put(artId, artifactChanged);
             } else {
@@ -522,7 +521,6 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       Map<Integer, Change> mightNeedWasValue = new HashMap<Integer, Change>();
       ConnectionHandlerStatement connectionHandlerStatement = null;
       boolean hasBranch = sourceBranch != null;
-      Set<Integer> attributeArtIds = new HashSet<Integer>();
       TransactionId sourceHeadTransactionId;
       TransactionId sourceEndTransactionId;
 
@@ -559,21 +557,15 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             int modType = resultSet.getInt("mod_type");
             String isValue = resultSet.getString("is_value");
 
-            //New artifacts are displayed as artifact changes not attribute changes
-            if (!artIds.contains(artId)) {
             attributeChanged =
                   new AttributeChanged(sourceBranch, artTypeId, sourceGamma, artId, sourceEndTransactionId,
-                           sourceHeadTransactionId,
-                           hasBranch ? ModificationType.NEW : ModificationType.getMod(modType), ChangeType.OUTGOING,
-                           isValue, "", attrId, attrTypeId);
+                        sourceHeadTransactionId, hasBranch ? ModificationType.NEW : ModificationType.getMod(modType),
+                        ChangeType.OUTGOING, isValue, "", attrId, attrTypeId);
 
             changes.add(attributeChanged);
             mightNeedWasValue.put(attrId, attributeChanged);
-               attributeArtIds.add(artId);
-            }
+            artIds.add(artId);
          }
-
-         artIds.addAll(attributeArtIds);
 
          //Load was values for branch change reports only
          if (hasBranch && !artIds.isEmpty()) {
