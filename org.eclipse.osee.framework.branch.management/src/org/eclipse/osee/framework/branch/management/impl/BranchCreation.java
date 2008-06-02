@@ -88,8 +88,8 @@ public class BranchCreation implements IBranchCreation {
                SQL3DataType.TIMESTAMP, timestamp, SQL3DataType.INTEGER, authorId, SQL3DataType.INTEGER, 1);
 
          specializedBranchOperations(branchId, newTransactionNumber, connection);
-         success = true;
 
+         success = true;
       }
 
       private int initializeBranch(Connection connection, String branchShortName, String branchName, int parentBranchId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId) throws SQLException {
@@ -152,7 +152,7 @@ public class BranchCreation implements IBranchCreation {
        */
       @Override
       public void specializedBranchOperations(int newBranchId, int newTransactionNumber, Connection connection) throws SQLException {
-         if (staticBranchName != null) ConnectionHandler.runPreparedUpdate(INSERT_DEFAULT_BRANCH_NAMES,
+         if (staticBranchName != null) ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES,
                SQL3DataType.VARCHAR, staticBranchName, SQL3DataType.INTEGER, branchId);
 
       }
