@@ -18,8 +18,8 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 
 /**
  * @author Ryan D. Brooks
@@ -79,9 +79,7 @@ public class EditingFolderVisitor implements IResourceDeltaVisitor {
                visitorCounters[7]++;
                UpdateArtifactJob updateJob = new UpdateArtifactJob();
                updateJob.setWorkingFile(file);
-               updateJob.setUser(false);
-               updateJob.setPriority(Job.SHORT);
-               updateJob.schedule();
+               Jobs.startJob(updateJob);
             } else {
                // don't process file on the first time it is "modified" because this happens as soon as the file is written out (and not yet modified)
                fileNameSet.add(file.getName());
