@@ -24,9 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  * @author Roberto E. Escobar
  */
 public class HttpProcessor {
-
    private static final int CONNECTION_TIMEOUT = 1000 * 60 * 2;
-   private static final int CONNECTION_READ_TIMEOUT = 1000 * 10;
 
    private HttpProcessor() {
    }
@@ -34,7 +32,7 @@ public class HttpProcessor {
    private static HttpURLConnection setupConnection(URL url) throws IOException {
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
       connection.setConnectTimeout(CONNECTION_TIMEOUT);
-      connection.setReadTimeout(CONNECTION_READ_TIMEOUT);
+      connection.setReadTimeout(0);
       return connection;
    }
 
