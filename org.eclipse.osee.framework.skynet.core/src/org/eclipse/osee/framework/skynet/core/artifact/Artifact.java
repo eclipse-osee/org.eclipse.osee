@@ -912,7 +912,13 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    }
 
    public void persistRelations() throws SQLException {
-      RelationManager.persistRelationsFor(this);
+      RelationManager.persistRelationsFor(this, null);
+   }
+
+   public void persistRelations(Collection<RelationType> relationTypes) throws SQLException {
+      for (RelationType relationType : relationTypes) {
+         RelationManager.persistRelationsFor(this, relationType);
+      }
    }
 
    public void persistAttributesAndRelations() throws SQLException {

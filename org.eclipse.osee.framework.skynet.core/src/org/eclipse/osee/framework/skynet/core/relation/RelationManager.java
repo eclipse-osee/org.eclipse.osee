@@ -271,8 +271,19 @@ public class RelationManager {
       return false;
    }
 
-   public static void persistRelationsFor(Artifact artifact) throws SQLException {
-      List<RelationLink> selectedRelations = artifactToRelations.get(artifact);
+   /**
+    * @param artifact
+    * @param relationType if not null persists the relations of this type, otherwise persists relations of all types
+    * @throws SQLException
+    */
+   public static void persistRelationsFor(Artifact artifact, RelationType relationType) throws SQLException {
+      List<RelationLink> selectedRelations;
+      if (relationType == null) {
+         selectedRelations = artifactToRelations.get(artifact);
+      } else {
+         selectedRelations = relationsByType.get(artifact, relationType);
+      }
+
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relation.isDirty()) {
