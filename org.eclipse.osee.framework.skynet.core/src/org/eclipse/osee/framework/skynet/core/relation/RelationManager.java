@@ -16,9 +16,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -108,29 +110,7 @@ public class RelationManager {
             selectedRelations = Collections.synchronizedList(new ArrayList<RelationLink>(4));
             relationsByType.put(artifact, relation.getRelationType(), selectedRelations);
          }
-         RelationSide sideToSort = relation.getSide(artifact).oppositeSide();
          selectedRelations.add(relation);
-
-         //sort the relations
-         int artId = LINKED_LIST_KEY;
-         int lastArtId = LINKED_LIST_KEY;
-         for (int i = 0; i < selectedRelations.size(); i++) {
-            if (selectedRelations.get(i).getSide(artifact).oppositeSide() == sideToSort) {
-               for (int j = i; j < selectedRelations.size(); j++) {
-                  if (selectedRelations.get(j).getSide(artifact).oppositeSide() == sideToSort) {
-                     lastArtId = selectedRelations.get(j).getArtifactId(sideToSort);
-                     int newId = selectedRelations.get(j).getOrder(sideToSort);
-                     if (newId == artId) {
-                        if (i != j) {
-                           selectedRelations.add(i, selectedRelations.remove(j));
-                        }
-                        break;
-                     }
-                  }
-               }
-               artId = lastArtId;
-            }
-         }
       }
    }
 
@@ -347,8 +327,10 @@ public class RelationManager {
 
       if (relation == null) {
          relation = new RelationLink(artifactA, artifactB, relationType, rationale);
-
          relation.setDirty();
+
+         setDefaultRelationOrder(relation, artifactA, artifactB);
+
          RelationManager.manageRelation(relation, RelationSide.SIDE_A);
          RelationManager.manageRelation(relation, RelationSide.SIDE_B);
       }
@@ -506,6 +488,153 @@ public class RelationManager {
 
       for (int i = movedArts.length - 1; i >= 0; i--) {
          addRelationAndModifyOrder(parentArtifact, movedArts[i], targetRelation, infront);
+      }
+   }
+
+   /**
+    * @param sideA
+    * @param targetArtifact
+    * @param insertAfterTarget
+    * @param relationType
+    * @param artifactA
+    * @param artifactB
+    * @param rationale
+    * @throws SQLException
+    * @throws OseeCoreException
+    */
+   public static void addRelation(Artifact artifactATarget, boolean insertAfterATarget, Artifact artifactBTarget, boolean insertAfterBTarget, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws SQLException, OseeCoreException {
+
+      ensureRelationCanBeAdded(relationType, artifactA, artifactB);
+
+      RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
+
+      if (relation == null) {
+         relation = new RelationLink(artifactA, artifactB, relationType, rationale);
+         relation.setDirty();
+
+         setDefaultRelationOrder(relation, artifactA, artifactB);
+
+         RelationManager.manageRelation(relation, RelationSide.SIDE_A);
+         RelationManager.manageRelation(relation, RelationSide.SIDE_B);
+
+         setRelationOrdering(RelationSide.SIDE_B, relation, artifactBTarget, insertAfterBTarget, artifactA, artifactA,
+               artifactBTarget);
+         setRelationOrdering(RelationSide.SIDE_A, relation, artifactATarget, insertAfterATarget, artifactB,
+               artifactATarget, artifactB);
+      }
+      SkynetEventManager.getInstance().kick(
+            new CacheRelationModifiedEvent(relation, relation.getABranch(), relation.getRelationType().getTypeName(),
+                  relation.getASideName(), ModType.Added, RelationManager.class));
+
+   }
+
+   private static void setDefaultRelationOrder(RelationLink relation, Artifact artifactA, Artifact artifactB) {
+      List<RelationLink> selectedRelations = getRelations(artifactA, relation.getRelationType(), RelationSide.SIDE_B);
+      if (selectedRelations != null && selectedRelations.size() > 0) {
+         relation.setOrder(RelationSide.SIDE_B, selectedRelations.get(selectedRelations.size() - 1).getArtifactId(
+               RelationSide.SIDE_B));
+      } else {
+         relation.setOrder(RelationSide.SIDE_B, -1);
+      }
+      selectedRelations = getRelations(artifactB, relation.getRelationType(), RelationSide.SIDE_A);
+      if (selectedRelations != null && selectedRelations.size() > 0) {
+         relation.setOrder(RelationSide.SIDE_A, selectedRelations.get(selectedRelations.size() - 1).getArtifactId(
+               RelationSide.SIDE_A));
+      } else {
+         relation.setOrder(RelationSide.SIDE_A, -1);
+      }
+   }
+
+   private static void setRelationOrdering(RelationSide side, RelationLink relation, Artifact targetArtifact, boolean insertAfterTarget, Artifact sourceArtifact, Artifact artA, Artifact artB) throws OseeCoreException {
+      if (targetArtifact != null) {
+
+         RelationLink targetRelation =
+               getLoadedRelation(sourceArtifact, artA.getArtId(), artB.getArtId(), relation.getRelationType());
+         if (targetRelation == null) {
+            throw new OseeCoreException(String.format(
+                  "No Relation exists on [%s] of type [%s] between aArtId[%d] and bArtId[%d].", artA.toString(),
+                  relation.getRelationType().toString(), artA.getArtId(), artB.getArtId()));
+         }
+         List<RelationLink> selectedRelations = relationsByType.get(sourceArtifact, relation.getRelationType());
+         if (selectedRelations.remove(relation)) {
+            int targetIndex = selectedRelations.indexOf(targetRelation);
+            int index = insertAfterTarget ? targetIndex + 1 : targetIndex;
+            selectedRelations.add(index, relation);
+            if (index == 0) {
+               relation.setOrder(side, LINKED_LIST_KEY);
+            } else {
+               boolean updatedOrder = false;
+               for (int i = index + 1; i < selectedRelations.size() && !updatedOrder; i++) {
+                  if (selectedRelations.get(i).getArtifactId(side.oppositeSide()) == sourceArtifact.getArtId()) {
+                     selectedRelations.get(i).setOrder(side, relation.getArtifactId(side));
+                     updatedOrder = true;
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   /**
+    * @param targetArtifact
+    * @param insertAfterTarget
+    * @param relationType
+    * @param artifactA
+    * @param artifactB
+    * @throws SQLException
+    * @throws OseeCoreException
+    */
+   public static void setRelationOrder(Artifact artifactATarget, boolean insertAfterATarget, Artifact artifactBTarget, boolean insertAfterBTarget, RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
+
+      RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
+
+      setRelationOrdering(RelationSide.SIDE_B, relation, artifactBTarget, insertAfterBTarget, artifactA, artifactA,
+            artifactBTarget);
+      setRelationOrdering(RelationSide.SIDE_A, relation, artifactATarget, insertAfterATarget, artifactB,
+            artifactATarget, artifactB);
+      SkynetEventManager.getInstance().kick(
+            new CacheRelationModifiedEvent(relation, relation.getABranch(), relation.getRelationType().getTypeName(),
+                  relation.getASideName(), ModType.Added, RelationManager.class));
+   }
+
+   /**
+    * @param artifact
+    * @throws SQLException
+    */
+   public static void sortRelations(Artifact artifact, Map<Integer, RelationLink> sideA, Map<Integer, RelationLink> sideB) throws SQLException {
+      List<RelationType> types = RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
+      for (RelationType type : types) {
+         List<RelationLink> relations = relationsByType.get(artifact, type);
+         if (relations != null) {
+            sideA.clear();
+            sideB.clear();
+            for (RelationLink relation : relations) {
+               if (!relation.isDeleted()) {
+                  if (relation.getSide(artifact) == RelationSide.SIDE_A) {
+                     sideB.put(relation.getOrder(RelationSide.SIDE_B), relation);
+                  } else {
+                     sideA.put(relation.getOrder(RelationSide.SIDE_A), relation);
+                  }
+               }
+            }
+
+            relations.clear();
+
+            //do side b first
+            RelationLink relation = sideB.remove(LINKED_LIST_KEY);
+            while (relation != null) {
+               relations.add(relation);
+               relation = sideB.remove(relation.getArtifactId(RelationSide.SIDE_B));
+            }
+            relations.addAll(sideB.values());
+            //now side a
+            relation = sideA.remove(LINKED_LIST_KEY);
+            while (relation != null) {
+               relations.add(relation);
+               relation = sideA.remove(relation.getArtifactId(RelationSide.SIDE_A));
+            }
+            relations.addAll(sideA.values());
+         }
       }
    }
 }

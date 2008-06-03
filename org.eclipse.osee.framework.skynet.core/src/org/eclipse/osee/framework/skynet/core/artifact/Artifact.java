@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -1076,6 +1077,31 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       addRelation(relationSide, artifact, null);
    }
 
+   public void addRelation(Artifact targetArtifact, boolean insertAfterTarget, IRelationEnumeration relationSide, Artifact artifact, String rationale) throws OseeCoreException, SQLException {
+      boolean sideA = relationSide.isSideA();
+      Artifact artifactA = sideA ? artifact : this;
+      Artifact artifactB = sideA ? this : artifact;
+      Artifact targetArtifactA = sideA ? targetArtifact : null;
+      Artifact targetArtifactB = sideA ? null : targetArtifact;
+      boolean insertAfterATarget = sideA ? insertAfterTarget : true;
+      boolean insertAfterBTarget = sideA ? true : insertAfterTarget;
+
+      RelationManager.addRelation(targetArtifactA, insertAfterATarget, targetArtifactB, insertAfterBTarget,
+            relationSide.getRelationType(), artifactA, artifactB, rationale);
+   }
+
+   public void setRelationOrder(Artifact targetArtifact, boolean insertAfterTarget, IRelationEnumeration relationSide, Artifact artifact) throws SQLException, OseeCoreException {
+      boolean sideA = relationSide.isSideA();
+      Artifact artifactA = sideA ? artifact : this;
+      Artifact artifactB = sideA ? this : artifact;
+      Artifact targetArtifactA = sideA ? targetArtifact : null;
+      Artifact targetArtifactB = sideA ? null : targetArtifact;
+      boolean insertAfterATarget = sideA ? insertAfterTarget : true;
+      boolean insertAfterBTarget = sideA ? true : insertAfterTarget;
+      RelationManager.setRelationOrder(targetArtifactA, insertAfterATarget, targetArtifactB, insertAfterBTarget,
+            relationSide.getRelationType(), artifactA, artifactB);
+   }
+
    /**
     * Use addRelation instead
     * 
@@ -1508,4 +1534,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       this.gammaId = gammaId;
       this.transactionId = active ? 0 : transactionId;
    }
+
+   /**
+    * @throws SQLException
+    */
+   public void sortRelations(Map<Integer, RelationLink> sideA, Map<Integer, RelationLink> sideB) throws SQLException {
+      RelationManager.sortRelations(this, sideA, sideB);
+   }
+
 }
