@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.skynet.core.change;
 import java.sql.SQLException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -87,7 +87,7 @@ public abstract class Change implements IAdaptable {
     */
    public Artifact getArtifact() throws IllegalArgumentException, SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
       if (artifact == null) {
-         artifact = ArtifactQuery.getArtifactFromId(artId, branch, true);
+         artifact = ArtifactCache.getActive(artId, branch);
       }
       return artifact;
    }
