@@ -50,41 +50,45 @@ public class ImportDataFromDbService implements IDbInitializationTask {
             System.out.println("Unable to import table data");
          }
          if (importConnection != null) {
-            System.out.println("Gathering information from ..." + importFromDbService);
+            try {
+               System.out.println("Gathering information from ..." + importFromDbService);
 
-            String userName = importConnection.getMetaData().getUserName();
-            if (userName != null && !userName.equals("")) {
+               String userName = importConnection.getMetaData().getUserName();
+               if (userName != null && !userName.equals("")) {
 
-               Set<String> schemasToGet = new TreeSet<String>();
-               schemasToGet.add(userName.toUpperCase());
+                  Set<String> schemasToGet = new TreeSet<String>();
+                  schemasToGet.add(userName.toUpperCase());
 
-               Map<String, Set<String>> dataToImport =
-                     getTablesToImport(importConnection, userName.toUpperCase(), schemasToGet);
-               if (dataToImport.size() > 0) {
-                  System.out.println(dataToImport.toString().replaceAll(", ", "\n"));
-                  makeBackupDirectoryIfItDoesntExist();
+                  Map<String, Set<String>> dataToImport =
+                        getTablesToImport(importConnection, userName.toUpperCase(), schemasToGet);
+                  if (dataToImport.size() > 0) {
+                     System.out.println(dataToImport.toString().replaceAll(", ", "\n"));
+                     makeBackupDirectoryIfItDoesntExist();
 
-                  System.out.println("Backing up Files to: " + backupDirectory.getAbsolutePath());
-                  DatabaseDataExtractor dbDataExtractor =
-                        new DatabaseDataExtractor(importConnection, schemasToGet, backupDirectory);
+                     System.out.println("Backing up Files to: " + backupDirectory.getAbsolutePath());
+                     DatabaseDataExtractor dbDataExtractor =
+                           new DatabaseDataExtractor(importConnection, schemasToGet, backupDirectory);
 
-                  Set<String> tablesToImport;
-                  if (importFromDbService.equals(determineDefaultConnection())) {
-                     tablesToImport = dataToImport.get(OseeProperties.OSEE_IMPORT_FROM_DB_SERVICE);
-                  } else {
-                     tablesToImport = dataToImport.get(importFromDbService);
+                     Set<String> tablesToImport;
+                     if (importFromDbService.equals(determineDefaultConnection())) {
+                        tablesToImport = dataToImport.get(OseeProperties.OSEE_IMPORT_FROM_DB_SERVICE);
+                     } else {
+                        tablesToImport = dataToImport.get(importFromDbService);
+                     }
+
+                     for (String importTable : tablesToImport) {
+                        dbDataExtractor.addTableNameToExtract(importTable);
+                     }
+                     dbDataExtractor.extract();
+                     dbDataExtractor.waitForWorkerThreads();
+
+                     prepareFilesForImport();
                   }
 
-                  for (String importTable : tablesToImport) {
-                     dbDataExtractor.addTableNameToExtract(importTable);
-                  }
-                  dbDataExtractor.extract();
-                  dbDataExtractor.waitForWorkerThreads();
-
-                  prepareFilesForImport();
                }
+            } finally {
+               importConnection.close();
             }
-            importConnection.close();
          }
       }
    }

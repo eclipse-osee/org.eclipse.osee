@@ -46,15 +46,21 @@ public class InitTablesFromCSV extends DbInitializationTask {
       // IN CODESET VARCHAR(128),
       // IN REPLACE SMALLINT)
       String tableName = file.getName().replace(DbConfigFileInformation.getCSVFileExtension(), "").toUpperCase();
-      PreparedStatement statement = connection.prepareStatement("CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE (?,?,?,?,?,?,?)");
-      statement.setString(1, schemaName);
-      statement.setString(2, tableName);
-      statement.setString(3, file.getAbsolutePath());
-      statement.setNull(4, Types.CHAR);
-      statement.setNull(5, Types.CHAR);
-      statement.setNull(6, Types.VARCHAR);
-      statement.setInt(7, 0);
-      statement.execute();
-      statement.close();
+      PreparedStatement statement = null;
+      try {
+         statement = connection.prepareStatement("CALL SYSCS_UTIL.SYSCS_IMPORT_TABLE (?,?,?,?,?,?,?)");
+         statement.setString(1, schemaName);
+         statement.setString(2, tableName);
+         statement.setString(3, file.getAbsolutePath());
+         statement.setNull(4, Types.CHAR);
+         statement.setNull(5, Types.CHAR);
+         statement.setNull(6, Types.VARCHAR);
+         statement.setInt(7, 0);
+         statement.execute();
+      } finally {
+         if (statement != null) {
+            statement.close();
+         }
+      }
    }
 }

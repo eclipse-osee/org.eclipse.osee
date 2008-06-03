@@ -12,7 +12,6 @@ Export-Package: org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.initialize,
  org.eclipse.osee.framework.database.initialize.tasks,
  org.eclipse.osee.framework.database.initialize.tasks.relational,
- org.eclipse.osee.framework.database.schemas,
  org.eclipse.osee.framework.database.sql,
  org.eclipse.osee.framework.database.sql.datatype,
  org.eclipse.osee.framework.database.utility

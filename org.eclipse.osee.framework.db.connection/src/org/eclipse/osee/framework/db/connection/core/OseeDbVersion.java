@@ -35,7 +35,6 @@ public class OseeDbVersion {
    public static final String OSEE_DB_CHECK_VERSION_KEY = "osee.db.version.check.enabled";
 
    public static String getOseeDbVersion(Connection connection) throws SQLException {
-
       return OseeInfo.getValue(OSEE_DB_VERSION_KEY);
    }
 
@@ -69,9 +68,15 @@ public class OseeDbVersion {
       else
          query = "UPDATE OSEE_INFO SET OSEE_VALUE = \'" + value + "\' WHERE OSEE_KEY = \'" + key + "\'";
 
-      Statement statement = connection.createStatement();
-      statement.executeUpdate(query);
-      statement.close();
+      Statement statement = null;
+      try {
+         statement = connection.createStatement();
+         statement.executeUpdate(query);
+      } finally {
+         if (statement != null) {
+            statement.close();
+         }
+      }
    }
 
    public static void ensureDatabaseCompatability(Connection connection) throws Exception {

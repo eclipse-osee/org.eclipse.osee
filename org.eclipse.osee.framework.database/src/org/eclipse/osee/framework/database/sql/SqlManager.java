@@ -89,15 +89,12 @@ public abstract class SqlManager {
             sqlDataType.preparedStatementHelper(statement, index + 1, columnTypes.get(index), columnValues.get(index));
          }
          statement.executeUpdate();
-         statement.close();
       } catch (SQLException e) {
+         throw new Exception(statement + "\n", e);
+      } finally {
          if (statement != null) {
             statement.close();
          }
-         throw new Exception(statement + "\n", e);
-      }
-      if (statement != null) {
-         statement.close();
       }
    }
 
@@ -203,8 +200,9 @@ public abstract class SqlManager {
    }
 
    protected void executeStatement(Connection connection, String sqlStatement) throws SQLException, Exception {
-      Statement statement = connection.createStatement();
+      Statement statement = null;
       try {
+         statement = connection.createStatement();
          statement.execute(sqlStatement);
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, sqlStatement);

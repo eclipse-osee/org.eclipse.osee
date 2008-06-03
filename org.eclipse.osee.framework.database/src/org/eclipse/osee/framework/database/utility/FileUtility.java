@@ -57,7 +57,7 @@ public class FileUtility {
       List<URL> streams = new ArrayList<URL>();
       for (File file : files) {
          try {
-            streams.add(file.toURL());
+            streams.add(file.toURI().toURL());
          } catch (MalformedURLException e) {
             e.printStackTrace();
          }
@@ -74,7 +74,7 @@ public class FileUtility {
       List<URL> streams = new ArrayList<URL>();
       for (File file : files) {
          try {
-            streams.add(file.toURL());
+            streams.add(file.toURI().toURL());
          } catch (MalformedURLException e) {
             e.printStackTrace();
          }

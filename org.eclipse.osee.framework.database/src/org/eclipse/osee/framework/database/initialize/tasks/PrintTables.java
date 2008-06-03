@@ -40,10 +40,11 @@ public class PrintTables extends DbInitializationTask {
    }
 
    private void printTable(Connection connection, String tableName) {
-      Statement statement;
+      Statement statement = null;
+      ResultSet resultSet = null;
       try {
          statement = connection.createStatement();
-         ResultSet resultSet = statement.executeQuery("select * from " + tableName);
+         resultSet = statement.executeQuery("select * from " + tableName);
          ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
          int numberOfColumns = resultSetMetaData.getColumnCount();
          String header = "\nTable:\t" + tableName + "\n";
@@ -70,10 +71,21 @@ public class PrintTables extends DbInitializationTask {
             results += "\n";
             System.out.print(results);
          }
-         resultSet.close();
-         statement.close();
       } catch (SQLException ex) {
          ex.printStackTrace();
+      } finally {
+         try {
+            if (resultSet != null) {
+               resultSet.close();
+            }
+         } catch (Exception ex) {
+         }
+         try {
+            if (statement != null) {
+               statement.close();
+            }
+         } catch (Exception ex) {
+         }
       }
    }
 }

@@ -58,7 +58,6 @@ public class DatabaseSchemaExtractor {
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(DatabaseSchemaExtractor.class);
 
-   private Connection connection;
    private DatabaseMetaData dbData;
    private String dbName;
    private String dbVersion;
@@ -72,8 +71,7 @@ public class DatabaseSchemaExtractor {
 
    public DatabaseSchemaExtractor(Connection connection, Set<String> schemas) throws SQLException {
       super();
-      this.connection = connection;
-      this.dbData = this.connection.getMetaData();
+      this.dbData = connection.getMetaData();
       this.dbName = dbData.getDatabaseProductName();
       this.dbVersion = dbData.getDatabaseProductVersion();
       this.dbType = SqlFactory.getDatabaseType(connection);

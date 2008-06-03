@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.database.initialize.tasks;
 
 import java.sql.Connection;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 public class GatherStatistics extends DbInitializationTask {
@@ -30,7 +31,15 @@ public class GatherStatistics extends DbInitializationTask {
    public void run(Connection connection) throws Exception {
       System.out.println("GatherStatistics");
       if (this.database == SupportedDatabase.oracle) {
-         ConnectionHandler.runPreparedQuery(gatherStats);
+         ConnectionHandlerStatement stmt = null;
+         try {
+            stmt = ConnectionHandler.runPreparedQuery(gatherStats);
+         } finally {
+            if (stmt != null) {
+               stmt.close();
+            }
+         }
+
       }
    }
 }

@@ -34,7 +34,7 @@ public final class DbUtil {
 
    public static void close(ConnectionHandlerStatement chStmt) {
       if (chStmt != null) {
-         close(chStmt.getStatement());
+         chStmt.close();
       }
    }
 

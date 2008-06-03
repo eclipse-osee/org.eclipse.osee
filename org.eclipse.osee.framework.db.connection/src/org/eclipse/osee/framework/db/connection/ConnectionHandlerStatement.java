@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.db.connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Statment object created by the ConnectionHandler. It contains:
@@ -68,10 +70,15 @@ public class ConnectionHandlerStatement {
          if (rset != null) {
             rset.close();
          }
+      } catch (SQLException ex) {
+         OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
+      }
+      try {
          if (statement != null) {
             statement.close();
          }
       } catch (SQLException ex) {
+         OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
       }
    }
 }

@@ -117,7 +117,7 @@ public class Query {
          }
          throw new IllegalArgumentException("No value returned");
       } finally {
-         DbUtil.close(chStmt);
+         chStmt.close();
       }
    }
 }

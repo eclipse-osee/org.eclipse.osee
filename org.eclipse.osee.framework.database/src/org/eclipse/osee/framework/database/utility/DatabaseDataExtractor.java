@@ -131,6 +131,12 @@ public class DatabaseDataExtractor {
             logger.log(Level.SEVERE,
                   "Error Processing Table [ " + table.getSchema() + "." + table.getName() + " ] Data ", ex);
          } finally {
+            try {
+               if (resultSet != null) {
+                  resultSet.close();
+               }
+            } catch (Exception ex) {
+            }
             DbUtil.close(statement);
          }
       }
