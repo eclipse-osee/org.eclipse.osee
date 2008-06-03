@@ -33,12 +33,14 @@ public class UpdateCurrentColumn extends AbstractBlam {
          "SELECT branch_id, maxt, txs1.gamma_id, art_id FROM osee_define_artifact_version arv2,  osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, arv1.art_id AS art, txd1.branch_id FROM osee_define_artifact_version arv1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE arv1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY arv1.art_id, txd1.branch_id) new_stuff WHERE art = arv2.art_id AND arv2.modification_id <> 3 AND arv2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
    private static final String SELECT_RELATIONS_TO_UPDATE =
          "SELECT branch_id, maxt, txs1.gamma_id, rel_id FROM osee_define_rel_link rel2, osee_define_txs txs1, (SELECT MAX(txs2.transaction_id) AS maxt, rel1.rel_link_id AS rel_id, txd1.branch_id FROM osee_define_rel_link rel1, osee_define_txs txs2, osee_define_tx_details txd1 WHERE rel1.gamma_id = txs2.gamma_id and txs2.transaction_id > ? and txd1.tx_type = 0 AND txs2.transaction_id = txd1.transaction_id GROUP BY rel1.rel_link_id, txd1.branch_id) new_stuff WHERE rel_id = rel2.rel_link_id AND rel2.modification_id <> 3 AND rel2.gamma_id = txs1.gamma_id AND txs1.transaction_id = maxt and txs1.transaction_id > ?";
-   private static final String UPDATE_ATTRIBUTE_CURRENT_TO_0 = //TODO PULL APART THESE THREE QUERY BECAUSE I NEED BOTH GAMMA_ID AND TRANSACTION TO FIND THE UNIQUE TXS 
-         "update osee_define_txs set tx_current = 0 where transaction_id = (SELECT txs1.transaction_id from osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute attr1 where txd1.branch_id = ? and attr1.attr_id = ? and txs1.tx_current = 1 and txd1.tx_type = 0 and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = attr1.gamma_id) and gamma_id = (SELECT txs1.gamma_id from osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute attr1 where txd1.branch_id = ? and attr1.attr_id = ? and txs1.tx_current = 1 and txd1.tx_type = 0 and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = attr1.gamma_id)";
-   private static final String UPDATE_ARTIFACT_CURRENT_TO_0 =
-         "update osee_define_txs set tx_current = 0 where transaction_id = (SELECT txs1.transaction_id from osee_define_txs txs1, osee_define_tx_details txd1, osee_define_artifact_version art1 where txd1.branch_id = ? and art1.art_id = ? and txs1.tx_current = 1 and txd1.tx_type = 0 and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = art1.gamma_id) and gamma_id = (SELECT txs1.gamma_id from osee_define_txs txs1, osee_define_tx_details txd1, osee_define_artifact_version art1 where txd1.branch_id = ? and art1.art_id = ? and txs1.tx_current = 1 and txd1.tx_type = 0 and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = art1.gamma_id)";
-   private static final String UPDATE_RELATION_CURRENT_TO_0 =
-         "update osee_define_txs set tx_current = 0 where transaction_id = (SELECT txs1.transaction_id from osee_define_txs txs1, osee_define_tx_details txd1, osee_define_rel_link link1 where txd1.branch_id = ? and link1.rel_link_id = ? and txs1.tx_current = 1 and txd1.tx_type = 0 and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = link1.gamma_id) and gamma_id = (SELECT txs1.gamma_id from osee_define_txs txs1, osee_define_tx_details txd1, osee_define_rel_link link1 where txd1.branch_id = ? and link1.rel_link_id = ? and txs1.tx_current = 1 and txd1.tx_type = 0 and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = link1.gamma_id)";
+   private static final String SELECT_STALE_ATTRIBUTES =
+         "SELECT txsouter.gamma_id, txsouter.transaction_id FROM osee_define_txs txsouter, (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_define_txs txs1, osee_define_tx_details txd1, osee_define_attribute attr1 where txd1.branch_id = ? and attr1.attr_id = ? AND txs1.tx_current = 1 AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = attr1.gamma_id) resulttable WHERE txsouter.transaction_id = resulttable.transaction_id AND resulttable.gamma_id = txsouter.gamma_id";
+   private static final String SELECT_STALE_ARTIFACTS =
+         "SELECT txsouter.gamma_id, txsouter.transaction_id FROM osee_define_txs txsouter, (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_define_txs txs1, osee_define_tx_details txd1, osee_define_artifact_version art1 WHERE txd1.branch_id = ? AND art1.art_id = ? AND txs1.tx_current = 1 AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = art1.gamma_id) resulttable WHERE txsouter.transaction_id = resulttable.transaction_id AND resulttable.gamma_id = txsouter.gamma_id";
+   private static final String SELECT_STALE_RELATIONS =
+         "SELECT txsouter.gamma_id, txsouter.transaction_id FROM osee_define_txs txsouter, (SELECT txs1.gamma_id, txs1.transaction_id FROM osee_define_txs txs1, osee_define_tx_details txd1, osee_define_rel_link link1 where txd1.branch_id = ? and link1.rel_link_id = ? AND txs1.tx_current = 1 AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = link1.gamma_id) resulttable WHERE txsouter.transaction_id = resulttable.transaction_id AND resulttable.gamma_id = txsouter.gamma_id";
+   private static final String UPDATE_TXS_CURRENT_TO_0 =
+         "update osee_define_txs set tx_current = 0 where gamma_id = ? and transaction_id = ?";
    private static final String UPDATE_TXS_CURRENT_TO_1 =
          "update osee_define_txs set tx_current = 1 where gamma_id = ? and transaction_id = ?";
    private static final String SELECT_BASELINED_TRANSACTIONS =
@@ -61,6 +63,9 @@ public class UpdateCurrentColumn extends AbstractBlam {
    private static final String SELECT_A_RELATION_ORDER =
          "select rel1.rel_link_type_id,  rel1.b_art_id, txd1.branch_id, rel1.a_order, txs1.gamma_id, rel1.a_art_id, rel1.b_order_value    from osee_define_tx_details txd1, osee_define_rel_link rel1, osee_define_txs txs1 where txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id and txs1.tx_current = 1 order by txd1.branch_id, rel1.rel_link_type_id, rel1.b_art_id, rel1.b_order_value";
    private static final String UPDATE_A_ORDER = "update osee_define_rel_link set a_order where gamma_id = ?";
+
+   private static final String VERIFY_TX_CURRENT =
+         "SELECT resulttable.branch_id, resulttable.art_id, COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, txd1.TIME, txd1.tx_type, txs1.*, artv1.art_id, artv1.modification_id, art1.art_type_id FROM osee_define_tx_details txd1, osee_define_txs txs1, osee_define_artifact art1, osee_define_artifact_version artv1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = artv1.gamma_id AND artv1.art_id = art1.art_id AND txs1.tx_current = 1) resulttable GROUP BY resulttable.branch_id, resulttable.art_id HAVING(COUNT(resulttable.branch_id) > 1)";
 
    private class UpdateHelper {
       int type;
@@ -117,12 +122,41 @@ public class UpdateCurrentColumn extends AbstractBlam {
          updateRelationsSortOrder(connection, SELECT_A_RELATION_ORDER, UPDATE_A_ORDER);
          updateRelationsSortOrder(connection, SELECT_B_RELATION_ORDER, UPDATE_B_ORDER);
 
+         if (variableMap.getBoolean("Run Tx Current Verification")) {
+            boolean result = verifyTxCurrent(connection);
+            if (!result) {
+               throw new Exception("Tx Current Verification [ Failed ]");
+            } else {
+               appendResultLine("Tx Current Verification [ Passed ]");
+            }
+         }
       } finally {
          if (connection != null) {
             connection.close();
          }
       }
 
+   }
+
+   private boolean verifyTxCurrent(Connection connection) throws SQLException {
+      ConnectionHandlerStatement statement = null;
+      boolean wasSuccessful = true;
+      try {
+         statement = ConnectionHandler.runPreparedQuery(connection, 0, VERIFY_TX_CURRENT, new Object[0]);
+         while (statement.next()) {
+            wasSuccessful = false;
+            appendResultLine(String.format("Duplicate tx_current at: branch_id[%s] id[%s]", statement.getRset().getInt(
+                  1), statement.getRset().getInt(2)));
+         }
+      } catch (Exception ex) {
+         wasSuccessful = false;
+         throw new SQLException(ex);
+      } finally {
+         if (statement != null) {
+            statement.close();
+         }
+      }
+      return wasSuccessful;
    }
 
    private void updateArtifactModType(Connection connection, int txNumber) throws SQLException {
@@ -282,26 +316,41 @@ public class UpdateCurrentColumn extends AbstractBlam {
     * @throws SQLException
     */
    private int updateTxCurrentToZero(Connection connection, List<UpdateHelper> updates) throws SQLException {
-      int rowsUpdated = 0;
-      List<Object[]> attrBatchArgs = new ArrayList<Object[]>();
-      List<Object[]> artBatchArgs = new ArrayList<Object[]>();
-      List<Object[]> linkBatchArgs = new ArrayList<Object[]>();
+      List<Object[]> setToUpdate = new ArrayList<Object[]>();
+      List<Object[]> result = null;
       for (UpdateHelper data : updates) {
+         result = null;
          if (data.type == 1) {
-            attrBatchArgs.add(new Object[] {SQL3DataType.INTEGER, data.branch_id, SQL3DataType.INTEGER, data.id,
-                  SQL3DataType.INTEGER, data.branch_id, SQL3DataType.INTEGER, data.id});
+            result = getStaleTxCurrents(connection, SELECT_STALE_ATTRIBUTES, data);
          } else if (data.type == 2) {
-            artBatchArgs.add(new Object[] {SQL3DataType.INTEGER, data.branch_id, SQL3DataType.INTEGER, data.id,
-                  SQL3DataType.INTEGER, data.branch_id, SQL3DataType.INTEGER, data.id});
+            result = getStaleTxCurrents(connection, SELECT_STALE_ARTIFACTS, data);
          } else if (data.type == 3) {
-            linkBatchArgs.add(new Object[] {SQL3DataType.INTEGER, data.branch_id, SQL3DataType.INTEGER, data.id,
-                  SQL3DataType.INTEGER, data.branch_id, SQL3DataType.INTEGER, data.id});
+            result = getStaleTxCurrents(connection, SELECT_STALE_RELATIONS, data);
+         }
+         if (result != null) {
+            setToUpdate.addAll(result);
          }
       }
-      rowsUpdated += ConnectionHandler.runPreparedUpdate(connection, UPDATE_ATTRIBUTE_CURRENT_TO_0, attrBatchArgs);
-      rowsUpdated += ConnectionHandler.runPreparedUpdate(connection, UPDATE_ARTIFACT_CURRENT_TO_0, artBatchArgs);
-      rowsUpdated += ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATION_CURRENT_TO_0, linkBatchArgs);
-      return rowsUpdated;
+      return ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_CURRENT_TO_0, setToUpdate);
+   }
+
+   private List<Object[]> getStaleTxCurrents(Connection connection, String query, UpdateHelper data) throws SQLException {
+      List<Object[]> toReturn = new ArrayList<Object[]>();
+      ConnectionHandlerStatement stmt = null;
+      try {
+         stmt =
+               ConnectionHandler.runPreparedQuery(query, new Object[] {SQL3DataType.INTEGER, data.branch_id,
+                     SQL3DataType.INTEGER, data.id});
+         while (stmt.next()) {
+            toReturn.add(new Object[] {SQL3DataType.BIGINT, stmt.getRset().getLong(1), SQL3DataType.INTEGER,
+                  stmt.getRset().getInt(2)});
+         }
+      } finally {
+         if (stmt != null) {
+            stmt.close();
+         }
+      }
+      return toReturn;
    }
 
    private void getUpdates(Connection connection, List<UpdateHelper> updates, int type, String query, int txNumber) throws SQLException {
@@ -331,6 +380,6 @@ public class UpdateCurrentColumn extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#getXWidgetXml()
     */
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"From Transaction Number\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XText\" displayName=\"From Transaction Number\" /><XWidget xwidgetType=\"XCheckBox\" displayName=\"Run Tx Current Verification\" labelAfter=\"true\" horizontalLabel=\"true\"/></xWidgets>";
    }
 }
