@@ -105,6 +105,7 @@ public class ConflictTestManager {
       // Add artifacts onto the destination Branch
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          ArtifactType artType = ArtifactTypeManager.getType(conflictDefs[i].artifactType);
+         //               ConfigurationPersistenceManager.getArtifactSubtypeDescriptor(conflictDefs[i].artifactType);
          destArtifacts[i] = rootArtifact.addNewChild(artType, "Test Artifact Number " + i);
          for (AttributeValue value : conflictDefs[i].newAttributes) {
             destArtifacts[i].addAttribute(value.attributeName, AttributeObjectConverter.stringToObject(value.clas,
@@ -171,9 +172,25 @@ public class ConflictTestManager {
          sBranch = branchPersistenceManager.getBranch(SOURCE_BRANCH);
       } catch (Exception ex) {
       }
+      if (sBranch == null) {
+         for (Branch branch : branchPersistenceManager.getArchivedBranches()) {
+            if (branch.getBranchName().equals(SOURCE_BRANCH)) {
+               sBranch = branch;
+               break;
+            }
+         }
+      }
       try {
          dBranch = branchPersistenceManager.getBranch(DEST_BRANCH);
       } catch (Exception ex) {
+      }
+      if (dBranch == null) {
+         for (Branch branch : branchPersistenceManager.getArchivedBranches()) {
+            if (branch.getBranchName().equals(DEST_BRANCH)) {
+               dBranch = branch;
+               break;
+            }
+         }
       }
       try {
          mBranch = branchPersistenceManager.getMergeBranch(sBranch.getBranchId(), dBranch.getBranchId());
@@ -269,6 +286,40 @@ public class ConflictTestManager {
       }
    }
 
+   public static boolean validateCommit() throws Exception {
+      for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
+         if (!conflictDefs[i].destDelete && !conflictDefs[i].sourceDelete) {
+            for (AttributeValue value : conflictDefs[i].values) {
+               String expected = value.mergeValue;
+               if (expected.equalsIgnoreCase("Source")) {
+                  expected = value.sourceValue;
+               } else if (expected.equalsIgnoreCase("Destination")) {
+                  expected = value.destValue;
+               }
+               if (value.sourceValue == null) {
+                  expected = value.destValue;
+               }
+               if (value.destValue == null) {
+                  expected = value.sourceValue;
+               }
+               if (!AttributeObjectConverter.stringToObject(value.clas, expected).toString().equals(
+                     destArtifacts[i].getSoleAttributeValueAsString(value.attributeName, " "))) {
+                  System.err.println("Expected the " + value.attributeName + " attribute to have a value of " + AttributeObjectConverter.stringToObject(
+                        value.clas, expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(
+                        value.attributeName, " ") + " for Artifact " + destArtifacts[i].getArtId());
+                  return false;
+               }
+            }
+         } else {
+            if (!destArtifacts[i].isDeleted()) {
+               System.err.println("Artifact " + destArtifacts[i] + "should be deleted but isn't");
+               return false;
+            }
+         }
+      }
+      return true;
+   }
+
    public static void createConflictDefinitions() {
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          conflictDefs[i] = new ConflictDefinition();
@@ -280,21 +331,20 @@ public class ConflictTestManager {
       conflictDefs[2].setValues("Software Requirement", false, false);
       conflictDefs[2].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
             StringAttribute.class));
-      conflictDefs[2].values.add(new AttributeValue("Page Type", "Landscape", "Landscape", "Source",
-            StringAttribute.class));
+      conflictDefs[2].values.add(new AttributeValue("Partition", "REND_H", "USM", "Source", StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Navigation",
             StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("Name", "Test Artifact Number 2 - Source",
             "Test Artifact Number 2 - Destination", "Test Artifact Number 2 - Merge", StringAttribute.class));
 
       conflictDefs[3].setValues("Software Requirement", true, false);
-      conflictDefs[3].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
-            StringAttribute.class));
-      conflictDefs[3].values.add(new AttributeValue("Page Type", "Landscape", "Landscape", "Source",
-            StringAttribute.class));
-      conflictDefs[3].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
-      conflictDefs[3].values.add(new AttributeValue("Name", "Test Artifact Number 3 - Source", null, "Destination",
-            StringAttribute.class));
+      //      conflictDefs[3].values.add(new AttributeValue("Safety Criticality", "2", "3", "Destination",
+      //            StringAttribute.class));
+      //      conflictDefs[3].values.add(new AttributeValue("Page Type", "Landscape", "Landscape", "Source",
+      //            StringAttribute.class));
+      //      conflictDefs[3].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      //      conflictDefs[3].values.add(new AttributeValue("Name", "Test Artifact Number 3 - Source", null, "Destination",
+      //            StringAttribute.class));
 
       conflictDefs[4].setValues("Software Requirement", false, false);
 

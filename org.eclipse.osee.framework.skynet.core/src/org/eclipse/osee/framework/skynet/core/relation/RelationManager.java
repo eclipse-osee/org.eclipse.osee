@@ -111,8 +111,8 @@ public class RelationManager {
             relationsByType.put(artifact, relation.getRelationType(), selectedRelations);
          }
          selectedRelations.add(relation);
+         }
       }
-   }
 
    private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
       List<RelationLink> selectedRelations = null;
@@ -230,12 +230,15 @@ public class RelationManager {
 
    /**
     * @param artifact
+    * @throws SQLException
     * @deprecated
     */
-   public static void revertRelationsFor(Artifact artifact) {
-      //TODO This is inappropriate to use as references held to links by other applications will be invalid.
+   public static void revertRelationsFor(Artifact artifact) throws SQLException {
+      //This is inappropriate to use as references held to links by other applications will continue to exist.
       artifactToRelations.remove(artifact);
-      relationsByType.remove(artifact);
+      for (RelationType type : RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch())) {
+         relationsByType.remove(artifact, type);
+      }
    }
 
    public static boolean hasDirtyLinks(Artifact artifact) {

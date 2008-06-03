@@ -897,7 +897,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ModType.Reverted, this));
    }
 
-   void prepareForReload() {
+   void prepareForReload() throws SQLException {
       attributes.clear();
       dirty = false;
       linksLoaded = false;

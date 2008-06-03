@@ -34,8 +34,10 @@ public class ConflictTestSuite {
       suite.addTest(new ConflictDetectionTest("testGetConflictsPerBranch"));
       suite.addTest(new MergeBranchManagementTest("testGetMergeBranchCreated"));
       suite.addTest(new ConflictDetectionTest("testBranchHasConflicts"));
+      suite.addTest(new ConflictedBranchCommitingTest("CheckCommitWithResolutionErrors"));
       //Test conflict resolution
-      suite.addTest(new ConflictResolutionTest("testResolveConflicts"));
+      //      suite.addTest(new ConflictResolutionTest("testResolveConflicts"));
+      //      suite.addTest(new ConflictedBranchCommitingTest("CheckCommitWithoutResolutionErrors"));
 
       TestSetup wrapper = new TestSetup(suite) {
          protected void setUp() throws Exception {

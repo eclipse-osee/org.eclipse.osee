@@ -8,7 +8,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.skynet.core.test;
 
 import java.util.Collection;
@@ -42,23 +41,6 @@ public class MergeBranchManagementTest extends TestCase {
     */
    protected void tearDown() throws Exception {
       super.tearDown();
-   }
-
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager#getOrCreateMergeBranch(org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.osee.framework.skynet.core.artifact.Branch, java.util.ArrayList)}.
-    */
-   public void testGetOrCreateMergeBranch() {
-      //      try {
-      //         BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
-      //         Branch mergeBranch =
-      //               branchPersistenceManager.getOrCreateMergeBranch(ConflictTestManager.getSourceBranch(),
-      //                     ConflictTestManager.getDestBranch());
-      //
-      //         assertTrue(mergeBranch == null);
-      //      } catch (Exception ex) {
-      //         fail(ex.getMessage());
-      //      }
    }
 
    /**

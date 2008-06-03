@@ -290,6 +290,7 @@ public class AttributeConflict extends Conflict {
       setStatus(Status.UNTOUCHED);
       if (isWordAttribute) {
          ((WordAttribute) getAttribute()).initializeToDefaultValue();
+         getAttribute().setNotDirty();
 
       } else {
          getArtifact().setSoleAttributeFromString(getDynamicAttributeDescriptor().getName(), NO_VALUE);

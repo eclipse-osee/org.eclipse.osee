@@ -31,8 +31,6 @@
 	<Table name="OSEE_ARTIFACT_LOADER" schema="OSEE">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
-		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_ARTIFACT_LOADER_Q_A_B_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, ART_ID, BRANCH_ID" />
 	</Table>

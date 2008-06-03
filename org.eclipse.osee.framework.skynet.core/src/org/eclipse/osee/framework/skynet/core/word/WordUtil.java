@@ -168,10 +168,9 @@ public class WordUtil {
       }
    }
 
-   public static String textOnly(final String string) {
-      String str = new String(string);
-      str = paragraphPattern.matcher(Xml.unescape(string)).replaceAll(" ");
-      str = tagKiller.matcher(string).replaceAll("").trim();
+   public static String textOnly(String str) {
+      str = paragraphPattern.matcher(Xml.unescape(str)).replaceAll(" ");
+      str = tagKiller.matcher(str).replaceAll("").trim();
       return str;
    }
 

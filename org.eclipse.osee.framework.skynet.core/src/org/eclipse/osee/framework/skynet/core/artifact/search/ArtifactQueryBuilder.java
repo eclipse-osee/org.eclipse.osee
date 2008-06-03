@@ -155,7 +155,7 @@ public class ArtifactQueryBuilder {
    private String getArtifactInsertSql(int queryId) throws SQLException {
       addParameter(SQL3DataType.INTEGER, queryId);
 
-      sql.append("SELECT ?, art1.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id FROM ");
+      sql.append("SELECT ?, art1.art_id, txd1.branch_id FROM ");
       appendAliasedTable("osee_define_artifact", false);
       appendAliasedTables("osee_define_artifact_version", "osee_define_txs", "osee_define_tx_details");
       sql.append("\n");
@@ -253,8 +253,8 @@ public class ArtifactQueryBuilder {
 
    private void addTxSql(String txsAlias, String txdAlias, Branch branch, boolean current) {
       if (current) {
-         sql.append(txsAlias);
-         sql.append(".tx_current=1 AND ");
+      sql.append(txsAlias);
+      sql.append(".tx_current=1 AND ");
       }
       sql.append(txsAlias);
       sql.append(".transaction_id=");
