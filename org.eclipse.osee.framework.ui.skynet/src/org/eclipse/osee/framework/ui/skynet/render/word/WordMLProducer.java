@@ -243,7 +243,7 @@ public class WordMLProducer {
    public void setPageLayout(Artifact artifact) throws IOException, IllegalStateException, SQLException, MultipleAttributesExist, AttributeDoesNotExist {
       String pageTypeValue = null;
       if (artifact.isAttributeTypeValid("Page Type")) {
-         pageTypeValue = artifact.getSoleAttributeValue("Page Type");
+         pageTypeValue = artifact.getSoleAttributeValue("Page Type", "Landscape");
       }
 
       boolean landscape = (pageTypeValue != null && pageTypeValue.equals("Landscape"));
