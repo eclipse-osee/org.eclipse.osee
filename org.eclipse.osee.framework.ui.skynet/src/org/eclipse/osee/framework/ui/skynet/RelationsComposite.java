@@ -683,6 +683,9 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          TreeItem selected = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
          Object object = selected.getData();
          try {
+
+            System.out.println(event.getSource());
+
             if (object instanceof RelationLink) {//used for ordering
                RelationLink targetLink = (RelationLink) object;
                RelationManager.addRelationAndModifyOrder(artifact, targetLink.getArtifactOnOtherSide(artifact),

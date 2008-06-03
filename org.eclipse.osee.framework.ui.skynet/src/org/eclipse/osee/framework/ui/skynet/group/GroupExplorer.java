@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
@@ -635,18 +634,31 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                         }
                         parentUnivGroupItem = ((GroupExplorerItem) selectedItem.getFirstElement()).getParentItem();
                         artifactsToInsert = insertArts.toArray(new Artifact[insertArts.size()]);
+
+                        Artifact parentArtifact = parentUnivGroupItem.getArtifact();
+                        Artifact targetArtifact = dragOverExplorerItem.getArtifact();
+
+                        for (Artifact art : insertArts) {
+                           parentArtifact.setRelationOrder(targetArtifact, !isFeedbackAfter,
+                                 CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art);
+                           targetArtifact = art;
+                        }
                      }
                      // Drag item came from outside Group Explorer
                      else {
                         List<Artifact> insertArts = Arrays.asList(((ArtifactData) event.data).getArtifacts());
                         parentUnivGroupItem = dragOverExplorerItem.getParentItem();
                         artifactsToInsert = insertArts.toArray(new Artifact[insertArts.size()]);
-                     }
-                     Artifact parentArtifact = parentUnivGroupItem.getArtifact();
-                     Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
-                     RelationManager.addRelationAndModifyOrder(parentArtifact, targetArtifact, artifactsToInsert,
-                           CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS.getRelationType(), !isFeedbackAfter);
+                        Artifact parentArtifact = parentUnivGroupItem.getArtifact();
+                        Artifact targetArtifact = dragOverExplorerItem.getArtifact();
+
+                        for (Artifact art : insertArts) {
+                           parentArtifact.addRelation(targetArtifact, isFeedbackAfter,
+                                 CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art, "");
+                           targetArtifact = art;
+                        }
+                     }
                   }
                }
                treeViewer.refresh(dragOverExplorerItem);
