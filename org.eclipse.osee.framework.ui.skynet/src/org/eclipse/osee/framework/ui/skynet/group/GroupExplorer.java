@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.group;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,8 +37,6 @@ import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent.EventData;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationPersistenceManager.Direction;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -157,27 +154,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
       refreshAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("refresh.gif"));
       refreshAction.setToolTipText("Refresh");
 
-      Action upAction = new Action("Up", Action.AS_PUSH_BUTTON) {
-
-         public void run() {
-            handleMoveSelection(Direction.Back);
-         }
-      };
-      upAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("up.gif"));
-      upAction.setToolTipText("Up");
-
-      Action downAction = new Action("Down", Action.AS_PUSH_BUTTON) {
-
-         public void run() {
-            handleMoveSelection(Direction.Forward);
-         }
-      };
-      downAction.setImageDescriptor(SkynetGuiPlugin.getInstance().getImageDescriptor("down.gif"));
-      downAction.setToolTipText("Down");
-
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
-      toolbarManager.add(upAction);
-      toolbarManager.add(downAction);
       toolbarManager.add(refreshAction);
 
       // IMenuManager manager = getViewSite().getActionBars().getMenuManager();
@@ -323,19 +300,6 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
          ArrayList<GroupExplorerItem> selected = new ArrayList<GroupExplorerItem>();
          selected.add(selItem);
          treeViewer.setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
-      }
-   }
-
-   public void handleMoveSelection(Direction dir) {
-      storeSelection();
-      GroupExplorerItem selItem = getSelectedItem();
-      if (selItem != null) {
-         try {
-            RelationPersistenceManager.getInstance().moveObjectB(selItem.getParentItem().getArtifact(),
-                  selItem.getArtifact(), CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, dir);
-         } catch (SQLException ex) {
-            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-         }
       }
    }
 
@@ -639,10 +603,11 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                         Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                         for (Artifact art : insertArts) {
-                           parentArtifact.setRelationOrder(targetArtifact, !isFeedbackAfter,
+                           parentArtifact.setRelationOrder(targetArtifact, isFeedbackAfter,
                                  CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art);
                            targetArtifact = art;
                         }
+                        parentArtifact.persistRelations();
                      }
                      // Drag item came from outside Group Explorer
                      else {
@@ -658,6 +623,7 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                                  CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art, "");
                            targetArtifact = art;
                         }
+                        parentArtifact.persistRelations();
                      }
                   }
                }
@@ -691,10 +657,11 @@ public class GroupExplorer extends ViewPart implements IEventReceiver, IActionab
                   protected void handleTxWork() throws Exception {
                      for (Artifact art : artsToRelate) {
                         if (!dragOverExplorerItem.contains(art)) {
-                           dragOverExplorerItem.getArtifact().relate(
-                                 CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art, true);
+                           dragOverExplorerItem.getArtifact().addRelation(
+                                 CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art);
                         }
                      }
+                     dragOverExplorerItem.getArtifact().persistRelations();
                   }
                };
 
