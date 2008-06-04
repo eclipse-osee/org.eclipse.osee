@@ -54,7 +54,6 @@ public class Branch implements Comparable<Branch>, IAdaptable {
          return null;
       }
    };
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final String UPDATE_BRANCH_SHORT_NAME =
          "UPDATE " + BRANCH_TABLE + " SET short_name = ? WHERE branch_id = ?";
    private final int branchId;
@@ -157,8 +156,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
       SkynetEventManager.getInstance().kick(
             new LocalRenameBranchEvent(this, branchId, branchName, getBranchShortName()));
       RemoteEventManager.getInstance().kick(
-            new NetworkRenameBranchEvent(branchId,
-                  SkynetAuthentication.getUser().getArtId(), branchName,
+            new NetworkRenameBranchEvent(branchId, SkynetAuthentication.getUser().getArtId(), branchName,
                   getBranchShortName()));
    }
 
@@ -314,7 +312,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    public boolean isChangeManaged() {
-      return associatedArtifactId != skynetAuth.getNoOneArtifactId();
+      return associatedArtifactId != SkynetAuthentication.getNoOneArtifactId();
    }
 
    // TODO fix this HACK

@@ -66,7 +66,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  */
 public class BranchExporter {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchExporter.class);
-   private static final SkynetAuthentication skynetAuthentication = SkynetAuthentication.getInstance();
    private static final String DELETED = " deleted=\"true\"";
 
    private static final LocalAliasTable ARTIFACT_ALIAS_1 = ARTIFACT_TABLE.aliasAs("art1");
@@ -165,7 +164,7 @@ public class BranchExporter {
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
 
       // Force all users to be mapped
-      skynetAuthentication.getUsers();
+      SkynetAuthentication.getInstance().getUsers();
 
       processBranch(rootDirectory, writer, new BranchData(branch), true, !descendantsOnly);
 
@@ -590,7 +589,7 @@ public class BranchExporter {
             // Should never happen due to the way transactionId is determined
             throw new IllegalStateException("Transaction does not line up to any of the feeding queries");
          }
-         User author = skynetAuthentication.getUserByArtId(linedUpSet.getInt("author"));
+         User author = SkynetAuthentication.getInstance().getUserByArtId(linedUpSet.getInt("author"));
          this.transactionId = transactionId;
          this.authorGuid = author == null ? "" : author.getGuid();
          this.time = linedUpSet.getTimestamp("time");
