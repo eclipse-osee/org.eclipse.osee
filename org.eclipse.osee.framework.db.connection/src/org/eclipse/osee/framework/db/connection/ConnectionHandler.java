@@ -232,8 +232,8 @@ public final class ConnectionHandler {
          returnValue = preparedStatement.executeUpdate();
       } finally {
          if (preparedStatement != null) {
-            preparedStatement.close();
-         }
+         preparedStatement.close();
+      }
       }
       return returnValue;
    }
@@ -369,8 +369,8 @@ public final class ConnectionHandler {
          throw ex;
       } finally {
          if (preparedStatement != null) {
-            preparedStatement.close();
-         }
+         preparedStatement.close();
+      }
       }
       return returnCount;
    }
@@ -507,7 +507,7 @@ public final class ConnectionHandler {
          throw ex;
       } finally {
          if (preparedStatement != null) {
-            preparedStatement.close();
+         preparedStatement.close();
          }
       }
    }
@@ -523,13 +523,7 @@ public final class ConnectionHandler {
    public static void endTransactionLevel(Object key) {
       try {
          dbTransactionManager.get().endTransactionLevel(key);
-      } catch (IllegalArgumentException ex) {
-         // If the terminate had to be done because the endBatchLevel died in onLastExit with
-         // SQLException
-         // then this will occur
-      } catch (SQLException ex) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.toString(), ex);
-      } catch (IllegalStateException ex) {
+      } catch (Exception ex) {
          OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.toString(), ex);
       }
    }

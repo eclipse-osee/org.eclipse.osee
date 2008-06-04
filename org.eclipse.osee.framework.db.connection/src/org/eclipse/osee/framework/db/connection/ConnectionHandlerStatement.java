@@ -70,10 +70,6 @@ public class ConnectionHandlerStatement {
          if (rset != null) {
             rset.close();
          }
-      } catch (SQLException ex) {
-         OseeLog.log(Activator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
-      }
-      try {
          if (statement != null) {
             statement.close();
          }

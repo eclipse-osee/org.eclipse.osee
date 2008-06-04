@@ -422,8 +422,8 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
    public boolean isConnected() {
       try {
          return skynetEventService != null && skynetEventService.isAlive();
-      } catch (RemoteException ex) {
-         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (Throwable th) {
+         logger.log(Level.SEVERE, th.toString(), th);
          return false;
       }
    }

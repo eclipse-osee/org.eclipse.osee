@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TXD_COMMENT;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHANGE;
@@ -38,7 +36,6 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.RemoteEventManager;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
@@ -59,8 +56,6 @@ public class SkynetTransaction {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetTransaction.class);
    private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final ArtifactPersistenceManager artifactPersistenceManager =
-         ArtifactPersistenceManager.getInstance();
    private static final String INSERT_INTO_TRANSACTION_DETAIL_TABLE =
          "INSERT INTO " + TRANSACTION_DETAIL_TABLE.columnsForInsert("transaction_id", TXD_COMMENT, "time", "author",
                "branch_id", "tx_type");
@@ -71,10 +66,6 @@ public class SkynetTransaction {
          "DELETE FROM " + TRANSACTION_DETAIL_TABLE + " WHERE transaction_id =?";
 
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-   private static final String SELECT_MAX_TRANSACTION =
-         "SELECT art_id, " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "transaction_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.join(
-               TRANSACTIONS_TABLE, "gamma_id") + " AND " + TRANSACTIONS_TABLE.join(TRANSACTION_DETAIL_TABLE,
-               "transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=? AND " + ARTIFACT_VERSION_TABLE.column("art_id") + " in (";
    private final Map<String, List<Object[]>> preparedBatch;
    private String transactionName;
    private String comment;
@@ -166,14 +157,14 @@ public class SkynetTransaction {
       boolean deleteTransactionDetail = false;
 
       try {
-         setArtifactsNotDirty();
-
          boolean insertBatchToTransactions = executeBatchToTransactions(monitor);
          boolean insertTransactionDataItems = executeTransactionDataItems();
 
          if (!insertBatchToTransactions && !insertTransactionDataItems) {
             deleteTransactionDetail = true;
          }
+
+         setArtifactsNotDirty();
       } catch (SQLException ex) {
          deleteTransactionDetail = true;
          transactionCleanUp();
@@ -230,7 +221,7 @@ public class SkynetTransaction {
       return insertTransactionDataItems;
    }
 
-   private void setArtifactsNotDirty() throws SQLException {
+   private void setArtifactsNotDirty() {
       for (ITransactionData transactionData : transactionItems.keySet()) {
          if (transactionData instanceof ArtifactTransactionData) {
             Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();

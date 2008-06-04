@@ -826,10 +826,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
     * 
     * @throws SQLException
     */
-   public void setNotDirty() throws SQLException {
+   public void setNotDirty() {
       dirty = false;
 
-      for (Attribute<?> attribute : getAttributes()) {
+      for (Attribute<?> attribute : attributes.getValues()) {
          attribute.setNotDirty();
       }
    }
