@@ -206,12 +206,13 @@ public final class ConnectionHandler {
 
       try {
          PreparedStatement preparedStatement = getConnection(overrideTransaction).prepareStatement(query);
+         chStmt.setStatement(preparedStatement);
+
          populateValuesForPreparedStatement(preparedStatement, data);
 
          record.markStart();
          preparedStatement.executeUpdate();
          record.markEnd();
-         chStmt.setStatement(preparedStatement);
       } catch (SQLException ex) {
          record.setSqlException(ex);
          OseeLog.log(Activator.class.getName(), Level.SEVERE, "sql update failed: " + query, ex);
@@ -230,7 +231,9 @@ public final class ConnectionHandler {
          populateValuesForPreparedStatement(preparedStatement, data);
          returnValue = preparedStatement.executeUpdate();
       } finally {
-         preparedStatement.close();
+         if (preparedStatement != null) {
+            preparedStatement.close();
+         }
       }
       return returnValue;
    }
@@ -256,15 +259,16 @@ public final class ConnectionHandler {
       PreparedStatement preparedStatement = null;
 
       try {
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          preparedStatement = connection.prepareStatement(query);
+         chStmt.setStatement(preparedStatement);
+
          preparedStatement.setFetchSize(fetchSize);
          populateValuesForPreparedStatement(preparedStatement, data);
 
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          record.markStart();
          chStmt.setRset(preparedStatement.executeQuery());
          record.markEnd();
-         chStmt.setStatement(preparedStatement);
          return chStmt;
       } catch (SQLException ex) {
          record.setSqlException(ex);
@@ -280,15 +284,16 @@ public final class ConnectionHandler {
       PreparedStatement preparedStatement = null;
 
       try {
+         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          preparedStatement = getConnection(overrideTranaction).prepareStatement(query);
+         chStmt.setStatement(preparedStatement);
+
          preparedStatement.setFetchSize(fetchSize);
          populateValuesForPreparedStatement(preparedStatement, data);
 
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          record.markStart();
          chStmt.setRset(preparedStatement.executeQuery());
          record.markEnd();
-         chStmt.setStatement(preparedStatement);
          return chStmt;
       } catch (SQLException ex) {
          record.setSqlException(ex);
@@ -302,9 +307,10 @@ public final class ConnectionHandler {
 
    public static int runPreparedUpdate(Connection connection, String query, List<Object[]> datas) throws SQLException {
       QueryRecord record = new QueryRecord("<batchable: batched> " + query, SQL3DataType.INTEGER, datas.size());
-      PreparedStatement preparedStatement = connection.prepareStatement(query);
       int returnCount = 0;
+      PreparedStatement preparedStatement = null;
       try {
+         preparedStatement = connection.prepareStatement(query);
          record.markStart();
          boolean needExecute = false;
          int count = 0;
@@ -362,7 +368,9 @@ public final class ConnectionHandler {
                ex);
          throw ex;
       } finally {
-         preparedStatement.close();
+         if (preparedStatement != null) {
+            preparedStatement.close();
+         }
       }
       return returnCount;
    }
@@ -431,9 +439,9 @@ public final class ConnectionHandler {
                "The datas list must have at least one element otherwise no sql statements will be run.");
       }
 
-      PreparedStatement preparedStatement = getConnection().prepareStatement(query);
-
+      PreparedStatement preparedStatement = null;
       try {
+         preparedStatement = getConnection().prepareStatement(query);
          record.markStart();
          if (useBatching) {
             boolean needExecute = false;
@@ -498,7 +506,9 @@ public final class ConnectionHandler {
          reGetConnection(false);
          throw ex;
       } finally {
-         preparedStatement.close();
+         if (preparedStatement != null) {
+            preparedStatement.close();
+         }
       }
    }
 
