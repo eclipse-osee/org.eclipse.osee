@@ -165,12 +165,12 @@ public class AccessControlManager implements PersistenceManager {
     * @throws SQLException
     */
    private void populateBranchAccessControlList() throws SQLException {
-      ConnectionHandlerStatement chStmt = null;
       BranchAccessObject branchAccessObject = null;
       String subjectName;
       Integer subjectId;
       Integer branchId;
 
+      ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
 
@@ -238,17 +238,21 @@ public class AccessControlManager implements PersistenceManager {
       if (!groupToSubjectsCache.containsKey(groupId)) {
          Integer groupMember;
 
-         ConnectionHandlerStatement chStmt =
-               ConnectionHandler.runPreparedQuery(USER_GROUP_MEMBERS, SQL3DataType.INTEGER, groupId,
-                     SQL3DataType.INTEGER, RelationTypeManager.getType("Users").getRelationTypeId());
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(USER_GROUP_MEMBERS, SQL3DataType.INTEGER, groupId,
+                        SQL3DataType.INTEGER, RelationTypeManager.getType("Users").getRelationTypeId());
 
-         // get group members and populate subjectToGroupCache
-         while (chStmt.next()) {
-            groupMember = chStmt.getRset().getInt("b_art_id");
-            subjectToGroupCache.put(groupMember, groupId);
-            groupToSubjectsCache.put(groupId, groupMember);
+            // get group members and populate subjectToGroupCache
+            while (chStmt.next()) {
+               groupMember = chStmt.getRset().getInt("b_art_id");
+               subjectToGroupCache.put(groupMember, groupId);
+               groupToSubjectsCache.put(groupId, groupMember);
+            }
+         } finally {
+            DbUtil.close(chStmt);
          }
-         DbUtil.close(chStmt);
       }
    }
 

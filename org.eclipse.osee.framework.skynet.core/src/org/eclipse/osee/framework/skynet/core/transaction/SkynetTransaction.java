@@ -265,34 +265,37 @@ public class SkynetTransaction {
          }
       }
 
-      ArrayList<Artifact> tempArts = new ArrayList<Artifact>(potentialConflictedArtifacts.values());
-      ConnectionHandlerStatement chStmt = null;
       int local_transaction_id;
       int db_transaction_id;
       int art_id;
 
+      ArrayList<Artifact> tempArts = new ArrayList<Artifact>(potentialConflictedArtifacts.values());
       while (!tempArts.isEmpty()) {
          Branch branch = tempArts.get(0).getBranch();
          String artIdList = artifactPersistenceManager.getArtIdList(tempArts);
-         chStmt =
-               ConnectionHandler.runPreparedQuery(SELECT_MAX_TRANSACTION + artIdList + ") group by art_id",
-                     SQL3DataType.INTEGER, branch.getBranchId());
-         local_transaction_id = transactionId.getLastSavedTransactionNumber();
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(SELECT_MAX_TRANSACTION + artIdList + ") group by art_id",
+                        SQL3DataType.INTEGER, branch.getBranchId());
+            local_transaction_id = transactionId.getLastSavedTransactionNumber();
 
-         while (chStmt.next()) {
-            db_transaction_id = chStmt.getRset().getInt("transaction_id");
+            while (chStmt.next()) {
+               db_transaction_id = chStmt.getRset().getInt("transaction_id");
 
-            if (local_transaction_id < db_transaction_id) {
-               for (Artifact artifact : allArtifacts) {
-                  artifact.setInTransaction(false);
+               if (local_transaction_id < db_transaction_id) {
+                  for (Artifact artifact : allArtifacts) {
+                     artifact.setInTransaction(false);
+                  }
+                  art_id = chStmt.getRset().getInt("art_id");
+                  logger.log(
+                        Level.WARNING,
+                        "A collision has occurred.  Artifact " + art_id + " with local transaction_id " + local_transaction_id + " has database transaction_id " + db_transaction_id);
                }
-               art_id = chStmt.getRset().getInt("art_id");
-               logger.log(
-                     Level.WARNING,
-                     "A collision has occurred.  Artifact " + art_id + " with local transaction_id " + local_transaction_id + " has database transaction_id " + db_transaction_id);
             }
+         } finally {
+            DbUtil.close(chStmt);
          }
-         DbUtil.close(chStmt);
       }
 
       for (Artifact artifact : allArtifacts) {

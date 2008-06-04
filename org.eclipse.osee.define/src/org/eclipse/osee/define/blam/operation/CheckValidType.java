@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.AbstractBlam;
@@ -51,23 +52,25 @@ public class CheckValidType extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.runPreparedQuery(sql);
-      Calendar cal = Calendar.getInstance(TimeZone.getDefault());
-      List<String> datas = new LinkedList<String>();
-      XResultData rd = new XResultData(logger);
-      ResultSet rSet = chStmt.getRset();
-      ;
-      int count = 0;
-
-      while (rSet.next()) {
-
-         for (String colName : colNames) {
-            datas.add(rSet.getString(colName));
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(sql);
+         Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+         List<String> datas = new LinkedList<String>();
+         XResultData rd = new XResultData(logger);
+         ResultSet rSet = chStmt.getRset();
+         int count = 0;
+         while (rSet.next()) {
+            for (String colName : colNames) {
+               datas.add(rSet.getString(colName));
+            }
+            count++;
          }
-         count++;
+         rd.addRaw("Results: " + count + "<br></br>Date: " + dateFormat.format(cal.getTime()) + "<br></br><br></br>" + AHTML.createTable(
+               datas, headers, headers.length, 1, 3));
+         rd.report("The report", Manipulations.RAW_HTML);
+      } finally {
+         DbUtil.close(chStmt);
       }
-      rd.addRaw("Results: " + count + "<br></br>Date: " + dateFormat.format(cal.getTime()) + "<br></br><br></br>" + AHTML.createTable(
-            datas, headers, headers.length, 1, 3));
-      rd.report("The report", Manipulations.RAW_HTML);
    }
 }

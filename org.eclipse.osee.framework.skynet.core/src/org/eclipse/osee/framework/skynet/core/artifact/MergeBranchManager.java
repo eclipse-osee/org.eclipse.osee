@@ -79,14 +79,22 @@ public class MergeBranchManager {
       Collection<Integer> artSet = new HashSet<Integer>();
 
       ConnectionHandlerStatement chStmt = null;
+      ResultSet rSet = null;
       try {
          chStmt =
                ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_ART_VER_TABLE, SQL3DataType.INTEGER,
                      branch.getBranchId());
-         ResultSet rSet = chStmt.getRset();
+         rSet = chStmt.getRset();
          while (chStmt.next()) {
             artSet.add(new Integer(rSet.getInt("art_id")));
          }
+      } finally {
+         DbUtil.close(chStmt);
+         chStmt = null;
+         rSet = null;
+      }
+
+      try {
          chStmt =
                ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_ATR_VER_TABLE, SQL3DataType.INTEGER,
                      branch.getBranchId());
@@ -94,6 +102,13 @@ public class MergeBranchManager {
          while (chStmt.next()) {
             artSet.add(new Integer(rSet.getInt("art_id")));
          }
+      } finally {
+         DbUtil.close(chStmt);
+         chStmt = null;
+         rSet = null;
+      }
+
+      try {
          chStmt =
                ConnectionHandler.runPreparedQuery(GET_ART_IDS_FOR_REL_VER_TABLE, SQL3DataType.INTEGER,
                      branch.getBranchId());
@@ -104,8 +119,9 @@ public class MergeBranchManager {
          }
       } finally {
          DbUtil.close(chStmt);
+         chStmt = null;
+         rSet = null;
       }
-
       return artSet;
    }
 

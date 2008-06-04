@@ -100,13 +100,11 @@ class DeleteBranchJob extends Job {
    private final class DeleteBranchTx extends AbstractDbTxTemplate {
       private Branch branch;
       private IProgressMonitor monitor;
-      private ConnectionHandlerStatement chStmt;
       private IStatus txResult;
 
       public DeleteBranchTx(Branch branch, IProgressMonitor monitor) {
          this.branch = branch;
          this.monitor = monitor;
-         this.chStmt = null;
          this.txResult = Status.CANCEL_STATUS;
       }
 
@@ -125,22 +123,27 @@ class DeleteBranchJob extends Job {
                "Can not delete a branch that has children");
 
          monitor.beginTask("Delete Branch: " + branch, 10);
-         chStmt =
-               ConnectionHandler.runPreparedQuery(SEARCH_FOR_DELETABLE_GAMMAS, SQL3DataType.INTEGER,
+         ConnectionHandlerStatement chStmt = null;
+         try {
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(SEARCH_FOR_DELETABLE_GAMMAS, SQL3DataType.INTEGER,
+                        branch.getBranchId(), SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
+                        branch.getBranchId());
+
+            if (chStmt.next()) {// checking to see if there are any gammas to delete
+               // before inserting into delete table
+               ConnectionHandler.runPreparedUpdate(POPULATE_BRANCH_DELETE_HELPER_WITH_GAMMAS, SQL3DataType.INTEGER,
                      branch.getBranchId(), SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
                      branch.getBranchId());
-
-         if (chStmt.getRset().next()) {// checking to see if there are any gammas to delete
-            // before inserting into delete table
-            ConnectionHandler.runPreparedUpdate(POPULATE_BRANCH_DELETE_HELPER_WITH_GAMMAS, SQL3DataType.INTEGER,
-                  branch.getBranchId(), SQL3DataType.INTEGER, branch.getBranchId(), SQL3DataType.INTEGER,
-                  branch.getBranchId());
-            monitor.worked(1);
+               monitor.worked(1);
+            }
+            deleteAttributeVersions();
+            deleteRelationVersions();
+            deleteArtifactVersions();
+            deleteBranch();
+         } finally {
+            DbUtil.close(chStmt);
          }
-         deleteAttributeVersions();
-         deleteRelationVersions();
-         deleteArtifactVersions();
-         deleteBranch();
       }
 
       /*
@@ -151,7 +154,6 @@ class DeleteBranchJob extends Job {
       @Override
       protected void handleTxFinally() throws Exception {
          super.handleTxFinally();
-         DbUtil.close(chStmt);
          monitor.done();
          if (getResult().equals(Status.OK_STATUS)) {
             eventManager.kick(new LocalDeletedBranchEvent(this, branch.getBranchId()));

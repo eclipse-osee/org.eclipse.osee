@@ -40,7 +40,7 @@ public class HttpBranchCreation {
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
 
-   public static Branch createChildBranch(SkynetAuthentication skynetAuth, final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws SQLException, OseeCoreException {
+   public static Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws SQLException, OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("branchName", childBranchName);
       parameters.put("function", "createChildBranch");

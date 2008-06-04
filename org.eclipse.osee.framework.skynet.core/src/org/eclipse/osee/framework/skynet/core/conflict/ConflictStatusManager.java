@@ -39,7 +39,7 @@ public class ConflictStatusManager {
       //just update the status field.
       try {
          HandlerStatement =
-               ConnectionHandler.runPreparedQuery(MERGE_UPDATE_STATUS, SQL3DataType.INTEGER, status.Value(),
+               ConnectionHandler.runPreparedQuery(MERGE_UPDATE_STATUS, SQL3DataType.INTEGER, status.getValue(),
                      SQL3DataType.INTEGER, sourceGamma, SQL3DataType.INTEGER, destGamma);
          ResultSet updateSet = HandlerStatement.getRset();
          updateSet.next();
@@ -49,14 +49,11 @@ public class ConflictStatusManager {
    }
 
    public static Status computeStatus(int sourceGamma, int destGamma, int branchID, int objectID, int conflictType, Conflict.Status passedStatus) throws SQLException {
-      ConnectionHandlerStatement checkHandlerStatement = null;
-      ConnectionHandlerStatement updateHandlerStatement = null;
-      ConnectionHandlerStatement insertHandlerStatement = null;
-      Conflict.Status status;
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited
 
+      ConnectionHandlerStatement checkHandlerStatement = null;
       try {
          checkHandlerStatement =
                ConnectionHandler.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, SQL3DataType.INTEGER, branchID,
@@ -67,17 +64,12 @@ public class ConflictStatusManager {
             //There was an entry so lets check it and update it.
             int intStatus = statusSet.getInt("status");
             if ((statusSet.getInt("source_gamma_id") != sourceGamma) || (statusSet.getInt("dest_gamma_id") != destGamma)) {
-               if (intStatus == Status.RESOLVED.Value()) intStatus = Status.OUT_OF_DATE.Value();
-               try {
-                  updateHandlerStatement =
-                        ConnectionHandler.runPreparedQuery(MERGE_UPDATE_GAMMAS, SQL3DataType.INTEGER, sourceGamma,
-                              SQL3DataType.INTEGER, destGamma, SQL3DataType.INTEGER, intStatus, SQL3DataType.INTEGER,
-                              branchID, SQL3DataType.INTEGER, objectID, SQL3DataType.INTEGER, conflictType);
-                  ResultSet updateSet = updateHandlerStatement.getRset();
-                  updateSet.next();
-               } finally {
-                  DbUtil.close(updateHandlerStatement);
+               if (intStatus == Status.RESOLVED.getValue()) {
+                  intStatus = Status.OUT_OF_DATE.getValue();
                }
+               ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, SQL3DataType.INTEGER, sourceGamma,
+                     SQL3DataType.INTEGER, destGamma, SQL3DataType.INTEGER, intStatus, SQL3DataType.INTEGER, branchID,
+                     SQL3DataType.INTEGER, objectID, SQL3DataType.INTEGER, conflictType);
             }
             return Status.getStatus(intStatus);
          }
@@ -86,21 +78,11 @@ public class ConflictStatusManager {
       } finally {
          DbUtil.close(checkHandlerStatement);
       }
-      status = passedStatus;
-      try {
+      ConnectionHandler.runPreparedUpdate(MERGE_INSERT_STATUS, SQL3DataType.INTEGER, objectID, SQL3DataType.INTEGER,
+            branchID, SQL3DataType.INTEGER, sourceGamma, SQL3DataType.INTEGER, destGamma, SQL3DataType.INTEGER,
+            passedStatus.getValue(), SQL3DataType.INTEGER, conflictType);
 
-         insertHandlerStatement =
-               ConnectionHandler.runPreparedQuery(MERGE_INSERT_STATUS, SQL3DataType.INTEGER, objectID,
-                     SQL3DataType.INTEGER, branchID, SQL3DataType.INTEGER, sourceGamma, SQL3DataType.INTEGER,
-                     destGamma, SQL3DataType.INTEGER, status.Value(), SQL3DataType.INTEGER, conflictType);
-
-         ResultSet insertSet = insertHandlerStatement.getRset();
-         insertSet.next();
-      } finally {
-         DbUtil.close(insertHandlerStatement);
-      }
-
-      return status;
+      return passedStatus;
    }
 
 }

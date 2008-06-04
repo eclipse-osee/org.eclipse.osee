@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.db.connection.core;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
@@ -88,18 +87,19 @@ public class OseeSequenceManager {
    }
 
    private long getSequence(String sequenceName) throws SQLException {
+      long toReturn = -1;
       ConnectionHandlerStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.runPreparedQuery(true, QUERY_SEQUENCE, SQL3DataType.VARCHAR, sequenceName);
-         ResultSet rSet = chStmt.getRset();
-         if (rSet.next()) {
-            return rSet.getLong(LAST_SEQUENCE);
+         if (chStmt.next()) {
+            toReturn = chStmt.getRset().getLong(LAST_SEQUENCE);
          } else {
             throw new SQLException("Sequence name [" + sequenceName + "] not found in " + SkynetDatabase.SEQUENCE_TABLE);
          }
       } finally {
          DbUtil.close(chStmt);
       }
+      return toReturn;
    }
 
    public synchronized long getNextSequence(String sequenceName) throws SQLException {

@@ -354,16 +354,17 @@ public class ArtifactPersistenceManager {
    }
 
    private int getArtifactCount(String sql, List<Object> dataList) throws SQLException {
+      int toReturn = -1;
       ConnectionHandlerStatement chStmt = null;
-
       try {
          chStmt = ConnectionHandler.runPreparedQuery(sql, dataList.toArray());
-
-         chStmt.next();
-         return chStmt.getRset().getInt("artifacts");
+         if (chStmt.next()) {
+            toReturn = chStmt.getRset().getInt("artifacts");
+         }
       } finally {
          DbUtil.close(chStmt);
       }
+      return toReturn;
    }
 
    public static String getIdSql(List<ISearchPrimitive> searchCriteria, boolean all, List<Object> dataList, Branch branch) throws SQLException {
@@ -482,6 +483,7 @@ public class ArtifactPersistenceManager {
       } finally {
          DbUtil.close(chStmt);
       }
+
       try {
          AttributeToTransactionOperation.meetMinimumAttributeCounts(artifact);
       } catch (OseeDataStoreException ex) {
@@ -658,45 +660,66 @@ public class ArtifactPersistenceManager {
 
       @Override
       protected void handleTxWork() throws Exception {
-
          Collection<Integer> gammaIdsModifications = new HashSet<Integer>();
          Collection<Integer> gammaIdsBaseline = new HashSet<Integer>();
 
          //Get attribute Gammas
-         ConnectionHandlerStatement connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(GET_ATTRIBUTE_GAMMAS_REVERT, SQL3DataType.INTEGER, branchId,
-                     SQL3DataType.INTEGER, artId);
-         ResultSet resultSet = connectionHandlerStatement.getRset();
-         while (resultSet.next()) {
-            if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
-               gammaIdsModifications.add(new Integer(resultSet.getInt("gamma_id")));
-            } else {
-               gammaIdsBaseline.add(new Integer(resultSet.getInt("gamma_id")));
+         ConnectionHandlerStatement connectionHandlerStatement = null;
+         ResultSet resultSet = null;
+         try {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(GET_ATTRIBUTE_GAMMAS_REVERT, SQL3DataType.INTEGER, branchId,
+                        SQL3DataType.INTEGER, artId);
+            resultSet = connectionHandlerStatement.getRset();
+            while (resultSet.next()) {
+               if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
+                  gammaIdsModifications.add(new Integer(resultSet.getInt("gamma_id")));
+               } else {
+                  gammaIdsBaseline.add(new Integer(resultSet.getInt("gamma_id")));
+               }
             }
+         } finally {
+            DbUtil.close(connectionHandlerStatement);
+            connectionHandlerStatement = null;
+            resultSet = null;
          }
-         //Get relation Gammas
-         connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(GET_RELATION_GAMMAS_REVERT, SQL3DataType.INTEGER, branchId,
-                     SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, artId);
-         resultSet = connectionHandlerStatement.getRset();
-         while (resultSet.next()) {
-            if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
-               gammaIdsModifications.add(new Integer(resultSet.getInt("gamma_id")));
-            } else {
-               gammaIdsBaseline.add(new Integer(resultSet.getInt("gamma_id")));
+
+         try {
+            //Get relation Gammas
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(GET_RELATION_GAMMAS_REVERT, SQL3DataType.INTEGER, branchId,
+                        SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, artId);
+            resultSet = connectionHandlerStatement.getRset();
+            while (resultSet.next()) {
+               if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
+                  gammaIdsModifications.add(new Integer(resultSet.getInt("gamma_id")));
+               } else {
+                  gammaIdsBaseline.add(new Integer(resultSet.getInt("gamma_id")));
+               }
             }
+         } finally {
+            DbUtil.close(connectionHandlerStatement);
+            connectionHandlerStatement = null;
+            resultSet = null;
          }
-         //Get artifact Gammas
-         connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(GET_ARTIFACT_GAMMAS_REVERT, SQL3DataType.INTEGER, branchId,
-                     SQL3DataType.INTEGER, artId);
-         resultSet = connectionHandlerStatement.getRset();
-         while (resultSet.next()) {
-            if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
-               gammaIdsModifications.add(new Integer(resultSet.getInt("gamma_id")));
-            } else {
-               gammaIdsBaseline.add(new Integer(resultSet.getInt("gamma_id")));
+
+         try {
+            //Get artifact Gammas
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(GET_ARTIFACT_GAMMAS_REVERT, SQL3DataType.INTEGER, branchId,
+                        SQL3DataType.INTEGER, artId);
+            resultSet = connectionHandlerStatement.getRset();
+            while (resultSet.next()) {
+               if (resultSet.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
+                  gammaIdsModifications.add(new Integer(resultSet.getInt("gamma_id")));
+               } else {
+                  gammaIdsBaseline.add(new Integer(resultSet.getInt("gamma_id")));
+               }
             }
+         } finally {
+            DbUtil.close(connectionHandlerStatement);
+            connectionHandlerStatement = null;
+            resultSet = null;
          }
 
          if (!gammaIdsModifications.isEmpty()) {

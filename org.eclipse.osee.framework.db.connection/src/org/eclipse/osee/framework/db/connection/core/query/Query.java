@@ -40,7 +40,7 @@ public class Query {
     * @throws SQLException
     */
    public static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, String sql, Object... data) throws SQLException {
-      acquireCollection(collection, ConnectionHandler.runPreparedQuery(sql, data), processor);
+      acquireCollection(collection, processor, 0, sql, data);
    }
 
    /**
@@ -53,13 +53,14 @@ public class Query {
     * @throws SQLException
     */
    public static <A extends Object> void acquireCollection(Collection<A> collection, String sql, RsetProcessor<A> processor) throws SQLException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.runPreparedQuery(100, sql);
-      acquireCollection(collection, chStmt, processor);
+      acquireCollection(collection, processor, 100, sql, new Object[0]);
    }
 
-   private static <A extends Object> void acquireCollection(Collection<A> collection, ConnectionHandlerStatement chStmt, RsetProcessor<A> processor) throws SQLException {
+   private static <A extends Object> void acquireCollection(Collection<A> collection, RsetProcessor<A> processor, int fetchSize, String sql, Object... data) throws SQLException {
       A item;
+      ConnectionHandlerStatement chStmt = null;
       try {
+         chStmt = ConnectionHandler.runPreparedQuery(fetchSize, sql, data);
          while (chStmt.next()) {
             try {
                item = processor.process(chStmt.getRset());
@@ -103,21 +104,21 @@ public class Query {
    }
 
    public static int getInt(String columnName, String query, Object... data) throws SQLException {
+      int toReturn = -1;
       ConnectionHandlerStatement chStmt = null;
-
       try {
          chStmt = ConnectionHandler.runPreparedQuery(query, data);
-
          if (chStmt.next()) {
-            int value = chStmt.getRset().getInt(columnName);
+            toReturn = chStmt.getRset().getInt(columnName);
             if (chStmt.next()) {
                throw new IllegalStateException("More than one value returned");
             }
-            return value;
+         } else {
+            throw new IllegalArgumentException("No value returned");
          }
-         throw new IllegalArgumentException("No value returned");
       } finally {
-         chStmt.close();
+         DbUtil.close(chStmt);
       }
+      return toReturn;
    }
 }

@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_DEFINITIONS;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_ID_SEQ;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.BRANCH_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
@@ -45,7 +44,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
-import org.eclipse.osee.framework.messaging.event.skynet.NetworkNewBranchEvent;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
@@ -56,8 +54,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch.BranchType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
-import org.eclipse.osee.framework.skynet.core.event.LocalNewBranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -118,15 +114,12 @@ public class BranchCreator implements PersistenceManager {
    private static final String INSERT_TX_FOR_HISTORY =
          "INSERT INTO " + TRANSACTIONS_TABLE.columnsForInsert("transaction_id", "gamma_id", "mod_type", "tx_current");
 
-   private static final String INSERT_DEFAULT_BRANCH_NAMES =
-         "INSERT INTO " + BRANCH_DEFINITIONS.columnsForInsert("static_branch_name", "mapped_branch_id");
+   //   private static final String INSERT_DEFAULT_BRANCH_NAMES =
+   //         "INSERT INTO " + BRANCH_DEFINITIONS.columnsForInsert("static_branch_name", "mapped_branch_id");
 
    private static final String MERGE_BRANCH_INSERT_QUERY =
          "INSERT INTO osee_define_merge " + "(source_branch_id, dest_branch_id, merge_branch_id)  VALUES( ? , ? , ?)";
 
-   private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
-   private static final RemoteEventManager remoteEventManager = RemoteEventManager.getInstance();
-   private SkynetAuthentication skynetAuth;
    private static final BranchCreator instance = new BranchCreator();
 
    private BranchCreator() {
@@ -144,13 +137,14 @@ public class BranchCreator implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#setRelatedManagers()
     */
    public void onManagerWebInit() throws Exception {
-      skynetAuth = SkynetAuthentication.getInstance();
+      SkynetAuthentication.getInstance();
    }
 
    private Pair<Branch, Integer> createBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType) throws SQLException, MultipleAttributesExist, UserNotInDatabase, IllegalArgumentException, IllegalStateException, MultipleArtifactsExist {
       User userToBlame = SkynetAuthentication.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
-      int userId = (userToBlame == null) ? skynetAuth.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
+      int userId =
+            (userToBlame == null) ? SkynetAuthentication.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
       String comment =
             BranchPersistenceManager.NEW_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ")";
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -389,12 +383,12 @@ public class BranchCreator implements PersistenceManager {
     * @throws MultipleArtifactsExist
     */
    private Branch initializeBranch(String branchShortName, String branchName, TransactionId parentBranchId, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType) throws SQLException, MultipleAttributesExist, UserNotInDatabase, MultipleArtifactsExist {
-      ConnectionHandlerStatement chStmt =
-            ConnectionHandler.runPreparedQuery(SELECT_BRANCH_BY_NAME, SQL3DataType.VARCHAR, branchName);
-      ResultSet rset = chStmt.getRset();
       branchShortName = StringFormat.truncate(branchShortName != null ? branchShortName : branchName, 25);
 
+      ConnectionHandlerStatement chStmt = null;
       try {
+         chStmt = ConnectionHandler.runPreparedQuery(SELECT_BRANCH_BY_NAME, SQL3DataType.VARCHAR, branchName);
+         ResultSet rset = chStmt.getRset();
          if (rset.next()) {
             throw new IllegalArgumentException("A branch with the name " + branchName + " already exists");
          }
@@ -408,7 +402,7 @@ public class BranchCreator implements PersistenceManager {
       int associatedArtifactId = -1;
 
       if (associatedArtifact == null && !SkynetDbInit.isDbInit()) {
-         associatedArtifact = skynetAuth.getUser(UserEnum.NoOne);
+         associatedArtifact = SkynetAuthentication.getUser(UserEnum.NoOne);
       }
 
       if (associatedArtifact != null) {
@@ -443,73 +437,8 @@ public class BranchCreator implements PersistenceManager {
     * @throws SQLException
     */
    public Branch createChildBranch(final TransactionId parentTransactionId, final String childBranchShortName, final String childBranchName, final Artifact associatedArtifact, boolean preserveMetaData, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) throws Exception {
-      return HttpBranchCreation.createChildBranch(skynetAuth, parentTransactionId, childBranchShortName,
-            childBranchName, associatedArtifact, preserveMetaData, compressArtTypes, preserveArtTypes);
-   }
-
-   private final class CreateChildBranchTx extends AbstractDbTxTemplate {
-      private Branch childBranch;
-      private String childBranchShortName;
-      private String childBranchName;
-      private TransactionId parentTransactionId;
-      private Artifact associatedArtifact;
-      private Collection<ArtifactType> compressArtTypes;
-      private Collection<ArtifactType> preserveArtTypes;
-      private boolean success = false;
-
-      public CreateChildBranchTx(TransactionId parentTransactionId, String childBranchShortName, String childBranchName, Artifact associatedArtifact, Collection<ArtifactType> compressArtTypes, Collection<ArtifactType> preserveArtTypes) {
-         this.childBranch = null;
-         this.parentTransactionId = parentTransactionId;
-         this.childBranchShortName = childBranchShortName;
-         this.childBranchName = childBranchName;
-         this.associatedArtifact = associatedArtifact;
-         this.compressArtTypes = compressArtTypes;
-         this.preserveArtTypes = preserveArtTypes;
-      }
-
-      @Override
-      protected void handleTxWork() throws Exception {
-         Pair<Branch, Integer> branchWithTransactionNumber =
-               createBranchWithBaselineTransactionNumber(associatedArtifact, parentTransactionId, childBranchShortName,
-                     childBranchName, BranchType.STANDARD);
-
-         childBranch = branchWithTransactionNumber.getKey();
-         int newTransactionNumber = branchWithTransactionNumber.getValue();
-
-         copyBranchAddressingFromTransaction(childBranch, newTransactionNumber, parentTransactionId, compressArtTypes,
-               preserveArtTypes);
-
-         success = true;
-
-      }
-
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxException(java.lang.Exception)
-       */
-      @Override
-      protected void handleTxException(Exception ex) throws Exception {
-         super.handleTxException(ex);
-         success = false;
-      }
-
-      /*
-       * (non-Javadoc)
-       * 
-       * @see org.eclipse.osee.framework.ui.plugin.util.db.AbstractDbTxTemplate#handleTxFinally()
-       */
-      @Override
-      protected void handleTxFinally() throws Exception {
-         super.handleTxFinally();
-         if (success) {
-            eventManager.kick(new LocalNewBranchEvent(this, childBranch.getBranchId()));
-            remoteEventManager.kick(new NetworkNewBranchEvent(childBranch.getBranchId(),
-                  SkynetAuthentication.getUser().getArtId()));
-         }
-      }
-
-      public Branch getChildBranch() {
-         return childBranch;
-      }
+      return HttpBranchCreation.createChildBranch(parentTransactionId, childBranchShortName, childBranchName,
+            associatedArtifact, preserveMetaData, compressArtTypes, preserveArtTypes);
    }
 
    /**

@@ -36,7 +36,7 @@ public abstract class Conflict implements IAdaptable {
          this.value = value;
       }
 
-      public final int Value() {
+      public final int getValue() {
          return value;
       }
 

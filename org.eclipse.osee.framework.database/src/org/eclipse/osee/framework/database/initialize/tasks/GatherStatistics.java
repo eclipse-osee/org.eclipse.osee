@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.initialize.tasks;
 import java.sql.Connection;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SupportedDatabase;
 
 public class GatherStatistics extends DbInitializationTask {
@@ -35,9 +36,7 @@ public class GatherStatistics extends DbInitializationTask {
          try {
             stmt = ConnectionHandler.runPreparedQuery(gatherStats);
          } finally {
-            if (stmt != null) {
-               stmt.close();
-            }
+            DbUtil.close(stmt);
          }
 
       }
