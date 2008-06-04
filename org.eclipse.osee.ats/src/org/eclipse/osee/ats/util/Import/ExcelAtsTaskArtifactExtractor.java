@@ -50,7 +50,6 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
    private IProgressMonitor monitor;
    private int rowNum;
    private final boolean emailPOCs;
-   private static SkynetAuthentication skyAuth = SkynetAuthentication.getInstance();
    private SMAManager smaMgr;
    private final boolean persist;
 
@@ -113,7 +112,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                if (userName == null || userName.equals(""))
                   u = SkynetAuthentication.getUser();
                else
-                  u = skyAuth.getUserByName(userName, false);
+                  u = SkynetAuthentication.getInstance().getUserByName(userName, false);
                if (u == null) OSEELog.logSevere(AtsPlugin.class, String.format(
                      "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum), false);
                taskArt.getLog().setOriginator(u);
@@ -126,7 +125,7 @@ public class ExcelAtsTaskArtifactExtractor extends AbstractArtifactExtractor imp
                   if (userName == null || userName.equals(""))
                      user = SkynetAuthentication.getUser();
                   else
-                     user = skyAuth.getUserByName(userName, false);
+                     user = SkynetAuthentication.getInstance().getUserByName(userName, false);
                   if (user == null) throw new IllegalArgumentException(String.format(
                         "Invalid Assignee \"%s\" for row %d", userName, rowNum));
                   assignees.add(user);

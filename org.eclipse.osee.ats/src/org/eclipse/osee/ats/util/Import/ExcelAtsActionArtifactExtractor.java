@@ -45,7 +45,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Donald G. Dunne
  */
 public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor implements RowProcessor {
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private static final String description = "Extract each row as an Action";
    private ExcelSaxHandler excelHandler;
    private String[] headerRow;
@@ -178,7 +177,7 @@ public class ExcelAtsActionArtifactExtractor extends AbstractArtifactExtractor i
          // Else if assignees, confirm that they are valid
          if (aData.assigneeStrs.size() > 0) {
             for (String assignee : aData.assigneeStrs) {
-               User user = skynetAuth.getUserByName(assignee, false);
+               User user = SkynetAuthentication.getInstance().getUserByName(assignee, false);
                if (user == null)
                   rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                else

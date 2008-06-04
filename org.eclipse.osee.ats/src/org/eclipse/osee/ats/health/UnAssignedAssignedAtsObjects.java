@@ -111,8 +111,8 @@ public class UnAssignedAssignedAtsObjects extends XNavigateItemAutoRunAction imp
    }
 
    private void getUnassignedAtsObjectHelper(final XResultData rd) throws Exception {
-      User unAssignedUser = SkynetAuthentication.getInstance().getUser(UserEnum.UnAssigned);
-      User noOneUser = SkynetAuthentication.getInstance().getUser(UserEnum.NoOne);
+      User unAssignedUser = SkynetAuthentication.getUser(UserEnum.UnAssigned);
+      User noOneUser = SkynetAuthentication.getUser(UserEnum.NoOne);
 
       Collection<Artifact> arts = StateMachineArtifact.getAllSMATypeArtifacts();
       for (Artifact art : arts) {

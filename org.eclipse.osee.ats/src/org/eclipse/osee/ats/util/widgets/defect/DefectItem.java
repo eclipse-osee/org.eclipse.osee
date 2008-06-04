@@ -158,7 +158,7 @@ public class DefectItem {
       date.setTime(new Long(AXml.getTagData(xml, "date")));
       this.date = date;
       try {
-         this.user = SkynetAuthentication.getInstance().getUserByIdWithError(AXml.getTagData(xml, "user"));
+         this.user = SkynetAuthentication.getUserByIdWithError(AXml.getTagData(xml, "user"));
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }

@@ -159,12 +159,10 @@ public class AtsLib implements IAtsLib {
    }
 
    public void createATSAction(String initialDescription, String actionableItem) {
-
       // Ensure actionable item is configured for ATS before continuing
       try {
-         Artifact aia =
-               ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, actionableItem,
-                     AtsPlugin.getAtsBranch());
+         ArtifactQuery.getArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, actionableItem,
+               AtsPlugin.getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          AWorkbench.popup(
                "Configuration Error",

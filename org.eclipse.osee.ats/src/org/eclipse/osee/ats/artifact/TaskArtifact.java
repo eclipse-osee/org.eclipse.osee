@@ -134,7 +134,8 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    @Override
    public StateMachineArtifact getParentSMA() throws SQLException {
-      Collection<StateMachineArtifact> smas = getArtifacts(CoreRelationEnumeration.SmaToTask_Sma, StateMachineArtifact.class);
+      Collection<StateMachineArtifact> smas =
+            getArtifacts(CoreRelationEnumeration.SmaToTask_Sma, StateMachineArtifact.class);
       if (smas.size() > 0) return smas.iterator().next();
       return null;
    }
@@ -163,7 +164,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       // Assign current user if unassigned
       try {
          if (smaMgr.getStateMgr().getAssignees().size() == 1 && smaMgr.getStateMgr().getAssignees().contains(
-               SkynetAuthentication.getInstance().getUser(UserEnum.UnAssigned))) {
+               SkynetAuthentication.getUser(UserEnum.UnAssigned))) {
             smaMgr.getStateMgr().setAssignee(SkynetAuthentication.getUser());
          }
       } catch (Exception ex) {
@@ -199,8 +200,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    public void parentWorkFlowTransitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws Exception {
       if (toPage.isCancelledPage() && isInWork())
          transitionToCancelled("Parent Cancelled", persist);
-      else if (fromPage.isCancelledPage() && isCancelled()) transitionToInWork(
-            SkynetAuthentication.getUser(), persist);
+      else if (fromPage.isCancelledPage() && isCancelled()) transitionToInWork(SkynetAuthentication.getUser(), persist);
    }
 
    /*
