@@ -344,16 +344,8 @@
 			<AppliesTo id="TRANSACTION_ID" />
 			<AppliesTo id="BRANCH_ID"/>
 		</Index>
-		<Index id="OSEE_TX_DETAILS_TYPE_TX_IDX">
-			<AppliesTo id="TX_TYPE" />
-			<AppliesTo id="TRANSACTION_ID" />
-		</Index>
 		<Index id="OSEE_TX_DETAILS_B_IDX">
 			<AppliesTo id="BRANCH_ID" />
-		</Index>
-		<Index id="OSEE_TX_DETAILS_B_T_IDX">
-			<AppliesTo id="BRANCH_ID" />
-			<AppliesTo id="TX_TYPE" />
 		</Index>
 	</Table>
 	
