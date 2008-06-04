@@ -73,18 +73,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
-   private static int count = 0;
-   public final int aaaSerialId = count++;
+   private HashCollection<String, Attribute<?>> attributes =
+         new HashCollection<String, Attribute<?>>(false, LinkedList.class, 12);
+   private boolean dirty = false;
+   private boolean inTransaction = false;
+   private boolean deleted = false;
    private final Branch branch;
    private final String guid;
-   protected boolean dirty = false;
-   protected boolean inTransaction = false;
-   private boolean deleted = false;
    private ArtifactType artifactType;
    private String humanReadableId;
    private ArtifactFactory parentFactory;
-   private HashCollection<String, Attribute<?>> attributes =
-         new HashCollection<String, Attribute<?>>(false, LinkedList.class, 4);
    private AttributeAnnotationManager annotationMgr;
    private int transactionId;
    private int artId;

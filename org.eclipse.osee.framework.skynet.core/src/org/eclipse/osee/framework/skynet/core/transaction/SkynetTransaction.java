@@ -18,22 +18,17 @@ import static org.eclipse.osee.framework.skynet.core.change.ModificationType.CHA
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.DELETED;
 import static org.eclipse.osee.framework.skynet.core.change.ModificationType.NEW;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
-import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -243,65 +238,6 @@ public class SkynetTransaction {
             if (!artifact.isDeleted()) {
                artifact.setNotDirty();
             }
-         }
-      }
-   }
-
-   private void performStripeCheckAndSetArtifactsNotDirty() throws SQLException {
-      Set<Artifact> allArtifacts = new HashSet<Artifact>();
-      Map<Integer, Artifact> potentialConflictedArtifacts = new HashMap<Integer, Artifact>();
-      Map<Integer, Integer> artIdToNewGamma = new HashMap<Integer, Integer>();
-
-      for (ITransactionData transactionData : transactionItems.keySet()) {
-         if (transactionData instanceof ArtifactTransactionData) {
-            Artifact artifact = ((ArtifactTransactionData) transactionData).getArtifact();
-            ModificationType modificationType = ((ArtifactTransactionData) transactionData).getModificationType();
-
-            allArtifacts.add(artifact);
-            if (!remoteEventManager.isConnected() && modificationType != ModificationType.NEW) {
-               potentialConflictedArtifacts.put(artifact.getArtId(), artifact);
-            }
-            artIdToNewGamma.put(artifact.getArtId(), ((ArtifactTransactionData) transactionData).getGammaId());
-         }
-      }
-
-      int local_transaction_id;
-      int db_transaction_id;
-      int art_id;
-
-      ArrayList<Artifact> tempArts = new ArrayList<Artifact>(potentialConflictedArtifacts.values());
-      while (!tempArts.isEmpty()) {
-         Branch branch = tempArts.get(0).getBranch();
-         String artIdList = artifactPersistenceManager.getArtIdList(tempArts);
-         ConnectionHandlerStatement chStmt = null;
-         try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(SELECT_MAX_TRANSACTION + artIdList + ") group by art_id",
-                        SQL3DataType.INTEGER, branch.getBranchId());
-            local_transaction_id = transactionId.getLastSavedTransactionNumber();
-
-            while (chStmt.next()) {
-               db_transaction_id = chStmt.getRset().getInt("transaction_id");
-
-               if (local_transaction_id < db_transaction_id) {
-                  for (Artifact artifact : allArtifacts) {
-                     artifact.setInTransaction(false);
-                  }
-                  art_id = chStmt.getRset().getInt("art_id");
-                  logger.log(
-                        Level.WARNING,
-                        "A collision has occurred.  Artifact " + art_id + " with local transaction_id " + local_transaction_id + " has database transaction_id " + db_transaction_id);
-               }
-            }
-         } finally {
-            DbUtil.close(chStmt);
-         }
-      }
-
-      for (Artifact artifact : allArtifacts) {
-         artifact.setInTransaction(false);
-         if (!artifact.isDeleted()) {
-            artifact.setNotDirty();
          }
       }
    }
