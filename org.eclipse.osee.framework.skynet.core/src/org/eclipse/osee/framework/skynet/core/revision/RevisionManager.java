@@ -424,7 +424,9 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       loadAttributeChanges(sourceBranch, transactionIdNumber, artIds, changes);
       loadRelationChanges(sourceBranch, transactionIdNumber, artIds, changes);
 
-      ArtifactQuery.getArtifactsFromIds(artIds, sourceBranch, true);
+      if (!artIds.isEmpty()) {
+         ArtifactQuery.getArtifactsFromIds(artIds, sourceBranch, true);
+      }
 
       return changes;
    }
@@ -460,6 +462,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                         artId, null, null, ModificationType.getMod(resultSet.getInt("mod_type")), ChangeType.OUTGOING);
 
             //We do not want to display artifacts that were new and then deleted
+            //The only was this could happen is if the artifact was in here twice
+            //since the sql only returns new or deleted artifacts
             if (!artifactChanges.containsKey(artId)) {
                artIds.add(artId);
                changes.add(artifactChanged);
@@ -973,21 +977,21 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
             ConnectionHandlerStatement chStmt = null;
             try {
-               String sql =
-                     "SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
-                           artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
+            String sql =
+                  "SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
+                        artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
 
-               chStmt =
-                     ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-                           fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                           toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                           fromTransactionId.getBranch().getBranchId());
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
+                        fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                        toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                        fromTransactionId.getBranch().getBranchId());
 
-               ResultSet rset = chStmt.getRset();
-               while (rset.next()) {
-                  artIdToMinOver.put(rset.getInt("art_id"),
-                        transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
-               }
+            ResultSet rset = chStmt.getRset();
+            while (rset.next()) {
+               artIdToMinOver.put(rset.getInt("art_id"),
+                     transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
+            }
             } finally {
                DbUtil.close(chStmt);
             }
@@ -995,21 +999,21 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             ConnectionHandlerStatement chStmt1 = null;
             try {
                String sql =
-                     "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
-                           artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
+                  "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
+                        artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
                chStmt1 =
-                     ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-                           fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                           fromTransactionId.getBranch().getBranchId());
+                  ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
+                        fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                        fromTransactionId.getBranch().getBranchId());
 
                ResultSet rset = chStmt1.getRset();
-               while (rset.next()) {
-                  artIdToMaxUnder.put(rset.getInt("art_id"),
-                        transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
-               }
+            while (rset.next()) {
+               artIdToMaxUnder.put(rset.getInt("art_id"),
+                     transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
+            }
             } finally {
                DbUtil.close(chStmt1);
-            }
+         }
          }
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
