@@ -124,7 +124,7 @@ public class SkyWalkerView extends ViewPart {
                   // objects
                   // which is necessary for a node size change
                   Artifact art = (Artifact) viewer.getInput();
-                  explore(SkynetAuthentication.getInstance().getUser(UserEnum.UnAssigned));
+                  explore(SkynetAuthentication.getUser(UserEnum.UnAssigned));
                   if (art != null) explore(art);
                } catch (Exception ex) {
                   // DO Nothing

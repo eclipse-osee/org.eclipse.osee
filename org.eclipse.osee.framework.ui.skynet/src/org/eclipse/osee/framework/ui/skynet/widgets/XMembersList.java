@@ -26,8 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
  */
 public class XMembersList extends XListViewer {
 
-   private static SkynetAuthentication skyAuth = SkynetAuthentication.getInstance();
-
    public XMembersList() {
       this("MList", "", "");
    }
@@ -40,7 +38,7 @@ public class XMembersList extends XListViewer {
       super(displayLabel, xmlRoot, xmlSubRoot);
       super.setLabelProvider(new ArtifactLabelProvider());
       super.setContentProvider(new ArrayContentProvider());
-      super.setInputArtifacts(skyAuth.getUsers());
+      super.setInputArtifacts(SkynetAuthentication.getInstance().getUsers());
       super.setSorter(new ArtifactViewerSorter());
    }
 

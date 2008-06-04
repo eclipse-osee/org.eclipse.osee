@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Label;
  * @author Donald G. Dunne
  */
 public class XMembersCombo extends XWidget {
-   private static SkynetAuthentication skyAuth = SkynetAuthentication.getInstance();
    private static final String DEFAULT_SELECTION = "--select--";
    private Combo dataCombo;
    private Composite composite;
@@ -204,7 +203,7 @@ public class XMembersCombo extends XWidget {
          String userId = matcher.group(1);
          User user = null;
          try {
-            user = skyAuth.getUserByIdWithError(userId);
+            user = SkynetAuthentication.getUserByIdWithError(userId);
          } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, false);
          }

@@ -50,7 +50,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class BranchLabelProvider implements ITableLabelProvider, ITableColorProvider, ILabelProvider {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchLabelProvider.class);
-   private static final SkynetAuthentication authentication = SkynetAuthentication.getInstance();
    private static Image branchImage = SkynetGuiPlugin.getInstance().getImage("branch.gif");
    private static Image changeManagedBranchImage = SkynetGuiPlugin.getInstance().getImage("change_managed_branch.gif");
 
@@ -75,7 +74,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
       this.attributeAction = attributeAction;
 
       // Make sure all of the users are mapped so we don't incur many single hits for users
-      authentication.getUsers();
+      SkynetAuthentication.getInstance().getUsers();
    }
 
    @SuppressWarnings("unchecked")
@@ -178,7 +177,7 @@ public class BranchLabelProvider implements ITableLabelProvider, ITableColorProv
          } else if (columnIndex == 2) {
             return String.valueOf(branch.getCreationDate());
          } else if (columnIndex == 3) {
-            User user = authentication.getUserByArtId(branch.getAuthorId());
+            User user = SkynetAuthentication.getInstance().getUserByArtId(branch.getAuthorId());
             return user == null ? "" : user.getDescriptiveName();
          } else if (columnIndex == 4) {
             return branch.getCreationComment();

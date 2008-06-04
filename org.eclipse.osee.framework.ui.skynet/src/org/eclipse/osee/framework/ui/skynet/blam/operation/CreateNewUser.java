@@ -64,7 +64,7 @@ public class CreateNewUser extends AbstractBlam {
          return;
       }
       try {
-         User existingUser = SkynetAuthentication.getInstance().getUserByIdWithError(userId);
+         User existingUser = SkynetAuthentication.getUserByIdWithError(userId);
          if (existingUser != null) {
             AWorkbench.popup("ERROR", "User with userId \"" + userId + "\" already exists.");
             monitor.done();
@@ -132,8 +132,7 @@ public class CreateNewUser extends AbstractBlam {
       // Add groups to belong to
       try {
          groupArts =
-               EmailGroupsAndUserGroups.getEmailGroupsAndUserGroups(
-                     SkynetAuthentication.getUser(), GroupType.Both);
+               EmailGroupsAndUserGroups.getEmailGroupsAndUserGroups(SkynetAuthentication.getUser(), GroupType.Both);
          String groupStr = "";
          for (Artifact art : groupArts) {
             groupStr += art.getDescriptiveName() + ",";

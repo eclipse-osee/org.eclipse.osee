@@ -46,7 +46,6 @@ import org.eclipse.swt.widgets.Text;
  * @author Donald G. Dunne
  */
 public class EmailWizardPage extends WizardPage {
-   private static final SkynetAuthentication skynetAuth = SkynetAuthentication.getInstance();
    private Text text;
    private ArrayList<Object> initialAddress;
    private TreeViewer namesList;
@@ -93,8 +92,8 @@ public class EmailWizardPage extends WizardPage {
 
       try {
          names.addAll(SkynetAuthentication.getInstance().getUsers());
-         names.remove(skynetAuth.getUser(UserEnum.UnAssigned));
-         names.remove(skynetAuth.getUser(UserEnum.NoOne));
+         names.remove(SkynetAuthentication.getUser(UserEnum.UnAssigned));
+         names.remove(SkynetAuthentication.getUser(UserEnum.NoOne));
       } catch (Exception ex) {
          OSEELog.logException(getClass(), ex, false);
          names.add(ex.getLocalizedMessage());

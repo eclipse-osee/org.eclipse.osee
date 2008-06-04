@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlData;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -50,8 +49,6 @@ import org.eclipse.swt.widgets.Table;
 public class PolicyDialog extends Dialog {
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(PolicyDialog.class);
-   private static final ArtifactPersistenceManager artifactManager = ArtifactPersistenceManager.getInstance();
-   private static final SkynetAuthentication skynetAuthentication = SkynetAuthentication.getInstance();
    private PolicyTableViewer policyTableViewer;
    private Button radEnabled;
    private Button radDisabled;
@@ -89,7 +86,7 @@ public class PolicyDialog extends Dialog {
       cmbUsers.setText("-Select Person-");
       cmbPermissionLevel.setText("-Select Permission-");
       ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
-      subjectList.addAll(skynetAuthentication.getUsers());
+      subjectList.addAll(SkynetAuthentication.getInstance().getUsers());
       try {
          subjectList.addAll(ArtifactQuery.getArtifactsFromType("User Group", BranchPersistenceManager.getCommonBranch()));
       } catch (SQLException ex) {
