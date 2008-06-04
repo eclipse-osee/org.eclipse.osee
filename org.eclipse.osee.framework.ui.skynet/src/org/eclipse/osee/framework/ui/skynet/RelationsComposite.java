@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
@@ -688,8 +689,15 @@ public class RelationsComposite extends Composite implements IEventReceiver {
 
             if (object instanceof RelationLink) {//used for ordering
                RelationLink targetLink = (RelationLink) object;
-               RelationManager.addRelationAndModifyOrder(artifact, targetLink.getArtifactOnOtherSide(artifact),
-                     ((ArtifactData) event.data).getArtifacts(), targetLink.getRelationType(), true);
+               //               RelationManager.addRelationAndModifyOrder(artifact, targetLink.getArtifactOnOtherSide(artifact),
+               //                     ((ArtifactData) event.data).getArtifacts(), targetLink.getRelationType(), true);
+
+               Artifact target = targetLink.getArtifactOnOtherSide(artifact);
+               for (Artifact art : ((ArtifactData) event.data).getArtifacts()) {
+                  artifact.setRelationOrder(target, isFeedbackAfter, new RelationTypeSide(targetLink.getRelationType(),
+                        targetLink.getSide(artifact).oppositeSide(), artifact), art);
+                  target = art;
+               }
                treeViewer.refresh();
                editor.onDirtied();
             } else if (object instanceof RelationTypeSide) {
@@ -704,6 +712,8 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          } catch (SQLException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          } catch (ArtifactDoesNotExist ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         } catch (OseeCoreException ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
 

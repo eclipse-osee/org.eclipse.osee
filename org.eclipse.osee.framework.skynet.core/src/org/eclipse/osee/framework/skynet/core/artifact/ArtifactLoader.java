@@ -19,7 +19,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
@@ -173,9 +175,11 @@ public final class ArtifactLoader {
       } finally {
          DbUtil.close(chStmt);
       }
-
+      Map<Integer, RelationLink> sideB = new HashMap<Integer, RelationLink>();
+      Map<Integer, RelationLink> sideA = new HashMap<Integer, RelationLink>();
       for (Artifact artifact : artifacts) {
          artifact.setLinksLoaded();
+         artifact.sortRelations(sideA, sideB);
       }
    }
 

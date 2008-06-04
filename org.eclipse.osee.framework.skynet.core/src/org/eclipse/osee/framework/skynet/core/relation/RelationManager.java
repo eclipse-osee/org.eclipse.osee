@@ -111,8 +111,8 @@ public class RelationManager {
             relationsByType.put(artifact, relation.getRelationType(), selectedRelations);
          }
          selectedRelations.add(relation);
-         }
       }
+   }
 
    private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
       List<RelationLink> selectedRelations = null;
@@ -563,15 +563,13 @@ public class RelationManager {
             int targetIndex = selectedRelations.indexOf(targetRelation);
             int index = insertAfterTarget ? targetIndex + 1 : targetIndex;
             selectedRelations.add(index, relation);
-            if (index == 0) {
-               relation.setOrder(side, LINKED_LIST_KEY);
-            } else {
-               boolean updatedOrder = false;
-               for (int i = index + 1; i < selectedRelations.size() && !updatedOrder; i++) {
-                  if (selectedRelations.get(i).getArtifactId(side.oppositeSide()) == sourceArtifact.getArtId()) {
-                     selectedRelations.get(i).setOrder(side, relation.getArtifactId(side));
-                     updatedOrder = true;
+            int lastArtId = LINKED_LIST_KEY;
+            for (RelationLink link : selectedRelations) {
+               if (!link.isDeleted() && link.getSide(sourceArtifact) == side.oppositeSide()) {
+                  if (link.getOrder(side) != lastArtId) {
+                     link.setOrder(side, lastArtId);
                   }
+                  lastArtId = link.getArtifactId(side);
                }
             }
          }
@@ -611,32 +609,40 @@ public class RelationManager {
          if (relations != null) {
             sideA.clear();
             sideB.clear();
+            boolean badValues = false;
             for (RelationLink relation : relations) {
                if (!relation.isDeleted()) {
                   if (relation.getSide(artifact) == RelationSide.SIDE_A) {
-                     sideB.put(relation.getOrder(RelationSide.SIDE_B), relation);
+                     if (sideB.put(relation.getOrder(RelationSide.SIDE_B), relation) != null) {
+                        badValues = true;
+                     }
                   } else {
-                     sideA.put(relation.getOrder(RelationSide.SIDE_A), relation);
+                     if (sideA.put(relation.getOrder(RelationSide.SIDE_A), relation) != null) {
+                        badValues = true;
+                     }
                   }
                }
             }
+            if (!badValues) {
+               relations.clear();
 
-            relations.clear();
-
-            //do side b first
-            RelationLink relation = sideB.remove(LINKED_LIST_KEY);
-            while (relation != null) {
-               relations.add(relation);
-               relation = sideB.remove(relation.getArtifactId(RelationSide.SIDE_B));
+               //do side b first
+               RelationLink relation = sideB.remove(LINKED_LIST_KEY);
+               while (relation != null) {
+                  relations.add(relation);
+                  RelationLink newRelation = sideB.get(relation.getArtifactId(RelationSide.SIDE_B));
+                  sideB.remove(relation.getArtifactId(RelationSide.SIDE_B));
+                  relation = newRelation;
+               }
+               relations.addAll(sideB.values());
+               //now side a
+               relation = sideA.remove(LINKED_LIST_KEY);
+               while (relation != null) {
+                  relations.add(relation);
+                  relation = sideA.remove(relation.getArtifactId(RelationSide.SIDE_A));
+               }
+               relations.addAll(sideA.values());
             }
-            relations.addAll(sideB.values());
-            //now side a
-            relation = sideA.remove(LINKED_LIST_KEY);
-            while (relation != null) {
-               relations.add(relation);
-               relation = sideA.remove(relation.getArtifactId(RelationSide.SIDE_A));
-            }
-            relations.addAll(sideA.values());
          }
       }
    }
