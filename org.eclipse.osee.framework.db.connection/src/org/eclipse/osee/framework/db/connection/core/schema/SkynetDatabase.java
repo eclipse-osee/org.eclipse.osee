@@ -53,7 +53,6 @@ public class SkynetDatabase {
    public static final Table ATTRIBUTE_VERSION_TABLE = new Table("OSEE_DEFINE_ATTRIBUTE");
    public static final Table ATTRIBUTE_TYPE_TABLE = new Table("OSEE_DEFINE_ATTRIBUTE_TYPE");
    public static final Table ATTRIBUTE_TYPE_TABLE_ACL = new Table("OSEE_DEFINE_ATTRIBUTE_TYPE_ACL");
-   public static final Table FACTORY_TABLE = new Table("OSEE_DEFINE_FACTORY");
    public static final Table RELATION_LINK_TABLE = new Table("OSEE_REL_LINK"); // NEW TABLE WITH GUID AND REL_LINK_ID ONLY
    public static final Table RELATION_LINK_VERSION_TABLE = new Table("OSEE_DEFINE_REL_LINK");
    public static final Table RELATION_LINK_TYPE_TABLE = new Table("OSEE_DEFINE_REL_LINK_TYPE");
