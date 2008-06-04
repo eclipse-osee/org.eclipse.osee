@@ -46,7 +46,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
    private static final String SELECT_BASELINED_TRANSACTIONS =
          "SELECT txs1.gamma_id, txs1.transaction_id from osee_define_txs txs1, osee_define_tx_details txd1 where txd1.tx_type = 1 and txd1.transaction_id > ? and txd1.transaction_id = txs1.transaction_id";
    private static final String UPDATE_TX_DETAILS_NON_BASELINE_TRANSACTIONS_TO_0 =
-         "UPDATE osee_Define_tx_details SET tx_type = 0 WHERE tx_type <> 1";
+         "UPDATE osee_Define_tx_details SET tx_type = 0 WHERE tx_type IS NULL"; // Changed tx_type <> 1 to account for null case
    private static final String UPDATE_TX_DETAILS_BASELINE_TRANSACTIONS_TO_1 =
          "UPDATE osee_Define_tx_details SET tx_type = 1 WHERE osee_comment LIKE '%New Branch%'";
    private static final String SELECT_ARTIFACT_MOD_TYPE =
@@ -115,12 +115,12 @@ public class UpdateCurrentColumn extends AbstractBlam {
                rowsUpdated));
          //*/
 
-         updateArtifactModType(connection, txNumber);
-         updateAttributeModType(connection, txNumber);
-         updateRelationModType(connection, txNumber);
-
-         updateRelationsSortOrder(connection, SELECT_A_RELATION_ORDER, UPDATE_A_ORDER);
-         updateRelationsSortOrder(connection, SELECT_B_RELATION_ORDER, UPDATE_B_ORDER);
+         //         updateArtifactModType(connection, txNumber);
+         //         updateAttributeModType(connection, txNumber);
+         //         updateRelationModType(connection, txNumber);
+         //
+         //         updateRelationsSortOrder(connection, SELECT_A_RELATION_ORDER, UPDATE_A_ORDER);
+         //         updateRelationsSortOrder(connection, SELECT_B_RELATION_ORDER, UPDATE_B_ORDER);
 
          if (variableMap.getBoolean("Run Tx Current Verification")) {
             boolean result = verifyTxCurrent(connection);
@@ -145,8 +145,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
          statement = ConnectionHandler.runPreparedQuery(connection, 0, VERIFY_TX_CURRENT, new Object[0]);
          while (statement.next()) {
             wasSuccessful = false;
-            appendResultLine(String.format("Duplicate tx_current at: branch_id[%s] id[%s]", statement.getRset().getInt(
-                  1), statement.getRset().getInt(2)));
+            //            appendResultLine(String.format("Duplicate tx_current at: branch_id[%s] id[%s]", statement.getRset().getInt(
+            //                  1), statement.getRset().getInt(2)));
          }
       } catch (Exception ex) {
          wasSuccessful = false;
@@ -331,6 +331,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
             setToUpdate.addAll(result);
          }
       }
+      appendResultLine(String.format("%d updates for [updateTxCurrentToZero]\n", setToUpdate.size()));
       return ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_CURRENT_TO_0, setToUpdate);
    }
 
@@ -346,9 +347,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
                   stmt.getRset().getInt(2)});
          }
       } finally {
-         if (stmt != null) {
-            stmt.close();
-         }
+         DbUtil.close(stmt);
       }
       return toReturn;
    }
