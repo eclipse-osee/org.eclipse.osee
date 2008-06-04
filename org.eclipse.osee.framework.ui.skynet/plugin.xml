@@ -447,30 +447,6 @@
 		<category id="org.eclipse.osee.define.import.category" name="OSEE">
       </category>
   	</extension>
-  <menuContribution
-        locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView">
-     <menu
-           label="Preview">
-        <command
-              commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
-        </command>
-        <command
-              commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
-        </command>
-     </menu>
-  </menuContribution>
-  <menuContribution
-        locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView.22">
-     <menu
-           label="Preview">
-        <command
-              commandId="org.eclipse.osee.framework.ui.skynet.previewArtifact.command">
-        </command>
-        <command
-              commandId="org.eclipse.osee.framework.ui.skynet.previewArtifactRecurse.command">
-        </command>
-     </menu>
-  </menuContribution>
   <extension
         point="org.eclipse.ui.exportWizards">
      <wizard
