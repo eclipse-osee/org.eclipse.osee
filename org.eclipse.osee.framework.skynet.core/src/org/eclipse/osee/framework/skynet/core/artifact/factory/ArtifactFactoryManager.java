@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.FACTORY_ID_SEQ;
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.FACTORY_TABLE;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.dbinit.SkynetDbInit;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.osgi.framework.Bundle;
 
@@ -75,7 +75,9 @@ public class ArtifactFactoryManager {
    private void populateCache() throws OseeDataStoreException {
       loadFactoryBundleMap();
       createFactoriesFromDB();
-      registerNewFactories();
+      if (SkynetDbInit.isDbInit()) {
+         registerNewFactories();
+      }
    }
 
    /**
@@ -92,7 +94,7 @@ public class ArtifactFactoryManager {
          }
 
          Bundle bundle = Platform.getBundle(bundleSymbolicName);
-         Method getInstance = bundle.loadClass(factoryClassName).getMethod("getInstance", new Class[] {int.class});
+         Method getInstance = bundle.loadClass(factoryClassName).getMethod("getInstance", int.class);
          ArtifactFactory factory = (ArtifactFactory) getInstance.invoke(null, new Object[] {factoryId});
 
          factoryNameMap.put(factoryClassName, factory);
@@ -141,8 +143,8 @@ public class ArtifactFactoryManager {
                int factoryId = Query.getNextSeqVal(null, FACTORY_ID_SEQ);
 
                ConnectionHandler.runPreparedUpdate(
-                     "INSERT INTO " + FACTORY_TABLE + " (factory_id, factory_class) VALUES (?, ?)",
-                     SQL3DataType.INTEGER, factoryId, SQL3DataType.VARCHAR, factoryClassName);
+                     "INSERT INTO osee_define_factory (factory_id, factory_class) VALUES (?, ?)", SQL3DataType.INTEGER,
+                     factoryId, SQL3DataType.VARCHAR, factoryClassName);
 
                createFactory(factoryClassName, factoryId);
             }
