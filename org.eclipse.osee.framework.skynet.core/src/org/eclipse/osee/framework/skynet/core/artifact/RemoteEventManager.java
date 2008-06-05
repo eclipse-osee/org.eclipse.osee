@@ -73,7 +73,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.TransactionRelationModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.swt.widgets.Display;
@@ -224,7 +223,6 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
     */
    private static class EventListener extends ASkynetEventListener {
       private static final long serialVersionUID = -3017349745450262540L;
-      private TransactionId editableTransactionId;
       private SkynetEventManager eventManager = SkynetEventManager.getInstance();
       private static final ISchedulingRule mutexRule = new ISchedulingRule() {
 
@@ -241,43 +239,44 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
          final String message = event.getMessage();
          if (message != null && message.length() > 0) {
             boolean isShutdownAllowed = false;
+
             // Determine whether this is a shutdown event
             // Prevent shutting down users without a valid message
             if (event instanceof SkynetDisconnectClientsEvent) {
                try {
-                  String[] userIds = ((SkynetDisconnectClientsEvent) event).getUserIds();
-                  User user = SkynetAuthentication.getUser();
+               String[] userIds = ((SkynetDisconnectClientsEvent) event).getUserIds();
+               User user = SkynetAuthentication.getUser();
                   if (user != null) {
                      String userId = user.getUserId();
-                     for (String temp : userIds) {
-                        if (temp.equals(userId)) {
-                           isShutdownAllowed = true;
-                           break;
+                  for (String temp : userIds) {
+                     if (temp.equals(userId)) {
+                        isShutdownAllowed = true;
+                        break;
                         }
                      }
                   }
                } catch (Exception ex) {
                   SkynetActivator.getLogger().log(Level.SEVERE, "Error processing shutdown", ex);
-               }
-               final boolean isShutdownRequest = isShutdownAllowed;
-               Display.getDefault().asyncExec(new Runnable() {
-                  public void run() {
+            }
+            final boolean isShutdownRequest = isShutdownAllowed;
+            Display.getDefault().asyncExec(new Runnable() {
+               public void run() {
                      if (isShutdownRequest) {
-                        MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                              "Shutdown Requested", message);
-                        // Shutdown the bench when this event is received
-                        PlatformUI.getWorkbench().close();
+                     MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                           "Shutdown Requested", message);
+                     // Shutdown the bench when this event is received
+                     PlatformUI.getWorkbench().close();
                      }
                   }
                });
-            } else {
+                  } else {
                Display.getDefault().asyncExec(new Runnable() {
                   public void run() {
                      MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                            "Remote Message", message);
                   }
                });
-            }
+               }
          }
       }
 
@@ -319,8 +318,7 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
                   } else if (event instanceof ISkynetArtifactEvent) {
                      updateArtifacts((ISkynetArtifactEvent) event, localEvents);
                   } else if (event instanceof ISkynetRelationLinkEvent) {
-                     updateRelations((ISkynetRelationLinkEvent) event, localEvents,
-                           editableTransactionId.getTransactionNumber());
+                     updateRelations((ISkynetRelationLinkEvent) event, localEvents);
                   }
                }
                eventManager.kick(new RemoteTransactionEvent(localEvents, this));
@@ -377,12 +375,11 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
 
    /**
     * @param event
-    * @param localEvents
     * @param newTransactionId
     * @throws ArtifactDoesNotExist
     * @throws SQLException
     */
-   private static void updateRelations(ISkynetRelationLinkEvent event, Collection<Event> localEvents, int newTransactionId) {
+   private static void updateRelations(ISkynetRelationLinkEvent event, Collection<Event> localEvents) {
       if (event == null) return;
 
       try {

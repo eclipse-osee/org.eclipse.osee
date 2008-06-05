@@ -96,9 +96,6 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
  * @author Jeff C. Phillips
  */
 public class RevisionManager implements PersistenceManager, IEventReceiver {
-   private static final String BRANCH_CHANGE_ART_IDS =
-         "SELECT ?, t3.art_id, t2.branch_id FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id union select ?, af4.art_id, td2.branch_id FROM osee_Define_txs tx1, osee_Define_tx_details td2, osee_Define_artifact_version av3, osee_Define_artifact af4 WHERE td2.branch_id = ? AND td2.tx_type = 0 AND td2.transaction_id = tx1.transaction_id AND tx1.gamma_id = av3.gamma_id AND (tx1.tx_current = 2 OR tx1.mod_type = 1)  AND av3.art_id = af4.art_id union SELECT ?, art4.art_id, td2.branch_id  from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3, osee_define_artifact art4 where tx1.tx_current = 1 AND td2.tx_type = 0 AND td2.branch_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id AND (art4.art_id = rl3.a_art_id OR art4.art_id = rl3.b_art_id)";
-
    private static final String BRANCH_ATTRIBUTE_IS_CHANGES =
          "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
@@ -396,8 +393,8 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @return
     * @throws SQLException
     */
-   public Collection<Change> getChangesPerTransaction(int transactionIdNumber) throws SQLException {
-      return getChangesPerBranch(null, transactionIdNumber);
+   public Collection<Change> getChangesPerTransaction(int transactionNumber) throws SQLException {
+      return getChangesPerBranch(null, transactionNumber);
    }
 
    /**

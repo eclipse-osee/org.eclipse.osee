@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class ChangeXViewer extends XViewer implements IEventReceiver {
 
    private static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
-   private final XChangeViewer xCommitViewer;
+   private final XChangeViewer xChangeViewer;
 
    /**
     * @param parent
@@ -70,7 +70,7 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
 
    public ChangeXViewer(Composite parent, int style, String nameSpace, IXViewerFactory xViewerFactory, XChangeViewer xRoleViewer) {
       super(parent, style, nameSpace, xViewerFactory);
-      this.xCommitViewer = xRoleViewer;
+      this.xChangeViewer = xRoleViewer;
    }
 
    public ArrayList<Change> getSelectedChanges() {
@@ -160,7 +160,7 @@ public class ChangeXViewer extends XViewer implements IEventReceiver {
     * @see org.eclipse.osee.framework.ui.plugin.event.IEventReceiver#onEvent(org.eclipse.osee.framework.ui.plugin.event.Event)
     */
    public void onEvent(Event event) {
-      xCommitViewer.refresh();
+      xChangeViewer.refresh();
    }
 
    /* (non-Javadoc)

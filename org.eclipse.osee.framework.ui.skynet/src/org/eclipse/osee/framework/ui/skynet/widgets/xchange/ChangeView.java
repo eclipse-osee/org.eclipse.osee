@@ -22,8 +22,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
@@ -49,27 +47,27 @@ public class ChangeView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView";
    private static String HELP_CONTEXT_ID = "ChangeView";
    private XChangeViewer xChangeViewer;
-   private Change[] changes;
-   private static Branch branch;
+   private Branch branch;
+   private int transactionNumber;
 
    /**
     * @author Donald G. Dunne
+    * @author Jeff C. Phillips
     */
    public ChangeView() {
    }
 
    public static void open(Branch branch) throws SQLException {
-      ChangeView.branch = branch;
       if (branch == null) throw new IllegalArgumentException("Branch can't be null");
-      ChangeView.openViewUpon(RevisionManager.getInstance().getChangesPerBranch(branch).toArray(new Change[] {}));
+      ChangeView.openViewUpon(branch, -1);
    }
 
-   public static void open(int transactionId) throws SQLException {
-      ChangeView.openViewUpon(RevisionManager.getInstance().getChangesPerTransaction(transactionId).toArray(
-            new Change[] {}));
+   public static void open(int transactionNumber) throws SQLException {
+      if (transactionNumber < 0) throw new IllegalArgumentException("Branch can't be null");
+      ChangeView.openViewUpon(null, transactionNumber);
    }
 
-   private static void openViewUpon(final Change[] changes) {
+   private static void openViewUpon(final Branch branch, final int transactionNumber) {
       Job job = new Job("Open Change View") {
 
          @Override
@@ -77,15 +75,12 @@ public class ChangeView extends ViewPart implements IActionable {
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
                   try {
-                     if (changes == null || changes.length == 0) {
-                        AWorkbench.popup("Information", "There are no changes on this branch.");
-                     } else {
-                        IWorkbenchPage page = AWorkbench.getActivePage();
-                        ChangeView changeView =
-                              (ChangeView) page.showView(VIEW_ID, String.valueOf(changes[0].getBranch().getBranchId()),
-                                    IWorkbenchPage.VIEW_ACTIVATE);
-                        changeView.explore(changes);
-                     }
+                     IWorkbenchPage page = AWorkbench.getActivePage();
+                     ChangeView changeView =
+                           (ChangeView) page.showView(VIEW_ID,
+                                 String.valueOf(branch != null ? branch.getBranchId() : transactionNumber),
+                                 IWorkbenchPage.VIEW_ACTIVATE);
+                     changeView.explore(branch, transactionNumber);
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
                   }
@@ -125,13 +120,6 @@ public class ChangeView extends ViewPart implements IActionable {
       xChangeViewer = new XChangeViewer();
       xChangeViewer.setDisplayLabel(false);
       xChangeViewer.createWidgets(parent, 1);
-      try {
-         if (changes != null) {
-            xChangeViewer.setChanges(changes);
-         }
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
-      }
 
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
@@ -151,19 +139,13 @@ public class ChangeView extends ViewPart implements IActionable {
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID);
    }
 
-   private void explore(final Change[] changes) {
-      this.changes = changes;
-      try {
-         if (xChangeViewer != null && changes != null) xChangeViewer.setChanges(changes);
-         setPartName("Change Report: " + changes[0].getBranch().getBranchShortName());
-      } catch (SQLException ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+   private void explore(final Branch branch, final int transactionNumber) throws SQLException {
+      if (xChangeViewer != null) {
+         this.branch = branch;
+         this.transactionNumber = transactionNumber;
+         xChangeViewer.setInputData(branch, transactionNumber);
+         setPartName("Change Report: " + branch != null ? branch.getBranchShortName() : String.valueOf(transactionNumber));
       }
-   }
-
-   private void explore(final Branch branch) throws SQLException {
-      Change[] changes = new Change[0];
-      explore(RevisionManager.getInstance().getChangesPerBranch(branch).toArray(changes));
    }
 
    public String getActionDescription() {
@@ -172,6 +154,7 @@ public class ChangeView extends ViewPart implements IActionable {
 
    private static final String INPUT = "input";
    private static final String BRANCH_ID = "branchId";
+   private static final String TRANSACTION_NUMBER = "transactionNumber";
 
    /*
     * (non-Javadoc)
@@ -182,7 +165,12 @@ public class ChangeView extends ViewPart implements IActionable {
    public void saveState(IMemento memento) {
       super.saveState(memento);
       memento = memento.createChild(INPUT);
-      memento.putInteger(BRANCH_ID, branch.getBranchId());
+
+      if (branch != null) {
+         memento.putInteger(BRANCH_ID, branch.getBranchId());
+      } else {
+         memento.putInteger(TRANSACTION_NUMBER, transactionNumber);
+      }
    }
 
    @Override
@@ -190,14 +178,21 @@ public class ChangeView extends ViewPart implements IActionable {
       super.init(site, memento);
       try {
          Integer branchId = null;
+         Integer transactionId = null;
+
          if (memento != null) {
             memento = memento.getChild(INPUT);
             if (memento != null) {
                branchId = memento.getInteger(BRANCH_ID);
-               if (branchId != null) explore(BranchPersistenceManager.getInstance().getBranch(branchId));
+               if (branchId != null) {
+                  openViewUpon(BranchPersistenceManager.getInstance().getBranch(branchId), -1);
+               } else {
+                  transactionId = memento.getInteger(TRANSACTION_NUMBER);
+                  if (transactionId != null) {
+                     openViewUpon(null, transactionId);
+                  }
+               }
             }
-            OSEELog.logWarning(SkynetGuiPlugin.class,
-                  "BranchId " + branchId + " not found.  Change Report init failed.", false);
          }
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, "Change report error on init", ex, false);

@@ -14,6 +14,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -22,10 +26,14 @@ import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.RemoteTransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.event.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.revision.RevisionManager;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -47,7 +55,11 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
 
    private ChangeXViewer xChangeViewer;
    public final static String normalColor = "#EEEEEE";
+   private static final String LOADING = "Loading ...";
+   private static final String NOT_CHANGES = "No changes were found";
    private Label extraInfoLabel;
+   private Branch branch;
+   private int transactionNumber;
 
    /**
     * @param label
@@ -65,7 +77,6 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
     */
    @Override
    public void createWidgets(Composite parent, int horizontalSpan) {
-
       // Create Text Widgets
       if (displayLabel && !label.equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
@@ -114,7 +125,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
 
       extraInfoLabel = new Label(leftComp, SWT.NONE);
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      extraInfoLabel.setText("");
+      extraInfoLabel.setText("\n");
 
       Composite rightComp = new Composite(bComp, SWT.NONE);
       rightComp.setLayout(new GridLayout());
@@ -130,7 +141,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
       item.setToolTipText("Refresh");
       item.addSelectionListener(new SelectionAdapter() {
          public void widgetSelected(SelectionEvent e) {
-            loadTable();
+            setInputData(branch, transactionNumber);
          }
       });
 
@@ -180,6 +191,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
    public void refresh() {
       xChangeViewer.refresh();
       setLabelError();
+      extraInfoLabel.setText(branch != null ? "Change Report for branch: " + branch.getBranchShortName() : "Change Report for transaction: " + transactionNumber);
    }
 
    @Override
@@ -225,9 +237,49 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
       return xChangeViewer.getInput();
    }
 
-   public void setChanges(Change[] changes) throws IllegalStateException, SQLException {
-      loadTable();
-      xChangeViewer.setChanges(changes);
+   public void setInputData(final Branch branch, final int transactionNumber) {
+      this.branch = branch;
+      this.transactionNumber = transactionNumber;
+
+      xChangeViewer.setInput(LOADING);
+
+      Job job = new Job("") {
+
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            final Change[] changes;
+
+            try {
+               if (branch != null) {
+                  changes = RevisionManager.getInstance().getChangesPerBranch(branch).toArray(new Change[0]);
+               } else {
+                  changes =
+                        RevisionManager.getInstance().getChangesPerTransaction(transactionNumber).toArray(new Change[0]);
+               }
+
+               Displays.ensureInDisplayThread(new Runnable() {
+                  public void run() {
+                     try {
+                        //                        extraInfoLabel.setText("Change Report: " + branch != null ? branch.getBranchShortName() : String.valueOf(transactionNumber));
+
+                        if (changes.length == 0) {
+                           xChangeViewer.setInput(NOT_CHANGES);
+                        } else {
+                           xChangeViewer.setChanges(changes);
+                           loadTable();
+                        }
+                     } catch (SQLException ex) {
+                        OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
+                     }
+                  }
+               });
+            } catch (SQLException ex) {
+               OSEELog.logException(SkynetGuiPlugin.class, ex.getLocalizedMessage(), ex, false);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job);
    }
 
    /* (non-Javadoc)
@@ -252,5 +304,4 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
    @Override
    public void setXmlData(String str) {
    }
-
 }
