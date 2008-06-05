@@ -232,8 +232,8 @@ public final class ConnectionHandler {
          returnValue = preparedStatement.executeUpdate();
       } finally {
          if (preparedStatement != null) {
-         preparedStatement.close();
-      }
+            preparedStatement.close();
+         }
       }
       return returnValue;
    }
@@ -263,7 +263,7 @@ public final class ConnectionHandler {
          preparedStatement = connection.prepareStatement(query);
          chStmt.setStatement(preparedStatement);
 
-         preparedStatement.setFetchSize(fetchSize);
+         preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
          populateValuesForPreparedStatement(preparedStatement, data);
 
          record.markStart();
@@ -279,6 +279,15 @@ public final class ConnectionHandler {
       }
    }
 
+   /**
+    * @param fetchSize hint as to the number of rows that should be fetched from the database at a time. will be limited
+    *           to 10,000
+    * @param overrideTranaction
+    * @param query
+    * @param data
+    * @return
+    * @throws SQLException
+    */
    private static ConnectionHandlerStatement runPreparedQuery(int fetchSize, boolean overrideTranaction, String query, Object... data) throws SQLException {
       QueryRecord record = new QueryRecord(query, data);
       PreparedStatement preparedStatement = null;
@@ -288,7 +297,7 @@ public final class ConnectionHandler {
          preparedStatement = getConnection(overrideTranaction).prepareStatement(query);
          chStmt.setStatement(preparedStatement);
 
-         preparedStatement.setFetchSize(fetchSize);
+         preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
          populateValuesForPreparedStatement(preparedStatement, data);
 
          record.markStart();
@@ -369,8 +378,8 @@ public final class ConnectionHandler {
          throw ex;
       } finally {
          if (preparedStatement != null) {
-         preparedStatement.close();
-      }
+            preparedStatement.close();
+         }
       }
       return returnCount;
    }
@@ -507,7 +516,7 @@ public final class ConnectionHandler {
          throw ex;
       } finally {
          if (preparedStatement != null) {
-         preparedStatement.close();
+            preparedStatement.close();
          }
       }
    }

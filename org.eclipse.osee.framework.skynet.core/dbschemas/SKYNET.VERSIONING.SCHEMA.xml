@@ -91,13 +91,9 @@
  	  	<Index id="OSEE_ATTRIBUTE_V_IDX" mySqlIgnore="true">
 			<AppliesTo id="VALUE"/>
 		</Index>
-		<Index id="OSEE_ATTRIBUTE_V_AR_IDX" mySqlIgnore="true">
+		<Index id="OSEE_ATTRIBUTE_AR_V_IDX" mySqlIgnore="true">
 			<AppliesTo id="ART_ID"/>
 			<AppliesTo id="VALUE"/>
-		</Index>
-		<Index id="OSEE_ATTRIBUTE_V_AR_IDX" mySqlIgnore="true">
-			<AppliesTo id="VALUE"/>
-			<AppliesTo id="ART_ID"/>
 		</Index>
 		<Index id="OSEE_ATTRIBUTE_AR_G_IDX" type="UNIQUE">
 			<AppliesTo id="ART_ID"/>
