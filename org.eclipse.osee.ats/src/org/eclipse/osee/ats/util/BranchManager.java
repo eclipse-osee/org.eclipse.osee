@@ -72,6 +72,7 @@ public class BranchManager {
    private boolean commitPopup;
    private final SMAManager smaMgr;
    private final ATSBranchMetrics atsBranchMetrics;
+   public static String BRANCH_CATEGORY = "Branch Changes";
 
    public BranchManager(SMAManager smaMgr) {
       this.smaMgr = smaMgr;

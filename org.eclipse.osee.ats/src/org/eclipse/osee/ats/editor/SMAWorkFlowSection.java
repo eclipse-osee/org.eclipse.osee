@@ -504,9 +504,9 @@ public class SMAWorkFlowSection extends SectionPart {
    private void handleTransition() {
 
       try {
-         if (smaMgr.getBranchMgr().isWorkingBranch()) {
+         if (smaMgr.getBranchMgr().isWorkingBranch() && !atsWorkPage.isAllowTransitionWithWorkingBranch()) {
             AWorkbench.popup("ERROR",
-                  "Can't transition with working branch present.\n\n" + "Delete branch first, then transition.");
+                  "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
             return;
          }
 

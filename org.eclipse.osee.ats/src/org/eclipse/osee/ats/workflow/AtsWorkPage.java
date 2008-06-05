@@ -195,6 +195,13 @@ public class AtsWorkPage extends WorkPage {
    /**
     * @return the allowCreateBranch
     */
+   public boolean isAllowTransitionWithWorkingBranch() throws Exception {
+      return AtsWorkDefinitions.isAllowTransitionWithWorkingBranch(workPageDefinition);
+   }
+
+   /**
+    * @return the allowCreateBranch
+    */
    public boolean isAllowCreateBranch() throws Exception {
       return AtsWorkDefinitions.isAllowCreateBranch(workPageDefinition);
    }

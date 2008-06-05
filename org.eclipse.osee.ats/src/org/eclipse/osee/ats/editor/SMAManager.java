@@ -742,7 +742,7 @@ public class SMAManager {
          // Validate transition from fromPage to toPage
          if (!overrideTransitionCheck && !getWorkFlowDefinition().getToPages(fromPage).contains(toPage)) {
             String errStr =
-                  "According to transition configuration, can't transition to \"" + toStateName + "\" from \"" + fromPage.getName() + "\"";
+                  "Not configured to transition to \"" + toStateName + "\" from \"" + fromPage.getName() + "\"";
             OSEELog.logSevere(AtsPlugin.class, errStr, false);
             return new Result(errStr);
          }

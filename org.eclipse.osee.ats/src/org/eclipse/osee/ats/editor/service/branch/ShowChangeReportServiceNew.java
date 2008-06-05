@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
-import org.eclipse.osee.ats.editor.stateItem.BranchableStateItem;
+import org.eclipse.osee.ats.util.BranchManager;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.event.LocalBranchEvent;
@@ -95,7 +95,7 @@ public class ShowChangeReportServiceNew extends WorkPageService implements IEven
     */
    @Override
    public String getSidebarCategory() {
-      return BranchableStateItem.BRANCH_CATEGORY;
+      return BranchManager.BRANCH_CATEGORY;
    }
 
    /*

@@ -62,6 +62,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       atsRequireStateHourSpentPrompt,
       atsAddDecisionValidateBlockingReview,
       atsAddDecisionValidateNonBlockingReview,
+      atsAllowTransitionWithWorkingBranch,
       atsAllowCreateBranch,
       atsAllowCommitBranch,
       atsForceAssigneesToTeamLeads
@@ -75,6 +76,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
          workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsRequireStateHourSpentPrompt.name()));
          workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()));
          workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAddDecisionValidateNonBlockingReview.name()));
+         workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowTransitionWithWorkingBranch.name()));
          workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowCreateBranch.name()));
          workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowCommitBranch.name()));
          workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsForceAssigneesToTeamLeads.name()));
@@ -226,6 +228,10 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static boolean isForceAssigneesToTeamLeads(WorkPageDefinition workPageDefinition) throws Exception {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsForceAssigneesToTeamLeads.name()) != null);
+   }
+
+   public static boolean isAllowTransitionWithWorkingBranch(WorkPageDefinition workPageDefinition) throws Exception {
+      return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowTransitionWithWorkingBranch.name()) != null);
    }
 
    public static boolean isRequireStateHoursSpentPrompt(WorkPageDefinition workPageDefinition) throws Exception {
