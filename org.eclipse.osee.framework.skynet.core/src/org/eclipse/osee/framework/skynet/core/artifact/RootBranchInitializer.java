@@ -26,8 +26,5 @@ class RootBranchInitializer {
 
       // Create necessary top universal group artifact
       UniversalGroup.createTopUniversalGroupArtifact(branch);
-
-      // Add default Word templates needed
-      //      TemplateInitializer.addFunctionality(branch);
    }
 }
