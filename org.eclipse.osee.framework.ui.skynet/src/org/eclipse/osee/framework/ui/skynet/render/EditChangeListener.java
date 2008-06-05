@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -37,11 +36,12 @@ public class EditChangeListener implements IResourceChangeListener {
       if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
          try {
             event.getDelta().accept(visitor);
-         } catch (CoreException ex) {
+         } catch (Exception ex) {
             OSEELog.logException(SkynetGuiPlugin.class, ex, true);
          }
       } else {
-         OSEELog.logException(SkynetGuiPlugin.class, null, true);
+         OSEELog.logWarning(SkynetGuiPlugin.class,
+               "expected change type to be POST_CHANGE but got \"" + event.getType() + "\" instead.", true);
       }
    }
 }
