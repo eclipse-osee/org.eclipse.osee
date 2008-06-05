@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -52,21 +53,23 @@ public class AttributeTypeValidityCache {
       //Partition attribute type id = 107, CSCI attribute type id = 695,
       int rootBranchId = branch.getRootBranch().getBranchId();
       if (rootBranchId == 2) {
-         removeAttributeType(attributeTypes, 695);
+         return removeAttributeType(attributeTypes, 695);
       } else if (rootBranchId == 221) {
-         removeAttributeType(attributeTypes, 107);
+         return removeAttributeType(attributeTypes, 107);
       }
 
       return attributeTypes;
    }
 
-   private void removeAttributeType(Collection<AttributeType> attributeTypes, int attributeTypeId) {
+   private Collection<AttributeType> removeAttributeType(Collection<AttributeType> attributeTypes, int attributeTypeId) {
       for (AttributeType attributeType : attributeTypes) {
          if (attributeType.getAttrTypeId() == attributeTypeId) {
+            attributeTypes = new ArrayList<AttributeType>(attributeTypes);
             attributeTypes.remove(attributeType);
-            return;
+            return attributeTypes;
          }
       }
+      return attributeTypes;
    }
 
    private synchronized void ensurePopulated() throws SQLException {
