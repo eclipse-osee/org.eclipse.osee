@@ -113,6 +113,7 @@ public abstract class Attribute<T> {
 
    private void setDirty() {
       dirty = true;
+      artifact.setInTransaction(false);
       SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(artifact, ModType.Changed, this));
    }
 
