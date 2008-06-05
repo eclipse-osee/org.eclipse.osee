@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
@@ -220,7 +221,16 @@ public class RelationsComposite extends Composite implements IEventReceiver {
          }
       });
 
-      treeViewer.expandToLevel(2);
+      //expand items that have children
+      Object[] types = ((ITreeContentProvider) treeViewer.getContentProvider()).getChildren(treeViewer.getInput());
+      for (Object obj : types) {
+         if (obj instanceof RelationType) {
+            RelationType type = (RelationType) obj;
+            if (RelationManager.getRelatedArtifactsCount(artifact, type, null) > 0) {
+               treeViewer.expandToLevel(obj, 1);
+            }
+         }
+      }
 
       new RelationSkynetDragAndDrop(tree, VIEW_ID);
    }
