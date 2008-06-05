@@ -50,6 +50,8 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.PersistenceManager;
 import org.eclipse.osee.framework.skynet.core.PersistenceManagerInit;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -57,7 +59,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactIdSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationInTransactionSearch;
@@ -95,6 +96,9 @@ import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
  * @author Jeff C. Phillips
  */
 public class RevisionManager implements PersistenceManager, IEventReceiver {
+   private static final String BRANCH_CHANGE_ART_IDS =
+         "SELECT ?, t3.art_id, t2.branch_id FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id union select ?, af4.art_id, td2.branch_id FROM osee_Define_txs tx1, osee_Define_tx_details td2, osee_Define_artifact_version av3, osee_Define_artifact af4 WHERE td2.branch_id = ? AND td2.tx_type = 0 AND td2.transaction_id = tx1.transaction_id AND tx1.gamma_id = av3.gamma_id AND (tx1.tx_current = 2 OR tx1.mod_type = 1)  AND av3.art_id = af4.art_id union SELECT ?, art4.art_id, td2.branch_id  from osee_define_txs tx1, osee_define_tx_details td2, osee_define_rel_link rl3, osee_define_artifact art4 where tx1.tx_current = 1 AND td2.tx_type = 0 AND td2.branch_id = ? AND tx1.transaction_id = td2.transaction_id AND tx1.gamma_id = rl3.gamma_id AND (art4.art_id = rl3.a_art_id OR art4.art_id = rl3.b_art_id)";
+
    private static final String BRANCH_ATTRIBUTE_IS_CHANGES =
          "SELECT t8.art_type_id, t3.art_id, t3.attr_id, t3.gamma_id, t3.attr_type_id, t3.value as is_value, t1.mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3, osee_define_artifact t8 WHERE t2.branch_id = ? AND t2.transaction_id = t1.transaction_id AND t1.tx_current = 1 AND t2.tx_type = 0 AND t8.art_id = t3.art_id AND t3.gamma_id = t1.gamma_id";
 
@@ -425,7 +429,17 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       loadRelationChanges(sourceBranch, transactionIdNumber, artIds, changes);
 
       if (!artIds.isEmpty()) {
-         ArtifactQuery.getArtifactsFromIds(artIds, sourceBranch, true);
+         int queryId = ArtifactLoader.getNewQueryId();
+
+         //TODO set this to run for the transaction path
+         List<Object[]> datas = new LinkedList<Object[]>();
+         for (int artId : artIds) {
+            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
+                  sourceBranch.getBranchId()});
+         }
+
+         ConnectionHandler.runPreparedUpdateBatch(ArtifactLoader.INSERT_INTO_LOADER, datas);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, artIds.size(), true);
       }
 
       return changes;
@@ -977,21 +991,21 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
             ConnectionHandlerStatement chStmt = null;
             try {
-            String sql =
-                  "SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
-                        artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
+               String sql =
+                     "SELECT " + TRANSACTION_DETAIL_TABLE.min("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
+                           artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + ">= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
 
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-                        fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                        toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                        fromTransactionId.getBranch().getBranchId());
+               chStmt =
+                     ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
+                           fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                           toTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                           fromTransactionId.getBranch().getBranchId());
 
-            ResultSet rset = chStmt.getRset();
-            while (rset.next()) {
-               artIdToMinOver.put(rset.getInt("art_id"),
-                     transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
-            }
+               ResultSet rset = chStmt.getRset();
+               while (rset.next()) {
+                  artIdToMinOver.put(rset.getInt("art_id"),
+                        transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
+               }
             } finally {
                DbUtil.close(chStmt);
             }
@@ -999,21 +1013,21 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             ConnectionHandlerStatement chStmt1 = null;
             try {
                String sql =
-                  "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
-                        artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
+                     "SELECT " + TRANSACTION_DETAIL_TABLE.max("transaction_id", "base_tx") + ", " + ARTIFACT_VERSION_TABLE.column("art_id") + " FROM " + ARTIFACT_VERSION_TABLE + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ARTIFACT_VERSION_TABLE.column("art_id") + " IN " + Collections.toString(
+                           artIdBlock, "(", ",", ")") + " AND " + ARTIFACT_VERSION_TABLE.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "<= ? " + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + " GROUP BY " + ARTIFACT_VERSION_TABLE.column("art_id");
                chStmt1 =
-                  ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
-                        fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
-                        fromTransactionId.getBranch().getBranchId());
+                     ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER,
+                           fromTransactionId.getTransactionNumber(), SQL3DataType.INTEGER,
+                           fromTransactionId.getBranch().getBranchId());
 
                ResultSet rset = chStmt1.getRset();
-            while (rset.next()) {
-               artIdToMaxUnder.put(rset.getInt("art_id"),
-                     transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
-            }
+               while (rset.next()) {
+                  artIdToMaxUnder.put(rset.getInt("art_id"),
+                        transactionIdManager.getPossiblyEditableTransactionIfFromCache(rset.getInt("base_tx")));
+               }
             } finally {
                DbUtil.close(chStmt1);
-         }
+            }
          }
       } catch (SQLException ex) {
          logger.log(Level.SEVERE, ex.toString(), ex);
