@@ -248,7 +248,8 @@ class CommitJob extends Job {
 
             int artifactCount = ArtifactLoader.selectArtifacts(queryId, ARTIFACT_CHANGES, dataList.toArray());
             ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, artifactCount, true);
-            
+            ArtifactLoader.clearQuery(queryId);
+
             transactionIdManager.resetEditableTransactionId(newTransactionNumber, toBranch);
             tagArtifacts(toBranch, fromBranchId, monitor);
 

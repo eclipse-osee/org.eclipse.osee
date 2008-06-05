@@ -14,13 +14,26 @@ package org.eclipse.osee.framework.skynet.core.relation;
  * @author Ryan D. Brooks
  */
 public enum RelationSide {
-   SIDE_A, SIDE_B;
+   SIDE_A, SIDE_B, OPPOSITE;
+
+   private static RelationSide[] sides = new RelationSide[] {SIDE_A, SIDE_B};
 
    public RelationSide oppositeSide() {
-      return this == SIDE_A ? SIDE_B : SIDE_A;
+      if (this == OPPOSITE) {
+         return OPPOSITE;
+      } else {
+         return this == SIDE_A ? SIDE_B : SIDE_A;
+      }
    }
 
    public boolean isSideA() {
       return this == RelationSide.SIDE_A;
+   }
+
+   /**
+    * @return
+    */
+   public static RelationSide[] getSides() {
+      return sides;
    }
 }

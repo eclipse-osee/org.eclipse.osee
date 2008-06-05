@@ -81,6 +81,10 @@ public final class ArtifactLoader {
       return ConnectionHandler.runPreparedUpdateReturnCount(LOADER_INSERT + sql, queryParameters);
    }
 
+   public static void selectArtifacts(List<Object[]> insertParameters) throws SQLException {
+      ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_LOADER, insertParameters);
+   }
+
    public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int artifactCount, boolean reload) throws SQLException {
       if (artifactCount > 0) {
          List<Artifact> artifacts = new ArrayList<Artifact>(artifactCount);

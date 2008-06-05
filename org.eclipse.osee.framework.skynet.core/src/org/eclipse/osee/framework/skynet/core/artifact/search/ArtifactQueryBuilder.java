@@ -309,7 +309,7 @@ public class ArtifactQueryBuilder {
 
    private List<Artifact> loadArtifacts(ISearchConfirmer confirmer, boolean reload) throws SQLException {
       int queryId = ArtifactLoader.getNewQueryId();
-      int artifactCount = ArtifactLoader.selectArtifacts(queryId, getArtifactInsertSql(queryId), dataList.toArray());
+      int artifactCount = selectArtifacts(queryId);
       List<Artifact> artifacts = ArtifactLoader.loadArtifacts(queryId, loadLevel, confirmer, artifactCount, reload);
       ArtifactLoader.clearQuery(queryId);
       return artifacts;
@@ -317,9 +317,13 @@ public class ArtifactQueryBuilder {
 
    public int countArtifacts() throws SQLException {
       int queryId = ArtifactLoader.getNewQueryId();
-      int artifactCount = ArtifactLoader.selectArtifacts(queryId, getArtifactInsertSql(queryId), dataList.toArray());
+      int artifactCount = selectArtifacts(queryId);
       ArtifactLoader.clearQuery(queryId);
       return artifactCount;
+   }
+
+   public int selectArtifacts(int queryId) throws SQLException {
+      return ArtifactLoader.selectArtifacts(queryId, getArtifactInsertSql(queryId), dataList.toArray());
    }
 
    public Artifact getArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {

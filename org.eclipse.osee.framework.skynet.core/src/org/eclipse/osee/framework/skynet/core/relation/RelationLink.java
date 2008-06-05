@@ -285,7 +285,7 @@ public class RelationLink {
 
    @Deprecated
    private String processArtifactSideName(Artifact artifact, boolean otherArtifact) {
-      for (RelationSide side : RelationSide.values()) {
+      for (RelationSide side : RelationSide.getSides()) {
          try {
             Artifact linkArt = getArtifact(side);
             if (linkArt == artifact) {

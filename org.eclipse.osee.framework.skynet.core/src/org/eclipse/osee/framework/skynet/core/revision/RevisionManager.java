@@ -440,6 +440,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
          ConnectionHandler.runPreparedUpdateBatch(ArtifactLoader.INSERT_INTO_LOADER, datas);
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, artIds.size(), true);
+         ArtifactLoader.clearQuery(queryId);
       }
 
       return changes;

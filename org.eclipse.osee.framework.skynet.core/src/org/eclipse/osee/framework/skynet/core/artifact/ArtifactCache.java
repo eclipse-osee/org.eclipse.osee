@@ -25,6 +25,9 @@ public class ArtifactCache {
    private final CompositeKeyHashMap<Integer, Integer, Artifact> artifactIdCache =
          new CompositeKeyHashMap<Integer, Integer, Artifact>(2000);
 
+   private final CompositeKeyHashMap<String, Integer, Artifact> artifactGuidCache =
+         new CompositeKeyHashMap<String, Integer, Artifact>(2000);
+
    private final CompositeKeyHashMap<String, Branch, Artifact> keyedArtifactCache =
          new CompositeKeyHashMap<String, Branch, Artifact>(10);
 
@@ -41,6 +44,7 @@ public class ArtifactCache {
    static void cache(Artifact artifact) {
       if (artifact.isLive()) {
          instance.artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), artifact);
+         instance.artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), artifact);
       } else {
          instance.historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
          instance.historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
@@ -51,6 +55,7 @@ public class ArtifactCache {
       instance.historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
       instance.historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
       instance.artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
+      instance.artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
    }
 
    public static Artifact getHistorical(Integer artId, Integer transactionNumber) {
@@ -83,6 +88,18 @@ public class ArtifactCache {
     */
    public static Artifact getActive(Integer artId, Integer branchId) {
       return instance.artifactIdCache.get(artId, branchId);
+   }
+
+   /**
+    * returns the active artifact with the given artifact id from the given branch if it is in the cache and null
+    * otherwise
+    * 
+    * @param artId
+    * @param branchId
+    * @return
+    */
+   public static Artifact getActive(String artGuid, Integer branchId) {
+      return instance.artifactGuidCache.get(artGuid, branchId);
    }
 
    /**

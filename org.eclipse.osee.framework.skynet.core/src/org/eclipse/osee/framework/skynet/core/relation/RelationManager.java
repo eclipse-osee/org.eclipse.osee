@@ -15,14 +15,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
@@ -149,6 +153,70 @@ public class RelationManager {
          }
       }
       return artifacts;
+   }
+
+   private static void addRelatedArtifactIds(int queryId, Artifact artifact, Collection<Artifact> relatedArtifacts, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, List<RelationLink> relations, RelationSide side) {
+      if (relations == null) {
+         return;
+      }
+      for (RelationLink relation : relations) {
+         if (!relation.isDeleted()) {
+            RelationSide resolvedSide = null;
+            if (side == RelationSide.OPPOSITE) {
+               resolvedSide = relation.getSide(artifact).oppositeSide();
+            } else {
+               if (relation.getSide(artifact) != side) {
+                  resolvedSide = side;
+               }
+            }
+            if (resolvedSide != null) {
+               int artId = relation.getArtifactId(resolvedSide);
+               int branchId = relation.getBranch(resolvedSide).getBranchId();
+               Artifact relatedArtifact = ArtifactCache.getActive(artId, branchId);
+               if (relatedArtifact == null) {
+                  insertParameters.put(artId, branchId, new Object[] {SQL3DataType.INTEGER, queryId,
+                        SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER, branchId});
+               } else {
+                  relatedArtifacts.add(relatedArtifact);
+               }
+            }
+         }
+      }
+   }
+
+   public static Set<Artifact> getRelatedArtifacts(Collection<Artifact> artifacts, int depth, IRelationEnumeration... relationTypes) throws SQLException {
+      int queryId = ArtifactLoader.getNewQueryId();
+      CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
+            new CompositeKeyHashMap<Integer, Integer, Object[]>(artifacts.size() * 8);
+      Set<Artifact> relatedArtifacts = new HashSet<Artifact>(insertParameters.size());
+      Collection<Artifact> newArtifacts = artifacts;
+      for (int i = 0; i < depth && newArtifacts.size() > 0; i++) {
+
+         insertParameters.clear();
+         for (Artifact artifact : newArtifacts) {
+            List<RelationLink> selectedRelations = null;
+            if (relationTypes.length == 0) {
+               selectedRelations = artifactToRelations.get(artifact);
+               addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations,
+                     RelationSide.OPPOSITE);
+            } else {
+               for (IRelationEnumeration relationEnum : relationTypes) {
+                  selectedRelations = relationsByType.get(artifact, relationEnum.getRelationType());
+                  addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations,
+                        relationEnum.getSide());
+               }
+            }
+         }
+
+         if (insertParameters.size() > 0) {
+            ArtifactLoader.selectArtifacts(new ArrayList<Object[]>(insertParameters.values()));
+            newArtifacts =
+                  ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters.size(), false);
+            ArtifactLoader.clearQuery(queryId);
+            relatedArtifacts.addAll(newArtifacts);
+         }
+      }
+      return relatedArtifacts;
    }
 
    private static boolean needsBulkLoad(List<RelationLink> selectedRelations, Artifact artifact, RelationSide relationSide) throws ArtifactDoesNotExist, SQLException {
