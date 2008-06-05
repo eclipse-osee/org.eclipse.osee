@@ -52,7 +52,7 @@ public final class ArtifactLoader {
    private static final String SELECT_ARTIFACTS =
          "SELECT al1.art_id, txs1.gamma_id, txs1.transaction_id, txd1.branch_id, art_type_id, guid, human_readable_id, mod_type FROM osee_artifact_loader al1, osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND al1.art_id = art1.art_id AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txd1.branch_id = al1.branch_id AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + ", " + TxChange.DELETED.getValue() + ")";
 
-   private static final String INSERT_INTO_LOADER =
+   public static final String INSERT_INTO_LOADER =
          "INSERT INTO osee_artifact_loader (query_id, art_id, branch_id) VALUES (?, ?, ?)";
 
    private static final String DELETE_FROM_LOADER = "DELETE FROM osee_artifact_loader WHERE query_id = ?";
