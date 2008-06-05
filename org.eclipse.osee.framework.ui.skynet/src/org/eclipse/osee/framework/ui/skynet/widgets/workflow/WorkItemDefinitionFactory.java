@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Donald G. Dunne
@@ -55,6 +57,19 @@ public class WorkItemDefinitionFactory {
                BranchPersistenceManager.getCommonBranch())) {
             addItemDefinition(new WorkFlowDefinition(art), art);
          }
+      }
+   }
+
+   public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws SQLException {
+      Artifact parentArt =
+            ArtifactQuery.getArtifactsFromName(parentWorkflowId, BranchPersistenceManager.getCommonBranch()).iterator().next();
+      if (parentArt == null) throw new IllegalArgumentException("Can't access parentWorkflowId " + parentWorkflowId);
+      Artifact childArt =
+            ArtifactQuery.getArtifactsFromName(childWorkflowId, BranchPersistenceManager.getCommonBranch()).iterator().next();
+      if (childArt == null) throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
+      if (!parentArt.getArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class).contains(childArt)) {
+         parentArt.addRelation(CoreRelationEnumeration.WorkItem__Child, childArt);
+         parentArt.persistRelations();
       }
    }
 

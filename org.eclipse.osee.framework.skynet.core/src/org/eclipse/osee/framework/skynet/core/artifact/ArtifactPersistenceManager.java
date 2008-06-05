@@ -172,7 +172,6 @@ public class ArtifactPersistenceManager {
          throw new IllegalArgumentException(
                "The artifact " + artifact.getGuid() + " must be at the head of the branch to be edited.");
       }
-
       if (artifact.isDirty() && !artifact.isInTransaction()) {
          builder.addArtifact(artifact);
       }

@@ -173,9 +173,9 @@ public class LoadAIsAndTeamsAction extends Action {
                   desc = line.replaceFirst(DESCRIPTION, "");
                else if (line.startsWith(WORKFLOW_ID)) {
                   workflowId = line.replaceFirst(WORKFLOW_ID, "");
-               } else if (line.startsWith(STATIC_ID))
+               } else if (line.startsWith(STATIC_ID)) {
                   staticIds.add(line.replaceFirst(STATIC_ID, ""));
-               else if (line.startsWith(GET_OR_CREATE))
+               } else if (line.startsWith(GET_OR_CREATE))
                   getOrCreate = true;
                else if (line.startsWith(FULL_NAME))
                   fullName = line.replaceFirst(FULL_NAME, "");
@@ -223,7 +223,6 @@ public class LoadAIsAndTeamsAction extends Action {
                for (Artifact actionableItem : actionableItems) {
                   teamDefArt.addRelation(CoreRelationEnumeration.TeamActionableItem_ActionableItem, actionableItem);
                }
-               teamDefArt.persistRelations();
             }
          }
          if (teamDefArt == null) {
