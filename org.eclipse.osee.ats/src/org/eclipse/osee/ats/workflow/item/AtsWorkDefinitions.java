@@ -11,16 +11,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.config.AtsConfig;
+import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsAnalyzeWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsAuthorizeWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsDecisionFollowupWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsDecisionPrepareWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsEndorseWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsImplementWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsPeerPrepareWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsPeerReviewWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsTaskInWorkPageDefinition;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemBooleanDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData.Fill;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
 /**
  * Create all the default ATS work items. This keeps from having to create a class for each of these. Also implement
@@ -33,43 +58,123 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    public static List<WorkItemDefinition> workItems;
    public static Map<String, WorkItemDefinition> idToWorkItem;
 
-   public static enum BooleanWorkItemId {
-      atsRequireStateHourSpentPrompt, atsAddDecisionValidateBlockingReview, atsAddDecisionValidateNonBlockingReview
+   public static enum RuleWorkItemId {
+      atsRequireStateHourSpentPrompt,
+      atsAddDecisionValidateBlockingReview,
+      atsAddDecisionValidateNonBlockingReview,
+      atsAllowCreateBranch,
+      atsAllowCommitBranch,
+      atsForceAssigneesToTeamLeads
    }
 
    public static List<WorkItemDefinition> getAtsWorkDefinitions() {
       if (workItems == null) {
          workItems = new ArrayList<WorkItemDefinition>();
 
-         // Create boolean work items
-         workItems.add(new WorkItemBooleanDefinition(BooleanWorkItemId.atsRequireStateHourSpentPrompt.name(), true));
-         workItems.add(new WorkItemBooleanDefinition(BooleanWorkItemId.atsAddDecisionValidateBlockingReview.name(),
-               true));
-         workItems.add(new WorkItemBooleanDefinition(BooleanWorkItemId.atsAddDecisionValidateNonBlockingReview.name(),
-               false));
+         // Create rule work items
+         workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsRequireStateHourSpentPrompt.name()));
+         workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()));
+         workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAddDecisionValidateNonBlockingReview.name()));
+         workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowCreateBranch.name()));
+         workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowCommitBranch.name()));
+         workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsForceAssigneesToTeamLeads.name()));
 
-         // Create AtsAttribute work items
-         workItems.add(new AtsAttributeSoleStringXWidgetWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE, Fill.Vertically));
-         workItems.add(new AtsAttributeSoleStringXWidgetWorkItem(ATSAttributes.PROBLEM_ATTRIBUTE, Fill.Vertically));
-         workItems.add(new AtsAttributeSoleStringXWidgetWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE,
-               Fill.Vertically));
-         workItems.add(new AtsAttributeSoleStringXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE, Fill.Vertically));
-         workItems.add(new AtsAttributeSoleFloatXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE));
+         // Create XWidget work items
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LOCATION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
+               XOption.FILL_VERTICALLY));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE, "XTextDam"));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CATEGORY_ATTRIBUTE, "XTextDam"));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, "XTextDam"));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE, "XTextDam",
+               XOption.FILL_VERTICALLY));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.TITLE_ATTRIBUTE, "XTextDam", XOption.REQUIRED));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE, "XTextDam",
+               XOption.FILL_VERTICALLY));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE, "XTextDam",
+               XOption.FILL_VERTICALLY));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.PROBLEM_ATTRIBUTE, "XTextDam",
+               XOption.FILL_VERTICALLY));
+         workItems.add(new AtsAttributeXWidgetWorkItem("Question",
+               AtsDecisionDecisionWorkPageDefinition.DECISION_XWIDGET_ID, "Name", "XLabelDam"));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE, "XTextDam",
+               XOption.FILL_VERTICALLY));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE, "XTextDam",
+               XOption.REQUIRED, XOption.FILL_VERTICALLY));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE, "XComboBooleanDam",
+               XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_ATTRIBUTE, "XComboDam(1,2,3)",
+               XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE, "XFloatDam"));
          workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE,
-               "OPTIONS_FROM_ATTRIBUTE_VALIDITY"));
+               "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED));
          workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE,
-               "OPTIONS_FROM_ATTRIBUTE_VALIDITY"));
-         workItems.add(new AtsAttributeSoleDateXWidgetWorkItem(ATSAttributes.DEADLINE_ATTRIBUTE));
+               "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DEADLINE_ATTRIBUTE, "XDateDam",
+               XOption.HORIZONTAL_LABEL));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE, "XCheckBoxDam",
+               XOption.HORIZONTAL_LABEL, XOption.LABEL_BEFORE));
+         workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.USER_COMMUNITY_ATTRIBUTE,
+               "XListDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.HORIZONTAL_LABEL, XOption.REQUIRED));
+         workItems.add(new AtsAttributeReviewDefectXWidgetWorkItem(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE));
+         workItems.add(new AtsAttributeReviewRolesXWidgetWorkItem(ATSAttributes.ROLE_ATTRIBUTE));
 
-         // Add Page Definitions
+         // Add Team Page and Workflow Definition
          workItems.add(new AtsEndorseWorkPageDefinition());
          workItems.add(new AtsAnalyzeWorkPageDefinition());
          workItems.add(new AtsAuthorizeWorkPageDefinition());
          workItems.add(new AtsImplementWorkPageDefinition());
          workItems.add(new AtsCompletedWorkPageDefinition());
          workItems.add(new AtsCancelledWorkPageDefinition());
+         workItems.add(new TeamWorkflowDefinition());
+
+         // Add Task Page and Workflow Definition
+         workItems.add(new AtsTaskInWorkPageDefinition());
+         workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+               TaskWorkflowDefinition.TASK_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+         workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
+               TaskWorkflowDefinition.TASK_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+         workItems.add(new TaskWorkflowDefinition());
+
+         // Add PeerToPeer Pages and Workflow Definition
+         workItems.add(new AtsPeerPrepareWorkPageDefinition());
+         workItems.add(new AtsPeerReviewWorkPageDefinition());
+         workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+               PeerToPeerWorkflowDefinition.PEER_REVIEW_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+         workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
+               PeerToPeerWorkflowDefinition.PEER_REVIEW_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+         workItems.add(new PeerToPeerWorkflowDefinition());
+
+         // Add Decision Pages and Workflow Definition
+         workItems.add(new AtsDecisionPrepareWorkPageDefinition());
+         workItems.add(new AtsDecisionDecisionWorkPageDefinition());
+         workItems.add(new AtsDecisionFollowupWorkPageDefinition());
+         workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+               DecisionWorkflowDefinition.DECISION_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+         workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
+               DecisionWorkflowDefinition.DECISION_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+         workItems.add(new DecisionWorkflowDefinition());
+
       }
       return workItems;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider#getDynamicWorkItemDefinitionsForPage()
+    */
+   @Override
+   public Collection<WorkItemDefinition> getDynamicWorkItemDefinitionsForPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws Exception {
+      List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
+      if (data instanceof SMAManager) {
+         SMAManager smaMgr = (SMAManager) data;
+         if (workPageDefinition.isInstanceOfPage(AtsCancelledWorkPageDefinition.ID)) {
+            defs.add(new AtsCancelledFromStateWorkItem(smaMgr));
+            defs.add(new AtsCancellationReasonStateWorkItem(smaMgr));
+         }
+         if (workPageDefinition.isInstanceOfPage(AtsCompletedWorkPageDefinition.ID)) {
+            defs.add(new AtsCompletedFromStateWorkItem(smaMgr));
+         }
+      }
+      return defs;
    }
 
    public static WorkItemDefinition getWorkItemDefinition(ATSAttributes atsAttribute) {
@@ -90,7 +195,87 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
     * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider#getWorkItemDefinitions()
     */
    @Override
-   public Collection<WorkItemDefinition> getWorkItemDefinitions() {
-      return AtsWorkDefinitions.getAtsWorkDefinitions();
+   public Collection<WorkItemDefinition> getProgramaticWorkItemDefinitions() throws Exception {
+      return new ArrayList<WorkItemDefinition>();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider#getWorkFlowDefinition(org.eclipse.osee.framework.skynet.core.artifact.Artifact)
+    */
+   @Override
+   public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws Exception {
+      if (artifact instanceof TeamWorkFlowArtifact) {
+         // return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(TeamWorkflowDefinition.ID);
+         return ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkFlowDefinition();
+      }
+      if (artifact instanceof TaskArtifact) return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(TaskWorkflowDefinition.ID);
+      if (artifact instanceof PeerToPeerReviewArtifact) return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(PeerToPeerWorkflowDefinition.ID);
+      if (artifact instanceof DecisionReviewArtifact) return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(DecisionWorkflowDefinition.ID);
+      return null;
+   }
+
+   public static boolean isValidatePage(WorkPageDefinition workPageDefinition) throws Exception {
+      if (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()) != null) return true;
+      if (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateNonBlockingReview.name()) != null) return true;
+      return false;
+   }
+
+   public static boolean isValidateReviewBlocking(WorkPageDefinition workPageDefinition) throws Exception {
+      return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()) != null);
+   }
+
+   public static boolean isForceAssigneesToTeamLeads(WorkPageDefinition workPageDefinition) throws Exception {
+      return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsForceAssigneesToTeamLeads.name()) != null);
+   }
+
+   public static boolean isRequireStateHoursSpentPrompt(WorkPageDefinition workPageDefinition) throws Exception {
+      return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsRequireStateHourSpentPrompt.name()) != null);
+   }
+
+   public static boolean isAllowCreateBranch(WorkPageDefinition workPageDefinition) throws Exception {
+      return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowCreateBranch.name()) != null);
+   }
+
+   public static boolean isAllowCommitBranch(WorkPageDefinition workPageDefinition) throws Exception {
+      return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowCommitBranch.name()) != null);
+   }
+
+   public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, Collection<? extends WorkItemDefinition> workItemDefinitions) throws Exception {
+      // Items must be imported in order due to the relations that are created between items
+      for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
+            WorkPageDefinition.class, WorkFlowDefinition.class}) {
+         WorkItemDefinitionFactory.clearCache();
+         for (WorkItemDefinition wid : workItemDefinitions) {
+            if (clazz.isInstance(wid)) {
+               System.out.println("Adding " + wid.getId() + " as class " + clazz);
+               Artifact art = wid.toArtifact(writeType);
+               // Relate if not already related
+               if (art.getArtifacts(CoreRelationEnumeration.WorkItem__Parent, Artifact.class).size() == 0) {
+                  if (wid instanceof WorkPageDefinition) {
+                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact(), art);
+                  }
+                  if (wid instanceof WorkRuleDefinition) {
+                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact(), art);
+                  }
+                  if (wid instanceof WorkWidgetDefinition) {
+                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact(), art);
+                  }
+                  if (wid instanceof WorkFlowDefinition) {
+                     relateIfNotRelated(AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact(), art);
+                  }
+               }
+               if (art.isDirty(true) && resultData != null) {
+                  resultData.log("Updated artifact " + art);
+               }
+               art.persistAttributesAndRelations();
+            }
+         }
+      }
+   }
+
+   private static void relateIfNotRelated(Artifact parent, Artifact child) throws Exception {
+      if (!parent.getArtifacts(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, Artifact.class).contains(child)) {
+         parent.addChild(child);
+      }
    }
 }

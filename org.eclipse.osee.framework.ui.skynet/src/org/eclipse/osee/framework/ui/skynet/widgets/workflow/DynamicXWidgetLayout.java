@@ -17,7 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -40,8 +40,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -105,7 +103,7 @@ public class DynamicXWidgetLayout {
          if (inChildComposite) {
             useComp = childComp;
             if (xWidgetLayoutData.isEndComposite()) inChildComposite = false;
-         } else if (xWidgetLayoutData.isHorizontalLabel()) {
+         } else if (xWidgetLayoutData.getXOptionHandler().contains(XOption.HORIZONTAL_LABEL)) {
             useComp = new Composite(attrComp, SWT.NONE);
             useComp.setLayout(ALayout.getZeroMarginLayout(2, false));
             useComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -118,10 +116,11 @@ public class DynamicXWidgetLayout {
                "^.*?\\.", ""));
          if (xWidgetLayoutData.getToolTip() != null && !xWidgetLayoutData.getToolTip().equals("")) xWidget.setToolTip(xWidgetLayoutData.getToolTip());
          xWidget.setRequiredEntry(xWidgetLayoutData.isRequired());
-         if (xWidgetLayoutData.getFill() != DynamicXWidgetLayoutData.Fill.None) {
+         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY) || xWidgetLayoutData.getXOptionHandler().contains(
+               XOption.FILL_VERTICALLY)) {
             if (xWidget instanceof XText) {
-               if (xWidgetLayoutData.getFill() == DynamicXWidgetLayoutData.Fill.Horizontally) ((XText) xWidget).setFillHorizontally(true);
-               if (xWidgetLayoutData.getFill() == DynamicXWidgetLayoutData.Fill.Vertically) {
+               if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_HORIZONTALLY)) ((XText) xWidget).setFillHorizontally(true);
+               if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
                   GridData gd = new GridData(GridData.FILL_BOTH);
                   useComp.setLayoutData(gd);
                   ((XText) xWidget).setFillVertically(true);
@@ -129,12 +128,12 @@ public class DynamicXWidgetLayout {
                if (xWidgetLayoutData.isHeightSet()) ((XText) xWidget).setHeight(xWidgetLayoutData.getHeight());
             }
          }
-         xWidget.setEditable(isEditable);
+         xWidget.setEditable(xWidgetLayoutData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
          if (dynamicWidgetLayoutListener != null) dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit,
                artifact, this, xModListener, isEditable);
          if (artifact != null && (xWidget instanceof IArtifactWidget)) {
             try {
-               ((IArtifactWidget) xWidget).setArtifact(artifact, xWidgetLayoutData.getLayoutName());
+               ((IArtifactWidget) xWidget).setArtifact(artifact, xWidgetLayoutData.getStorageName());
             } catch (Exception ex) {
                OSEELog.logException(SkynetGuiPlugin.class, ex, true);
             }
@@ -143,13 +142,13 @@ public class DynamicXWidgetLayout {
             xWidget.createWidgets(toolkit, useComp, 2);
          else
             xWidget.createWidgets(useComp, 2);
-         if (xWidgetLayoutData.getFill() == DynamicXWidgetLayoutData.Fill.Vertically) {
+         if (xWidgetLayoutData.getXOptionHandler().contains(XOption.FILL_VERTICALLY)) {
             GridData gd = new GridData(GridData.FILL_BOTH);
             gd.minimumHeight = 60;
             ((XText) xWidget).getStyledText().setLayoutData(gd);
          }
          if (artifact != null && (xWidget instanceof XLabelDam)) ((XLabelDam) xWidget).setArtifact(artifact,
-               xWidgetLayoutData.getLayoutName());
+               xWidgetLayoutData.getStorageName());
          if (xModListener != null) xWidget.addXModifiedListener(xModListener);
          xWidget.addXModifiedListener(refreshRequiredModListener);
 
@@ -203,7 +202,7 @@ public class DynamicXWidgetLayout {
          Result valid = data.getXWidget().isValid();
          if (valid.isFalse()) {
             // Check to see if widget is part of a completed OR or XOR group
-            if (!isOrGroupFromAttrNameComplete(data.getLayoutName()) && !isXOrGroupFromAttrNameComplete(data.getLayoutName())) return valid;
+            if (!isOrGroupFromAttrNameComplete(data.getStorageName()) && !isXOrGroupFromAttrNameComplete(data.getStorageName())) return valid;
          }
       }
       return Result.TrueResult;
@@ -222,43 +221,13 @@ public class DynamicXWidgetLayout {
    }
 
    public void addWorkLayoutDatas(List<DynamicXWidgetLayoutData> datas) {
-      // remove old datas before adding new ones.
-      this.datas.clear();
       this.datas.addAll(datas);
    }
 
    public DynamicXWidgetLayoutData getLayoutData(String attrName) {
       for (DynamicXWidgetLayoutData layoutData : datas)
-         if (layoutData.getLayoutName().equals(attrName)) return layoutData;
+         if (layoutData.getStorageName().equals(attrName)) return layoutData;
       return null;
-   }
-
-   public void processInstructions(Document doc) throws IOException, ParserConfigurationException, SAXException {
-
-      for (String reqStrTag : new String[] {XOR_REQUIRED, OR_REQUIRED}) {
-         NodeList nodes = doc.getElementsByTagName(reqStrTag);
-         if (nodes.getLength() > 0) {
-            for (int y = 0; y < nodes.getLength(); y++) {
-               Element element = (Element) nodes.item(y);
-               for (int x = 0; x < element.getAttributes().getLength(); x++) {
-                  Node node = element.getAttributes().item(x);
-                  String nodeName = node.getNodeName();
-                  if (nodeName.equals(XWIDGETS_LIST))
-                     if (reqStrTag.equals(XOR_REQUIRED)) {
-                        processXOrRequired(node.getNodeValue());
-                     } else {
-                        processOrRequired(node.getNodeValue());
-                     }
-                  else {
-                     SkynetGuiPlugin.getLogger().log(Level.SEVERE,
-                           "Unhandled " + reqStrTag + " attribute \"" + nodeName + "\" for " + this);
-                     throw new IllegalArgumentException("Unhandled " + reqStrTag + " attribute (see error log)");
-                  }
-               }
-            }
-         }
-      }
-      processLayoutDatas(doc.getDocumentElement());
    }
 
    public boolean isOrRequired(String attrName) {
@@ -332,8 +301,7 @@ public class DynamicXWidgetLayout {
       Document document = Jaxp.readXmlDocument(xWidgetXml);
       Element rootElement = document.getDocumentElement();
 
-      XWidgetParser parser = new XWidgetParser();
-      List<DynamicXWidgetLayoutData> attrs = parser.extractlayoutDatas(this, rootElement);
+      List<DynamicXWidgetLayoutData> attrs = XWidgetParser.extractlayoutDatas(this, rootElement);
       for (DynamicXWidgetLayoutData attr : attrs) {
          nameToLayoutData.put(attr.getName(), attr);
          datas.add(attr);
@@ -341,8 +309,7 @@ public class DynamicXWidgetLayout {
    }
 
    protected void processLayoutDatas(Element element) throws IOException, ParserConfigurationException, SAXException {
-      XWidgetParser parser = new XWidgetParser();
-      List<DynamicXWidgetLayoutData> layoutDatas = parser.extractlayoutDatas(this, element);
+      List<DynamicXWidgetLayoutData> layoutDatas = XWidgetParser.extractlayoutDatas(this, element);
       for (DynamicXWidgetLayoutData layoutData : layoutDatas) {
          nameToLayoutData.put(layoutData.getName(), layoutData);
          datas.add(layoutData);

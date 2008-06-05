@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.ui.skynet.ats.NoteType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -62,8 +62,9 @@ public class AddNoteOperation extends WorkPageService {
       try {
          ArrayList<String> artifactNames = new ArrayList<String>();
          artifactNames.add(smaMgr.getSma().getDescriptiveName() + " - " + smaMgr.getSma().getDescriptiveName());
-         for (WorkPage page : smaMgr.getWorkFlow().getPages())
-            if (!page.equals(DefaultTeamState.Cancelled.name()) && !page.equals(DefaultTeamState.Completed.name())) artifactNames.add(page.getName());
+         for (WorkPageDefinition page : smaMgr.getWorkFlowDefinition().getPagesOrdered())
+            if (!page.getName().equals(DefaultTeamState.Cancelled.name()) && !page.getName().equals(
+                  DefaultTeamState.Completed.name())) artifactNames.add(page.getName());
          NewNoteWizard noteWizard = new NewNoteWizard(artifactNames);
          WizardDialog dialog =
                new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), noteWizard);

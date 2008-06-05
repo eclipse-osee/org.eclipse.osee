@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.DefaultTeamState;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -197,10 +197,11 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       }
    }
 
-   public void parentWorkFlowTransitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws Exception {
-      if (toPage.isCancelledPage() && isInWork())
+   public void parentWorkFlowTransitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws Exception {
+      if (toPage.getName().equals(DefaultTeamState.Cancelled.name()) && isInWork())
          transitionToCancelled("Parent Cancelled", persist);
-      else if (fromPage.isCancelledPage() && isCancelled()) transitionToInWork(SkynetAuthentication.getUser(), persist);
+      else if (fromPage.getName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) transitionToInWork(
+            SkynetAuthentication.getUser(), persist);
    }
 
    /*

@@ -1434,7 +1434,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                   protected void handleTxWork() throws Exception {
                      // Replace all of the parent relations
                      for (Artifact artifact : artifactsToBeRelated) {
-                        artifact.relateReplace(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
+                        artifact.setRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, parentArtifact);
                         artifact.persistAttributesAndRelations();
                      }
                   }

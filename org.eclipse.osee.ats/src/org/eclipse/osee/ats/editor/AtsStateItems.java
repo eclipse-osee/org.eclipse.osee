@@ -36,7 +36,7 @@ public class AtsStateItems {
    }
 
    public List<IAtsStateItem> getCurrentPageStateItems(SMAManager smaMgr) throws Exception {
-      return getStateItems(smaMgr.getWorkPage().getId());
+      return getStateItems(smaMgr.getWorkPageDefinition().getId());
    }
 
    @SuppressWarnings( {"deprecation", "unchecked"})

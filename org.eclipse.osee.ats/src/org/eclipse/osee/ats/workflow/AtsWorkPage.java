@@ -11,66 +11,40 @@
 
 package org.eclipse.osee.ats.workflow;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.util.DefaultTeamState;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptions;
+import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsWorkPage extends WorkPage {
 
-   private boolean requireStateHoursSpentPrompt = false;
-   private boolean forceAssigneesToTeamLeads = false;
-   private boolean allowCreateBranch = false;
-   private boolean allowCommitBranch = false;
-   protected TaskResolutionOptions taskResolutionOptions;
-   private boolean startPage = false;
-   private boolean validatePage = false;
-   private boolean validateReviewBlocking = false;
-   public static String WORKPAGE_STARTPAGE = "startPage";
-   public static String WORKPAGE_VALIDATE_PAGE = "validatePage";
-   public static String WORKPAGE_PAGE_ID = "pageId";
-   public static String WORKPAGE_ATS_REQUIRE_STATE_HOURS_SPENT_PROMPT = "atsRequireStateHourSpentPrompt";
-   public static String WORkPAGE_ATS_FORCE_ASSIGNEES_TO_TEAM_LEADS = "atsForceAssigneesToTeamLeads";
-   public static String WORKPAGE_ATS_ALLOW_CREATE_BRANCH = "atsAllowCreateBranch";
-   public static String WORKPAGE_ATS_ALLOW_COMMIT_BRANCH = "atsAllowCommitBranch";
-   private PageType pageType;
+   protected TaskResolutionOptionRule taskResolutionOptions;
    private SMAManager smaMgr;
-   private String instructionStr;
-   public static enum PageType {
-      Team, ActionableItem, WorkFlowPage
-   };
 
-   public AtsWorkPage(String name, String id, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
-      super(name, id, xWidgetsXml, optionResolver);
+   public AtsWorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
+      super(workFlowDefinition, workPageDefinition, xWidgetsXml, optionResolver);
    }
 
    public AtsWorkPage(IXWidgetOptionResolver optionResolver) {
-      this("", "", null, optionResolver);
+      this(null, null, null, optionResolver);
    }
 
    /*
@@ -103,11 +77,11 @@ public class AtsWorkPage extends WorkPage {
    public void createXWidgetLayoutData(DynamicXWidgetLayoutData layoutData, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) throws Exception {
       super.createXWidgetLayoutData(layoutData, xWidget, toolkit, art, xModListener, isEditable);
       // If no tooltip, add global tooltip
-      if ((xWidget.getToolTip() == null || xWidget.getToolTip().equals("")) && ATSAttributes.getAtsAttributeByStoreName(layoutData.getLayoutName()) != null && ATSAttributes.getAtsAttributeByStoreName(
-            layoutData.getLayoutName()).getDescription() != null && !ATSAttributes.getAtsAttributeByStoreName(
-            layoutData.getLayoutName()).getDescription().equals("")) {
-         xWidget.setToolTip(ATSAttributes.getAtsAttributeByStoreName(layoutData.getLayoutName()).getDescription());
-         layoutData.setToolTip(ATSAttributes.getAtsAttributeByStoreName(layoutData.getLayoutName()).getDescription());
+      if ((xWidget.getToolTip() == null || xWidget.getToolTip().equals("")) && ATSAttributes.getAtsAttributeByStoreName(layoutData.getStorageName()) != null && ATSAttributes.getAtsAttributeByStoreName(
+            layoutData.getStorageName()).getDescription() != null && !ATSAttributes.getAtsAttributeByStoreName(
+            layoutData.getStorageName()).getDescription().equals("")) {
+         xWidget.setToolTip(ATSAttributes.getAtsAttributeByStoreName(layoutData.getStorageName()).getDescription());
+         layoutData.setToolTip(ATSAttributes.getAtsAttributeByStoreName(layoutData.getStorageName()).getDescription());
       }
       // Store workAttr in control for use by help
       if (xWidget.getControl() != null) xWidget.getControl().setData(layoutData);
@@ -147,90 +121,21 @@ public class AtsWorkPage extends WorkPage {
       return true;
    }
 
-   /**
-    * @return Returns the fromPages.
-    */
-   public ArrayList<AtsWorkPage> getFromAtsPages() {
-      ArrayList<AtsWorkPage> pages = new ArrayList<AtsWorkPage>();
-      for (WorkPage page : super.getFromPages())
-         pages.add((AtsWorkPage) page);
-      return pages;
-   }
-
-   /**
-    * @return Returns the toPages.
-    */
-   public ArrayList<AtsWorkPage> getToAtsPages() {
-      ArrayList<AtsWorkPage> pages = new ArrayList<AtsWorkPage>();
-      for (WorkPage page : super.getToPages())
-         pages.add((AtsWorkPage) page);
-      return pages;
-   }
-
    public boolean isEndorsePage() {
       return getName().equals(DefaultTeamState.Endorse.name());
-   }
-
-   @Override
-   public void processInstructions(Document doc) throws ParserConfigurationException, SAXException, IOException {
-
-      // Process workpage node attributes
-      processWorkPageNode(doc);
-
-      NodeList nodes = doc.getElementsByTagName(TaskResolutionOptions.ATS_TASK_OPTIONS_TAG);
-      if (nodes.getLength() > 0) {
-         taskResolutionOptions = new TaskResolutionOptions();
-         taskResolutionOptions.setFromDoc(doc);
-      }
-      dynamicXWidgetLayout.processInstructions(doc);
-   }
-
-   public void processWorkPageNode(Document doc) {
-      Element rootElement = doc.getDocumentElement();
-      if (rootElement.getNodeName().equals("WorkPage")) {
-         for (int x = 0; x < rootElement.getAttributes().getLength(); x++) {
-            Node node = rootElement.getAttributes().item(x);
-            String nodeName = node.getNodeName();
-            if (nodeName.equals(WORKPAGE_STARTPAGE))
-               setStartPage(Boolean.parseBoolean(node.getNodeValue()));
-            else if (nodeName.equals(WORKPAGE_ATS_REQUIRE_STATE_HOURS_SPENT_PROMPT))
-               requireStateHoursSpentPrompt = Boolean.parseBoolean(node.getNodeValue());
-            else if (nodeName.equals(WORkPAGE_ATS_FORCE_ASSIGNEES_TO_TEAM_LEADS))
-               forceAssigneesToTeamLeads = Boolean.parseBoolean(node.getNodeValue());
-            else if (nodeName.equals(WORKPAGE_ATS_ALLOW_CREATE_BRANCH))
-               allowCreateBranch = Boolean.parseBoolean(node.getNodeValue());
-            else if (nodeName.equals(WORKPAGE_ATS_ALLOW_COMMIT_BRANCH))
-               allowCommitBranch = Boolean.parseBoolean(node.getNodeValue());
-            else if (nodeName.equals(WORKPAGE_PAGE_ID))
-               setId(node.getNodeValue());
-            else if (nodeName.equals(WORKPAGE_VALIDATE_PAGE)) {
-               setValidatePage(true);
-               if (node.getNodeValue().equals("nonblocking"))
-                  setValidateReviewBlocking(true);
-               else
-                  setValidateReviewBlocking(false);
-            } else {
-               OSEELog.logSevere(AtsPlugin.class,
-                     "Unhandled WorkPage attribute \"" + nodeName + "\" for page " + getName(), false);
-            }
-         }
-      } else {
-         SkynetGuiPlugin.getLogger().log(Level.SEVERE, "No WorkPage element found for page " + getName());
-         throw new IllegalArgumentException("No WorkPage element found for page " + getName());
-      }
    }
 
    /**
     * @return Returns the taskResolutionOptions.
     */
-   public TaskResolutionOptions getTaskResDef() {
+   public TaskResolutionOptionRule getTaskResDef() {
       return taskResolutionOptions;
    }
 
    /**
     * @param taskResolutionOptions The taskResolutionOptions to set.
     */
-   public void setTaskResDef(TaskResolutionOptions taskResolutionOptions) {
+   public void setTaskResDef(TaskResolutionOptionRule taskResolutionOptions) {
       this.taskResolutionOptions = taskResolutionOptions;
    }
 
@@ -238,64 +143,11 @@ public class AtsWorkPage extends WorkPage {
       return this.taskResolutionOptions != null;
    }
 
-   public boolean isRequireStateHoursSpentPrompt() {
-      return requireStateHoursSpentPrompt;
-   }
-
-   /**
-    * @return Returns the pageType.
-    */
-   public PageType getPageType() {
-      return pageType;
-   }
-
-   /**
-    * @param pageType The pageType to set.
-    */
-   public void setPageType(PageType pageType) {
-      this.pageType = pageType;
-   }
-
    /**
     * @return the startPage
     */
-   public boolean isStartPage() {
-      return startPage;
-   }
-
-   /**
-    * @param startPage the startPage to set
-    */
-   public void setStartPage(boolean startPage) {
-      this.startPage = startPage;
-   }
-
-   /**
-    * @return the validatePage
-    */
-   public boolean isValidatePage() {
-      return validatePage;
-   }
-
-   /**
-    * @param validatePage the validatePage to set
-    */
-   public void setValidatePage(boolean validatePage) {
-      this.validatePage = validatePage;
-   }
-
-   /**
-    * @return the validateReviewBlocking
-    */
-   public boolean isValidateReviewBlocking() {
-      return validateReviewBlocking;
-   }
-
-   /**
-    * @param validateReviewBlocking the validateReviewBlocking to set
-    */
-   public void setValidateReviewBlocking(boolean validateReviewBlocking) {
-      this.validateReviewBlocking = validateReviewBlocking;
+   public boolean isStartPage() throws Exception {
+      return workFlowDefinition.getStartPage().getId().equals(getId());
    }
 
    /**
@@ -313,55 +165,45 @@ public class AtsWorkPage extends WorkPage {
    }
 
    /**
-    * @return the instructionStr
+    * @return the validatePage
     */
-   public String getInstructionStr() {
-      return instructionStr;
+   public boolean isValidatePage() throws Exception {
+      return AtsWorkDefinitions.isValidatePage(workPageDefinition);
    }
 
    /**
-    * @param instructionStr the instructionStr to set
+    * @return the validateReviewBlocking
     */
-   public void setInstructionStr(String instructionStr) {
-      this.instructionStr = instructionStr;
-   }
-
-   public String toString() {
-      return getPageType() + ": " + getName();
+   public boolean isValidateReviewBlocking() throws Exception {
+      return AtsWorkDefinitions.isValidateReviewBlocking(workPageDefinition);
    }
 
    /**
     * @return the forceAssigneesToTeamLeads
     */
-   public boolean isForceAssigneesToTeamLeads() {
-      return forceAssigneesToTeamLeads;
+   public boolean isForceAssigneesToTeamLeads() throws Exception {
+      return AtsWorkDefinitions.isForceAssigneesToTeamLeads(workPageDefinition);
+   }
+
+   /**
+    * @return the forceAssigneesToTeamLeads
+    */
+   public boolean isRequireStateHoursSpentPrompt() throws Exception {
+      return AtsWorkDefinitions.isRequireStateHoursSpentPrompt(workPageDefinition);
    }
 
    /**
     * @return the allowCreateBranch
     */
-   public boolean isAllowCreateBranch() {
-      return allowCreateBranch;
-   }
-
-   /**
-    * @param allowCreateBranch the allowCreateBranch to set
-    */
-   public void setAllowCreateBranch(boolean allowCreateBranch) {
-      this.allowCreateBranch = allowCreateBranch;
+   public boolean isAllowCreateBranch() throws Exception {
+      return AtsWorkDefinitions.isAllowCreateBranch(workPageDefinition);
    }
 
    /**
     * @return the allowCommitBranch
     */
-   public boolean isAllowCommitBranch() {
-      return allowCommitBranch;
+   public boolean isAllowCommitBranch() throws Exception {
+      return AtsWorkDefinitions.isAllowCommitBranch(workPageDefinition);
    }
 
-   /**
-    * @param allowCommitBranch the allowCommitBranch to set
-    */
-   public void setAllowCommitBranch(boolean allowCommitBranch) {
-      this.allowCommitBranch = allowCommitBranch;
-   }
 }

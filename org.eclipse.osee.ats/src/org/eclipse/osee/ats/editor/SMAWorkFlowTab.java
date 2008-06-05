@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.util.AtsLib;
+import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -166,8 +168,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       StringBuffer sb = new StringBuffer();
       for (WorkPage wPage : pages) {
          AtsWorkPage page = (AtsWorkPage) wPage;
-         if (smaMgr.isCurrentState(page) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
-            sb.append(page.getHtml(smaMgr.isCurrentState(page) ? activeColor : normalColor));
+         if (smaMgr.isCurrentState(page.getName()) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
+            sb.append(page.getHtml(smaMgr.isCurrentState(page.getName()) ? activeColor : normalColor));
             sb.append(AHTML.newline());
          }
       }
@@ -206,24 +208,19 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       // Only display current or past states
-      for (WorkPage wPage : smaMgr.getSma().getWorkFlow().getPagesOrdered()) {
-         AtsWorkPage page = (AtsWorkPage) wPage;
-         if (smaMgr.isCurrentState(page) || smaMgr.getStateMgr().isStateVisited(page.getName())) {
+      for (WorkPageDefinition workPageDefinition : smaMgr.getSma().getWorkFlowDefinition().getPagesOrdered()) {
+         AtsWorkPage atsWorkPage =
+               (AtsWorkPage) new AtsWorkPage(smaMgr.getWorkFlowDefinition(), workPageDefinition, null,
+                     ATSXWidgetOptionResolver.getInstance());
+         if (smaMgr.isCurrentState(atsWorkPage.getName()) || smaMgr.getStateMgr().isStateVisited(atsWorkPage.getName())) {
             // Don't show completed or cancelled state if not currently those state
-            if (page.isCompletePage() && !smaMgr.isCompleted()) continue;
-            if (page.isCancelledPage() && !smaMgr.isCancelled()) continue;
-            SMAWorkFlowSection section = null;
-            if (page.isCancelledPage())
-               section = new SMAWorkFlowCancelledSection(body, toolkit, SWT.NONE, page, smaMgr);
-            else if (page.isCompletePage())
-               section = new SMAWorkFlowCompletedSection(body, toolkit, SWT.NONE, page, smaMgr);
-            else {
-               section = new SMAWorkFlowSection(body, toolkit, SWT.NONE, page, smaMgr);
-            }
+            if (atsWorkPage.isCompletePage() && !smaMgr.isCompleted()) continue;
+            if (atsWorkPage.isCancelledPage() && !smaMgr.isCancelled()) continue;
+            SMAWorkFlowSection section = new SMAWorkFlowSection(body, toolkit, SWT.NONE, atsWorkPage, smaMgr);
             control = section.getMainComp();
             sections.add(section);
             managedForm.addPart(section);
-            pages.add(page);
+            pages.add(atsWorkPage);
          }
       }
 

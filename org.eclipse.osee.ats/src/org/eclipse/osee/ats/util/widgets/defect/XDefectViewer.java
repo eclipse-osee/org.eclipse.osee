@@ -236,7 +236,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
 
    public void loadTable() {
       try {
-         if (reviewArt != null) {
+         if (reviewArt != null && xViewer != null) {
             xViewer.set(reviewArt.getDefectManager().getDefectItems());
          }
       } catch (Exception ex) {
@@ -357,6 +357,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
    }
 
    public void refresh() {
+      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
       xViewer.refresh();
       setLabelError();
       refreshActionEnablement();
@@ -483,7 +484,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IEventRec
 
    public void setReviewArt(IReviewArtifact reviewArt) {
       this.reviewArt = reviewArt;
-      loadTable();
+      if (xViewer != null) loadTable();
    }
 
    /*

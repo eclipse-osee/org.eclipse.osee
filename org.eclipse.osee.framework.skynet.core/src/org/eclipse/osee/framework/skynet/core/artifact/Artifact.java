@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -1121,11 +1122,38 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
       RelationManager.deleteRelation(relationSide.getRelationType(), artifactA, artifactB);
    }
 
-   public void relateReplace(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
-      for (RelationLink relation : getRelations(relationSide)) {
-         relation.delete();
+   /**
+    * Overwrites all existing relations to this artifact with a single relation to an artifact
+    * 
+    * @param relationSide
+    * @param artifact
+    * @throws SQLException
+    */
+   public void setRelation(IRelationEnumeration relationSide, Artifact artifact) throws SQLException {
+      setRelations(relationSide, Arrays.asList(new Artifact[] {artifact}));
+   }
+
+   /**
+    * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
+    * 
+    * @param relationSide
+    * @param artifacts
+    * @throws SQLException
+    */
+   public void setRelations(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) throws SQLException {
+      Collection<Artifact> currentlyRelated = getArtifacts(relationSide, Artifact.class);
+      // Add new relations if don't exist
+      for (Artifact artifact : artifacts) {
+         if (!currentlyRelated.contains(artifact)) {
+            addRelation(relationSide, artifact);
+         }
       }
-      addRelation(relationSide, artifact);
+      // Remove relations that have been removed
+      for (Artifact artifact : currentlyRelated) {
+         if (!artifacts.contains(artifact)) {
+            deleteRelation(relationSide, artifact);
+         }
+      }
    }
 
    public final boolean isLinksLoaded() {
@@ -1539,5 +1567,4 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
    public void sortRelations(Map<Integer, RelationLink> sideA, Map<Integer, RelationLink> sideB) throws SQLException {
       RelationManager.sortRelations(this, sideA, sideB);
    }
-
 }

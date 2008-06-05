@@ -24,11 +24,11 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -39,7 +39,7 @@ import org.osgi.framework.Bundle;
  * @author Donald G. Dunne
  */
 public class NewActionPage3 extends WizardPage {
-   private AtsWorkPage page;
+   private WorkPage page;
    private Composite comp;
    private final NewActionWizard wizard;
    private static Set<IAtsWizardItem> wizardExtensionItems = new HashSet<IAtsWizardItem>();
@@ -96,7 +96,7 @@ public class NewActionPage3 extends WizardPage {
             }
             sb.append("</WorkPage>");
 
-            page = new AtsWorkPage("Action", "", sb.toString(), ATSXWidgetOptionResolver.getInstance());
+            page = new WorkPage(sb.toString(), ATSXWidgetOptionResolver.getInstance());
             page.createBody(null, comp, null, xModListener, true);
 
             comp.layout();

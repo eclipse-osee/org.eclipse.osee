@@ -4,7 +4,6 @@
    <extension-point id="AtsNavigateItem" name="AtsNavigateItem" schema="schema/AtsNavigateItem.exsd"/>
    <extension-point id="AtsStateItem" name="AtsStateItem" schema="schema/AtsStateItem.exsd"/>
    <extension-point id="AtsAIandTeamConfig" name="AtsAIandTeamConfig" schema="schema/AtsAIandTeamConfig.exsd"/>
-   <extension-point id="AtsVueWorkflowDiagram" name="AtsVueWorkflowDiagram" schema="schema/AtsVueWorkflowDiagram.exsd"/>
    <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="schema/AtsWizardItem.exsd"/>
    <extension-point id="AtsTeamWorkflow" name="AtsTeamWorkflow" schema="schema/AtsTeamWorkflow.exsd"/>
          <extension
@@ -220,24 +219,6 @@
          id="ats"
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
       <Renderer classname="org.eclipse.osee.ats.editor.AtsRenderer"/>
-   </extension>
-   <extension
-         point="org.eclipse.osee.ats.AtsVueWorkflowDiagram">
-      <AtsVueWorkflowDiagram
-            id="osee_ats_defaultTeam_workflow"
-            vueFilename="support/osee_ats_defaultTeam_workflow.vue"/>
-      <AtsVueWorkflowDiagram
-            id="osee_ats_defaultTask_workflow"
-            vueFilename="support/osee_ats_defaultTask_workflow.vue"/>
-      <AtsVueWorkflowDiagram
-            id="osee_ats_defaultSimpleTeam_workflow"
-            vueFilename="support/osee_ats_defaultSimpleTeam_workflow.vue"/>
-      <AtsVueWorkflowDiagram
-            id="osee_ats_decisionReview_workflow"
-            vueFilename="support/osee_ats_decisionReview_workflow.vue"/>
-      <AtsVueWorkflowDiagram
-            id="osee_ats_peerToPeerReview_workflow"
-            vueFilename="support/osee_ats_peerToPeerReview_workflow.vue"/>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider">

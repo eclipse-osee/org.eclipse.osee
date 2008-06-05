@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -68,16 +67,15 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    }
 
    /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isCurrentSectionExpanded(org.eclipse.osee.ats.workflow.AtsWorkPage)
+    * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#isCurrentSectionExpanded(String stateName)
     */
    @Override
-   public boolean isCurrentSectionExpanded(AtsWorkPage page) {
+   public boolean isCurrentSectionExpanded(String stateName) {
       // Always expand the decision state
-      if (page.getName().endsWith(StateNames.Decision.name())) return true;
+      if (stateName.endsWith(StateNames.Decision.name())) return true;
       // If current state is decision and this is prepare state, don't expand the Prepare state
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(StateNames.Decision.name()) && page.getName().contains(
-            StateNames.Prepare.name())) return false;
-      return super.isCurrentSectionExpanded(page);
+      if (smaMgr.getStateMgr().getCurrentStateName().equals(StateNames.Decision.name()) && stateName.contains(StateNames.Prepare.name())) return false;
+      return super.isCurrentSectionExpanded(stateName);
    }
 
    @Override

@@ -14,16 +14,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.config.AtsDatabaseConfig;
-import org.eclipse.osee.ats.config.ImportWorkflowAction;
-import org.eclipse.osee.ats.config.LoadAIsAndTeamsAction;
 import org.eclipse.osee.ats.config.demo.OseeAtsConfigDemoPlugin;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
+import org.eclipse.osee.ats.workflow.vue.LoadAIsAndTeamsAction;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -42,15 +39,9 @@ import org.eclipse.osee.framework.skynet.core.util.Requirements;
  */
 public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
    public void run(Connection connection) throws Exception {
-      // Imports ATS workflow vue diagrams as id specified in extension point
-      (new ImportWorkflowAction(false, AtsPlugin.PLUGIN_ID)).run();
-      // Imports workflow vue diagrams as id specified in extension point
-      (new ImportWorkflowAction(false, OseeAtsConfigDemoPlugin.PLUGIN_ID)).run();
       // Creates Actionable Items and Teams
       // Teams are related to workflow by id specified in team object in VUE diagram
       (new LoadAIsAndTeamsAction(false, OseeAtsConfigDemoPlugin.PLUGIN_ID)).run();
-      // Link review and task workflows
-      AtsDatabaseConfig.linkHeadTeamDefinitionWithReviewsAndTaskWorkflowDiagrams();
       // Create initial version artifacts for Widget teams
       createVersionArtifacts();
       // Create SAW_Bld_1 branch

@@ -53,7 +53,7 @@ public class StateHoursSpentStat extends WorkPageService {
    @Override
    public void createSidebarService(Group workGroup, AtsWorkPage page, XFormToolkit toolkit, final SMAWorkFlowSection section) {
       this.page = page;
-      if (!isCompleteCancelledState(page) && smaMgr.isCurrentState(page)) {
+      if (!isCompleteCancelledState(page) && smaMgr.isCurrentState(page.getName())) {
          link = toolkit.createHyperlink(workGroup, "", SWT.NONE);
          if (smaMgr.getSma().isReadOnly())
             link.addHyperlinkListener(readOnlyHyperlinkListener);

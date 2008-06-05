@@ -57,7 +57,7 @@ public class TargetedForVersionState extends WorkPageService {
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) {
-      return smaMgr.isCurrentState(page) && (smaMgr.getSma() instanceof TeamWorkFlowArtifact);
+      return smaMgr.isCurrentState(page.getName()) && (smaMgr.getSma() instanceof TeamWorkFlowArtifact);
    }
 
    /* (non-Javadoc)

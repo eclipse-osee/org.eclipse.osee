@@ -10,22 +10,33 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkPageViewSorter extends ViewerSorter {
+public class WorkPageDefinitionLabelProvider implements ILabelProvider {
 
-   public WorkPageViewSorter() {
-      super();
+   public Image getImage(Object arg0) {
+      return null;
    }
 
-   @SuppressWarnings("unchecked")
-   @Override
-   public int compare(Viewer viewer, Object e1, Object e2) {
-      return getComparator().compare(((WorkPage) e1).getName(), ((WorkPage) e2).getName());
+   public String getText(Object arg0) {
+      return ((WorkPageDefinition) arg0).getName();
    }
 
+   public void addListener(ILabelProviderListener arg0) {
+   }
+
+   public void dispose() {
+   }
+
+   public boolean isLabelProperty(Object arg0, String arg1) {
+      return false;
+   }
+
+   public void removeListener(ILabelProviderListener arg0) {
+   }
 }

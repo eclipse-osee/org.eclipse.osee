@@ -430,7 +430,7 @@ public class BranchManager {
 
          if (!overrideStateValidation) {
             // Check extenstion points for valid commit
-            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(smaMgr.getWorkPage().getId())) {
+            for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(smaMgr.getWorkPageDefinition().getId())) {
                Result result = item.committing(smaMgr);
                if (result.isFalse()) return result;
             }

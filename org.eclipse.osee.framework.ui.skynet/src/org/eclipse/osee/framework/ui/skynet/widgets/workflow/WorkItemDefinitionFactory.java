@@ -6,55 +6,140 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.osgi.framework.Bundle;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
  */
 public class WorkItemDefinitionFactory {
 
-   private static Map<String, WorkItemDefinition> itemIdToDefinition = new HashMap<String, WorkItemDefinition>();
+   private static Map<String, WorkItemDefinition> itemIdToDefinition;
+   private static Map<String, Artifact> itemIdToWidArtifact;
 
-   static {
-      // Add all work item definitions provided through extension points
-      for (IWorkDefinitionProvider provider : getWorkDefinitionProviders()) {
-         for (WorkItemDefinition def : provider.getWorkItemDefinitions()) {
-            addItemDefinition(def);
-         }
-      }
-      // TODO Add all work item definitions provided through the database
+   public static void clearCache() {
+      itemIdToDefinition = null;
+      itemIdToWidArtifact = null;
    }
 
-   public static void addItemDefinition(WorkItemDefinition workItemDefinition) {
+   private static void loadDefinitions() throws Exception {
+      if (itemIdToDefinition == null) {
+         itemIdToDefinition = new HashMap<String, WorkItemDefinition>();
+         itemIdToWidArtifact = new HashMap<String, Artifact>();
+
+         // Add all work item definitions provided through extension points
+         for (IWorkDefinitionProvider provider : WorkDefinitionProvider.getWorkDefinitionProviders()) {
+            for (WorkItemDefinition def : provider.getProgramaticWorkItemDefinitions()) {
+               addItemDefinition(def);
+            }
+         }
+
+         for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkRuleDefinition.ARTIFACT_NAME,
+               BranchPersistenceManager.getCommonBranch())) {
+            addItemDefinition(new WorkRuleDefinition(art), art);
+         }
+         for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkWidgetDefinition.ARTIFACT_NAME,
+               BranchPersistenceManager.getCommonBranch())) {
+            addItemDefinition(new WorkWidgetDefinition(art), art);
+         }
+         for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkPageDefinition.ARTIFACT_NAME,
+               BranchPersistenceManager.getCommonBranch())) {
+            addItemDefinition(new WorkPageDefinition(art), art);
+         }
+         for (Artifact art : ArtifactQuery.getArtifactsFromType(WorkFlowDefinition.ARTIFACT_NAME,
+               BranchPersistenceManager.getCommonBranch())) {
+            addItemDefinition(new WorkFlowDefinition(art), art);
+         }
+      }
+   }
+
+   private static void addItemDefinition(WorkItemDefinition workItemDefinition) {
       if (workItemDefinition.getId() == null) throw new IllegalArgumentException("Item Id can't be null");
       if (itemIdToDefinition.containsKey(workItemDefinition.getId())) throw new IllegalArgumentException(
-            "Item Id must be unique.  Already page with id \"" + workItemDefinition.getId() + "\"");
+            "Item Id must be unique.  Already work item with id \"" + workItemDefinition.getId() + "\"");
       itemIdToDefinition.put(workItemDefinition.getId(), workItemDefinition);
    }
 
-   public static WorkItemDefinition getWorkItemDefinition(String id) {
+   private static void addItemDefinition(WorkItemDefinition workItemDefinition, Artifact artifact) {
+      addItemDefinition(workItemDefinition);
+      itemIdToWidArtifact.put(workItemDefinition.id, artifact);
+   }
+
+   public static void loadDefinitions(Collection<Artifact> arts) throws Exception {
+      for (Artifact art : arts) {
+         if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+            System.out.println("Updating WorkItemDefinition cache with " + art);
+            addItemDefinition(new WorkRuleDefinition(art), art);
+         }
+         if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+            System.out.println("Updating WorkItemDefinition cache with " + art);
+            addItemDefinition(new WorkWidgetDefinition(art), art);
+         }
+         if (art.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
+            System.out.println("Updating WorkItemDefinition cache with " + art);
+            addItemDefinition(new WorkPageDefinition(art), art);
+         }
+         if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+            System.out.println("Updating WorkItemDefinition cache with " + art);
+            addItemDefinition(new WorkFlowDefinition(art), art);
+         }
+      }
+   }
+
+   public static WorkItemDefinition getWorkItemDefinition(String id) throws Exception {
+      loadDefinitions();
+      WorkItemDefinition wid = itemIdToDefinition.get(id);
+      if (wid == null) {
+         // Attempt to get from DB
+         loadDefinitions(ArtifactQuery.getArtifactsFromName(id, BranchPersistenceManager.getAtsBranch()));
+      }
       return itemIdToDefinition.get(id);
    }
 
-   public static List<WorkItemDefinition> getWorkItemDefinition(java.util.Collection<String> ids) {
+   public static Artifact getWorkItemDefinitionArtifact(String id) throws Exception {
+      loadDefinitions();
+      Artifact art = itemIdToWidArtifact.get(id);
+      if (art == null) {
+         // Attempt to get from DB
+         loadDefinitions(ArtifactQuery.getArtifactsFromName(id, BranchPersistenceManager.getAtsBranch()));
+      }
+      return itemIdToWidArtifact.get(id);
+   }
+
+   public static List<WorkItemDefinition> getWorkItemDefinition(java.util.Collection<String> ids) throws Exception {
+      loadDefinitions();
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
       for (String id : ids) {
          WorkItemDefinition def = getWorkItemDefinition(id);
-         if (def == null) throw new IllegalArgumentException("Page Id \"" + id + "\" is not a defined work item");
+         if (def == null) throw new IllegalArgumentException("Work Item Id \"" + id + "\" is not a defined work item");
          defs.add(def);
       }
       return defs;
    }
 
-   public static List<WorkItemDefinition> getWorkItemDefinitions(java.util.Collection<String> pageids) {
+   /**
+    * Call to get dynamic definitions based on data specified. This is intended for extenders to be able to provide
+    * widgets that are either conditionally added or are configured dynamically based on dynamic circumstances
+    * 
+    * @param data
+    * @return
+    */
+   public static List<WorkItemDefinition> getDynamicWorkItemDefintions(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, Object data) throws Exception {
+      List<WorkItemDefinition> dynamicDefinitions = new ArrayList<WorkItemDefinition>();
+      for (IWorkDefinitionProvider provider : WorkDefinitionProvider.getWorkDefinitionProviders()) {
+         dynamicDefinitions.addAll(provider.getDynamicWorkItemDefinitionsForPage(workFlowDefinition,
+               workPageDefinition, data));
+      }
+      return dynamicDefinitions;
+   }
+
+   public static List<WorkItemDefinition> getWorkItemDefinitions(Collection<String> pageids) throws Exception {
+      loadDefinitions();
       List<WorkItemDefinition> defs = new ArrayList<WorkItemDefinition>();
       for (String itemId : pageids) {
          WorkItemDefinition def = getWorkItemDefinition(itemId);
@@ -62,45 +147,6 @@ public class WorkItemDefinitionFactory {
          defs.add(def);
       }
       return defs;
-   }
-
-   public static WorkItemDefinition getWorkItemDefinitionFromXml(String xml) {
-      WorkItemDefinition def = null;
-      if (WorkItemBooleanDefinition.isWorkItemBoolean(xml))
-         def = WorkItemBooleanDefinition.createFromXml(xml);
-      else if (WorkItemStringDefinition.isWorkItemString(xml))
-         def = WorkItemStringDefinition.createFromXml(xml);
-      else
-         throw new IllegalArgumentException("WorkItemDefinition doesn't exist for \"" + xml + "\"");
-      return def;
-   }
-
-   private static List<IWorkDefinitionProvider> workDefinitionProviders;
-
-   private static List<IWorkDefinitionProvider> getWorkDefinitionProviders() {
-      workDefinitionProviders = new ArrayList<IWorkDefinitionProvider>();
-      for (IConfigurationElement el : ExtensionPoints.getExtensionElements(
-            "org.eclipse.osee.framework.ui.skynet.WorkDefinitionProvider", "WorkDefinitionProvider")) {
-         String classname = null;
-         String bundleName = null;
-         if (el.getName().equals("WorkDefinitionProvider")) {
-            classname = el.getAttribute("classname");
-            bundleName = el.getContributor().getName();
-            if (classname != null && bundleName != null) {
-               Bundle bundle = Platform.getBundle(bundleName);
-               try {
-                  Class<?> taskClass = bundle.loadClass(classname);
-                  Object obj = taskClass.newInstance();
-                  workDefinitionProviders.add((IWorkDefinitionProvider) obj);
-               } catch (Exception ex) {
-                  OSEELog.logException(SkynetGuiPlugin.class, "Error loading WorkDefinitionProvider extension", ex,
-                        true);
-               }
-            }
-
-         }
-      }
-      return workDefinitionProviders;
    }
 
 }

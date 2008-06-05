@@ -16,7 +16,6 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -24,6 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Listener;
  * @author Donald G. Dunne
  */
 public class NewActionPage2 extends WizardPage {
-   private AtsWorkPage page;
+   private WorkPage page;
    private final NewActionWizard wizard;
 
    /**
@@ -77,7 +77,7 @@ public class NewActionPage2 extends WizardPage {
          comp.setLayout(new GridLayout(2, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         page = new AtsWorkPage("Action", "", sb.toString(), ATSXWidgetOptionResolver.getInstance());
+         page = new WorkPage(sb.toString(), ATSXWidgetOptionResolver.getInstance());
          page.createBody(null, comp, null, xModListener, true);
 
          ((XText) getXWidget("Description")).getLabelWidget().addListener(SWT.MouseUp, new Listener() {

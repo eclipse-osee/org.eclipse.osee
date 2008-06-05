@@ -60,12 +60,14 @@ public class XTextSpellCheckPaintListener implements PaintListener {
       xText.getStyledText().addMouseListener(mouseListener);
       xText.getStyledText().addDisposeListener(new DisposeListener() {
          public void widgetDisposed(DisposeEvent e) {
+            if (xText == null || xText.getStyledText() == null || xText.getStyledText().isDisposed()) return;
             xText.getStyledText().removeMouseListener(mouseListener);
          }
       });
    }
 
    public void paintControl(PaintEvent e) {
+      if (xText == null || xText.getStyledText() == null || xText.getStyledText().isDisposed()) return;
       GC gc = e.gc;
       gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
       if (xText != null) {

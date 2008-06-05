@@ -32,7 +32,7 @@ public class UserRole {
    private User user;
    private Double hoursSpent = null;
    private String guid = GUID.generateGuidStr();
-   private boolean completed = false;
+   private Boolean completed = false;
 
    public static enum Role {
       Moderator, Reviewer, Author;
@@ -46,7 +46,7 @@ public class UserRole {
    };
 
    public UserRole() {
-      this(Role.Reviewer, SkynetAuthentication.getUser(), null, null);
+      this(Role.Reviewer, SkynetAuthentication.getUser(), null, false);
    }
 
    public UserRole(Role role, User user) {

@@ -79,13 +79,18 @@ public class OSEECheckedFilteredTree extends OSEEFilteredTree {
       }
    }
 
+   public void clearChecked() {
+      this.checked.clear();
+      restoreChecked(treeViewer.getTree().getItems());
+   }
+
    private void restoreChecked(TreeItem treeItems[]) {
       for (TreeItem treeItem : treeItems) {
          if (treeItem.getChecked() && !checked.contains(treeItem.getData())) {
-            System.out.println("Unchecked " + treeItem.getData());
+            //            System.out.println("Unchecked " + treeItem.getData());
             treeItem.setChecked(false);
          } else if (!treeItem.getChecked() && checked.contains(treeItem.getData())) {
-            System.out.println("Checked " + treeItem.getData());
+            //            System.out.println("Checked " + treeItem.getData());
             treeItem.setChecked(true);
          }
          restoreChecked(treeItem.getItems());
@@ -95,10 +100,10 @@ public class OSEECheckedFilteredTree extends OSEEFilteredTree {
    private void storeResults(TreeItem treeItems[]) {
       for (TreeItem treeItem : treeItems) {
          if (treeItem.getChecked() && !checked.contains(treeItem.getData())) {
-            System.out.println("Added " + treeItem.getData());
+            //            System.out.println("Added " + treeItem.getData());
             checked.add(treeItem.getData());
          } else if (!treeItem.getChecked() && checked.contains(treeItem.getData())) {
-            System.out.println("Removed " + treeItem.getData());
+            //            System.out.println("Removed " + treeItem.getData());
             checked.remove(treeItem.getData());
          }
          storeResults(treeItem.getItems());

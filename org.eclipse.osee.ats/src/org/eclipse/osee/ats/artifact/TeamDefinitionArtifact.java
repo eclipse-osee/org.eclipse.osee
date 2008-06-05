@@ -38,6 +38,8 @@ import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 
 /**
  * @author Donald G. Dunne
@@ -115,6 +117,20 @@ public class TeamDefinitionArtifact extends BasicArtifact {
       if (getParent() instanceof TeamDefinitionArtifact) {
          TeamDefinitionArtifact parentTda = (TeamDefinitionArtifact) getParent();
          if (parentTda != null) return parentTda.getTeamDefinitionHoldingVersions();
+      }
+      return null;
+   }
+
+   /**
+    * This method will walk up the TeamDefinition tree until a def is found that configured with work flow.
+    * 
+    * @return parent TeamDefinition that holds the work flow id attribute
+    */
+   public TeamDefinitionArtifact getTeamDefinitionHoldingWorkFlow() throws SQLException {
+      if (getArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class).size() > 0) return this;
+      if (getParent() instanceof TeamDefinitionArtifact) {
+         TeamDefinitionArtifact parentTda = (TeamDefinitionArtifact) getParent();
+         if (parentTda != null) return parentTda.getTeamDefinitionHoldingWorkFlow();
       }
       return null;
    }
@@ -222,6 +238,15 @@ public class TeamDefinitionArtifact extends BasicArtifact {
 
    public double getManDayHrsFromItemAndChildren() throws SQLException {
       return getManDayHrsFromItemAndChildren(this);
+   }
+
+   public WorkFlowDefinition getWorkFlowDefinition() throws Exception {
+      Artifact teamDef = getTeamDefinitionHoldingWorkFlow();
+      if (teamDef == null) return null;
+      Artifact workFlowArt =
+            getTeamDefinitionHoldingWorkFlow().getArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class).iterator().next();
+      if (workFlowArt == null) return null;
+      return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowArt.getDescriptiveName());
    }
 
    /**

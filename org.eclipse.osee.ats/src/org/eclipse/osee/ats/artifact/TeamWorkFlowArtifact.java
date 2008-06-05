@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -46,6 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.swt.widgets.Display;
 
@@ -256,7 +256,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    @Override
-   public void transitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws Exception {
+   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws Exception {
       super.transitioned(fromPage, toPage, toAssignees, persist);
       for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts())
          taskArt.parentWorkFlowTransitioned(fromPage, toPage, toAssignees, persist);
@@ -283,7 +283,7 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
    }
 
    public void setTargetedForVersion(VersionArtifact version, boolean persist) throws SQLException {
-      relateReplace(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, version);
+      setRelation(CoreRelationEnumeration.TeamWorkflowTargetedForVersion_Version, version);
       if (persist) {
          persistRelations();
       }

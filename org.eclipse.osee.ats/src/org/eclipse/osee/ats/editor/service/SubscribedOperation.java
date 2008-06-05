@@ -38,7 +38,7 @@ public class SubscribedOperation extends WorkPageService {
     */
    @Override
    public boolean isShowSidebarService(AtsWorkPage page) {
-      return smaMgr.isCurrentState(page);
+      return smaMgr.isCurrentState(page.getName());
    }
 
    /* (non-Javadoc)

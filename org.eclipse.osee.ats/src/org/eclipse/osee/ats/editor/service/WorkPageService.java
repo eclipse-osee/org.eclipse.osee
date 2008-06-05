@@ -34,11 +34,11 @@ public abstract class WorkPageService {
    }
 
    public boolean isCurrentState(AtsWorkPage page) {
-      return smaMgr.isCurrentState(page);
+      return smaMgr.isCurrentState(page.getName());
    }
 
    public boolean isCurrentNonCompleteCancelledState(AtsWorkPage page) {
-      return smaMgr.isCurrentState(page) && !isCompleteCancelledState(page);
+      return smaMgr.isCurrentState(page.getName()) && !isCompleteCancelledState(page);
    }
 
    public boolean isCompleteCancelledState(AtsWorkPage page) {

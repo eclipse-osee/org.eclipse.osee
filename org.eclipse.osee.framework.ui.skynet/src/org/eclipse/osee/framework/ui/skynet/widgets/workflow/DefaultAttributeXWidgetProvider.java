@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 
 /**
  * @author Donald G. Dunne
@@ -32,11 +33,11 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       int max = attributeType.getMaxOccurrences();
       DynamicXWidgetLayoutData defaultData = new DynamicXWidgetLayoutData(null);
       defaultData.setName(attributeType.getName());
-      defaultData.setRequired(attributeType.getMinOccurrences() > 0);
+      if (attributeType.getMinOccurrences() > 0) defaultData.getXOptionHandler().add(XOption.REQUIRED);
       defaultData.setToolTip(attributeType.getTipText());
-      defaultData.setHorizontalLabel(true);
-      defaultData.setlayoutName(attributeType.getName());
-      if (min == 1) defaultData.setRequired(true);
+      defaultData.getXOptionHandler().add(XOption.HORIZONTAL_LABEL);
+      defaultData.setStorageName(attributeType.getName());
+      if (min == 1) defaultData.getXOptionHandler().add(XOption.REQUIRED);
       if (attributeType.getBaseAttributeClass().equals(EnumeratedAttribute.class)) {
          if (max == 1) {
             defaultData.setXWidgetName("XComboDam(" + Collections.toString(",",
@@ -44,7 +45,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          } else {
             defaultData.setXWidgetName("XListDam(" + Collections.toString(",",
                   EnumeratedAttribute.getChoices(attributeType)) + ")");
-            defaultData.setHorizontalLabel(false);
+            defaultData.getXOptionHandler().add(XOption.VERTICAL_LABEL);
          }
       } else if (attributeType.getBaseAttributeClass().equals(StringAttribute.class)) {
          if (max == 1) {

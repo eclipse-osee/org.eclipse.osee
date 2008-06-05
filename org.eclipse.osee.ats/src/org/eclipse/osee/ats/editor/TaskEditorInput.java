@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -67,10 +66,11 @@ public class TaskEditorInput implements IEditorInput {
     */
    public List<TaskResOptionDefinition> getResOptions() throws SQLException {
       if (resOptions == null) {
-         resOptions =
-               taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPage(
-                     DefaultTeamState.Implement.name()).getTaskResDef() != null ? taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPage(
-                     DefaultTeamState.Implement.name()).getTaskResDef().getOptions() : null;
+         //         resOptions =
+         //               taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPageDefinitionByName(
+         //                     DefaultTeamState.Implement.name()).getTaskResDef() != null ? taskArts.iterator().next().getParentTeamWorkflow().getSmaMgr().getWorkPage(
+         //                     DefaultTeamState.Implement.name()).getTaskResDef().getOptions() : null;
+         System.err.println("fix this TaskEditorInput.getResOptions");
       }
       return resOptions;
    }

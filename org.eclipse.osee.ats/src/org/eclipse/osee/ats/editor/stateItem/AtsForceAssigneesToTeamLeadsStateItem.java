@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 
@@ -41,7 +42,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
    @Override
    public void transitioned(SMAManager smaMgr, String fromState, String toState, Collection<User> toAssignees) throws Exception {
       super.transitioned(smaMgr, fromState, toState, toAssignees);
-      if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (smaMgr.getWorkPage(toState).isForceAssigneesToTeamLeads())) {
+      if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (AtsWorkDefinitions.isForceAssigneesToTeamLeads(smaMgr.getWorkPageDefinitionByName(toState)))) {
          // Set Assignees to all user roles users
          try {
             Collection<User> teamLeads = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();

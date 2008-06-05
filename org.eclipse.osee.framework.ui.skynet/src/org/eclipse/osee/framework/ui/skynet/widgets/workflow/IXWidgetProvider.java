@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
  */
 public interface IXWidgetProvider {
 
-   public XWidget createXWidget(String xWidgetName, String name, boolean labelAfter, DynamicXWidgetLayoutData xWidgetLayoutData);
+   public XWidget createXWidget(String xWidgetName, String name, DynamicXWidgetLayoutData xWidgetLayoutData);
 
 }

@@ -35,7 +35,7 @@ public class WorkAttrHelpResource implements IHelpResource {
     */
    public String getHref() {
       if (layoutData != null) {
-         File file = AtsPlugin.getInstance().getPluginStoreFile(layoutData.getLayoutName() + ".html");
+         File file = AtsPlugin.getInstance().getPluginStoreFile(layoutData.getStorageName() + ".html");
          String absFile = "file:\\/\\/" + file.getAbsolutePath();
          StringBuffer sb = new StringBuffer();
          sb.append(AHTML.heading(1, layoutData.getName()));

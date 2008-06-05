@@ -6,20 +6,22 @@
 package org.eclipse.osee.ats.workflow.item;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemXWidgetDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsAttributeSoleDateXWidgetWorkItem extends WorkItemXWidgetDefinition {
+public class AtsAttributeReviewRolesXWidgetWorkItem extends WorkWidgetDefinition {
 
-   protected AtsAttributeSoleDateXWidgetWorkItem(ATSAttributes atsAttribute) {
+   protected AtsAttributeReviewRolesXWidgetWorkItem(ATSAttributes atsAttribute) {
       super(atsAttribute.getDisplayName(), atsAttribute.getStoreName());
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
-      data.setlayoutName(getId());
-      data.setXWidgetName("XDateDam");
+      data.setStorageName(getId());
+      data.getXOptionHandler().add(XOption.REQUIRED);
+      data.setXWidgetName("XUserRoleViewer");
       set(data);
    }
 }

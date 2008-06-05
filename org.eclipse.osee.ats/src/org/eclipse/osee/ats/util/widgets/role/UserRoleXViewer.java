@@ -112,7 +112,7 @@ public class UserRoleXViewer extends XViewer {
    }
 
    public void set(Collection<? extends UserRole> userRoles) {
-      ((UserRoleContentProvider) getContentProvider()).set(userRoles);
+      if (((UserRoleContentProvider) getContentProvider()) != null) ((UserRoleContentProvider) getContentProvider()).set(userRoles);
    }
 
    public void clear() {

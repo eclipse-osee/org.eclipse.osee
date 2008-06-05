@@ -11,18 +11,17 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.w3c.dom.Document;
@@ -30,47 +29,54 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
+ * Instantiation of a workpagedefinition for a given workflow. This contains UI components that are specific to the
+ * instantiation.
+ * 
  * @author Donald G. Dunne
  */
 public class WorkPage implements IDynamicWidgetLayoutListener {
 
-   private String id = GUID.generateGuidStr();
-   private String name;
-   private ArrayList<WorkPage> fromPages = new ArrayList<WorkPage>();
-   private ArrayList<WorkPage> toPages = new ArrayList<WorkPage>();
-   private ArrayList<WorkPage> returnPages = new ArrayList<WorkPage>();
-   private WorkPage defaultToPage;
    protected DynamicXWidgetLayout dynamicXWidgetLayout;
+   protected final WorkPageDefinition workPageDefinition;
+   protected final WorkFlowDefinition workFlowDefinition;
 
    /**
     * @param instructionLines input lines of WorkAttribute declarations
     */
-   public WorkPage(String name, String id, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
+   public WorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
       super();
-      this.name = name;
-      if (id != null && !id.equals("")) this.id = id;
+      this.workFlowDefinition = workFlowDefinition;
+      this.workPageDefinition = workPageDefinition;
       dynamicXWidgetLayout = new DynamicXWidgetLayout(this, optionResolver);
       try {
-         if (xWidgetsXml != null) processLayoutDatas(xWidgetsXml);
+         if (xWidgetsXml != null) processXmlLayoutDatas(xWidgetsXml);
       } catch (Exception ex) {
          SkynetGuiPlugin.getLogger().log(Level.SEVERE, "Error processing attributes", ex);
       }
    }
 
-   public WorkPage(String name, String id, List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver) {
+   public WorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver) {
       super();
-      this.name = name;
-      if (id != null && !id.equals("")) this.id = id;
+      this.workFlowDefinition = workFlowDefinition;
+      this.workPageDefinition = workPageDefinition;
+      dynamicXWidgetLayout = new DynamicXWidgetLayout(this, optionResolver);
+      dynamicXWidgetLayout.setLayoutDatas(datas);
+   }
+
+   public WorkPage(List<DynamicXWidgetLayoutData> datas, IXWidgetOptionResolver optionResolver) {
+      super();
+      this.workFlowDefinition = null;
+      this.workPageDefinition = null;
       dynamicXWidgetLayout = new DynamicXWidgetLayout(this, optionResolver);
       dynamicXWidgetLayout.setLayoutDatas(datas);
    }
 
    public WorkPage(String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
-      this("", "", xWidgetsXml, optionResolver);
+      this(null, null, xWidgetsXml, optionResolver);
    }
 
    public WorkPage(IXWidgetOptionResolver optionResolver) {
-      this("", "", (String) null, optionResolver);
+      this(null, null, (String) null, optionResolver);
    }
 
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, WorkPage page, XModifiedListener xModListener, boolean isEditable) throws Exception {
@@ -134,7 +140,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
          if (!layoutData.getXWidget().isValid().isTrue()) {
             // Check to see if widget is part of a completed OR or XOR group
-            if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getLayoutName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getLayoutName())) return new Result(
+            if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStorageName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStorageName())) return new Result(
                   "Must Enter \"" + layoutData.getName() + "\"");
          }
       }
@@ -152,20 +158,16 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    }
 
    public String toString() {
-      StringBuffer sb = new StringBuffer(name + (id != null ? " (" + id + ") " : "") + "\n");
-      for (WorkPage page : toPages) {
-         sb.append("-> " + page.name + (returnPages.contains(toPages) ? " (return)" : "") + "\n");
+      StringBuffer sb =
+            new StringBuffer(
+                  workPageDefinition.getName() + (workPageDefinition.getId() != null ? " (" + workPageDefinition.getId() + ") " : "") + "\n");
+      for (WorkPageDefinition page : workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
+            TransitionType.ToPage)) {
+         sb.append("-> " + page.name + (workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
+               TransitionType.ToPageAsReturn).contains(
+               workFlowDefinition.getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPage)) ? " (return)" : "") + "\n");
       }
       return sb.toString();
-   }
-
-   public void addFromPage(WorkPage page) {
-      fromPages.add(page);
-   }
-
-   public void addToPage(WorkPage page, boolean returnPage) {
-      toPages.add(page);
-      if (returnPage) returnPages.add(page);
    }
 
    public Set<DynamicXWidgetLayoutData> getlayoutDatas() {
@@ -184,7 +186,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       processLayoutDatas(doc.getDocumentElement());
    }
 
-   protected void processLayoutDatas(String xWidgetXml) throws IOException, ParserConfigurationException, SAXException {
+   protected void processXmlLayoutDatas(String xWidgetXml) throws IOException, ParserConfigurationException, SAXException {
       dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
    }
 
@@ -193,64 +195,57 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    }
 
    public String getName() {
-      return name;
+      return workPageDefinition.name;
    }
 
    public String getId() {
-      return id;
-   }
-
-   /**
-    * @return Returns the fromPages.
-    */
-   public ArrayList<WorkPage> getFromPages() {
-      return fromPages;
+      return workPageDefinition.id;
    }
 
    /**
     * @return Returns the toPages.
     */
-   public ArrayList<WorkPage> getToPages() {
-      return toPages;
+   public List<WorkPageDefinition> getToPages() {
+      return workFlowDefinition.getToPages(workPageDefinition);
    }
 
-   public boolean isReturnPage(WorkPage page) {
-      return returnPages.contains(page);
+   /**
+    * @return Returns the toPages.
+    */
+   public List<WorkPageDefinition> getReturnPages() {
+      return workFlowDefinition.getReturnPages(workPageDefinition);
+   }
+
+   public boolean isReturnPage(WorkPageDefinition page) {
+      return getReturnPages().contains(page);
    }
 
    /**
     * @return Returns the defaultToPage.
     */
-   public WorkPage getDefaultToPage() {
-      return defaultToPage;
+   public WorkPageDefinition getDefaultToPage() {
+      return workFlowDefinition.getDefaultToPage(workPageDefinition);
    }
 
    /**
-    * @param defaultToPage The defaultToPage to set.
+    * @return the workPageDefinition
     */
-   public void setDefaultToPage(WorkPage defaultToPage) {
-      this.defaultToPage = defaultToPage;
+   public WorkPageDefinition getWorkPageDefinition() {
+      return workPageDefinition;
    }
 
    /**
-    * @param id The id to set.
+    * @return the workFlowDefinition
     */
-   public void setId(String id) {
-      this.id = id;
+   public WorkFlowDefinition getWorkFlowDefinition() {
+      return workFlowDefinition;
    }
 
    /**
-    * @param name The name to set.
+    * @return the dynamicXWidgetLayout
     */
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   /**
-    * @return the returnPages
-    */
-   public ArrayList<WorkPage> getReturnPages() {
-      return returnPages;
+   public DynamicXWidgetLayout getDynamicXWidgetLayout() {
+      return dynamicXWidgetLayout;
    }
 
 }

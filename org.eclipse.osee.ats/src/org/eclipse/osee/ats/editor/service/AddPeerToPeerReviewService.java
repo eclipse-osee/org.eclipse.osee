@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor.service;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewPeerToPeerReviewJob;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -19,6 +20,7 @@ import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListDialog;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
@@ -60,18 +62,23 @@ public class AddPeerToPeerReviewService extends WorkPageService {
          }
 
          public void linkActivated(HyperlinkEvent e) {
-            StateListDialog dialog =
-                  new StateListDialog("Related Review State", "Select state to that review will be associated with.",
-                        smaMgr.getWorkFlow().getPageNames());
-            dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});
-            if (dialog.open() == 0) {
-               if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Add PeerToPeer Review",
-                     "Create a PeerToPeer Review and attach it the \"" + dialog.getResult()[0] + "\" state?")) return;
-               NewPeerToPeerReviewJob job =
-                     new NewPeerToPeerReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), dialog.getSelectedState());
-               job.setUser(true);
-               job.setPriority(Job.LONG);
-               job.schedule();
+            try {
+               StateListDialog dialog =
+                     new StateListDialog("Related Review State",
+                           "Select state to that review will be associated with.",
+                           smaMgr.getWorkFlowDefinition().getPageNames());
+               dialog.setInitialSelections(new Object[] {smaMgr.getStateMgr().getCurrentStateName()});
+               if (dialog.open() == 0) {
+                  if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Add PeerToPeer Review",
+                        "Create a PeerToPeer Review and attach it the \"" + dialog.getResult()[0] + "\" state?")) return;
+                  NewPeerToPeerReviewJob job =
+                        new NewPeerToPeerReviewJob((TeamWorkFlowArtifact) smaMgr.getSma(), dialog.getSelectedState());
+                  job.setUser(true);
+                  job.setPriority(Job.LONG);
+                  job.schedule();
+               }
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
             }
          }
       });

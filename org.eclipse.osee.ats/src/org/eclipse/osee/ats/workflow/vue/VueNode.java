@@ -8,25 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.workflow;
+package org.eclipse.osee.ats.workflow.vue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.workflow.AtsWorkPage.PageType;
+import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
-import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
-import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.w3c.dom.Document;
 
 /**
  * @author Donald G. Dunne
  */
-public class VueWorkPage {
+public class VueNode {
 
    private final String vueXml;
    private String vueId;
-   private AtsWorkPage workPage;
+   private DiagramNode workPage;
    public static enum Shape {
       ellipse, rectangle, hexagon;
       public static Shape getShape(String shape) {
@@ -45,17 +42,17 @@ public class VueWorkPage {
    /**
     * @return Returns the workPage.
     */
-   public AtsWorkPage getWorkPage() {
+   public DiagramNode getWorkPage() {
       return workPage;
    }
 
    /**
     * 
     */
-   public VueWorkPage(String vueXml) {
+   public VueNode(String vueXml) {
       super();
       this.vueXml = vueXml;
-      workPage = new AtsWorkPage(ATSXWidgetOptionResolver.getInstance());
+      workPage = new DiagramNode(ATSXWidgetOptionResolver.getInstance());
       processVueXml(vueXml);
    }
 
@@ -65,18 +62,9 @@ public class VueWorkPage {
       noteXml = noteXml.replaceAll("%sp;", " ");
       workPage.setInstructionStr(noteXml);
       getDetails();
-      if (getShape() == VueWorkPage.Shape.ellipse)
+      if (getShape() == VueNode.Shape.ellipse)
          workPage.setPageType(PageType.Team);
-      else if (getShape() == VueWorkPage.Shape.rectangle) workPage.setPageType(PageType.ActionableItem);
-      if (noteXml.startsWith("<WorkPage ")) {
-         workPage.setPageType(PageType.WorkFlowPage);
-         try {
-            Document doc = Jaxp.readXmlDocument(noteXml);
-            workPage.processInstructions(doc);
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, "Can't process vue xml", ex, true);
-         }
-      }
+      else if (getShape() == VueNode.Shape.rectangle) workPage.setPageType(PageType.ActionableItem);
    }
 
    public void getDetails() {

@@ -175,8 +175,8 @@ public class XText extends XWidget {
       sText.setMenu(getDefaultMenu());
       sText.addModifyListener(textListener);
       if (text != null) sText.setText(text);
-      spellPaintListener = new XTextSpellCheckPaintListener(this, OseeDictionary.getInstance());
       if (spellCheck) {
+         spellPaintListener = new XTextSpellCheckPaintListener(this, OseeDictionary.getInstance());
          sText.addPaintListener(spellPaintListener);
          if (modDict != null) spellPaintListener.addXTextSpellModifyDictionary(modDict);
       }
@@ -247,7 +247,9 @@ public class XText extends XWidget {
    public void dispose() {
       if (labelWidget != null) labelWidget.dispose();
       if (sText != null) {
-         if (spellPaintListener != null && !sText.isDisposed()) sText.removePaintListener(spellPaintListener);
+         if (spellPaintListener != null && !sText.isDisposed()) {
+            sText.removePaintListener(spellPaintListener);
+         }
          sText.dispose();
          sText = null;
       }

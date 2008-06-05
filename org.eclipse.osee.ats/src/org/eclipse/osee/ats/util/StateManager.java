@@ -20,9 +20,9 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -239,7 +239,7 @@ public class StateManager {
       return getVisitedStateNames().contains(name);
    }
 
-   public void transitionHelper(Collection<User> toAssignees, boolean persist, AtsWorkPage fromPage, AtsWorkPage toPage, String toStateName, String cancelReason) throws Exception {
+   public void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason) throws Exception {
       // Set XCurrentState info to XState
       stateDam.setState(currentStateDam.getState());
 

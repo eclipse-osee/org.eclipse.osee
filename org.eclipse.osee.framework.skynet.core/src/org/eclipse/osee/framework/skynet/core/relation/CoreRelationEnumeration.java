@@ -82,6 +82,9 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
    Dependency__Dependency(false, "Dependency"),
    Dependency__Artifact(true, "Dependency"),
 
+   WorkItem__Parent(true, "Work Item"),
+   WorkItem__Child(false, "Work Item"),
+
    Design__Design(false, "Design"),
    Design__Requirement(true, "Design"),
 

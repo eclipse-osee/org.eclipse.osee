@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -56,9 +57,9 @@ public class ReviewManager {
     * @return new review
     * @throws SQLException
     */
-   public DecisionReviewArtifact createValidateReview(boolean force) throws SQLException, MultipleAttributesExist {
+   public DecisionReviewArtifact createValidateReview(boolean force) throws Exception {
       // If not validate page, don't do anything
-      if (!force && !smaMgr.getWorkPage().isValidatePage()) return null;
+      if (!force && !AtsWorkDefinitions.isValidatePage(smaMgr.getWorkPageDefinition())) return null;
       // If validate review already created for this state, return
       if (!force && getReviewsFromCurrentState().size() > 0) {
          for (ReviewSMArtifact rev : getReviewsFromCurrentState()) {
@@ -74,7 +75,7 @@ public class ReviewManager {
          decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
          decRev.setSoleAttributeValue(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName(),
-               smaMgr.getWorkPage().isValidateReviewBlocking());
+               AtsWorkDefinitions.isValidateReviewBlocking(smaMgr.getWorkPageDefinition()));
 
          SMAManager revSmaMgr = new SMAManager(decRev);
          revSmaMgr.transition(DecisionReviewArtifact.StateNames.Decision.name(), smaMgr.getOriginator(), true);
@@ -88,8 +89,7 @@ public class ReviewManager {
    }
 
    public PeerToPeerReviewArtifact createNewPeerToPeerReview(String againstState) throws Exception {
-      return createNewPeerToPeerReview(againstState, SkynetAuthentication.getUser(),
-            new Date());
+      return createNewPeerToPeerReview(againstState, SkynetAuthentication.getUser(), new Date());
    }
 
    public PeerToPeerReviewArtifact createNewPeerToPeerReview(String againstState, User origUser, Date origDate) throws IllegalStateException, Exception {

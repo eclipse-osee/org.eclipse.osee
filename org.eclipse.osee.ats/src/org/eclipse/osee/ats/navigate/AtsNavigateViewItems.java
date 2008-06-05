@@ -241,6 +241,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       if (AtsPlugin.isAtsAdmin()) {
          XNavigateItem adminItems = new XNavigateItem(null, "Admin");
 
+         new UpdateAtsWorkItemDefinitions(adminItems);
+
          criteria = new LinkedList<ISearchPrimitive>();
          criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, Operator.EQUAL));
          new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Actions", criteria, true));

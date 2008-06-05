@@ -73,7 +73,7 @@ public class NewAttributesComposite extends Composite {
                   attrType));
          }
 
-         workPage = new WorkPage("Attributes", "attributes", widgets, new DefaultXWidgetOptionResolver());
+         workPage = new WorkPage(widgets, new DefaultXWidgetOptionResolver());
          workPage.createBody(toolkit, mainComp, artifact, xModifiedListener, true);
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

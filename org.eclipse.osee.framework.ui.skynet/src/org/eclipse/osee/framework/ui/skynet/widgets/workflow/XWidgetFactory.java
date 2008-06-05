@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersList;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMultiXWidgetTextDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XRelationTypeListViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
@@ -66,12 +67,12 @@ public class XWidgetFactory {
       return reference;
    }
 
-   public XWidget createXWidget(String xWidgetName, String name, boolean labelAfter, DynamicXWidgetLayoutData xWidgetLayoutData) {
+   public XWidget createXWidget(String xWidgetName, String name, DynamicXWidgetLayoutData xWidgetLayoutData) {
       XWidget xWidget = null;
 
       // Look for widget provider to create widget
       for (IXWidgetProvider widgetProvider : getXWidgetProviders()) {
-         xWidget = widgetProvider.createXWidget(xWidgetName, name, labelAfter, xWidgetLayoutData);
+         xWidget = widgetProvider.createXWidget(xWidgetName, name, xWidgetLayoutData);
          if (xWidget != null) {
             return xWidget;
          }
@@ -107,17 +108,19 @@ public class XWidgetFactory {
          xWidget = new XFloat(name);
       else if (xWidgetName.equals("XFloatDam"))
          xWidget = new XFloatDam(name);
+      else if (xWidgetName.equals("XIntegerDam"))
+         xWidget = new org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam(name);
       else if (xWidgetName.equals("XLabel"))
          xWidget = new XLabel(name);
       else if (xWidgetName.equals("XCheckBox")) {
          XCheckBox checkBox = new XCheckBox(name);
-         checkBox.setLabelAfter(labelAfter);
+         checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
          if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) checkBox.set(xWidgetLayoutData.getDefaultValue().equals(
                "true"));
          xWidget = checkBox;
       } else if (xWidgetName.equals("XCheckBoxDam")) {
          XCheckBoxDam checkBox = new XCheckBoxDam(name);
-         checkBox.setLabelAfter(labelAfter);
+         checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
          xWidget = checkBox;
       } else if (xWidgetName.startsWith("XComboDam")) {
          String values[] =

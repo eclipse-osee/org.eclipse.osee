@@ -29,8 +29,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public abstract class AtsStateItem implements IAtsStateItem {
 
    public static String ALL_STATE_IDS = "ALL";
-   private static ArrayList<WorkPageService> EMPTY_SERVICES = new ArrayList<WorkPageService>();
-   private static Collection<String> EMPTY_STRING = new ArrayList<String>();
+   private static final ArrayList<WorkPageService> EMPTY_SERVICES = new ArrayList<WorkPageService>();
+   private static final Collection<String> EMPTY_STRING = new ArrayList<String>();
 
    /* (non-Javadoc)
     * @see org.eclipse.osee.ats.editor.IAtsStateItem#committing(org.eclipse.osee.ats.editor.SMAManager)

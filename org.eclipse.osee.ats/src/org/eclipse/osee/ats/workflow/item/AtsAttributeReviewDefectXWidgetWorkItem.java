@@ -7,21 +7,19 @@ package org.eclipse.osee.ats.workflow.item;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemXWidgetDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData.Fill;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsAttributeSoleStringXWidgetWorkItem extends WorkItemXWidgetDefinition {
+public class AtsAttributeReviewDefectXWidgetWorkItem extends WorkWidgetDefinition {
 
-   protected AtsAttributeSoleStringXWidgetWorkItem(ATSAttributes atsAttribute, Fill fill) {
+   protected AtsAttributeReviewDefectXWidgetWorkItem(ATSAttributes atsAttribute) {
       super(atsAttribute.getDisplayName(), atsAttribute.getStoreName());
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
-      data.setlayoutName(getId());
-      data.setXWidgetName("XTextDam");
-      data.setFill(fill);
+      data.setStorageName(getId());
+      data.setXWidgetName("XDefectViewer");
       set(data);
    }
 }

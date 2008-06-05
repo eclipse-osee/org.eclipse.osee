@@ -27,9 +27,6 @@ import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.NotifyUsersJob;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
-import org.eclipse.osee.ats.workflow.AtsWorkFlow;
-import org.eclipse.osee.ats.workflow.AtsWorkFlowFactory;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -53,7 +50,9 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.XViewerCells;
 import org.eclipse.swt.graphics.Image;
 
@@ -69,7 +68,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    private Collection<User> preSaveStateAssignees;
    private User preSaveOriginator;
    public static double MAN_DAY_HOURS = 8;
-   private AtsWorkFlow atsWorkFlow;
+   protected WorkFlowDefinition workFlowDefinition;
 
    /**
     * @param parentFactory
@@ -169,8 +168,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * @param page
     * @return true if section should be expanded
     */
-   public boolean isCurrentSectionExpanded(AtsWorkPage page) {
-      return smaMgr.isCurrentState(page);
+   public boolean isCurrentSectionExpanded(String stateName) {
+      return smaMgr.getStateMgr().getCurrentStateName().equals(stateName);
    }
 
    public void notifyNewAssigneesAndReset() {
@@ -270,7 +269,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
       try {
          LogItem item = smaMgr.getSma().getLog().getStateEvent(LogType.StateCancelled);
          if (item == null) throw new IllegalArgumentException("No Cancelled Event");
-         for (WorkPage toPage : smaMgr.getWorkPage().getToPages())
+         for (WorkPageDefinition toPage : smaMgr.getWorkFlowDefinition().getToPages(smaMgr.getWorkPageDefinition()))
             if (toPage.getName().equals(item.getState())) return true;
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, false);
@@ -319,22 +318,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    }
 
    /**
-    * Since workflow currently contains data and ui components, cache on a per artifact basis.<br>
-    * <br>
-    * TODO Separate WorkPage, WorkFlow and XWidget definitions from their UI display. Then, cache workflows at the
-    * AtsWorkflowFactory level.
-    * 
     * @return
     */
-   public AtsWorkFlow getWorkFlow() {
-      if (atsWorkFlow == null) {
+   public WorkFlowDefinition getWorkFlowDefinition() throws Exception {
+      if (workFlowDefinition == null) {
          try {
-            atsWorkFlow = AtsWorkFlowFactory.getWorkflow(this);
+            workFlowDefinition = WorkFlowDefinitionFactory.getWorkFlowDefinition(this);
          } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, ex, true);
+            OSEELog.logException(AtsPlugin.class, ex, false);
          }
       }
-      return atsWorkFlow;
+      return workFlowDefinition;
    }
 
    public void addSubscribed(User user) throws SQLException {
@@ -718,9 +712,9 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
     * 
-    * @throws Exception TODO
+    * @throws Exception
     */
-   public void transitioned(AtsWorkPage fromPage, AtsWorkPage toPage, Collection<User> toAssignees, boolean persist) throws Exception {
+   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist) throws Exception {
    }
 
    /*
@@ -1042,7 +1036,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IWorld
    public int getPercentCompleteSMATotal() throws Exception {
       int percent = 0;
       int numStates = 0;
-      for (String stateName : smaMgr.getWorkFlow().getPageNames()) {
+      for (String stateName : smaMgr.getWorkFlowDefinition().getPageNames()) {
          if (!stateName.equals(DefaultTeamState.Completed.name()) && !stateName.equals(DefaultTeamState.Cancelled.name())) {
             percent += getPercentCompleteSMAStateTotal(stateName);
             numStates++;

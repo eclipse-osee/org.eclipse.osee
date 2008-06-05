@@ -11,56 +11,28 @@
 package org.eclipse.osee.ats.config;
 
 import java.sql.Connection;
-import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.workflow.AtsWorkFlowFactory;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
 public class AtsDatabaseConfig extends DbInitializationTask {
 
    public void run(Connection connection) throws Exception {
       createAtsTopLevelConfigObjects();
-      // Imports workflow vue diagrams as id specified in extension point
-      (new ImportWorkflowAction(false)).run();
-      // Creates Actionable Items and Teams
-      // Teams are related to workflow by id specified in team object in VUE diagram
-      (new LoadAIsAndTeamsAction(false)).run();
-      linkHeadTeamDefinitionWithReviewsAndTaskWorkflowDiagrams();
-   }
 
-   public static void linkHeadTeamDefinitionWithReviewsAndTaskWorkflowDiagrams() throws Exception {
-      TeamDefinitionArtifact teamDef = TeamDefinitionArtifact.getHeadTeamDefinition();
+      // Import Work Item Definitions
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
+            AtsWorkDefinitions.getAtsWorkDefinitions());
 
-      // Relate task workflow
-      Artifact taskWorkflow =
-            ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.DEFAULT_TASK_WORKFLOW,
-                  AtsPlugin.getAtsBranch());
-      teamDef.relate(CoreRelationEnumeration.TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram, taskWorkflow, true);
-
-      // Relate peer to Peer review
-      Artifact peerWorkflow =
-            ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.PEERTOPEER_REVIEW_WORKFLOW,
-                  AtsPlugin.getAtsBranch());
-      teamDef.relate(CoreRelationEnumeration.TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram,
-            peerWorkflow, true);
-
-      // Relate peer to Peer review
-      Artifact decisionWorkflow =
-            ArtifactQuery.getArtifactFromTypeAndName("General Document", AtsWorkFlowFactory.DECISION_REVIEW_WORKFLOW,
-                  AtsPlugin.getAtsBranch());
-      teamDef.relate(CoreRelationEnumeration.TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram,
-            decisionWorkflow, true);
-
-      teamDef.persistAttributesAndRelations();
    }
 
    private void createAtsTopLevelConfigObjects() throws Exception {
       AtsConfig.getInstance().getOrCreateAtsHeadingArtifact();
       AtsConfig.getInstance().getOrCreateTeamsDefinitionArtifact();
       AtsConfig.getInstance().getOrCreateActionableItemsHeadingArtifact();
-      AtsConfig.getInstance().getOrCreateWorkflowDiagramsArtifact();
+      AtsConfig.getInstance().getOrCreateWorkFlowsFolderArtifact();
+      AtsConfig.getInstance().getOrCreateWorkRulesFolderArtifact();
+      AtsConfig.getInstance().getOrCreateWorkWidgetsFolderArtifact();
+      AtsConfig.getInstance().getOrCreateWorkPagesFolderArtifact();
    }
 }

@@ -44,7 +44,7 @@ public class XComboBooleanDam extends XCombo implements IArtifactWidget {
             artifact.deleteSoleAttribute(attributeTypeName);
          } else {
             String enteredValue = get();
-            artifact.setSoleAttributeValue(attributeTypeName, enteredValue);
+            artifact.setSoleAttributeValue(attributeTypeName, (enteredValue != null && enteredValue.equals("yes")));
          }
       } catch (Exception ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);

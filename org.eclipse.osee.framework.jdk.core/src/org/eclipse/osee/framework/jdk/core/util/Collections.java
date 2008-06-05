@@ -127,6 +127,14 @@ public class Collections {
       return set;
    }
 
+   public static List<Object> getAggregate(Object... objects) {
+      List<Object> objs = new ArrayList<Object>();
+      for (Object obj : objects) {
+         objs.add(obj);
+      }
+      return objs;
+   }
+
    public static List<Object> getAggregateTree(List<Object> items, int maxPerList) {
       if (items == null) throw new IllegalArgumentException("items can not be null");
       if (maxPerList < 2) throw new IllegalArgumentException("maxPerList can not be less than 2");

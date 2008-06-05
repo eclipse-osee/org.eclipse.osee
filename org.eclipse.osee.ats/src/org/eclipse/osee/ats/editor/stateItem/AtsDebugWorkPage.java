@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
+import org.eclipse.osee.ats.editor.stateItem.AtsLogWorkPage.EmptyWorkFlowDefinition;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -26,7 +28,8 @@ public class AtsDebugWorkPage extends AtsWorkPage {
     * @param optionResolver
     */
    public AtsDebugWorkPage() {
-      super("ATS Admin Debug", "ats.Debug", null, null);
+      super(new EmptyWorkFlowDefinition("ATS Admin Debug", PAGE_ID), new WorkPageDefinition("ATS Admin Debug", PAGE_ID,
+            null), null, null);
    }
 
 }

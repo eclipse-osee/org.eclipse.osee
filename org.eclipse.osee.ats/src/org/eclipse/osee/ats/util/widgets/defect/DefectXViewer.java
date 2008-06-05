@@ -112,15 +112,15 @@ public class DefectXViewer extends XViewer {
    }
 
    public void add(Collection<DefectItem> defectItems) {
-      ((DefectContentProvider) getContentProvider()).add(defectItems);
+      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).add(defectItems);
    }
 
    public void set(Collection<? extends DefectItem> defectItems) {
-      ((DefectContentProvider) getContentProvider()).set(defectItems);
+      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).set(defectItems);
    }
 
    public void clear() {
-      ((DefectContentProvider) getContentProvider()).clear();
+      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).clear();
    }
 
    /**

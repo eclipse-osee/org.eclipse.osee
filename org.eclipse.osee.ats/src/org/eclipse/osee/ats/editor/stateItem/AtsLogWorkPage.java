@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -19,12 +21,35 @@ import org.eclipse.osee.ats.workflow.AtsWorkPage;
 public class AtsLogWorkPage extends AtsWorkPage {
 
    public static String PAGE_ID = "ats.Log";
+   private final String title;
+
+   public static class EmptyWorkFlowDefinition extends WorkFlowDefinition {
+
+      /**
+       * @param name
+       * @param id
+       * @param parentId
+       */
+      public EmptyWorkFlowDefinition(String name, String id) {
+         super(name, id, null);
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition#getStartWorkPage()
+       */
+      @Override
+      public WorkPageDefinition getStartPage() {
+         return null;
+      }
+
+   }
 
    /**
     * @param title
     */
    public AtsLogWorkPage(String title) {
-      super(title, "ats.Log", null, null);
+      super(new EmptyWorkFlowDefinition(title, PAGE_ID), new WorkPageDefinition(title, PAGE_ID, null), null, null);
+      this.title = title;
    }
 
    /* (non-Javadoc)

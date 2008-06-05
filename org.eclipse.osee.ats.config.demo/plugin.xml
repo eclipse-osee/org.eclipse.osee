@@ -37,25 +37,6 @@
       </AtsAIandTeamConfig>
    </extension>
    <extension
-         point="org.eclipse.osee.ats.AtsVueWorkflowDiagram">
-      <AtsVueWorkflowDiagram
-            id="demo_test_workflow"
-            vueFilename="support/demo_test_workflow.vue">
-      </AtsVueWorkflowDiagram>
-      <AtsVueWorkflowDiagram
-            id="demo_req_workflow"
-            vueFilename="support/demo_req_workflow.vue">
-      </AtsVueWorkflowDiagram>
-      <AtsVueWorkflowDiagram
-            id="demo_code_workflow"
-            vueFilename="support/demo_code_workflow.vue">
-      </AtsVueWorkflowDiagram>
-      <AtsVueWorkflowDiagram
-            id="demo_sw_design_workflow"
-            vueFilename="support/demo_sw_design_workflow.vue">
-      </AtsVueWorkflowDiagram>
-   </extension>
-   <extension
          point="org.eclipse.osee.ats.AtsNavigateItem">
       <AtsNavigateItem
             classname="org.eclipse.osee.ats.config.demo.navigate.DemoNavigateViewItems">

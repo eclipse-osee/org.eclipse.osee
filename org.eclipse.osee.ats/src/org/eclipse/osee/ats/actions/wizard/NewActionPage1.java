@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Active;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
@@ -31,9 +30,13 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PatternFilter;
@@ -43,7 +46,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
  */
 public class NewActionPage1 extends WizardPage {
    private final NewActionWizard wizard;
-   private AtsWorkPage page;
+   private WorkPage page;
    private OSEECheckedFilteredTree treeViewer;
    private static PatternFilter patternFilter = new PatternFilter();
 
@@ -71,7 +74,7 @@ public class NewActionPage1 extends WizardPage {
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         page = new AtsWorkPage("Action", "", xWidgetXml, ATSXWidgetOptionResolver.getInstance());
+         page = new WorkPage(xWidgetXml, ATSXWidgetOptionResolver.getInstance());
          page.createBody(null, comp, null, xModListener, true);
 
          Composite aiComp = new Composite(comp, SWT.NONE);
@@ -100,10 +103,25 @@ public class NewActionPage1 extends WizardPage {
                getContainer().updateButtons();
             }
          });
-         if (wizard.getInitialAias() != null) treeViewer.setInitalChecked(wizard.getInitialAias());
+
+         Button deselectAll = new Button(aiComp, SWT.PUSH);
+         deselectAll.setText("De-Select All");
+         deselectAll.addSelectionListener(new SelectionListener() {
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+               treeViewer.clearChecked();
+            };
+         });
 
          setControl(comp);
          setHelpContexts();
+         if (wizard.getInitialAias() != null) treeViewer.setInitalChecked(wizard.getInitialAias());
       } catch (Exception ex) {
          OSEELog.logException(AtsPlugin.class, ex, true);
       }

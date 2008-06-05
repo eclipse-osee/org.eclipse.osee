@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
+import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -52,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorInput;
@@ -195,7 +197,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
          SkynetEventManager.getInstance().register(RemoteTransactionEvent.class, this);
          SkynetEventManager.getInstance().register(LocalTransactionEvent.class, this);
-         SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, this);
+         //         SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, this);
          SkynetEventManager.getInstance().register(LocalNewBranchEvent.class, this);
          SkynetEventManager.getInstance().register(RemoteNewBranchEvent.class, this);
          SkynetEventManager.getInstance().register(LocalCommitBranchEvent.class, this);
@@ -210,7 +212,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          workFlowPageIndex = addPage(workFlowTab);
 
          // Create Tasks tab
-         if (smaMgr.showTaskTab()) {
+         System.err.println("Disabling TaskTab...fix this");
+         if (false && smaMgr.showTaskTab()) {
             taskComposite = new SMATaskComposite(getContainer(), SWT.NONE);
             taskComposite.create(this);
             taskPageIndex = addPage(taskComposite);
@@ -387,7 +390,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getResOptions()
     */
    public List<TaskResOptionDefinition> getResOptions() throws Exception {
-      if (smaMgr.getWorkPage().isUsingTaskResolutionOptions()) return smaMgr.getWorkPage().getTaskResDef().getOptions();
+      WorkItemDefinition workItemDefinition =
+            smaMgr.getWorkPageDefinition().getWorkItemDefinition(TaskResolutionOptionRule.ATS_TASK_OPTIONS_TAG);
+      if (workItemDefinition != null) return ((TaskResolutionOptionRule) workItemDefinition).getOptions();
       return new ArrayList<TaskResOptionDefinition>();
    }
 
@@ -427,7 +432,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#isUsingTaskResolutionOptions()
     */
    public boolean isUsingTaskResolutionOptions() throws Exception {
-      return smaMgr.getWorkPage().isUsingTaskResolutionOptions();
+      if (smaMgr.getWorkPageDefinition() == null) return false;
+      return (smaMgr.getWorkPageDefinition().getWorkItemDefinition(TaskResolutionOptionRule.ATS_TASK_OPTIONS_TAG) != null);
    }
 
    /*

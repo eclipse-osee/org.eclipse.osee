@@ -27,10 +27,13 @@ import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 public class AtsConfig {
 
    private static AtsConfig instance = new AtsConfig();
-   public static String HEADING_ARTIFACT = "Heading";
+   public static String FOLDER_ARTIFACT = "Folder";
    public static String ATS_HEADING = "Action Tracking System";
    public static String MSA_TOOLS_HEADING = "MSA Tools";
-   public static String WORKFLOW_DIAGRAMS_HEADING = "Workflow Diagrams";
+   public static String WORK_FLOWS_FOLDER = "Work Flows";
+   public static String WORK_RULES_FOLDER = "Work Rules";
+   public static String WORK_WIDGETS_FOLDER = "Work Widgets";
+   public static String WORK_PAGES_FOLDER = "Work Pages";
    public static String TEAMS_HEADING = "Teams";
    public static String ACTIONABLE_ITEMS_HEADING = "Actionable Items";
 
@@ -40,6 +43,42 @@ public class AtsConfig {
 
    public static AtsConfig getInstance() {
       return instance;
+   }
+
+   public Artifact getOrCreateWorkRulesFolderArtifact() throws Exception {
+      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_RULES_FOLDER);
+      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_RULES_FOLDER)) {
+         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_RULES_FOLDER);
+      }
+      validateATSHeadingParent(art);
+      return art;
+   }
+
+   public Artifact getOrCreateWorkPagesFolderArtifact() throws Exception {
+      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_PAGES_FOLDER);
+      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_PAGES_FOLDER)) {
+         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_PAGES_FOLDER);
+      }
+      validateATSHeadingParent(art);
+      return art;
+   }
+
+   public Artifact getOrCreateWorkWidgetsFolderArtifact() throws Exception {
+      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_WIDGETS_FOLDER);
+      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_WIDGETS_FOLDER)) {
+         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_WIDGETS_FOLDER);
+      }
+      validateATSHeadingParent(art);
+      return art;
+   }
+
+   public Artifact getOrCreateWorkFlowsFolderArtifact() throws Exception {
+      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, WORK_FLOWS_FOLDER);
+      if (!art.getAttributesToStringList(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE).contains(WORK_FLOWS_FOLDER)) {
+         art.addAttribute(ArtifactStaticIdSearch.STATIC_ID_ATTRIBUTE, WORK_FLOWS_FOLDER);
+      }
+      validateATSHeadingParent(art);
+      return art;
    }
 
    public ActionableItemArtifact getOrCreateActionableItemsHeadingArtifact() throws Exception {
@@ -65,13 +104,6 @@ public class AtsConfig {
       return (TeamDefinitionArtifact) art;
    }
 
-   public Artifact getOrCreateWorkflowDiagramsArtifact() throws Exception {
-      Artifact art =
-            Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), HEADING_ARTIFACT, WORKFLOW_DIAGRAMS_HEADING);
-      validateATSHeadingParent(art);
-      return art;
-   }
-
    private void validateATSHeadingParent(Artifact art) {
       try {
          if (art.getParent() == null) {
@@ -86,7 +118,7 @@ public class AtsConfig {
    }
 
    public Artifact getOrCreateAtsHeadingArtifact() throws Exception {
-      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), HEADING_ARTIFACT, ATS_HEADING);
+      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, ATS_HEADING);
       if (art.getParent() == null) {
          try {
             Artifact rootArt =
@@ -101,7 +133,7 @@ public class AtsConfig {
    }
 
    public Artifact getOrCreateMsaToolsHeadingArtifact() throws Exception {
-      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), HEADING_ARTIFACT, MSA_TOOLS_HEADING);
+      Artifact art = Artifacts.getOrCreateArtifact(AtsPlugin.getAtsBranch(), FOLDER_ARTIFACT, MSA_TOOLS_HEADING);
       if (art.getParent() == null) {
          try {
             Artifact rootArt =

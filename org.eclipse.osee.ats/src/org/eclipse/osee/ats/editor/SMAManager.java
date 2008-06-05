@@ -41,8 +41,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
-import org.eclipse.osee.ats.workflow.AtsWorkFlow;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
@@ -64,7 +63,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeTypeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -106,13 +106,6 @@ public class SMAManager {
       SMAEditor.close(sma, save);
    }
 
-   public boolean isFirstState(AtsWorkPage page) {
-      if (page.isStartPage()) return true;
-      if ((sma instanceof TeamWorkFlowArtifact) && page.isEndorsePage()) return true;
-      if ((sma instanceof TaskArtifact) && page.getName().equals(TaskArtifact.INWORK_STATE)) return true;
-      return false;
-   }
-
    public Set<User> getPrivilegedUsers() throws SQLException {
       return sma.getPrivilegedUsers();
    }
@@ -133,30 +126,37 @@ public class SMAManager {
       return Result.FalseResult;
    }
 
-   public AtsWorkPage getWorkPage() {
-      try {
-         return (AtsWorkPage) sma.getWorkFlow().getPage(getStateMgr().getCurrentStateName());
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
-      return null;
+   public WorkPageDefinition getWorkPageDefinition() throws Exception {
+      if (getStateMgr().getCurrentStateName() == null) return null;
+      return sma.getWorkFlowDefinition().getWorkPageDefinitionByName(getStateMgr().getCurrentStateName());
+   }
+
+   public WorkPageDefinition getWorkPageDefinitionByName(String name) throws Exception {
+      return sma.getWorkFlowDefinition().getWorkPageDefinitionByName(name);
+   }
+
+   public WorkPageDefinition getWorkPageDefinitionById(String id) throws Exception {
+      return sma.getWorkFlowDefinition().getWorkPageDefinitionById(id);
    }
 
    public boolean isHistoricalVersion() {
       return sma.isHistorical();
    }
 
-   public boolean isAccessControlWrite() {
-      return AccessControlManager.getInstance().checkCurrentUserObjectPermission(sma, PermissionEnum.WRITE);
+   public List<WorkPageDefinition> getToWorkPages() throws Exception {
+      return getWorkFlowDefinition().getToPages(getWorkPageDefinition());
    }
 
-   public AtsWorkPage getWorkPage(String name) {
-      try {
-         return (AtsWorkPage) sma.getWorkFlow().getPage(name);
-      } catch (Exception ex) {
-         OSEELog.logException(AtsPlugin.class, ex, true);
-      }
-      return null;
+   public List<WorkPageDefinition> getReturnPages() throws Exception {
+      return getWorkFlowDefinition().getReturnPages(getWorkPageDefinition());
+   }
+
+   public boolean isReturnPage(WorkPageDefinition workPageDefinition) throws Exception {
+      return getWorkFlowDefinition().isReturnPage(getWorkPageDefinition(), workPageDefinition);
+   }
+
+   public boolean isAccessControlWrite() {
+      return AccessControlManager.getInstance().checkCurrentUserObjectPermission(sma, PermissionEnum.WRITE);
    }
 
    public User getOriginator() {
@@ -164,8 +164,7 @@ public class SMAManager {
    }
 
    public void setOriginator(User user) throws IllegalStateException, SQLException, MultipleAttributesExist {
-      sma.getLog().addLog(LogType.Originated, "",
-            "Changed by " + SkynetAuthentication.getUser().getName(), user);
+      sma.getLog().addLog(LogType.Originated, "", "Changed by " + SkynetAuthentication.getUser().getName(), user);
    }
 
    /**
@@ -630,8 +629,8 @@ public class SMAManager {
       return false;
    }
 
-   public AtsWorkFlow getWorkFlow() {
-      return sma.getWorkFlow();
+   public WorkFlowDefinition getWorkFlowDefinition() throws Exception {
+      return sma.getWorkFlowDefinition();
    }
 
    public boolean isCompleted() {
@@ -642,12 +641,12 @@ public class SMAManager {
       return (stateMgr.getCurrentStateName().equals(DefaultTeamState.Cancelled.name()));
    }
 
-   public boolean isCurrentSectionExpanded(AtsWorkPage page) {
-      return sma.isCurrentSectionExpanded(page);
+   public boolean isCurrentSectionExpanded(String stateName) {
+      return sma.isCurrentSectionExpanded(stateName);
    }
 
-   public boolean isCurrentState(WorkPage page) {
-      return page.getName().equals(stateMgr.getCurrentStateName());
+   public boolean isCurrentState(String stateName) {
+      return stateName.equals(stateMgr.getCurrentStateName());
    }
 
    public void setTransitionAssignees(Collection<User> assignees) {
@@ -736,17 +735,21 @@ public class SMAManager {
    private Result transition(final String toStateName, final Collection<User> toAssignees, final boolean persist, final String cancelReason, boolean overrideTransitionCheck) {
       try {
          // Validate toState name
-         final AtsWorkPage fromPage = getWorkPage();
-         final AtsWorkPage toPage = getWorkPage(toStateName);
+         final WorkPageDefinition fromPage = getWorkPageDefinition();
+         final WorkPageDefinition toPage = getWorkPageDefinitionByName(toStateName);
          if (toPage == null) return new Result("Invalid toState \"" + toStateName + "\"");
 
          // Validate transition from fromPage to toPage
-         if (!overrideTransitionCheck && !fromPage.getToPages().contains(toPage)) {
+         if (!overrideTransitionCheck && !getWorkFlowDefinition().getToPages(fromPage).contains(toPage)) {
             String errStr =
                   "According to transition configuration, can't transition to \"" + toStateName + "\" from \"" + fromPage.getName() + "\"";
             OSEELog.logSevere(AtsPlugin.class, errStr, false);
             return new Result(errStr);
          }
+
+         // Don't transition with uncommitted branch if this is a commit state
+         if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && getBranchMgr().isWorkingBranch()) return new Result(
+               "Working Branch exists.  Please commit or delete working branch before transition.");
 
          // Check extension points for valid transition
          for (IAtsStateItem item : stateItems.getStateItems(fromPage.getId())) {
@@ -778,9 +781,9 @@ public class SMAManager {
       return Result.TrueResult;
    }
 
-   private void transitionHelper(Collection<User> toAssignees, boolean persist, AtsWorkPage fromPage, AtsWorkPage toPage, String toStateName, String cancelReason) throws Exception {
+   private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String cancelReason) throws Exception {
       // Log transition
-      if (toPage.isCancelledPage()) {
+      if (toPage.getName().equals(DefaultTeamState.Cancelled.name())) {
          getSma().getLog().addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), cancelReason);
       } else {
          getSma().getLog().addLog(LogType.StateComplete, stateMgr.getCurrentStateName(), "");

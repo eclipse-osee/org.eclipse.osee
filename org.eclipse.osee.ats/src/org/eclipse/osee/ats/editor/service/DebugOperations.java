@@ -87,11 +87,16 @@ public class DebugOperations extends WorkPageService {
          }
 
          public void linkActivated(HyperlinkEvent e) {
-            String hrid = smaMgr.getWorkFlow().getId().replaceFirst("^.* - ", "");
-            if (hrid.length() != 5)
-               AWorkbench.popup("Open Workflow", "Workflow is NOT an artifact\n\n" + smaMgr.getWorkFlow().getId());
-            else
-               AtsLib.open(hrid, OpenView.ArtifactEditor);
+            try {
+               String hrid = smaMgr.getWorkFlowDefinition().getId().replaceFirst("^.* - ", "");
+               if (hrid.length() != 5)
+                  AWorkbench.popup("Open Workflow",
+                        "Workflow is NOT an artifact\n\n" + smaMgr.getWorkFlowDefinition().getId());
+               else
+                  AtsLib.open(hrid, OpenView.ArtifactEditor);
+            } catch (Exception ex) {
+               OSEELog.logException(AtsPlugin.class, ex, true);
+            }
          }
       });
       link = toolkit.createHyperlink(workGroup, "Open Team Definition", SWT.NONE);

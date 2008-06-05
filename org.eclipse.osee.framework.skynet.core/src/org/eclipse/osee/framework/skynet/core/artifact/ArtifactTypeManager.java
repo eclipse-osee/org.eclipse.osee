@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.ui.plugin.util.InputStreamImageDescriptor;
 
@@ -138,7 +137,7 @@ public class ArtifactTypeManager {
 
       if (artifactType == null) {
          throw new IllegalArgumentException(
-               "Atrifact type with namespace \"" + namespace + "\" and name \"" + name + "\" is not available.");
+               "Artifact type with namespace \"" + namespace + "\" and name \"" + name + "\" is not available.");
       }
       return artifactType;
    }
@@ -176,8 +175,7 @@ public class ArtifactTypeManager {
     * @throws OseeCoreException
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch) throws SQLException, OseeCoreException {
-      return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(
-            branch);
+      return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(branch);
    }
 
    /**
@@ -211,8 +209,7 @@ public class ArtifactTypeManager {
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch, String guid, String humandReadableId) throws SQLException, OseeCoreException {
-      return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(
-            branch, guid, humandReadableId);
+      return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(branch, guid, humandReadableId);
    }
 
    public static void updateArtifactTypeImage(ArtifactType descriptor, InputStreamImageDescriptor imageDescriptor) throws SQLException {

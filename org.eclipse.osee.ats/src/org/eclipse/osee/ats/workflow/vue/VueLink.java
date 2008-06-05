@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.workflow;
+package org.eclipse.osee.ats.workflow.vue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 /**
  * @author Donald G. Dunne
  */
-public class VueWorkLink {
+public class VueLink {
 
    private final String xml;
    private String name;
@@ -28,7 +28,7 @@ public class VueWorkLink {
    /**
     * 
     */
-   public VueWorkLink(String xml) {
+   public VueLink(String xml) {
       super();
       this.xml = xml;
       Matcher m =

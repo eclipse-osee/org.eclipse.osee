@@ -8,32 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.workflow;
+package org.eclipse.osee.ats.workflow.vue;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.config.WorkflowDiagramFactory;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
-import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.NativeArtifact;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
-import org.w3c.dom.Document;
 
 /**
  * @author Donald G. Dunne
  */
-public class VueWorkFlow {
+public class VueDiagram {
 
-   private ArrayList<VueWorkLink> links = new ArrayList<VueWorkLink>();
-   private ArrayList<VueWorkPage> vuePages = new ArrayList<VueWorkPage>();
-   private AtsWorkFlow workflow;
+   private ArrayList<VueLink> links = new ArrayList<VueLink>();
+   private ArrayList<VueNode> vuePages = new ArrayList<VueNode>();
+   private Diagram workflow;
    private static String INHERITED_WORKFLOW_TAG = "InheritedWorkflow";
    private static String PAGE_REPLACE_ALL_TAG = "PageIdReplaceAll";
-   private static Pattern workPagePattern = Pattern.compile("<WorkPage +pageId=\"(.*?)\".*?\\/>");
    private static Pattern inheritedPattern =
          Pattern.compile("&lt;" + INHERITED_WORKFLOW_TAG + " workflowId=\"(.*?)\"/&gt;",
                Pattern.DOTALL | Pattern.MULTILINE);
@@ -47,13 +43,12 @@ public class VueWorkFlow {
    /**
     * @param vueXml
     */
-   public VueWorkFlow(String workflowId, String vueXml) {
-      workflow = new AtsWorkFlow(workflowId);
+   public VueDiagram(String workflowId, String vueXml) {
+      workflow = new Diagram(workflowId);
       String inheritedVueXml = getInheritedVueXml(workflowId, vueXml);
       if (inheritedVueXml != null) {
          processXml(inheritedVueXml);
          replacePageIds(workflowId, vueXml);
-         setOverriddenWorkPageAttributes(vueXml);
          storeInheritData(vueXml);
       } else
          processXml(vueXml);
@@ -67,25 +62,6 @@ public class VueWorkFlow {
          workflow.setInheritData("Unable to extract just inherit block => " + vueXml);
    }
 
-   private void setOverriddenWorkPageAttributes(String xml) {
-      String xmlStr = AXml.xmlToText(xml);
-      Matcher m = workPagePattern.matcher(xmlStr);
-      while (m.find()) {
-         try {
-            String pageId = m.group(1);
-            for (VueWorkPage page : vuePages) {
-               if (page.getWorkPage().getId().equals(pageId)) {
-                  Document doc = Jaxp.readXmlDocument(m.group());
-                  page.getWorkPage().processWorkPageNode(doc);
-               }
-            }
-         } catch (Exception ex) {
-            OSEELog.logException(AtsPlugin.class, "Can't process vue xml", ex, true);
-         }
-      }
-
-   }
-
    private void replacePageIds(String workflowId, String xml) {
       String srchValue = null;
       String replaceValue = null;
@@ -96,7 +72,7 @@ public class VueWorkFlow {
       }
       srchValue = m.group(1);
       replaceValue = m.group(2);
-      for (VueWorkPage page : vuePages) {
+      for (VueNode page : vuePages) {
          page.getWorkPage().setId(page.getWorkPage().getId().replaceFirst(srchValue, replaceValue));
       }
    }
@@ -111,7 +87,7 @@ public class VueWorkFlow {
             return null;
          }
          workflowName = m.group(1);
-         NativeArtifact nativeArtifact = WorkflowDiagramFactory.getInstance().getAtsWorkflowArtifact(workflowName);
+         NativeArtifact nativeArtifact = DiagramFactory.getInstance().getAtsWorkflowArtifact(workflowName);
          InputStream is = nativeArtifact.getNativeContent();
          String vueXml = AFile.readFile(is);
          return vueXml;
@@ -132,19 +108,19 @@ public class VueWorkFlow {
          if (childParms.contains("xsi:type=\"group\"")) {
             throw new IllegalArgumentException("Can't use grouping in diagram");
          } else if (childParms.contains("xsi:type=\"link\"")) {
-            VueWorkLink link = new VueWorkLink(matchStr);
+            VueLink link = new VueLink(matchStr);
             links.add(link);
          } else if (childParms.contains("xsi:type=\"node\"")) {
-            VueWorkPage vuePage = new VueWorkPage(matchStr);
+            VueNode vuePage = new VueNode(matchStr);
             vuePages.add(vuePage);
             workflow.addPage(vuePage.getWorkPage());
          } else
             throw new IllegalArgumentException("Unhandled xsi:type");
       }
-      for (VueWorkLink link : links) {
-         VueWorkPage fromVuePage = getPageFromVueId(link.getFromVueId());
+      for (VueLink link : links) {
+         VueNode fromVuePage = getPageFromVueId(link.getFromVueId());
          if (fromVuePage == null) throw new IllegalArgumentException("Can't retrieve from page");
-         VueWorkPage toVuePage = getPageFromVueId(link.getToVueId());
+         VueNode toVuePage = getPageFromVueId(link.getToVueId());
          if (toVuePage == null) throw new IllegalArgumentException(
                "Can't retrieve to page " + link.getToVueId() + " from page " + link.getFromVueId() + " named \"" + fromVuePage.getWorkPage().getName() + "\"");
          fromVuePage.getWorkPage().addToPage(toVuePage.getWorkPage(), link.getName().equals("return"));
@@ -163,8 +139,8 @@ public class VueWorkFlow {
       }
    }
 
-   public VueWorkPage getPageFromVueId(String vueId) {
-      for (VueWorkPage page : vuePages)
+   public VueNode getPageFromVueId(String vueId) {
+      for (VueNode page : vuePages)
          if (page.getVueId().equals(vueId)) return page;
       return null;
    }
@@ -172,7 +148,7 @@ public class VueWorkFlow {
    /**
     * @return Returns the workflow.
     */
-   public AtsWorkFlow getWorkflow() {
+   public Diagram getWorkflow() {
       return workflow;
    }
 

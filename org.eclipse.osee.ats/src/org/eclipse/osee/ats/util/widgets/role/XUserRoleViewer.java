@@ -200,7 +200,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
 
    public void loadTable() {
       try {
-         if (reviewArt != null) {
+         if (reviewArt != null && xViewer != null) {
             xViewer.set(reviewArt.getUserRoleManager().getUserRoles());
          }
       } catch (Exception ex) {
@@ -292,6 +292,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
    }
 
    public void refresh() {
+      if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
       xViewer.refresh();
       setLabelError();
       refreshActionEnablement();
@@ -414,7 +415,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IEventR
 
    public void setReviewArt(IReviewArtifact reviewArt) {
       this.reviewArt = reviewArt;
-      loadTable();
+      if (xViewer != null) loadTable();
    }
 
    /*

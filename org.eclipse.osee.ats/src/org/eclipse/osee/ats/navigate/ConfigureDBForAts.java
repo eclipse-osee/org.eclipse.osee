@@ -17,10 +17,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.config.ImportWorkflowAction;
-import org.eclipse.osee.ats.config.LoadAIsAndTeamsAction;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.ats.workflow.vue.LoadAIsAndTeamsAction;
 import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -62,8 +63,9 @@ public class ConfigureDBForAts extends XNavigateItemAction {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            monitor.subTask("Loading TeamWorkflows for " + pluginId);
-            (new ImportWorkflowAction(false, pluginId)).run();
+            monitor.subTask("Loading Work Item Definitions for " + pluginId);
+            AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
+                  AtsWorkDefinitions.getAtsWorkDefinitions());
             monitor.subTask("Loading Actionable Items and Teams for " + pluginId);
             (new LoadAIsAndTeamsAction(false, pluginId)).run();
          } catch (Exception ex) {

@@ -46,6 +46,15 @@ public class SkynetArtifactFactory extends ArtifactFactory {
       if (factoryKey.equals(WorkspaceFileArtifact.ARTIFACT_NAME)) {
          return new WorkspaceFileArtifact(this, guid, humandReadableId, branch, artifactType);
       }
+      if (factoryKey.equals(WorkspaceFileArtifact.ARTIFACT_NAME)) {
+         return new WorkspaceFileArtifact(this, guid, humandReadableId, branch, artifactType);
+      }
+      if (factoryKey.equals(WorkspaceFileArtifact.ARTIFACT_NAME)) {
+         return new WorkspaceFileArtifact(this, guid, humandReadableId, branch, artifactType);
+      }
+      if (factoryKey.equals(WorkspaceFileArtifact.ARTIFACT_NAME)) {
+         return new WorkspaceFileArtifact(this, guid, humandReadableId, branch, artifactType);
+      }
       throw new IllegalArgumentException("did not recognize the factory key: " + factoryKey);
    }
 }

@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -22,13 +25,21 @@ import org.w3c.dom.NodeList;
 /**
  * @author Donald G. Dunne
  */
-public class TaskResolutionOptions {
+public class TaskResolutionOptionRule extends WorkRuleDefinition {
 
    private List<TaskResOptionDefinition> options = new ArrayList<TaskResOptionDefinition>();
    public static String ATS_TASK_OPTIONS_TAG = "AtsTaskOptions";
 
-   public TaskResolutionOptions() {
-      super();
+   public TaskResolutionOptionRule(String name, String id) {
+      super(name, id, null);
+   }
+
+   public static TaskResolutionOptionRule getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws Exception {
+      WorkItemDefinition workItemDefinition = workPageDefinition.getWorkItemDefinition(ATS_TASK_OPTIONS_TAG);
+      if (workItemDefinition instanceof TaskResolutionOptionRule) {
+         return (TaskResolutionOptionRule) workItemDefinition;
+      }
+      return null;
    }
 
    public void setFromDoc(Document doc) {
@@ -43,7 +54,7 @@ public class TaskResolutionOptions {
       }
    }
 
-   public void setFromXml(String xmlStr) {
+   public void fromXml(String xmlStr) {
       String optionsXml = AXml.getTagData(xmlStr, ATS_TASK_OPTIONS_TAG);
       Matcher m =
             Pattern.compile(
@@ -56,7 +67,7 @@ public class TaskResolutionOptions {
       }
    }
 
-   public String toXml(String xmlStr) {
+   public String toXml() {
       StringBuffer sb = new StringBuffer();
       sb.append("<" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">\n");
       for (TaskResOptionDefinition def : options) {

@@ -17,10 +17,9 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData.Align;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData.Fill;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -40,6 +39,12 @@ public class XWidgetParser {
       return extractlayoutDatas(dynamicXWidgetLayout, rootElement);
    }
 
+   public static DynamicXWidgetLayoutData extractlayoutData(DynamicXWidgetLayout dynamicXWidgetLayout, String xml) throws ParserConfigurationException, SAXException, IOException {
+      Document document = Jaxp.readXmlDocument(xml);
+      Element rootElement = document.getDocumentElement();
+      return extractWorkAttribute(dynamicXWidgetLayout, rootElement);
+   }
+
    public static List<DynamicXWidgetLayoutData> extractlayoutDatas(DynamicXWidgetLayout dynamicXWidgetLayout, Element xWidgets) throws ParserConfigurationException, SAXException, IOException {
       NodeList widgets = xWidgets.getElementsByTagName(DynamicXWidgetLayout.XWIDGET);
       List<DynamicXWidgetLayoutData> layoutDatas = new ArrayList<DynamicXWidgetLayoutData>(widgets.getLength());
@@ -48,6 +53,56 @@ public class XWidgetParser {
          layoutDatas.add(extractWorkAttribute(dynamicXWidgetLayout, (Element) widgets.item(i)));
       }
       return layoutDatas;
+   }
+
+   public static String toXml(DynamicXWidgetLayoutData data) throws Exception {
+      Document doc = Jaxp.newDocument();
+      Element element = doc.createElement(DynamicXWidgetLayout.XWIDGET);
+      element.setAttribute("displayName", data.getName());
+      element.setAttribute("storageName", data.getStorageName());
+      element.setAttribute("toolTip", data.getToolTip());
+      element.setAttribute("id", data.getId());
+      element.setAttribute("xwidgetType", data.getXWidgetName());
+      element.setAttribute("defaultValue", data.getDefaultValue());
+      for (XOption xOption : data.getXOptionHandler().getXOptions()) {
+         if (xOption == XOption.ALIGN_CENTER)
+            element.setAttribute("align", "Center");
+         else if (xOption == XOption.ALIGN_LEFT)
+            element.setAttribute("align", "Left");
+         else if (xOption == XOption.ALIGN_RIGHT)
+            element.setAttribute("align", "Right");
+         else if (xOption == XOption.EDITABLE)
+            element.setAttribute("editable", "true");
+         else if (xOption == XOption.NOT_EDITABLE)
+            element.setAttribute("editable", "false");
+         else if (xOption == XOption.ENABLED)
+            element.setAttribute("enabled", "true");
+         else if (xOption == XOption.NOT_ENABLED)
+            element.setAttribute("enabled", "false");
+         else if (xOption == XOption.REQUIRED)
+            element.setAttribute("required", "true");
+         else if (xOption == XOption.NOT_REQUIRED)
+            element.setAttribute("required", "false");
+         else if (xOption == XOption.FILL_HORIZONTALLY)
+            element.setAttribute("fill", "Horizontally");
+         else if (xOption == XOption.FILL_VERTICALLY)
+            element.setAttribute("fill", "Vertically");
+         else if (xOption == XOption.HORIZONTAL_LABEL)
+            element.setAttribute("horizontalLabel", "true");
+         else if (xOption == XOption.VERTICAL_LABEL)
+            element.setAttribute("horizontalLabel", "false");
+         else if (xOption == XOption.LABEL_AFTER)
+            element.setAttribute("labelAfter", "true");
+         else if (xOption == XOption.LABEL_BEFORE)
+            element.setAttribute("labelAfter", "false");
+         else if (xOption == XOption.NONE)
+            // do nothing
+            ;
+         else
+            throw new IllegalArgumentException("Unhandled xOption \"" + xOption + "\"");
+      }
+      doc.appendChild(element);
+      return Jaxp.getDocumentXml(doc);
    }
 
    private static DynamicXWidgetLayoutData extractWorkAttribute(DynamicXWidgetLayout dynamicXWidgetLayout, Element widget) {
@@ -60,40 +115,56 @@ public class XWidgetParser {
          String nodeName = node.getNodeName();
          if (nodeName.equals("displayName")) {
             dynamicXWidgetLayoutData.setName(node.getNodeValue());
-            if (dynamicXWidgetLayoutData.getLayoutName().equals("")) dynamicXWidgetLayoutData.setlayoutName(node.getNodeValue());
+            if (dynamicXWidgetLayoutData.getStorageName().equals("")) dynamicXWidgetLayoutData.setStorageName(node.getNodeValue());
          } else if (nodeName.equals("storageName")) {
-            dynamicXWidgetLayoutData.setlayoutName(node.getNodeValue());
+            dynamicXWidgetLayoutData.setStorageName(node.getNodeValue());
             if (dynamicXWidgetLayoutData.getName().equals("")) dynamicXWidgetLayoutData.setName(node.getNodeValue());
          } else if (nodeName.equals("toolTip"))
             dynamicXWidgetLayoutData.setToolTip(node.getNodeValue());
-         else if (nodeName.equals("helpContextId")) {
-            // Not used anymore
-         } else if (nodeName.equals("helpPluginId")) {
-            // Not used anymore
-         } else if (nodeName.equals("beginComposite"))
-            dynamicXWidgetLayoutData.setBeginComposite(Integer.parseInt(node.getNodeValue()));
-         else if (nodeName.equals("endComposite"))
-            dynamicXWidgetLayoutData.setEndComposite(Boolean.parseBoolean((node.getNodeValue())));
+         else if (nodeName.equals("id"))
+            dynamicXWidgetLayoutData.setId(node.getNodeValue());
          else if (nodeName.equals("horizontalLabel"))
-            dynamicXWidgetLayoutData.setHorizontalLabel(Boolean.parseBoolean((node.getNodeValue())));
+            dynamicXWidgetLayoutData.getXOptionHandler().add(
+                  Boolean.parseBoolean((node.getNodeValue())) ? XOption.HORIZONTAL_LABEL : XOption.NONE);
          else if (nodeName.equals("labelAfter"))
-            dynamicXWidgetLayoutData.setLabelAfter(Boolean.parseBoolean((node.getNodeValue())));
+            dynamicXWidgetLayoutData.getXOptionHandler().add(
+                  Boolean.parseBoolean((node.getNodeValue())) ? XOption.LABEL_AFTER : XOption.NONE);
          else if (nodeName.equals("required"))
-            dynamicXWidgetLayoutData.setRequired(Boolean.parseBoolean(node.getNodeValue()));
+            dynamicXWidgetLayoutData.getXOptionHandler().add(
+                  Boolean.parseBoolean(node.getNodeValue()) ? XOption.REQUIRED : XOption.NONE);
+         else if (nodeName.equals("editable"))
+            dynamicXWidgetLayoutData.getXOptionHandler().add(
+                  Boolean.parseBoolean(node.getNodeValue()) ? XOption.EDITABLE : XOption.NONE);
          else if (nodeName.equals("xwidgetType"))
             dynamicXWidgetLayoutData.setXWidgetName(node.getNodeValue());
-         else if (nodeName.equals("fill"))
-            dynamicXWidgetLayoutData.setFill(Fill.valueOf(node.getNodeValue()));
-         else if (nodeName.equals("height"))
+         else if (nodeName.equals("fill")) {
+            String value = node.getNodeValue();
+            if (value.equalsIgnoreCase("Horizontally"))
+               dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
+            else if (value.equalsIgnoreCase("Vertically"))
+               dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+            else
+               OSEELog.logWarning(SkynetGuiPlugin.class, new IllegalArgumentException(
+                     "Unknown Fill Value \"" + value + "\""), false);
+         } else if (nodeName.equals("height"))
             dynamicXWidgetLayoutData.setHeight(Integer.parseInt(node.getNodeValue()));
-         else if (nodeName.equals("align"))
-            dynamicXWidgetLayoutData.setAlign(Align.valueOf(node.getNodeValue()));
-         else if (nodeName.equals("defaultValue"))
+         else if (nodeName.equals("align")) {
+            String value = node.getNodeValue();
+            if (value.equalsIgnoreCase("Left"))
+               dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_LEFT);
+            else if (value.equalsIgnoreCase("Right"))
+               dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_RIGHT);
+            else if (value.equalsIgnoreCase("Center"))
+               dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_CENTER);
+            else
+               OSEELog.logWarning(SkynetGuiPlugin.class, new IllegalArgumentException(
+                     "Unknown Align Value \"" + value + "\""), false);
+         } else if (nodeName.equals("defaultValue"))
             dynamicXWidgetLayoutData.setDefaultValue(node.getNodeValue());
          else if (nodeName.equals("keyedBranch"))
             dynamicXWidgetLayoutData.setKeyedBranchName(node.getNodeValue());
          else {
-            OSEELog.logException(SkynetGuiPlugin.class, new Exception(
+            OSEELog.logException(SkynetGuiPlugin.class, new IllegalArgumentException(
                   "Unsupported XWidget attribute \"" + nodeName + "\""), false);
          }
       }
