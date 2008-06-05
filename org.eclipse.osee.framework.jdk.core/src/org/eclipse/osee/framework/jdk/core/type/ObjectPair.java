@@ -18,4 +18,9 @@ public class ObjectPair<O, T> {
       this.object1 = object1;
       this.object2 = object2;
    }
+
+   @Override
+   public String toString() {
+      return "<" + object1 + ", " + object2 + ">";
+   }
 }
