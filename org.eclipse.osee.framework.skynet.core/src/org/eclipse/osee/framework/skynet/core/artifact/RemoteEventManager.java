@@ -241,38 +241,43 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
          final String message = event.getMessage();
          if (message != null && message.length() > 0) {
             boolean isShutdownAllowed = false;
-
             // Determine whether this is a shutdown event
             // Prevent shutting down users without a valid message
             if (event instanceof SkynetDisconnectClientsEvent) {
-               String[] userIds = ((SkynetDisconnectClientsEvent) event).getUserIds();
-               User user = SkynetAuthentication.getUser();
                try {
-                  String userId = user != null ? user.getUserId() : "";
-                  for (String temp : userIds) {
-                     if (temp.equals(userId)) {
-                        isShutdownAllowed = true;
-                        break;
+                  String[] userIds = ((SkynetDisconnectClientsEvent) event).getUserIds();
+                  User user = SkynetAuthentication.getUser();
+                  if (user != null) {
+                     String userId = user.getUserId();
+                     for (String temp : userIds) {
+                        if (temp.equals(userId)) {
+                           isShutdownAllowed = true;
+                           break;
+                        }
                      }
                   }
                } catch (Exception ex) {
                   SkynetActivator.getLogger().log(Level.SEVERE, "Error processing shutdown", ex);
                }
-            }
-            final boolean isShutdownRequest = isShutdownAllowed;
-            Display.getDefault().asyncExec(new Runnable() {
-               public void run() {
-                  if (false != isShutdownRequest) {
-                     MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                           "Shutdown Requested", message);
-                     // Shutdown the bench when this event is received
-                     PlatformUI.getWorkbench().close();
-                  } else {
+               final boolean isShutdownRequest = isShutdownAllowed;
+               Display.getDefault().asyncExec(new Runnable() {
+                  public void run() {
+                     if (isShutdownRequest) {
+                        MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                              "Shutdown Requested", message);
+                        // Shutdown the bench when this event is received
+                        PlatformUI.getWorkbench().close();
+                     }
+                  }
+               });
+            } else {
+               Display.getDefault().asyncExec(new Runnable() {
+                  public void run() {
                      MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                            "Remote Message", message);
                   }
-               }
-            });
+               });
+            }
          }
       }
 
