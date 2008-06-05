@@ -123,7 +123,6 @@ public class XMultiXWidget extends XWidget {
 
    XModifiedListener xModifiedListener = new XModifiedListener() {
       public void widgetModified(XWidget widget) {
-         System.out.println("notify listeners");
          notifyXModifiedListeners();
       };
    };
