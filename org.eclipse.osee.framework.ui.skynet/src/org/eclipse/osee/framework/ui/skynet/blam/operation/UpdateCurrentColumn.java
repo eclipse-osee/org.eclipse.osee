@@ -120,14 +120,14 @@ public class UpdateCurrentColumn extends AbstractBlam {
       }
    }
 
-   private final class RelationHelper {
+   private final class RelationOrderTracker {
       int rel_link_type, art_id, branch_id, order;
       int rel_link_type_old = 0, art_id_old = 0, branch_id_old = 0;
       int new_order;
       int other_side_art_id = 0;
       long gammaId = 0;
 
-      RelationHelper(ResultSet resultSet) throws SQLException {
+      void processRow(ResultSet resultSet) throws SQLException {
          rel_link_type = resultSet.getInt(1);
          art_id = resultSet.getInt(2);
          branch_id = resultSet.getInt(3);
@@ -264,13 +264,14 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
       private void updateRelationsSortOrder(IProgressMonitor monitor, Connection connection, String name, String query, String update) throws Exception {
          final List<Object[]> batchArgs = new ArrayList<Object[]>();
+         final RelationOrderTracker relationOrderTracker = new RelationOrderTracker();
 
          monitor.subTask(String.format("Updating [%s] sort order", name));
          executeQuery(monitor, connection, new IRowProcessor() {
             public void processRow(ResultSet resultSet) throws Exception {
-               RelationHelper helper = new RelationHelper(resultSet);
-               if (helper.isUpdateRequired()) {
-                  batchArgs.add(helper.getUpdateData());
+               relationOrderTracker.processRow(resultSet);
+               if (relationOrderTracker.isUpdateRequired()) {
+                  batchArgs.add(relationOrderTracker.getUpdateData());
                }
             }
          }, 5000, query);
