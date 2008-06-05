@@ -391,6 +391,8 @@ public final class ConnectionHandler {
             returnCount += update;
          } else if (Statement.EXECUTE_FAILED == update) {
             OseeLog.log(Activator.class.getName(), Level.SEVERE, "sql execute failes.");
+         } else if (Statement.SUCCESS_NO_INFO == update) {
+            returnCount++;
          }
       }
       return returnCount;
