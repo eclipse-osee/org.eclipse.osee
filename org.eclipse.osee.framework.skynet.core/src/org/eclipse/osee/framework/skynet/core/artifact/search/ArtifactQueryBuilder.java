@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
-import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -214,17 +213,17 @@ public class ArtifactQueryBuilder {
          sql.append("=art1.art_id AND ");
       }
 
-      sql.append("art1.art_id=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND ");
-      if (allowDeleted) {
-         sql.append("(");
-      }
-      sql.append("txs1.tx_current=");
-      sql.append(TxChange.CURRENT.getValue());
+      sql.append("art1.art_id=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current");
 
       if (allowDeleted) {
-         sql.append(" OR txs1.mod_type=");
-         sql.append(ModificationType.DELETED.getValue());
+         sql.append(" IN (");
+         sql.append(TxChange.CURRENT.getValue());
+         sql.append(", ");
+         sql.append(TxChange.DELETED.getValue());
          sql.append(")");
+      } else {
+         sql.append("=");
+         sql.append(TxChange.CURRENT.getValue());
       }
 
       sql.append(" AND txs1.transaction_id=txd1.transaction_id");

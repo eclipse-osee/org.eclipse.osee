@@ -54,6 +54,9 @@ public class ArtifactLabelProvider extends LabelProvider {
          Artifact artifact = (Artifact) element;
 
          String name = artifact.getDescriptiveName();
+         if (artifact.isDeleted()) {
+            name += " <Deleted>";
+         }
          if (artifactExplorer != null) {
             if (artifactExplorer.showArtIds()) {
                name += " (" + artifact.getArtId() + ") ";
