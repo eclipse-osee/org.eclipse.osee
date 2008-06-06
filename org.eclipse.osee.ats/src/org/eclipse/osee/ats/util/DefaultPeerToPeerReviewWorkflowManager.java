@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.util;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.skynet.core.User;

@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionFollowupWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionPrepareWorkPageDefinition;

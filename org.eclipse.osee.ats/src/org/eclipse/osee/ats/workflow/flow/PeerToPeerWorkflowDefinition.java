@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.page.AtsPeerPrepareWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsPeerReviewWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

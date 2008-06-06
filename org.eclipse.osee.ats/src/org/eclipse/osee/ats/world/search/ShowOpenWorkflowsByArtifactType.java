@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;

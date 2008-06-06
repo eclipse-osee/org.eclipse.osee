@@ -15,13 +15,15 @@ import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsConfig;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition.SimpleState;
 import org.eclipse.osee.ats.workflow.page.AtsAnalyzeWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsAuthorizeWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
@@ -34,6 +36,7 @@ import org.eclipse.osee.ats.workflow.page.AtsImplementWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsPeerPrepareWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsPeerReviewWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsTaskInWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.SimpleInWorkWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -128,6 +131,17 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
          workItems.add(new AtsCompletedWorkPageDefinition());
          workItems.add(new AtsCancelledWorkPageDefinition());
          workItems.add(new TeamWorkflowDefinition());
+
+         // Add Simple and Workflow Definition
+         workItems.add(new WorkPageDefinition(SimpleState.Endorse.name(), SimpleWorkflowDefinition.ENDORSE_STATE_ID,
+               AtsEndorseWorkPageDefinition.ID));
+         workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+               SimpleWorkflowDefinition.INWORK_STATE_ID, SimpleInWorkWorkPageDefinition.ID));
+         workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+               SimpleWorkflowDefinition.COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+         workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
+               SimpleWorkflowDefinition.CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+         workItems.add(new SimpleWorkflowDefinition());
 
          // Add Task Page and Workflow Definition
          workItems.add(new AtsTaskInWorkPageDefinition());

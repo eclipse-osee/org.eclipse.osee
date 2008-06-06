@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;

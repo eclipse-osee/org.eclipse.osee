@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
@@ -56,6 +55,11 @@ public class TeamWorkFlowArtifact extends StateMachineArtifact implements IWorld
 
    public static String ARTIFACT_NAME = "Team Workflow";
    private XActionableItemsDam actionableItemsDam;
+   public static enum DefaultTeamState {
+
+      Endorse, Analyze, Authorize, Implement, Completed, Cancelled
+
+   }
 
    /**
     * @param parentFactory
