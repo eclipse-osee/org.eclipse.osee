@@ -6,7 +6,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
 
 /**
  * @author Donald G. Dunne

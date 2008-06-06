@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.ui.skynet.render.word.template;
 import java.io.IOException;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.util.AttributeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.util.MultipleAttributesExist;
+import org.eclipse.osee.framework.skynet.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**

@@ -77,11 +77,7 @@ public class SkynetDatabase {
    public static final Table TAG_CLOUD_TYPE_TABLE = new Table("OSEE_TAG_CLOUD_TYPE");
    public static final Table TAG_TABLE = new Table("OSEE_TAG");
    public static final Table TAG_TYPE_TABLE = new Table("OSEE_TAG_TYPE");
-
-   public static final Table USAGE_TABLE = new Table("OSEE_USAGE");
-
    public static final Table SNAPSHOT_TABLE = new Table("OSEE_SNAPSHOT");
-
    public static final String TXD_COMMENT = "OSEE_COMMENT";
 
    public static final View CURRENT_VERSION_VIEW =

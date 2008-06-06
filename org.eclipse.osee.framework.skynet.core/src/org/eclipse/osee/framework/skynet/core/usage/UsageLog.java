@@ -10,27 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.usage;
 
-import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.USAGE_TABLE;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 
 /**
  * @author Robert A. Fisher
  */
 public class UsageLog {
-   private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(UsageLog.class);
    private static final String INSERT_TO_LOG =
-         "INSERT INTO " + USAGE_TABLE + " (user_id, time, event_id, details) VALUES (?,?,?,?)";
+         "INSERT INTO osee_usage (user_id, time, event_id, details) VALUES (?,?,?,?)";
    private static UsageLog instance = null;
 
    private final boolean usageLoggingEnabled;
@@ -115,7 +113,7 @@ public class UsageLog {
                log.writeOutLog();
             } catch (SQLException ex) {
                running = false;
-               logger.log(Level.SEVERE, ex.toString(), ex);
+               OseeLog.log(SkynetActivator.class.getName(), Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
          }
       }
