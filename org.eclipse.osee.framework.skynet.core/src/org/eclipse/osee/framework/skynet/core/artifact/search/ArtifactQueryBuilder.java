@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
+import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -35,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
 public class ArtifactQueryBuilder {
    private final HashMap<String, NextAlias> nextAliases = new HashMap<String, NextAlias>();
    private final StringBuilder sql = new StringBuilder(1000);
-   private final List<Object> dataList = new ArrayList<Object>();
+   private final List<Object> queryParameters = new ArrayList<Object>();
    private List<String> guids;
    private List<String> hrids;
    private String guidOrHrid;
@@ -151,10 +155,12 @@ public class ArtifactQueryBuilder {
       nextAliases.put("osee_define_rel_link", new NextAlias("rel"));
    }
 
-   private String getArtifactInsertSql(int queryId) throws SQLException {
-      addParameter(SQL3DataType.INTEGER, queryId);
-
-      sql.append("SELECT DISTINCT ?, art1.art_id, txd1.branch_id FROM ");
+   private String getArtifactInsertSql(boolean count) throws SQLException {
+      if (count) {
+         sql.append("SELECT count(art1.art_id) FROM ");
+      } else {
+         sql.append("SELECT art1.art_id, txd1.branch_id FROM ");
+      }
       appendAliasedTable("osee_define_artifact", false);
       appendAliasedTables("osee_define_artifact_version", "osee_define_txs", "osee_define_tx_details");
       sql.append("\n");
@@ -238,8 +244,8 @@ public class ArtifactQueryBuilder {
    }
 
    public void addParameter(SQL3DataType sqlType, Object data) {
-      dataList.add(sqlType);
-      dataList.add(data);
+      queryParameters.add(sqlType);
+      queryParameters.add(data);
    }
 
    public void addCurrentTxSql(String txsAlias, String txdAlias) {
@@ -300,30 +306,33 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Artifact> getArtifacts(ISearchConfirmer confirmer) throws SQLException {
-      return loadArtifacts(confirmer, false);
+      int artifactCountEstimate = 300;
+      return ArtifactLoader.getArtifacts(getArtifactInsertSql(false), queryParameters.toArray(), artifactCountEstimate,
+            loadLevel, false, confirmer);
    }
 
    public List<Artifact> reloadArtifacts() throws SQLException {
-      return loadArtifacts(null, true);
-   }
-
-   private List<Artifact> loadArtifacts(ISearchConfirmer confirmer, boolean reload) throws SQLException {
-      int queryId = ArtifactLoader.getNewQueryId();
-      int artifactCount = selectArtifacts(queryId);
-      List<Artifact> artifacts = ArtifactLoader.loadArtifacts(queryId, loadLevel, confirmer, artifactCount, reload);
-      ArtifactLoader.clearQuery(queryId);
-      return artifacts;
+      int artifactCountEstimate = 300;
+      return ArtifactLoader.getArtifacts(getArtifactInsertSql(false), queryParameters.toArray(), artifactCountEstimate,
+            loadLevel, true, null);
    }
 
    public int countArtifacts() throws SQLException {
-      int queryId = ArtifactLoader.getNewQueryId();
-      int artifactCount = selectArtifacts(queryId);
-      ArtifactLoader.clearQuery(queryId);
-      return artifactCount;
-   }
+      int artifactCount = 0;
 
-   public int selectArtifacts(int queryId) throws SQLException {
-      return ArtifactLoader.selectArtifacts(queryId, getArtifactInsertSql(queryId), dataList.toArray());
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(1, getArtifactInsertSql(true), queryParameters.toArray());
+         ResultSet rSet = chStmt.getRset();
+
+         if (rSet.next()) {
+            artifactCount = rSet.getInt("count");
+         }
+      } finally {
+         DbUtil.close(chStmt);
+      }
+
+      return artifactCount;
    }
 
    public Artifact getArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {

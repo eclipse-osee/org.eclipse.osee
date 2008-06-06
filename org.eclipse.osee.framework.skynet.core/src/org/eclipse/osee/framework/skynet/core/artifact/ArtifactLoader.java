@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
@@ -40,9 +41,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
  * @author Ryan D. Brooks
  */
 public final class ArtifactLoader {
-
-   private static final String LOADER_INSERT = "INSERT INTO osee_artifact_loader (query_id, art_id, branch_id) ";
-
    private static final String SELECT_RELATIONS =
          "SELECT rel_link_id, a_art_id, b_art_id, rel_link_type_id, a_order_value, b_order_value, rel1.gamma_id, rationale, al1.branch_id FROM osee_artifact_loader al1, osee_define_rel_link rel1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE al1.query_id = ? AND (al1.art_id = rel1.a_art_id OR al1.art_id = rel1.b_art_id) AND rel1.gamma_id = txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = al1.branch_id";
 
@@ -56,6 +54,65 @@ public final class ArtifactLoader {
          "INSERT INTO osee_artifact_loader (query_id, art_id, branch_id) VALUES (?, ?, ?)";
 
    private static final String DELETE_FROM_LOADER = "DELETE FROM osee_artifact_loader WHERE query_id = ?";
+
+   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer) throws SQLException {
+      int queryId = getNewQueryId();
+      CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
+            new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate);
+
+      selectArtifacts(queryId, insertParameters, sql, queryParameters, artifactCountEstimate);
+      List<Artifact> artifacts = loadArtifacts(queryId, loadLevel, confirmer, insertParameters.values(), reload);
+      return artifacts;
+   }
+
+   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload) throws SQLException {
+      return getArtifacts(sql, queryParameters, artifactCountEstimate, loadLevel, reload, null);
+   }
+
+   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload) throws SQLException {
+      if (insertParameters.size() > 0) {
+         ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_LOADER, insertParameters);
+         List<Artifact> artifacts = new ArrayList<Artifact>(insertParameters.size());
+         ConnectionHandlerStatement chStmt = null;
+
+         try {
+            chStmt =
+                  ConnectionHandler.runPreparedQuery(insertParameters.size(), SELECT_ARTIFACTS, SQL3DataType.INTEGER,
+                        queryId);
+            ResultSet rSet = chStmt.getRset();
+
+            while (rSet.next()) {
+               artifacts.add(retrieveShallowArtifact(rSet, reload));
+            }
+         } finally {
+            DbUtil.close(chStmt);
+         }
+
+         if (confirmer == null || confirmer.canProceed(insertParameters.size())) {
+            loadArtifactsData(queryId, artifacts, loadLevel, reload);
+         }
+         ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_LOADER, SQL3DataType.INTEGER, queryId);
+         return artifacts;
+      }
+      return Collections.emptyList();
+   }
+
+   private static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate) throws SQLException {
+      ConnectionHandlerStatement chStmt = null;
+      try {
+         chStmt = ConnectionHandler.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
+         ResultSet rSet = chStmt.getRset();
+
+         while (rSet.next()) {
+            int artId = rSet.getInt("art_id");
+            int branchId = rSet.getInt("branch_id");
+            insertParameters.put(artId, branchId, new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER,
+                  artId, SQL3DataType.INTEGER, branchId});
+         }
+      } finally {
+         DbUtil.close(chStmt);
+      }
+   }
 
    private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload) throws SQLException {
       int artifactId = rSet.getInt("art_id");
@@ -77,49 +134,13 @@ public final class ArtifactLoader {
       return artifact;
    }
 
-   public static int selectArtifacts(int queryId, String sql, Object[] queryParameters) throws SQLException {
-      return ConnectionHandler.runPreparedUpdateReturnCount(LOADER_INSERT + sql, queryParameters);
-   }
-
-   public static void selectArtifacts(List<Object[]> insertParameters) throws SQLException {
-      ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_LOADER, insertParameters);
-   }
-
-   public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int artifactCount, boolean reload) throws SQLException {
-      if (artifactCount > 0) {
-         List<Artifact> artifacts = new ArrayList<Artifact>(artifactCount);
-         ConnectionHandlerStatement chStmt = null;
-
-         try {
-            chStmt = ConnectionHandler.runPreparedQuery(artifactCount, SELECT_ARTIFACTS, SQL3DataType.INTEGER, queryId);
-            ResultSet rSet = chStmt.getRset();
-
-            while (rSet.next()) {
-               artifacts.add(retrieveShallowArtifact(rSet, reload));
-            }
-         } finally {
-            DbUtil.close(chStmt);
-         }
-
-         if (confirmer == null || confirmer.canProceed(artifactCount)) {
-            loadArtifactsData(queryId, artifacts, loadLevel, reload);
-         }
-         return artifacts;
-      }
-      return Collections.emptyList();
-   }
-
    static void loadArtifactData(Artifact artifact, ArtifactLoad loadLevel) throws SQLException {
       int queryId = getNewQueryId();
-      ConnectionHandler.runPreparedUpdateReturnCount(INSERT_INTO_LOADER, SQL3DataType.INTEGER, queryId,
-            SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
+      ConnectionHandler.runPreparedUpdate(INSERT_INTO_LOADER, SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER,
+            artifact.getArtId(), SQL3DataType.INTEGER, artifact.getBranch().getBranchId());
       List<Artifact> artifacts = new ArrayList<Artifact>(1);
       artifacts.add(artifact);
       loadArtifactsData(queryId, artifacts, loadLevel, false);
-   }
-
-   public static void clearQuery(int queryId) throws SQLException {
-      ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_LOADER, SQL3DataType.INTEGER, queryId);
    }
 
    private static void loadArtifactsData(int queryId, Collection<Artifact> artifacts, ArtifactLoad loadLevel, boolean reload) throws SQLException {

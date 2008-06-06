@@ -434,10 +434,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
                   sourceBranch.getBranchId()});
          }
-
-         ConnectionHandler.runPreparedUpdateBatch(ArtifactLoader.INSERT_INTO_LOADER, datas);
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, artIds.size(), true);
-         ArtifactLoader.clearQuery(queryId);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, true);
       }
 
       return changes;

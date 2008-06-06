@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -436,14 +437,8 @@ public final class ConnectionHandler {
       }
    }
 
-   public static void runPreparedUpdateBatch(String query, List<Object[]> datas) throws SQLException {
-      runBatchablePreparedUpdate(query, true, datas);
-   }
-
-   private static void runBatchablePreparedUpdate(String query, boolean useBatching, List<Object[]> datas) throws SQLException {
-      QueryRecord record =
-            new QueryRecord("<batchable: " + (useBatching ? "" : "not ") + "batched> " + query, SQL3DataType.INTEGER,
-                  datas.size());
+   public static void runPreparedUpdateBatch(String query, Collection<Object[]> datas) throws SQLException {
+      QueryRecord record = new QueryRecord("<batched> " + query, SQL3DataType.INTEGER, datas.size());
 
       if (datas.size() < 1) {
          throw new IllegalArgumentException(
@@ -454,29 +449,22 @@ public final class ConnectionHandler {
       try {
          preparedStatement = getConnection().prepareStatement(query);
          record.markStart();
-         if (useBatching) {
-            boolean needExecute = false;
-            int count = 0;
-            for (Object[] data : datas) {
-               count++;
-               populateValuesForPreparedStatement(preparedStatement, data);
-               preparedStatement.addBatch();
-               preparedStatement.clearParameters();
-               needExecute = true;
-               if (count > 2000) {
-                  preparedStatement.executeBatch();
-                  count = 0;
-                  needExecute = false;
-               }
-            }
-            if (needExecute) {
+         boolean needExecute = false;
+         int count = 0;
+         for (Object[] data : datas) {
+            count++;
+            populateValuesForPreparedStatement(preparedStatement, data);
+            preparedStatement.addBatch();
+            preparedStatement.clearParameters();
+            needExecute = true;
+            if (count > 2000) {
                preparedStatement.executeBatch();
+               count = 0;
+               needExecute = false;
             }
-         } else {
-            for (Object[] data : datas) {
-               populateValuesForPreparedStatement(preparedStatement, data);
-               preparedStatement.execute();
-            }
+         }
+         if (needExecute) {
+            preparedStatement.executeBatch();
          }
          record.markEnd();
       } catch (SQLException ex) {
@@ -487,7 +475,7 @@ public final class ConnectionHandler {
             System.out.println("this is the next exception");
             exlist.printStackTrace();
          }
-         StringBuilder details = new StringBuilder(datas.size() * datas.get(0).length * 20);
+         StringBuilder details = new StringBuilder(datas.size() * datas.iterator().next().length * 20);
          details.append("[ DATA OBJECT: \n");
          for (Object[] data : datas) {
             for (int i = 0; i < data.length; i++) {

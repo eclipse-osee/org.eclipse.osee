@@ -75,10 +75,6 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromId(String guidOrHrid, Branch branch) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      Artifact artifact = ArtifactCache.getActive(guidOrHrid, branch.getBranchId());
-      if (artifact != null) {
-         return artifact;
-      }
       return getArtifactFromId(guidOrHrid, branch, false);
    }
 
@@ -94,6 +90,10 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromId(String guidOrHrid, Branch branch, boolean allowDeleted) throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      Artifact artifact = ArtifactCache.getActive(guidOrHrid, branch.getBranchId());
+      if (artifact != null) {
+         return artifact;
+      }
       return new ArtifactQueryBuilder(guidOrHrid, branch, allowDeleted, FULL).getArtifact();
    }
 

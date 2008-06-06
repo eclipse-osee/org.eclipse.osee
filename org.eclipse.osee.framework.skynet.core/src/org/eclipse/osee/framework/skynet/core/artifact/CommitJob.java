@@ -13,9 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -83,7 +81,7 @@ class CommitJob extends Job {
          "UPDATE osee_Define_txs tx1 set tx_current = 1 WHERE EXISTS (SELECT 'x' from osee_define_tx_details det WHERE det.branch_id = ? and det.transaction_id = tx1.transaction_id and tx1.gamma_id = ?)";
 
    private static final String ARTIFACT_CHANGES =
-         "(SELECT ?, av1.art_id, ? FROM osee_Define_txs tx1, osee_define_artifact_version av1 WHERE tx1.transaction_id = ? AND tx1.gamma_id = av1.gamma_id) UNION (SELECT DISTINCT ?, ar1.art_id, ? FROM osee_Define_txs tx1, osee_define_rel_link rl1, osee_define_artifact ar1 WHERE (rl1.a_art_id = ar1.art_id OR rl1.b_art_id = ar1.art_id) AND tx1.transaction_id = ? AND tx1.gamma_id = rl1.gamma_id)";
+         "SELECT av1.art_id, ? FROM osee_Define_txs tx1, osee_define_artifact_version av1 WHERE tx1.transaction_id = ? AND tx1.gamma_id = av1.gamma_id) UNION ALL (SELECT ar1.art_id, ? FROM osee_Define_txs tx1, osee_define_rel_link rl1, osee_define_artifact ar1 WHERE (rl1.a_art_id = ar1.art_id OR rl1.b_art_id = ar1.art_id) AND tx1.transaction_id = ? AND tx1.gamma_id = rl1.gamma_id";
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
@@ -229,26 +227,11 @@ class CommitJob extends Job {
          }
 
          if (insertCount > 0) {
-            //TODO: Reload the artifacts that have changed.
-            List<Object> dataList = new ArrayList<Object>();
-            int queryId = ArtifactLoader.getNewQueryId();
-
-            dataList.add(SQL3DataType.INTEGER);
-            dataList.add(queryId);
-            dataList.add(SQL3DataType.INTEGER);
-            dataList.add(toBranch.getBranchId());
-            dataList.add(SQL3DataType.INTEGER);
-            dataList.add(newTransactionNumber);
-            dataList.add(SQL3DataType.INTEGER);
-            dataList.add(queryId);
-            dataList.add(SQL3DataType.INTEGER);
-            dataList.add(toBranch.getBranchId());
-            dataList.add(SQL3DataType.INTEGER);
-            dataList.add(newTransactionNumber);
-
-            int artifactCount = ArtifactLoader.selectArtifacts(queryId, ARTIFACT_CHANGES, dataList.toArray());
-            ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, artifactCount, true);
-            ArtifactLoader.clearQuery(queryId);
+            Object[] dataList =
+                  new Object[] {SQL3DataType.INTEGER, toBranch.getBranchId(), SQL3DataType.INTEGER,
+                        newTransactionNumber, SQL3DataType.INTEGER, toBranch.getBranchId(), SQL3DataType.INTEGER,
+                        newTransactionNumber};
+            ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, dataList, 400, ArtifactLoad.FULL, true);
 
             transactionIdManager.resetEditableTransactionId(newTransactionNumber, toBranch);
             tagArtifacts(toBranch, fromBranchId, monitor);
