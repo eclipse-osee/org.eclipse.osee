@@ -26,8 +26,9 @@ public class ArtifactQueryTest extends TestCase {
 
    public void testGetArtifactsFromBranch() {
       try {
-         Branch branch = BranchPersistenceManager.getKeyedBranch("Block III Main");
-         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType("Software Requirement", branch);//ArtifactQuery.getArtifactsFromBranch(common, true);
+         Branch branch = BranchPersistenceManager.getCommonBranch();
+         //List<Artifact> artifacts = ArtifactQuery.getArtifactsFromType("Software Requirement", branch);
+         List<Artifact> artifacts = ArtifactQuery.getArtifactsFromBranch(branch, true);
 
          assertTrue(artifacts.size() > 0);
          for (Artifact artifact : artifacts) {
