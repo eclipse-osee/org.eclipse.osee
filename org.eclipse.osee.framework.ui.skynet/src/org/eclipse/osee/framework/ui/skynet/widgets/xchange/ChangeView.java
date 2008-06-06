@@ -144,7 +144,7 @@ public class ChangeView extends ViewPart implements IActionable {
          this.branch = branch;
          this.transactionNumber = transactionNumber;
          xChangeViewer.setInputData(branch, transactionNumber);
-         setPartName("Change Report: " + branch != null ? branch.getBranchShortName() : String.valueOf(transactionNumber));
+         setPartName(branch != null ? "Change Report: " + branch.getBranchShortName() : "Change Report: " + String.valueOf(transactionNumber));
       }
    }
 

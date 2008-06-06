@@ -191,7 +191,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
    public void refresh() {
       xChangeViewer.refresh();
       setLabelError();
-      extraInfoLabel.setText(branch != null ? "Change Report for branch: " + branch.getBranchShortName() : "Change Report for transaction: " + transactionNumber);
+      extraInfoLabel.setText(branch != null ? "Changes for branch: " + branch.getBranchShortName() : "Changes for transaction: " + transactionNumber);
    }
 
    @Override
@@ -260,8 +260,6 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
                      try {
-                        //                        extraInfoLabel.setText("Change Report: " + branch != null ? branch.getBranchShortName() : String.valueOf(transactionNumber));
-
                         if (changes.length == 0) {
                            xChangeViewer.setInput(NOT_CHANGES);
                         } else {
