@@ -71,30 +71,41 @@ public final class ArtifactLoader {
 
    public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload) throws SQLException {
       if (insertParameters.size() > 0) {
-         ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_LOADER, insertParameters);
-         List<Artifact> artifacts = new ArrayList<Artifact>(insertParameters.size());
-         ConnectionHandlerStatement chStmt = null;
-
          try {
-            chStmt =
-                  ConnectionHandler.runPreparedQuery(insertParameters.size(), SELECT_ARTIFACTS, SQL3DataType.INTEGER,
-                        queryId);
-            ResultSet rSet = chStmt.getRset();
+            selectArtifacts(insertParameters);
+            List<Artifact> artifacts = new ArrayList<Artifact>(insertParameters.size());
+            ConnectionHandlerStatement chStmt = null;
 
-            while (rSet.next()) {
-               artifacts.add(retrieveShallowArtifact(rSet, reload));
+            try {
+               chStmt =
+                     ConnectionHandler.runPreparedQuery(insertParameters.size(), SELECT_ARTIFACTS,
+                           SQL3DataType.INTEGER, queryId);
+               ResultSet rSet = chStmt.getRset();
+
+               while (rSet.next()) {
+                  artifacts.add(retrieveShallowArtifact(rSet, reload));
+               }
+            } finally {
+               DbUtil.close(chStmt);
             }
-         } finally {
-            DbUtil.close(chStmt);
-         }
 
-         if (confirmer == null || confirmer.canProceed(insertParameters.size())) {
-            loadArtifactsData(queryId, artifacts, loadLevel, reload);
+            if (confirmer == null || confirmer.canProceed(insertParameters.size())) {
+               loadArtifactsData(queryId, artifacts, loadLevel, reload);
+            }
+            return artifacts;
+         } finally {
+            clearQuery(queryId);
          }
-         ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_LOADER, SQL3DataType.INTEGER, queryId);
-         return artifacts;
       }
       return Collections.emptyList();
+   }
+
+   public static void selectArtifacts(Collection<Object[]> insertParameters) throws SQLException {
+      ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_LOADER, insertParameters);
+   }
+
+   public static void clearQuery(int queryId) throws SQLException {
+      ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_LOADER, SQL3DataType.INTEGER, queryId);
    }
 
    private static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate) throws SQLException {
