@@ -55,6 +55,18 @@ public final class ArtifactLoader {
 
    private static final String DELETE_FROM_LOADER = "DELETE FROM osee_artifact_loader WHERE query_id = ?";
 
+   /**
+    * (re)loads the artifacts selected by sql and then returns them in a list
+    * 
+    * @param sql
+    * @param queryParameters
+    * @param artifactCountEstimate
+    * @param loadLevel
+    * @param reload
+    * @param confirmer
+    * @return
+    * @throws SQLException
+    */
    public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer) throws SQLException {
       int queryId = getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
@@ -65,10 +77,32 @@ public final class ArtifactLoader {
       return artifacts;
    }
 
+   /**
+    * (re)loads the artifacts selected by sql and then returns them in a list
+    * 
+    * @param sql
+    * @param queryParameters
+    * @param artifactCountEstimate
+    * @param loadLevel
+    * @param reload
+    * @return
+    * @throws SQLException
+    */
    public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload) throws SQLException {
       return getArtifacts(sql, queryParameters, artifactCountEstimate, loadLevel, reload, null);
    }
 
+   /**
+    * loads or reloads artifacts based on artifact ids and branch ids in the insertParameters
+    * 
+    * @param queryId
+    * @param loadLevel
+    * @param confirmer
+    * @param insertParameters
+    * @param reload
+    * @return
+    * @throws SQLException
+    */
    public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload) throws SQLException {
       if (insertParameters.size() > 0) {
          try {
@@ -100,10 +134,23 @@ public final class ArtifactLoader {
       return Collections.emptyList();
    }
 
+   /**
+    * must be call in a try block with a finally clause which calls clearQuery()
+    * 
+    * @param insertParameters
+    * @throws SQLException
+    */
    public static void selectArtifacts(Collection<Object[]> insertParameters) throws SQLException {
       ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_LOADER, insertParameters);
    }
 
+   /**
+    * should only be used in tandem with with selectArtifacts()
+    * 
+    * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
+    *           selectArtifacts
+    * @throws SQLException
+    */
    public static void clearQuery(int queryId) throws SQLException {
       ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_LOADER, SQL3DataType.INTEGER, queryId);
    }
