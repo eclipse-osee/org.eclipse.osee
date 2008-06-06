@@ -191,7 +191,6 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
    public void refresh() {
       xChangeViewer.refresh();
       setLabelError();
-      extraInfoLabel.setText(branch != null ? "Changes for branch: " + branch.getBranchShortName() : "Changes for transaction: " + transactionNumber);
    }
 
    @Override
@@ -241,7 +240,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
       this.branch = branch;
       this.transactionNumber = transactionNumber;
 
-      xChangeViewer.setInput(LOADING);
+      extraInfoLabel.setText(LOADING);
 
       Job job = new Job("") {
 
@@ -261,8 +260,9 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
                   public void run() {
                      try {
                         if (changes.length == 0) {
-                           xChangeViewer.setInput(NOT_CHANGES);
+                           extraInfoLabel.setText(NOT_CHANGES);
                         } else {
+                           extraInfoLabel.setText("");
                            xChangeViewer.setChanges(changes);
                            loadTable();
                         }
