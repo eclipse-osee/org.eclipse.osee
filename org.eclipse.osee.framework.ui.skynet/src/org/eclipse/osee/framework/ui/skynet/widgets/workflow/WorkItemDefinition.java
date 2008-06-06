@@ -67,6 +67,15 @@ public abstract class WorkItemDefinition {
       return false;
    }
 
+   public boolean hasParent() {
+      return (getParentId() != null);
+   }
+
+   public WorkItemDefinition getParent() throws Exception {
+      if (!hasParent()) return null;
+      return WorkItemDefinitionFactory.getWorkItemDefinition(getParentId());
+   }
+
    public String toString() {
       return "Name: \"" + name + "\"    Id: \"" + id + "\"   " + (parentId != null ? "   Parent: " + parentId : "");
    }

@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 public class AtsLogWorkPage extends AtsWorkPage {
 
    public static String PAGE_ID = "ats.Log";
-   private final String title;
 
    public static class EmptyWorkFlowDefinition extends WorkFlowDefinition {
 
@@ -34,14 +33,6 @@ public class AtsLogWorkPage extends AtsWorkPage {
          super(name, id, null);
       }
 
-      /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition#getStartWorkPage()
-       */
-      @Override
-      public WorkPageDefinition getStartPage() {
-         return null;
-      }
-
    }
 
    /**
@@ -49,7 +40,6 @@ public class AtsLogWorkPage extends AtsWorkPage {
     */
    public AtsLogWorkPage(String title) {
       super(new EmptyWorkFlowDefinition(title, PAGE_ID), new WorkPageDefinition(title, PAGE_ID, null), null, null);
-      this.title = title;
    }
 
    /* (non-Javadoc)

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
@@ -161,11 +162,15 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       StringBuffer sb =
             new StringBuffer(
                   workPageDefinition.getName() + (workPageDefinition.getId() != null ? " (" + workPageDefinition.getId() + ") " : "") + "\n");
-      for (WorkPageDefinition page : workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
-            TransitionType.ToPage)) {
-         sb.append("-> " + page.name + (workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
-               TransitionType.ToPageAsReturn).contains(
-               workFlowDefinition.getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPage)) ? " (return)" : "") + "\n");
+      try {
+         for (WorkPageDefinition page : workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
+               TransitionType.ToPage)) {
+            sb.append("-> " + page.name + (workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
+                  TransitionType.ToPageAsReturn).contains(
+                  workFlowDefinition.getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPage)) ? " (return)" : "") + "\n");
+         }
+      } catch (Exception ex) {
+         OSEELog.logException(SkynetGuiPlugin.class, ex, false);
       }
       return sb.toString();
    }
@@ -205,25 +210,25 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    /**
     * @return Returns the toPages.
     */
-   public List<WorkPageDefinition> getToPages() {
+   public List<WorkPageDefinition> getToPages() throws Exception {
       return workFlowDefinition.getToPages(workPageDefinition);
    }
 
    /**
     * @return Returns the toPages.
     */
-   public List<WorkPageDefinition> getReturnPages() {
+   public List<WorkPageDefinition> getReturnPages() throws Exception {
       return workFlowDefinition.getReturnPages(workPageDefinition);
    }
 
-   public boolean isReturnPage(WorkPageDefinition page) {
+   public boolean isReturnPage(WorkPageDefinition page) throws Exception {
       return getReturnPages().contains(page);
    }
 
    /**
     * @return Returns the defaultToPage.
     */
-   public WorkPageDefinition getDefaultToPage() {
+   public WorkPageDefinition getDefaultToPage() throws Exception {
       return workFlowDefinition.getDefaultToPage(workPageDefinition);
    }
 

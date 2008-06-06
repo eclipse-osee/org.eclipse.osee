@@ -29,7 +29,7 @@ public class WorkItemDefinitionFactory {
       itemIdToWidArtifact = null;
    }
 
-   private static void loadDefinitions() throws Exception {
+   private synchronized static void loadDefinitions() throws Exception {
       if (itemIdToDefinition == null) {
          itemIdToDefinition = new HashMap<String, WorkItemDefinition>();
          itemIdToWidArtifact = new HashMap<String, Artifact>();
@@ -107,6 +107,7 @@ public class WorkItemDefinitionFactory {
    }
 
    public static WorkItemDefinition getWorkItemDefinition(String id) throws Exception {
+      if (id == null) throw new IllegalStateException("WorkItemDefinition id can't be null");
       loadDefinitions();
       WorkItemDefinition wid = itemIdToDefinition.get(id);
       if (wid == null) {
@@ -117,6 +118,7 @@ public class WorkItemDefinitionFactory {
    }
 
    public static Artifact getWorkItemDefinitionArtifact(String id) throws Exception {
+      if (id == null) throw new IllegalStateException("WorkItemDefinition id can't be null");
       loadDefinitions();
       Artifact art = itemIdToWidArtifact.get(id);
       if (art == null) {

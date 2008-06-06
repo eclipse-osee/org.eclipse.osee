@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
  */
 public class TaskWorkflowDefinition extends WorkFlowDefinition {
 
-   public static String ID = "osee.ats.defaultTask";
+   public static String ID = "osee.ats.taskWorkflow";
    public static String TASK_COMPLETED_STATE_ID = ID + "." + DefaultTeamState.Completed.name();
    public static String TASK_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
 

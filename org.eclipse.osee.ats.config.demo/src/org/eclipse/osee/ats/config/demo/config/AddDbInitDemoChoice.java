@@ -41,6 +41,7 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
 
       dbInitTasks.add("org.eclipse.osee.ats.config.demo.AddCommonBranchForAtsDemo");
       dbInitTasks.add("org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTask");
+      dbInitTasks.add("org.eclipse.osee.ats.AtsDatabaseConfig");
       dbInitTasks.add("org.eclipse.osee.ats.config.demo.AtsConfigDemoDatabaseConfig");
       dbInitTasks.add("org.eclipse.osee.framework.ui.skynet.TagCommonBranchArtifacts");
 

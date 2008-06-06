@@ -52,9 +52,9 @@ public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
             DemoTestWorkFlowDefinition.getWorkItemDefinitions());
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            DemoReqWorkFlowDefinition.getWorkItemDefinitions());
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
             DemoSWDesignWorkFlowDefinition.getWorkItemDefinitions());
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
+            DemoReqWorkFlowDefinition.getWorkItemDefinitions());
 
       // Creates Actionable Items and Teams
       // Teams are related to workflow by id specified in team object in VUE diagram

@@ -13,7 +13,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
  */
 public class SimpleWorkflowDefinition extends WorkFlowDefinition {
 
-   public static String ID = "osee.ats.simpleTeam";
+   public static String ID = "osee.ats.simpleTeamWorkflow";
    public static enum SimpleState {
       Endorse, InWork, Completed, Cancelled
    };
@@ -39,25 +39,23 @@ public class SimpleWorkflowDefinition extends WorkFlowDefinition {
    public SimpleWorkflowDefinition(String name, String workflowId) {
       super(name, workflowId, null);
       addDefaultTransitions(this, workflowId);
-      startPageId = workflowId + "." + SimpleState.Endorse;
+      startPageId = SimpleState.Endorse.name();
    }
 
    public static void addDefaultTransitions(WorkFlowDefinition teamWorkflowDefinition, String workflowId) {
-      teamWorkflowDefinition.addPageTransition(workflowId + "." + SimpleState.Endorse,
-            workflowId + "." + SimpleState.InWork, TransitionType.ToPageAsDefault);
-      teamWorkflowDefinition.addPageTransition(workflowId + "." + SimpleState.InWork,
-            workflowId + "." + SimpleState.Completed, TransitionType.ToPageAsDefault);
+      teamWorkflowDefinition.addPageTransition(SimpleState.Endorse.name(), SimpleState.InWork.name(),
+            TransitionType.ToPageAsDefault);
+      teamWorkflowDefinition.addPageTransition(SimpleState.InWork.name(), SimpleState.Completed.name(),
+            TransitionType.ToPageAsDefault);
 
       // Add return transitions
-      teamWorkflowDefinition.addPageTransition(workflowId + "." + SimpleState.InWork,
-            workflowId + "." + SimpleState.Endorse, TransitionType.ToPageAsReturn);
-      teamWorkflowDefinition.addPageTransition(workflowId + "." + SimpleState.Completed,
-            workflowId + "." + SimpleState.InWork, TransitionType.ToPageAsReturn);
+      teamWorkflowDefinition.addPageTransition(SimpleState.InWork.name(), SimpleState.Endorse.name(),
+            TransitionType.ToPageAsReturn);
+      teamWorkflowDefinition.addPageTransition(SimpleState.Completed.name(), SimpleState.InWork.name(),
+            TransitionType.ToPageAsReturn);
 
       // Add cancelled transitions
-      teamWorkflowDefinition.addPageTransitionToPageAndReturn(workflowId + "." + SimpleState.Endorse,
-            workflowId + "." + SimpleState.Cancelled);
-      teamWorkflowDefinition.addPageTransitionToPageAndReturn(workflowId + "." + SimpleState.InWork,
-            workflowId + "." + SimpleState.Cancelled);
+      teamWorkflowDefinition.addPageTransitionToPageAndReturn(SimpleState.Endorse.name(), SimpleState.Cancelled.name());
+      teamWorkflowDefinition.addPageTransitionToPageAndReturn(SimpleState.InWork.name(), SimpleState.Cancelled.name());
    }
 }
