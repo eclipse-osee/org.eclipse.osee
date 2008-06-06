@@ -778,9 +778,6 @@
              name="org.eclipse.ui.edit.ChangeView.copy.seperator"
              visible="true">
        </separator>
-       <command
-             commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.compressWordAttributes.command">
-       </command>
     </menuContribution>
  </extension>
  <extension

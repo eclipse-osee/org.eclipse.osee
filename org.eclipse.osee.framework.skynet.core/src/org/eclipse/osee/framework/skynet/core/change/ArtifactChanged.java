@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.util.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.util.MultipleArtifactsExist;
@@ -30,6 +31,7 @@ public class ArtifactChanged extends Change {
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(ArtifactChanged.class);
    private ArtifactType artifactSubtypeDescriptor;
+   private ArtifactChange artifactChange;
 
    /**
     * @param artTypeId
@@ -96,12 +98,41 @@ public class ArtifactChanged extends Change {
       return "";
    }
 
+   private ArtifactChange getArtifactChange() throws SQLException, IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
+      if (artifactChange == null) {
+         artifactChange =
+               new ArtifactChange(getChangeType(), getModificationType(), getArtifactName(),
+                     ArtifactTypeManager.getType(getArtTypeId()), getArtifact(), null, null, getFromTransactionId(),
+                     getFromTransactionId(), getToTransactionId(), getArtId(), getGamma(), null);
+      }
+      return artifactChange;
+   }
+
    /* (non-Javadoc)
     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
     */
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
+      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+
+      try {
+         // this is a temporary fix until the old change report goes away.
+         if (adapter.isInstance(getArtifactChange())) {
+            return getArtifactChange();
+         }
+         if (adapter.isInstance(getArtifact())) {
+            return getArtifact();
+         }
+      } catch (IllegalArgumentException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (SQLException ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (ArtifactDoesNotExist ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      } catch (MultipleArtifactsExist ex) {
+         logger.log(Level.SEVERE, ex.toString(), ex);
+      }
       return null;
    }
 
