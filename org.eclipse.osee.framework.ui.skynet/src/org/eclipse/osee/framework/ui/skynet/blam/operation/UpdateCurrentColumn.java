@@ -23,16 +23,19 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.OseeDbConnection;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap;
 
 /**
- * @author Andrew M Finkbeiner
+ * @author Andrew M. Finkbeiner
+ * @author Roberto E. Escobar
  */
 public class UpdateCurrentColumn extends AbstractBlam {
 
    private enum Operations {
-      Update_Tx_Current, Update_Tx_Mod_Type, Run_Tx_Current_Verification;
+      Update_Tx_Current, Update_Tx_Mod_Type, Run_Tx_Current_Verification, Run_Tx_Mod_Type_Verification;
 
       public String asLabel() {
          return this.name().replaceAll("_", " ");
@@ -40,7 +43,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
    }
 
    private enum TypesEnum {
-      arts, attrs, rels;
+      artifacts, attributes, relations;
    }
 
    private static final String SELECT_ATTRIBUTES_TO_UPDATE =
@@ -72,15 +75,22 @@ public class UpdateCurrentColumn extends AbstractBlam {
    private static final String UPDATE_TX_DETAILS_BASELINE_TRANSACTIONS_TO_1 =
          "UPDATE osee_Define_tx_details SET tx_type = 1 WHERE osee_comment LIKE '%New Branch%'";
 
-   private static final String UPDATE_TXS_MOD_TYPE =
-         "update osee_define_txs set mod_type = ? where transaction_id = ? AND gamma_id = ?";
+   private static final String VERIFY_ARTIFACT_MOD_TYPE =
+         "select count(1) from osee_define_txs txs1, osee_define_artifact_version artv1 WHERE txs1.gamma_id = artv1.gamma_id AND txs1.mod_type IS NULL";
+   private static final String VERIFY_ATTRIBUTE_MOD_TYPE =
+         "select count(1) from osee_define_txs txs1, osee_define_attribute attr1 WHERE txs1.gamma_id = attr1.gamma_id AND txs1.mod_type IS NULL";
+   private static final String VERIFY_RELATION_MOD_TYPE =
+         "select count(1) from osee_define_txs txs1, osee_define_rel_link rel1 WHERE txs1.gamma_id = rel1.gamma_id AND txs1.mod_type IS NULL";
 
-   private static final String SELECT_ARTIFACT_MOD_TYPE =
-         "select artv1.modification_id, txd1.transaction_id, txs1.gamma_id from osee_define_tx_details txd1, osee_define_txs txs1, osee_define_artifact_version artv1 where txd1.transaction_id > ? and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = artv1.gamma_id";
-   private static final String SELECT_ATTRIBUTE_MOD_TYPE =
-         "select attr1.modification_id, txd1.transaction_id, txs1.gamma_id from osee_define_tx_details txd1, osee_define_txs txs1, osee_define_attribute attr1 where txd1.transaction_id > ? and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = attr1.gamma_id";
-   private static final String SELECT_RELATION_MOD_TYPE =
-         "select rel1.modification_id,  txd1.transaction_id, txs1.gamma_id from osee_define_tx_details txd1, osee_define_txs txs1, osee_define_rel_link rel1 where txd1.transaction_id > ? and txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = rel1.gamma_id";
+   private static final String INNER_SELECT_ARTIFACT_MOD_TYPE =
+         "select artv1.modification_id from osee_define_txs txs1, osee_define_artifact_version artv1 " + "where txs1.gamma_id = artv1.gamma_id and txs1.transaction_id > ?";
+   private static final String INNER_SELECT_ATTRIBUTE_MOD_TYPE =
+         "select attr1.modification_id from osee_define_txs txs1, osee_define_attribute attr1 " + "where txs1.gamma_id = attr1.gamma_id and txs1.transaction_id > ?";
+   private static final String INNER_SELECT_RELATION_MOD_TYPE =
+         "select rel1.modification_id from osee_define_txs txs1, osee_define_rel_link rel1 " + "where txs1.gamma_id = rel1.gamma_id and txs1.transaction_id > ?";
+
+   private static final String UPDATE_TXS_MOD_TYPE_SINGLE_CALL =
+         "update osee_define_txs txsOuter set mod_type = (%s and txsOuter.transaction_id = txs1.transaction_id and txsOuter.gamma_id = txs1.gamma_id)";
 
    private static final String UPDATE_B_ORDER = "update osee_define_rel_link set b_order where gamma_id = ?";
    private static final String SELECT_B_RELATION_ORDER =
@@ -91,16 +101,6 @@ public class UpdateCurrentColumn extends AbstractBlam {
 
    private static final String VERIFY_TX_CURRENT =
          "SELECT resulttable.branch_id, resulttable.art_id, COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txd1.branch_id, txd1.TIME, txd1.tx_type, txs1.*, artv1.art_id, artv1.modification_id, art1.art_type_id FROM osee_define_tx_details txd1, osee_define_txs txs1, osee_define_artifact art1, osee_define_artifact_version artv1 WHERE txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = artv1.gamma_id AND artv1.art_id = art1.art_id AND txs1.tx_current = 1) resulttable GROUP BY resulttable.branch_id, resulttable.art_id HAVING(COUNT(resulttable.branch_id) > 1)";
-
-   private static final Map<TypesEnum, Pair<String, String>> typesQueryMap;
-   static {
-      typesQueryMap = new HashMap<TypesEnum, Pair<String, String>>();
-      typesQueryMap.put(TypesEnum.arts, new Pair<String, String>(SELECT_ARTIFACTS_TO_UPDATE, SELECT_STALE_ARTIFACTS));
-      typesQueryMap.put(TypesEnum.attrs, new Pair<String, String>(SELECT_ATTRIBUTES_TO_UPDATE, SELECT_STALE_ATTRIBUTES));
-      typesQueryMap.put(TypesEnum.rels, new Pair<String, String>(SELECT_RELATIONS_TO_UPDATE, SELECT_STALE_RELATIONS));
-   }
-   private static final String[] MOD_TYPE_QUERIES =
-         new String[] {SELECT_ARTIFACT_MOD_TYPE, SELECT_ATTRIBUTE_MOD_TYPE, SELECT_RELATION_MOD_TYPE};
 
    private final class UpdateHelper {
       TypesEnum type;
@@ -229,10 +229,13 @@ public class UpdateCurrentColumn extends AbstractBlam {
             toReturn = new UpdateTxCurrentOperation();
             break;
          case Update_Tx_Mod_Type:
-            toReturn = new UpdateTxModTypeOperation();
+            toReturn = new UpdateTxModTypeSingleCallOperation();
             break;
          case Run_Tx_Current_Verification:
             toReturn = new VerifyTxCurrentOperation();
+            break;
+         case Run_Tx_Mod_Type_Verification:
+            toReturn = new VerifyTxModTypeOperation();
             break;
          default:
             break;
@@ -299,7 +302,20 @@ public class UpdateCurrentColumn extends AbstractBlam {
    }
 
    private final class UpdateTxCurrentOperation implements IOperation {
-      int totalCount = 0;
+
+      private final Map<TypesEnum, Pair<String, String>> typesQueryMap;
+      private int totalCount;
+
+      public UpdateTxCurrentOperation() {
+         totalCount = 0;
+         typesQueryMap = new HashMap<TypesEnum, Pair<String, String>>();
+         typesQueryMap.put(TypesEnum.artifacts, new Pair<String, String>(SELECT_ARTIFACTS_TO_UPDATE,
+               SELECT_STALE_ARTIFACTS));
+         typesQueryMap.put(TypesEnum.attributes, new Pair<String, String>(SELECT_ATTRIBUTES_TO_UPDATE,
+               SELECT_STALE_ATTRIBUTES));
+         typesQueryMap.put(TypesEnum.relations, new Pair<String, String>(SELECT_RELATIONS_TO_UPDATE,
+               SELECT_STALE_RELATIONS));
+      }
 
       /* (non-Javadoc)
        * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute()
@@ -451,55 +467,54 @@ public class UpdateCurrentColumn extends AbstractBlam {
       }
    }
 
-   private final class UpdateTxModTypeOperation implements IOperation {
-      int totalModCount;
+   private final class UpdateTxModTypeSingleCallOperation implements IOperation {
 
-      public int getTotalWork() {
-         return MOD_TYPE_QUERIES.length;
+      private Map<TypesEnum, String> modTypeInnerSelectMap;
+
+      public UpdateTxModTypeSingleCallOperation() {
+         modTypeInnerSelectMap = new HashMap<TypesEnum, String>();
+         modTypeInnerSelectMap.put(TypesEnum.artifacts, INNER_SELECT_ARTIFACT_MOD_TYPE);
+         modTypeInnerSelectMap.put(TypesEnum.attributes, INNER_SELECT_ATTRIBUTE_MOD_TYPE);
+         modTypeInnerSelectMap.put(TypesEnum.relations, INNER_SELECT_RELATION_MOD_TYPE);
       }
 
       /* (non-Javadoc)
-       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute(java.sql.Connection, int)
+       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#getTotalWork()
        */
       @Override
-      public void execute(final IProgressMonitor monitor, final Connection connection, int startAtTxNumber) throws Exception {
+      public int getTotalWork() {
+         return modTypeInnerSelectMap.size();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute(org.eclipse.core.runtime.IProgressMonitor, java.sql.Connection, int)
+       */
+      @Override
+      public void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception {
          final IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
-         final int batchSize = 100000;
-         final List<Object[]> batchArgs = new ArrayList<Object[]>(batchSize);
-         totalModCount = 0;
-
          subMonitor.beginTask("Update Mod Type", getTotalWork());
-         IRowProcessor processor = new IRowProcessor() {
-            public void processRow(ResultSet resultSet) throws Exception {
-               batchArgs.add(new Object[] {SQL3DataType.INTEGER, resultSet.getInt(1), SQL3DataType.INTEGER,
-                     resultSet.getInt(2), SQL3DataType.BIGINT, resultSet.getLong(3)});
 
-               if (subMonitor.isCanceled() != true && batchArgs.size() >= batchSize) {
-                  writeToDb(subMonitor, connection, batchArgs);
-               }
+         int totalModified = 0;
+         for (TypesEnum type : modTypeInnerSelectMap.keySet()) {
+            subMonitor.subTask(String.format("Processing [%s] Mod Types", type.name()));
+            String innerSelect = modTypeInnerSelectMap.get(type);
+            if (Strings.isValid(innerSelect)) {
+               String updateSql = String.format(UPDATE_TXS_MOD_TYPE_SINGLE_CALL, innerSelect);
+
+               long time = System.currentTimeMillis();
+               int count =
+                     ConnectionHandler.runPreparedUpdate(connection, updateSql, SQL3DataType.INTEGER, startAtTxNumber);
+               appendResultLine(String.format("Updated [%s] rows for [%s] in [%d]ms\n", count, type.name(),
+                     (System.currentTimeMillis() - time)));
+               totalModified += count;
             }
-         };
-         for (String query : MOD_TYPE_QUERIES) {
-            executeQuery(subMonitor, connection, processor, 5000, query, SQL3DataType.INTEGER, startAtTxNumber);
             subMonitor.worked(1);
             if (subMonitor.isCanceled()) {
                break;
             }
          }
-
-         if (subMonitor.isCanceled() != true && batchArgs.size() > 0) {
-            writeToDb(subMonitor, connection, batchArgs);
-         }
-         appendResultLine(String.format("Updated [%d] mod types.\n", totalModCount));
+         appendResultLine(String.format("Updated [%d]txs mod types\n", totalModified));
          subMonitor.done();
-      }
-
-      private void writeToDb(IProgressMonitor monitor, Connection connection, List<Object[]> data) throws SQLException {
-         int count = ConnectionHandler.runPreparedUpdate(connection, UPDATE_TXS_MOD_TYPE, data);
-         totalModCount += count;
-         monitor.subTask(String.format("Updated [%d of %d] mod types - overall [%d]\n", count, data.size(),
-               totalModCount));
-         data.clear();
       }
    }
 
@@ -510,6 +525,9 @@ public class UpdateCurrentColumn extends AbstractBlam {
        */
       @Override
       public void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception {
+         final IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
+         subMonitor.beginTask("Verifying Tx Current", getTotalWork());
+
          int totalRowCount = executeQuery(monitor, connection, new IRowProcessor() {
             @Override
             public void processRow(ResultSet resultSet) throws SQLException {
@@ -526,8 +544,9 @@ public class UpdateCurrentColumn extends AbstractBlam {
          } else {
             msg = "Failed";
          }
-         appendResultLine(String.format("Tx Current Verification [ %s ]", msg));
-         monitor.worked(1);
+         appendResultLine(String.format("Tx Current Verification [ %s ]\n", msg));
+         subMonitor.worked(1);
+         subMonitor.done();
       }
 
       /* (non-Javadoc)
@@ -536,6 +555,64 @@ public class UpdateCurrentColumn extends AbstractBlam {
       @Override
       public int getTotalWork() {
          return 1;
+      }
+   }
+
+   private final class VerifyTxModTypeOperation implements IOperation {
+
+      private Map<TypesEnum, String> modTypeVerificationMap;
+
+      public VerifyTxModTypeOperation() {
+         modTypeVerificationMap = new HashMap<TypesEnum, String>();
+         modTypeVerificationMap.put(TypesEnum.artifacts, VERIFY_ARTIFACT_MOD_TYPE);
+         modTypeVerificationMap.put(TypesEnum.attributes, VERIFY_ATTRIBUTE_MOD_TYPE);
+         modTypeVerificationMap.put(TypesEnum.relations, VERIFY_RELATION_MOD_TYPE);
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#execute(org.eclipse.core.runtime.IProgressMonitor, java.sql.Connection, int)
+       */
+      @Override
+      public void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception {
+         final IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
+         subMonitor.beginTask("Verifying Tx Mod Types", getTotalWork());
+         final Map<TypesEnum, Integer> results = new HashMap<TypesEnum, Integer>();
+         final MutableInteger totalRowCount = new MutableInteger(0);
+         for (final TypesEnum type : modTypeVerificationMap.keySet()) {
+            monitor.subTask(String.format("Verifying: [%s]", type.name()));
+            String sql = modTypeVerificationMap.get(type);
+            if (Strings.isValid(sql)) {
+               executeQuery(monitor, connection, new IRowProcessor() {
+                  @Override
+                  public void processRow(ResultSet resultSet) throws SQLException {
+                     int total = resultSet.getInt(1);
+                     totalRowCount.getValueAndInc(total);
+                     results.put(type, total);
+                  }
+               }, 0, sql);
+            }
+            monitor.worked(1);
+         }
+         String msg = null;
+         boolean result = totalRowCount.getValue() == 0;
+         if (monitor.isCanceled()) {
+            msg = "Cancelled";
+         } else if (result) {
+            msg = "Passed";
+         } else {
+            msg = "Failed";
+            appendResultLine(String.format("Tx Mod Type Verification Results [ %s ]\n", results));
+         }
+         appendResultLine(String.format("Tx Mod Type Verification [ %s ]\n", msg));
+         subMonitor.done();
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateCurrentColumn.IOperation#getTotalWork()
+       */
+      @Override
+      public int getTotalWork() {
+         return modTypeVerificationMap.size();
       }
    }
 
