@@ -40,7 +40,6 @@ public class MyWorldSearchItem extends UserSearchItem {
    }
 
    public Collection<Artifact> searchIt(User user) throws Exception {
-      System.out.println("hello");
       List<Artifact> artifacts =
             ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
                   "%<" + user.getUserId() + ">%", BranchPersistenceManager.getAtsBranch());

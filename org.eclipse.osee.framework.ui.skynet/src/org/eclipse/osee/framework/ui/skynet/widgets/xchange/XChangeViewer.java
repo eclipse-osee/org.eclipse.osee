@@ -214,7 +214,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
    public void onEvent(final Event event) {
       if (xChangeViewer == null || xChangeViewer.getTree() == null || xChangeViewer.getTree().isDisposed()) return;
       if (event instanceof TransactionEvent) {
-         refresh();
+         //TODO Add event 
       }
    }
 

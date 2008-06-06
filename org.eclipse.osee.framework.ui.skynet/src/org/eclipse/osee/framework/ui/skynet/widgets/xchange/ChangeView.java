@@ -79,7 +79,7 @@ public class ChangeView extends ViewPart implements IActionable {
                      ChangeView changeView =
                            (ChangeView) page.showView(VIEW_ID,
                                  String.valueOf(branch != null ? branch.getBranchId() : transactionNumber),
-                                 IWorkbenchPage.VIEW_ACTIVATE);
+                                 IWorkbenchPage.VIEW_VISIBLE);
                      changeView.explore(branch, transactionNumber);
                   } catch (Exception ex) {
                      OSEELog.logException(SkynetGuiPlugin.class, ex, true);
