@@ -54,19 +54,10 @@ public class HttpServerPreferences extends FieldEditorPreferencePage implements 
       content.setLayout(layout);
       content.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      Group httpGroup = new Group(content, SWT.NONE);
-      httpGroup.setLayout(new GridLayout());
-      httpGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      httpGroup.setText("Http Server");
-
-      String defaultRemoteAddress = preference.getDefaultString(PreferenceConstants.OSEE_REMOTE_HTTP_SERVER);
-      addField(new DefaultWithStringAndIntegerFields(PreferenceConstants.OSEE_REMOTE_HTTP_SERVER, defaultRemoteAddress,
-            "Enter Address:", "Enter Port:", httpGroup));
-
       Group resourceGroup = new Group(content, SWT.NONE);
       resourceGroup.setLayout(new GridLayout());
       resourceGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      resourceGroup.setText("Resource Server");
+      resourceGroup.setText("OSEE Application Server");
 
       Composite resourceComposite = new Composite(resourceGroup, SWT.NONE);
       resourceComposite.setLayout(new GridLayout(2, false));
@@ -83,6 +74,16 @@ public class HttpServerPreferences extends FieldEditorPreferencePage implements 
 
       Label label2 = new Label(resourceComposite, SWT.NONE);
       label2.setText(defaultApplicationServer != null ? defaultApplicationServer : "");
+
+      Group httpGroup = new Group(content, SWT.NONE);
+      httpGroup.setLayout(new GridLayout());
+      httpGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      httpGroup.setText("Http Server");
+
+      String defaultRemoteAddress = preference.getDefaultString(PreferenceConstants.OSEE_REMOTE_HTTP_SERVER);
+      addField(new DefaultWithStringAndIntegerFields(PreferenceConstants.OSEE_REMOTE_HTTP_SERVER, defaultRemoteAddress,
+            "Enter Address:", "Enter Port:", httpGroup));
+      httpGroup.setVisible(false);
 
    }
 
