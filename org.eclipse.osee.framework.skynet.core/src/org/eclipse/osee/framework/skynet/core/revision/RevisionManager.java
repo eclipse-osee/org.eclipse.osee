@@ -417,22 +417,25 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
     * @return
     * @throws SQLException
     */
-   private Collection<Change> getChangesPerBranch(Branch sourceBranch, int transactionIdNumber) throws SQLException {
+   private Collection<Change> getChangesPerBranch(Branch sourceBranch, int transactionNumber) throws SQLException {
       ArrayList<Change> changes = new ArrayList<Change>();
       Set<Integer> artIds = new HashSet<Integer>();
 
-      loadNewOrDeletedArtifactChanges(sourceBranch, transactionIdNumber, artIds, changes);
-      loadAttributeChanges(sourceBranch, transactionIdNumber, artIds, changes);
-      loadRelationChanges(sourceBranch, transactionIdNumber, artIds, changes);
+      loadNewOrDeletedArtifactChanges(sourceBranch, transactionNumber, artIds, changes);
+      loadAttributeChanges(sourceBranch, transactionNumber, artIds, changes);
+      loadRelationChanges(sourceBranch, transactionNumber, artIds, changes);
+
+      Branch branch =
+            sourceBranch != null ? sourceBranch : BranchPersistenceManager.getInstance().getBranchForTransactionNumber(
+                  transactionNumber);
 
       if (!artIds.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
 
-         //TODO set this to run for the transaction path
          List<Object[]> datas = new LinkedList<Object[]>();
          for (int artId : artIds) {
             datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
-                  sourceBranch.getBranchId()});
+                  branch.getBranchId()});
          }
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, false);
       }
