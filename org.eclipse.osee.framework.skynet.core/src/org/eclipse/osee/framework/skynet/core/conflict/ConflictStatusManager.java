@@ -38,11 +38,9 @@ public class ConflictStatusManager {
       //Gammas should be up to date so you can use them to get entry
       //just update the status field.
       try {
-         HandlerStatement =
-               ConnectionHandler.runPreparedQuery(MERGE_UPDATE_STATUS, SQL3DataType.INTEGER, status.getValue(),
-                     SQL3DataType.INTEGER, sourceGamma, SQL3DataType.INTEGER, destGamma);
-         ResultSet updateSet = HandlerStatement.getRset();
-         updateSet.next();
+         ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_STATUS, SQL3DataType.INTEGER, status.getValue(),
+               SQL3DataType.INTEGER, sourceGamma, SQL3DataType.INTEGER, destGamma);
+
       } finally {
          DbUtil.close(HandlerStatement);
       }

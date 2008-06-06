@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactIdSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactInTransactionSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ConflictingArtifactSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
@@ -141,6 +140,12 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
                TRANSACTION_DETAIL_TABLE, TRANSACTIONS_TABLE, RELATION_LINK_VERSION_TABLE) + " WHERE " + TRANSACTIONS_TABLE.join(
                TRANSACTION_DETAIL_TABLE, "transaction_id") + " AND " + RELATION_LINK_VERSION_TABLE.join(
                TRANSACTIONS_TABLE, "gamma_id") + " AND " + RELATION_LINK_VERSION_TABLE.column("b_art_id") + "=?" + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?" + ")" + TX_DATA + " WHERE " + TX_DATA.column("transaction_id") + "<?" + " ORDER BY " + TX_DATA.column("transaction_id") + " DESC";
+
+   private static final String ARTIFACT_CONFLICTS =
+         "SELECT art1.art_type_id, arv1.art_id, txs1.mod_type AS source_mod_type, txs1.gamma_id AS source_gamma, txs2.mod_type AS dest_mod_type, txs2.gamma_id AS dest_gamma FROM osee_define_txs txs1, osee_define_txs txs2, osee_define_tx_details txd1, osee_define_tx_details txd2, osee_define_artifact_version arv1, osee_define_artifact_version arv2, osee_define_artifact art1 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = arv1.gamma_id and arv1.art_id = art1.art_id AND arv1.art_id = arv2.art_id AND arv2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ?";
+
+   private static final String ATTRIBUTE_CONFLICTS =
+         "SELECT atr1.art_id, txs1.mod_type, atr1.attr_type_id, atr1.attr_id, atr1.gamma_id AS source_gamma, atr1.value AS source_value, atr2.gamma_id AS dest_gamma, atr2.value as dest_value, txs2.mod_type AS dest_mod_type FROM osee_define_txs txs1, osee_define_txs txs2, osee_define_tx_details txd1, osee_define_tx_details txd2, osee_define_attribute atr1, osee_define_attribute atr2 WHERE txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs1.gamma_id = atr1.gamma_id AND atr1.attr_id = atr2.attr_id AND atr2.gamma_id = txs2.gamma_id AND txs2.tx_current in (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND txs2.transaction_id = txd2.transaction_id AND txs2.transaction_id > ? AND txd2.branch_id = ?";
 
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(RevisionManager.class);
    private ArtifactPersistenceManager artifactManager;
@@ -624,6 +629,7 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
             artIdSetDontShow, artIdSetDontAdd);
       loadAttributeConflicts(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet);
 
+      //Remove Art IDs for artifacts that should not be added to the branch because they were deleted etc. 
       for (Integer integer : artIdSetDontAdd) {
          artIdSet.remove(integer);
       }
@@ -634,6 +640,9 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
 
       if (mergeBranch == null) throw new Exception("Could not create the Merge Branch.");
 
+      preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet);
+
+      //Don't create the conflicts for attributes on an artifact that is deleted etc.
       for (ConflictBuilder conflictBuilder : conflictBuilders) {
          Conflict conflict = conflictBuilder.getConflict(mergeBranch, artIdSetDontShow);
          if (conflict != null) {
@@ -642,14 +651,27 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
          }
       }
 
-      if (!artIdSet.isEmpty()) {
-         List<ISearchPrimitive> artIds = new LinkedList<ISearchPrimitive>();
-         for (Integer integer : artIdSet) {
-            artIds.add(new ArtifactIdSearch(integer));
-         }
-         artifactManager.getArtifacts(artIds, true, mergeBranch);
-      }
       return conflicts;
+   }
+
+   /**
+    * 
+    */
+   private void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet) throws SQLException {
+      if (artIdSet != null && !artIdSet.isEmpty()) {
+         int queryId = ArtifactLoader.getNewQueryId();
+
+         List<Object[]> datas = new LinkedList<Object[]>();
+         for (int artId : artIdSet) {
+            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
+                  sourceBranch.getBranchId()});
+            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
+                  destinationBranch.getBranchId()});
+            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
+                  mergeBranch.getBranchId()});
+         }
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, datas, true);
+      }
    }
 
    /**
@@ -664,15 +686,10 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       ConnectionHandlerStatement connectionHandlerStatement = null;
 
       try {
-         String ARTIFACT_CONFLICTS =
-               "SELECT t99.art_type_id, t3.art_id, t1.mod_type as source_mod_type, t3.gamma_id AS source_gamma, t33.gamma_id AS dest_gamma, t34.mod_type as dest_mod_type FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_artifact_version t3, osee_define_artifact t99, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.art_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_artifact_version t6 WHERE t4.mod_type <> -4  AND t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? GROUP BY t6.art_id ORDER BY transaction_id) t44, osee_define_artifact_version t33, osee_define_txs t34, osee_Define_tx_details t35 WHERE t99.art_id = t3.art_id and t35.branch_id = ? and t35.transaction_id = t34.transaction_id and t35.transaction_id = t44.transaction_id and t33.gamma_id = t34.gamma_id and t33.art_id = t44.art_id and t1.transaction_id = t2.transaction_id  AND t2.transaction_id > ?  AND t1.mod_type <> -4  AND t2.branch_id = ? AND t1.gamma_id = t3.gamma_id  AND t3.art_id = t44.art_id  AND EXISTS (SELECT 'x' FROM osee_define_txs txs, osee_define_artifact_version atv, osee_define_tx_details txd WHERE atv.art_id = t44.art_id  and txd.branch_id = ? and txs.gamma_id = atv.gamma_id and txs.transaction_id = ? AND t33.gamma_id <> txs.gamma_id) ORDER BY t3.art_id, t3.gamma_id DESC";
-
          connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(ARTIFACT_CONFLICTS, SQL3DataType.INTEGER,
-                     destinationBranch.getBranchId(), SQL3DataType.INTEGER, destinationBranch.getBranchId(),
+               ConnectionHandler.runPreparedQuery(ARTIFACT_CONFLICTS, SQL3DataType.INTEGER, sourceBranch.getBranchId(),
                      SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(), SQL3DataType.INTEGER,
-                     sourceBranch.getBranchId(), SQL3DataType.INTEGER, sourceBranch.getBranchId(),
-                     SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber());
+                     destinationBranch.getBranchId());
 
          TransactionId sourceHeadTransactionId = transactionIdManager.getEditableTransactionId(sourceBranch);
          ResultSet resultSet = connectionHandlerStatement.getRset();
@@ -727,15 +744,10 @@ public class RevisionManager implements PersistenceManager, IEventReceiver {
       ConnectionHandlerStatement connectionHandlerStatement = null;
 
       try {
-         String ATTRIBUTE_CONFLICTS =
-               "SELECT t99.art_id, t1.mod_type, t3.modification_id, t3.attr_type_id, t3.art_id, t3.attr_id," + " t3.gamma_id AS source_gamma, t3.VALUE AS source_value, " + "t33.gamma_id AS dest_gamma, t33.VALUE AS dest_value, " + "t33.art_id AS dest_art_id " + "FROM osee_define_txs t1, osee_define_tx_details t2, osee_define_attribute t3,   " + "osee_define_artifact t99, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id " + "FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6 " + "WHERE t4.mod_type <> -4  AND t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id" + " AND t5.branch_id = ? GROUP BY t6.attr_id    ORDER BY transaction_id) t44, " + "osee_define_attribute t33, osee_define_txs t34, osee_Define_tx_details t35 " + "WHERE t99.art_id = t3.art_id and t35.branch_id = ? and t35.transaction_id = t34.transaction_id" + " and t35.transaction_id = t44.transaction_id and t33.gamma_id = t34.gamma_id and " + "t33.attr_id = t44.attr_id and t1.transaction_id = t2.transaction_id  AND t2.transaction_id > ? " + " AND t1.mod_type <> -4  AND t2.branch_id = ? AND t1.gamma_id = t3.gamma_id  " + "AND t3.attr_id = t44.attr_id  AND EXISTS (SELECT 'x' FROM osee_define_txs txs, " + "osee_define_attribute attr, osee_define_tx_details txd WHERE attr.attr_id = t44.attr_id " + " and txd.branch_id = ? and txs.gamma_id = attr.gamma_id and txs.transaction_id = ? " + "AND t33.gamma_id <> txs.gamma_id) ORDER BY t3.art_id, t3.attr_id, t3.gamma_id DESC";
-
          connectionHandlerStatement =
                ConnectionHandler.runPreparedQuery(ATTRIBUTE_CONFLICTS, SQL3DataType.INTEGER,
-                     destinationBranch.getBranchId(), SQL3DataType.INTEGER, destinationBranch.getBranchId(),
-                     SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(), SQL3DataType.INTEGER,
-                     sourceBranch.getBranchId(), SQL3DataType.INTEGER, sourceBranch.getBranchId(),
-                     SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber());
+                     sourceBranch.getBranchId(), SQL3DataType.INTEGER, baselineTransaction.getTransactionNumber(),
+                     SQL3DataType.INTEGER, destinationBranch.getBranchId());
 
          TransactionId sourceHeadTransactionId = transactionIdManager.getEditableTransactionId(sourceBranch);
          ResultSet resultSet = connectionHandlerStatement.getRset();

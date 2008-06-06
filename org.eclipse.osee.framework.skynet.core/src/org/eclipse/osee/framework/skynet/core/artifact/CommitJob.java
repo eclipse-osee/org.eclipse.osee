@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
@@ -72,7 +73,7 @@ class CommitJob extends Job {
          "INSERT INTO OSEE_DEFINE_TXS(transaction_id, gamma_id, mod_type, tx_current) SELECT ?, tx1.gamma_id, tx1.mod_type, CASE WHEN tx1.mod_type = 3 THEN " + TxChange.DELETED.getValue() + " ELSE " + TxChange.CURRENT.getValue() + " END FROM osee_define_txs tx1, osee_define_tx_details td2, osee_define_artifact_version av3 WHERE tx1.tx_current IN (" + TxChange.CURRENT.getValue() + " , " + TxChange.DELETED.getValue() + ") AND tx1.transaction_id = td2.transaction_id AND td2.branch_id = ? AND td2.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND tx1.gamma_id = av3.gamma_id";
 
    private static final String UPDATE_MERGE_TRANSACTIONS =
-         "UPDATE osee_Define_txs set gamma_id = ? Where transaction_id = ? and gamma_id = ?";
+         "UPDATE osee_Define_txs set gamma_id = ?, mod_type = " + ModificationType.MERGED.getValue() + " Where transaction_id = ? and gamma_id = ?";
 
    private static final String DELETE_MERGE_TRANSACTIONS =
          "DELETE from osee_Define_txs Where transaction_id = ? and gamma_id = ?";
@@ -81,7 +82,7 @@ class CommitJob extends Job {
          "UPDATE osee_Define_txs tx1 set tx_current = 1 WHERE EXISTS (SELECT 'x' from osee_define_tx_details det WHERE det.branch_id = ? and det.transaction_id = tx1.transaction_id and tx1.gamma_id = ?)";
 
    private static final String ARTIFACT_CHANGES =
-         "SELECT av1.art_id, ? FROM osee_Define_txs tx1, osee_define_artifact_version av1 WHERE tx1.transaction_id = ? AND tx1.gamma_id = av1.gamma_id) UNION ALL (SELECT ar1.art_id, ? FROM osee_Define_txs tx1, osee_define_rel_link rl1, osee_define_artifact ar1 WHERE (rl1.a_art_id = ar1.art_id OR rl1.b_art_id = ar1.art_id) AND tx1.transaction_id = ? AND tx1.gamma_id = rl1.gamma_id";
+         "SELECT av1.art_id, ? as branch_id FROM osee_Define_txs tx1, osee_define_artifact_version av1 WHERE tx1.transaction_id = ? AND tx1.gamma_id = av1.gamma_id UNION ALL SELECT ar1.art_id, ? as branch_id FROM osee_Define_txs tx1, osee_define_rel_link rl1, osee_define_artifact ar1 WHERE (rl1.a_art_id = ar1.art_id OR rl1.b_art_id = ar1.art_id) AND tx1.transaction_id = ? AND tx1.gamma_id = rl1.gamma_id";
 
    private static final SkynetEventManager eventManager = SkynetEventManager.getInstance();
    private static final BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();

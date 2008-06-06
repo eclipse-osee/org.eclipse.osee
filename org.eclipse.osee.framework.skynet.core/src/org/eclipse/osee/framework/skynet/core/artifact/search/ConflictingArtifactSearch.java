@@ -30,17 +30,17 @@ public class ConflictingArtifactSearch implements ISearchPrimitive {
    private static final String CONFLICT_TABLE =
          "((SELECT art_id " + "FROM " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
 
-         "SELECT a_art_id art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
+         "SELECT a_art_id as art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
 
-         "SELECT b_art_id art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id) " +
+         "SELECT b_art_id as art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id) " +
 
          " intersect " +
 
          "(SELECT art_id " + "FROM " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
 
-         "SELECT a_art_id art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
+         "SELECT a_art_id as art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
 
-         "SELECT b_art_id art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id))";
+         "SELECT b_art_id as art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id)) tcd1";
 
    private final int parentBranchId;
    private final int parentBaseTransactionNumber;

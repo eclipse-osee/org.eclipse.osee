@@ -17,7 +17,7 @@ import java.io.Serializable;
  * @author Ryan D. Brooks
  */
 public enum ModificationType implements Serializable {
-   NEW("New", 1), CHANGE("Modified", 2), DELETED("Deleted", 3);
+   NEW("New", 1), CHANGE("Modified", 2), DELETED("Deleted", 3), MERGED("Merged", 4);
 
    private int value;
    private String displayName;

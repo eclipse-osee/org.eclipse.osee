@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.sql.SQLException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
@@ -120,7 +121,10 @@ public abstract class Conflict implements IAdaptable {
     */
    public Artifact getArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
       if (artifact == null) {
-         artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch, true);
+         artifact = ArtifactCache.getActive(artId, mergeBranch.getBranchId());
+         if (artifact == null) {
+            artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch, true);
+         }
       }
       return artifact;
    }
@@ -132,7 +136,10 @@ public abstract class Conflict implements IAdaptable {
     */
    public Artifact getSourceArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
       if (sourceArtifact == null) {
-         sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
+         sourceArtifact = ArtifactCache.getActive(artId, sourceBranch.getBranchId());
+         if (sourceArtifact == null) {
+            sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, true);
+         }
       }
       return sourceArtifact;
    }
@@ -144,7 +151,10 @@ public abstract class Conflict implements IAdaptable {
     */
    public Artifact getDestArtifact() throws ArtifactDoesNotExist, MultipleArtifactsExist, SQLException {
       if (destArtifact == null) {
-         destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, true);
+         destArtifact = ArtifactCache.getActive(artId, destBranch.getBranchId());
+         if (destArtifact == null) {
+            destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, true);
+         }
       }
       return destArtifact;
    }

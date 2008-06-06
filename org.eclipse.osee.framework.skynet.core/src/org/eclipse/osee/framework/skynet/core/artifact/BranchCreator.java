@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.db.connection.core.transaction.AbstractDbTxTem
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
@@ -466,7 +465,7 @@ public class BranchCreator implements PersistenceManager {
        * @param destBranch
        * @param artIds
        */
-      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) {
+      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds) throws SQLException {
          this(sourceBranch, destBranch, artIds, null);
       }
 
@@ -475,7 +474,7 @@ public class BranchCreator implements PersistenceManager {
        * @param destBranch
        * @param artIds
        */
-      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds, Branch mergeBranch) {
+      public CreateMergeBranchTx(Branch sourceBranch, Branch destBranch, Collection<Integer> artIds, Branch mergeBranch) throws SQLException {
          super();
          this.sourceBranch = sourceBranch;
          this.destBranch = destBranch;
@@ -507,15 +506,25 @@ public class BranchCreator implements PersistenceManager {
             branchWithTransactionNumber =
                   new Pair<Branch, Integer>(mergeBranch, startTransactionId.getTransactionNumber());
          }
-         String attributeGammas =
-               "INSERT INTO OSEE_DEFINE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, attr1.gamma_id, txs2.mod_type, ? FROM osee_define_attribute attr1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS  transaction_id, t6.attr_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_attribute t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in " + Collections.toString(
-                     artIds, "(", ",", ")") + " GROUP BY t6.attr_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = attr1.gamma_id and attr1.attr_id = t4.attr_id order by attr1.gamma_id";
-         String artifactVersionGammas =
-               "INSERT INTO OSEE_DEFINE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, art1.gamma_id, txs2.mod_type, ? FROM osee_define_artifact_version art1, osee_define_txs txs2, (SELECT MAX(t4.transaction_id) AS transaction_id FROM osee_define_txs t4, osee_define_tx_details t5, osee_define_artifact_version t6 WHERE t4.gamma_id = t6.gamma_id AND t4.transaction_id = t5.transaction_id AND t5.branch_id = ? and t6.art_id in " + Collections.toString(
-                     artIds, "(", ",", ")") + " GROUP BY t6.art_id ORDER BY transaction_id) t4 where t4.transaction_id = txs2.transaction_id and txs2.gamma_id = art1.gamma_id order by art1.gamma_id";
 
-         insertGammas(attributeGammas, branchWithTransactionNumber.getValue());
-         insertGammas(artifactVersionGammas, branchWithTransactionNumber.getValue());
+         int queryId = ArtifactLoader.getNewQueryId();
+         List<Object[]> datas = new LinkedList<Object[]>();
+         for (int artId : artIds) {
+            datas.add(new Object[] {SQL3DataType.INTEGER, queryId, SQL3DataType.INTEGER, artId, SQL3DataType.INTEGER,
+                  sourceBranch.getBranchId()});
+         }
+         try {
+            ConnectionHandler.runPreparedUpdateBatch(ArtifactLoader.INSERT_INTO_LOADER, datas);
+            String attributeGammas =
+                  "INSERT INTO OSEE_DEFINE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, atr1.gamma_id, txs1.mod_type, ? FROM osee_define_attribute atr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_artifact_loader ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
+            String artifactVersionGammas =
+                  "INSERT INTO OSEE_DEFINE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, arv1.gamma_id, txs1.mod_type, ? FROM osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1, osee_artifact_loader ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
+
+            insertGammas(attributeGammas, branchWithTransactionNumber.getValue(), queryId);
+            insertGammas(artifactVersionGammas, branchWithTransactionNumber.getValue(), queryId);
+         } finally {
+            ArtifactLoader.clearQuery(queryId);
+         }
 
          mergeBranch = branchWithTransactionNumber.getKey();
 
@@ -523,11 +532,9 @@ public class BranchCreator implements PersistenceManager {
 
          if (createBranch) {
             try {
-               chStmt =
-                     ConnectionHandler.runPreparedQuery(MERGE_BRANCH_INSERT_QUERY, SQL3DataType.INTEGER,
-                           sourceBranch.getBranchId(), SQL3DataType.INTEGER, destBranch.getBranchId(),
-                           SQL3DataType.INTEGER, mergeBranch.getBranchId());
-               chStmt.next();
+               ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_INSERT_QUERY, SQL3DataType.INTEGER,
+                     sourceBranch.getBranchId(), SQL3DataType.INTEGER, destBranch.getBranchId(), SQL3DataType.INTEGER,
+                     mergeBranch.getBranchId());
             } finally {
                DbUtil.close(chStmt);
             }
@@ -538,9 +545,10 @@ public class BranchCreator implements PersistenceManager {
          return mergeBranch;
       }
 
-      private void insertGammas(String sql, int baselineTransactionNumber) throws SQLException {
-         ConnectionHandler.runPreparedQuery(sql, SQL3DataType.INTEGER, baselineTransactionNumber, SQL3DataType.INTEGER,
-               TxChange.CURRENT.getValue(), SQL3DataType.INTEGER, sourceBranch.getBranchId());
+      private void insertGammas(String sql, int baselineTransactionNumber, int queryId) throws SQLException {
+         ConnectionHandler.runPreparedUpdate(sql, SQL3DataType.INTEGER, baselineTransactionNumber,
+               SQL3DataType.INTEGER, TxChange.CURRENT.getValue(), SQL3DataType.INTEGER, sourceBranch.getBranchId(),
+               SQL3DataType.INTEGER, queryId);
       }
    }
 }
