@@ -306,25 +306,26 @@ public class UpdateCurrentColumn extends AbstractBlam {
        */
       @Override
       public void execute(IProgressMonitor monitor, Connection connection, int startAtTxNumber) throws Exception {
-         int rowsUpdated = 0;
-         int txTypeNumber = 0;
          totalCount = 0;
          final IProgressMonitor subMonitor = new SubProgressMonitor(monitor, getTotalWork());
          subMonitor.beginTask("Update Tx Current", getTotalWork());
 
          List<UpdateHelper> updates = new ArrayList<UpdateHelper>();
 
-         updateBaselineTransactions(subMonitor, connection, txTypeNumber);
+         int txTypeNumber = updateBaselineTransactions(subMonitor, connection);
+         appendResultLine(String.format("Updated [%d] transactions to baseline transactions.\n", txTypeNumber));
+
          updateBaselinedTransactionsToCurrent(subMonitor, connection, startAtTxNumber);
          getUpdates(subMonitor, connection, updates, startAtTxNumber);
+         appendResultLine(String.format("Total items identified as latest: [%d] \n", updates.size()));
+
          long time = System.currentTimeMillis();
-         appendResultLine(String.format("Update [%d] transactions to baseline transactions.\n", txTypeNumber));
-         appendResultLine(String.format("Going to update [%d] items to a 0 tx_current value.\n", updates.size()));
-         rowsUpdated = updateTxCurrentToZeroForStaleItems(subMonitor, connection, updates);
+         int rowsUpdated = updateTxCurrentToZeroForStaleItems(subMonitor, connection, updates);
          appendResultLine(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
                rowsUpdated));
+
          time = System.currentTimeMillis();
-         appendResultLine(String.format("Going to update [%d] items to a 1 tx_current value.\n", updates.size()));
+         appendResultLine(String.format("Going to update [%d] items to tx_current value of 1 or 2.\n", updates.size()));
          rowsUpdated = updateTxCurrentForLatestItems(subMonitor, connection, updates);
          appendResultLine(String.format("Took [%d]ms to update [%d] rows.\n", (System.currentTimeMillis() - time),
                rowsUpdated));
@@ -332,7 +333,8 @@ public class UpdateCurrentColumn extends AbstractBlam {
          subMonitor.done();
       }
 
-      private void updateBaselineTransactions(IProgressMonitor monitor, Connection connection, int txTypeNumber) throws SQLException {
+      private int updateBaselineTransactions(IProgressMonitor monitor, Connection connection) throws SQLException {
+         int txTypeNumber = 0;
          monitor.subTask("Update Baseline Txs - Tx Details Table");
          if (monitor.isCanceled() != true) {
             txTypeNumber +=
@@ -341,6 +343,7 @@ public class UpdateCurrentColumn extends AbstractBlam {
                   ConnectionHandler.runPreparedUpdate(connection, UPDATE_TX_DETAILS_BASELINE_TRANSACTIONS_TO_1);
          }
          monitor.worked(1);
+         return txTypeNumber;
       }
 
       private void updateBaselinedTransactionsToCurrent(final IProgressMonitor monitor, final Connection connection, final int txNumber) throws Exception {
