@@ -372,7 +372,7 @@
     <child ID="447" label="SAW SW" x="-196.42252" y="143.6177"
         width="137.97998" height="30.830002" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Full Name:SAW Software%nl;Lead:Kay Jason%nl;Member:Maichael Johnson%nl;%nl;Member:Steven Kohn%nl;WorkflowId:osee.ats.defaultTeam%nl;AtsTeamUsesVersions%nl;StaticId:saw.teamDefHoldingVersions</notes>
+        <notes>Full Name:SAW Software%nl;Lead:Kay Jason%nl;Member:Maichael Johnson%nl;%nl;Member:Steven Kohn%nl;WorkflowId:osee.ats.teamWorkflow%nl;AtsTeamUsesVersions%nl;StaticId:saw.teamDefHoldingVersions</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -694,7 +694,7 @@
     <child ID="503" label="CIS SW" x="332.14752" y="139.45474"
         width="137.97998" height="30.830002" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Full Name:CIS Software%nl;Lead:Kay Jason%nl;Member:Maichael Johnson%nl;%nl;Member:Steven Kohn%nl;WorkflowId:osee.ats.defaultTeam%nl;AtsTeamUsesVersions%nl;StaticId:cis.teamDefHoldingVersions</notes>
+        <notes>Full Name:CIS Software%nl;Lead:Kay Jason%nl;Member:Maichael Johnson%nl;%nl;Member:Steven Kohn%nl;WorkflowId:osee.ats.teamWorkflow%nl;AtsTeamUsesVersions%nl;StaticId:cis.teamDefHoldingVersions</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -717,7 +717,7 @@
     <child ID="505" label="Tools Team" x="-651.8525" y="81.45474"
         width="128.9" height="30.150002" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Full Name:Tools Team%nl;Lead:Jeffery Kay%nl;Member:Jeffery Kay%nl;Member:Roland Stevens%nl;WorkflowId:osee.ats.defaultTeam</notes>
+        <notes>Full Name:Tools Team%nl;Lead:Jeffery Kay%nl;Member:Jeffery Kay%nl;Member:Roland Stevens%nl;WorkflowId:osee.ats.teamWorkflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -858,7 +858,7 @@
     </child>
     <child ID="519" label="Web Team" x="-766.3125" y="-2.205246"
         width="122.34" height="29.89" strokeWidth="1.0" autoSized="true" xsi:type="node">
-        <notes>Full Name:Company Website Team%nl;Lead:Karmen John%nl;Member:Jeffery Kay%nl;Member:Roland Stevens%nl;WorkflowId:osee.ats.simpleTeam</notes>
+        <notes>Full Name:Company Website Team%nl;Lead:Karmen John%nl;Member:Jeffery Kay%nl;Member:Roland Stevens%nl;WorkflowId:osee.ats.simpleTeamWorkflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -893,7 +893,7 @@
     <child ID="523" label="SAW HW" x="-429.85248" y="91.45474"
         width="137.97998" height="30.830002" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Full Name:SAW Hardware%nl;Lead:Jason Michael%nl;Member:Jason Michael%nl;AtsTeamUsesVersions%nl;WorkflowId:osee.ats.defaultTeam</notes>
+        <notes>Full Name:SAW Hardware%nl;Lead:Jason Michael%nl;Member:Jason Michael%nl;AtsTeamUsesVersions%nl;WorkflowId:osee.ats.teamWorkflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -1037,7 +1037,7 @@
     <child ID="536" label="Process Team" x="-927.83997" y="71.21979"
         width="147.06" height="31.509998" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Full Name:Processes Team%nl;Lead:Alex Kay%nl;Member:Michael Alex%nl;Member:Janice Michael%nl;Member:Keith Johnson%nl;WorkflowId:osee.ats.defaultTeam</notes>
+        <notes>Full Name:Processes Team%nl;Lead:Alex Kay%nl;Member:Michael Alex%nl;Member:Janice Michael%nl;Member:Keith Johnson%nl;WorkflowId:osee.ats.teamWorkflow</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
@@ -1180,7 +1180,7 @@
     <child ID="552" label="Facilities Team" x="-1205.7528" y="93.64368"
         width="151.1" height="31.349998" strokeWidth="1.0"
         autoSized="true" xsi:type="node">
-        <notes>Full Name:Facilities Team%nl;Lead:John Stevens%nl;Member:Jason Stevens%nl;Member:Michael John%nl;Member:Steven Michael%nl;WorkflowId:osee.ats.simpleTeam%nl;Member:John Stevens%nl;</notes>
+        <notes>Full Name:Facilities Team%nl;Lead:John Stevens%nl;Member:Jason Stevens%nl;Member:Michael John%nl;Member:Steven Michael%nl;WorkflowId:osee.ats.simpleTeamWorkflow%nl;Member:John Stevens%nl;</notes>
         <fillColor>#a7c2e9</fillColor>
         <strokeColor>#776d6d</strokeColor>
         <font>Arial-plain-14</font>
