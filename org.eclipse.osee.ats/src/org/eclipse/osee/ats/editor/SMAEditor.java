@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.util.widgets.task.IXTaskViewer;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.AtsLocalStateTransitionedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
@@ -299,11 +298,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
          if (smaMgr.isInTransition()) return;
          if (getContainer() == null || getContainer().isDisposed()) return;
 
-         // Because ArtifactVersionIncrementedEvent is only remote, need
-         // to handle local state transition events separately
-         if (event instanceof AtsLocalStateTransitionedEvent) {
-            redrawPages();
-         }
          if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent) ||
          //
          (event instanceof LocalNewBranchEvent) || (event instanceof RemoteNewBranchEvent)) {

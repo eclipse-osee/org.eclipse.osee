@@ -17,13 +17,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.skynet.core.ArtifactVersionIncrementedEvent;
-import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent;
 import org.eclipse.osee.framework.ui.plugin.event.Event;
 import org.eclipse.osee.framework.ui.plugin.event.IEventReceiver;
@@ -71,23 +68,12 @@ public abstract class TransactionEvent extends Event {
       processedLookups = true;
       for (Event event : localEvents) {
          debug.report("   event " + event);
-         // Use guid check cause a deleted artifactModEvent doesn't currently return the deleted
-         // artifact
          if (event instanceof ArtifactModifiedEvent) {
-            try {
-               Artifact artifact = ((ArtifactModifiedEvent) event).getArtifact();
-               modified.add(artifact.getArtId());
-               if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Deleted) deleted.add(artifact.getArtId());
-               if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Purged) purged.add(artifact.getArtId());
-               debug.report("   MATCH FOUND ");
-            } catch (ArtifactDoesNotExist ex) {
-               SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            } catch (MultipleArtifactsExist ex) {
-               SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            } catch (SQLException ex) {
-               SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-            }
-
+            Artifact artifact = ((ArtifactModifiedEvent) event).getArtifact();
+            modified.add(artifact.getArtId());
+            if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Deleted) deleted.add(artifact.getArtId());
+            if (((ArtifactModifiedEvent) event).getType() == ArtifactModifiedEvent.ModType.Purged) purged.add(artifact.getArtId());
+            debug.report("   MATCH FOUND ");
          } else if (event instanceof RelationModifiedEvent) {
             debug.report("   MATCH FOUND ");
             relChanged.add(((RelationModifiedEvent) event).getLink().getAArtifactId());
@@ -239,7 +225,5 @@ public abstract class TransactionEvent extends Event {
       public void setArtifactVersionIncremented(boolean artifactVersionIncremented) {
          this.artifactVersionIncremented = artifactVersionIncremented;
       }
-
    }
-
 }

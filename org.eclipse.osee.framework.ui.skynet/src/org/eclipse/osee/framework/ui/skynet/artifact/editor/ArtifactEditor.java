@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.DefaultBranchChangedEvent
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactLockStatusChanged;
 import org.eclipse.osee.framework.skynet.core.event.LocalCommitBranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
@@ -118,10 +119,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
          public void run() {
             try {
                for (Artifact artifact : artifacts) {
-                  if (!AccessControlManager.getInstance().checkObjectPermission(
-                        SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
-                     OSEELog.logInfo(
-                           SkynetGuiPlugin.class,
+                  if (!AccessControlManager.getInstance().checkObjectPermission(SkynetAuthentication.getUser(),
+                        artifact, PermissionEnum.READ)) {
+                     OSEELog.logInfo(SkynetGuiPlugin.class,
                            "The user " + SkynetAuthentication.getUser() + " does not have read access to " + artifact,
                            true);
                   } else
@@ -150,10 +150,9 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
-               if (!AccessControlManager.getInstance().checkObjectPermission(
-                     SkynetAuthentication.getUser(), artifact, PermissionEnum.READ)) {
-                  OSEELog.logInfo(
-                        SkynetGuiPlugin.class,
+               if (!AccessControlManager.getInstance().checkObjectPermission(SkynetAuthentication.getUser(), artifact,
+                     PermissionEnum.READ)) {
+                  OSEELog.logInfo(SkynetGuiPlugin.class,
                         "The user " + SkynetAuthentication.getUser() + " does not have read access to " + artifact,
                         true);
                } else if (artifact != null) {
@@ -530,73 +529,67 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
 
    public void onEvent(final Event event) {
       final ArtifactEditor editor = this;
+      Artifact artifact = getEditorInput().getArtifact();
 
-      if (event instanceof TransactionEvent) {
-         ((TransactionEvent) event).fireSingleEvent(this);
-      } else if (event instanceof ArtifactModifiedEvent) {
-         ModType modType = ((ArtifactModifiedEvent) event).getType();
+      if (event instanceof ArtifactEvent) {
+         ArtifactEvent artifactEvent = (ArtifactEvent) event;
+         Artifact eventArtifact = artifactEvent.getArtifact();
 
-         if (modType == ModType.Deleted) {
-            AWorkbench.getActivePage().closeEditor(editor, false);
-         } else if (modType == ModType.Added || modType == ModType.Changed || modType == ModType.Reverted) {
-            Artifact artifact = getEditorInput().getArtifact();
-            setPartName(getEditorInput().getName());
-            setTitleImage(artifact.getImage());
-            attributeComposite.refreshArtifact(artifact);
+         if (eventArtifact.equals(artifact)) {
+            if (event instanceof ArtifactModifiedEvent) {
+               ModType modType = ((ArtifactModifiedEvent) event).getType();
 
-            onDirtied();
+               if (modType == ModType.Deleted) {
+                  AWorkbench.getActivePage().closeEditor(editor, false);
+               } else if (modType == ModType.Added || modType == ModType.Changed || modType == ModType.Reverted) {
+
+                  setPartName(getEditorInput().getName());
+                  setTitleImage(artifact.getImage());
+                  attributeComposite.refreshArtifact(artifact);
+
+                  onDirtied();
+               } else if (event instanceof VisitorEvent) {
+                  firePropertyChange(PROP_DIRTY);
+                  renderPreviewPage();
+               } else if (event instanceof ArtifactLockStatusChanged) {
+                  setTitleImage(getEditorInput().getArtifact().getImage());
+               }
+            }
          }
+      } else if (event instanceof TransactionEvent) {
+         ((TransactionEvent) event).fireSingleEvent(this);
       } else if (event instanceof RelationModifiedEvent) {
          onDirtied();
 
          if (!relationsComposite.isDisposed()) {
-
             Display.getDefault().asyncExec(new Runnable() {
-
                public void run() {
                   relationsComposite.refresh();
                }
             });
          }
-      } else if (event instanceof ArtifactVersionIncrementedEvent) {
-         ArtifactVersionIncrementedEvent verEvent = (ArtifactVersionIncrementedEvent) event;
-
-         if (getEditorInput().getArtifact().equals(verEvent.getOldVersion())) {
-            changeToArtifact(verEvent.getNewVersion());
-         }
       } else if (event instanceof RemoteTransactionEvent) {
          ((RemoteTransactionEvent) event).fireSingleEvent(editor);
-
       } else if (event instanceof DefaultBranchChangedEvent) {
          try {
-            Artifact artifact = getEditorInput().getArtifact();
             if (artifact.getBranch().equals(branchManager.getDefaultBranch()) != true && !artifact.isReadOnly()) {
                try {
                   changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), branchManager.getDefaultBranch()));
                } catch (ArtifactDoesNotExist ex) {
                   System.err.println("Attention: Artifact " + artifact.getArtId() + " does not exist on new default branch. Closing the editor.");
-                  changeToArtifact(null);
+                  AWorkbench.getActivePage().closeEditor(this, false);
                }
             }
             checkEnabledTooltems();
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          }
-      } else if (event instanceof VisitorEvent) {
-         VisitorEvent visitorevent = (VisitorEvent) event;
-
-         if (visitorevent.getArtifact().equals(getEditorInput().getArtifact())) {
-            firePropertyChange(PROP_DIRTY);
-            renderPreviewPage();
-         }
-      } else if (event instanceof ArtifactLockStatusChanged) {
-         setTitleImage(getEditorInput().getArtifact().getImage());
       } else if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent)) {
-         Artifact artifact = getEditorInput().getArtifact();
          try {
             changeToArtifact(ArtifactQuery.getArtifactFromId(artifact.getGuid(), branchManager.getDefaultBranch()));
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.toString(), ex);
+            AWorkbench.getActivePage().closeEditor(this, false);
          }
       } else {
          throw new IllegalStateException("Not registered for legal event.");

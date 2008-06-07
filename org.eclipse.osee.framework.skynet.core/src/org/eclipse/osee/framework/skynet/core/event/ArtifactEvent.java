@@ -11,12 +11,33 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.event.Event;
 
 /**
- * @author Jeff C. Phillips
+ * @author Donald G. Dunne
  */
-public class VisitorEvent extends ArtifactEvent {
-   public VisitorEvent(Artifact artifact, Object sender) {
-      super(artifact, sender);
+public abstract class ArtifactEvent extends Event {
+   private final Artifact artifact;
+
+   public ArtifactEvent(Artifact artifact, Object sender) {
+      super(sender);
+      this.artifact = artifact;
+   }
+
+   public Artifact getArtifact() {
+      return artifact;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof ArtifactEvent) {
+         return artifact.equals(((ArtifactEvent) obj).artifact);
+      }
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      return artifact.hashCode();
    }
 }

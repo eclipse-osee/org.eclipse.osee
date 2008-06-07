@@ -243,8 +243,8 @@ public class RevisionHistoryView extends ViewPart implements IActionable, IEvent
       if (event instanceof ArtifactModifiedEvent) {
          ArtifactModifiedEvent artModEvent = (ArtifactModifiedEvent) event;
          closeView =
-               artifact != null && artModEvent.getType() == ModType.Deleted && artModEvent.getGuid().equals(
-                     artifact.getGuid());
+               artifact != null && artModEvent.getType() == ModType.Deleted && artModEvent.getArtifact().equals(
+                     artifact);
       }
 
       if ((event instanceof LocalCommitBranchEvent) || (event instanceof RemoteCommitBranchEvent) || (event instanceof LocalDeletedBranchEvent) || (event instanceof RemoteDeletedBranchEvent)) {

@@ -11,25 +11,23 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.GuidEvent;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactEvent;
 
 /**
  * @author Jeff C. Phillips
  */
-public class ArtifactVersionIncrementedEvent extends GuidEvent {
+public class ArtifactVersionIncrementedEvent extends ArtifactEvent {
    private Artifact oldVersion;
    private Artifact newVersion;
 
    public ArtifactVersionIncrementedEvent(Artifact oldVersion, Artifact newVersion, Object sender) {
-      super(sender);
+      super(newVersion, sender);
 
       this.newVersion = newVersion;
       this.oldVersion = oldVersion;
 
       if (!oldVersion.getGuid().equals(newVersion.getGuid())) throw new IllegalArgumentException(
             "The old version artifact must have the same GUID as the new version artifact.");
-
-      setGuid(newVersion.getGuid(), newVersion.getBranch());
    }
 
    /**
@@ -45,5 +43,4 @@ public class ArtifactVersionIncrementedEvent extends GuidEvent {
    public Artifact getOldVersion() {
       return oldVersion;
    }
-
 }

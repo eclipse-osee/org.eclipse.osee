@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
  * @author Jeff C. Phillips
  */
 public class TransactionArtifactModifiedEvent extends ArtifactModifiedEvent {
-
    /**
     * @param artifact
     * @param type
@@ -23,15 +22,4 @@ public class TransactionArtifactModifiedEvent extends ArtifactModifiedEvent {
    public TransactionArtifactModifiedEvent(Artifact artifact, ModType type, Object sender) {
       super(artifact, type, sender);
    }
-
-   /**
-    * @param guid
-    * @param branch TODO
-    * @param type
-    * @param sender
-    */
-   public TransactionArtifactModifiedEvent(String guid, Branch branch, ModType type, Object sender) {
-      super(guid, branch, type, sender);
-   }
-
 }

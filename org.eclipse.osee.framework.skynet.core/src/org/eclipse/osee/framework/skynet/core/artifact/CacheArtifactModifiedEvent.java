@@ -23,28 +23,4 @@ public class CacheArtifactModifiedEvent extends ArtifactModifiedEvent {
    public CacheArtifactModifiedEvent(Artifact artifact, ModType type, Object sender) {
       super(artifact, type, sender);
    }
-
-   /**
-    * @param guid
-    * @param branch TODO
-    * @param type
-    * @param sender
-    */
-   public CacheArtifactModifiedEvent(String guid, Branch branch, ModType type, Object sender) {
-      super(guid, branch, type, sender);
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof CacheArtifactModifiedEvent) {
-         return (getGuid().equals(((CacheArtifactModifiedEvent) obj).getGuid()));
-      }
-      return super.equals(obj);
-   }
-
-   @Override
-   public int hashCode() {
-      return getGuid().hashCode();
-   }
-
 }

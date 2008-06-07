@@ -89,8 +89,9 @@ public class SkynetEventManager extends EventManager {
          if (receiverMap.containsKey(eventClass) && receiverMap.get(eventClass) != null) receivers.addAll(receiverMap.get(eventClass));
 
          // Get all receivers subscribed by Event type and Guid
-         if ((event.equals(GuidEvent.class)) && (guidReceiverMap.containsKey(eventClass, ((GuidEvent) event).getGuid()))) receivers.addAll(guidReceiverMap.get(
-               eventClass, ((GuidEvent) event).getGuid()));
+         if ((event.equals(ArtifactEvent.class)) && (guidReceiverMap.containsKey(eventClass,
+               ((ArtifactEvent) event).getArtifact().getGuid()))) receivers.addAll(guidReceiverMap.get(eventClass,
+               ((ArtifactEvent) event).getArtifact().getGuid()));
 
          receivers.addAll(subscribeAll);
       }

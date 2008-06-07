@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import org.eclipse.osee.framework.skynet.core.event.GuidEvent;
+import org.eclipse.osee.framework.skynet.core.event.ArtifactEvent;
 
 /**
  * @author Robert A. Fisher
  */
-public abstract class ArtifactModifiedEvent extends GuidEvent {
+public abstract class ArtifactModifiedEvent extends ArtifactEvent {
 
    private ModType modType;
    public enum ModType {
@@ -34,24 +34,11 @@ public abstract class ArtifactModifiedEvent extends GuidEvent {
     * @param sender
     */
    public ArtifactModifiedEvent(Artifact artifact, ModType type, Object sender) {
-      this(artifact.getGuid(), artifact.getBranch(), type, sender);
-      this.artifact = artifact;
-   }
-
-   /**
-    * @param guid
-    * @param branch TODO
-    * @param type
-    * @param sender
-    */
-   public ArtifactModifiedEvent(String guid, Branch branch, ModType type, Object sender) {
-      super(sender);
-      setGuid(guid, branch);
+      super(artifact, sender);
       this.modType = type;
    }
 
    public ModType getType() {
       return modType;
    }
-
 }

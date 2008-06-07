@@ -11,25 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.event.Event;
 
 /**
  * @author Jeff C. Phillips
  */
-public class ArtifactLockStatusChanged extends Event {
-
-   private Artifact artifact;
-
+public class ArtifactLockStatusChanged extends ArtifactEvent {
    public ArtifactLockStatusChanged(Object sender, Artifact artifact) {
-      super(sender);
-
-      this.artifact = artifact;
-   }
-
-   /**
-    * @return Returns the artifact.
-    */
-   public Artifact getArtifact() {
-      return artifact;
+      super(artifact, sender);
    }
 }
