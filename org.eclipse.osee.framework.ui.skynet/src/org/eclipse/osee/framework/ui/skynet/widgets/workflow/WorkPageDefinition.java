@@ -43,7 +43,7 @@ public class WorkPageDefinition extends WorkItemDefinition {
    public Artifact toArtifact(WriteType writeType) throws Exception {
       Artifact art = super.toArtifact(writeType);
       List<Artifact> children = new ArrayList<Artifact>();
-      for (WorkItemDefinition wid : getWorkItems()) {
+      for (WorkItemDefinition wid : getWorkItems(false)) {
          Artifact widArt = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(wid.getId());
          if (widArt == null) {
             throw new IllegalStateException(
@@ -83,13 +83,6 @@ public class WorkPageDefinition extends WorkItemDefinition {
 
    public void removeWorkItem(String workItemDefintionId) {
       workItemIds.remove(workItemDefintionId);
-   }
-
-   /**
-    * @return the workItems
-    */
-   public List<WorkItemDefinition> getWorkItems() throws Exception {
-      return getWorkItems(false);
    }
 
    /**

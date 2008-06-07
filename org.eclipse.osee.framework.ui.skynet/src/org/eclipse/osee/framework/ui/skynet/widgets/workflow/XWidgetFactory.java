@@ -67,6 +67,10 @@ public class XWidgetFactory {
       return reference;
    }
 
+   public XWidget createXWidget(DynamicXWidgetLayoutData xWidgetLayoutData) {
+      return createXWidget(xWidgetLayoutData.getXWidgetName(), xWidgetLayoutData.getName(), xWidgetLayoutData);
+   }
+
    public XWidget createXWidget(String xWidgetName, String name, DynamicXWidgetLayoutData xWidgetLayoutData) {
       XWidget xWidget = null;
 
@@ -123,16 +127,18 @@ public class XWidgetFactory {
          checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
          xWidget = checkBox;
       } else if (xWidgetName.startsWith("XComboDam")) {
-         String values[] =
-               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
-         if (values.length > 0) {
-            xWidget = new XComboDam(name);
-            XComboDam combo = new XComboDam(name);
-            combo.setDataStrings(values);
-            xWidget = combo;
-         } else
-            throw new IllegalArgumentException(
-                  "Invalid XComboDam.  " + "Must be \"XComboDam(option1,option2,option3)\"");
+         if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
+            String values[] =
+                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            if (values.length > 0) {
+               xWidget = new XComboDam(name);
+               XComboDam combo = new XComboDam(name);
+               combo.setDataStrings(values);
+               xWidget = combo;
+            } else
+               throw new IllegalArgumentException(
+                     "Invalid XComboDam.  " + "Must be \"XComboDam(option1,option2,option3)\"");
+         }
       } else if (xWidgetName.startsWith("XComboBooleanDam")) {
          xWidget = new XComboBooleanDam(name);
          XComboBooleanDam combo = new XComboBooleanDam(name);
@@ -163,14 +169,16 @@ public class XWidgetFactory {
          } else
             throw new IllegalArgumentException("Invalid XCombo.  " + "Must be \"XCombo(option1,option2,option3)\"");
       } else if (xWidgetName.startsWith("XListDam")) {
-         String values[] =
-               xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
-         if (values.length > 0) {
-            XListDam list = new XListDam(name);
-            list.add(values);
-            xWidget = list;
-         } else
-            throw new IllegalArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
+         if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
+            String values[] =
+                  xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
+            if (values.length > 0) {
+               XListDam list = new XListDam(name);
+               list.add(values);
+               xWidget = list;
+            } else
+               throw new IllegalArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
+         }
       } else if (xWidgetName.equals("XHyperlabelMemberSelDam")) {
          xWidget = new XHyperlabelMemberSelDam(name);
       } else if (xWidgetName.startsWith("XListDropViewer")) {
@@ -196,7 +204,7 @@ public class XWidgetFactory {
             throw new IllegalArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
 
       } else {
-         throw new IllegalArgumentException("Unhandled XWidget \"" + xWidgetName);
+         throw new IllegalArgumentException("Unhandled XWidget \"" + xWidgetName + "\"");
       }
       if (xWidget instanceof XText) {
          ((XText) xWidget).addXTextSpellModifyDictionary(new SkynetSpellModifyDictionary());

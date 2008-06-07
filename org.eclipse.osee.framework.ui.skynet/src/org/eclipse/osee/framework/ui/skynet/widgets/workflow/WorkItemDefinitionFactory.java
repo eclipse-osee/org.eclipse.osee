@@ -166,4 +166,9 @@ public class WorkItemDefinitionFactory {
       return defs;
    }
 
+   public static Collection<WorkItemDefinition> getWorkItemDefinitions() throws Exception {
+      loadDefinitions();
+      return itemIdToDefinition.values();
+   }
+
 }

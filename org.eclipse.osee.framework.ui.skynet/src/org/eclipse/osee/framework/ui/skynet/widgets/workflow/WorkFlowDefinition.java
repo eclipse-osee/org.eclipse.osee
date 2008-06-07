@@ -69,7 +69,8 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       }
 
       // Read in this workflow's start page
-      startPageId = artifact.getSoleAttributeValue(WorkItemAttributes.START_PAGE.getAttributeTypeName(), "");
+      startPageId =
+            artifact.getSoleAttributeValue(WorkItemAttributes.START_PAGE.getAttributeTypeName(), null, String.class);
    }
 
    @Override
@@ -81,9 +82,8 @@ public class WorkFlowDefinition extends WorkItemDefinition {
                "For WorkFlowDefinition " + getId() + ".  Start Page not defined.  Must be in this or a parent's WorkFlowDefinition.");
       }
       // Only store start page if it's part of this definition
-      if (getStartPageId(this, false) != null) {
-         art.setSoleAttributeFromString(WorkItemAttributes.START_PAGE.getAttributeTypeName(), getStartPageId(this,
-               false));
+      if (startPageId != null) {
+         art.setSoleAttributeFromString(WorkItemAttributes.START_PAGE.getAttributeTypeName(), startPageId);
       }
       // Store transition items declared as part of this definition
       List<String> transitionItems = new ArrayList<String>();
