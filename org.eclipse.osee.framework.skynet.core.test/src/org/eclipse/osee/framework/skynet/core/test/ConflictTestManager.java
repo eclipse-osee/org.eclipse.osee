@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.test;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -42,8 +41,6 @@ public class ConflictTestManager {
    private static ConflictDefinition[] conflictDefs = new ConflictDefinition[NUMBER_OF_ARTIFACTS];
    private static final BranchPersistenceManager branchPersistenceManager = BranchPersistenceManager.getInstance();
    private static final TransactionIdManager transactionIdManager = TransactionIdManager.getInstance();
-   private static final ArtifactPersistenceManager artifactPersistenceManager =
-         ArtifactPersistenceManager.getInstance();
    private static int NUMBER_OF_CONFLICTS = 0;
    private static int NUMBER_OF_ARTIFACTS_ON_BRANCH = 0;
 
@@ -96,12 +93,9 @@ public class ConflictTestManager {
       }
       parentTransactionId = transactionIdManager.getEditableTransactionId(branch);
       destBranch = branchPersistenceManager.createWorkingBranch(parentTransactionId, null, DEST_BRANCH, null);
-      Collection<Artifact> artifacts = artifactPersistenceManager.getArtifactsFromAttribute("Name", FOLDER, destBranch);
-      //      Artifact rootArtifact = artifactPersistenceManager.getDefaultHierarchyRootArtifact(destBranch);
-      Artifact rootArtifact = artifacts.iterator().next();
-      if (rootArtifact == null) {
-         throw new Exception("Could not find the Root Artifact");
-      }
+
+      Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, destBranch);
+
       // Add artifacts onto the destination Branch
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          ArtifactType artType = ArtifactTypeManager.getType(conflictDefs[i].artifactType);

@@ -165,7 +165,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    public void tagAllArtifacts() throws Exception {
       OSEELog.logInfo(OseeAtsConfigDemoPlugin.class, "Tagging Branches", false);
-      Job job = new TagBranchesJob(BranchPersistenceManager.getInstance().getBranches());
+      Job job = new TagBranchesJob(BranchPersistenceManager.getBranches());
       job.setUser(false);
       job.setPriority(Job.LONG);
       job.schedule();

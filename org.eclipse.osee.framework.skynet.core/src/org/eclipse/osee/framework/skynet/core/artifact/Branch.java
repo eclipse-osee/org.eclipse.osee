@@ -227,7 +227,7 @@ public class Branch implements Comparable<Branch>, IAdaptable {
    }
 
    private void getChildBranches(Branch parentBranch, Collection<Branch> children) throws SQLException {
-      for (Branch branch : BranchPersistenceManager.getInstance().getBranches()) {
+      for (Branch branch : BranchPersistenceManager.getBranches()) {
          if (branch.getParentBranchId() == parentBranch.getBranchId()) {
             children.add(branch);
             getChildBranches(branch, children);

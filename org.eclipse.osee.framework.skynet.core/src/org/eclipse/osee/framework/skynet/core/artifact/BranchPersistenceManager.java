@@ -161,9 +161,9 @@ public class BranchPersistenceManager implements PersistenceManager {
       return getCommonBranch();
    }
 
-   public List<Branch> getBranches() throws SQLException {
-      ensurePopulatedCache(false);
-      List<Branch> branches = new ArrayList<Branch>(branchCache.values());
+   public static List<Branch> getBranches() throws SQLException {
+      instance.ensurePopulatedCache(false);
+      List<Branch> branches = new ArrayList<Branch>(instance.branchCache.values());
       Collections.sort(branches);
       return branches;
    }
@@ -623,8 +623,7 @@ public class BranchPersistenceManager implements PersistenceManager {
          if (modType == ModificationType.DELETED.getValue()) {
             remoteRelationEvent =
                   new NetworkRelationLinkDeletedEvent(relTypeId, gammaId, parentBranch.getBranchId(),
-                        newTransactionNumber, relId, aArtId, bArtId,
-                        SkynetAuthentication.getUser().getArtId());
+                        newTransactionNumber, relId, aArtId, bArtId, SkynetAuthentication.getUser().getArtId());
          } else if (modType == ModificationType.CHANGE.getValue()) {
             remoteRelationEvent =
                   new NetworkRelationLinkModifiedEvent(gammaId, parentBranch.getBranchId(), newTransactionNumber,

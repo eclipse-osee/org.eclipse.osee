@@ -135,7 +135,7 @@ public class User extends Artifact implements Serializable {
    public void toggleFavoriteBranch(Branch favoriteBranch) {
 
       try {
-         Collection<Branch> branches = BranchPersistenceManager.getInstance().getBranches();
+         Collection<Branch> branches = BranchPersistenceManager.getBranches();
          HashSet<Integer> branchIds = new HashSet<Integer>();
          for (Branch branch : branches)
             branchIds.add(branch.getBranchId());

@@ -121,7 +121,7 @@ public class ArtifactQuery {
     * @throws SQLException
     */
    public static List<Artifact> getArtifactsFromIds(Collection<Integer> artifactIds, Branch branch, boolean allowDeleted) throws SQLException {
-      return new ArtifactQueryBuilder(artifactIds, branch, allowDeleted, FULL).getArtifacts(null);
+      return new ArtifactQueryBuilder(artifactIds, branch, allowDeleted, FULL).getArtifacts(50, null);
    }
 
    /**
@@ -133,11 +133,12 @@ public class ArtifactQuery {
     * @throws SQLException
     */
    public static List<Artifact> getArtifactsFromIds(List<String> guidOrHrids, Branch branch) throws SQLException {
-      return new ArtifactQueryBuilder(guidOrHrids, branch, FULL).getArtifacts(null);
+      return new ArtifactQueryBuilder(guidOrHrids, branch, FULL).getArtifacts(30, null);
    }
 
    public static List<Artifact> getArtifactsFromName(String artifactName, Branch branch) throws SQLException {
-      return new ArtifactQueryBuilder(branch, FULL, false, new AttributeValueCriteria("Name", artifactName)).getArtifacts(null);
+      return new ArtifactQueryBuilder(branch, FULL, false, new AttributeValueCriteria("Name", artifactName)).getArtifacts(
+            30, null);
    }
 
    public static List<Artifact> getArtifactsFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws SQLException {
@@ -179,15 +180,16 @@ public class ArtifactQuery {
    }
 
    public static List<Artifact> getArtifactsFromType(ArtifactType artifactType, Branch branch) throws SQLException {
-      return new ArtifactQueryBuilder(artifactType, branch, FULL).getArtifacts(null);
+      return new ArtifactQueryBuilder(artifactType, branch, FULL).getArtifacts(1000, null);
    }
 
    public static List<Artifact> getArtifactsFromBranch(Branch branch, boolean allowDeleted) throws SQLException {
-      return new ArtifactQueryBuilder(branch, FULL, allowDeleted).getArtifacts(null);
+      return new ArtifactQueryBuilder(branch, FULL, allowDeleted).getArtifacts(10000, null);
    }
 
    public static List<Artifact> getArtifactsFromType(String artifactTypeName, Branch branch) throws SQLException {
-      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL).getArtifacts(null);
+      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL).getArtifacts(1000,
+            null);
    }
 
    /**
@@ -199,8 +201,9 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws SQLException
     */
-   public static List<Artifact> getArtifactsFromTypeAnd(String artifactTypeName, Branch branch, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
-      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL, criteria).getArtifacts(null);
+   public static List<Artifact> getArtifactsFromTypeAnd(String artifactTypeName, Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
+      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL, criteria).getArtifacts(
+            artifactCountEstimate, null);
    }
 
    /**
@@ -211,8 +214,8 @@ public class ArtifactQuery {
     * @return
     * @throws SQLException
     */
-   public static List<Artifact> getArtifactsFromCriteria(Branch branch, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
-      return new ArtifactQueryBuilder(branch, FULL, criteria).getArtifacts(null);
+   public static List<Artifact> getArtifactsFromCriteria(Branch branch, int artifactCountEstimate, List<AbstractArtifactSearchCriteria> criteria) throws SQLException {
+      return new ArtifactQueryBuilder(branch, FULL, criteria).getArtifacts(artifactCountEstimate, null);
    }
 
    /**
@@ -223,8 +226,8 @@ public class ArtifactQuery {
     * @return
     * @throws SQLException
     */
-   public static List<Artifact> getArtifactsFromCriteria(Branch branch, AbstractArtifactSearchCriteria... criteria) throws SQLException {
-      return new ArtifactQueryBuilder(branch, FULL, false, criteria).getArtifacts(null);
+   public static List<Artifact> getArtifactsFromCriteria(Branch branch, int artifactCountEstimate, AbstractArtifactSearchCriteria... criteria) throws SQLException {
+      return new ArtifactQueryBuilder(branch, FULL, false, criteria).getArtifacts(artifactCountEstimate, null);
    }
 
    /**
@@ -238,7 +241,7 @@ public class ArtifactQuery {
     */
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws SQLException {
       return new ArtifactQueryBuilder(artifact.getBranch(), FULL, false, new RelationCriteria(artifact.getArtId(),
-            relationType, relationSide)).getArtifacts(null);
+            relationType, relationSide)).getArtifacts(1000, null);
    }
 
    /**
@@ -252,12 +255,13 @@ public class ArtifactQuery {
     * @throws SQLException
     */
    public static List<Artifact> getArtifactsFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
-      return queryFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch).getArtifacts(null);
+      return queryFromTypeAndAttribute(artifactTypeName, attributeTypeName, attributeValue, branch).getArtifacts(100,
+            null);
    }
 
    public static List<Artifact> getArtifactsFromAttribute(String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
       return new ArtifactQueryBuilder(branch, FULL, false,
-            new AttributeValueCriteria(attributeTypeName, attributeValue)).getArtifacts(null);
+            new AttributeValueCriteria(attributeTypeName, attributeValue)).getArtifacts(300, null);
    }
 
    private static ArtifactQueryBuilder queryFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws SQLException {
@@ -266,6 +270,7 @@ public class ArtifactQuery {
    }
 
    public static List<Artifact> getArtifactsFromHistoricalAttributeValue(String attributeValue, Branch branch) throws SQLException {
-      return new ArtifactQueryBuilder(branch, FULL, true, new AttributeValueCriteria(null, attributeValue, true)).getArtifacts(null);
+      return new ArtifactQueryBuilder(branch, FULL, true, new AttributeValueCriteria(null, attributeValue, true)).getArtifacts(
+            30, null);
    }
 }

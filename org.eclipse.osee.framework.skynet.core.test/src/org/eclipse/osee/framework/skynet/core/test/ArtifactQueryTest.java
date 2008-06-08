@@ -30,6 +30,7 @@ public class ArtifactQueryTest extends TestCase {
 
       assertTrue(artifacts.size() > 0);
       for (Artifact artifact : artifacts) {
+         System.out.println(artifact.getDescriptiveName());
          assertTrue(artifact.getDescriptiveName().length() > 0);
          artifact.isOrphan(); // this is good exercise like doing push-ups
       }

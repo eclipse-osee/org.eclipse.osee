@@ -28,9 +28,7 @@ public class DeleteErroneousTagsFromWorkingBranches extends AbstractBlam {
     * @see org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation#runOperation(org.eclipse.osee.framework.ui.skynet.blam.BlamVariableMap, org.eclipse.osee.framework.skynet.core.artifact.Branch, org.eclipse.core.runtime.IProgressMonitor)
     */
    public void runOperation(BlamVariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      BranchPersistenceManager branchManager = BranchPersistenceManager.getInstance();
-
-      for (Branch branch : branchManager.getBranches()) {
+      for (Branch branch : BranchPersistenceManager.getBranches()) {
          if (branch.hasParentBranch()) {
             ConnectionHandler.runPreparedUpdate(DELETE_ERRONEOUS_TAGS, SQL3DataType.INTEGER, branch.getBranchId(),
                   SQL3DataType.INTEGER, branch.getBranchId());

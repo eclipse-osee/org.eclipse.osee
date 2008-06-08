@@ -802,7 +802,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
                   "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
                   getArtifactTypeName(), getGuid()));
          }
-         return getSoleAttributeValue("Name");
+         String name = getSoleAttributeValue("Name");
+         return name == null ? UNNAMED : name;
       } catch (Exception ex) {
          SkynetActivator.getLogger().log(Level.SEVERE, ex.getLocalizedMessage(), ex);
          return ex.getLocalizedMessage();
@@ -892,7 +893,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact> {
 
       prepareForReload();
 
-      new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifacts();
+      new ArtifactQueryBuilder(artId, branch, true, FULL).reloadArtifacts(1);
       SkynetEventManager.getInstance().kick(new CacheArtifactModifiedEvent(this, ModType.Reverted, this));
    }
 

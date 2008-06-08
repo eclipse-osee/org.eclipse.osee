@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
 /**
@@ -60,8 +59,8 @@ public class StateWorldSearchItem extends WorldSearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactsFromCriteria(BranchPersistenceManager.getAtsBranch(), new AttributeValueCriteria(
-                  ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(), getSearchStateClass() + ";%"));
+            ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
+                  getSearchStateClass() + ";%", BranchPersistenceManager.getAtsBranch());
       if (isCancelled()) return EMPTY_SET;
       return arts;
 

@@ -101,7 +101,7 @@ public class BranchSelectionDialog extends MessageDialog {
          }
       });
       try {
-         oseeFilteredTree.getViewer().setInput(BranchPersistenceManager.getInstance().getBranches());
+         oseeFilteredTree.getViewer().setInput(BranchPersistenceManager.getBranches());
       } catch (SQLException ex) {
          OSEELog.logException(SkynetGuiPlugin.class, ex, true);
       }

@@ -305,14 +305,12 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   public List<Artifact> getArtifacts(ISearchConfirmer confirmer) throws SQLException {
-      int artifactCountEstimate = 300;
+   public List<Artifact> getArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer) throws SQLException {
       return ArtifactLoader.getArtifacts(getArtifactInsertSql(false), queryParameters.toArray(), artifactCountEstimate,
             loadLevel, false, confirmer);
    }
 
-   public List<Artifact> reloadArtifacts() throws SQLException {
-      int artifactCountEstimate = 300;
+   public List<Artifact> reloadArtifacts(int artifactCountEstimate) throws SQLException {
       return ArtifactLoader.getArtifacts(getArtifactInsertSql(false), queryParameters.toArray(), artifactCountEstimate,
             loadLevel, true, null);
    }
@@ -336,7 +334,7 @@ public class ArtifactQueryBuilder {
    }
 
    public Artifact getArtifact() throws SQLException, ArtifactDoesNotExist, MultipleArtifactsExist {
-      Collection<Artifact> artifacts = getArtifacts(null);
+      Collection<Artifact> artifacts = getArtifacts(1, null);
 
       if (artifacts.size() == 0) {
          throw new ArtifactDoesNotExist(getSoleExceptionMessage(artifacts.size()));

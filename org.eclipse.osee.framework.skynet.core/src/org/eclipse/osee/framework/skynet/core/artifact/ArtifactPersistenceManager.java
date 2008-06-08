@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModifiedEvent.ModType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelatedToSearch;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
@@ -765,10 +764,6 @@ public class ArtifactPersistenceManager {
          bulkLoad.add(new RelatedToSearch(art.getArtId(), false));
       }
       getArtifacts(bulkLoad, false, branch);
-   }
-
-   public Collection<Artifact> getArtifactsFromAttribute(String attributeName, String attributeValue, Branch branch) throws SQLException {
-      return ArtifactQuery.getArtifactsFromCriteria(branch, new AttributeValueCriteria(attributeName, attributeValue));
    }
 
    /**

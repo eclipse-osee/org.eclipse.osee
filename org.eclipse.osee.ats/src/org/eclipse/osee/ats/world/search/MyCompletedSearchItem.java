@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
 
 /**
  * @author Donald G. Dunne
@@ -41,7 +40,7 @@ public class MyCompletedSearchItem extends UserSearchItem {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       String valueToMatch =
             "%state=\"Completed\" type=\"StateEntered\" userId=\"" + getSearchUser().getUserId() + "\"%";
-      return ArtifactQuery.getArtifactsFromCriteria(AtsPlugin.getAtsBranch(), new AttributeValueCriteria(
-            ATSAttributes.LOG_ATTRIBUTE.getStoreName(), valueToMatch));
+      return ArtifactQuery.getArtifactsFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), valueToMatch,
+            AtsPlugin.getAtsBranch());
    }
 }
