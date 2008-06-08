@@ -5,11 +5,20 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsDecisionFollowupWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsDecisionPrepareWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsPeerPrepareWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsPeerReviewWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -28,6 +37,31 @@ public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
    public PeerToPeerWorkflowDefinition(Artifact artifact) throws Exception {
       super(artifact);
       throw new IllegalStateException("This constructor should never be used.");
+   }
+
+   public static List<WorkItemDefinition> getAtsWorkDefinitions() {
+      List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
+
+      // Add PeerToPeer Pages and Workflow Definition
+      workItems.add(new AtsPeerPrepareWorkPageDefinition());
+      workItems.add(new AtsPeerReviewWorkPageDefinition());
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+            PeerToPeerWorkflowDefinition.PEER_REVIEW_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
+            PeerToPeerWorkflowDefinition.PEER_REVIEW_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new PeerToPeerWorkflowDefinition());
+
+      // Add Decision Pages and Workflow Definition
+      workItems.add(new AtsDecisionPrepareWorkPageDefinition());
+      workItems.add(new AtsDecisionDecisionWorkPageDefinition());
+      workItems.add(new AtsDecisionFollowupWorkPageDefinition());
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+            DecisionWorkflowDefinition.DECISION_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
+            DecisionWorkflowDefinition.DECISION_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new DecisionWorkflowDefinition());
+
+      return workItems;
    }
 
    /**

@@ -11,6 +11,11 @@
 package org.eclipse.osee.ats.config;
 
 import java.sql.Connection;
+import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
@@ -23,6 +28,26 @@ public class AtsDatabaseConfig extends DbInitializationTask {
       // Import Work Item Definitions
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
             AtsWorkDefinitions.getAtsWorkDefinitions());
+
+      // Import Work Item Definitions
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
+            TeamWorkflowDefinition.getAtsWorkDefinitions());
+
+      // Import Work Item Definitions
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
+            SimpleWorkflowDefinition.getAtsWorkDefinitions());
+
+      // Import Work Item Definitions
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
+            TaskWorkflowDefinition.getAtsWorkDefinitions());
+
+      // Import Work Item Definitions
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
+            DecisionWorkflowDefinition.getAtsWorkDefinitions());
+
+      // Import Work Item Definitions
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
+            PeerToPeerWorkflowDefinition.getAtsWorkDefinitions());
 
    }
 

@@ -5,11 +5,17 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsTaskInWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -28,6 +34,20 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
    public TaskWorkflowDefinition(Artifact artifact) throws Exception {
       super(artifact);
       throw new IllegalStateException("This constructor should never be used.");
+   }
+
+   public static List<WorkItemDefinition> getAtsWorkDefinitions() {
+      List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
+
+      // Add Task Page and Workflow Definition
+      workItems.add(new AtsTaskInWorkPageDefinition());
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+            TaskWorkflowDefinition.TASK_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
+            TaskWorkflowDefinition.TASK_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new TaskWorkflowDefinition());
+
+      return workItems;
    }
 
    /**

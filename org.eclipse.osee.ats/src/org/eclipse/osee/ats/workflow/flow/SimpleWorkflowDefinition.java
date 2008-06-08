@@ -5,8 +5,16 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsEndorseWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -57,5 +65,19 @@ public class SimpleWorkflowDefinition extends WorkFlowDefinition {
       // Add cancelled transitions
       teamWorkflowDefinition.addPageTransitionToPageAndReturn(SimpleState.Endorse.name(), SimpleState.Cancelled.name());
       teamWorkflowDefinition.addPageTransitionToPageAndReturn(SimpleState.InWork.name(), SimpleState.Cancelled.name());
+   }
+
+   public static List<WorkItemDefinition> getAtsWorkDefinitions() {
+      List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
+
+      workItems.add(new WorkPageDefinition(SimpleState.Endorse.name(), SimpleWorkflowDefinition.ENDORSE_STATE_ID,
+            AtsEndorseWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(SimpleState.InWork.name(), SimpleWorkflowDefinition.INWORK_STATE_ID, null));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+            SimpleWorkflowDefinition.COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
+            SimpleWorkflowDefinition.CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new SimpleWorkflowDefinition());
+      return workItems;
    }
 }

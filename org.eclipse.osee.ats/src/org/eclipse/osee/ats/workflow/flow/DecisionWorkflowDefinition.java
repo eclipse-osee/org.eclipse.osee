@@ -5,13 +5,19 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
+import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionFollowupWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionPrepareWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsPeerPrepareWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -30,6 +36,22 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
    public DecisionWorkflowDefinition(Artifact artifact) throws Exception {
       super(artifact);
       throw new IllegalStateException("This constructor should never be used.");
+   }
+
+   public static List<WorkItemDefinition> getAtsWorkDefinitions() {
+      List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
+
+      // Add Decision Pages and Workflow Definition
+      workItems.add(new AtsDecisionPrepareWorkPageDefinition());
+      workItems.add(new AtsDecisionDecisionWorkPageDefinition());
+      workItems.add(new AtsDecisionFollowupWorkPageDefinition());
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+            DecisionWorkflowDefinition.DECISION_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
+            DecisionWorkflowDefinition.DECISION_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new DecisionWorkflowDefinition());
+
+      return workItems;
    }
 
    /**
