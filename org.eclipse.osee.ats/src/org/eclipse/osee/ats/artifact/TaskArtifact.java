@@ -44,7 +44,9 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
 
    private SMAManager smaMgr;
 
-   public static String INWORK_STATE = "InWork";
+   public static enum TaskStates {
+      InWork, Completed, Cancelled
+   };
 
    /**
     * @param parentFactory
@@ -145,7 +147,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    public Boolean isInWork() {
-      return (smaMgr.getStateMgr().getCurrentStateName().equals(INWORK_STATE));
+      return (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork));
    }
 
    public Boolean isCompleted() {
@@ -175,8 +177,8 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    public void transitionToInWork(User toUser, boolean persist) throws Exception {
-      if (smaMgr.getStateMgr().getCurrentStateName().equals(INWORK_STATE)) return;
-      Result result = smaMgr.transition(INWORK_STATE, toUser, false);
+      if (smaMgr.getStateMgr().getCurrentStateName().equals(TaskStates.InWork)) return;
+      Result result = smaMgr.transition(TaskStates.InWork.name(), toUser, false);
       if (smaMgr.getStateMgr().getPercentComplete() == 100) smaMgr.getStateMgr().setPercentComplete(99);
       if (persist) smaMgr.getSma().saveSMA();
       if (result.isFalse()) result.popup();
@@ -248,7 +250,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return 0;
       double est = getWorldViewEstimatedHours();
       if (getWorldViewStatePercentComplete() == 0) return getWorldViewEstimatedHours();
-      double percent = smaMgr.getStateMgr().getPercentComplete(INWORK_STATE);
+      double percent = smaMgr.getStateMgr().getPercentComplete(TaskStates.InWork.name());
       if (percent == 0) return getWorldViewEstimatedHours();
       double remain = getWorldViewEstimatedHours() - (est * (percent / 100.0));
       return remain;
@@ -292,7 +294,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    public Collection<User> getImplementers() {
-      return smaMgr.getStateMgr().getAssignees(INWORK_STATE);
+      return smaMgr.getStateMgr().getAssignees(TaskStates.InWork.name());
    }
 
    /*

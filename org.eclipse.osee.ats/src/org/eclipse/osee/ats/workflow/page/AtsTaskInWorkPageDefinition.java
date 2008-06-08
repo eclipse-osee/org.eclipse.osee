@@ -6,7 +6,7 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -16,10 +16,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = TaskWorkflowDefinition.ID + "." + TaskArtifact.INWORK_STATE;
+   public static String ID = TaskWorkflowDefinition.ID + "." + TaskStates.InWork.name();
 
    public AtsTaskInWorkPageDefinition() {
-      this(TaskArtifact.INWORK_STATE, ID, null);
+      this(TaskStates.InWork.name(), ID, null);
    }
 
    public AtsTaskInWorkPageDefinition(String name, String pageId, String parentId) {

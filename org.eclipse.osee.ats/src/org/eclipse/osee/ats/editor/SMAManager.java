@@ -23,11 +23,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.util.BranchManager;
@@ -672,7 +672,7 @@ public class SMAManager {
    }
 
    public String getAssigneesWasIsStr() {
-      if (isCompleted() || isCancelled()) return "(" + Artifacts.commaArts(stateMgr.getAssignees(TaskArtifact.INWORK_STATE)) + ")";
+      if (isCompleted() || isCancelled()) return "(" + Artifacts.commaArts(stateMgr.getAssignees(TaskStates.InWork.name())) + ")";
       return Artifacts.commaArts(stateMgr.getAssignees());
    }
 

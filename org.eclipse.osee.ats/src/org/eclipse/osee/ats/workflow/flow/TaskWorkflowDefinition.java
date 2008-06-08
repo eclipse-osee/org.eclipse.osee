@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.workflow.flow;
 
+import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.page.AtsTaskInWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,7 +37,7 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
     */
    public TaskWorkflowDefinition(String name, String id) {
       super(name, id, null);
-      addPageTransition(AtsTaskInWorkPageDefinition.ID, TASK_COMPLETED_STATE_ID, TransitionType.ToPageAsDefault);
+      addPageTransition(TaskStates.InWork.name(), TASK_COMPLETED_STATE_ID, TransitionType.ToPageAsDefault);
 
       // Add return transitions
       addPageTransition(TASK_COMPLETED_STATE_ID, AtsTaskInWorkPageDefinition.ID, TransitionType.ToPageAsReturn);

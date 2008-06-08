@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
@@ -90,10 +91,10 @@ public class TaskMetrics extends AbstractBlam {
    private void tallyState(TaskArtifact task) throws SQLException, MultipleAttributesExist {
       XStateDam stateDam = new XStateDam(task);
 
-      SMAState state = stateDam.getState(TaskArtifact.INWORK_STATE, false);
+      SMAState state = stateDam.getState(TaskStates.InWork.name(), false);
       if (state == null) {
          XCurrentStateDam currentStateDam = new XCurrentStateDam(task);
-         state = currentStateDam.getState(TaskArtifact.INWORK_STATE, false);
+         state = currentStateDam.getState(TaskStates.InWork.name(), false);
       }
 
       for (User user : state.getAssignees()) {

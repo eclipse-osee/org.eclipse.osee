@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.workflow.page.AtsImplementWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsPeerPrepareWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsPeerReviewWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsTaskInWorkPageDefinition;
-import org.eclipse.osee.ats.workflow.page.SimpleInWorkWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -135,8 +134,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
          // Add Simple and Workflow Definition
          workItems.add(new WorkPageDefinition(SimpleState.Endorse.name(), SimpleWorkflowDefinition.ENDORSE_STATE_ID,
                AtsEndorseWorkPageDefinition.ID));
-         workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
-               SimpleWorkflowDefinition.INWORK_STATE_ID, SimpleInWorkWorkPageDefinition.ID));
+         workItems.add(new WorkPageDefinition(SimpleState.InWork.name(), SimpleWorkflowDefinition.INWORK_STATE_ID, null));
          workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
                SimpleWorkflowDefinition.COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
          workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
