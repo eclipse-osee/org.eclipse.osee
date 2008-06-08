@@ -23,12 +23,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 public class TaskWorkflowDefinition extends WorkFlowDefinition {
 
    public static String ID = "osee.ats.taskWorkflow";
-   public static String TASK_COMPLETED_STATE_ID = ID + "." + DefaultTeamState.Completed.name();
-   public static String TASK_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
 
    public TaskWorkflowDefinition() {
       this("Task Workflow Definition", ID);
-      startPageId = AtsTaskInWorkPageDefinition.ID;
+      startPageId = TaskStates.InWork.name();
    }
 
    public TaskWorkflowDefinition(Artifact artifact) throws Exception {
@@ -41,10 +39,10 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
 
       // Add Task Page and Workflow Definition
       workItems.add(new AtsTaskInWorkPageDefinition());
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
-            TaskWorkflowDefinition.TASK_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
-            TaskWorkflowDefinition.TASK_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(), ID + "." + TaskStates.Completed.name(),
+            AtsCompletedWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(), ID + "." + TaskStates.Cancelled.name(),
+            AtsCancelledWorkPageDefinition.ID));
       workItems.add(new TaskWorkflowDefinition());
 
       return workItems;
@@ -57,13 +55,13 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
     */
    public TaskWorkflowDefinition(String name, String id) {
       super(name, id, null);
-      addPageTransition(TaskStates.InWork.name(), TASK_COMPLETED_STATE_ID, TransitionType.ToPageAsDefault);
+      addPageTransition(TaskStates.InWork.name(), TaskStates.Completed.name(), TransitionType.ToPageAsDefault);
 
       // Add return transitions
-      addPageTransition(TASK_COMPLETED_STATE_ID, AtsTaskInWorkPageDefinition.ID, TransitionType.ToPageAsReturn);
+      addPageTransition(TaskStates.Completed.name(), TaskStates.InWork.name(), TransitionType.ToPageAsReturn);
 
       // Add cancelled transitions
-      addPageTransitionToPageAndReturn(AtsTaskInWorkPageDefinition.ID, TASK_CANCELLED_STATE_ID);
+      addPageTransitionToPageAndReturn(TaskStates.InWork.name(), TaskStates.Cancelled.name());
    }
 
 }
