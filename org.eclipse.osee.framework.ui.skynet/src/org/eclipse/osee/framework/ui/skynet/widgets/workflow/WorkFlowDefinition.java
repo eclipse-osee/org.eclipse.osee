@@ -232,12 +232,8 @@ public class WorkFlowDefinition extends WorkItemDefinition {
             if (toPageIds == null) {
                continue;
             }
-            try {
-               for (WorkItemDefinition def : WorkItemDefinitionFactory.getWorkItemDefinitions(toPageIds)) {
-                  workPageDefs.add((WorkPageDefinition) def);
-               }
-            } catch (Exception ex) {
-               OSEELog.logException(SkynetGuiPlugin.class, ex, false);
+            for (WorkItemDefinition def : WorkItemDefinitionFactory.getWorkItemDefinitions(toPageIds)) {
+               workPageDefs.add((WorkPageDefinition) def);
             }
          }
       }

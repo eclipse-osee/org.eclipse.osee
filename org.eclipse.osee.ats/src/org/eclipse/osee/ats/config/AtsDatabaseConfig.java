@@ -29,23 +29,23 @@ public class AtsDatabaseConfig extends DbInitializationTask {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
             AtsWorkDefinitions.getAtsWorkDefinitions());
 
-      // Import Work Item Definitions
+      // Import Team Work Item Definitions
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
             TeamWorkflowDefinition.getAtsWorkDefinitions());
 
-      // Import Work Item Definitions
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            SimpleWorkflowDefinition.getAtsWorkDefinitions());
-
-      // Import Work Item Definitions
+      // Import Task Work Item Definitions
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
             TaskWorkflowDefinition.getAtsWorkDefinitions());
 
-      // Import Work Item Definitions
+      // Import Simple Team Work Item Definitions
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
+            SimpleWorkflowDefinition.getAtsWorkDefinitions());
+
+      // Import Decision Work Item Definitions
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
             DecisionWorkflowDefinition.getAtsWorkDefinitions());
 
-      // Import Work Item Definitions
+      // Import Peer to Peer Work Item Definitions
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
             PeerToPeerWorkflowDefinition.getAtsWorkDefinitions());
 
