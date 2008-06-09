@@ -147,7 +147,7 @@ public class AtsWorkPage extends WorkPage {
     * @return the startPage
     */
    public boolean isStartPage() throws Exception {
-      return workFlowDefinition.getStartPage(true).getId().equals(getId());
+      return workFlowDefinition.getStartPage().getId().equals(getId());
    }
 
    /**

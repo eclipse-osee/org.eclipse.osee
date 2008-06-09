@@ -53,7 +53,7 @@ public class AtsWorkItemDefinitionTest extends TestCase {
             System.out.println("Testing Work Flow " + workItemDefinition);
             WorkFlowDefinition workFlowDefinition = (WorkFlowDefinition) workItemDefinition;
             assertTrue(workFlowDefinition.getPagesOrdered().size() > 0);
-            assertNotNull(workFlowDefinition.getStartPage(true));
+            assertNotNull(workFlowDefinition.getStartPage());
          }
       }
    }

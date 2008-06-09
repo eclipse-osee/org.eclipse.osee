@@ -25,9 +25,6 @@ public class WorkFlowDefinition extends WorkItemDefinition {
 
    public static String ARTIFACT_NAME = "Work Flow Definition";
 
-   // fromPageId --- TransitionType ---> toPageIds
-   private Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType =
-         new HashMap<String, Map<TransitionType, Set<String>>>();
    public static enum TransitionType {
       // Normal transition; will be provided as option in transition pulldown
       ToPage,
@@ -37,8 +34,16 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       // ToPage that will also be registered as the default selected transition state
       ToPageAsDefault,
    }
-   private Map<String, String> pageNameToPageId;
+   // fromPageId --- TransitionType ---> toPageIds
+   // Contains locally defined transitions
+   private Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType =
+         new HashMap<String, Map<TransitionType, Set<String>>>();
+   // Contains locally and inherited transitions 
+   protected Map<String, Map<TransitionType, Set<String>>> inheritedPageIdToPageIdsViaTransitionType;
+   // Contains local and inherited pageNameToPageIds
+   protected Map<String, String> pageNameToPageId;
    protected String startPageId;
+   protected String resolvedStartPageId;
 
    public WorkFlowDefinition(String name, String id, String parentId) {
       super(name, id, parentId);
@@ -49,24 +54,8 @@ public class WorkFlowDefinition extends WorkItemDefinition {
             artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
                   WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
 
-      // Read in this workflow's transition information
-      for (String transition : artifact.getAttributesToStringList(WorkItemAttributes.TRANSITION.getAttributeTypeName())) {
-         String[] strs = transition.split(";");
-         if (strs.length != 3) {
-            OSEELog.logException(
-                  SkynetGuiPlugin.class,
-                  new IllegalStateException(
-                        "Transition attribute from artifact " + artifact.getHumanReadableId() + " is invalid.  Must be <fromState>;<transitionType>;<toState>"),
-                  false);
-            continue;
-         }
-         TransitionType transitionType = TransitionType.valueOf(strs[1]);
-         // Since workflows can be defined by stateName or pageId, resolve any stateName to pageId so only dealing with one index
-         // eg (Endorse -> <workflow id>.Endorse -> osee.ats.Endorse  AND osee.ats.Endorse -> osee.ats.Endorse)
-         String fromPage = strs[0].contains(".") ? strs[0] : id + "." + strs[0];
-         String toPage = strs[2].contains(".") ? strs[2] : id + "." + strs[2];
-         addPageTransition(fromPage, toPage, transitionType);
-      }
+      // Add local transitions from this artifact
+      addTransitionsFromArtifact(artifact, pageIdToPageIdsViaTransitionType, getId());
 
       // Read in this workflow's start page
       startPageId =
@@ -77,7 +66,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
    public Artifact toArtifact(WriteType writeType) throws Exception {
       Artifact art = super.toArtifact(writeType);
       // Make sure start page is defined in this or parent's definition
-      if (getStartPageId(this, true) == null) {
+      if (getResolvedStartPageId() == null) {
          throw new IllegalStateException(
                "For WorkFlowDefinition " + getId() + ".  Start Page not defined.  Must be in this or a parent's WorkFlowDefinition.");
       }
@@ -101,24 +90,33 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return art;
    }
 
-   public Set<String> getPageNames() throws Exception {
+   public Collection<String> getPageNames() throws Exception {
       loadPageData();
       return pageNameToPageId.keySet();
    }
 
-   public Collection<String> getPageIds() throws Exception {
-      loadPageData();
-      return pageNameToPageId.values();
+   public static void loadInheritedData(WorkFlowDefinition workFlowDefinition, String workflowId, Map<String, Map<TransitionType, Set<String>>> inheritedPageIdToPageIdsViaTransitionType) throws Exception {
+      addTransitionsFromArtifact(WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workFlowDefinition.getId()),
+            inheritedPageIdToPageIdsViaTransitionType, workflowId);
+      if (workFlowDefinition.hasParent()) {
+         WorkFlowDefinition.loadInheritedData((WorkFlowDefinition) workFlowDefinition.getParent(), workflowId,
+               inheritedPageIdToPageIdsViaTransitionType);
+      }
    }
 
    public synchronized void loadPageData() throws Exception {
+      if (inheritedPageIdToPageIdsViaTransitionType == null) {
+         inheritedPageIdToPageIdsViaTransitionType = new HashMap<String, Map<TransitionType, Set<String>>>();
+         WorkFlowDefinition.loadInheritedData(this, getId(), inheritedPageIdToPageIdsViaTransitionType);
+      }
+      resolvedStartPageId = getResolvedStartPageId(this, getId());
       if (pageNameToPageId == null) {
          pageNameToPageId = new HashMap<String, String>();
-         for (String pageNameOrId : pageIdToPageIdsViaTransitionType.keySet()) {
+         for (String pageNameOrId : inheritedPageIdToPageIdsViaTransitionType.keySet()) {
             WorkPageDefinition workPageDefinition =
                   (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageNameOrId));
             pageNameToPageId.put(workPageDefinition.name, workPageDefinition.id);
-            for (Map<TransitionType, Set<String>> transTypeToPageIds : pageIdToPageIdsViaTransitionType.values()) {
+            for (Map<TransitionType, Set<String>> transTypeToPageIds : inheritedPageIdToPageIdsViaTransitionType.values()) {
                for (TransitionType transType : transTypeToPageIds.keySet()) {
                   for (String pageId2 : transTypeToPageIds.get(transType)) {
                      workPageDefinition =
@@ -172,8 +170,30 @@ public class WorkFlowDefinition extends WorkItemDefinition {
     * @param transitionType
     */
    public void addPageTransitionToPageAndReturn(String fromPageId, String toPageId) {
-      addPageTransition(fromPageId, toPageId, TransitionType.ToPage);
-      addPageTransition(toPageId, fromPageId, TransitionType.ToPageAsReturn);
+      addPageTransition(pageIdToPageIdsViaTransitionType, fromPageId, toPageId, TransitionType.ToPage);
+      addPageTransition(pageIdToPageIdsViaTransitionType, toPageId, fromPageId, TransitionType.ToPageAsReturn);
+   }
+
+   public static void addTransitionsFromArtifact(Artifact artifact, Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType, String workflowId) throws Exception {
+      // Read in this workflow's transition information
+      for (String transition : artifact.getAttributesToStringList(WorkItemAttributes.TRANSITION.getAttributeTypeName())) {
+         String[] strs = transition.split(";");
+         if (strs.length != 3) {
+            OSEELog.logException(
+                  SkynetGuiPlugin.class,
+                  new IllegalStateException(
+                        "Transition attribute from artifact " + artifact.getHumanReadableId() + " is invalid.  Must be <fromState>;<transitionType>;<toState>"),
+                  false);
+            continue;
+         }
+         TransitionType transType = TransitionType.valueOf(strs[1]);
+         // Since workflows can be defined by stateName or pageId, resolve any stateName to pageId so only dealing with one index
+         // eg (Endorse -> <workflow id>.Endorse -> osee.ats.Endorse  AND osee.ats.Endorse -> osee.ats.Endorse)
+         String fromPage = strs[0].contains(".") ? strs[0] : workflowId + "." + strs[0];
+         String toPage = strs[2].contains(".") ? strs[2] : workflowId + "." + strs[2];
+         addPageTransition(pageIdToPageIdsViaTransitionType, fromPage, toPage, transType);
+      }
+
    }
 
    /**
@@ -186,6 +206,19 @@ public class WorkFlowDefinition extends WorkItemDefinition {
     * @param transitionType
     */
    public void addPageTransition(String fromPageId, String toPageId, TransitionType... transitionType) {
+      WorkFlowDefinition.addPageTransition(pageIdToPageIdsViaTransitionType, fromPageId, toPageId, transitionType);
+   }
+
+   /**
+    * Register transition for from and to pages. The use of simple page names (eg "Endorse") allows for other workflows
+    * to inherit this workflow by just using the same state names. id will be prepended to name prior to retrieving the
+    * WorkPageDefinitions
+    * 
+    * @param fromPageId either page Name "Endorse" or full namespace "osee.ats.Endorse"
+    * @param toPageId either page Name "Endorse" or full namespace "osee.ats.Endorse"
+    * @param transitionType
+    */
+   public static void addPageTransition(Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType, String fromPageId, String toPageId, TransitionType... transitionType) {
       List<Object> transTypes = Collections.getAggregate((Object[]) transitionType);
       Map<TransitionType, Set<String>> transitionTypeToPageIds = pageIdToPageIdsViaTransitionType.get(fromPageId);
       if (transitionTypeToPageIds == null) {
@@ -218,13 +251,23 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return getPageDefinitions(this, fromPageId, true, transitionType);
    }
 
-   public Map<TransitionType, Set<String>> getTransitionTypeToPageIds(String fromPageId) {
+   public Map<TransitionType, Set<String>> getTransitionTypeToPageIds(String fromPageId) throws Exception {
+      loadPageData();
       return pageIdToPageIdsViaTransitionType.get(fromPageId);
    }
 
+   public Map<TransitionType, Set<String>> getInheritedTransitionTypeToPageIds(String fromPageId) throws Exception {
+      loadPageData();
+      return inheritedPageIdToPageIdsViaTransitionType.get(fromPageId);
+   }
+
    public static List<WorkPageDefinition> getPageDefinitions(WorkFlowDefinition workFlowDefinition, String fromPageId, boolean includeInherited, TransitionType... transitionType) throws Exception {
-      Map<TransitionType, Set<String>> transitionTypeToPageIds =
-            workFlowDefinition.getTransitionTypeToPageIds(fromPageId);
+      Map<TransitionType, Set<String>> transitionTypeToPageIds = null;
+      if (includeInherited) {
+         transitionTypeToPageIds = workFlowDefinition.getInheritedTransitionTypeToPageIds(fromPageId);
+      } else {
+         transitionTypeToPageIds = workFlowDefinition.getTransitionTypeToPageIds(fromPageId);
+      }
       List<WorkPageDefinition> workPageDefs = new ArrayList<WorkPageDefinition>();
       if (transitionTypeToPageIds != null) {
          for (TransitionType transType : transitionType) {
@@ -237,13 +280,11 @@ public class WorkFlowDefinition extends WorkItemDefinition {
             }
          }
       }
-      if (workFlowDefinition.hasParent()) workPageDefs.addAll(getPageDefinitions(
-            (WorkFlowDefinition) workFlowDefinition.getParent(), fromPageId, includeInherited, transitionType));
       return workPageDefs;
    }
 
    public List<WorkPageDefinition> getPagesOrdered() throws Exception {
-      WorkPageDefinition startWorkPageDefinition = getStartPage(true);
+      WorkPageDefinition startWorkPageDefinition = getStartPage();
       if (startWorkPageDefinition == null) throw new IllegalArgumentException(
             "Can't locate Start WorkPageDefinition for workflow " + getName());
 
@@ -311,16 +352,34 @@ public class WorkFlowDefinition extends WorkItemDefinition {
       return ARTIFACT_NAME;
    }
 
-   public WorkPageDefinition getStartPage(boolean includeInherited) throws Exception {
-      return (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getStartPageId(this, includeInherited));
+   public WorkPageDefinition getStartPage() throws Exception {
+      loadPageData();
+      if (resolvedStartPageId != null) {
+         return (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(resolvedStartPageId);
+      }
+      return null;
    }
 
-   public static String getStartPageId(WorkFlowDefinition workFlowDefinition, boolean includeInherited) throws Exception {
+   public void setStartPageId(String startPageId) {
+      this.startPageId = startPageId;
+   }
+
+   public String getStartPageId() throws Exception {
+      loadPageData();
+      return startPageId;
+   }
+
+   public String getResolvedStartPageId() throws Exception {
+      loadPageData();
+      return resolvedStartPageId;
+   }
+
+   private static String getResolvedStartPageId(WorkFlowDefinition workFlowDefinition, String workflowId) throws Exception {
       if (workFlowDefinition.startPageId != null) {
-         return workFlowDefinition.startPageId.contains(".") ? workFlowDefinition.startPageId : workFlowDefinition.id + "." + workFlowDefinition.startPageId;
+         return workFlowDefinition.startPageId.contains(".") ? workFlowDefinition.startPageId : workflowId + "." + workFlowDefinition.startPageId;
       }
-      if (includeInherited && workFlowDefinition.hasParent()) {
-         return getStartPageId((WorkFlowDefinition) workFlowDefinition.getParent(), includeInherited);
+      if (workFlowDefinition.hasParent()) {
+         return getResolvedStartPageId((WorkFlowDefinition) workFlowDefinition.getParent(), workflowId);
       }
       return null;
    }
