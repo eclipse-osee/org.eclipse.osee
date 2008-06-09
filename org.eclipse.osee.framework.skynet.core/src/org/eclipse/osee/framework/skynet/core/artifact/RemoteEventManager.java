@@ -244,39 +244,39 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
             // Prevent shutting down users without a valid message
             if (event instanceof SkynetDisconnectClientsEvent) {
                try {
-               String[] userIds = ((SkynetDisconnectClientsEvent) event).getUserIds();
-               User user = SkynetAuthentication.getUser();
+                  String[] userIds = ((SkynetDisconnectClientsEvent) event).getUserIds();
+                  User user = SkynetAuthentication.getUser();
                   if (user != null) {
                      String userId = user.getUserId();
-                  for (String temp : userIds) {
-                     if (temp.equals(userId)) {
-                        isShutdownAllowed = true;
-                        break;
+                     for (String temp : userIds) {
+                        if (temp.equals(userId)) {
+                           isShutdownAllowed = true;
+                           break;
                         }
                      }
                   }
                } catch (Exception ex) {
                   SkynetActivator.getLogger().log(Level.SEVERE, "Error processing shutdown", ex);
-            }
-            final boolean isShutdownRequest = isShutdownAllowed;
-            Display.getDefault().asyncExec(new Runnable() {
-               public void run() {
+               }
+               final boolean isShutdownRequest = isShutdownAllowed;
+               Display.getDefault().asyncExec(new Runnable() {
+                  public void run() {
                      if (isShutdownRequest) {
-                     MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                           "Shutdown Requested", message);
-                     // Shutdown the bench when this event is received
-                     PlatformUI.getWorkbench().close();
+                        MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                              "Shutdown Requested", message);
+                        // Shutdown the bench when this event is received
+                        PlatformUI.getWorkbench().close();
                      }
                   }
                });
-                  } else {
+            } else {
                Display.getDefault().asyncExec(new Runnable() {
                   public void run() {
                      MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                            "Remote Message", message);
                   }
                });
-               }
+            }
          }
       }
 
@@ -403,14 +403,17 @@ public class RemoteEventManager implements IServiceLookupListener, PersistenceMa
                modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Deleted;
             }
          } else if (event instanceof NetworkNewRelationLinkEvent) {
-            NetworkNewRelationLinkEvent newRelationLinkEvent = (NetworkNewRelationLinkEvent) event;
-            String rationale = newRelationLinkEvent.getRationale();
-            Artifact aArtifact = ArtifactQuery.getArtifactFromId(event.getArtAId(), branch);
-            Artifact bArtifact = ArtifactQuery.getArtifactFromId(event.getArtBId(), branch);
-            modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Added;
+            if (ArtifactCache.getActive(aArtId, branch.getBranchId()) != null || ArtifactCache.getActive(bArtId,
+                  branch.getBranchId()) != null) {
+               NetworkNewRelationLinkEvent newRelationLinkEvent = (NetworkNewRelationLinkEvent) event;
+               String rationale = newRelationLinkEvent.getRationale();
+               Artifact aArtifact = ArtifactQuery.getArtifactFromId(event.getArtAId(), branch);
+               Artifact bArtifact = ArtifactQuery.getArtifactFromId(event.getArtBId(), branch);
+               modType = org.eclipse.osee.framework.skynet.core.relation.RelationModifiedEvent.ModType.Added;
 
-            RelationManager.addRelation(relationType, aArtifact, bArtifact, rationale);
-            link = RelationManager.getLoadedRelation(relationType, aArtId, bArtId, branch, branch);
+               RelationManager.addRelation(relationType, aArtifact, bArtifact, rationale);
+               link = RelationManager.getLoadedRelation(relationType, aArtId, bArtId, branch, branch);
+            }
          }
 
          link.setNotDirty();
