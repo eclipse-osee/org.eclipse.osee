@@ -18,7 +18,6 @@ import java.util.logging.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.ArtifactVersionIncrementedEvent;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
@@ -227,7 +226,6 @@ public class ArtifactEditor extends MultiPageEditorPart implements IDirtiableEdi
       String guid = getEditorInput().getArtifact().getGuid();
       eventManager.register(CacheArtifactModifiedEvent.class, guid, this);
       eventManager.register(CacheRelationModifiedEvent.class, this);
-      eventManager.register(ArtifactVersionIncrementedEvent.class, this);
       eventManager.register(RemoteTransactionEvent.class, this);
       eventManager.register(TransactionRelationModifiedEvent.class, this);
       eventManager.register(DefaultBranchChangedEvent.class, this);

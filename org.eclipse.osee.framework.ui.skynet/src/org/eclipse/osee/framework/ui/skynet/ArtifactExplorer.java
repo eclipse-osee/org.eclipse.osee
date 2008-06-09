@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.StringFormat;
 import org.eclipse.osee.framework.plugin.core.config.ConfigUtil;
-import org.eclipse.osee.framework.skynet.core.ArtifactVersionIncrementedEvent;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
@@ -998,7 +997,6 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
       exploreRoot = artifact;
 
       SkynetEventManager.getInstance().unRegisterAll(this);
-      SkynetEventManager.getInstance().register(ArtifactVersionIncrementedEvent.class, this);
       SkynetEventManager.getInstance().register(AuthenticationEvent.class, this);
       SkynetEventManager.getInstance().register(CacheArtifactModifiedEvent.class, this);
       SkynetEventManager.getInstance().register(CacheRelationModifiedEvent.class, this);
@@ -1187,13 +1185,6 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
                   // make sure his linkmanager is loaded
                   treeViewer.refresh(bArt, false);
                }
-            } else if (event instanceof ArtifactVersionIncrementedEvent) {
-               ArtifactVersionIncrementedEvent verEvent = (ArtifactVersionIncrementedEvent) event;
-               Artifact parentArtifact = verEvent.getNewVersion().getParent();
-               treeViewer.remove(verEvent.getOldVersion());
-
-               if (parentArtifact != null) treeViewer.refresh(parentArtifact);
-
             } else if (event instanceof TransactionEvent) {
                ((TransactionEvent) event).fireSingleEvent(artifactExplorer);
             } else if (event instanceof DefaultBranchChangedEvent) {
