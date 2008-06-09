@@ -41,7 +41,7 @@ import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -119,24 +119,24 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
       criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, Operator.EQUAL));
+      criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
       new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All Actions", criteria, true));
 
       criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(DecisionReviewArtifact.ARTIFACT_NAME, Operator.EQUAL));
+      criteria.add(new ArtifactTypeSearch(DecisionReviewArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
       new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All Decision Review", criteria, true));
 
       criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(PeerToPeerReviewArtifact.ARTIFACT_NAME, Operator.EQUAL));
+      criteria.add(new ArtifactTypeSearch(PeerToPeerReviewArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
       new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All PeerToPeer Review", criteria, true));
 
       criteria = new LinkedList<ISearchPrimitive>();
       for (String teamArtifactName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         criteria.add(new ArtifactTypeSearch(teamArtifactName, Operator.EQUAL));
+         criteria.add(new ArtifactTypeSearch(teamArtifactName, DepricatedOperator.EQUAL));
       new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All Teams", criteria, false));
 
       criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, Operator.EQUAL));
+      criteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
       new SearchNavigateItem(adminItems, new CriteriaSearchItem("Show All Tasks", criteria, true));
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health");
