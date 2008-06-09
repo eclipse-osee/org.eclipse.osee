@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.EQUAL;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -21,12 +21,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  */
 public class ArtifactIdSearch implements ISearchPrimitive {
    private int artId;
-   private Operator operator;
+   private DepricatedOperator operator;
 
    /**
     * @param humanReadableId The human readable id to search for
     */
-   public ArtifactIdSearch(int artId, Operator operator) {
+   public ArtifactIdSearch(int artId, DepricatedOperator operator) {
       super();
       this.operator = operator;
       this.artId = artId;

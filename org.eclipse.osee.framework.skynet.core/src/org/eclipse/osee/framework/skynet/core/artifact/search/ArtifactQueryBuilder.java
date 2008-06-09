@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -50,6 +51,7 @@ public class ArtifactQueryBuilder {
    private Collection<ArtifactType> artifactTypes;
    private final boolean allowDeleted;
    private final ArtifactLoad loadLevel;
+   private boolean count = false;
 
    /**
     * @param artId
@@ -159,7 +161,7 @@ public class ArtifactQueryBuilder {
       return id;
    }
 
-   private String getArtifactInsertSql(boolean count) throws SQLException {
+   private String getArtifactInsertSql() throws SQLException {
       if (count) {
          sql.append("SELECT count(art1.art_id) FROM ");
       } else {
@@ -321,21 +323,42 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Artifact> getArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer) throws SQLException {
-      return ArtifactLoader.getArtifacts(getArtifactInsertSql(false), queryParameters.toArray(), artifactCountEstimate,
-            loadLevel, false, confirmer);
+      return internalGetArtifacts(artifactCountEstimate, confirmer, false);
    }
 
    public List<Artifact> reloadArtifacts(int artifactCountEstimate) throws SQLException {
-      return ArtifactLoader.getArtifacts(getArtifactInsertSql(false), queryParameters.toArray(), artifactCountEstimate,
-            loadLevel, true, null);
+      return internalGetArtifacts(artifactCountEstimate, null, true);
+   }
+
+   private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, boolean reload) throws SQLException {
+      List<Artifact> artifacts =
+            ArtifactLoader.getArtifacts(getArtifactInsertSql(), queryParameters.toArray(), artifactCountEstimate,
+                  loadLevel, reload, confirmer);
+      clearCriteria();
+      return artifacts;
+   }
+
+   private void clearCriteria() throws SQLException {
+      if (this.criteria != null) {
+         for (AbstractArtifactSearchCriteria critiri : criteria) {
+            critiri.cleanUp();
+         }
+      }
+   }
+
+   public void selectArtifacts(int queryId, int artifactCountEstimate, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters) throws SQLException {
+      ArtifactLoader.selectArtifacts(queryId, insertParameters, getArtifactInsertSql(), queryParameters.toArray(),
+            artifactCountEstimate);
+      clearCriteria();
    }
 
    public int countArtifacts() throws SQLException {
       int artifactCount = 0;
 
       ConnectionHandlerStatement chStmt = null;
+      count = true;
       try {
-         chStmt = ConnectionHandler.runPreparedQuery(1, getArtifactInsertSql(true), queryParameters.toArray());
+         chStmt = ConnectionHandler.runPreparedQuery(1, getArtifactInsertSql(), queryParameters.toArray());
          ResultSet rSet = chStmt.getRset();
 
          if (rSet.next()) {
@@ -344,7 +367,7 @@ public class ArtifactQueryBuilder {
       } finally {
          DbUtil.close(chStmt);
       }
-
+      clearCriteria();
       return artifactCount;
    }
 

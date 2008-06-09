@@ -22,11 +22,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.db.connection.DbUtil;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeToTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.change.TxChange;
@@ -71,7 +75,6 @@ public final class ArtifactLoader {
       int queryId = getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate);
-
       selectArtifacts(queryId, insertParameters, sql, queryParameters, artifactCountEstimate);
       List<Artifact> artifacts = loadArtifacts(queryId, loadLevel, confirmer, insertParameters.values(), reload);
       return artifacts;
@@ -105,6 +108,7 @@ public final class ArtifactLoader {
     */
    public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, Collection<Object[]> insertParameters, boolean reload) throws SQLException {
       if (insertParameters.size() > 0) {
+         long time = System.currentTimeMillis();
          try {
             selectArtifacts(insertParameters);
             List<Artifact> artifacts = new ArrayList<Artifact>(insertParameters.size());
@@ -129,6 +133,8 @@ public final class ArtifactLoader {
             return artifacts;
          } finally {
             clearQuery(queryId);
+            OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Artifact Load Time: %s",
+                  Lib.getElapseString(time)));
          }
       }
       return Collections.emptyList();
@@ -155,8 +161,10 @@ public final class ArtifactLoader {
       ConnectionHandler.runPreparedUpdateReturnCount(DELETE_FROM_LOADER, SQL3DataType.INTEGER, queryId);
    }
 
-   private static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate) throws SQLException {
+   public static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate) throws SQLException {
       ConnectionHandlerStatement chStmt = null;
+      long time = System.currentTimeMillis();
+
       try {
          chStmt = ConnectionHandler.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
          ResultSet rSet = chStmt.getRset();
@@ -170,6 +178,8 @@ public final class ArtifactLoader {
       } finally {
          DbUtil.close(chStmt);
       }
+      OseeLog.log(SkynetActivator.class, Level.INFO, String.format("Artifact Selection Time: %s",
+            Lib.getElapseString(time)));
    }
 
    private static Artifact retrieveShallowArtifact(ResultSet rSet, boolean reload) throws SQLException {

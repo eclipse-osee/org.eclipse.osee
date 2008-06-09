@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ARTIFACT_TYPE_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.EQUAL;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -22,14 +22,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  */
 public class ArtifactTypeSearch implements ISearchPrimitive {
    private String typeName;
-   private Operator operation;
+   private DepricatedOperator operation;
    private static final String tables = ARTIFACT_TABLE + "," + ARTIFACT_TYPE_TABLE;
    private final static String TOKEN = ";";
 
    /**
     * @param typeName
     */
-   public ArtifactTypeSearch(String typeName, Operator operation) {
+   public ArtifactTypeSearch(String typeName, DepricatedOperator operation) {
       super();
       this.typeName = typeName;
       this.operation = operation;
@@ -74,7 +74,7 @@ public class ArtifactTypeSearch implements ISearchPrimitive {
       if (values.length != 2) throw new IllegalStateException(
             "Value for " + ArtifactTypeSearch.class.getSimpleName() + " not parsable");
 
-      return new ArtifactTypeSearch(values[0], Operator.valueOf(values[1]));
+      return new ArtifactTypeSearch(values[0], DepricatedOperator.valueOf(values[1]));
    }
 
 }

@@ -35,6 +35,14 @@
 		<Constraint schema="OSEE" id="OSEE_ARTIFACT_LOADER_Q_A_B_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, ART_ID, BRANCH_ID" />
 	</Table>
 	
+	<Table name="OSEE_ATTRIBUTE_SEARCH" schema="OSEE">
+		<Column id="ATTR_QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="VALUE" defaultValue="not null" type="VARCHAR" />
+		<Index id="OSEE_ATTRIBUTE_SEARCH_A_IDX">
+			<AppliesTo id="ATTR_QUERY_ID"/>
+		</Index>
+	</Table>
+	
 	<Table name="OSEE_DEFINE_ARTIFACT_VERSION" schema="OSEE">
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />

@@ -11,16 +11,26 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.framework.db.connection.ConnectionHandler;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
 /**
  * @author Ryan D. Brooks
  */
-public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
+public class AttributeCriteria extends AbstractArtifactSearchCriteria {
+
+   public static final String INSERT_INTO_ATTRIBUTE_SEARCH =
+         "INSERT INTO osee_attribute_search (attr_query_id, value) VALUES (?, ?)";
+   public static final String DELETE_FROM_ATTRIBUTE_SEARCH =
+         "DELETE FROM osee_attribute_search WHERE attr_query_id = ?";
+
    private AttributeType attributeType;
    private String value;
    private Collection<String> values;
@@ -28,6 +38,8 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
    private String txdAlias;
    private String attrAlias;
    private final boolean historical;
+   private final Operator operator;
+   private int attrQueryId;
 
    /**
     * Constructor for search criteria that finds an attribute of the given type with its current value equal to the
@@ -37,7 +49,7 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * @param value to search; supports % wildcard
     * @throws SQLException
     */
-   public AttributeValueCriteria(String attributeTypeName, String value) throws SQLException {
+   public AttributeCriteria(String attributeTypeName, String value) throws SQLException {
       this(attributeTypeName, value, false);
    }
 
@@ -49,7 +61,7 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * @param value
     * @throws SQLException
     */
-   public AttributeValueCriteria(String attributeTypeName) throws SQLException {
+   public AttributeCriteria(String attributeTypeName) throws SQLException {
       this(attributeTypeName, null, false);
    }
 
@@ -62,8 +74,22 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * @param values
     * @throws SQLException
     */
-   public AttributeValueCriteria(String attributeTypeName, Collection<String> values) throws SQLException {
-      this(attributeTypeName, null, values, false);
+   public AttributeCriteria(String attributeTypeName, Collection<String> values) throws SQLException {
+      this(attributeTypeName, null, values, false, Operator.EQUAL);
+   }
+
+   /**
+    * Constructor for search criteria that finds an attribute of the given type with its current value exactly equal (or
+    * not equal) to any one of the given literal values. If the list only contains one value, then the search is
+    * conducted exactly as if the single value constructor was called. This search does not support the wildcard for
+    * multiple values.
+    * 
+    * @param attributeTypeName
+    * @param values
+    * @throws SQLException
+    */
+   public AttributeCriteria(String attributeTypeName, Collection<String> values, Operator operator) throws SQLException {
+      this(attributeTypeName, null, values, false, operator);
    }
 
    /**
@@ -75,11 +101,11 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
     * @param historical if true will search on any branch and any attribute revision
     * @throws SQLException
     */
-   public AttributeValueCriteria(String attributeTypeName, String value, boolean historical) throws SQLException {
-      this(attributeTypeName, value, null, historical);
+   public AttributeCriteria(String attributeTypeName, String value, boolean historical) throws SQLException {
+      this(attributeTypeName, value, null, historical, Operator.EQUAL);
    }
 
-   private AttributeValueCriteria(String attributeTypeName, String value, Collection<String> values, boolean historical) throws SQLException {
+   private AttributeCriteria(String attributeTypeName, String value, Collection<String> values, boolean historical, Operator operator) throws SQLException {
       if (attributeTypeName != null) {
          this.attributeType = AttributeTypeManager.getType(attributeTypeName);
       }
@@ -91,9 +117,16 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
             this.value = values.iterator().next();
          } else {
             this.values = values;
+            this.attrQueryId = ArtifactLoader.getNewQueryId();
+
+            List<Object[]> data = new ArrayList<Object[]>();
+            for (String str : values) {
+               data.add(new Object[] {SQL3DataType.INTEGER, this.attrQueryId, SQL3DataType.VARCHAR, str});
+            }
+            ConnectionHandler.runPreparedUpdateBatch(INSERT_INTO_ATTRIBUTE_SEARCH, data);
          }
       }
-
+      this.operator = operator;
       this.historical = historical;
    }
 
@@ -121,17 +154,30 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
          builder.append(attrAlias);
          builder.append(".value");
          if (value.contains("%")) {
+            if (operator == Operator.NOT_EQUAL) {
+               builder.append(" NOT");
+            }
             builder.append(" LIKE ");
          } else {
-            builder.append("=");
+            if (operator == Operator.NOT_EQUAL) {
+               builder.append("<>");
+            } else {
+               builder.append("=");
+            }
          }
          builder.append("? AND ");
          builder.addParameter(SQL3DataType.VARCHAR, value);
       }
 
       if (values != null && values.size() > 0) {
+
          builder.append(attrAlias);
-         builder.append(".value IN ('" + Collections.toString("','", values) + "') AND ");
+         builder.append(".value ");
+         if (operator == Operator.NOT_EQUAL) {
+            builder.append("NOT ");
+         }
+         builder.append("IN ( SELECT value FROM osee_attribute_search WHERE attr_query_id = ? ) AND ");
+         builder.addParameter(SQL3DataType.INTEGER, this.attrQueryId);
       }
 
       builder.append(attrAlias);
@@ -166,6 +212,9 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
       } else {
          strB.append("*");
       }
+      if (operator == Operator.NOT_EQUAL) {
+         strB.append(" NOT ");
+      }
       strB.append("=");
       if (value != null) {
          strB.append(value);
@@ -177,4 +226,9 @@ public class AttributeValueCriteria extends AbstractArtifactSearchCriteria {
       }
       return strB.toString();
    }
+
+   public void cleanUp() throws SQLException {
+      ConnectionHandler.runPreparedUpdate(DELETE_FROM_ATTRIBUTE_SEARCH, SQL3DataType.INTEGER, this.attrQueryId);
+   }
+
 }

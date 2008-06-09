@@ -10,15 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-public enum Operator {
-   EQUAL("="), NOT_EQUAL("<>");
+@Deprecated
+public enum DepricatedOperator {
+   EQUAL("="), NOT_EQUAL("<>"), LIKE(" like "), CONTAINS(" like "), IS(" is ");
 
    private String expression;
 
    /**
     * @param expression
     */
-   private Operator(String expression) {
+   private DepricatedOperator(String expression) {
       this.expression = expression;
    }
 

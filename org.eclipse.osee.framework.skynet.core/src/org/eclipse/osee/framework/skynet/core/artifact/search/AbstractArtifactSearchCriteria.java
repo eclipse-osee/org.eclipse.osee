@@ -23,6 +23,10 @@ public abstract class AbstractArtifactSearchCriteria {
 
    public abstract void addJoinArtId(ArtifactQueryBuilder builder, boolean left) throws SQLException;
 
+   public void cleanUp() throws SQLException {
+
+   }
+
    /* (non-Javadoc)
     * @see java.lang.Object#toString()
     */

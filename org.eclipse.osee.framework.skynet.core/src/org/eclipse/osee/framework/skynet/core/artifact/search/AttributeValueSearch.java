@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabas
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.db.connection.core.schema.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.IS;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.IS;
 import java.util.List;
 import org.eclipse.osee.framework.db.connection.core.schema.LocalAliasTable;
 import org.eclipse.osee.framework.db.connection.info.SQL3DataType;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 public class AttributeValueSearch implements ISearchPrimitive {
    private String attributeName;
    private String attributeValue;
-   private Operator operator;
+   private DepricatedOperator operator;
    private static final LocalAliasTable ATTRIBUTE_ALIAS_1 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_1");
    private static final LocalAliasTable ATTRIBUTE_ALIAS_2 = new LocalAliasTable(ATTRIBUTE_VERSION_TABLE, "attr_2");
    private static final LocalAliasTable ATTRIBUTE_TYPE_ALIAS_1 =
@@ -46,7 +46,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
     * @param attributeValue
     * @param operator
     */
-   public AttributeValueSearch(String attributeName, String attributeValue, Operator operator) {
+   public AttributeValueSearch(String attributeName, String attributeValue, DepricatedOperator operator) {
 
       if (attributeValue == null && operator != null) throw new IllegalArgumentException(
             "An attributeValue must be supplied if an operator is supplied");
@@ -82,7 +82,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
       String sql;
 
-      if (operator == Operator.LIKE || operator == Operator.CONTAINS)
+      if (operator == DepricatedOperator.LIKE || operator == DepricatedOperator.CONTAINS)
          sql = ATTRIBUTE_TYPE_ALIAS_1.column("name") + " LIKE ?";
       else
          sql = ATTRIBUTE_TYPE_ALIAS_1.column("name") + "=?";
@@ -98,7 +98,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
       if (attributeValue != null) {
          sql += " AND " + ATTRIBUTE_ALIAS_1.column("value") + operator + " ?";
          dataList.add(SQL3DataType.VARCHAR);
-         if (operator == Operator.CONTAINS)
+         if (operator == DepricatedOperator.CONTAINS)
             dataList.add("%" + attributeValue + "%");
          else
             dataList.add(attributeValue);
@@ -126,6 +126,6 @@ public class AttributeValueSearch implements ISearchPrimitive {
       if (values.length != 3) throw new IllegalStateException(
             "Value for " + AttributeValueSearch.class.getSimpleName() + " not parsable");
 
-      return new AttributeValueSearch(values[0], values[1], Operator.valueOf(values[2]));
+      return new AttributeValueSearch(values[0], values[1], DepricatedOperator.valueOf(values[2]));
    }
 }
