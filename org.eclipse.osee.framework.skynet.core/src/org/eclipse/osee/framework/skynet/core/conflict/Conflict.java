@@ -242,7 +242,7 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public Image getArtifactImage() throws IllegalArgumentException, SQLException, Exception {
-      return getArtifact().getArtifactType().getImage(getChangeType(), getModificationType());
+      return getArtifact().getArtifactType().getImage(getChangeType(), ModificationType.CHANGE);
    }
 
    public boolean okToOverwriteMerge() throws SQLException {

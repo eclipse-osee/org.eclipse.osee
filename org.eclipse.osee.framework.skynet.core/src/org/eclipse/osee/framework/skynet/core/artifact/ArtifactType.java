@@ -27,7 +27,6 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osee.framework.skynet.core.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SkynetActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
-import org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ModificationType;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictionType;
@@ -174,20 +173,14 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    }
 
    public Image getImage(ChangeType changeType, ModificationType modType) {
-      return getImage(changeType, modType, false);
-   }
-
-   public Image getImage(ChangeType changeType, ModificationType modType, boolean small) {
       if (changeType == null) throw new IllegalArgumentException("changeType can not be null.");
       if (modType == null) throw new IllegalArgumentException("modType can not be null.");
-      if (changeType == CONFLICTING && modType == NEW) throw new IllegalArgumentException(
-            "conflicting new artifacts are not supported");
+      if (changeType == CONFLICTING && modType == NEW) {
+         return imageRegistry.get(BASE + changeType + ModificationType.CHANGE);
+      }
 
       checkImageRegistry();
-      if (small)
-         return imageRegistry.get(BASE + changeType + modType + "Small");
-      else
-         return imageRegistry.get(BASE + changeType + modType);
+      return imageRegistry.get(BASE + changeType + modType);
    }
 
    public Image getImage(ConflictionType conType) {

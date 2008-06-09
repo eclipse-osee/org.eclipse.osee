@@ -123,8 +123,16 @@ public class AttributeToTransactionOperation {
    }
 
    private void createNewAttributeMemo(Attribute<?> attribute) throws SQLException {
+      if (attribute == null) return;
       int gammaId = SkynetDatabase.getNextGammaId();
-      int attrId = Query.getNextSeqVal(null, SkynetDatabase.ATTR_ID_SEQ);
+      int attrId =
+            ConfigurationPersistenceManager.getExistingAttributeId(artifact.getArtId(),
+                  attribute.getAttributeType().getAttrTypeId(),
+                  artifact.getAttributes(attribute.getAttributeType().getName()));
+      //check for single and existing and find attrid if exists
+      if (attrId < 0) {
+         attrId = Query.getNextSeqVal(null, SkynetDatabase.ATTR_ID_SEQ);
+      }
       attribute.setIds(attrId, gammaId);
    }
 

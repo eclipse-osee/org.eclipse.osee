@@ -173,7 +173,7 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public Image getImage() {
-      return AttributeChangeIcons.getImage(getChangeType(), getModificationType());
+      return AttributeChangeIcons.getImage(getChangeType(), ModificationType.CHANGE);
    }
 
    /*

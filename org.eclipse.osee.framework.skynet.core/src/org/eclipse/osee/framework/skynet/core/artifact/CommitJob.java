@@ -75,12 +75,6 @@ class CommitJob extends Job {
    private static final String UPDATE_MERGE_TRANSACTIONS =
          "UPDATE osee_Define_txs set gamma_id = ?, mod_type = " + ModificationType.MERGED.getValue() + " Where transaction_id = ? and gamma_id = ?";
 
-   private static final String DELETE_MERGE_TRANSACTIONS =
-         "DELETE from osee_Define_txs Where transaction_id = ? and gamma_id = ?";
-
-   private static final String UPDATE_CURRENT_TRANSACTIONS =
-         "UPDATE osee_Define_txs tx1 set tx_current = 1 WHERE EXISTS (SELECT 'x' from osee_define_tx_details det WHERE det.branch_id = ? and det.transaction_id = tx1.transaction_id and tx1.gamma_id = ?)";
-
    private static final String ARTIFACT_CHANGES =
          "SELECT av1.art_id, ? as branch_id FROM osee_Define_txs tx1, osee_define_artifact_version av1 WHERE tx1.transaction_id = ? AND tx1.gamma_id = av1.gamma_id UNION ALL SELECT ar1.art_id, ? as branch_id FROM osee_Define_txs tx1, osee_define_rel_link rl1, osee_define_artifact ar1 WHERE (rl1.a_art_id = ar1.art_id OR rl1.b_art_id = ar1.art_id) AND tx1.transaction_id = ? AND tx1.gamma_id = rl1.gamma_id";
 
@@ -212,17 +206,9 @@ class CommitJob extends Job {
          //add in all merge branch changes over any other source branch changes.
          if (conflictsExist) {
             for (Conflict conflict : conflicts) {
-               if (!conflict.mergeEqualsDestination()) {//Only update if merge value is different than the destination Value
-                  insertCount +=
-                        ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, SQL3DataType.INTEGER,
-                              conflict.getMergeGammaId(), SQL3DataType.INTEGER, newTransactionNumber,
-                              SQL3DataType.INTEGER, conflict.getSourceGamma());
-               } else { //If merge value is the same as the destination value remove the Source Branch updates from the table.
-                  ConnectionHandler.runPreparedUpdateReturnCount(DELETE_MERGE_TRANSACTIONS, SQL3DataType.INTEGER,
-                        newTransactionNumber, SQL3DataType.INTEGER, conflict.getSourceGamma());
-                  ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_CURRENT_TRANSACTIONS, SQL3DataType.INTEGER,
-                        toBranch.getBranchId(), SQL3DataType.INTEGER, conflict.getDestGamma());
-               }
+               ConnectionHandler.runPreparedUpdateReturnCount(UPDATE_MERGE_TRANSACTIONS, SQL3DataType.INTEGER,
+                     conflict.getMergeGammaId(), SQL3DataType.INTEGER, newTransactionNumber, SQL3DataType.INTEGER,
+                     conflict.getSourceGamma());
             }
 
          }
