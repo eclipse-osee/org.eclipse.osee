@@ -121,7 +121,22 @@ public class ArtifactPersistenceManager {
    public static final String INSERT_TRANSACTION_HOLDER =
          "INSERT INTO osee_transaction_holder (query_id, gamma_id, transaction_id) VALUES (?, ?, ?)";
 
+   private static final String SELECT_ARTIFACT_START =
+         "SELECT art1.*, txs1.* FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
+   private static final String SELECT_ARTIFACT_END =
+         " AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? order by txs1.transaction_id desc";
+   private static final String SELECT_ARTIFACT_BY_GUID = SELECT_ARTIFACT_START + "art1.guid =?" + SELECT_ARTIFACT_END;
+   private static final String SELECT_ARTIFACT_BY_ID = SELECT_ARTIFACT_START + "art1.art_id =?" + SELECT_ARTIFACT_END;
+
    private static final String DELETE_FROM_HOLDER = "DELETE FROM osee_transaction_holder WHERE query_id = ?";
+
+   private static final String ARTIFACT_SELECT =
+         "SELECT osee_define_artifact.art_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
+
+   private static final String ARTIFACT_ID_SELECT =
+         "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
+
+   private static final String ARTIFACT_COUNT_SELECT = "SELECT COUNT(art_id) FROM " + ARTIFACT_TABLE + " WHERE ";
 
    private ExtensionDefinedObjects<IAttributeSaveListener> attributeSaveListeners;
 
@@ -232,13 +247,6 @@ public class ArtifactPersistenceManager {
             artifact.getHumanReadableId());
    }
 
-   private static final String SELECT_ARTIFACT_START =
-         "SELECT art1.*, txs1.* FROM osee_define_artifact art1, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE ";
-   private static final String SELECT_ARTIFACT_END =
-         " AND art1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ? AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? order by txs1.transaction_id desc";
-   private static final String SELECT_ARTIFACT_BY_GUID = SELECT_ARTIFACT_START + "art1.guid =?" + SELECT_ARTIFACT_END;
-   private static final String SELECT_ARTIFACT_BY_ID = SELECT_ARTIFACT_START + "art1.art_id =?" + SELECT_ARTIFACT_END;
-
    /**
     * This method acquires <code>Artifact</code>'s directly from the database. This should only be called by
     * factories since all caching is performed by the factory.
@@ -304,14 +312,6 @@ public class ArtifactPersistenceManager {
 
       return artifact;
    }
-
-   private static final String ARTIFACT_SELECT =
-         "SELECT osee_define_artifact.art_id, txd1.branch_id FROM osee_define_artifact, osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
-
-   private static final String ARTIFACT_ID_SELECT =
-         "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
-
-   private static final String ARTIFACT_COUNT_SELECT = "SELECT COUNT(art_id) FROM " + ARTIFACT_TABLE + " WHERE ";
 
    public static CharSequence getSelectArtIdSql(ISearchPrimitive searchCriteria, List<Object> dataList, Branch branch) throws SQLException {
       return getSelectArtIdSql(searchCriteria, dataList, null, branch);
