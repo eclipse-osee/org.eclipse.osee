@@ -175,6 +175,7 @@ public class WorkFlowDefinition extends WorkItemDefinition {
    }
 
    public static void addTransitionsFromArtifact(Artifact artifact, Map<String, Map<TransitionType, Set<String>>> pageIdToPageIdsViaTransitionType, String workflowId) throws Exception {
+      if (artifact == null) return;
       // Read in this workflow's transition information
       for (String transition : artifact.getAttributesToStringList(WorkItemAttributes.TRANSITION.getAttributeTypeName())) {
          String[] strs = transition.split(";");

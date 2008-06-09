@@ -5,10 +5,9 @@
  */
 package org.eclipse.osee.ats.config.demo.workflow;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -21,10 +20,10 @@ public class DemoTestWorkFlowDefinition extends TeamWorkflowDefinition {
       super("Demo Test Work Flow Definition", ID, TeamWorkflowDefinition.ID);
    }
 
-   public static List<WorkItemDefinition> getWorkItemDefinitions() {
-      List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
-      workItems.add(new DemoTestWorkFlowDefinition());
-      return workItems;
+   public void config(WriteType writeType, XResultData xResultData) throws Exception {
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
+            TeamWorkflowDefinition.getWorkPageDefinitionsForId(getId()));
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, new DemoTestWorkFlowDefinition());
    }
 
 }

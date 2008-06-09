@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.config.demo.workflow.DemoCodeWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoReqWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoSWDesignWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.vue.LoadAIsAndTeamsAction;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,15 +45,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.
 public class AtsConfigDemoDatabaseConfig extends DbInitializationTask {
    public void run(Connection connection) throws Exception {
 
-      // Import WorkItemDefinitions
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            DemoCodeWorkFlowDefinition.getWorkItemDefinitions());
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            DemoTestWorkFlowDefinition.getWorkItemDefinitions());
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            DemoSWDesignWorkFlowDefinition.getWorkItemDefinitions());
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            DemoReqWorkFlowDefinition.getWorkItemDefinitions());
+      new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
+      new DemoTestWorkFlowDefinition().config(WriteType.New, null);
+      new DemoReqWorkFlowDefinition().config(WriteType.New, null);
+      new DemoSWDesignWorkFlowDefinition().config(WriteType.New, null);
 
       // Creates Actionable Items and Teams
       // Teams are related to workflow by id specified in team object in VUE diagram
