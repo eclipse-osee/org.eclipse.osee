@@ -46,6 +46,10 @@ public class OseeLog {
       log.log(loggerName, loggerName, level, message);
    }
 
+   public static void log(Class loggerName, Level level, String message) {
+      log.log(loggerName.getName(), loggerName.getName(), level, message);
+   }
+
    public static void log(String loggerName, Level level, String message, Throwable th) {
       log.log(loggerName, loggerName, level, message, th);
    }
