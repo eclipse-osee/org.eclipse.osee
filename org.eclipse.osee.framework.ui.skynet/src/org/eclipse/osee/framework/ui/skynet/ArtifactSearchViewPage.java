@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CacheArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.TransactionArtifactModifiedEvent;
+import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.attribute.Attribute;
 import org.eclipse.osee.framework.skynet.core.event.SkynetEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.CacheRelationModifiedEvent;
@@ -370,7 +371,17 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
          @Override
          public boolean isEnabled() {
-            return accessControlManager.checkObjectListPermission(getSelectedArtifacts(viewer), PermissionEnum.WRITE);
+            boolean isEnabled = true;
+            List<Artifact> artifacts = getSelectedArtifacts(viewer);
+            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.WRITE);
+            //whole word artifacts can only be viewed as a single document
+            for (Artifact artifact : artifacts) {
+               if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
+                  isEnabled &= artifacts.size() == 1;
+                  break;
+               }
+            }
+            return isEnabled;
          }
       });
    }
@@ -415,7 +426,17 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
          @Override
          public boolean isEnabled() {
-            return accessControlManager.checkObjectListPermission(getSelectedArtifacts(viewer), PermissionEnum.READ);
+            boolean isEnabled = true;
+            List<Artifact> artifacts = getSelectedArtifacts(viewer);
+            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+            //whole word artifacts can only be viewed as a single document
+            for (Artifact artifact : artifacts) {
+               if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
+                  isEnabled &= artifacts.size() == 1;
+                  break;
+               }
+            }
+            return isEnabled;
          }
       });
 
@@ -435,7 +456,17 @@ public class ArtifactSearchViewPage extends AbstractArtifactSearchViewPage imple
 
          @Override
          public boolean isEnabled() {
-            return accessControlManager.checkObjectListPermission(getSelectedArtifacts(viewer), PermissionEnum.READ);
+            boolean isEnabled = true;
+            List<Artifact> artifacts = getSelectedArtifacts(viewer);
+            isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+            //whole word artifacts can only be viewed as a single document
+            for (Artifact artifact : artifacts) {
+               if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
+                  isEnabled &= artifacts.size() == 1;
+                  break;
+               }
+            }
+            return isEnabled;
          }
       });
 

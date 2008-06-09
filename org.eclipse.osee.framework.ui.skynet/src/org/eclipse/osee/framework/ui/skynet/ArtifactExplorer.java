@@ -568,8 +568,7 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
 
       try {
          Collection<ArtifactType> descriptors =
-               ConfigurationPersistenceManager.getValidArtifactTypes(
-                     BranchPersistenceManager.getInstance().getDefaultBranch());
+               ConfigurationPersistenceManager.getValidArtifactTypes(BranchPersistenceManager.getInstance().getDefaultBranch());
          for (ArtifactType descriptor : descriptors) {
             if (!descriptor.getName().equals("Root Artifact")) {
                MenuItem item = new MenuItem(subMenu, SWT.PUSH);
@@ -852,11 +851,9 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
             while (iterator.hasNext()) {
                Artifact object = (Artifact) iterator.next();
                if ((new GlobalMenuPermissions(object)).isLocked()) {
-                  AccessControlManager.getInstance().unLockObject(object,
-                        SkynetAuthentication.getUser());
+                  AccessControlManager.getInstance().unLockObject(object, SkynetAuthentication.getUser());
                } else {
-                  AccessControlManager.getInstance().lockObject(object,
-                        SkynetAuthentication.getUser());
+                  AccessControlManager.getInstance().lockObject(object, SkynetAuthentication.getUser());
                }
             }
          }
@@ -1145,11 +1142,11 @@ public class ArtifactExplorer extends ViewPart implements IEventReceiver, IActio
          lockMenuItem.setEnabled(permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
          editMenuItem.setEnabled(permiss.isWritePermission());
          createMenuItem.setEnabled(permiss.isWritePermission());
-         // previewMenuItem.setEnabled(readPermission);
          openMenuItem.setEnabled(permiss.isWritePermission());
          goIntoMenuItem.setEnabled(permiss.isReadPermission());
          copyMenuItem.setEnabled(permiss.isReadPermission());
          pasteMenuItem.setEnabled(permiss.isWritePermission());
+
       }
    }
 

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
+import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.revision.TransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -112,16 +113,20 @@ public class ArtifactPreviewMenu {
                      permitted &=
                            accessManager.checkObjectPermission(SkynetAuthentication.getUser(), artifact,
                                  PermissionEnum.READ);
-                  }
 
-                  previewMenuItem.setEnabled(permitted);
+                     //whole word artifacts can only be viewed as a single document
+                     if (artifact instanceof WordArtifact && ((WordArtifact) artifact).isWholeWordArtifact()) {
+                        permitted &= selection.size() == 1;
+                        break;
+                     }
+                  }
                }
             } catch (Exception ex) {
                OSEELog.logException(ArtifactPreviewMenu.class, ex, true);
                previewMenuItem.setEnabled(false);
             }
+            previewMenuItem.setEnabled(permitted);
          }
-
       });
    }
 

@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.access.PermissionEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.WordArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -71,6 +72,14 @@ public abstract class PreviewArtifactHandler extends AbstractHandler {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
          artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
          isEnabled = accessControlManager.checkObjectListPermission(artifacts, PermissionEnum.READ);
+
+         //whole word artifacts can only be viewed as a single document
+         for (Artifact artifact : artifacts) {
+            if (artifact instanceof WordArtifact && !((WordArtifact) artifact).isWholeWordArtifact()) {
+               isEnabled &= artifacts.size() == 1;
+               break;
+            }
+         }
       }
 
       return isEnabled;
