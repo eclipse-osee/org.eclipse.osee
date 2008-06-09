@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.search.Operator.EQUAL;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator.EQUAL;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
