@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
@@ -30,8 +32,18 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
    private List<TaskResOptionDefinition> options = new ArrayList<TaskResOptionDefinition>();
    public static String ATS_TASK_OPTIONS_TAG = "AtsTaskOptions";
 
-   public TaskResolutionOptionRule(String name, String id) {
+   public TaskResolutionOptionRule(String name, String id, String value) {
       super(name, id, null);
+      if (value != null && !value.equals("")) setData(value);
+   }
+
+   /**
+    * @param artifact
+    * @throws Exception
+    */
+   public TaskResolutionOptionRule(Artifact artifact) throws Exception {
+      super(artifact);
+      fromXml(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), ""));
    }
 
    public static TaskResolutionOptionRule getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws Exception {

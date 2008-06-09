@@ -132,9 +132,6 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       return defs;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider#getWorkItemDefinitions()
-    */
    @Override
    public Collection<WorkItemDefinition> getProgramaticWorkItemDefinitions() throws Exception {
       return new ArrayList<WorkItemDefinition>();

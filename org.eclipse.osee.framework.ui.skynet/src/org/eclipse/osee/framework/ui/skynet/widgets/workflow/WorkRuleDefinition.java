@@ -67,7 +67,7 @@ public class WorkRuleDefinition extends WorkItemDefinition {
    @Override
    public Artifact toArtifact(WriteType writeType) throws Exception {
       Artifact ruleArt = super.toArtifact(writeType);
-      if (get() != null) ruleArt.setSoleAttributeValue(WorkItemAttributes.WORK_NAME.getAttributeTypeName(), get());
+      if (get() != null) ruleArt.setSoleAttributeValue(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), get());
       return ruleArt;
    }
 
