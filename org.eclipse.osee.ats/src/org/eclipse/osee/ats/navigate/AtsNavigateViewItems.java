@@ -70,7 +70,7 @@ import org.eclipse.osee.framework.skynet.core.SkynetAuthentication;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamOperations;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.BlamOperation;
 import org.eclipse.osee.framework.ui.skynet.util.EmailGroupsAndUserGroups;
@@ -109,7 +109,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       User user = SkynetAuthentication.getUser();
 
       LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, Operator.EQUAL));
+      criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
       items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
       items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
       items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
@@ -151,8 +151,8 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(new SearchNavigateItem(null, new UserCommunitySearchItem()));
 
       XNavigateItem aiTeam = new XNavigateItem(null, "Actionable Items");
-      new SearchNavigateItem(aiTeam, new ActionableItemWorldSearchItem("Actionable Item Actions", (String[]) null,
-            false, true, false));
+      new SearchNavigateItem(aiTeam, new ActionableItemWorldSearchItem(null, "Actionable Item Actions", false, true,
+            false));
       items.add(aiTeam);
 
       XNavigateItem teamItem = new XNavigateItem(null, "Teams");
@@ -244,24 +244,24 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new UpdateAtsWorkItemDefinitions(adminItems);
 
          criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, Operator.EQUAL));
+         criteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
          new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Actions", criteria, true));
 
          criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(DecisionReviewArtifact.ARTIFACT_NAME, Operator.EQUAL));
+         criteria.add(new ArtifactTypeSearch(DecisionReviewArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
          new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Decision Review", criteria, true));
 
          criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(PeerToPeerReviewArtifact.ARTIFACT_NAME, Operator.EQUAL));
+         criteria.add(new ArtifactTypeSearch(PeerToPeerReviewArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
          new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - PeerToPeer Review", criteria, true));
 
          criteria = new LinkedList<ISearchPrimitive>();
          for (String teamArtifactName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-            criteria.add(new ArtifactTypeSearch(teamArtifactName, Operator.EQUAL));
+            criteria.add(new ArtifactTypeSearch(teamArtifactName, DepricatedOperator.EQUAL));
          new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Teams", criteria, false));
 
          criteria = new LinkedList<ISearchPrimitive>();
-         criteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, Operator.EQUAL));
+         criteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
          new SearchNavigateItem(adminItems, new CriteriaSearchItem("Admin - Tasks", criteria, true));
 
          new DoesNotWorkItem(adminItems);

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSear
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 
@@ -90,20 +90,20 @@ public class EditTasksByTeamVersionSearchItem extends WorldSearchItem {
       List<ISearchPrimitive> teamDefWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       for (TeamDefinitionArtifact tda : getSearchTeamDefs())
          teamDefWorkflowCriteria.add(new AttributeValueSearch(
-               ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid(), Operator.EQUAL));
+               ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid(), DepricatedOperator.EQUAL));
       FromArtifactsSearch teamDefWorkflowSearch = new FromArtifactsSearch(teamDefWorkflowCriteria, false);
 
       FromArtifactsSearch versionWorkflowSearch = null;
       if (selectedVersion != null) {
          List<ISearchPrimitive> versionCriteria = new LinkedList<ISearchPrimitive>();
-         versionCriteria.add(new ArtifactIdSearch(selectedVersion.getArtId(), Operator.EQUAL));
+         versionCriteria.add(new ArtifactIdSearch(selectedVersion.getArtId(), DepricatedOperator.EQUAL));
          versionWorkflowSearch = new FromArtifactsSearch(versionCriteria, true);
       }
 
       // Find all Team Workflows artifact types
       List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, Operator.EQUAL));
+         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, DepricatedOperator.EQUAL));
       FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
 
       List<ISearchPrimitive> allProductCriteria = new LinkedList<ISearchPrimitive>();

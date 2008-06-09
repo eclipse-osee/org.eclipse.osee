@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearc
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.NotSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.util.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
@@ -132,13 +132,13 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       List<ISearchPrimitive> teamDefWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       for (TeamDefinitionArtifact tda : getSearchTeamDefs())
          teamDefWorkflowCriteria.add(new AttributeValueSearch(
-               ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid(), Operator.EQUAL));
+               ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(), tda.getGuid(), DepricatedOperator.EQUAL));
       FromArtifactsSearch teamDefWorkflowSearch = new FromArtifactsSearch(teamDefWorkflowCriteria, false);
 
       // Find all Team Workflows artifact types
       List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, Operator.EQUAL));
+         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, DepricatedOperator.EQUAL));
       FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
 
       List<ISearchPrimitive> allTeamCriteria = new LinkedList<ISearchPrimitive>();
@@ -146,9 +146,9 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
       allTeamCriteria.add(teamWorkflowSearch);
       if (!showFinished) {
          allTeamCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Cancelled.name() + ";;;", Operator.NOT_EQUAL));
+               DefaultTeamState.Cancelled.name() + ";;;", DepricatedOperator.NOT_EQUAL));
          allTeamCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Completed.name() + ";;;", Operator.NOT_EQUAL));
+               DefaultTeamState.Completed.name() + ";;;", DepricatedOperator.NOT_EQUAL));
       }
       FromArtifactsSearch allTeamWorkflows = new FromArtifactsSearch(allTeamCriteria, true);
 
@@ -161,9 +161,9 @@ public class UnReleasedTeamWorldSearchItem extends WorldSearchItem {
 
       // Get un-released version artifacts
       List<ISearchPrimitive> unReleasedVersionCriteria = new LinkedList<ISearchPrimitive>();
-      unReleasedVersionCriteria.add(new ArtifactTypeSearch(VersionArtifact.ARTIFACT_NAME, Operator.EQUAL));
+      unReleasedVersionCriteria.add(new ArtifactTypeSearch(VersionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
       unReleasedVersionCriteria.add(new AttributeValueSearch(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName(), "no",
-            Operator.EQUAL));
+            DepricatedOperator.EQUAL));
       FromArtifactsSearch unReleasedVersionCriteriaArts = new FromArtifactsSearch(unReleasedVersionCriteria, true);
 
       List<ISearchPrimitive> unReleasedTeamsCriteria = new LinkedList<ISearchPrimitive>();

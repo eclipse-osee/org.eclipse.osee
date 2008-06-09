@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AIFile;
@@ -70,7 +70,7 @@ public class TaskMetrics extends AbstractBlam {
       ArtifactType descriptor = variableMap.getArtifactSubtypeDescriptor("Artifact Type");
 
       FromArtifactsSearch teamWorkflowSearch =
-            new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(), Operator.EQUAL));
+            new FromArtifactsSearch(new ArtifactTypeSearch(descriptor.getName(), DepricatedOperator.EQUAL));
       LinkedList<ISearchPrimitive> relatedCriteria = new LinkedList<ISearchPrimitive>();
       relatedCriteria.add(new InRelationSearch(teamWorkflowSearch, CoreRelationEnumeration.SmaToTask_Task));
 

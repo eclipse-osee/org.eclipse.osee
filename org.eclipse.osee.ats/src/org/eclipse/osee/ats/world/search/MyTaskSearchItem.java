@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 
 /**
  * @author Donald G. Dunne
@@ -44,12 +44,12 @@ public class MyTaskSearchItem extends UserSearchItem {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "<" + user.getUserId() + ">", Operator.CONTAINS));
+            "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
       FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
 
       List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       teamWorkflowCriteria.add(currentStateSearch);
-      teamWorkflowCriteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, Operator.EQUAL));
+      teamWorkflowCriteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
 
       if (isCancelled()) return EMPTY_SET;
       Collection<Artifact> arts =

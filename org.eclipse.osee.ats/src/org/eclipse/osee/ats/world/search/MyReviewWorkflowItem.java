@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 
 /**
  * @author Donald G. Dunne
@@ -47,19 +47,19 @@ public class MyReviewWorkflowItem extends UserSearchItem {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "<" + user.getUserId() + ">", Operator.CONTAINS));
+            "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
       if (reviewState == ReviewState.All) {
          currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-               "<" + user.getUserId() + ">", Operator.CONTAINS));
+               "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
          currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.ROLE_ATTRIBUTE.getStoreName(),
-               "userId>" + user.getUserId() + "</userId", Operator.CONTAINS));
+               "userId>" + user.getUserId() + "</userId", DepricatedOperator.CONTAINS));
       }
       FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
 
       // Find all Team Workflows artifact types
       List<ISearchPrimitive> reviewTypeCriteria = new LinkedList<ISearchPrimitive>();
       for (String reviewArtName : ReviewManager.getAllReviewArtifactTypeNames())
-         reviewTypeCriteria.add(new ArtifactTypeSearch(reviewArtName, Operator.EQUAL));
+         reviewTypeCriteria.add(new ArtifactTypeSearch(reviewArtName, DepricatedOperator.EQUAL));
       FromArtifactsSearch reviewArtSearch = new FromArtifactsSearch(reviewTypeCriteria, false);
 
       List<ISearchPrimitive> allCriteria = new LinkedList<ISearchPrimitive>();

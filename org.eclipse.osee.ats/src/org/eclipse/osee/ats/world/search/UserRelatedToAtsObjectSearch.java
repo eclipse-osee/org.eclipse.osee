@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
@@ -46,22 +46,22 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       List<ISearchPrimitive> currentStateCriteria = new LinkedList<ISearchPrimitive>();
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "<" + user.getUserId() + ">", Operator.CONTAINS));
+            "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
       if (!activeObjectsOnly) {
          currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.STATE_ATTRIBUTE.getStoreName(),
-               "<" + user.getUserId() + ">", Operator.CONTAINS));
+               "<" + user.getUserId() + ">", DepricatedOperator.CONTAINS));
          currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
-               "userId=\"" + user.getUserId() + "\"", Operator.CONTAINS));
+               "userId=\"" + user.getUserId() + "\"", DepricatedOperator.CONTAINS));
       }
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "userId>" + user.getUserId() + "</userId", Operator.CONTAINS));
+            "userId>" + user.getUserId() + "</userId", DepricatedOperator.CONTAINS));
       currentStateCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-            "user>" + user.getUserId() + "</user", Operator.CONTAINS));
+            "user>" + user.getUserId() + "</user", DepricatedOperator.CONTAINS));
       FromArtifactsSearch currentStateSearch = new FromArtifactsSearch(currentStateCriteria, false);
 
       List<ISearchPrimitive> smaArtifactTypeCriteria = new LinkedList<ISearchPrimitive>();
       for (String artifactTypeName : StateMachineArtifact.getAllSMATypeNames()) {
-         smaArtifactTypeCriteria.add(new ArtifactTypeSearch(artifactTypeName, Operator.EQUAL));
+         smaArtifactTypeCriteria.add(new ArtifactTypeSearch(artifactTypeName, DepricatedOperator.EQUAL));
       }
       FromArtifactsSearch smaArtifactTypeSearch = new FromArtifactsSearch(smaArtifactTypeCriteria, false);
 

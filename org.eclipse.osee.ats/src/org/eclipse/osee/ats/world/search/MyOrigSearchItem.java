@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSear
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
@@ -54,18 +54,18 @@ public class MyOrigSearchItem extends UserSearchItem {
       // Find all Team Workflows artifact types
       List<ISearchPrimitive> teamWorkflowCriteria = new LinkedList<ISearchPrimitive>();
       for (String teamArtName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, Operator.EQUAL));
+         teamWorkflowCriteria.add(new ArtifactTypeSearch(teamArtName, DepricatedOperator.EQUAL));
       FromArtifactsSearch teamWorkflowSearch = new FromArtifactsSearch(teamWorkflowCriteria, false);
 
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
       List<ISearchPrimitive> smaOrigCriteria = new LinkedList<ISearchPrimitive>();
       smaOrigCriteria.add(new AttributeValueSearch(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
-            "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", Operator.LIKE));
+            "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", DepricatedOperator.LIKE));
       if (onlyInWork) {
          smaOrigCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Cancelled.name() + ";;;", Operator.NOT_EQUAL));
+               DefaultTeamState.Cancelled.name() + ";;;", DepricatedOperator.NOT_EQUAL));
          smaOrigCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Completed.name() + ";;;", Operator.NOT_EQUAL));
+               DefaultTeamState.Completed.name() + ";;;", DepricatedOperator.NOT_EQUAL));
       }
       smaOrigCriteria.add(teamWorkflowSearch);
       FromArtifactsSearch smaOrigSearch = new FromArtifactsSearch(smaOrigCriteria, true);

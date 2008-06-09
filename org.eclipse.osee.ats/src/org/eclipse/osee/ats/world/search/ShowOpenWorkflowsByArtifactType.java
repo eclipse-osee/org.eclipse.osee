@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSear
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.InRelationSearch;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
@@ -47,16 +47,16 @@ public class ShowOpenWorkflowsByArtifactType extends WorldSearchItem {
 
       List<ISearchPrimitive> artTypeNameCriteria = new LinkedList<ISearchPrimitive>();
       for (String artType : artifactTypes)
-         artTypeNameCriteria.add(new ArtifactTypeSearch(artType, Operator.EQUAL));
+         artTypeNameCriteria.add(new ArtifactTypeSearch(artType, DepricatedOperator.EQUAL));
       FromArtifactsSearch artTypeNameSearch = new FromArtifactsSearch(artTypeNameCriteria, false);
 
       List<ISearchPrimitive> allReviewCriteria = new LinkedList<ISearchPrimitive>();
       allReviewCriteria.add(artTypeNameSearch);
       if (!showFinished) {
          allReviewCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Cancelled.name() + ";;;", Operator.NOT_EQUAL));
+               DefaultTeamState.Cancelled.name() + ";;;", DepricatedOperator.NOT_EQUAL));
          allReviewCriteria.add(new AttributeValueSearch(ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
-               DefaultTeamState.Completed.name() + ";;;", Operator.NOT_EQUAL));
+               DefaultTeamState.Completed.name() + ";;;", DepricatedOperator.NOT_EQUAL));
       }
       FromArtifactsSearch allReviews = new FromArtifactsSearch(allReviewCriteria, true);
 

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.RelationCriteria;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
@@ -47,9 +47,9 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>(4);
 
       if (pcrIds != null && pcrIds.size() > 0) {
-         criteria.add(new AttributeValueCriteria(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), pcrIds));
+         criteria.add(new AttributeCriteria(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName(), pcrIds));
       } else {
-         criteria.add(new AttributeValueCriteria(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName()));
+         criteria.add(new AttributeCriteria(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName()));
       }
 
       if (teamDefs != null && teamDefs.size() > 0) {
@@ -57,7 +57,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldSearchItem {
          for (TeamDefinitionArtifact teamDef : teamDefs) {
             teamDefGuids.add(teamDef.getGuid());
          }
-         criteria.add(new AttributeValueCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
+         criteria.add(new AttributeCriteria(ATSAttributes.TEAM_DEFINITION_GUID_ATTRIBUTE.getStoreName(),
                teamDefGuids));
       }
 

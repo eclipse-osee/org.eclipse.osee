@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.FromArtifactsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.artifact.search.DepricatedOperator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.widgets.Display;
 
@@ -58,14 +58,14 @@ public class AtsAttributeSearchItem extends WorldSearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws Exception {
       if (searchStr == null) return EMPTY_SET;
       LinkedList<ISearchPrimitive> criteria = new LinkedList<ISearchPrimitive>();
-      criteria.add(new AttributeValueSearch(attributeName, searchStr, Operator.CONTAINS));
+      criteria.add(new AttributeValueSearch(attributeName, searchStr, DepricatedOperator.CONTAINS));
       FromArtifactsSearch stringCriteria = new FromArtifactsSearch(criteria, true);
 
       LinkedList<ISearchPrimitive> atsObjectCriteria = new LinkedList<ISearchPrimitive>();
-      atsObjectCriteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, Operator.EQUAL));
+      atsObjectCriteria.add(new ArtifactTypeSearch(ActionArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
       for (String teamArtifactName : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames())
-         atsObjectCriteria.add(new ArtifactTypeSearch(teamArtifactName, Operator.EQUAL));
-      atsObjectCriteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, Operator.EQUAL));
+         atsObjectCriteria.add(new ArtifactTypeSearch(teamArtifactName, DepricatedOperator.EQUAL));
+      atsObjectCriteria.add(new ArtifactTypeSearch(TaskArtifact.ARTIFACT_NAME, DepricatedOperator.EQUAL));
       FromArtifactsSearch atsObjectSearch = new FromArtifactsSearch(atsObjectCriteria, false);
 
       LinkedList<ISearchPrimitive> bothCriteria = new LinkedList<ISearchPrimitive>();
