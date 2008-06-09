@@ -47,7 +47,7 @@ public class ArtifactQueryBuilder {
    private final Branch branch;
    private int artifactId;
    private Collection<Integer> artifactIds;
-   private ArtifactType artifactType;
+   private Collection<ArtifactType> artifactTypes;
    private final boolean allowDeleted;
    private final ArtifactLoad loadLevel;
 
@@ -80,18 +80,15 @@ public class ArtifactQueryBuilder {
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel) {
-      this(null, 0, null, null, artifactType, branch, false, loadLevel);
+      this(null, 0, null, null, Collections.toList(artifactType), branch, false, loadLevel);
+   }
+
+   public ArtifactQueryBuilder(Collection<ArtifactType> artifactTypes, Branch branch, ArtifactLoad loadLevel) {
+      this(null, 0, null, null, artifactTypes, branch, false, loadLevel);
    }
 
    public ArtifactQueryBuilder(Branch branch, ArtifactLoad loadLevel, boolean allowDeleted) {
       this(null, 0, null, null, null, branch, allowDeleted, loadLevel);
-   }
-
-   private static String ensureValid(String id) {
-      if (id == null) {
-         throw new IllegalArgumentException("The id can not be null.");
-      }
-      return id;
    }
 
    private static AbstractArtifactSearchCriteria[] toArray(List<AbstractArtifactSearchCriteria> criteria) {
@@ -107,15 +104,15 @@ public class ArtifactQueryBuilder {
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
-      this(null, 0, null, null, artifactType, branch, false, loadLevel, criteria);
+      this(null, 0, null, null, Collections.toList(artifactType), branch, false, loadLevel, criteria);
    }
 
    public ArtifactQueryBuilder(ArtifactType artifactType, Branch branch, ArtifactLoad loadLevel, List<AbstractArtifactSearchCriteria> criteria) {
-      this(null, 0, null, null, artifactType, branch, false, loadLevel, toArray(criteria));
+      this(null, 0, null, null, Collections.toList(artifactType), branch, false, loadLevel, toArray(criteria));
    }
 
-   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, ArtifactType artifactType, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
-      this.artifactType = artifactType;
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, boolean allowDeleted, ArtifactLoad loadLevel, AbstractArtifactSearchCriteria... criteria) {
+      this.artifactTypes = artifactTypes;
       this.branch = branch;
       this.criteria = criteria;
       this.loadLevel = loadLevel;
@@ -155,6 +152,13 @@ public class ArtifactQueryBuilder {
       nextAliases.put("osee_define_rel_link", new NextAlias("rel"));
    }
 
+   private static String ensureValid(String id) {
+      if (id == null) {
+         throw new IllegalArgumentException("The id can not be null.");
+      }
+      return id;
+   }
+
    private String getArtifactInsertSql(boolean count) throws SQLException {
       if (count) {
          sql.append("SELECT count(art1.art_id) FROM ");
@@ -180,9 +184,20 @@ public class ArtifactQueryBuilder {
       if (artifactIds != null) {
          sql.append("art1.art_id IN (" + Collections.toString(",", artifactIds) + ") AND ");
       }
-      if (artifactType != null) {
-         sql.append("art1.art_type_id=? AND ");
-         addParameter(SQL3DataType.INTEGER, artifactType.getArtTypeId());
+      if (artifactTypes != null) {
+         sql.append("art1.art_type_id");
+         if (artifactTypes.size() == 1) {
+            sql.append("=? AND ");
+            addParameter(SQL3DataType.INTEGER, artifactTypes.iterator().next().getArtTypeId());
+         } else {
+            sql.append("IN (");
+            for (ArtifactType artifactType : artifactTypes) {
+               sql.append(artifactType.getArtTypeId());
+               sql.append(",");
+            }
+            sql.deleteCharAt(sql.length() - 1);
+            sql.append(") AND ");
+         }
       }
 
       if (guidOrHrid != null) {
@@ -353,10 +368,9 @@ public class ArtifactQueryBuilder {
          message.append(artifactCount);
          message.append(" artifacts found");
       }
-      if (artifactType != null) {
-         message.append(" with type \"");
-         message.append(artifactType.getName());
-         message.append("\"");
+      if (artifactTypes != null) {
+         message.append(" with type(s): ");
+         message.append(artifactTypes);
       }
       if (artifactId != 0) {
          message.append(" with id \"");

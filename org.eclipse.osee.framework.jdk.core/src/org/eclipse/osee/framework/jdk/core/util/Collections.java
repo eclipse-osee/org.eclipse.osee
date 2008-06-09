@@ -68,6 +68,12 @@ public class Collections {
       return toString(c, null, separator, null);
    }
 
+   public static <T> List<T> toList(T object) {
+      List<T> list = new ArrayList<T>(1);
+      list.add(object);
+      return list;
+   }
+
    /**
     * The resultant set is those elements in superSet which are not in the subSet
     * 

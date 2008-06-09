@@ -192,6 +192,11 @@ public class ArtifactQuery {
             null);
    }
 
+   public static List<Artifact> getArtifactsFromTypes(Collection<String> artifactTypeNames, Branch branch) throws SQLException {
+      return new ArtifactQueryBuilder(ArtifactTypeManager.getTypes(artifactTypeNames), branch, FULL).getArtifacts(1000,
+            null);
+   }
+
    /**
     * search for artifacts of the given type on a particular branch that satisfy the given criteria
     * 

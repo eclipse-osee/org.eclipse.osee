@@ -16,8 +16,10 @@ import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -143,11 +145,23 @@ public class ArtifactTypeManager {
    }
 
    /**
-    * @return Returns the descriptor with a particular name (uses null for namespace), null if it does not exist.
+    * @return Returns the type with a particular name (uses null for namespace), null if it does not exist.
     * @throws SQLException
     */
    public static ArtifactType getType(String artifactTypeName) throws SQLException {
       return getType("", artifactTypeName);
+   }
+
+   /**
+    * @return Returns the types with a particular name (uses null for namespace), null if it does not exist.
+    * @throws SQLException
+    */
+   public static List<ArtifactType> getTypes(Collection<String> artifactTypeNames) throws SQLException {
+      List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>(artifactTypeNames.size());
+      for (String artifactTypeName : artifactTypeNames) {
+         artifactTypes.add(getType("", artifactTypeName));
+      }
+      return artifactTypes;
    }
 
    /**
