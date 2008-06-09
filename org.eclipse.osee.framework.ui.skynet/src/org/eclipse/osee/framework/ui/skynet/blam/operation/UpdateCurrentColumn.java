@@ -83,14 +83,14 @@ public class UpdateCurrentColumn extends AbstractBlam {
          "select count(1) from osee_define_txs txs1, osee_define_rel_link rel1 WHERE txs1.gamma_id = rel1.gamma_id AND txs1.mod_type IS NULL";
 
    private static final String INNER_SELECT_ARTIFACT_MOD_TYPE =
-         "select artv1.modification_id from osee_define_txs txs1, osee_define_artifact_version artv1 " + "where txs1.gamma_id = artv1.gamma_id and txs1.transaction_id > ?";
+         "select artv1.modification_id from osee_define_txs txs1, osee_define_artifact_version artv1 " + "where txs1.gamma_id = artv1.gamma_id";
    private static final String INNER_SELECT_ATTRIBUTE_MOD_TYPE =
-         "select attr1.modification_id from osee_define_txs txs1, osee_define_attribute attr1 " + "where txs1.gamma_id = attr1.gamma_id and txs1.transaction_id > ?";
+         "select attr1.modification_id from osee_define_txs txs1, osee_define_attribute attr1 " + "where txs1.gamma_id = attr1.gamma_id";
    private static final String INNER_SELECT_RELATION_MOD_TYPE =
-         "select rel1.modification_id from osee_define_txs txs1, osee_define_rel_link rel1 " + "where txs1.gamma_id = rel1.gamma_id and txs1.transaction_id > ?";
+         "select rel1.modification_id from osee_define_txs txs1, osee_define_rel_link rel1 " + "where txs1.gamma_id = rel1.gamma_id";
 
    private static final String UPDATE_TXS_MOD_TYPE_SINGLE_CALL =
-         "update osee_define_txs txsOuter set mod_type = (%s and txsOuter.transaction_id = txs1.transaction_id and txsOuter.gamma_id = txs1.gamma_id)";
+         "update osee_define_txs txsOuter set mod_type = (%s and txsOuter.transaction_id = txs1.transaction_id and txsOuter.gamma_id = txs1.gamma_id) WHERE txsouter.transaction_id > ? AND txsouter.mod_type IS NULL";
 
    private static final String UPDATE_B_ORDER = "update osee_define_rel_link set b_order where gamma_id = ?";
    private static final String SELECT_B_RELATION_ORDER =
