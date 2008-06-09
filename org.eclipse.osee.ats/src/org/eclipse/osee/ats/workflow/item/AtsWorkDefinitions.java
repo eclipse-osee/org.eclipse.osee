@@ -5,7 +5,9 @@
  */
 package org.eclipse.osee.ats.workflow.item;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -50,6 +52,11 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       atsAllowCreateBranch,
       atsAllowCommitBranch,
       atsForceAssigneesToTeamLeads
+   }
+
+   public static void relatePageToBranchCommitRules(String pageId) throws SQLException {
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, RuleWorkItemId.atsAllowCommitBranch.name());
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, RuleWorkItemId.atsAllowCreateBranch.name());
    }
 
    public static List<WorkItemDefinition> getAtsWorkDefinitions() {
@@ -176,6 +183,11 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static boolean isAllowCommitBranch(WorkPageDefinition workPageDefinition) throws Exception {
       return (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowCommitBranch.name()) != null);
+   }
+
+   public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, WorkItemDefinition workItemDefinition) throws Exception {
+      importWorkItemDefinitionsIntoDb(writeType, resultData,
+            Arrays.asList(new WorkItemDefinition[] {workItemDefinition}));
    }
 
    public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, Collection<? extends WorkItemDefinition> workItemDefinitions) throws Exception {

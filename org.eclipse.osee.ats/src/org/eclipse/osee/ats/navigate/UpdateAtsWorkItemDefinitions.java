@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.AbstractSkynetTxTemplate;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -51,8 +51,7 @@ public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
          @Override
          protected void handleTxWork() throws Exception {
             XResultData xResultData = new XResultData(SkynetGuiPlugin.getLogger());
-            AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.Update, xResultData,
-                  AtsWorkDefinitions.getAtsWorkDefinitions());
+            AtsDatabaseConfig.configWorkItemDefinitions(WriteType.Update, xResultData);
             if (xResultData.isEmpty()) {
                xResultData.log("Nothing updated");
             }

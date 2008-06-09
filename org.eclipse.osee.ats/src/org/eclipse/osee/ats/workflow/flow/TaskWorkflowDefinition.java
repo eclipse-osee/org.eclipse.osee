@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsTaskInWorkPageDefinition;
@@ -16,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -32,6 +34,10 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
    public TaskWorkflowDefinition(Artifact artifact) throws Exception {
       super(artifact);
       throw new IllegalStateException("This constructor should never be used.");
+   }
+
+   public void config(WriteType writeType, XResultData xResultData) throws Exception {
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, getAtsWorkDefinitions());
    }
 
    public static List<WorkItemDefinition> getAtsWorkDefinitions() {

@@ -19,35 +19,28 @@ import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.database.initialize.tasks.DbInitializationTask;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
 public class AtsDatabaseConfig extends DbInitializationTask {
 
    public void run(Connection connection) throws Exception {
       createAtsTopLevelConfigObjects();
 
+      // Configure WorkItemDefinitions
+      configWorkItemDefinitions(WriteType.New, null);
+
+   }
+
+   public static void configWorkItemDefinitions(WriteType writeType, XResultData xResultData) throws Exception {
+
       // Import Work Item Definitions
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            AtsWorkDefinitions.getAtsWorkDefinitions());
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, null, AtsWorkDefinitions.getAtsWorkDefinitions());
 
-      // Import Team Work Item Definitions
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            TeamWorkflowDefinition.getAtsWorkDefinitions());
-
-      // Import Task Work Item Definitions
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            TaskWorkflowDefinition.getAtsWorkDefinitions());
-
-      // Import Simple Team Work Item Definitions
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            SimpleWorkflowDefinition.getAtsWorkDefinitions());
-
-      // Import Decision Work Item Definitions
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            DecisionWorkflowDefinition.getAtsWorkDefinitions());
-
-      // Import Peer to Peer Work Item Definitions
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-            PeerToPeerWorkflowDefinition.getAtsWorkDefinitions());
+      new TeamWorkflowDefinition().config(writeType, null);
+      new TaskWorkflowDefinition().config(writeType, null);
+      new SimpleWorkflowDefinition().config(writeType, null);
+      new DecisionWorkflowDefinition().config(writeType, null);
+      new PeerToPeerWorkflowDefinition().config(writeType, null);
 
    }
 

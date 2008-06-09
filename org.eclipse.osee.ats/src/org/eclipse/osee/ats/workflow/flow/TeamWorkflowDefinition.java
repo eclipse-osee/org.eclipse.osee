@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.workflow.flow;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsAnalyzeWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsAuthorizeWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
@@ -17,6 +18,8 @@ import org.eclipse.osee.ats.workflow.page.AtsImplementWorkPageDefinition;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -46,6 +49,10 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
       super(name, workflowId, parentWorkflowId);
    }
 
+   public void config(WriteType writeType, XResultData xResultData) throws Exception {
+      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, getAtsWorkDefinitions());
+   }
+
    /**
     * Instantiate workflow as a TeamWorkflowDefinition with default transitions and startPageId set.
     * 
@@ -71,6 +78,24 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
       workItems.add(new AtsCancelledWorkPageDefinition());
       workItems.add(new TeamWorkflowDefinition());
 
+      return workItems;
+   }
+
+   public static List<WorkItemDefinition> getWorkPageDefinitionsForId(String workflowId) {
+      List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
+      // Add Team Page and Workflow Definition
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Endorse.name(),
+            workflowId + "." + DefaultTeamState.Endorse.name(), AtsEndorseWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Analyze.name(),
+            workflowId + "." + DefaultTeamState.Analyze.name(), AtsAnalyzeWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Authorize.name(),
+            workflowId + "." + DefaultTeamState.Authorize.name(), AtsAuthorizeWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Implement.name(),
+            workflowId + "." + DefaultTeamState.Implement.name(), AtsImplementWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
+            workflowId + "." + DefaultTeamState.Completed.name(), AtsCompletedWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
+            workflowId + "." + DefaultTeamState.Cancelled.name(), AtsCancelledWorkPageDefinition.ID));
       return workItems;
    }
 
