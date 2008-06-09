@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SkynetAuthentication implements PersistenceManager {
    private static final Logger logger = ConfigUtil.getConfigFactory().getLogger(SkynetAuthentication.class);
-   private OseeAuthentication oseeAuthentication;
    private int noOneArtifactId;
    private boolean createUserWhenNotInDatabase = true;
 
@@ -82,14 +81,14 @@ public class SkynetAuthentication implements PersistenceManager {
     * @see org.eclipse.osee.framework.skynet.core.PersistenceManager#onManagerWebInit()
     */
    public void onManagerWebInit() throws Exception {
-      oseeAuthentication = OseeAuthentication.getInstance();
    }
 
    public boolean isAuthenticated() {
-      return oseeAuthentication.isAuthenticated();
+      return OseeAuthentication.getInstance().isAuthenticated();
    }
 
    private void forceAuthenticationRoutine() {
+      OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
       if (!oseeAuthentication.isAuthenticated()) {
          if (oseeAuthentication.isLoginAllowed()) {
             AuthenticationDialog.openDialog();
@@ -126,6 +125,7 @@ public class SkynetAuthentication implements PersistenceManager {
                forceAuthenticationRoutine();
             }
 
+            OseeAuthentication oseeAuthentication = OseeAuthentication.getInstance();
             if (!oseeAuthentication.isAuthenticated()) {
                currentUser = getUser(UserEnum.Guest);
             } else {
