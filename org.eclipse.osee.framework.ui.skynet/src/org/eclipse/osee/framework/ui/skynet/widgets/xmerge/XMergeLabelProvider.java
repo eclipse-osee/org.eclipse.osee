@@ -81,7 +81,13 @@ public class XMergeLabelProvider implements ITableLabelProvider {
       try {
          if (element instanceof Conflict) {
             Conflict conflict = (Conflict) element;
-            if (aCol == MergeColumn.Artifact_Name) {
+            if (aCol == MergeColumn.Conflict_Resolved) {
+               if (conflict.statusResolved()) return "D) Resolved";
+               if (conflict.statusEdited()) return "B) Modified";
+               if (conflict.statusOutOfDate()) return "C) Artifact Changed After Resolution";
+               if (conflict.statusUntouched()) return " ";
+               if (conflict.statusNotResolvable()) return "A) Must Be Reverted";
+            } else if (aCol == MergeColumn.Artifact_Name) {
                return conflict.getArtifactName();
             } else if (aCol == MergeColumn.Change_Item) {
                return conflict.getChangeItem();

@@ -84,7 +84,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
    private IContentProviderRunnable providerRunnable;
    private boolean showChildBranchesAtMainLevel;
    private boolean showChildBranchesUnderParents;
-   private boolean showMergeBranches;
    private boolean showTransactions;
 
    //   private boolean myHideTransactions = false;
@@ -93,7 +92,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       this.providerRunnable = new ChildrenRunnable();
       this.root = null;
       this.showChildBranchesAtMainLevel = false;
-      this.showMergeBranches = false;
       this.showChildBranchesUnderParents = true;
    }
 
@@ -126,14 +124,6 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
             BranchPersistenceManager branchManager = (BranchPersistenceManager) parentElement;
             try {
                Collection<Branch> branches = branchManager.refreshBranches();
-               if (!showMergeBranches) {
-                  Iterator<Branch> iter = branches.iterator();
-                  while (iter.hasNext()) {
-                     if (iter.next().isMergeBranch()) {
-                        iter.remove();
-                     }
-                  }
-               }
                if (!showChildBranchesAtMainLevel) {
                   Iterator<Branch> iter = branches.iterator();
                   while (iter.hasNext()) {
@@ -463,17 +453,4 @@ public class BranchContentProvider implements ITreeContentProvider, ArtifactChan
       this.showChildBranchesUnderParents = showChildBranchesUnderParents;
    }
 
-   /**
-    * @return the showChildBranchesUnderParents
-    */
-   public boolean isShowMergeBranches() {
-      return showMergeBranches;
-   }
-
-   /**
-    * @param showChildBranchesUnderParents the showChildBranchesUnderParents to set
-    */
-   public void setShowMergeBranches(boolean showMergeBranches) {
-      this.showMergeBranches = showMergeBranches;
-   }
 }

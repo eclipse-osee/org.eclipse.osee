@@ -24,10 +24,10 @@ public enum MergeColumn {
    // Need empty column cause of how certain operating systems handle the first column of a table
    Empty("", 0, SWT.LEFT, true, SortDataType.String, false),
 
-   Conflict_Resolved("Conflict Resolved", 25, SWT.LEFT, true, SortDataType.String, false),
+   Conflict_Resolved("Conflict Resolved", 23, SWT.LEFT, true, SortDataType.String, false),
 
    Artifact_Name("Artifact", 200, SWT.LEFT, true, SortDataType.String, false),
-   
+
    Type("Type", 150, SWT.LEFT, true, SortDataType.String, false),
 
    Change_Item("Change Item", 150, SWT.LEFT, true, SortDataType.String, false),

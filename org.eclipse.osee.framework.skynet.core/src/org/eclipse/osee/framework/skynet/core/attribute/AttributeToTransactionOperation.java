@@ -50,7 +50,7 @@ public class AttributeToTransactionOperation {
          "UPDATE " + ATTRIBUTE_VERSION_TABLE + " SET value = ?, uri = ? WHERE art_id = ? and attr_id = ? and attr_type_id = ? and gamma_id = ?";
 
    private static final String GET_EXISTING_ATTRIBUTE_IDS =
-         "SELECT distinct atr1.attr_id FROM osee_define_attribute atr1, osee_define_attribute_type aty1 WHERE atr1.art_id = ? AND atr1.attr_type_id = ? AND atr1.attr_type_id = aty1.attr_type_id AND aty1.max_occurence = 1";
+         "SELECT DISTINCT atr1.attr_id FROM osee_define_attribute atr1, osee_define_attribute_type aty1 WHERE atr1.art_id = ? AND atr1.attr_type_id = ?";
 
    private final Artifact artifact;
    private final SkynetTransaction transaction;
@@ -82,6 +82,7 @@ public class AttributeToTransactionOperation {
       }
    }
 
+   //TODO
    private void versionControlled(Artifact artifact, Attribute<?> attribute, SkynetTransaction transaction) throws Exception {
       ModType modType = null;
       ModificationType attrModType = null;
@@ -131,26 +132,27 @@ public class AttributeToTransactionOperation {
 
    private void createNewAttributeMemo(Attribute<?> attribute) throws SQLException {
       if (attribute == null) return;
-      int gammaId = SkynetDatabase.getNextGammaId();
       ConnectionHandlerStatement connectionHandlerStatement = null;
+      AttributeType attributeType = attribute.getAttributeType();
       int attrId = -1;
-      try {
-         connectionHandlerStatement =
-               ConnectionHandler.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, SQL3DataType.INTEGER,
-                     artifact.getArtId(), SQL3DataType.INTEGER, attribute.getAttributeType().getAttrTypeId(),
-                     SQL3DataType.INTEGER, artifact.getArtId(), SQL3DataType.INTEGER,
-                     attribute.getAttributeType().getAttrTypeId());
+      //TODO: Only handles a max Occurrence of 1
+      if (attributeType.getMaxOccurrences() == 1) {
+         try {
+            connectionHandlerStatement =
+                  ConnectionHandler.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, SQL3DataType.INTEGER,
+                        artifact.getArtId(), SQL3DataType.INTEGER, attributeType.getAttrTypeId());
 
-         ResultSet resultSet = connectionHandlerStatement.getRset();
+            ResultSet resultSet = connectionHandlerStatement.getRset();
 
-         if (resultSet.next()) {
-            //TODO: Currently only grabs the first attrID found.  Need to resolve multiple attrID,s where multiple attributes can exist
-            attrId = (resultSet.getInt("attr_id"));
+            if (resultSet.next()) {
+               attrId = (resultSet.getInt("attr_id"));
+            }
+         } finally {
+            DbUtil.close(connectionHandlerStatement);
          }
-      } finally {
-         DbUtil.close(connectionHandlerStatement);
       }
-      if (attrId < 0) {
+      int gammaId = SkynetDatabase.getNextGammaId();
+      if (attrId < 1) {
          attrId = Query.getNextSeqVal(null, SkynetDatabase.ATTR_ID_SEQ);
       }
       attribute.setIds(attrId, gammaId);

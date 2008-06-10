@@ -1789,10 +1789,9 @@ public class BranchView extends ViewPart implements IActionable, IEventReceiver 
          BranchContentProvider provider = (BranchContentProvider) branchTable.getContentProvider();
 
          // No effect if going to the same state
-         if (provider.isShowChildBranchesAtMainLevel() != flat || provider.isShowChildBranchesUnderParents() != !flat || provider.isShowMergeBranches() != flat) {
+         if (provider.isShowChildBranchesAtMainLevel() != flat || provider.isShowChildBranchesUnderParents() != !flat) {
             nameFilter.setFlat(flat);
             provider.setShowChildBranchesAtMainLevel(flat);
-            provider.setShowMergeBranches(flat);
             provider.setShowChildBranchesUnderParents(!flat);
 
             provider.refresh();

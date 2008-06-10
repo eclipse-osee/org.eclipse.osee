@@ -67,6 +67,8 @@ import org.eclipse.osee.framework.skynet.core.user.UserNotInDatabase;
 public class BranchCreator implements PersistenceManager {
    static final Logger logger = ConfigUtil.getConfigFactory().getLogger(BranchPersistenceManager.class);
 
+   public static final String NEW_MERGE_BRANCH_COMMENT = "New Merge Branch from ";
+
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_1 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t1");
    private static final LocalAliasTable ARTIFACT_VERSION_ALIAS_2 = new LocalAliasTable(ARTIFACT_VERSION_TABLE, "t2");
 
@@ -116,7 +118,7 @@ public class BranchCreator implements PersistenceManager {
    //   private static final String INSERT_DEFAULT_BRANCH_NAMES =
    //         "INSERT INTO " + BRANCH_DEFINITIONS.columnsForInsert("static_branch_name", "mapped_branch_id");
 
-   private static final String MERGE_BRANCH_INSERT_QUERY =
+   private static final String MERGE_BRANCH_INSERT =
          "INSERT INTO osee_define_merge " + "(source_branch_id, dest_branch_id, merge_branch_id)  VALUES( ? , ? , ?)";
 
    private static final BranchCreator instance = new BranchCreator();
@@ -139,16 +141,16 @@ public class BranchCreator implements PersistenceManager {
       SkynetAuthentication.getInstance();
    }
 
-   private Pair<Branch, Integer> createBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType) throws SQLException, MultipleAttributesExist, UserNotInDatabase, IllegalArgumentException, IllegalStateException, MultipleArtifactsExist {
+   private Pair<Branch, Integer> createMergeBranchWithBaselineTransactionNumber(Artifact associatedArtifact, TransactionId sourceTransactionId, String childBranchShortName, String childBranchName, BranchType branchType, Branch destBranch) throws SQLException, MultipleAttributesExist, UserNotInDatabase, IllegalArgumentException, IllegalStateException, MultipleArtifactsExist {
       User userToBlame = SkynetAuthentication.getUser();
       Branch parentBranch = sourceTransactionId.getBranch();
       int userId =
             (userToBlame == null) ? SkynetAuthentication.getUser(UserEnum.NoOne).getArtId() : userToBlame.getArtId();
       String comment =
-            BranchPersistenceManager.NEW_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ")";
+            NEW_MERGE_BRANCH_COMMENT + parentBranch.getBranchName() + "(" + sourceTransactionId.getTransactionNumber() + ") and " + destBranch.getBranchName();
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       Branch childBranch =
-            initializeBranch(childBranchShortName, childBranchName, sourceTransactionId, userId, timestamp, comment,
+            initializeBranch(childBranchShortName, childBranchName, null, userId, timestamp, comment,
                   associatedArtifact, branchType);
 
       // insert the new transaction data first.
@@ -496,10 +498,10 @@ public class BranchCreator implements PersistenceManager {
          Pair<Branch, Integer> branchWithTransactionNumber;
          if (createBranch) {
             branchWithTransactionNumber =
-                  createBranchWithBaselineTransactionNumber(SkynetAuthentication.getUser(),
+                  createMergeBranchWithBaselineTransactionNumber(SkynetAuthentication.getUser(),
                         TransactionIdManager.getInstance().getStartEndPoint(sourceBranch).getKey(),
                         "Merge " + sourceBranch.getDisplayName(), "Merge " + sourceBranch.getDisplayName(),
-                        BranchType.MERGE);
+                        BranchType.MERGE, destBranch);
          } else {
             TransactionId startTransactionId =
                   TransactionIdManager.getInstance().getStartEndPoint(mergeBranch).getKey();
@@ -515,9 +517,9 @@ public class BranchCreator implements PersistenceManager {
          }
          try {
             ConnectionHandler.runPreparedUpdateBatch(ArtifactLoader.INSERT_INTO_LOADER, datas);
-         String attributeGammas =
+            String attributeGammas =
                   "INSERT INTO OSEE_DEFINE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, atr1.gamma_id, txs1.mod_type, ? FROM osee_define_attribute atr1, osee_define_txs txs1, osee_define_tx_details txd1, osee_artifact_loader ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
-         String artifactVersionGammas =
+            String artifactVersionGammas =
                   "INSERT INTO OSEE_DEFINE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, arv1.gamma_id, txs1.mod_type, ? FROM osee_define_artifact_version arv1, osee_define_txs txs1, osee_define_tx_details txd1, osee_artifact_loader ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
 
             insertGammas(attributeGammas, branchWithTransactionNumber.getValue(), queryId);
@@ -532,7 +534,7 @@ public class BranchCreator implements PersistenceManager {
 
          if (createBranch) {
             try {
-               ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_INSERT_QUERY, SQL3DataType.INTEGER,
+               ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_INSERT, SQL3DataType.INTEGER,
                      sourceBranch.getBranchId(), SQL3DataType.INTEGER, destBranch.getBranchId(), SQL3DataType.INTEGER,
                      mergeBranch.getBranchId());
             } finally {
