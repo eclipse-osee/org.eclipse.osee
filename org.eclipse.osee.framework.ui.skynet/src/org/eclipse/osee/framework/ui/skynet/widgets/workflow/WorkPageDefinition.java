@@ -117,11 +117,11 @@ public class WorkPageDefinition extends WorkItemDefinition {
    }
 
    public boolean isCompletePage() {
-      return getName().equals("Completed");
+      return getPageName().equals("Completed");
    }
 
    public boolean isCancelledPage() {
-      return getName().equals("Cancelled");
+      return getPageName().equals("Cancelled");
    }
 
    /* (non-Javadoc)

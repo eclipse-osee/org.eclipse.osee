@@ -530,8 +530,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
          // Get transition to assignees
          Set<User> toAssignees;
-         if (toWorkPageDefinition.getName().equals(DefaultTeamState.Cancelled.name()) || toWorkPageDefinition.getName().equals(
-               DefaultTeamState.Completed.name()))
+         if (toWorkPageDefinition.isCancelledPage() || toWorkPageDefinition.isCompletePage())
             toAssignees = new HashSet<User>();
          else
             toAssignees = smaMgr.getTransitionAssignees();
