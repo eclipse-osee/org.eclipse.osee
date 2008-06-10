@@ -18,20 +18,20 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
    public static String ARTIFACT_NAME = "Work Widget Definition";
    public static String tagName = DynamicXWidgetLayout.XWIDGET;
 
-   /**
-    * @param name
-    * @param itemId
-    * @param parentItemId
-    * @param data
-    */
+   public WorkWidgetDefinition(String name, String id) {
+      super(name, id, null);
+   }
+
    public WorkWidgetDefinition(DynamicXWidgetLayoutData xWidgetLayoutData) {
-      super(xWidgetLayoutData.getName(), xWidgetLayoutData.getId(), null);
+      super(xWidgetLayoutData.getName() + " - " + xWidgetLayoutData.getId(), xWidgetLayoutData.getId(), null);
       setData(xWidgetLayoutData);
    }
 
    public WorkWidgetDefinition(Artifact artifact) throws Exception {
-      this(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_NAME.getAttributeTypeName(),
-            artifact.getDescriptiveName()), artifact.getDescriptiveName());
+      this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
+            WorkItemAttributes.WORK_ID.getAttributeTypeName(), artifact.getDescriptiveName()));
+      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
+
       DynamicXWidgetLayoutData data =
             getFromXml(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), ""));
       setData(data);
@@ -42,10 +42,6 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
       Artifact art = super.toArtifact(writeType);
       art.setSoleAttributeFromString(WorkItemAttributes.WORK_DATA.getAttributeTypeName(), XWidgetParser.toXml(get()));
       return art;
-   }
-
-   public WorkWidgetDefinition(String name, String id) {
-      super(name, id, null);
    }
 
    public DynamicXWidgetLayoutData get() {

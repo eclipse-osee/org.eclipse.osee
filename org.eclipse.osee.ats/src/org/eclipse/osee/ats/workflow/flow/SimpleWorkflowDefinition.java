@@ -33,13 +33,13 @@ public class SimpleWorkflowDefinition extends WorkFlowDefinition {
    public static String COMPLETED_STATE_ID = ID + "." + SimpleState.Completed.name();
    public static String CANCELLED_STATE_ID = ID + "." + SimpleState.Cancelled.name();
 
-   public SimpleWorkflowDefinition() {
-      this("Simple Work Flow Definition", ID);
-   }
-
    public SimpleWorkflowDefinition(Artifact artifact) throws Exception {
       super(artifact);
       throw new IllegalStateException("This constructor should never be used.");
+   }
+
+   public SimpleWorkflowDefinition() {
+      this(ID, ID);
    }
 
    /**

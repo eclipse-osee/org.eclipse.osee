@@ -50,9 +50,10 @@ public class WorkFlowDefinition extends WorkItemDefinition {
    }
 
    public WorkFlowDefinition(Artifact artifact) throws Exception {
-      this(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_NAME.getAttributeTypeName(), ""),
-            artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
-                  WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
+      this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
+            WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), artifact.getSoleAttributeValue(
+            WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
+      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
 
       // Add local transitions from this artifact
       addTransitionsFromArtifact(artifact, pageIdToPageIdsViaTransitionType, getId());
@@ -115,13 +116,13 @@ public class WorkFlowDefinition extends WorkItemDefinition {
          for (String pageNameOrId : inheritedPageIdToPageIdsViaTransitionType.keySet()) {
             WorkPageDefinition workPageDefinition =
                   (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageNameOrId));
-            pageNameToPageId.put(workPageDefinition.name, workPageDefinition.id);
+            pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
             for (Map<TransitionType, Set<String>> transTypeToPageIds : inheritedPageIdToPageIdsViaTransitionType.values()) {
                for (TransitionType transType : transTypeToPageIds.keySet()) {
                   for (String pageId2 : transTypeToPageIds.get(transType)) {
                      workPageDefinition =
                            (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageId2));
-                     pageNameToPageId.put(workPageDefinition.name, workPageDefinition.id);
+                     pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
                   }
                }
             }

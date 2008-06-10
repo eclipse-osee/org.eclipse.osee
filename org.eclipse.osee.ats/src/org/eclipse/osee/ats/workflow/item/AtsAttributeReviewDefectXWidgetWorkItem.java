@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
 public class AtsAttributeReviewDefectXWidgetWorkItem extends WorkWidgetDefinition {
 
    protected AtsAttributeReviewDefectXWidgetWorkItem(ATSAttributes atsAttribute) {
-      super(atsAttribute.getDisplayName(), atsAttribute.getStoreName());
+      super(atsAttribute.getDisplayName() + " - " + atsAttribute.getStoreName(), atsAttribute.getStoreName());
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
       data.setStorageName(getId());

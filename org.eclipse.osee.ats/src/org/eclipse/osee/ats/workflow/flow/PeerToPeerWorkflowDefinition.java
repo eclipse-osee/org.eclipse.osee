@@ -29,7 +29,8 @@ public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
    public static String PEER_REVIEW_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
 
    public PeerToPeerWorkflowDefinition() {
-      this("Peer To Peer Workflow Definition", ID);
+      super(ID, ID, null);
+      addTransitions();
       startPageId = AtsPeerPrepareWorkPageDefinition.ID;
    }
 
@@ -57,13 +58,7 @@ public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
       return workItems;
    }
 
-   /**
-    * @param name
-    * @param id
-    * @param parentId
-    */
-   public PeerToPeerWorkflowDefinition(String name, String id) {
-      super(name, id, null);
+   private void addTransitions() {
       // Add default transitions
       addPageTransition(AtsPeerPrepareWorkPageDefinition.ID, AtsPeerReviewWorkPageDefinition.ID,
             TransitionType.ToPageAsDefault);

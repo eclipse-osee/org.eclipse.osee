@@ -27,7 +27,7 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
    public static String ID = "osee.ats.taskWorkflow";
 
    public TaskWorkflowDefinition() {
-      this("Task Workflow Definition", ID);
+      this(ID, ID);
       startPageId = TaskStates.InWork.name();
    }
 

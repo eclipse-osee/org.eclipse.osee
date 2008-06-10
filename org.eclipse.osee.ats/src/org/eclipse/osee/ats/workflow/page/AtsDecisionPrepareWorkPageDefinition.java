@@ -24,7 +24,7 @@ public class AtsDecisionPrepareWorkPageDefinition extends WorkPageDefinition {
 
    public AtsDecisionPrepareWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
-      addWorkItem(ATSAttributes.TITLE_ATTRIBUTE.getStoreName());
+      addWorkItem("ats.Title");
       addWorkItem(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), XOption.NOT_REQUIRED);
       addWorkItem(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName());

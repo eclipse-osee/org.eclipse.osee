@@ -20,21 +20,31 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 public class WorkPageDefinition extends WorkItemDefinition {
 
    public static String ARTIFACT_NAME = "Work Page Definition";
+   private String pageName;
 
    private List<String> workItemIds = new ArrayList<String>();
    // Map to store XOptions that will override the default choices when the XWidget was declared
    private Map<String, XOptionHandler> workDefToXOptionHandler = new HashMap<String, XOptionHandler>();
 
-   public WorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+   public WorkPageDefinition(String pageName, String pageId, String parentId) {
+      this(pageId, pageName, pageId, parentId);
+   }
+
+   public WorkPageDefinition(String itemName, String pageName, String pageId, String parentId) {
+      super(itemName, pageId, parentId);
+      this.pageName = pageName;
    }
 
    public WorkPageDefinition(Artifact artifact) throws Exception {
-      this(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_NAME.getAttributeTypeName(), ""),
-            artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
-                  WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
+      this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
+            WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), (String) null), artifact.getSoleAttributeValue(
+            WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null), artifact.getSoleAttributeValue(
+            WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), (String) null));
+      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
+      setPageName(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(),
+            (String) null));
       for (Artifact art : artifact.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
-         String widId = art.getDescriptiveName();
+         String widId = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null);
          workItemIds.add(widId);
       }
    }
@@ -50,6 +60,10 @@ public class WorkPageDefinition extends WorkItemDefinition {
                   "While processing Work Page \"" + getId() + "\":  No Artifact found for WorkItemDefinition \"" + wid.getId() + "\"");
          }
          children.add(widArt);
+      }
+      // Only store start page if it's part of this definition
+      if (pageName != null) {
+         art.setSoleAttributeFromString(WorkItemAttributes.WORK_PAGE_NAME.getAttributeTypeName(), pageName);
       }
       // This supports both relating new children and when WriteType.Overwrite of updating
       art.setRelations(CoreRelationEnumeration.WorkItem__Child, children);
@@ -110,6 +124,16 @@ public class WorkPageDefinition extends WorkItemDefinition {
       return null;
    }
 
+   public List<WorkItemDefinition> getWorkItemDefinitionsByType(String workType) throws Exception {
+      List<WorkItemDefinition> wids = new ArrayList<WorkItemDefinition>();
+      for (WorkItemDefinition workItemDefinition : getWorkItems(true)) {
+         if (workItemDefinition.getType() != null && workItemDefinition.getType().equals(workType)) {
+            wids.add(workItemDefinition);
+         }
+      }
+      return wids;
+   }
+
    /**
     * @param workItems the workItems to set
     */
@@ -132,6 +156,14 @@ public class WorkPageDefinition extends WorkItemDefinition {
    @Override
    public String getArtifactTypeName() {
       return ARTIFACT_NAME;
+   }
+
+   public String getPageName() {
+      return pageName;
+   }
+
+   public void setPageName(String pageName) {
+      this.pageName = pageName;
    }
 
 }

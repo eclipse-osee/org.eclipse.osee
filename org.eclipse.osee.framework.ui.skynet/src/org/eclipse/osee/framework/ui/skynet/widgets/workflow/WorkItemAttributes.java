@@ -10,9 +10,11 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
  */
 public class WorkItemAttributes {
 
-   public static WorkItemAttributes WORK_NAME = new WorkItemAttributes("Work Name");
+   public static WorkItemAttributes WORK_ID = new WorkItemAttributes("Work Id");
    public static WorkItemAttributes WORK_PARENT_ID = new WorkItemAttributes("Work Parent Id");
    public static WorkItemAttributes WORK_DATA = new WorkItemAttributes("Work Data");
+   public static WorkItemAttributes WORK_PAGE_NAME = new WorkItemAttributes("Work Page Name");
+   public static WorkItemAttributes WORK_TYPE = new WorkItemAttributes("Work Type");
    public static WorkItemAttributes TRANSITION = new WorkItemAttributes("Transition");
    public static WorkItemAttributes START_PAGE = new WorkItemAttributes("Start Page");
 

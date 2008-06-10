@@ -29,7 +29,7 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
    public static String ID = "osee.ats.teamWorkflow";
 
    public TeamWorkflowDefinition() {
-      this("Team Work Flow Definition", ID);
+      this(ID, ID);
    }
 
    public TeamWorkflowDefinition(Artifact artifact) throws Exception {

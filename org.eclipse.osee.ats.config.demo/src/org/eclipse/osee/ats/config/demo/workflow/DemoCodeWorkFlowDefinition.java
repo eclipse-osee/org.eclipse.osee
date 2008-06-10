@@ -17,7 +17,7 @@ public class DemoCodeWorkFlowDefinition extends TeamWorkflowDefinition {
    public static String ID = "demo.code";
 
    public DemoCodeWorkFlowDefinition() {
-      super("Demo Code Work Flow Definition", ID);
+      super(ID, ID);
    }
 
    public void config(WriteType writeType, XResultData xResultData) throws Exception {

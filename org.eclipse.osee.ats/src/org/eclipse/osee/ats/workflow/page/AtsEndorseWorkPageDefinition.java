@@ -25,7 +25,7 @@ public class AtsEndorseWorkPageDefinition extends WorkPageDefinition {
    public AtsEndorseWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      addWorkItem(ATSAttributes.TITLE_ATTRIBUTE.getStoreName());
+      addWorkItem("ats.Title");
       addWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName());

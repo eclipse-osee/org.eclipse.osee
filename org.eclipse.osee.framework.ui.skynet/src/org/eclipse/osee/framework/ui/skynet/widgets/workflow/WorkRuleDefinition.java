@@ -41,17 +41,23 @@ public class WorkRuleDefinition extends WorkItemDefinition {
     * @param parentId
     */
    public WorkRuleDefinition(String name, String id, String value) {
-      super(name, id, null);
+      this(name, id, value, null);
+   }
+
+   public WorkRuleDefinition(String name, String id, String value, String type) {
+      super(name, id, null, type);
       if (value != null && value.equals("")) throw new IllegalArgumentException(
             "value must be either null or length>0.  value can not be \"\".  Invalid for WorkRuleDefinition " + id);
       if (value != null) setData(value);
    }
 
    public WorkRuleDefinition(Artifact artifact) throws Exception {
-      this(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_NAME.getAttributeTypeName(), ""),
-            artifact.getDescriptiveName(), null);
+      this(artifact.getDescriptiveName(), artifact.getSoleAttributeValue(
+            WorkItemAttributes.WORK_ID.getAttributeTypeName(), ""), null);
+      setType(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(), (String) null));
+
       try {
-         setData(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_NAME.getAttributeTypeName()));
+         setData(artifact.getSoleAttributeValue(WorkItemAttributes.WORK_DATA.getAttributeTypeName()));
       } catch (AttributeDoesNotExist ex) {
          // do nothing
       }

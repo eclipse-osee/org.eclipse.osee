@@ -24,7 +24,7 @@ public class WorkPageDefinitionLabelProvider implements ILabelProvider {
    }
 
    public String getText(Object arg0) {
-      return ((WorkPageDefinition) arg0).getName();
+      return ((WorkPageDefinition) arg0).getPageName();
    }
 
    public void addListener(ILabelProviderListener arg0) {

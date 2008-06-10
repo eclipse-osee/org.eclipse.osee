@@ -31,7 +31,8 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
    public static String DECISION_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
 
    public DecisionWorkflowDefinition() {
-      this("Decision Workflow Definition", ID);
+      super(ID, ID, null);
+      addTransitions();
       startPageId = AtsDecisionPrepareWorkPageDefinition.ID;
    }
 
@@ -60,13 +61,7 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
       return workItems;
    }
 
-   /**
-    * @param name
-    * @param id
-    * @param parentId
-    */
-   public DecisionWorkflowDefinition(String name, String id) {
-      super(name, id, null);
+   private void addTransitions() {
       // Add Prepare Transitions
       addPageTransition(AtsDecisionPrepareWorkPageDefinition.ID, AtsDecisionDecisionWorkPageDefinition.ID,
             TransitionType.ToPageAsDefault);

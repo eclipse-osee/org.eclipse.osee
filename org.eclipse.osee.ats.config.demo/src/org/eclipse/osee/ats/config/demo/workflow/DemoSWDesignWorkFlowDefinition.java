@@ -17,7 +17,7 @@ public class DemoSWDesignWorkFlowDefinition extends TeamWorkflowDefinition {
    public static String ID = "demo.swdesign";
 
    public DemoSWDesignWorkFlowDefinition() {
-      super("Demo SW Design Work Flow Definition", ID, TeamWorkflowDefinition.ID);
+      super(ID, ID, TeamWorkflowDefinition.ID);
    }
 
    public void config(WriteType writeType, XResultData xResultData) throws Exception {

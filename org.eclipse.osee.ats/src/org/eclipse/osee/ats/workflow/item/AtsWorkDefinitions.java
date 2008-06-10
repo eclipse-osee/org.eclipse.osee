@@ -79,7 +79,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.SMA_NOTE_ATTRIBUTE, "XTextDam",
             XOption.FILL_VERTICALLY));
-      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.TITLE_ATTRIBUTE, "XTextDam", XOption.REQUIRED));
+      workItems.add(new AtsAttributeXWidgetWorkItem("Title", "ats.Title", "Name", "XTextDam", XOption.REQUIRED));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE, "XTextDam",
             XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE, "XTextDam",

@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
 public class AtsAttributeXWidgetWorkItem extends WorkWidgetDefinition {
 
    public AtsAttributeXWidgetWorkItem(String name, String id, String attributeTypeName, String xWidgetName, XOption... xOption) {
-      super(name, id);
+      super(name + " - " + id, id);
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
       data.setId(id);

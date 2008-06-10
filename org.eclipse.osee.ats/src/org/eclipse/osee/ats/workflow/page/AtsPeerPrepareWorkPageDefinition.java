@@ -24,7 +24,7 @@ public class AtsPeerPrepareWorkPageDefinition extends WorkPageDefinition {
 
    public AtsPeerPrepareWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
-      addWorkItem(ATSAttributes.TITLE_ATTRIBUTE.getStoreName());
+      addWorkItem("ats.Title");
       addWorkItem(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.LEGACY_PCR_ID_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.ROLE_ATTRIBUTE.getStoreName());

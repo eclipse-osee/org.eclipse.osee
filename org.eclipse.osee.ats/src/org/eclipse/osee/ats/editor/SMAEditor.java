@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -384,8 +385,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
     * @see org.eclipse.osee.ats.util.widgets.task.IXTaskViewer#getResOptions()
     */
    public List<TaskResOptionDefinition> getResOptions() throws Exception {
-      WorkItemDefinition workItemDefinition =
-            smaMgr.getWorkPageDefinition().getWorkItemDefinition(TaskResolutionOptionRule.ATS_TASK_OPTIONS_TAG);
+      List<WorkItemDefinition> wids =
+            smaMgr.getWorkPageDefinition().getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE);
+      if (wids.size() == 0) return Collections.emptyList();
+      if (wids.size() > 1) throw new IllegalArgumentException(
+            "Expected on 1 " + TaskResolutionOptionRule.WORK_TYPE + ", found " + wids.size());
+      WorkItemDefinition workItemDefinition = wids.iterator().next();
       if (workItemDefinition != null) return ((TaskResolutionOptionRule) workItemDefinition).getOptions();
       return new ArrayList<TaskResOptionDefinition>();
    }

@@ -62,10 +62,12 @@ public class WorkItemDefinitionFactory {
 
    public static void relateWorkItemDefinitions(String parentWorkflowId, String childWorkflowId) throws SQLException {
       Artifact parentArt =
-            ArtifactQuery.getArtifactsFromName(parentWorkflowId, BranchPersistenceManager.getCommonBranch()).iterator().next();
+            ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+                  parentWorkflowId, BranchPersistenceManager.getCommonBranch()).iterator().next();
       if (parentArt == null) throw new IllegalArgumentException("Can't access parentWorkflowId " + parentWorkflowId);
       Artifact childArt =
-            ArtifactQuery.getArtifactsFromName(childWorkflowId, BranchPersistenceManager.getCommonBranch()).iterator().next();
+            ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), childWorkflowId,
+                  BranchPersistenceManager.getCommonBranch()).iterator().next();
       if (childArt == null) throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
       if (!parentArt.getArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class).contains(childArt)) {
          parentArt.addRelation(CoreRelationEnumeration.WorkItem__Child, childArt);
@@ -112,7 +114,8 @@ public class WorkItemDefinitionFactory {
       WorkItemDefinition wid = itemIdToDefinition.get(id);
       if (wid == null) {
          // Attempt to get from DB
-         loadDefinitions(ArtifactQuery.getArtifactsFromName(id, BranchPersistenceManager.getAtsBranch()));
+         loadDefinitions(ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
+               BranchPersistenceManager.getAtsBranch()));
       }
       return itemIdToDefinition.get(id);
    }
@@ -123,7 +126,8 @@ public class WorkItemDefinitionFactory {
       Artifact art = itemIdToWidArtifact.get(id);
       if (art == null) {
          // Attempt to get from DB
-         loadDefinitions(ArtifactQuery.getArtifactsFromName(id, BranchPersistenceManager.getAtsBranch()));
+         loadDefinitions(ArtifactQuery.getArtifactsFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
+               BranchPersistenceManager.getAtsBranch()));
       }
       return itemIdToWidArtifact.get(id);
    }

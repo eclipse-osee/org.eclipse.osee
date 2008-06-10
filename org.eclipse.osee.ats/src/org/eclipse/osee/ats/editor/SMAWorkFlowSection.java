@@ -599,7 +599,7 @@ public class SMAWorkFlowSection extends SectionPart {
             OSEELog.logException(AtsPlugin.class, ex, true);
          }
 
-         Result result = smaMgr.transition(toWorkPageDefinition.getName(), toAssignees, true, false);
+         Result result = smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, true, false);
          if (result.isFalse()) {
             result.popup();
             return;

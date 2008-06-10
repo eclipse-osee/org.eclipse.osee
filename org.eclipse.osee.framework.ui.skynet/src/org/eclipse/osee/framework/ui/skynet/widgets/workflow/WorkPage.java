@@ -165,7 +165,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       try {
          for (WorkPageDefinition page : workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
                TransitionType.ToPage)) {
-            sb.append("-> " + page.name + (workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
+            sb.append("-> " + page.getPageName() + (workFlowDefinition.getPageDefinitions(workPageDefinition.getId(),
                   TransitionType.ToPageAsReturn).contains(
                   workFlowDefinition.getPageDefinitions(workPageDefinition.getId(), TransitionType.ToPage)) ? " (return)" : "") + "\n");
          }
@@ -200,7 +200,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    }
 
    public String getName() {
-      return workPageDefinition.name;
+      return workPageDefinition.getPageName();
    }
 
    public String getId() {

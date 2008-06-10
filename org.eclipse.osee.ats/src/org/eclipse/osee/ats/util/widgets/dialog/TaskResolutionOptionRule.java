@@ -31,9 +31,10 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
 
    private List<TaskResOptionDefinition> options = new ArrayList<TaskResOptionDefinition>();
    public static String ATS_TASK_OPTIONS_TAG = "AtsTaskOptions";
+   public static String WORK_TYPE = "AtsTaskResolutionOptions";
 
    public TaskResolutionOptionRule(String name, String id, String value) {
-      super(name, id, null);
+      super(name, id, null, WORK_TYPE);
       if (value != null && !value.equals("")) setData(value);
    }
 

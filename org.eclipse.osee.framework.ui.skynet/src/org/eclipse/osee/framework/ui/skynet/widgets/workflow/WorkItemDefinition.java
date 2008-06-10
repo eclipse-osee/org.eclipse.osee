@@ -24,18 +24,27 @@ public abstract class WorkItemDefinition {
    protected final String id;
    protected final String name;
    protected final String parentId;
+   protected String type;
    protected Object data;
    public static enum WriteType {
       Update, New
    };
 
    public WorkItemDefinition(String name, String id, String parentId) {
+      this(name, id, parentId, null);
+   }
+
+   public WorkItemDefinition(String name, String id, String parentId, String type) {
       this.name = name;
       this.id = id;
+      this.type = type;
       this.parentId = parentId;
       if (parentId != null && parentId.equals("")) throw new IllegalArgumentException(
             "parentId must either be null or a valid parent Id.  Invalid for WorkItemDefinition " + id);
+      if (type != null && type.equals("")) throw new IllegalArgumentException(
+            "type must either be null or a value, not empty string.  Invalid for WorkItemDefinition " + id);
       if (this.id == null || this.id.equals("")) throw new IllegalArgumentException("id must be unique and non-null");
+
    }
 
    /**
@@ -51,7 +60,7 @@ public abstract class WorkItemDefinition {
       for (String visitedId : visitedPageIds)
          visitedIds.add(visitedId);
 
-      // Check for circluar dependency
+      // Check for circular dependency
       if (visitedIds.contains(getId())) throw new IllegalStateException(
             "Circular dependency detected.  Id already visited: " + getId());
 
@@ -95,6 +104,13 @@ public abstract class WorkItemDefinition {
    }
 
    /**
+    * @return the name
+    */
+   public String getType() {
+      return type;
+   }
+
+   /**
     * @return the parentId
     */
    public String getParentId() {
@@ -130,13 +146,19 @@ public abstract class WorkItemDefinition {
          // Create new
          artifact = ArtifactTypeManager.addArtifact(getArtifactTypeName(), BranchPersistenceManager.getCommonBranch());
       }
-      artifact.setDescriptiveName(getId());
+      artifact.setDescriptiveName(getName());
       if (getParentId() != null) artifact.setSoleAttributeValue(
             WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), getParentId());
-      artifact.setSoleAttributeValue(WorkItemAttributes.WORK_NAME.getAttributeTypeName(), getName());
+      artifact.setSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), getId());
+      if (getType() != null) artifact.setSoleAttributeValue(WorkItemAttributes.WORK_TYPE.getAttributeTypeName(),
+            getType());
       return artifact;
    }
 
    public abstract String getArtifactTypeName();
+
+   public void setType(String type) {
+      this.type = type;
+   }
 
 }

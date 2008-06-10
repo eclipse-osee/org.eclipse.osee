@@ -25,7 +25,7 @@ public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
    public AtsTaskInWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      addWorkItem(ATSAttributes.TITLE_ATTRIBUTE.getStoreName());
+      addWorkItem("ats.Title");
       addWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());
