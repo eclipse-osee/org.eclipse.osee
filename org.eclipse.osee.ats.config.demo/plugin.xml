@@ -86,5 +86,11 @@
             classname="org.eclipse.osee.ats.config.demo.util.DemoAuthentication">
       </AuthenticationClass>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.plugin.core.OseeConfigFile">
+      <OseeConfig
+            file="support/osee.demo.client.config.xml">
+      </OseeConfig>
+   </extension>
 
 </plugin>

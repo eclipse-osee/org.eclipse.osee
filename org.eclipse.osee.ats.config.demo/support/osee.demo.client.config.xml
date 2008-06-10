@@ -1,0 +1,27 @@
+<OSEEConfig>
+	<Developer/>
+	<Mode>Production</Mode>
+	<ServiceLookup>
+		<Group>LBA_DEVELOPMENT</Group>	
+	</ServiceLookup>
+	<Logger>
+		<Name>com.sun.jini.thread.TaskManager</Name>
+		<Level>OFF</Level>
+	</Logger>
+	<Logger>
+		<Name>net.jini.discovery.LookupLocatorDiscovery</Name>
+		<Level>OFF</Level>
+	</Logger>
+	<Logger>
+		<Name>org.eclipse.osee.framework.plugin.core.server.ClassServer</Name>
+		<Level>OFF</Level>
+	</Logger>
+	<Logger>
+		<Name>com.sun.jini.reggie.RegistrarProxy</Name>
+		<Level>OFF</Level>
+	</Logger>
+
+	<!-- This is here temporarily until we figure out how to tell the clients what to use -->
+	<!-- Need to specify which authentication provider to use -->
+	<AuthenticationProvider id="org.eclipse.osee.ats.config.demo.DemoAuthentication"/>
+</OSEEConfig>
