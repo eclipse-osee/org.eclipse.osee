@@ -93,29 +93,30 @@ public class AttributeCellModifier implements ICellModifier {
     *      java.lang.Object)
     */
    public void modify(Object element, String property, Object value) {
-      // Note that it is possible for an SWT Item to be passed instead of the model element.
-      if (element instanceof Item) {
-         element = ((Item) element).getData();
-      }
-      try {
-         Attribute<?> attribute = (Attribute<?>) element;
-
-         if (attribute instanceof DateAttribute) {
-            if (value instanceof GregorianCalendar) {
-               ((DateAttribute) attribute).setValue(new Date(((GregorianCalendar) value).getTimeInMillis()));
-
-            } else {
-               ((DateAttribute) attribute).setValue((Date) value);
-            }
-         } else if (!(attribute instanceof BinaryAttribute)) {
-            //binary attributes should not be changed.
-            attribute.setFromString((String) value);
+      if (element != null) {
+         // Note that it is possible for an SWT Item to be passed instead of the model element.
+         if (element instanceof Item) {
+            element = ((Item) element).getData();
          }
-      } catch (Exception ex) {
-         OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         try {
+            Attribute<?> attribute = (Attribute<?>) element;
+
+            if (attribute instanceof DateAttribute) {
+               if (value instanceof GregorianCalendar) {
+                  ((DateAttribute) attribute).setValue(new Date(((GregorianCalendar) value).getTimeInMillis()));
+               } else {
+                  ((DateAttribute) attribute).setValue((Date) value);
+               }
+            } else if (!(attribute instanceof BinaryAttribute)) {
+               //binary attributes should not be changed.
+               attribute.setFromString((String) value);
+            }
+         } catch (Exception ex) {
+            OSEELog.logException(SkynetGuiPlugin.class, ex, true);
+         }
+         tableViewer.update(element, null);
+         editor.onDirtied();
+         attrComp.notifyModifyAttribuesListeners();
       }
-      tableViewer.update(element, null);
-      editor.onDirtied();
-      attrComp.notifyModifyAttribuesListeners();
    }
 }
