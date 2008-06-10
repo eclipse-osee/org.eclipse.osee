@@ -37,7 +37,7 @@
 	
 	<Table name="OSEE_ATTRIBUTE_SEARCH" schema="OSEE">
 		<Column id="ATTR_QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="VALUE" defaultValue="not null" type="VARCHAR" />
+		<Column id="VALUE" defaultValue="not null" limits="4000" type="VARCHAR" />
 		<Index id="OSEE_ATTRIBUTE_SEARCH_A_IDX">
 			<AppliesTo id="ATTR_QUERY_ID"/>
 		</Index>
