@@ -44,6 +44,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xresults.XResultData;
  */
 public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
+   public static String ATS_TITLE_ID = "ats.Title";
+   public static String ATS_DESCRIPTION_NOT_REQUIRED_ID =
+         ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName() + ".notRequired";
    public static enum RuleWorkItemId {
       atsRequireStateHourSpentPrompt,
       atsAddDecisionValidateBlockingReview,
@@ -92,6 +95,9 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
             XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE, "XTextDam", XOption.REQUIRED,
             XOption.FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE.getDisplayName(),
+            ATS_DESCRIPTION_NOT_REQUIRED_ID, ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "XTextDam",
+            XOption.NOT_REQUIRED, XOption.FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE, "XComboBooleanDam",
             XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.DECISION_ATTRIBUTE, "XComboDam(1,2,3)",

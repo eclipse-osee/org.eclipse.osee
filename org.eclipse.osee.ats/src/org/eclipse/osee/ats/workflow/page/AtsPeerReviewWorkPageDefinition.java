@@ -8,7 +8,7 @@ package org.eclipse.osee.ats.workflow.page;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
@@ -27,7 +27,7 @@ public class AtsPeerReviewWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(ATSAttributes.ROLE_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.REVIEW_DEFECT_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.LOCATION_ATTRIBUTE.getStoreName(), XOption.NOT_REQUIRED);
+      addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
    }
 
 }

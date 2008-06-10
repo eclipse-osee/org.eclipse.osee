@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
@@ -152,11 +151,6 @@ public class SMAWorkFlowSection extends SectionPart {
          if (workItemDefinition instanceof WorkWidgetDefinition) {
             DynamicXWidgetLayoutData data = ((WorkWidgetDefinition) workItemDefinition).get();
             data.setDynamicXWidgetLayout(atsWorkPage.getDynamicXWidgetLayout());
-            // Get overridden XOptions if applicable
-            XOptionHandler xOptionHandler = atsWorkPage.getWorkPageDefinition().getXOptionHandler(workItemDefinition);
-            if (xOptionHandler != null) {
-               data.getXOptionHandler().add(xOptionHandler.getXOptions());
-            }
             staticDatas.add(data);
          }
       }

@@ -6,13 +6,9 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 
 /**
  * @author Donald G. Dunne
@@ -23,8 +19,6 @@ public class WorkPageDefinition extends WorkItemDefinition {
    private String pageName;
 
    private List<String> workItemIds = new ArrayList<String>();
-   // Map to store XOptions that will override the default choices when the XWidget was declared
-   private Map<String, XOptionHandler> workDefToXOptionHandler = new HashMap<String, XOptionHandler>();
 
    public WorkPageDefinition(String pageName, String pageId, String parentId) {
       this(pageId, pageName, pageId, parentId);
@@ -75,24 +69,6 @@ public class WorkPageDefinition extends WorkItemDefinition {
 
    public void addWorkItem(String workItemDefintionId) {
       workItemIds.add(workItemDefintionId);
-   }
-
-   public XOptionHandler getXOptionHandler(WorkItemDefinition workItemDefinition) {
-      return workDefToXOptionHandler.get(workItemDefinition);
-   }
-
-   /**
-    * Adds the workItemDefinition and logs the xOptions that will be used to override the default configured options.
-    * This does NOT change the default configured options, just overrides for this page's display.
-    * 
-    * @param workItemDefinition
-    * @param xOption
-    */
-   public void addWorkItem(String workItemDefintionId, XOption... xOption) {
-      addWorkItem(workItemDefintionId);
-      if (xOption.length > 0) {
-         workDefToXOptionHandler.put(workItemDefintionId, new XOptionHandler(xOption));
-      }
    }
 
    public void removeWorkItem(String workItemDefintionId) {

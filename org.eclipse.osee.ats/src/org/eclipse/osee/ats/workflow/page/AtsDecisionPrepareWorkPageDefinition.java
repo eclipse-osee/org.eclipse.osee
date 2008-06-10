@@ -8,7 +8,7 @@ package org.eclipse.osee.ats.workflow.page;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
@@ -26,7 +26,7 @@ public class AtsDecisionPrepareWorkPageDefinition extends WorkPageDefinition {
       super(name, pageId, parentId);
       addWorkItem("ats.Title");
       addWorkItem(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName());
-      addWorkItem(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), XOption.NOT_REQUIRED);
+      addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
       addWorkItem(ATSAttributes.BLOCKING_REVIEW_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.DEADLINE_ATTRIBUTE.getStoreName());
       addWorkItem(ATSAttributes.ESTIMATED_HOURS_ATTRIBUTE.getStoreName());

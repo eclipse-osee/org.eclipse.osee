@@ -18,7 +18,7 @@ public class AtsAttributeXWidgetWorkItem extends WorkWidgetDefinition {
    public AtsAttributeXWidgetWorkItem(String name, String id, String attributeTypeName, String xWidgetName, XOption... xOption) {
       super(name + " - " + id, id);
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
-      data.setName(getName());
+      data.setName(name);
       data.setId(id);
       data.setStorageName(attributeTypeName);
       data.setXWidgetName(xWidgetName);
