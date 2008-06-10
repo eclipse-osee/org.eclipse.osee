@@ -14,12 +14,14 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.LocalTransactionEvent;
@@ -35,9 +37,12 @@ import org.eclipse.osee.framework.ui.plugin.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OSEELog;
+import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -110,6 +115,7 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
 
+      new ChangeDragAndDrop(tree, ChangeXViewer.NAMESPACE);
    }
 
    public void createTaskActionBar(Composite parent) {
@@ -304,5 +310,44 @@ public class XChangeViewer extends XWidget implements IEventReceiver {
     */
    @Override
    public void setXmlData(String str) {
+   }
+   public class ChangeDragAndDrop extends SkynetDragAndDrop {
+
+      public ChangeDragAndDrop(Tree tree, String viewId) {
+         super(tree, viewId);
+      }
+
+      @Override
+      public void performDragOver(DropTargetEvent event) {
+         event.detail = DND.DROP_NONE;
+      }
+
+      @Override
+      public Artifact[] getArtifacts() throws SQLException {
+         IStructuredSelection selection = (IStructuredSelection) xChangeViewer.getSelection();
+         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+
+         if (selection != null && !selection.isEmpty()) {
+            for (Object object : selection.toArray()) {
+
+               if (object instanceof IAdaptable) {
+                  Artifact artifact = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
+
+                  if (artifact != null) {
+                     artifacts.add(artifact);
+                  }
+               }
+            }
+         }
+         return artifacts.toArray(new Artifact[artifacts.size()]);
+      }
+
+      //      @Override
+      //      public void performDrop(DropTargetEvent event) {
+      //         if (TextTransfer.getInstance().isSupportedType(event.currentDataType) || ArtifactTransfer.getInstance().isSupportedType(
+      //               event.currentDataType)) {
+      //            event.detail = DND.DROP_MOVE;
+      //         }
+      //      }
    }
 }

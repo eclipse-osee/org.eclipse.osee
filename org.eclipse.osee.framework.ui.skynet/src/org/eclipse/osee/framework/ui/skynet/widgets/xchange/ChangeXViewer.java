@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class ChangeXViewer extends XViewer implements IEventReceiver {
 
-   private static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
+   public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";
    private final XChangeViewer xChangeViewer;
 
    /**
